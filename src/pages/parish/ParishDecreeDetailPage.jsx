@@ -33,6 +33,30 @@ const humanLabel = (key) => String(key || '')
   .replaceAll('_', ' ')
   .replace(/^./, (c) => c.toUpperCase());
 
+const sacramentLabel = (value) => {
+  const key = String(value || '').toLowerCase();
+  if (key.includes('confirm')) return 'Confirmación';
+  if (key.includes('matrim')) return 'Matrimonio';
+  if (key.includes('exequ') || key.includes('funer')) return 'Exequias';
+  if (key.includes('baut')) return 'Bautismo';
+  return value || 'Sacramento';
+};
+
+const decreeTypeLabel = (value) => {
+  const key = String(value || '').toLowerCase();
+  if (key.includes('correc')) return 'Corrección';
+  if (key.includes('repos') || key.includes('replacement')) return 'Reposición';
+  return value || 'Acto canónico';
+};
+
+const decreeStatusLabel = (value) => {
+  const key = String(value || '').toLowerCase();
+  if (key === 'reversed' || key === 'revertida') return 'Revertido';
+  if (key === 'cancelled' || key === 'cancelado') return 'Cancelado';
+  if (key === 'active' || key === 'vigente') return 'Vigente';
+  return value || 'Vigente';
+};
+
 const DataItem = ({ label, value }) => (
   <div className="rounded-2xl border border-slate-100 bg-slate-50/70 p-4">
     <p className="text-[9px] font-black uppercase tracking-[0.18em] text-slate-400">{label}</p>
@@ -265,7 +289,7 @@ const ParishDecreeDetailPage = () => {
             </Button>
             <div>
               <p className="text-[9px] font-black uppercase tracking-[0.25em] text-blue-600">
-                Cancillería · Decreto ejecutado
+                Cancillería · Decreto recibido por la Parroquia
               </p>
               <h1 className="mt-1 font-serif text-3xl font-black text-slate-950">
                 Decreto {decreeNumber || 'sin número'}
@@ -307,10 +331,10 @@ const ParishDecreeDetailPage = () => {
                     SACRAMENTUM · Cancillería Diocesana
                   </p>
                   <h2 className="mt-1 font-serif text-2xl font-black uppercase text-slate-900">
-                    Decreto de {text(decreeType, 'acto canónico')}
+                    Decreto de {decreeTypeLabel(decreeType)}
                   </h2>
                   <p className="mt-1 text-sm font-bold uppercase text-slate-500">
-                    {text(sacrament, 'Sacramento')} · {text(decreeNumber, 'S/N')}
+                    {sacramentLabel(sacrament)} · {text(decreeNumber, 'S/N')}
                   </p>
                 </div>
                 <div className="hidden items-center gap-2 rounded-2xl border border-green-200 bg-green-50 px-4 py-3 text-[9px] font-black uppercase tracking-widest text-green-700 md:flex print:flex">
@@ -330,9 +354,9 @@ const ParishDecreeDetailPage = () => {
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                   <DataItem label="Número de decreto" value={decreeNumber} />
                   <DataItem label="Fecha del decreto" value={formatDate(decreeDate)} />
-                  <DataItem label="Sacramento" value={sacrament} />
-                  <DataItem label="Tipo" value={decreeType} />
-                  <DataItem label="Estado" value={decree.status} />
+                  <DataItem label="Sacramento" value={sacramentLabel(sacrament)} />
+                  <DataItem label="Tipo de decreto" value={decreeTypeLabel(decreeType)} />
+                  <DataItem label="Estado" value={decreeStatusLabel(decree.status)} />
                   <DataItem label="Persona / Titular" value={targetName} />
                 </div>
               </section>

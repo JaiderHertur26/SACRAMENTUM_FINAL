@@ -315,8 +315,9 @@ const Sidebar = ({ isOpen, onClose, onLogout, role, menuItems: externalMenuItems
                 label: 'Decretos',
                 icon: FileText,
                 children: [
-                    { label: 'Reposiciones recibidas', path: '/parish/decree-replacement/view' },
-                    { label: 'Correcciones recibidas', path: '/parish/decree-correction/view' },
+                    { label: 'Centro de Decretos', path: '/parroquia/decretos', icon: ScrollText },
+                    { label: 'Correcciones recibidas', path: '/parroquia/decretos/archivo?type=correccion&sacrament=bautismo' },
+                    { label: 'Reposiciones recibidas', path: '/parroquia/decretos/archivo?type=reposicion&sacrament=bautismo' }
                 ]
             },            
             { label: 'Chat Diocesano', path: '/communications', icon: MessageCircleMore, badgeCount: chatCount },

@@ -12,10 +12,19 @@ import { es } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
 import { listOfficialNotifications, markOfficialNotificationRead } from '@/services/officialNotificationsService';
 
+const sacramentLabel = (value) => {
+    const key = String(value || '').toLowerCase();
+    if (key.includes('confirm')) return 'Confirmación';
+    if (key.includes('matrim')) return 'Matrimonio';
+    if (key.includes('exequ') || key.includes('funer')) return 'Exequias';
+    return 'Bautismo';
+};
+
 // --- COMPONENTE SECUNDARIO PARA LA TARJETA ---
 const NotificationCard = ({ notification, onView }) => {
     const isUnread = notification.status === 'pending' || notification.status === 'unread';
     const isCorrection = ['correction', 'correccion'].includes(notification.decree_type);
+    const decreeLabel = isCorrection ? 'Decreto de Corrección' : 'Decreto de Reposición';
 
     return (
         <motion.div 
@@ -37,7 +46,10 @@ const NotificationCard = ({ notification, onView }) => {
                 <div className="flex flex-wrap justify-center md:justify-start items-center gap-3 mb-2">
                     <span className={cn("px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border", 
                         isCorrection ? "bg-blue-50 text-blue-700 border-blue-100" : "bg-blue-50 text-blue-700 border-blue-100")}>
-                        {isCorrection ? 'Decreto ODC' : 'Decreto Reposición'}
+                        {decreeLabel}
+                    </span>
+                    <span className="px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border border-slate-200 bg-slate-50 text-slate-600">
+                        {sacramentLabel(notification.sacramentType)}
                     </span>
                     {isUnread && <span className="w-2 h-2 rounded-full bg-blue-600 animate-ping" />}
                     <span className="text-[10px] text-slate-400 font-bold uppercase tracking-tighter">

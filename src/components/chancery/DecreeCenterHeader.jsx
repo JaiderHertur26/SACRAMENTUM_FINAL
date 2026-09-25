@@ -1,4 +1,3 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   ScrollText,
@@ -9,37 +8,65 @@ import {
   HeartHandshake,
   Heart,
   ShieldCheck,
-  ArrowLeft
+  ArrowLeft,
+  Eye
 } from 'lucide-react';
 
-const OPERATION_META = {
+export const DECREE_OPERATION_META = Object.freeze({
   correction: {
     label: 'Corrección',
-    subtitle: 'Anula la partida original y crea una nueva supletoria',
+    subtitle: 'Existe una partida con error: la original queda anulada y se crea una nueva partida supletoria vinculada.',
     icon: FileCheck2
   },
   reposition: {
     label: 'Reposición',
-    subtitle: 'No existe partida utilizable: se reconstruye con evidencia',
+    subtitle: 'No existe una partida utilizable: se crea una nueva partida supletoria con fundamento documental suficiente.',
     icon: ArchiveRestore
   },
   archive: {
     label: 'Archivo',
-    subtitle: 'Consulta, impresión y reversión auditada',
+    subtitle: 'Consulta, impresión y trazabilidad institucional de los decretos emitidos.',
     icon: History
   }
-};
+});
 
-const SACRAMENT_META = {
-  bautismo: { label: 'Bautismo', icon: Church },
-  confirmacion: { label: 'Confirmación', icon: HeartHandshake },
-  matrimonio: { label: 'Matrimonio', icon: Heart },
-  exequias: { label: 'Exequias', icon: ScrollText }
-};
+export const DECREE_SACRAMENT_META = Object.freeze({
+  bautismo: {
+    label: 'Bautismo',
+    icon: Church,
+    description: 'Corrección y reposición de partidas bautismales.'
+  },
+  confirmacion: {
+    label: 'Confirmación',
+    icon: HeartHandshake,
+    description: 'Corrección y reposición de partidas de Confirmación.'
+  },
+  matrimonio: {
+    label: 'Matrimonio',
+    icon: Heart,
+    description: 'Corrección y reposición del registro matrimonial. La nulidad no pertenece a este Centro.'
+  },
+  exequias: {
+    label: 'Exequias',
+    icon: ScrollText,
+    description: 'Corrección y reposición de partidas de Exequias.'
+  }
+});
 
-export const decreeRouteFor = (mode, sacrament) => {
+const centerPath = (scope) => scope === 'parish' ? '/parroquia/decretos' : '/chancery/decretos';
+
+export const decreeRouteFor = (mode, sacrament, scope = 'chancery') => {
+  const sacramentKey = sacrament || 'bautismo';
+
+  if (scope === 'parish') {
+    const params = new URLSearchParams();
+    if (mode && mode !== 'archive') params.set('type', mode === 'reposition' ? 'reposicion' : 'correccion');
+    params.set('sacrament', sacramentKey);
+    return `/parroquia/decretos/archivo?${params.toString()}`;
+  }
+
   if (mode === 'archive') {
-    return `/chancery/decretos/archivo?sacrament=${encodeURIComponent(sacrament || 'bautismo')}`;
+    return `/chancery/decretos/archivo?sacrament=${encodeURIComponent(sacramentKey)}`;
   }
 
   const correction = {
@@ -56,26 +83,34 @@ export const decreeRouteFor = (mode, sacrament) => {
     exequias: '/chancery/exequias/decretos?mode=reposition'
   };
 
-  return (mode === 'reposition' ? reposition : correction)[sacrament || 'bautismo'];
+  return (mode === 'reposition' ? reposition : correction)[sacramentKey];
 };
 
 const DecreeCenterHeader = ({
   mode = null,
   sacrament = null,
+  scope = 'chancery',
   title = 'Centro de Decretos Sacramentales',
-  subtitle = 'Gobierno documental unificado de Bautismo, Confirmación, Matrimonio y Exequias.',
+  subtitle,
   showBack = false
 }) => {
   const navigate = useNavigate();
+  const isParish = scope === 'parish';
+
+  const resolvedSubtitle = subtitle || (
+    isParish
+      ? 'Recepción, consulta e impresión de decretos de Corrección y Reposición emitidos por Cancillería para Bautismo, Confirmación, Matrimonio y Exequias.'
+      : 'Gobierno documental unificado de Corrección y Reposición para Bautismo, Confirmación, Matrimonio y Exequias.'
+  );
 
   const switchMode = (nextMode) => {
     const targetSacrament = sacrament || 'bautismo';
-    navigate(decreeRouteFor(nextMode, targetSacrament));
+    navigate(decreeRouteFor(nextMode, targetSacrament, scope));
   };
 
   const switchSacrament = (nextSacrament) => {
-    const targetMode = mode || 'correction';
-    navigate(decreeRouteFor(targetMode, nextSacrament));
+    const targetMode = mode || 'archive';
+    navigate(decreeRouteFor(targetMode, nextSacrament, scope));
   };
 
   return (
@@ -85,7 +120,7 @@ const DecreeCenterHeader = ({
           {showBack ? (
             <button
               type="button"
-              onClick={() => navigate('/chancery/decretos')}
+              onClick={() => navigate(centerPath(scope))}
               className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-white/10 text-white transition hover:bg-white/15"
               aria-label="Volver al Centro de Decretos"
             >
@@ -99,28 +134,32 @@ const DecreeCenterHeader = ({
 
           <div>
             <p className="text-[9px] font-black uppercase tracking-[0.26em] text-amber-300">
-              Cancillería · Gobierno Documental
+              {isParish ? 'Parroquia · Decretos recibidos de Cancillería' : 'Cancillería · Gobierno Documental'}
             </p>
             <h1 className="mt-1 font-serif text-3xl font-black text-white">{title}</h1>
-            <p className="mt-1 max-w-3xl text-xs text-slate-300">{subtitle}</p>
+            <p className="mt-1 max-w-3xl text-xs text-slate-300">{resolvedSubtitle}</p>
           </div>
         </div>
 
         <button
           type="button"
-          onClick={() => navigate('/chancery/decretos')}
+          onClick={() => navigate(centerPath(scope))}
           className="inline-flex items-center gap-2 self-start rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-[9px] font-black uppercase tracking-widest text-slate-200 transition hover:bg-white/10 md:self-auto"
         >
-          <ShieldCheck className="h-4 w-4 text-amber-300" />
-          Centro unificado
+          {isParish ? <Eye className="h-4 w-4 text-amber-300" /> : <ShieldCheck className="h-4 w-4 text-amber-300" />}
+          {isParish ? 'Centro parroquial' : 'Centro unificado'}
         </button>
       </div>
 
       <div className="space-y-3 p-4">
         <div className="grid gap-3 md:grid-cols-3">
-          {Object.entries(OPERATION_META).map(([key, meta]) => {
+          {Object.entries(DECREE_OPERATION_META).map(([key, meta]) => {
             const Icon = meta.icon;
             const active = mode === key;
+            const subtitleText = isParish && key === 'archive'
+              ? 'Consulta, impresión y trazabilidad. La reversión corresponde exclusivamente a Cancillería.'
+              : meta.subtitle;
+
             return (
               <button
                 key={key}
@@ -139,7 +178,7 @@ const DecreeCenterHeader = ({
                 <span>
                   <span className={active ? 'block text-xs font-black uppercase tracking-wide !text-white' : 'block text-xs font-black uppercase tracking-wide text-slate-800'}>{meta.label}</span>
                   <span className={active ? 'mt-0.5 block text-[10px] !text-slate-200' : 'mt-0.5 block text-[10px] text-slate-400'}>
-                    {meta.subtitle}
+                    {subtitleText}
                   </span>
                 </span>
               </button>
@@ -148,7 +187,7 @@ const DecreeCenterHeader = ({
         </div>
 
         <div className="grid grid-cols-2 gap-2 rounded-2xl bg-slate-50 p-2 md:grid-cols-4">
-          {Object.entries(SACRAMENT_META).map(([key, meta]) => {
+          {Object.entries(DECREE_SACRAMENT_META).map(([key, meta]) => {
             const Icon = meta.icon;
             const active = sacrament === key;
             return (

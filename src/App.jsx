@@ -52,6 +52,8 @@ const DatosAuxiliaresPage = lazy(() => import('@/pages/parish/DatosAuxiliaresPag
 const ParishNotificationsPage = lazy(() => import('@/pages/parish/ParishNotificationsPage'));
 const SacramentalNotificationsPage = lazy(() => import('@/pages/parish/SacramentalNotificationsPage'));
 const ParishDecreeDetailPage = lazy(() => import('@/pages/parish/ParishDecreeDetailPage'));
+const ParishSacramentalDecreesCenterPage = lazy(() => import('@/pages/parish/ParishSacramentalDecreesCenterPage'));
+const ParishSacramentalDecreeArchivePage = lazy(() => import('@/pages/parish/ParishSacramentalDecreeArchivePage'));
 
 /* --- BAPTISM --- */
 const BaptismNewPage = lazy(() => import('@/pages/parish/BaptismNewPage'));
@@ -61,8 +63,6 @@ const BaptismIndexPage = lazy(() => import('@/pages/parish/BaptismIndexPage'));
 const BaptismParametersPage = lazy(() => import('@/pages/parish/BaptismParametersPage'));
 const BaptismPartidasPage = lazy(() => import('@/pages/parish/BaptismPartidasPage'));
 const BaptismDetailPage = lazy(() => import('@/pages/BaptismDetailPage'));
-const BaptismRepositionListPage = lazy(() => import('@/pages/parish/BaptismRepositionListPage'));
-const BaptismCorrectionListPage = lazy(() => import('@/pages/parish/BaptismCorrectionListPage'));
 
 /* --- CONFIRMATION --- */
 const ConfirmationNewPage = lazy(() => import('@/pages/parish/ConfirmationNewPage'));
@@ -71,7 +71,6 @@ const ConfirmationSentarRegistrosPage = lazy(() => import('@/pages/parish/Confir
 const ConfirmationIndexPage = lazy(() => import('@/pages/parish/ConfirmationIndexPage'));
 const ConfirmationParametersPage = lazy(() => import('@/pages/parish/ConfirmationParametersPage'));
 const ConfirmationPartidasPage = lazy(() => import('@/pages/parish/ConfirmationPartidasPage'));
-const ConfirmationCorrectionListPage = lazy(() => import('@/pages/parish/ConfirmationCorrectionListPage'));
 
 /* --- MATRIMONIO --- */
 const MatrimonioNewPage = lazy(() => import('@/pages/parish/MatrimonioNewPage'));
@@ -189,24 +188,26 @@ const AppContent = () => {
                 <Route path="/parroquia/parametros" element={<Navigate to="/parroquia/bautismo/parametros" replace />} />
                 <Route path="/parroquia/bautismo/:baptismPartidaId" element={<ProtectedRoute requiredRole={ROLE_TYPES.PARISH}><BaptismDetailPage /></ProtectedRoute>} />
 
-                {/* --- DECREES (ReposiciÃ³n & CorrecciÃ³n - Parish) --- */}
-                <Route path="/parroquia/decretos/nuevo-reposicion" element={<Navigate to="/parroquia/decretos/reposicion" replace />} />
-                <Route path="/parish/decree-replacement/new" element={<Navigate to="/parish/decree-replacement/view" replace />} />
-                <Route path="/parroquia/decretos/reposicion" element={<Navigate to="/parish/decree-replacement/view" replace />} />
-                <Route path="/parish/decree-replacement/view" element={<ProtectedRoute requiredRole={ROLE_TYPES.PARISH}><BaptismRepositionListPage /></ProtectedRoute>} />
-                <Route path="/parroquia/decretos/editar-reposicion" element={<Navigate to="/parroquia/decretos/reposicion" replace />} />
-                <Route path="/parish/decree-replacement/edit" element={<Navigate to="/parish/decree-replacement/view" replace />} />
+                {/* --- CENTRO PARROQUIAL UNIFICADO DE DECRETOS --- */}
+                <Route path="/parroquia/decretos" element={<ProtectedRoute requiredRole={ROLE_TYPES.PARISH}><ParishSacramentalDecreesCenterPage /></ProtectedRoute>} />
+                <Route path="/parroquia/decretos/archivo" element={<ProtectedRoute requiredRole={ROLE_TYPES.PARISH}><ParishSacramentalDecreeArchivePage /></ProtectedRoute>} />
 
-                <Route path="/parish/decree-correction/new" element={<Navigate to="/parish/decree-correction/view" replace />} />
-                <Route path="/parroquia/decretos/nuevo-correccion" element={<Navigate to="/parish/decree-correction/view" replace />} />
-                <Route path="/parish/decree-correction/view" element={<ProtectedRoute requiredRole={ROLE_TYPES.PARISH}><BaptismCorrectionListPage /></ProtectedRoute>} />
-                <Route path="/parroquia/decretos/ver-correcciones" element={<Navigate to="/parish/decree-correction/view" replace />} />
-                <Route path="/parish/decree-correction/edit" element={<Navigate to="/parish/decree-correction/view" replace />} />
-                <Route path="/parroquia/decretos/editar-correccion" element={<Navigate to="/parish/decree-correction/view" replace />} />
+                {/* Compatibilidad con rutas históricas de Parroquia */}
+                <Route path="/parroquia/decretos/nuevo-reposicion" element={<Navigate to="/parroquia/decretos/archivo?type=reposicion&sacrament=bautismo" replace />} />
+                <Route path="/parish/decree-replacement/new" element={<Navigate to="/parroquia/decretos/archivo?type=reposicion&sacrament=bautismo" replace />} />
+                <Route path="/parroquia/decretos/reposicion" element={<Navigate to="/parroquia/decretos/archivo?type=reposicion&sacrament=bautismo" replace />} />
+                <Route path="/parish/decree-replacement/view" element={<Navigate to="/parroquia/decretos/archivo?type=reposicion&sacrament=bautismo" replace />} />
+                <Route path="/parroquia/decretos/editar-reposicion" element={<Navigate to="/parroquia/decretos/archivo?type=reposicion&sacrament=bautismo" replace />} />
+                <Route path="/parish/decree-replacement/edit" element={<Navigate to="/parroquia/decretos/archivo?type=reposicion&sacrament=bautismo" replace />} />
 
-                {/* ðŸš€ AÃ‘ADIDO: Rutas para el Nuevo Decreto de CorrecciÃ³n de ConfirmaciÃ³n */}
-                <Route path="/parroquia/decretos/nuevo-correccion-confirmacion" element={<Navigate to="/parroquia/decretos/ver-correcciones-confirmacion" replace />} />
-                <Route path="/parroquia/decretos/ver-correcciones-confirmacion" element={<ProtectedRoute requiredRole={ROLE_TYPES.PARISH}><ConfirmationCorrectionListPage /></ProtectedRoute>} />
+                <Route path="/parish/decree-correction/new" element={<Navigate to="/parroquia/decretos/archivo?type=correccion&sacrament=bautismo" replace />} />
+                <Route path="/parroquia/decretos/nuevo-correccion" element={<Navigate to="/parroquia/decretos/archivo?type=correccion&sacrament=bautismo" replace />} />
+                <Route path="/parish/decree-correction/view" element={<Navigate to="/parroquia/decretos/archivo?type=correccion&sacrament=bautismo" replace />} />
+                <Route path="/parroquia/decretos/ver-correcciones" element={<Navigate to="/parroquia/decretos/archivo?type=correccion&sacrament=bautismo" replace />} />
+                <Route path="/parish/decree-correction/edit" element={<Navigate to="/parroquia/decretos/archivo?type=correccion&sacrament=bautismo" replace />} />
+                <Route path="/parroquia/decretos/editar-correccion" element={<Navigate to="/parroquia/decretos/archivo?type=correccion&sacrament=bautismo" replace />} />
+                <Route path="/parroquia/decretos/nuevo-correccion-confirmacion" element={<Navigate to="/parroquia/decretos/archivo?type=correccion&sacrament=confirmacion" replace />} />
+                <Route path="/parroquia/decretos/ver-correcciones-confirmacion" element={<Navigate to="/parroquia/decretos/archivo?type=correccion&sacrament=confirmacion" replace />} />
 
                 {/* --- CONFIRMATION ROUTES --- */}
                 <Route path="/parroquia/confirmacion/nuevo" element={<ProtectedRoute requiredRole={ROLE_TYPES.PARISH}><ConfirmationNewPage /></ProtectedRoute>} />

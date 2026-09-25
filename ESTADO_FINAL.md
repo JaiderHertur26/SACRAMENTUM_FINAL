@@ -1,6 +1,6 @@
 ﻿# SACRAMENTUM · ESTADO FINAL CONSOLIDADO
 
-Estado operativo: **V29 ESTABLE · RESOLUCIÓN INTELIGENTE DE CÓDIGOS LEGACY**
+Estado operativo: **V30 ESTABLE · CENTRO PARROQUIAL UNIFICADO DE DECRETOS**
 Fecha de corte: **25 de septiembre de 2026**
 
 ## Validación de frontend
@@ -235,4 +235,73 @@ Objetivo: impedir que los registros históricos muestren códigos técnicos cuan
 Checkpoint previo: `C:\SACRAMENTUM\CHECKPOINTS\SACRAMENTUM_FINAL_2026-09-25_PRE_V29_LEGACY_RESOLUTION`.
 
 ESTADO CANÓNICO ACTUAL: **V29 ESTABLE · RESOLUCIÓN INTELIGENTE DE CÓDIGOS LEGACY**.
+
+
+---
+## V30 · CENTRO PARROQUIAL UNIFICADO DE DECRETOS · 2026-09-25
+
+### Objetivo
+Unificar completamente el lenguaje, navegación y lectura de decretos entre Parroquia y Cancillería.
+
+### Matriz sacramental común
+- Bautismo.
+- Confirmación.
+- Matrimonio.
+- Exequias.
+
+### Actuaciones comunes
+- Corrección: existe una partida con error; la original queda anulada y se crea una nueva partida supletoria vinculada.
+- Reposición: no existe una partida utilizable; se crea una nueva partida supletoria con fundamento documental suficiente.
+- Archivo: consulta, impresión y trazabilidad institucional.
+
+### Competencias
+- Parroquia: recibe, consulta, imprime y revisa trazabilidad.
+- Cancillería: emite y revierte Correcciones y Reposiciones.
+- La nulidad matrimonial permanece fuera de este Centro y corresponde al Tribunal Eclesiástico.
+
+### Frontend
+- Nuevo `ParishSacramentalDecreesCenterPage.jsx`.
+- Nuevo `ParishSacramentalDecreeArchivePage.jsx`.
+- `DecreeCenterHeader.jsx` funciona como lenguaje compartido Parroquia/Cancillería.
+- `SacramentalDecreesCenterPage.jsx` usa las mismas definiciones compartidas.
+- `ParishDecreeDetailPage.jsx` humaniza sacramento, tipo y estado.
+- `ParishNotificationsPage.jsx` elimina `Decreto ODC` y usa `Decreto de Corrección` / `Decreto de Reposición`, mostrando además el sacramento.
+- Sidebar parroquial incorpora `Centro de Decretos`.
+- Rutas parroquiales históricas redirigen al Centro nuevo.
+- Se retiraron las páginas antiguas parciales de Bautismo/Confirmación para impedir regresión de lenguaje.
+
+### Supabase
+- Migración `20260925191903_parish_decree_center_v30.sql` aplicada.
+- RLS SELECT: `can_access_parish(parish_id)`.
+- Parroquia sólo puede leer decretos de su propia parroquia.
+- Cancillería/Diócesis sólo leen dentro de su jurisdicción.
+- La política INSERT existente continúa sin incluir Parroquia.
+- Trigger `sacramentum_guard_decree_authority()` exige rol Cancillería para emitir/revertir Corrección o Reposición y valida diócesis.
+
+### Soporte transaccional verificado
+- Bautismo: Corrección + Reposición.
+- Confirmación: Corrección + Reposición.
+- Matrimonio: Corrección + Reposición.
+- Exequias: Corrección + Reposición.
+
+### Validación
+- Gate V30: 38/38.
+- V29: 38/38.
+- V28: 29/29.
+- V19: 12/12.
+- Bautismo: OK.
+- Confirmación: OK.
+- Exequias ↔ Bautismo V7: 14/14.
+- V15: OK.
+- V16C: 29/29.
+- V17: 25/25.
+- V18: 17/17.
+- V20: 14/14.
+- npm audit: 0 vulnerabilidades.
+- Build Vite: 3072 módulos · 2.11 s · exit code 0.
+- Migraciones Local = Remote hasta `20260925191903`.
+
+Checkpoint previo: `C:\SACRAMENTUM\CHECKPOINTS\SACRAMENTUM_FINAL_2026-09-25_PRE_V30_PARISH_DECREES`.
+
+ESTADO CANÓNICO ACTUAL: **V30 ESTABLE · CENTRO PARROQUIAL UNIFICADO DE DECRETOS**.
 

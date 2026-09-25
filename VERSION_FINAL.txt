@@ -1,13 +1,12 @@
 SACRAMENTUM FINAL
-Estado: V29 estable · Resolución Inteligente de Códigos Legacy
+Estado: V30 estable · Centro Parroquial Unificado de Decretos
 Fecha: 2026-09-25
-Frontend: Vite 8.3.1 + React Router DOM 7.18.4
-Documentos: V28 Sistema Documental Eclesial vigente
-Legacy V29: sexo, tipo de unión y referencias de sacerdote normalizadas
-Bautismos legacy auditados: 46 · DA FE numérico residual: 0
-Confirmaciones legacy auditadas: 173 · sexo resuelto: 173
-Resolver sacerdote: misma parroquia + coincidencia única
-Supabase: migraciones local/remoto alineadas hasta 20260925184206
-Gate V29: 38/38
-Build Windows validado: OK · Vite 8.3.1
-Seguridad npm: 0 vulnerabilidades
+Decretos: lenguaje unificado Parroquia ↔ Cancillería
+Sacramentos: Bautismo · Confirmación · Matrimonio · Exequias
+Operaciones: Corrección · Reposición · Archivo
+Parroquia: consulta, impresión y trazabilidad
+Cancillería: emisión y reversión exclusiva
+Supabase: decretos SELECT por jurisdicción · INSERT mantiene autoridad de Cancillería
+Gate V30: 38/38
+Build: OK · Vite 8.3.1 · 3072 módulos · 2.11 s
+npm audit: 0 vulnerabilidades
