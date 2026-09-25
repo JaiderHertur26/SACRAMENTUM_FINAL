@@ -3,6 +3,14 @@ import { generateUUID } from '@/utils/supabaseHelpers';
 import { convertDateToSpanishText } from '@/utils/dateTimeFormatters';
 import { obtenerNotasAlMargen } from './marginalNotesService';
 import { getLocalDateISO } from '@/utils/localDate';
+import {
+    extractLegacyResolved,
+    normalizeLegacyCode,
+    normalizeLegacyDisplayPayload,
+    normalizeLegacySex,
+    normalizeLegacyUnionType,
+    resolveLegacyPriestDisplay
+} from '@/utils/legacyDisplayResolvers';
 
 const safeJsonParse = (str, fallback = []) => {
     if (!str || str === 'undefined' || str === 'null') return fallback;
@@ -78,6 +86,8 @@ export const purificarRegistroBautismo = (raw) => {
     let rawPayload = raw.raw_data || raw.rawData || {};
     if (typeof rawPayload === 'string') rawPayload = safeJsonParse(rawPayload, {});
     if (!rawPayload || typeof rawPayload !== 'object' || Array.isArray(rawPayload)) rawPayload = {};
+    rawPayload = normalizeLegacyDisplayPayload(rawPayload);
+    const legacyResolved = extractLegacyResolved(rawPayload);
 
     const pId = raw.parishId || raw.parish_id || rawPayload.parishId || rawPayload.parish_id || null;
     const recordSource = raw.source || rawPayload.source || '';
@@ -104,6 +114,33 @@ export const purificarRegistroBautismo = (raw) => {
     };
     const notaFinalConFecha = notaCalculada.replace(/\[FECHA_EXPEDICION\]/g, getFechaHoyLetras()).toUpperCase();
 
+    const rawDaFeValue = raw.daFe || raw.da_fe || rawPayload.daFe || rawPayload.da_fe || rawPayload.dafe || '';
+    const legacyDaFeCode = normalizeLegacyCode(
+        legacyResolved.legacy_dafe_code
+        || rawPayload.legacy_dafe_code
+        || rawPayload.legacy_normalized?.legacy_dafe_code
+        || rawDaFeValue
+    );
+    const daFeDisplay = resolveLegacyPriestDisplay({
+        canonicalValue: raw.daFe || raw.da_fe || '',
+        resolvedValue: legacyResolved.daFe || rawPayload.legacy_dafe_resolved_name || '',
+        code: legacyDaFeCode || rawPayload.dafe || '',
+        parishId: pId
+    });
+
+    const rawMinisterValue = raw.ministro || raw.minister_name || raw.minister || rawPayload.ministro || rawPayload.minister || '';
+    const legacyMinisterCode = normalizeLegacyCode(
+        legacyResolved.legacy_minister_code
+        || rawPayload.legacy_minister_code
+        || rawMinisterValue
+    );
+    const ministerDisplay = resolveLegacyPriestDisplay({
+        canonicalValue: raw.ministro || raw.minister_name || raw.minister || '',
+        resolvedValue: legacyResolved.ministro || '',
+        code: legacyMinisterCode || rawPayload.ministro || rawPayload.minister || '',
+        parishId: pId
+    });
+
     // Este diccionario unifica lo que viene de React y lo que viene de las nuevas columnas de Supabase
     const purificado = {
         id: raw.id || generateUUID(),
@@ -122,7 +159,7 @@ export const purificarRegistroBautismo = (raw) => {
         
         apellidos: String(raw.apellidos || raw.last_name || '').trim().toUpperCase(),
         nombres: String(raw.nombres || raw.first_name || '').trim().toUpperCase(),
-        sexo: String(raw.sexo || raw.gender || rawPayload.sexo || rawPayload.gender || '').trim().toUpperCase(),
+        sexo: normalizeLegacySex(raw.sexo || raw.gender || legacyResolved.sexo || rawPayload.sexo || rawPayload.gender || ''),
         fechaNacimiento: raw.fechaNacimiento || raw.fecha_nacimiento || raw.birthDate || '',
         lugarNacimiento: String(raw.lugarNacimiento || raw.lugar_nacimiento || raw.placeOfBirth || '').trim().toUpperCase(),
 
@@ -131,7 +168,7 @@ export const purificarRegistroBautismo = (raw) => {
         oficinaRegistro: String(raw.oficinaRegistro || raw.oficina_registro || raw.registryOffice || '').toUpperCase(),
         fechaExpedicionRegistro: raw.fechaExpedicionRegistro || raw.fecha_expedicion_registro || raw.fechaExpedicion || '',
 
-        tipoUnionPadres: String(raw.tipoUnionPadres || raw.tipo_union_padres || raw.parentalUnion || '').trim().toUpperCase(),
+        tipoUnionPadres: normalizeLegacyUnionType(raw.tipoUnionPadres || raw.tipo_union_padres || legacyResolved.tipo_union_padres || raw.parentalUnion || rawPayload.tipoUnionPadres || rawPayload.tipo_union_padres || rawPayload.tipohijo || ''),
         nombrePadre: String(raw.nombrePadre || raw.nombre_padre || raw.fatherName || '').trim().toUpperCase(),
         cedulaPadre: raw.cedulaPadre || raw.cedula_padre || raw.fatherId || '',
         nombreMadre: String(raw.nombreMadre || raw.nombre_madre || raw.motherName || '').trim().toUpperCase(),
@@ -142,8 +179,10 @@ export const purificarRegistroBautismo = (raw) => {
         abuelosMaternos: String(raw.abuelosMaternos || raw.abuelos_maternos || raw.maternalGrandparents || '').trim().toUpperCase(),
 
         padrinos: String(raw.padrinos || raw.godparents || '').trim().toUpperCase(),
-        ministro: String(raw.ministro || raw.minister_name || raw.minister || '').trim().toUpperCase(),
-        daFe: String(raw.daFe || raw.da_fe || rawPayload.daFe || rawPayload.da_fe || '').trim().toUpperCase(),
+        ministro: ministerDisplay,
+        legacyMinisterCode,
+        daFe: daFeDisplay,
+        legacyDaFeCode,
         observaciones: String(raw.observations || raw.observaciones || raw.obs || rawPayload.observations || rawPayload.observaciones || rawPayload.obs || '').trim(),
 
         notaMarginal: notaFinalConFecha,
@@ -328,7 +367,7 @@ export const getPendingBaptisms = async (parishId) => {
             const cloudPending = data.map(pb => {
                 let raw = pb.raw_data;
                 if (typeof raw === 'string') raw = safeJsonParse(raw, {});
-                return { ...purificarRegistroBautismo({ ...raw, id: pb.id, status: pb.status || 'pending' }), reportado: Boolean(pb.reportado), status: pb.status || 'pending' };
+                return { ...purificarRegistroBautismo({ ...raw, id: pb.id, parish_id: pb.parish_id, raw_data: raw, status: pb.status || 'pending' }), reportado: Boolean(pb.reportado), status: pb.status || 'pending' };
             });
             
             localStorage.setItem(`pendingBaptisms_${parishId}`, JSON.stringify(cloudPending));
@@ -400,14 +439,38 @@ export const purificarRegistroConfirmacion = (raw) => {
     let payload = raw.raw_data || raw.rawData || {};
     if (typeof payload === 'string') payload = safeJsonParse(payload, {});
     if (!payload || typeof payload !== 'object' || Array.isArray(payload)) payload = {};
+    payload = normalizeLegacyDisplayPayload(payload);
+    const legacyResolved = extractLegacyResolved(payload);
     const legacy = payload.legacy_normalized && typeof payload.legacy_normalized === 'object'
         ? payload.legacy_normalized : {};
     const parishId = raw.parish_id || raw.parishId || payload.parish_id || payload.parishId || null;
     const source = raw.source || payload.source || '';
     const rawDaFe = raw.da_fe || raw.daFe || payload.daFe || payload.da_fe || payload.dafe || '';
-    const daFeIsCode = /^\d+$/.test(String(rawDaFe || '').trim());
-    const legacyDaFeCode = String(payload.legacy_dafe_code || legacy.legacy_dafe_code || (daFeIsCode ? rawDaFe : '') || '').trim();
-    const resolvedLegacyDaFe = String(payload.legacy_dafe_resolved_name || legacy.legacy_dafe_resolved_name || '').trim();
+    const legacyDaFeCode = normalizeLegacyCode(
+        legacyResolved.legacy_dafe_code
+        || payload.legacy_dafe_code
+        || legacy.legacy_dafe_code
+        || rawDaFe
+    );
+    const daFeDisplay = resolveLegacyPriestDisplay({
+        canonicalValue: raw.da_fe || raw.daFe || '',
+        resolvedValue: legacyResolved.daFe || payload.legacy_dafe_resolved_name || legacy.legacy_dafe_resolved_name || '',
+        code: legacyDaFeCode || payload.dafe || '',
+        parishId
+    });
+
+    const rawMinister = raw.ministro || payload.ministro || legacy.minister || '';
+    const legacyMinisterCode = normalizeLegacyCode(
+        legacyResolved.legacy_minister_code
+        || payload.legacy_minister_code
+        || rawMinister
+    );
+    const ministerDisplay = resolveLegacyPriestDisplay({
+        canonicalValue: raw.ministro || '',
+        resolvedValue: legacyResolved.ministro || '',
+        code: legacyMinisterCode || payload.ministro || legacy.minister || '',
+        parishId
+    });
     return {
         id: raw.id || payload.id || generateUUID(),
         parishId, parish_id: parishId,
@@ -420,7 +483,7 @@ export const purificarRegistroConfirmacion = (raw) => {
         lugarSacramento: String(payload.lugarSacramento || payload.lugarConfirmacion || payload.lugcon || legacy.celebration_place || '').trim().toUpperCase(),
         apellidos: String(raw.apellidos || payload.apellidos || legacy.last_names || '').trim().toUpperCase(),
         nombres: String(raw.nombres || payload.nombres || legacy.names || '').trim().toUpperCase(),
-        sexo: String(raw.sexo || payload.sexo || legacy.gender || '').trim().toUpperCase(),
+        sexo: normalizeLegacySex(raw.sexo || legacyResolved.sexo || payload.sexo || legacy.gender || ''),
         fechaNacimiento: raw.fecha_nacimiento || payload.fechaNacimiento || legacy.birth_date || '',
         lugarNacimiento: String(raw.lugar_nacimiento || payload.lugarNacimiento || legacy.birth_place || '').trim().toUpperCase(),
         edad: payload.edad || legacy.age_text || '',
@@ -432,7 +495,7 @@ export const purificarRegistroConfirmacion = (raw) => {
         cedulaMadre: raw.cedula_madre || payload.cedulaMadre || '',
         abuelosPaternos: String(raw.abuelos_paternos || payload.abuelosPaternos || '').trim().toUpperCase(),
         abuelosMaternos: String(raw.abuelos_maternos || payload.abuelosMaternos || '').trim().toUpperCase(),
-        tipoUnionPadres: String(raw.tipo_union_padres || payload.tipoUnionPadres || '').trim().toUpperCase(),
+        tipoUnionPadres: normalizeLegacyUnionType(raw.tipo_union_padres || legacyResolved.tipo_union_padres || payload.tipoUnionPadres || payload.tipo_union_padres || payload.tipohijo || ''),
         fechaBautismo: raw.fecha_bautismo || payload.fechaBautismo || '',
         lugarBautismo: String(raw.lugar_bautismo || payload.lugarBautismo || legacy.baptism_place || '').trim().toUpperCase(),
         libroBautismo: normalizeConfirmationRef(payload.libroBautismo || legacy.baptism_book),
@@ -440,8 +503,9 @@ export const purificarRegistroConfirmacion = (raw) => {
         numeroBautismo: normalizeConfirmationRef(payload.numeroBautismo || legacy.baptism_number),
         codigoBautizo: payload.codigoBautizo || payload.codbau || legacy.baptism_church_code || '',
         padrinos: String(raw.padrinos || payload.padrinos || legacy.sponsor || '').trim().toUpperCase(),
-        ministro: String(raw.ministro || payload.ministro || legacy.minister || '').trim().toUpperCase(),
-        daFe: daFeIsCode ? resolvedLegacyDaFe.toUpperCase() : String(rawDaFe || '').trim().toUpperCase(),
+        ministro: ministerDisplay,
+        legacyMinisterCode,
+        daFe: daFeDisplay,
         legacyDaFeCode,
         notaMarginal: String(raw.nota_marginal || payload.notaMarginal || payload.nota_marginal || '').trim(),
         observaciones: String(raw.observations || payload.observaciones || payload.observations || legacy.observations || '').trim(),

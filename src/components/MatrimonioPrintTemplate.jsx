@@ -68,13 +68,13 @@ const MatrimonioPrintTemplate = forwardRef(({ data, parroquiaInfo }, ref) => {
     place: clean(data[`${normalized}BirthPlace`] || raw[`${prefix}LugarNac`]),
     father: clean(data[`${normalized}Father`] || raw[`${prefix}Padre`]),
     mother: clean(data[`${normalized}Mother`] || raw[`${prefix}Madre`]),
-    baptismPlace: clean(raw[`${prefix}BautismoLugar`]),
+    baptismPlace: clean(data[`${normalized}BaptismPlace`] || raw[`${prefix}BautismoLugar`]),
     baptismRef: [
-      raw[`${prefix}BautismoLibro`] && `LIBRO ${pad4(raw[`${prefix}BautismoLibro`])}`,
-      raw[`${prefix}BautismoFolio`] && `FOLIO ${pad4(raw[`${prefix}BautismoFolio`])}`,
-      raw[`${prefix}BautismoNumero`] && `ACTA ${pad4(raw[`${prefix}BautismoNumero`])}`
+      (data[`${normalized}BaptismBook`] || raw[`${prefix}BautismoLibro`]) && `LIBRO ${pad4(data[`${normalized}BaptismBook`] || raw[`${prefix}BautismoLibro`])}`,
+      (data[`${normalized}BaptismFolio`] || raw[`${prefix}BautismoFolio`]) && `FOLIO ${pad4(data[`${normalized}BaptismFolio`] || raw[`${prefix}BautismoFolio`])}`,
+      (data[`${normalized}BaptismNumber`] || raw[`${prefix}BautismoNumero`]) && `ACTA ${pad4(data[`${normalized}BaptismNumber`] || raw[`${prefix}BautismoNumero`])}`
     ].filter(Boolean).join(' · '),
-    baptismDate: dateText(raw[`${prefix}BautismoFecha`])
+    baptismDate: dateText(data[`${normalized}BaptismDate`] || raw[`${prefix}BautismoFecha`])
   });
 
   const groom = person('novio', 'groom');
@@ -84,7 +84,7 @@ const MatrimonioPrintTemplate = forwardRef(({ data, parroquiaInfo }, ref) => {
   const minister = clean(data.minister || data.ministro || raw.presenciaria || raw.ministro || raw.minister);
   const witnesses = [clean(raw.testigo1Nombres), clean(raw.testigo2Nombres)].filter(Boolean).join(' / ') || clean(data.witnesses || data.testigos || raw.testigos);
   const note = clean(data.notaMarginal || data.nota_marginal || raw.notaMarginal || raw.nota_marginal || raw.notaAlMargen) || 'NINGUNA REGISTRADA.';
-  const priest = clean(data.firmaImpresion || inst.parroco || raw.parroco || raw.daFe || raw.da_fe);
+  const priest = clean(data.firmaImpresion || data.daFe || data.da_fe || raw.legacy_resolved?.daFe || inst.parroco || raw.parroco || raw.daFe || raw.da_fe);
 
   const status = String(data.status || raw.status || raw.estado || '').trim().toLowerCase();
   const inactiveLabel = ['anulada', 'annulled'].includes(status)

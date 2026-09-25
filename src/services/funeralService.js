@@ -1,6 +1,42 @@
 import { supabase } from '@/lib/supabaseClient';
+import {
+  extractLegacyResolved,
+  normalizeLegacyDisplayPayload,
+  normalizeLegacySex,
+  resolveLegacyPriestDisplay
+} from '@/utils/legacyDisplayResolvers';
 
 const firstRow = (data) => Array.isArray(data) ? (data[0] || null) : (data || null);
+
+const hydrateFuneralRow = (row) => {
+  if (!row) return row;
+
+  const raw = normalizeLegacyDisplayPayload(row.raw_data || {});
+  const resolved = extractLegacyResolved(raw);
+  const parishId = row.parish_id || raw.parish_id || raw.parishId || null;
+
+  const daFeDisplay = resolveLegacyPriestDisplay({
+    canonicalValue: row.da_fe || raw.daFe || raw.da_fe || raw.dafe || '',
+    resolvedValue: resolved.daFe || '',
+    code: resolved.legacy_dafe_code || raw.legacy_normalized?.legacy_dafe_code || '',
+    parishId
+  });
+
+  const ministerDisplay = resolveLegacyPriestDisplay({
+    canonicalValue: row.ministro || raw.ministro || raw.minister || '',
+    resolvedValue: resolved.ministro || '',
+    code: resolved.legacy_minister_code || raw.legacy_normalized?.minister || '',
+    parishId
+  });
+
+  return {
+    ...row,
+    sexo: normalizeLegacySex(row.sexo || resolved.sexo || raw.sexo || raw.sex || raw.gender || raw.legacy_normalized?.gender || ''),
+    da_fe: daFeDisplay,
+    ministro: ministerDisplay,
+    raw_data: raw
+  };
+};
 
 export const createPendingFuneralCloud = async ({ parishId, record }) => {
   const { data, error } = await supabase.rpc('create_pending_funeral', {
@@ -82,7 +118,7 @@ export const getPendingFuneralsCloud = async (parishId) => {
     .order('created_at', { ascending: true });
 
   if (error) throw error;
-  return data || [];
+  return (data || []).map(hydrateFuneralRow);
 };
 
 export const getFuneralsCloud = async (parishId) => {
@@ -94,7 +130,7 @@ export const getFuneralsCloud = async (parishId) => {
     .order('fecha_defuncion', { ascending: false });
 
   if (error) throw error;
-  return data || [];
+  return (data || []).map(hydrateFuneralRow);
 };
 
 export const getFuneralMarginalNotesCloud = async (funeralId) => {

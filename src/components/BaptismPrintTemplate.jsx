@@ -64,11 +64,11 @@ const BaptismPrintTemplate = forwardRef(({ data, parroquiaInfo }, ref) => {
   const lugarBautismo = clean(raw.lugarBautismo || raw.lugbau || raw.place || data.lugar_bautismo);
   const fechaNacimiento = dateText(raw.fechaNacimiento || raw.fecnac || data.fecha_nacimiento);
   const lugarNacimiento = clean(raw.lugarNacimiento || raw.lugarn || data.lugar_nacimiento);
-  const sexo = clean(raw.sexo || raw.sex || data.sexo);
+  const sexo = clean(data.sexo || raw.legacy_resolved?.sexo || raw.sexo || raw.sex);
   const identificacion = clean(raw.nuip || raw.identification || raw.serialRegistro || data.nuip);
   const padre = clean(raw.nombrePadre || raw.padre || data.nombre_padre);
   const madre = clean(raw.nombreMadre || raw.madre || data.nombre_madre);
-  const tipoUnion = clean(raw.tipoUnionPadres || raw.tipohijo || data.tipo_union_padres);
+  const tipoUnion = clean(data.tipoUnionPadres || data.tipo_union_padres || raw.legacy_resolved?.tipo_union_padres || raw.tipoUnionPadres || raw.tipohijo);
   const abuelosPaternos = clean(raw.abuelosPaternos || raw.abuepat || data.abuelos_paternos);
   const abuelosMaternos = clean(raw.abuelosMaternos || raw.abuemat || data.abuelos_maternos);
   const padrinos = clean(raw.padrinos || data.padrinos);
@@ -79,10 +79,17 @@ const BaptismPrintTemplate = forwardRef(({ data, parroquiaInfo }, ref) => {
   const activePriest = priests.find((priest) => String(priest.estado) === '1' || String(priest.estado).toUpperCase() === 'ACTIVO');
   const signatureName = cleanTitle(activePriest ? `${activePriest.nombre} ${activePriest.apellido || ''}` : header.parroco || '');
 
-  const ministerRaw = clean(raw.ministro || data.ministro);
-  const minister = ministerRaw ? `PBRO. ${cleanTitle(ministerRaw)}` : '';
-  const faithRaw = clean(raw.daFe || raw.dafe || raw.da_fe || data.daFe || data.da_fe);
-  const faith = faithRaw ? `PBRO. ${cleanTitle(faithRaw)}` : '';
+  const priestLabel = (value) => {
+    const normalized = clean(value);
+    if (!normalized) return '';
+    if (normalized.startsWith('CÓDIGO LEGADO ')) return normalized;
+    return `PBRO. ${cleanTitle(normalized)}`;
+  };
+
+  const ministerRaw = clean(data.ministro || raw.legacy_resolved?.ministro || raw.ministro);
+  const minister = priestLabel(ministerRaw);
+  const faithRaw = clean(data.daFe || data.da_fe || raw.legacy_resolved?.daFe || raw.daFe || raw.dafe || raw.da_fe);
+  const faith = priestLabel(faithRaw);
 
   const noteSource = data.notaMarginal || data.nota_marginal || raw.notaMarginal || raw.nota_marginal || '';
   let note = clean(noteSource);

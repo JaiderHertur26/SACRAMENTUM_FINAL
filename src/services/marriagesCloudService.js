@@ -1,15 +1,40 @@
 import { supabase } from '@/lib/supabaseClient';
 import { TABLE_NAMES } from '@/config/supabaseConfig';
+import {
+  extractLegacyResolved,
+  normalizeLegacyDisplayPayload,
+  normalizeLegacySex,
+  resolveLegacyPriestDisplay
+} from '@/utils/legacyDisplayResolvers';
 
 const dateOnly = (v) => v ? String(v).slice(0, 10) : null;
 
 export const mapMarriageRow = (row) => {
-  const raw = row?.raw_data || {};
+  const raw = normalizeLegacyDisplayPayload(row?.raw_data || {});
+  const legacy = raw.legacy_normalized && typeof raw.legacy_normalized === 'object'
+    ? raw.legacy_normalized
+    : {};
+  const resolved = extractLegacyResolved(raw);
+  const party1 = legacy.party_1 && typeof legacy.party_1 === 'object' ? legacy.party_1 : {};
+  const party2 = legacy.party_2 && typeof legacy.party_2 === 'object' ? legacy.party_2 : {};
 
-  const groomName = raw.groomName ?? raw.novioNombres ?? raw.esposo?.nombres ?? raw.nombres_esposo ?? '';
-  const groomSurname = raw.groomSurname ?? raw.novioApellidos ?? raw.esposo?.apellidos ?? raw.apellidos_esposo ?? '';
-  const brideName = raw.brideName ?? raw.noviaNombres ?? raw.esposa?.nombres ?? raw.nombres_esposa ?? '';
-  const brideSurname = raw.brideSurname ?? raw.noviaApellidos ?? raw.esposa?.apellidos ?? raw.apellidos_esposa ?? '';
+  const groomName = raw.groomName ?? raw.novioNombres ?? raw.esposo?.nombres ?? raw.nombres_esposo ?? raw.nombr1 ?? party1.names ?? '';
+  const groomSurname = raw.groomSurname ?? raw.novioApellidos ?? raw.esposo?.apellidos ?? raw.apellidos_esposo ?? raw.apell1 ?? party1.last_names ?? '';
+  const brideName = raw.brideName ?? raw.noviaNombres ?? raw.esposa?.nombres ?? raw.nombres_esposa ?? raw.nombr2 ?? party2.names ?? '';
+  const brideSurname = raw.brideSurname ?? raw.noviaApellidos ?? raw.esposa?.apellidos ?? raw.apellidos_esposa ?? raw.apell2 ?? party2.last_names ?? '';
+
+  const ministerDisplay = resolveLegacyPriestDisplay({
+    canonicalValue: raw.minister ?? raw.presenciaria ?? raw.ministro ?? '',
+    resolvedValue: resolved.ministro ?? '',
+    code: resolved.legacy_minister_code ?? legacy.minister ?? '',
+    parishId: row?.parish_id
+  });
+  const daFeDisplay = resolveLegacyPriestDisplay({
+    canonicalValue: raw.daFe ?? raw.da_fe ?? raw.dafe ?? '',
+    resolvedValue: resolved.daFe ?? '',
+    code: resolved.legacy_dafe_code ?? legacy.legacy_dafe_code ?? '',
+    parishId: row?.parish_id
+  });
 
   const witnessNames = [
     raw.testigo1Nombres,
@@ -44,25 +69,43 @@ export const mapMarriageRow = (row) => {
     groomSurname,
     groomFather: raw.groomFather ?? raw.novioPadre ?? '',
     groomMother: raw.groomMother ?? raw.novioMadre ?? '',
-    groomBirthDate: raw.groomBirthDate ?? raw.novioFechaNac ?? '',
-    groomBirthPlace: raw.groomBirthPlace ?? raw.novioLugarNac ?? '',
+    groomParents: raw.groomParents ?? party1.parents ?? '',
+    groomSex: normalizeLegacySex(resolved.party_1_gender ?? party1.gender ?? raw.sexo1 ?? raw.sex1 ?? ''),
+    groomBirthDate: raw.groomBirthDate ?? raw.novioFechaNac ?? party1.birth_date ?? '',
+    groomBirthPlace: raw.groomBirthPlace ?? raw.novioLugarNac ?? party1.birth_place ?? '',
+    groomBaptismPlace: raw.groomBaptismPlace ?? raw.novioBautismoLugar ?? party1.baptism_place ?? '',
+    groomBaptismDate: raw.groomBaptismDate ?? raw.novioBautismoFecha ?? party1.baptism_date ?? '',
+    groomBaptismBook: raw.groomBaptismBook ?? raw.novioBautismoLibro ?? party1.baptism_book ?? '',
+    groomBaptismFolio: raw.groomBaptismFolio ?? raw.novioBautismoFolio ?? party1.baptism_folio ?? '',
+    groomBaptismNumber: raw.groomBaptismNumber ?? raw.novioBautismoNumero ?? party1.baptism_number ?? '',
 
     brideName,
     brideSurname,
     brideFather: raw.brideFather ?? raw.noviaPadre ?? '',
     brideMother: raw.brideMother ?? raw.noviaMadre ?? '',
-    brideBirthDate: raw.brideBirthDate ?? raw.noviaFechaNac ?? '',
-    brideBirthPlace: raw.brideBirthPlace ?? raw.noviaLugarNac ?? '',
+    brideParents: raw.brideParents ?? party2.parents ?? '',
+    brideSex: normalizeLegacySex(resolved.party_2_gender ?? party2.gender ?? raw.sexo2 ?? raw.sex2 ?? ''),
+    brideBirthDate: raw.brideBirthDate ?? raw.noviaFechaNac ?? party2.birth_date ?? '',
+    brideBirthPlace: raw.brideBirthPlace ?? raw.noviaLugarNac ?? party2.birth_place ?? '',
+    brideBaptismPlace: raw.brideBaptismPlace ?? raw.noviaBautismoLugar ?? party2.baptism_place ?? '',
+    brideBaptismDate: raw.brideBaptismDate ?? raw.noviaBautismoFecha ?? party2.baptism_date ?? '',
+    brideBaptismBook: raw.brideBaptismBook ?? raw.noviaBautismoLibro ?? party2.baptism_book ?? '',
+    brideBaptismFolio: raw.brideBaptismFolio ?? raw.noviaBautismoFolio ?? party2.baptism_folio ?? '',
+    brideBaptismNumber: raw.brideBaptismNumber ?? raw.noviaBautismoNumero ?? party2.baptism_number ?? '',
 
     place: raw.place ?? raw.lugarCeremonia ?? raw.lugarMatrimonio ?? '',
     lugarMatrimonio: raw.lugarMatrimonio ?? raw.lugarCeremonia ?? raw.place ?? '',
-    minister: raw.minister ?? raw.presenciaria ?? raw.ministro ?? '',
-    ministro: raw.ministro ?? raw.presenciaria ?? raw.minister ?? '',
-    witnesses: raw.witnesses ?? raw.testigos ?? witnessNames,
-    testigos: raw.testigos ?? raw.witnesses ?? witnessNames,
+    minister: ministerDisplay,
+    ministro: ministerDisplay,
+    daFe: daFeDisplay,
+    da_fe: daFeDisplay,
+    legacyDaFeCode: resolved.legacy_dafe_code ?? legacy.legacy_dafe_code ?? '',
+    witnesses: raw.witnesses ?? raw.testigos ?? legacy.witnesses ?? witnessNames,
+    testigos: raw.testigos ?? raw.witnesses ?? legacy.witnesses ?? witnessNames,
 
     createdAt: row.created_at,
-    updatedAt: row.updated_at
+    updatedAt: row.updated_at,
+    raw_data: raw
   };
 };
 

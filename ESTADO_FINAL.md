@@ -1,6 +1,6 @@
-# SACRAMENTUM · ESTADO FINAL CONSOLIDADO
+﻿# SACRAMENTUM · ESTADO FINAL CONSOLIDADO
 
-Estado operativo: **V28 ESTABLE · SISTEMA DOCUMENTAL ECLESIAL**  
+Estado operativo: **V29 ESTABLE · RESOLUCIÓN INTELIGENTE DE CÓDIGOS LEGACY**
 Fecha de corte: **25 de septiembre de 2026**
 
 ## Validación de frontend
@@ -173,3 +173,66 @@ Objetivo: elevar todas las boletas/constancias y partidas existentes al nivel vi
 Checkpoint previo: `C:\SACRAMENTUM\CHECKPOINTS\SACRAMENTUM_FINAL_2026-09-25_PRE_V28_DOCUMENTOS`.
 
 ESTADO CANÓNICO ACTUAL: **V28 ESTABLE · SISTEMA DOCUMENTAL ECLESIAL**.
+
+---
+## V29 · RESOLUCIÓN INTELIGENTE DE CÓDIGOS LEGACY · 2026-09-25
+
+Objetivo: impedir que los registros históricos muestren códigos técnicos cuando existe una equivalencia humana verificable en los catálogos parroquiales.
+
+### Reglas históricas verificadas
+- Sexo: `1 = MASCULINO`, `2 = FEMENINO`.
+- Tipo de unión: `1 = MATRIMONIO CATÓLICO`, `2 = MATRIMONIO CIVIL`, `3 = UNIÓN LIBRE`, `4 = MADRE SOLTERA`, `5 = OTRO CASO`.
+- Código de sacerdote / DA FE / Ministro: se resuelve exclusivamente contra Párrocos de la misma parroquia y sólo con coincidencia única.
+- Si el código no tiene equivalencia, se conserva como `CÓDIGO LEGADO XXXX · NOMBRE NO CONSTA`; nunca se inventa un nombre.
+
+### Alcance
+- Bautismo: partidas, boletas, lectura histórica y nuevas importaciones.
+- Confirmación: partidas, boletas, lectura histórica y nuevas importaciones.
+- Matrimonio: expedientes/boletas, partidas, `legacy_normalized` y futuros legados.
+- Exequias: pendientes, partidas y futuros legados.
+
+### Persistencia y trazabilidad
+- El JSON original se conserva.
+- Se agrega `legacy_resolved` para valores humanizados sin destruir la evidencia de origen.
+- Los triggers V29 normalizan escrituras nuevas y actualizaciones.
+- Cambios en Datos Auxiliares → Párrocos refrescan automáticamente referencias históricas de esa parroquia.
+
+### Backfill real
+- Bautismos con DA FE numérico antes de V29: 46.
+- DA FE numérico después de V29: 0.
+- Resueltos por catálogo: 7 (`0001`: 1; `0004`: 6).
+- Sin equivalencia actual: 39 (`0005`: 2; `0006`: 37).
+- Los 46 Bautismos históricos tienen sexo y unión humanizados en `legacy_resolved`.
+- Las 173 Confirmaciones históricas tienen sexo humanizado en `legacy_resolved`.
+
+### Frontend
+- Nuevo `src/utils/legacyDisplayResolvers.js`.
+- El nombre canónico/resuelto de Supabase tiene prioridad sobre caché local.
+- El catálogo local sólo actúa como fallback para resolver códigos.
+- Código ambiguo no se resuelve.
+
+### Base de datos
+- `20260925183731_legacy_reference_resolution_v29.sql`.
+- `20260925183931_legacy_reference_resolution_v29_hardening.sql`.
+- `20260925184038_legacy_reference_resolution_v29_lockdown.sql`.
+- `20260925184206_legacy_reference_resolution_v29_final_hardening.sql`.
+- Historia local y remota de migraciones alineada.
+
+### Validación
+- Gate V29: 38/38.
+- Gate documental V28: 29/29.
+- V19: 12/12.
+- Bautismo: OK.
+- Confirmación: OK.
+- Exequias ↔ Bautismo V7: 14/14.
+- V15: OK.
+- V16C: 29/29.
+- V17: 25/25.
+- V18: 17/17.
+- V20: 14/14.
+- npm audit: 0 vulnerabilidades.
+
+Checkpoint previo: `C:\SACRAMENTUM\CHECKPOINTS\SACRAMENTUM_FINAL_2026-09-25_PRE_V29_LEGACY_RESOLUTION`.
+
+ESTADO CANÓNICO ACTUAL: **V29 ESTABLE · RESOLUCIÓN INTELIGENTE DE CÓDIGOS LEGACY**.
+

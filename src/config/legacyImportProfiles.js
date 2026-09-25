@@ -12,6 +12,44 @@ const unionType = (value) => {
   const map = { '1': 'MATRIMONIO CATÓLICO', '2': 'MATRIMONIO CIVIL', '3': 'UNIÓN LIBRE', '4': 'MADRE SOLTERA', '5': 'OTRO CASO' };
   return map[v] || upper(v);
 };
+
+const normalizeLegacyCatalogCodesDeep = (value, fieldName = '') => {
+  if (Array.isArray(value)) return value.map((item) => normalizeLegacyCatalogCodesDeep(item));
+
+  if (value && typeof value === 'object') {
+    return Object.fromEntries(
+      Object.entries(value).map(([key, child]) => [
+        key,
+        normalizeLegacyCatalogCodesDeep(child, key)
+      ])
+    );
+  }
+
+  const key = upper(fieldName)
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^A-Z0-9]/g, '');
+
+  if (
+    key === 'SEXO'
+    || key === 'SEX'
+    || key === 'GENDER'
+    || key === 'GENERO'
+    || /^SEXO[12]$/.test(key)
+    || /^SEX[12]$/.test(key)
+    || /^GENDER[12]$/.test(key)
+  ) return sex(value);
+
+  if (
+    key === 'TIPOHIJO'
+    || key === 'TIPOUNION'
+    || key === 'TIPOUNIONPADRES'
+    || key === 'PARENTUNION'
+    || key === 'PARENTUNIONTYPE'
+  ) return unionType(value);
+
+  return value;
+};
 const dateOnly = (value) => {
   if (!value) return '';
   const v = String(value).trim();
@@ -125,8 +163,8 @@ export const LEGACY_IMPORT_PROFILES = {
     label: 'Matrimonios históricos', targetEntity: 'marriage', requiresParish: true,
     normalize: (r) => ({
       book_number: text(r.libro), folio: text(r.folio), number: text(r.numero), legacy_entry_number: text(r.numinsc), celebration_date: dateOnly(r.fecmat),
-      party_1: { last_names: text(r.apell1), names: text(r.nombr1), parents: text(r.hijode), baptism_place: text(r.lugbau1), baptism_date: dateOnly(r.fecbau1), baptism_book: text(r.libbau1), baptism_folio: text(r.folbau1), baptism_number: text(r.numbau1), birth_date: dateOnly(r.fecnac1), birth_place: text(r.lugnac1) },
-      party_2: { last_names: text(r.apell2), names: text(r.nombr2), parents: text(r.hijade), baptism_place: text(r.lugbau2), baptism_date: dateOnly(r.fecbau2), baptism_book: text(r.libbau2), baptism_folio: text(r.folbau2), baptism_number: text(r.numbau2), birth_date: dateOnly(r.fecnac2), birth_place: text(r.lugnac2) },
+      party_1: { last_names: text(r.apell1), names: text(r.nombr1), parents: text(r.hijode), gender: sex(r.sexo1 ?? r.sex1 ?? r.sexo_1), baptism_place: text(r.lugbau1), baptism_date: dateOnly(r.fecbau1), baptism_book: text(r.libbau1), baptism_folio: text(r.folbau1), baptism_number: text(r.numbau1), birth_date: dateOnly(r.fecnac1), birth_place: text(r.lugnac1) },
+      party_2: { last_names: text(r.apell2), names: text(r.nombr2), parents: text(r.hijade), gender: sex(r.sexo2 ?? r.sex2 ?? r.sexo_2), baptism_place: text(r.lugbau2), baptism_date: dateOnly(r.fecbau2), baptism_book: text(r.libbau2), baptism_folio: text(r.folbau2), baptism_number: text(r.numbau2), birth_date: dateOnly(r.fecnac2), birth_place: text(r.lugnac2) },
       witnesses: text(r.testigos), minister: text(r.ministro), legacy_dafe_code: text(r.dafe), free_union: r.unilibre ?? null, annulled: boolish(r.anulado), legacy_updated_at: text(r.actualizad), observations: text(r.observacio || r.observations)
     }),
     key: (r) => sourceKey(r.libro,r.folio,r.numero)
@@ -134,7 +172,7 @@ export const LEGACY_IMPORT_PROFILES = {
   DIFUNTOS: {
     label: 'Exequias históricas', targetEntity: 'funeral', requiresParish: true,
     normalize: (r) => ({
-      book_number: text(r.libro), folio: text(r.folio), number: text(r.numero), names: text(r.nombres || r.nombre), last_names: text(r.apellidos), birth_date: dateOnly(r.fecnac), death_date: dateOnly(r.fecham || r.fecha_defuncion), death_place: text(r.lugmue || r.lugar_defuncion), funeral_date: dateOnly(r.fechae || r.fecha_exequias), funeral_place: text(r.lugexe || r.lugar_exequias), cemetery: text(r.cementerio), minister: text(r.ministro), legacy_dafe_code: text(r.dafe), observations: text(r.observacio || r.observations)
+      book_number: text(r.libro), folio: text(r.folio), number: text(r.numero), names: text(r.nombres || r.nombre), last_names: text(r.apellidos), gender: sex(r.sexo || r.sex), birth_date: dateOnly(r.fecnac), birth_place: text(r.lugnac || r.lugarn || r.lugar_nacimiento), death_date: dateOnly(r.fecham || r.fecha_defuncion), death_place: text(r.lugmue || r.lugar_defuncion), funeral_date: dateOnly(r.fechae || r.fecha_exequias), funeral_place: text(r.lugexe || r.lugar_exequias), cemetery: text(r.cementerio), father_name: text(r.padre), mother_name: text(r.madre), spouse: text(r.conyuge), minister: text(r.ministro), legacy_dafe_code: text(r.dafe), observations: text(r.observacio || r.observations)
     }),
     key: (r) => sourceKey(r.libro,r.folio,r.numero)
   },
@@ -245,7 +283,7 @@ const dateIssue = (value, label) => {
 export const analyzeLegacyRow = (profileKey, raw, index=0) => {
   const profile = LEGACY_IMPORT_PROFILES[profileKey];
   if (!profile) throw new Error(`Perfil no soportado: ${profileKey}`);
-  const normalized = profile.normalize(raw,index);
+  const normalized = normalizeLegacyCatalogCodesDeep(profile.normalize(raw,index));
   const issues = [];
   const add = (code,detail) => issues.push({code,detail});
 

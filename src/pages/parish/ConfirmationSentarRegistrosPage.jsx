@@ -15,7 +15,7 @@ import {
 import ConfirmationTicket from '@/components/ConfirmationTicket';
 import { supabase } from '@/lib/supabaseClient'; 
 import { calculateNextConsecutive } from '@/services/sacramentParametersService';
-import { getParishPrintProfile } from '@/services/sacramentsService';
+import { getParishPrintProfile, purificarRegistroConfirmacion } from '@/services/sacramentsService';
 import { getMarginalNoteTemplates } from '@/services/marginalNotesTemplatesService';
 import { institutionalConfirm } from '@/lib/institutionalDialog';
 
@@ -86,8 +86,15 @@ const ConfirmationSentarRegistrosPage = () => {
             if (!tempError && tempData && tempData.length > 0) {
                 const cloudPending = tempData.map(pb => {
                     const raw = typeof pb.raw_data === 'string' ? JSON.parse(pb.raw_data) : (pb.raw_data || {});
-                    return { ...raw, id: pb.id, status: 'pending', reportado: pb.reportado }; 
-                });
+                    const normalized = purificarRegistroConfirmacion({
+                        ...raw,
+                        id: pb.id,
+                        parish_id: pb.parish_id,
+                        raw_data: raw,
+                        status: pb.status || 'pending'
+                    });
+                    return normalized ? { ...normalized, reportado: Boolean(pb.reportado) } : null;
+                }).filter(Boolean);
                 
                 recordsMapped = cloudPending.map(r => {
                     let fechaSac = r.fechaSacramento || r.celebration_date || r.sacramentDate || r.feccon || '';
