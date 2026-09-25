@@ -1,0 +1,13 @@
+import fs from 'node:fs';
+const p=`${process.cwd()}/scripts/verify-legacy-import-relational.mjs`;
+let s=fs.readFileSync(p,'utf8');
+const old=`if(!ab.issue_codes.includes('REPORTED_LEGACY_RECONCILE')) failures.push('INSBAUTI no marca reconciliación histórica');\nif(!ac.issue_codes.includes('REPORTED_LEGACY_RECONCILE')) failures.push('INSCONFI no marca reconciliación histórica');`;
+const neu=`if(!ab.issue_codes.includes('LEGACY_BOLETA_REPORTED')) failures.push('INSBAUTI true no se marca como boleta reportada');\nif(!ac.issue_codes.includes('LEGACY_BOLETA_REPORTED')) failures.push('INSCONFI true no se marca como boleta reportada');\nconst bf=analyzeLegacyRow('INSBAUTI',{...b,numero:'000099',reported:false,fecins:'FECHA-MALA'},1);\nconst cf=analyzeLegacyRow('INSCONFI',{...c,numero:'000099',reported:false,feccon:'FECHA-MALA'},1);\neq(bf.status,'valid','INSBAUTI false preservación total'); eq(cf.status,'valid','INSCONFI false preservación total');\nif(!bf.issue_codes.includes('LEGACY_BOLETA_NOT_SEATED')) failures.push('INSBAUTI false no se marca no sentada');\nif(!cf.issue_codes.includes('LEGACY_BOLETA_NOT_SEATED')) failures.push('INSCONFI false no se marca no sentada');`;
+if(!s.includes(old)) throw new Error('Checks antiguos no encontrados');
+s=s.replace(old,neu);
+const marker=`if(!page.includes('metadata?.reconciliation')) failures.push('UI no muestra resultado de conciliación');`;
+const extra=`if(!page.includes('boleta_counts')) failures.push('UI/lote no conserva conteos reported/not_seated');\nif(!page.includes('Importar todas las boletas')) failures.push('UI no ofrece importación total de boletas');`;
+if(!s.includes(marker)) throw new Error('Marcador final no encontrado');
+s=s.replace(marker,marker+'\n'+extra);
+fs.writeFileSync(p,s);
+console.log('VERIFY_BOLETAS_V3_PATCHED');

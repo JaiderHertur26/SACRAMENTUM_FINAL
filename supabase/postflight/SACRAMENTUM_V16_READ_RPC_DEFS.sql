@@ -1,0 +1,2 @@
+select pg_get_functiondef('public.mark_sacramental_notification_read(uuid)'::regprocedure) as mark_read_def;
+select pg_get_functiondef('public.mark_sacramental_receipt_read(uuid)'::regprocedure) as mark_receipt_def;

@@ -1,0 +1,17 @@
+import fs from 'node:fs';
+const p=`${process.cwd()}/src/pages/admin/LegacyMigrationCenterPage.jsx`;
+let s=fs.readFileSync(p,'utf8');
+const oldMeta=`metadata:{ file_size:file.size, analyzed_client_side:true, structure_version:'fase3-relational', source_scope:hash, reconciliation_mode:['INSBAUTI','INSCONFI'].includes(profileKey) ? 'historical_crossmatch' : 'standard' }`;
+const newMeta=`metadata:{ file_size:file.size, analyzed_client_side:true, structure_version:'fase3-relational-v3', source_scope:hash, reconciliation_mode:['INSBAUTI','INSCONFI'].includes(profileKey) ? 'historical_boleta_crossmatch' : 'standard', boleta_counts:['INSBAUTI','INSCONFI'].includes(profileKey) ? { reported:boletaCounts.reported, not_seated:boletaCounts.notSeated } : undefined }`;
+if(!s.includes(oldMeta)) throw new Error('Metadata lote no encontrado');
+s=s.replace(oldMeta,newMeta);
+const oldBadge=`<span className="px-2.5 py-1 rounded-full bg-slate-100 text-slate-700">Sin coincidencia {currentBatch.metadata.reconciliation.unmatched||0}</span>`;
+const newBadge=`<span className="px-2.5 py-1 rounded-full bg-slate-100 text-slate-700">Reportadas sin partida {currentBatch.metadata.reconciliation.unmatched||0}</span>`;
+if(!s.includes(oldBadge)) throw new Error('Badge sin coincidencia no encontrado');
+s=s.replace(oldBadge,newBadge);
+const oldButton=`} Importar únicamente válidos</Button>`;
+const newButton=`} {['INSBAUTI','INSCONFI'].includes(profileKey)?'Importar todas las boletas':'Importar únicamente válidos'}</Button>`;
+if(!s.includes(oldButton)) throw new Error('Botón importación no encontrado');
+s=s.replace(oldButton,newButton);
+fs.writeFileSync(p,s);
+console.log('PATCH_BOLETA_UI_V3_OK');

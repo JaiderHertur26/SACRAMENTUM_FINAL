@@ -1,0 +1,30 @@
+# Dependencias
+node_modules/
+
+# Build
+dist/
+
+# Envs y credenciales
+.env
+.env.local
+.env.production
+.env.development
+.env*.local
+
+# Vite / Vercel
+.vite/
+.vercel/
+
+# Supabase local/CLI
+supabase/.temp/
+supabase/.branches/
+
+# Artefactos temporales y pruebas locales
+*_tmp.sql
+_backup_exequias_bautismo_v7/
+coverage/
+*.log
+
+# Sistemas
+.DS_Store
+Thumbs.db

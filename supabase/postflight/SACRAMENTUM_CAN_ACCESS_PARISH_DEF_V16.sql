@@ -1,0 +1,1 @@
+select pg_get_functiondef('public.can_access_parish(uuid)'::regprocedure) as can_access_parish_def;

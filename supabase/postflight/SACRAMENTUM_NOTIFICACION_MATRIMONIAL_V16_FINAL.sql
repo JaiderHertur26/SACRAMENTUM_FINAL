@@ -1,0 +1,18 @@
+select
+  (select count(*) from pg_policies where schemaname='public' and tablename='matrimonial_notifications') = 1 as notification_rls_policy_ok,
+  (select count(*) from pg_policies where schemaname='public' and tablename='matrimonial_notification_recipients') = 1 as recipient_rls_policy_ok,
+  (select count(*) from pg_publication_tables where pubname='supabase_realtime' and schemaname='public' and tablename='matrimonial_notifications') = 1 as notifications_realtime_ok,
+  (select count(*) from pg_publication_tables where pubname='supabase_realtime' and schemaname='public' and tablename='matrimonial_notification_recipients') = 1 as recipients_realtime_ok,
+  has_function_privilege('authenticated','public.issue_matrimonial_notification(uuid,uuid,uuid,jsonb,date,text,text,text,uuid,uuid,text,text,text,text,text,jsonb)','EXECUTE') as issue_rpc_ok,
+  has_function_privilege('authenticated','public.process_matrimonial_notification_recipient(uuid)','EXECUTE') as process_rpc_ok,
+  has_function_privilege('authenticated','public.mark_sacramental_notification_read(uuid)','EXECUTE') as read_rpc_ok,
+  has_function_privilege('authenticated','public.mark_sacramental_receipt_read(uuid)','EXECUTE') as receipt_read_rpc_ok,
+  not has_table_privilege('authenticated','public.matrimonial_notifications','UPDATE') as direct_doc_update_blocked,
+  not has_table_privilege('authenticated','public.matrimonial_notification_recipients','UPDATE') as direct_recipient_update_blocked,
+  (select count(*) from public.matrimonial_notifications where payload ?| array['smokeV16','smokeV16Manual','smokeV16Duplicate','smokeV16OriginSpoof']) as smoke_documents,
+  (select count(*) from public.marginal_notes where content like 'SMOKE V16%') as smoke_marginal_notes,
+  (select count(*) from public.parishes where id in ('40000000-0000-4000-8000-000000000016','40000000-0000-4000-8000-000000000017')) as smoke_parishes,
+  (select parish_id='ada2c810-c6eb-4b75-8e3c-4941e3022687'::uuid from public.user_profiles where auth_user_id='6eebfea0-5280-4d96-bc38-e9f0021fbb25' limit 1) as user_profile_restored,
+  (select parish_id='ada2c810-c6eb-4b75-8e3c-4941e3022687'::uuid from public.baptisms where id='bd482f25-33d4-4c79-9fc9-e464b32f8867') as baptism_restored,
+  (select count(*) from public.matrimonial_notifications) as live_matrimonial_documents,
+  (select count(*) from public.matrimonial_notification_recipients) as live_matrimonial_recipients;

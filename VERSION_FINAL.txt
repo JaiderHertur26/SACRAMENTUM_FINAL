@@ -1,0 +1,9 @@
+SACRAMENTUM FINAL
+Estado: V27 estable
+Fecha: 2026-09-25
+Frontend: Vite 8.3.1 + React Router DOM 7.18.4
+Build Windows validado: OK
+Supabase: migraciones V22-V25 aplicadas; Local = Remote (30 migraciones)
+Seguridad npm: 0 vulnerabilidades
+Regresión sacramental: OK
+Code splitting: bundle inicial 403.68 kB (126.39 kB gzip)

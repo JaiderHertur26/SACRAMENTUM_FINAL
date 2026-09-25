@@ -1,0 +1,15 @@
+select
+  exists(select 1 from information_schema.columns where table_schema='public' and table_name='baptisms' and column_name='is_deceased') as baptisms_is_deceased_ok,
+  exists(select 1 from information_schema.columns where table_schema='public' and table_name='baptisms' and column_name='death_date') as baptisms_death_date_ok,
+  exists(select 1 from information_schema.columns where table_schema='public' and table_name='baptisms' and column_name='death_place') as baptisms_death_place_ok,
+  exists(select 1 from information_schema.columns where table_schema='public' and table_name='baptisms' and column_name='linked_funeral_id') as baptisms_linked_funeral_ok,
+  exists(select 1 from information_schema.columns where table_schema='public' and table_name='funerals' and column_name='baptism_id') as funerals_baptism_id_ok,
+  exists(select 1 from information_schema.columns where table_schema='public' and table_name='pending_funerals' and column_name='baptism_id') as pending_funeral_baptism_id_ok,
+  exists(select 1 from information_schema.columns where table_schema='public' and table_name='baptisms' and column_name='nuip') as baptisms_nuip_ok,
+  exists(select 1 from pg_trigger where tgname='trg_validate_pending_funeral_baptism' and not tgisinternal) as trg_pending_ok,
+  exists(select 1 from pg_trigger where tgname='trg_validate_funeral_baptism' and not tgisinternal) as trg_funeral_ok,
+  exists(select 1 from pg_trigger where tgname='trg_sync_baptism_death_from_funeral' and not tgisinternal) as trg_sync_ok,
+  to_regprocedure('public.sacramentum_validate_funeral_baptism_link()') is not null as validate_fn_ok,
+  to_regprocedure('public.sacramentum_sync_baptism_death_from_funeral()') is not null as sync_fn_ok,
+  (select count(*) from public.baptisms where coalesce(is_deceased,false)=true) as deceased_baptisms,
+  (select count(*) from public.baptisms where linked_funeral_id is not null) as linked_baptisms;

@@ -1,0 +1,208 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 210 40% 98%;
+    --foreground: 222 47% 11%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+    --primary: 46 65% 52%;
+    --primary-foreground: 222 47% 11%;
+    --secondary: 209 38% 48%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
+    --accent: 210 40% 96%;
+    --accent-foreground: 222 47% 11%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 209 38% 48%;
+    --radius: 1rem;
+
+    --sacramentum-blue: 209 38% 48%;
+    --sacramentum-gold: 46 65% 52%;
+    --sacramentum-ink: 222 47% 11%;
+    --sacramentum-surface: 210 40% 98%;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html {
+    background: hsl(var(--background));
+  }
+
+  body {
+    @apply min-h-screen bg-background text-foreground antialiased;
+    font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply text-foreground font-semibold tracking-tight;
+  }
+
+  input, textarea, select {
+    @apply bg-white text-foreground placeholder:text-slate-400;
+  }
+
+  input:focus, textarea:focus, select:focus {
+    outline: none;
+  }
+
+  ::selection {
+    background: hsl(var(--secondary) / 0.18);
+    color: hsl(var(--foreground));
+  }
+
+  th {
+    @apply font-bold text-slate-800;
+  }
+}
+
+@layer components {
+  .sacramentum-shell {
+    @apply min-h-screen bg-slate-50 text-slate-950;
+  }
+
+  .sacramentum-panel {
+    @apply rounded-2xl border border-slate-200 bg-white shadow-sm;
+  }
+
+  .sacramentum-kicker {
+    @apply text-[9px] font-black uppercase tracking-[0.22em] text-slate-400;
+  }
+
+  .sacramentum-section-title {
+    @apply text-sm font-black uppercase tracking-wide text-slate-900;
+  }
+
+  .sacramentum-field-label {
+    @apply mb-1.5 block text-[10px] font-black uppercase tracking-widest text-slate-500;
+  }
+
+  .sacramentum-page-header {
+    @apply mb-7 flex flex-col gap-4 md:flex-row md:items-center md:justify-between;
+  }
+
+  .sacramentum-page-heading {
+    @apply flex items-center gap-3;
+  }
+
+  .sacramentum-page-icon {
+    @apply flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#4B7BA7] text-white shadow-lg shadow-blue-900/10;
+  }
+
+  .sacramentum-page-kicker {
+    @apply text-[9px] font-black uppercase tracking-[0.24em] text-[#4B7BA7];
+  }
+
+  .sacramentum-page-title {
+    @apply mt-0.5 font-serif text-3xl font-black tracking-tight text-slate-950;
+  }
+
+  .sacramentum-page-description {
+    @apply mt-2 max-w-3xl text-sm font-medium leading-relaxed text-slate-500;
+  }
+
+  .sacramentum-toolbar {
+    @apply mb-6 flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-3 shadow-sm md:flex-row md:items-center md:justify-between;
+  }
+
+  .sacramentum-search-field {
+    @apply h-11 w-full rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-800 shadow-sm transition-all placeholder:text-slate-400 focus:border-[#4B7BA7] focus:ring-4 focus:ring-[#4B7BA7]/10;
+  }
+
+  .sacramentum-table-shell {
+    @apply overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm;
+  }
+
+  .sacramentum-form-shell {
+    @apply relative overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-xl shadow-blue-900/5;
+  }
+
+  .sacramentum-field {
+    @apply h-11 w-full rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-900 shadow-sm transition-all placeholder:text-slate-400 focus:border-[#4B7BA7] focus:ring-4 focus:ring-[#4B7BA7]/10 disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-500;
+  }
+
+  .sacramentum-field-compact {
+    @apply h-9 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-900 transition-all placeholder:text-slate-400 focus:border-[#4B7BA7] focus:ring-4 focus:ring-[#4B7BA7]/10;
+  }
+}
+
+/* Custom Scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 9999px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* --- PRINT MEDIA STYLES --- */
+@media print {
+  @page {
+    size: letter;
+    margin: 0mm;
+  }
+
+  html, body {
+    width: 8.5in;
+    height: 11in;
+    margin: 0 !important;
+    padding: 0 !important;
+    background-color: white !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    overflow: hidden !important;
+  }
+
+  nav,
+  aside,
+  header,
+  footer,
+  button,
+  .no-print,
+  .sidebar-container,
+  [role="dialog"],
+  [class*="DashboardLayout"] > div:first-child {
+    display: none !important;
+  }
+
+  .print\:block {
+    display: block !important;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+  }
+
+  .print\:hidden {
+    display: none !important;
+  }
+
+  .print\:block > div {
+    page-break-inside: avoid !important;
+    page-break-after: avoid !important;
+  }
+
+  * {
+    color: #000 !important;
+    text-shadow: none !important;
+  }
+}

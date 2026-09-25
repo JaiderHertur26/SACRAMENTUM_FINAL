@@ -1,0 +1,11 @@
+import fs from 'node:fs';
+const file='src/pages/admin/LegacyMigrationCenterPage.jsx';
+let s=fs.readFileSync(file,'utf8');
+const a="  const importProfile = profileKey ? LEGACY_IMPORT_PROFILES[profileKey] : null;";
+const b=`  const importProfile = profileKey ? LEGACY_IMPORT_PROFILES[profileKey] : null;\n  const isHistoricalBallot = ['INSBAUTI','INSCONFI'].includes(profileKey);\n  const allowParishSelection = Boolean(importProfile?.requiresParish || isHistoricalBallot);`;
+if(!s.includes(a)) throw new Error('No se encontró importProfile');
+s=s.replace(a,b);
+s=s.replace("disabled={!importProfile?.requiresParish}","disabled={!allowParishSelection}");
+s=s.replace("{importProfile?.requiresParish?'Seleccione parroquia…':'No requerida para este catálogo'}","{importProfile?.requiresParish?'Seleccione parroquia…':isHistoricalBallot?'Opcional · parroquia de custodia / conciliación':'No requerida para este catálogo'}");
+fs.writeFileSync(file,s);
+console.log('PATCH_BOLETA_PARISH_SELECTOR_OK');

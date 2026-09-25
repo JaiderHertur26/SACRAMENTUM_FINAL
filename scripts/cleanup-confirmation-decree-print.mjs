@@ -1,0 +1,12 @@
+import fs from 'node:fs';
+const p='C:/SACRAMENTUM/SACRAMENTUM_FINAL/src/components/PrintCorrectionDecreeConfirmations.jsx';
+let s=fs.readFileSync(p,'utf8');
+function rep(a,b){if(!s.includes(a)) throw new Error('Patrón no encontrado: '+a.slice(0,80)); s=s.replace(a,b);}
+rep("  const { getParrocos, getMisDatosList } = useAppData();","  const { getMisDatosList } = useAppData();");
+rep("  const [targetParishInfo, setTargetParishInfo] = useState({ name: '', city: '', priest: '' });","  const [targetParishInfo, setTargetParishInfo] = useState({ name: '', city: '' });");
+rep(`                  const { data: parrocosData } = await supabase.from('parrocos').select('payload').eq('parish_id', pId);\n                  let pPriest = '';\n                  if (parrocosData && parrocosData.length > 0) {\n                      const activePriestRow = parrocosData.find(row => {\n                          let p = row.payload; if (typeof p === 'string') p = JSON.parse(p);\n                          return String(p.estado) === '1' || String(p.Estado) === '1';\n                      });\n                      if (activePriestRow) {\n                          let p = activePriestRow.payload; if (typeof p === 'string') p = JSON.parse(p);\n                          pPriest = \`${'${p.nombre || p.nombres || \'\'} ${p.apellido || p.apellidos || \'\'}'}\`.trim();\n                      }\n                  }\n\n                  if (isMounted) setTargetParishInfo({ name: pName.toUpperCase(), city: pCity.toUpperCase(), priest: pPriest.toUpperCase() });`,`                  if (isMounted) setTargetParishInfo({ name: pName.toUpperCase(), city: pCity.toUpperCase() });`);rep("    isMasterCopy, targetParishName, nombreSacerdoteDestino, observaciones ","    isMasterCopy, targetParishName, observaciones ");
+rep("  let nombreDaFeFinal = '';\n",'');
+rep("          nombreDaFeFinal = nombreSacerdoteDestino || nombreDaFeFinal;\n",'');
+rep(`          \n          const parrocos = (authUser?.parishId && typeof getParrocos === 'function') ? getParrocos(authUser.parishId) : [];\n          const parrocoActivo = parrocos.find(p => String(p.estado || p.Estado || '').toUpperCase() === '1');\n          if (parrocoActivo) nombreDaFeFinal = \`${'${parrocoActivo.nombre || \'\'} ${parrocoActivo.apellido || \'\'}'}\`.trim();`,``);
+fs.writeFileSync(p,s,'utf8');
+console.log('CONFIRMACION_DECRETO_PRINT_DEAD_CODE_OK');
