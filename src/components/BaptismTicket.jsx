@@ -1,239 +1,195 @@
 import React from 'react';
-import { BookOpen } from 'lucide-react';
 import { getLocalDateISO } from '@/utils/localDate';
+import {
+  CutLine,
+  DataCard,
+  DataField,
+  DocumentFooter,
+  EcclesialHeader,
+  EcclesialPrintStyles,
+  RegistryBand,
+  SectionLabel,
+  SignatureLine,
+  TicketFrame,
+  DOCUMENT_PALETTE
+} from '@/components/sacramental/EcclesialDocumentPrimitives';
 
 const BaptismTicket = ({ baptismData, parishInfo }) => {
-    if (!baptismData) return null;
+  if (!baptismData) return null;
 
-    // --- 1. RESOLUCIÓN DE DATOS INSTITUCIONALES ---
-    const formatData = (val) => {
-        if (!val || val === '---' || String(val).trim() === '') return '';
-        return String(val).trim().toUpperCase();
-    };
+  const p = DOCUMENT_PALETTE;
+  const clean = (value) => {
+    if (value === null || value === undefined) return '';
+    const text = String(value).trim();
+    if (!text || ['---', 'NULL', 'UNDEFINED', 'N/A'].includes(text.toUpperCase())) return '';
+    return text.toUpperCase();
+  };
 
-    const header = parishInfo || {};
-    const diocesis = formatData(header.diocesis || baptismData.dioceseName || baptismData.diocese_name || '');
-    const nombreP = formatData(header.nombre || baptismData.lugarBautismo || baptismData.parishName || baptismData.parish_name || '');
-    const direccion = formatData(header.direccion || '');
-    const telefono = formatData(header.telefono || '');
-    const ciudad = formatData(header.ciudad || baptismData.city || '');
-    const region = formatData(header.region || '');
+  const header = parishInfo || {};
+  const diocesis = clean(header.diocesis || baptismData.dioceseName || baptismData.diocese_name);
+  const parroquia = clean(header.nombre || baptismData.lugarBautismo || baptismData.parishName || baptismData.parish_name);
+  const ciudad = clean(header.ciudad || baptismData.city);
+  const region = clean(header.region);
+  const location = [ciudad, region].filter(Boolean).join(', ') + ([ciudad, region].some(Boolean) ? ' · COLOMBIA' : '');
 
-    let ubicacionFinal = ciudad;
-    // Normalizamos para evitar duplicar si la ciudad ya incluye el departamento
-    const ciudadNorm = ciudad.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
-    const regionNorm = region.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
+  const formatDate = (value) => {
+    if (!value) return '';
+    const str = String(value).slice(0, 10);
+    const match = str.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if (!match) return clean(value);
+    const [, y, m, day] = match;
+    const date = new Date(Number(y), Number(m) - 1, Number(day));
+    return date.toLocaleDateString('es-CO', { day: '2-digit', month: 'long', year: 'numeric' }).toUpperCase();
+  };
 
-    if (region && !ciudadNorm.includes(regionNorm)) {
-        ubicacionFinal += `, ${region}`;
-    }
-    if (!ciudadNorm.includes('COLOMBIA')) {
-        ubicacionFinal += ' - COLOMBIA';
-    }
+  const formatTime = (value) => {
+    if (!value) return '';
+    const match = String(value).trim().match(/^(\d{1,2}):(\d{2})/);
+    if (!match) return clean(value);
+    let hour = Number(match[1]);
+    const minute = match[2];
+    const suffix = hour >= 12 ? 'P. M.' : 'A. M.';
+    hour = hour % 12 || 12;
+    return `${hour}:${minute} ${suffix}`;
+  };
 
-    const contactLine = [direccion, telefono ? `TEL: ${telefono}` : '', ubicacionFinal]
-        .filter(Boolean)
-        .join(' — ');
+  const registro = clean(baptismData.numeroRegistro || baptismData.numero_registro || baptismData.registration_number);
+  const bautizando = `${clean(baptismData.nombres || baptismData.firstName)} ${clean(baptismData.apellidos || baptismData.lastName)}`.trim();
+  const sexo = clean(baptismData.sexo || baptismData.sex);
+  const identificacion = clean(baptismData.nuip || baptismData.identification || baptismData.serialRegistro);
+  const fechaNacimiento = formatDate(baptismData.fechaNacimiento || baptismData.birthDate);
+  const lugarNacimiento = clean(baptismData.lugarNacimiento || baptismData.birthPlace);
+  const direccion = clean(baptismData.direccion || baptismData.address);
+  const tipoUnion = clean(baptismData.tipoUnionPadres || baptismData.parentalUnion);
+  const padre = clean(baptismData.nombrePadre || baptismData.fatherName);
+  const madre = clean(baptismData.nombreMadre || baptismData.motherName);
+  const abuelosPaternos = clean(baptismData.abuelosPaternos || baptismData.paternalGrandparents);
+  const abuelosMaternos = clean(baptismData.abuelosMaternos || baptismData.maternalGrandparents);
+  const padrinos = clean(baptismData.padrinos || baptismData.godparents);
+  const ministro = clean(baptismData.ministro || baptismData.minister);
+  const fechaPrevista = formatDate(baptismData.fechaSacramento || baptismData.sacramentDate);
+  const horaPrevista = formatTime(baptismData.horaSacramento || baptismData.hora_sacramento || baptismData.time);
 
-    // --- 2. FORMATEADORES DE FECHA ---
-    const formatDate = (dateString) => {
-        if (!dateString) return '';
-        try {
-            const date = new Date(dateString);
-            if (isNaN(date.getTime())) return String(dateString).toUpperCase();
-            
-            const day = date.getUTCDate();
-            const month = date.toLocaleString('es-CO', { month: 'long', timeZone: 'UTC' }).toUpperCase();
-            const year = date.getUTCFullYear();
-            
-            return `${day} DE ${month} DE ${year}`;
-        } catch (e) {
-            return String(dateString).toUpperCase();
-        }
-    };
+  const responsable = padre || madre || padrinos || abuelosPaternos || abuelosMaternos || '';
 
-    const formatTime = (timeValue) => {
-        if (!timeValue) return '';
-        const match = String(timeValue).trim().match(/^(\d{1,2}):(\d{2})/);
-        if (!match) return String(timeValue).trim().toUpperCase();
-        let hour = Number(match[1]);
-        const minute = match[2];
-        const suffix = hour >= 12 ? 'P. M.' : 'A. M.';
-        hour = hour % 12 || 12;
-        return `${hour}:${minute} ${suffix}`;
-    };
+  const HeaderRight = ({ label }) => (
+    <div style={{ width: 145, flex: '0 0 auto', textAlign: 'right' }}>
+      <div style={{ fontSize: 6.5, fontWeight: 900, color: p.gold, letterSpacing: '0.12em' }}>{label}</div>
+      <div style={{ marginTop: 3, fontSize: 12.5, fontWeight: 900, color: p.ink, fontFamily: '"Courier New", monospace' }}>
+        {registro || 'PENDIENTE'}
+      </div>
+      <div style={{ marginTop: 1, fontSize: 6.2, color: p.faint }}>N.º DE REGISTRO</div>
+    </div>
+  );
 
-    // --- 3. MAPEO DE DATOS DEL BAUTIZO ---
-    const nroReg = formatData(baptismData.numeroRegistro || baptismData.registration_number || '');
-    const bautizando = `${formatData(baptismData.nombres || baptismData.firstName)} ${formatData(baptismData.apellidos || baptismData.lastName)}`.trim();
-    const sexoReal = formatData(baptismData.sexo) || '';
-    const identificacion = formatData(baptismData.nuip || baptismData.identification || baptismData.serialRegistro);
-    const dirResidencia = formatData(baptismData.direccion || baptismData.address);
-    const tipoUnion = formatData(baptismData.tipoUnionPadres || baptismData.parentalUnion);
-    const nombrePadre = formatData(baptismData.nombrePadre || baptismData.fatherName);
-    const nombreMadre = formatData(baptismData.nombreMadre || baptismData.motherName);
-    const abuelosPaternos = formatData(baptismData.abuelosPaternos || baptismData.paternalGrandparents);
-    const abuelosMaternos = formatData(baptismData.abuelosMaternos || baptismData.maternalGrandparents);
-    const padrinos = formatData(baptismData.padrinos || baptismData.godparents);
-    const ministro = formatData(baptismData.ministro || baptismData.minister);
-    
-    // 🚀 LÓGICA EN CASCADA PARA LA FIRMA DEL RESPONSABLE
-    const getResponsable = () => {
-        if (nombrePadre) return nombrePadre;
-        if (nombreMadre) return nombreMadre;
-        if (abuelosPaternos) return abuelosPaternos;
-        if (abuelosMaternos) return abuelosMaternos;
-        if (padrinos) return padrinos;
-        return '';
-    };
-    const nombreResponsable = getResponsable();
+  const TicketHalf = ({ family = false }) => (
+    <TicketFrame tone={family ? 'ivory' : 'plain'}>
+      <EcclesialHeader
+        compact
+        diocese={diocesis}
+        parish={parroquia}
+        location={location}
+        eyebrow="PASTORAL SACRAMENTAL"
+        title={family ? 'Constancia de Inscripción Bautismal' : 'Boleta de Bautismo'}
+        subtitle="Registro previo · no constituye partida"
+        right={<HeaderRight label={family ? 'COPIA PARA LA FAMILIA' : 'ARCHIVO PARROQUIAL'} />}
+      />
 
-    // --- 4. COMPONENTES ESTRUCTURALES ---
-    const FieldLine = ({ label, value, width = "100%" }) => (
-        <div style={{ display: 'flex', alignItems: 'flex-end', width: width, marginBottom: '6px' }}>
-            <span style={{ fontSize: '11px', fontWeight: 'bold', marginRight: '6px', whiteSpace: 'nowrap' }}>
-                {label}:
-            </span>
-            <span style={{ 
-                flex: 1, 
-                borderBottom: '1px solid black', 
-                fontSize: '12px', 
-                lineHeight: '1.2', 
-                paddingBottom: '1px',
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis'
-            }}>
-                {value}
-            </span>
+      <RegistryBand
+        compact
+        items={[
+          { label: 'Fecha de trámite', value: formatDate(getLocalDateISO()), mono: false },
+          { label: 'Fecha prevista', value: fechaPrevista || 'POR DEFINIR', mono: false, highlight: true },
+          { label: 'Hora', value: horaPrevista || '—', mono: false }
+        ]}
+      />
+
+      <DataCard tone={family ? 'ivory' : 'wash'} style={{ marginTop: 8, textAlign: 'center', padding: '8px 12px' }}>
+        <div style={{ fontSize: 6.5, fontWeight: 900, color: p.faint, letterSpacing: '0.13em' }}>BAUTIZANDO(A)</div>
+        <div style={{ marginTop: 3, fontFamily: 'Georgia, serif', fontSize: 12.2, fontWeight: 800, color: p.navy }}>
+          {bautizando || '—'}
         </div>
-    );
+      </DataCard>
 
-    const TicketHalf = ({ isArchive }) => (
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '0.25in 0.6in', position: 'relative', overflow: 'hidden' }}>
-            
-            {/* Marca de agua sutil */}
-            <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', opacity: 0.03, pointerEvents: 'none' }}>
-                <BookOpen size={300} strokeWidth={1} />
+      {!family ? (
+        <>
+          <div style={{ marginTop: 8 }}>
+            <SectionLabel>Datos personales y familiares</SectionLabel>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '7px 11px' }}>
+              <DataField label="Nacimiento" value={fechaNacimiento} />
+              <DataField label="Lugar de nacimiento" value={lugarNacimiento} />
+              <DataField label="Sexo" value={sexo} />
+              <DataField label="NUIP / NIP / Serial" value={identificacion} mono />
+              <DataField label="Padre" value={padre} />
+              <DataField label="Madre" value={madre} />
+              <DataField label="Abuelos paternos" value={abuelosPaternos} />
+              <DataField label="Abuelos maternos" value={abuelosMaternos} />
+              <DataField label="Padrinos" value={padrinos} />
             </div>
+          </div>
 
-            {/* ENCABEZADO INSTITUCIONAL UNIFICADO */}
-            <div style={{ textAlign: 'center', marginBottom: '8px' }}>
-                <div style={{ fontSize: '14px', fontWeight: '900' }}>{diocesis}</div>
-                <div style={{ fontSize: '14px', fontWeight: '900', marginTop: '2px' }}>{nombreP}</div>
-                <div style={{ fontSize: '9px', marginTop: '4px', fontWeight: 'bold' }}>{contactLine}</div>
+          <div style={{ marginTop: 8, display: 'grid', gridTemplateColumns: '1.15fr 1fr 1fr', gap: 10 }}>
+            <DataField label="Dirección" value={direccion} />
+            <DataField label="Situación de los padres" value={tipoUnion} />
+            <DataField label="Ministro propuesto" value={ministro} />
+          </div>
+
+          <div style={{ marginTop: 'auto', display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: 18 }}>
+            <div style={{ maxWidth: 390, fontSize: 6.7, lineHeight: 1.35, color: p.muted }}>
+              Documento de preparación y control parroquial. Los datos deben verificarse antes del asiento sacramental definitivo.
             </div>
+            <SignatureLine name={responsable} role="RESPONSABLE / ACUDIENTE" width={210} />
+          </div>
+        </>
+      ) : (
+        <>
+          <div style={{ marginTop: 9, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '9px 13px' }}>
+            <DataField label="Fecha de nacimiento" value={fechaNacimiento} />
+            <DataField label="Lugar de nacimiento" value={lugarNacimiento} />
+            <DataField label="Padre" value={padre} />
+            <DataField label="Madre" value={madre} />
+            <DataField label="Padrinos" value={padrinos} />
+            <DataField label="Ministro previsto" value={ministro} />
+          </div>
 
-            {/* TÍTULO DE LA BOLETA */}
-            <div style={{ textAlign: 'center', margin: '8px 0' }}>
-                <span style={{ 
-                    fontSize: '12px', 
-                    fontWeight: '900', 
-                    letterSpacing: '1.5px', // Espaciado seguro para evitar saltos de línea
-                    borderBottom: isArchive ? 'none' : '1px solid #000',
-                    paddingBottom: '2px'
-                }}>
-                    {isArchive ? 'BOLETA PARA ARCHIVO PARROQUIAL' : 'CONSTANCIA DE INSCRIPCIÓN (FAMILIA)'}
-                </span>
+          <div style={{ marginTop: 10, padding: '8px 10px', border: `1px solid ${p.goldSoft}`, borderLeft: `3px solid ${p.gold}`, borderRadius: 8, background: '#FFFCF1' }}>
+            <div style={{ fontSize: 6.8, fontWeight: 900, color: p.warning, letterSpacing: '0.11em' }}>IMPORTANTE</div>
+            <div style={{ marginTop: 3, fontSize: 7.4, lineHeight: 1.35, color: p.text }}>
+              Esta constancia acredita únicamente la inscripción o preparación para el Bautismo. No certifica que el sacramento haya sido celebrado y no sustituye una Partida de Bautismo.
             </div>
+          </div>
 
-            {/* BARRA DE CONTROL */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px', fontSize: '11px', fontWeight: 'bold' }}>
-                <div>REGISTRO Nº: {nroReg}</div>
-                <div>FECHA TRÁMITE: {formatDate(getLocalDateISO())}</div>
-            </div>
+          <div style={{ marginTop: 'auto', display: 'flex', justifyContent: 'flex-end' }}>
+            <SignatureLine role="FIRMA / SELLO PARROQUIAL" width={210} />
+          </div>
+        </>
+      )}
 
-            {/* ADVERTENCIA FAMILIA */}
-            {!isArchive && (
-                <div style={{ textAlign: 'center', fontSize: '10px', fontWeight: 'bold', marginBottom: '8px' }}>
-                    ESTA BOLETA NO ES UNA PARTIDA DE BAUTISMO VÁLIDA PARA TRÁMITES CIVILES O ECLESIÁSTICOS.
-                </div>
-            )}
+      <div style={{ marginTop: 8 }}>
+        <DocumentFooter trace={family ? 'SACRAMENTUM · CONSTANCIA DE INSCRIPCIÓN' : 'SACRAMENTUM · CONTROL PASTORAL INTERNO'} />
+      </div>
+    </TicketFrame>
+  );
 
-            {/* CUERPO DEL DOCUMENTO */}
-            <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
-                
-                <FieldLine label="BAUTIZANDO" value={bautizando} />
-                
-                <div style={{ display: 'flex', gap: '15px' }}>
-                    <FieldLine label="FECHA NAC." value={formatDate(baptismData.fechaNacimiento)} width="50%" />
-                    <FieldLine label="LUGAR NAC." value={formatData(baptismData.lugarNacimiento)} width="50%" />
-                </div>
-
-                <div style={{ display: 'flex', gap: '15px' }}>
-                    <FieldLine label="SEXO" value={sexoReal} width="50%" />
-                    <FieldLine label="NUIP / NIP / SERIAL" value={identificacion} width="50%" />
-                </div>
-
-                <div style={{ display: 'flex', gap: '15px' }}>
-                    <FieldLine label="PADRE" value={nombrePadre} width="50%" />
-                    <FieldLine label="MADRE" value={nombreMadre} width="50%" />
-                </div>
-
-                <div style={{ display: 'flex', gap: '15px' }}>
-                    <FieldLine label="DIRECCIÓN" value={dirResidencia} width="60%" />
-                    <FieldLine label="ESTADO CIVIL P." value={tipoUnion} width="40%" />
-                </div>
-
-                <FieldLine label="ABUELOS PATER." value={abuelosPaternos} />
-                <FieldLine label="ABUELOS MATER." value={abuelosMaternos} />
-                <FieldLine label="PADRINOS" value={padrinos} />
-
-                <div style={{ display: 'flex', gap: '15px' }}>
-                    <FieldLine label="FECHA BAUTISMO" value={formatDate(baptismData.fechaSacramento)} width="65%" />
-                    <FieldLine label="HORA" value={formatTime(baptismData.horaSacramento || baptismData.hora_sacramento)} width="35%" />
-                </div>
-
-                <FieldLine label="MINISTRO" value={ministro} />
-
-                {/* SECCIÓN DE FIRMA */}
-                <div style={{ marginTop: 'auto', display: 'flex', alignItems: 'flex-end', paddingTop: '10px' }}>
-                    <span style={{ fontSize: '11px', fontWeight: 'bold', marginRight: '8px' }}>Firma responsable:</span>
-                    <div style={{ display: 'flex', flexDirection: 'column', width: '300px' }}>
-                        <div style={{ borderBottom: '1px solid black', height: '15px' }}></div>
-                        <span style={{ fontSize: '11px', textAlign: 'center', marginTop: '3px', fontWeight: 'bold' }}>{nombreResponsable}</span>
-                    </div>
-                </div>
-
-            </div>
-
-            {/* NOTA DE PIE */}
-            <div style={{ fontSize: '9px', fontWeight: 'bold', paddingTop: '8px', minHeight: '14px' }}>
-                {isArchive 
-                    ? '* USO INTERNO. VERIFIQUE DATOS ANTES DE ASENTAR EL ACTA DEFINITIVA.'
-                    : ''}
-            </div>
-        </div>
-    );
-
-    return (
-        <div style={{ 
-            width: '8.5in', 
-            height: '11in', 
-            backgroundColor: 'white', 
-            color: 'black', 
-            fontFamily: 'Arial, sans-serif',
-            margin: '0 auto',
-            display: 'flex',
-            flexDirection: 'column',
-            boxSizing: 'border-box'
-        }}>
-            <style dangerouslySetInnerHTML={{ __html: `
-                @media print {
-                    @page { size: letter portrait; margin: 0; }
-                    body { margin: 0; background: white; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-                }
-            `}} />
-
-            <TicketHalf isArchive={true} />
-            
-            {/* LÍNEA DE CORTE */}
-            <div style={{ width: '100%', borderTop: '1px dashed black' }}></div>
-            
-            <TicketHalf isArchive={false} />
-
-        </div>
-    );
+  return (
+    <div
+      style={{
+        width: '8.5in',
+        height: '11in',
+        padding: '0.24in 0.3in',
+        boxSizing: 'border-box',
+        background: '#fff',
+        color: p.ink,
+        fontFamily: 'Arial, sans-serif',
+        margin: '0 auto'
+      }}
+    >
+      <EcclesialPrintStyles />
+      <TicketHalf />
+      <CutLine />
+      <TicketHalf family />
+    </div>
+  );
 };
 
 export default BaptismTicket;

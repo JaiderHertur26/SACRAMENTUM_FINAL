@@ -3028,3 +3028,61 @@ Este bloque SUPERA el corte V21 como estado técnico actual.
 - `C:\SACRAMENTUM\CHECKPOINTS\SACRAMENTUM_FINAL_2026-09-25_PRE_V27_CODE_SPLITTING`
 
 ESTADO CANÓNICO ACTUAL: **V27 ESTABLE**.
+
+---
+## V28 · SISTEMA DOCUMENTAL ECLESIAL · 2026-09-25
+
+Objetivo: elevar todas las boletas/constancias y partidas existentes al nivel visual de Matrimonio, con una identidad más eclesial, sobria y uniforme.
+
+### Familia visual maestra
+- Azul eclesial profundo + oro envejecido + blanco/marfil.
+- Cruz institucional común.
+- Doble borde sobrio.
+- Títulos en serif y datos en sans/monoespaciada según función.
+- Cabecera institucional unificada.
+- Libro/Folio/Número como referencia canónica visible en partidas.
+- Firma y sello parroquial con jerarquía uniforme.
+- Pie documental SACRAMENTUM.
+
+### Boletas / documentos previos
+- `BaptismTicket.jsx`: rediseño completo.
+- `ConfirmationTicket.jsx`: rediseño completo.
+- `MatrimonioTicket.jsx`: armonizado con la familia maestra.
+- Cada documento mantiene copia para archivo y copia familiar/contrayentes.
+- Se declara visualmente que la boleta/constancia NO constituye ni sustituye una Partida.
+- Se evita mostrar Libro/Folio/Número como si ya existieran antes del asiento.
+
+### Partidas
+- `BaptismPrintTemplate.jsx`: nueva certificación eclesiástica.
+- `ConfirmationPrintTemplate.jsx`: nueva certificación eclesiástica.
+- `MatrimonioPrintTemplate.jsx`: armonizado y elevado.
+- `FuneralPartidasPage.jsx`: usa generador eclesial común para Partida y Constancia.
+- `funeralDocumentHtml.js`: nuevo motor de impresión de Exequias.
+- Notas marginales, estados no vigentes y firmas conservan su semántica.
+
+### Integridad documental
+- Partidas históricas NO infieren lugar de celebración desde la parroquia actual.
+- Si el dato histórico no consta, el documento muestra vacío/guion; no inventa información.
+- Lógica sacramental, consecutivos, asientos, notas, RLS y RPC no fueron modificados.
+
+### Arquitectura
+- Nuevo componente compartido: `src/components/sacramental/EcclesialDocumentPrimitives.jsx`.
+- Gate nuevo: `scripts/verify-ecclesial-documents-v28.mjs`.
+- Resultado gate: **29/29**.
+
+### Validación final
+- `npm audit`: 0 vulnerabilidades.
+- Bautismo: OK.
+- Confirmación: OK.
+- V7 Exequias ↔ Bautismo: 14/14.
+- V15: OK.
+- V16C: 29/29.
+- V17: 25/25.
+- V18: 17/17.
+- V19: 12/12.
+- V20: 14/14.
+- Build Vite 8.3.1: **3078 módulos, 10.59 s, exit code 0**.
+
+Checkpoint previo: `C:\SACRAMENTUM\CHECKPOINTS\SACRAMENTUM_FINAL_2026-09-25_PRE_V28_DOCUMENTOS`.
+
+ESTADO CANÓNICO ACTUAL: **V28 ESTABLE · SISTEMA DOCUMENTAL ECLESIAL**.

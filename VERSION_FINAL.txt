@@ -1,9 +1,10 @@
 SACRAMENTUM FINAL
-Estado: V27 estable
+Estado: V28 estable · Sistema Documental Eclesial
 Fecha: 2026-09-25
 Frontend: Vite 8.3.1 + React Router DOM 7.18.4
-Build Windows validado: OK
-Supabase: migraciones V22-V25 aplicadas; Local = Remote (30 migraciones)
+Documentos: Boletas y Partidas unificadas en familia eclesial
+Build Windows validado: OK · 3078 módulos · 10.59 s
+Supabase: sin cambios en V28 · backend V25 vigente
 Seguridad npm: 0 vulnerabilidades
+Gate documental V28: 29/29
 Regresión sacramental: OK
-Code splitting: bundle inicial 403.68 kB (126.39 kB gzip)

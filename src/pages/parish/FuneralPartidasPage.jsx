@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+﻿import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/context/AuthContext';
@@ -21,6 +21,7 @@ import {
 } from '@/services/funeralService';
 import { cn } from '@/lib/utils';
 import { labelStatus } from '@/utils/uiLabels';
+import { buildFuneralConstanciaHtml, buildFuneralPartidaHtml } from '@/utils/funeralDocumentHtml';
 
 const escapeHtml = (value) =>
   String(value ?? '')
@@ -130,127 +131,22 @@ const FuneralPartidasPage = () => {
   const printCertificate = () => {
     if (!selected) return;
 
-    const raw = selected.raw_data || {};
     const popup = window.open('', '_blank', 'width=900,height=1100');
     if (!popup) {
       toast({
-        title: 'El navegador bloqueó la impresión',
+        title: 'El navegador bloqueÃ³ la impresiÃ³n',
         description: 'Permita ventanas emergentes para imprimir la partida.',
         variant: 'destructive'
       });
       return;
     }
 
-    const noteList = [];
-    if (selected.nota_marginal) noteList.push(selected.nota_marginal);
-    if (printNotes) notes.forEach((note) => noteList.push(note.content));
-
-    const notesHtml = noteList.length
-      ? noteList.map((note) => `<div class="note">${escapeHtml(note)}</div>`).join('')
-      : '<div class="empty">NINGUNA REGISTRADA.</div>';
-
-    const sacraments = Array.isArray(raw.sacramentosRecibidos)
-      ? raw.sacramentosRecibidos.join(', ')
-      : '';
-
-    const age = raw.edadDeclarada
-      ? `${raw.edadDeclarada} ${raw.tipoEdad || 'años'}`
-      : '';
-
-    popup.document.write(`<!doctype html>
-<html lang="es">
-<head>
-<meta charset="utf-8" />
-<title>Partida de Exequias · SACRAMENTUM</title>
-<style>
-@page { size: Letter; margin: 14mm; }
-* { box-sizing: border-box; }
-body { margin:0; color:#172033; font-family: Georgia, 'Times New Roman', serif; background:#fff; }
-.sheet { min-height: 245mm; border:1.5px solid #264f78; padding:22px 26px; position:relative; }
-.sheet:before { content:''; position:absolute; inset:7px; border:1px solid #d8b85a; pointer-events:none; }
-header { text-align:center; padding:4px 25px 18px; border-bottom:1px solid #d9e0e8; }
-.diocese { font-size:12px; font-weight:700; letter-spacing:.13em; text-transform:uppercase; color:#264f78; }
-.parish { margin-top:5px; font-size:14px; font-weight:700; text-transform:uppercase; }
-.city { margin-top:3px; font-size:9px; letter-spacing:.12em; color:#687385; text-transform:uppercase; }
-.kicker { margin-top:20px; font-size:8px; letter-spacing:.35em; color:#a48123; text-transform:uppercase; }
-h1 { margin:5px 0 0; font-size:28px; color:#172033; }
-.ref { margin:20px 0; display:grid; grid-template-columns:repeat(4,1fr); gap:8px; }
-.ref div { padding:10px; border:1px solid #d9e0e8; text-align:center; }
-.ref span { display:block; font:700 7px Arial,sans-serif; letter-spacing:.14em; color:#7b8593; text-transform:uppercase; }
-.ref strong { display:block; margin-top:4px; font:700 13px Arial,sans-serif; color:#264f78; }
-.intro { margin:18px 0; font-size:12px; line-height:1.65; text-align:justify; }
-.section { margin-top:14px; border-top:1px solid #d9e0e8; padding-top:10px; }
-.section-title { font:700 8px Arial,sans-serif; letter-spacing:.18em; color:#264f78; text-transform:uppercase; margin-bottom:8px; }
-.row { display:grid; grid-template-columns:130px 1fr; gap:12px; padding:4px 0; font-size:11px; line-height:1.45; }
-.row label { font:700 8px Arial,sans-serif; color:#7b8593; text-transform:uppercase; letter-spacing:.08em; }
-.row strong { font-weight:700; }
-.note { margin:5px 0; padding:7px 9px; border-left:3px solid #d8b85a; background:#fbfaf5; font-size:10px; line-height:1.45; }
-.empty { font-size:10px; color:#7b8593; }
-.signature { margin-top:34px; display:grid; grid-template-columns:1fr 1fr; gap:50px; }
-.line { border-top:1px solid #172033; padding-top:6px; text-align:center; font:700 8px Arial,sans-serif; letter-spacing:.12em; text-transform:uppercase; }
-footer { margin-top:22px; text-align:center; font:400 7px Arial,sans-serif; color:#8a939f; letter-spacing:.08em; }
-</style>
-</head>
-<body>
-<div class="sheet">
-<header>
-  <div class="diocese">${escapeHtml(institution.dioceseName)}</div>
-  <div class="parish">${escapeHtml(institution.parishName)}</div>
-  <div class="city">${escapeHtml(institution.city)}</div>
-  <div class="kicker">Certificación Eclesiástica</div>
-  <h1>Partida de Exequias</h1>
-</header>
-
-<div class="ref">
-  <div><span>Tipo de Libro</span><strong>${escapeHtml((selected.book_type || 'ordinario').toUpperCase())}</strong></div>
-  <div><span>Libro</span><strong>${escapeHtml(selected.book_number || '—')}</strong></div>
-  <div><span>Folio</span><strong>${escapeHtml(selected.folio || '—')}</strong></div>
-  <div><span>Número</span><strong>${escapeHtml(selected.number || '—')}</strong></div>
-</div>
-
-<p class="intro">
-El suscrito Párroco CERTIFICA que en el archivo parroquial consta el siguiente registro de Exequias:
-</p>
-
-<div class="section">
-  <div class="section-title">Datos del difunto</div>
-  <div class="row"><label>Nombre</label><strong>${escapeHtml(`${selected.nombres || ''} ${selected.apellidos || ''}`.trim())}</strong></div>
-  <div class="row"><label>Sexo</label><div>${escapeHtml(selected.sexo || '—')}</div></div>
-  <div class="row"><label>Nacimiento</label><div>${escapeHtml(dateText(selected.fecha_nacimiento))} ${selected.lugar_nacimiento ? '· ' + escapeHtml(selected.lugar_nacimiento) : ''}</div></div>
-  ${age ? `<div class="row"><label>Edad</label><div>${escapeHtml(age)}</div></div>` : ''}
-  ${raw.estadoCivil ? `<div class="row"><label>Estado civil</label><div>${escapeHtml(raw.estadoCivil)}</div></div>` : ''}
-  <div class="row"><label>Padre</label><div>${escapeHtml(selected.nombre_padre || '—')}</div></div>
-  <div class="row"><label>Madre</label><div>${escapeHtml(selected.nombre_madre || '—')}</div></div>
-  ${selected.conyuge ? `<div class="row"><label>Cónyuge</label><div>${escapeHtml(selected.conyuge)}</div></div>` : ''}
-</div>
-
-<div class="section">
-  <div class="section-title">Defunción y Exequias</div>
-  <div class="row"><label>Defunción</label><strong>${escapeHtml(dateText(selected.fecha_defuncion))}</strong></div>
-  <div class="row"><label>Lugar</label><div>${escapeHtml(selected.lugar_defuncion || '—')}</div></div>
-  <div class="row"><label>Exequias</label><div>${escapeHtml(dateText(selected.fecha_exequias))} ${selected.hora_exequias ? '· ' + escapeHtml(String(selected.hora_exequias).slice(0,5)) : ''}</div></div>
-  <div class="row"><label>Lugar Exequias</label><div>${escapeHtml(selected.lugar_exequias || '—')}</div></div>
-  <div class="row"><label>Cementerio</label><div>${escapeHtml(selected.cementerio || '—')}</div></div>
-  <div class="row"><label>Ministro</label><div>${escapeHtml(selected.ministro || '—')}</div></div>
-  ${selected.da_fe ? `<div class="row"><label>Da fe</label><div>${escapeHtml(selected.da_fe)}</div></div>` : ''}
-  ${sacraments ? `<div class="row"><label>Sacramentos recibidos</label><div>${escapeHtml(sacraments)}</div></div>` : ''}
-</div>
-
-<div class="section">
-  <div class="section-title">Anotaciones marginales</div>
-  ${notesHtml}
-</div>
-
-<div class="signature">
-  <div class="line">PÁRROCO</div>
-  <div class="line">FIRMA Y SELLO PARROQUIAL</div>
-</div>
-
-<footer>Documento expedido desde SACRAMENTUM · Registro Eclesial</footer>
-</div>
-<script>window.onload=()=>{window.print();};</script>
-</body>
-</html>`);
+    popup.document.write(buildFuneralPartidaHtml({
+      record: selected,
+      notes,
+      printNotes,
+      institution
+    }));
     popup.document.close();
   };
 
@@ -261,239 +157,17 @@ El suscrito Párroco CERTIFICA que en el archivo parroquial consta el siguiente 
     const popup = window.open('', '_blank', 'width=850,height=900');
     if (!popup) {
       toast({
-        title: 'El navegador bloqueó la impresión',
+        title: 'El navegador bloqueÃ³ la impresiÃ³n',
         description: 'Permita ventanas emergentes para imprimir la Constancia de Exequias.',
         variant: 'destructive'
       });
       return;
     }
 
-    const fullName = `${record.nombres || ''} ${record.apellidos || ''}`.trim();
-    const funeralTime = record.hora_exequias
-      ? String(record.hora_exequias).slice(0, 5)
-      : '';
-
-    popup.document.write(`<!doctype html>
-<html lang="es">
-<head>
-<meta charset="utf-8" />
-<title>Constancia de Exequias · SACRAMENTUM</title>
-<style>
-@page { size: Letter; margin: 16mm; }
-* { box-sizing: border-box; }
-body {
-  margin: 0;
-  background: #fff;
-  color: #172033;
-  font-family: Georgia, 'Times New Roman', serif;
-}
-.sheet {
-  max-width: 720px;
-  margin: 0 auto;
-  border: 1.5px solid #264f78;
-  padding: 24px 28px 26px;
-  position: relative;
-}
-.sheet:before {
-  content: '';
-  position: absolute;
-  inset: 7px;
-  border: 1px solid #d8b85a;
-  pointer-events: none;
-}
-header {
-  text-align: center;
-  padding: 2px 18px 17px;
-  border-bottom: 1px solid #d9e0e8;
-}
-.diocese {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: .13em;
-  text-transform: uppercase;
-  color: #264f78;
-}
-.parish {
-  margin-top: 5px;
-  font-size: 14px;
-  font-weight: 700;
-  text-transform: uppercase;
-}
-.city {
-  margin-top: 3px;
-  font-size: 9px;
-  letter-spacing: .12em;
-  color: #687385;
-  text-transform: uppercase;
-}
-.kicker {
-  margin-top: 17px;
-  font: 700 8px Arial, sans-serif;
-  letter-spacing: .28em;
-  color: #a48123;
-  text-transform: uppercase;
-}
-h1 {
-  margin: 5px 0 0;
-  font-size: 25px;
-}
-.control {
-  margin: 18px 0;
-  display: grid;
-  grid-template-columns: 1.2fr 1fr 1fr 1fr;
-  gap: 7px;
-}
-.control div {
-  border: 1px solid #d9e0e8;
-  padding: 9px 7px;
-  text-align: center;
-}
-.control span {
-  display: block;
-  font: 700 7px Arial, sans-serif;
-  color: #7b8593;
-  letter-spacing: .12em;
-  text-transform: uppercase;
-}
-.control strong {
-  display: block;
-  margin-top: 4px;
-  font: 700 12px Arial, sans-serif;
-  color: #264f78;
-}
-.statement {
-  margin: 19px 0 17px;
-  font-size: 12px;
-  line-height: 1.7;
-  text-align: justify;
-}
-.name {
-  margin: 14px 0 18px;
-  padding: 13px 15px;
-  background: #f6f8fb;
-  border-left: 3px solid #d8b85a;
-}
-.name span {
-  display: block;
-  font: 700 7px Arial, sans-serif;
-  letter-spacing: .14em;
-  color: #7b8593;
-  text-transform: uppercase;
-}
-.name strong {
-  display: block;
-  margin-top: 4px;
-  font-size: 16px;
-  text-transform: uppercase;
-}
-.grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0 24px;
-  border-top: 1px solid #d9e0e8;
-  padding-top: 11px;
-}
-.row {
-  display: grid;
-  grid-template-columns: 105px 1fr;
-  gap: 8px;
-  padding: 5px 0;
-  font-size: 11px;
-  line-height: 1.45;
-}
-.row label {
-  font: 700 7px Arial, sans-serif;
-  color: #7b8593;
-  text-transform: uppercase;
-  letter-spacing: .08em;
-}
-.admin-note {
-  margin-top: 16px;
-  padding: 9px 11px;
-  border: 1px dashed #b9c5d3;
-  background: #fbfcfd;
-  font: 700 8px Arial, sans-serif;
-  color: #667386;
-  letter-spacing: .04em;
-}
-.signature {
-  margin-top: 38px;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 52px;
-}
-.line {
-  border-top: 1px solid #172033;
-  padding-top: 6px;
-  text-align: center;
-  font: 700 8px Arial, sans-serif;
-  letter-spacing: .11em;
-  text-transform: uppercase;
-}
-footer {
-  margin-top: 20px;
-  text-align: center;
-  font: 400 7px Arial, sans-serif;
-  color: #8a939f;
-  letter-spacing: .07em;
-}
-</style>
-</head>
-<body>
-<div class="sheet">
-<header>
-  <div class="diocese">${escapeHtml(institution.dioceseName)}</div>
-  <div class="parish">${escapeHtml(institution.parishName)}</div>
-  <div class="city">${escapeHtml(institution.city)}</div>
-  <div class="kicker">Documento Complementario</div>
-  <h1>Constancia de Exequias</h1>
-</header>
-
-<div class="control">
-  <div><span>N.º Registro</span><strong>${escapeHtml(record.numero_registro || '—')}</strong></div>
-  <div><span>Libro</span><strong>${escapeHtml(record.book_number || '—')}</strong></div>
-  <div><span>Folio</span><strong>${escapeHtml(record.folio || '—')}</strong></div>
-  <div><span>Número</span><strong>${escapeHtml(record.number || '—')}</strong></div>
-</div>
-
-<p class="statement">
-La Parroquia hace constar que en su archivo eclesiástico se encuentra asentado el registro de Exequias correspondiente a:
-</p>
-
-<div class="name">
-  <span>Fiel difunto</span>
-  <strong>${escapeHtml(fullName)}</strong>
-</div>
-
-<div class="grid">
-  <div>
-    <div class="row"><label>Defunción</label><div>${escapeHtml(dateText(record.fecha_defuncion))}</div></div>
-    <div class="row"><label>Lugar</label><div>${escapeHtml(record.lugar_defuncion || '—')}</div></div>
-    <div class="row"><label>Exequias</label><div>${escapeHtml(dateText(record.fecha_exequias))}${funeralTime ? ' · ' + escapeHtml(funeralTime) : ''}</div></div>
-  </div>
-  <div>
-    <div class="row"><label>Lugar Exequias</label><div>${escapeHtml(record.lugar_exequias || '—')}</div></div>
-    <div class="row"><label>Cementerio</label><div>${escapeHtml(record.cementerio || '—')}</div></div>
-    <div class="row"><label>Ministro</label><div>${escapeHtml(record.ministro || '—')}</div></div>
-  </div>
-</div>
-
-<div class="admin-note">
-CONTROL ADMINISTRATIVO: esta constancia es un documento complementario derivado del asiento parroquial.
-El N.º de Registro es de control interno y no sustituye Libro, Folio y Número.
-</div>
-
-<div class="signature">
-  <div class="line">PÁRROCO</div>
-  <div class="line">FIRMA Y SELLO PARROQUIAL</div>
-</div>
-
-<footer>Documento generado desde SACRAMENTUM · Registro Eclesial</footer>
-</div>
-<script>window.onload=()=>{window.print();};</script>
-</body>
-</html>`);
-
+    popup.document.write(buildFuneralConstanciaHtml({
+      record,
+      institution
+    }));
     popup.document.close();
   };
 
@@ -715,3 +389,4 @@ const Detail = ({ label, value }) => (
 );
 
 export default FuneralPartidasPage;
+

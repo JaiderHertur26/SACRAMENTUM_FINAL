@@ -2,222 +2,228 @@ import React, { forwardRef } from 'react';
 import { convertDateToSpanishText } from '@/utils/dateTimeFormatters';
 import { getLocalDateISO } from '@/utils/localDate';
 import { useAppData } from '@/context/AppDataContext';
+import {
+  DataCard,
+  DataField,
+  DetailRow,
+  DocumentFooter,
+  DocumentFrame,
+  EcclesialHeader,
+  NotesBox,
+  RegistryBand,
+  SectionLabel,
+  SignatureLine,
+  DOCUMENT_PALETTE
+} from '@/components/sacramental/EcclesialDocumentPrimitives';
 
 const BaptismPrintTemplate = forwardRef(({ data, parroquiaInfo }, ref) => {
   const { getParrocos } = useAppData();
-
   if (!data) return null;
 
+  const p = DOCUMENT_PALETTE;
   const raw = data.raw_data || data;
   const header = parroquiaInfo || data.parroquiaInfo || {};
 
-  const formatData = (val) => {
-    if (!val || val === '---' || String(val).trim() === '') return '';
-    return String(val).trim().toUpperCase();
+  const clean = (value) => {
+    if (value === null || value === undefined) return '';
+    const text = String(value).trim();
+    if (!text || ['---', 'NULL', 'UNDEFINED', 'N/A'].includes(text.toUpperCase())) return '';
+    return text.toUpperCase();
   };
 
-  const diocesis = formatData(header.diocesis || data.dioceseName || data.diocese_name || '') || '[DIÓCESIS NO CONFIGURADA]';
-  const parroquia = formatData(header.nombre || data.parishName || data.parish_name || '') || '[PARROQUIA NO CONFIGURADA]';
-  const ciudad = formatData(header.ciudad || data.city || '');
-  const region = formatData(header.region || '');
-
-  let ubicacionFinal = ciudad;
-  const ciudadNorm = ciudad.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-  const regionNorm = region.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-
-  if (region && !ciudadNorm.includes(regionNorm)) {
-    ubicacionFinal = [ubicacionFinal, region].filter(Boolean).join(', ');
-  }
-  if (ubicacionFinal && !ubicacionFinal.includes('COLOMBIA')) {
-    ubicacionFinal += ' - COLOMBIA';
-  }
-  if (!ubicacionFinal) ubicacionFinal = '[UBICACIÓN NO CONFIGURADA]';
-
-  const formatRegistryRef = (value) => {
-    const clean = String(value ?? '').trim();
-    if (!clean || clean === '---' || clean === '0') return '----';
-    return /^\d+$/.test(clean) ? clean.padStart(4, '0') : clean.toUpperCase();
+  const padRef = (value) => {
+    const text = clean(value);
+    if (!text || text === '0') return '----';
+    return /^\d+$/.test(text) ? text.padStart(4, '0') : text;
   };
-  const libro = formatRegistryRef(raw.Libro || raw.book_number || raw.numeroLibro || data.book_number || data.Libro);
-  const folio = formatRegistryRef(raw.folio || raw.page_number || data.folio || data.page_number);
-  const acta = formatRegistryRef(raw.numero || raw.number || raw.numeroActa || data.numero || data.number);
 
-  const formatFecha = (dStr) => {
-    if (!dStr || dStr === '---' || dStr.trim() === '') return '';
+  const dateText = (value) => {
+    if (!value) return '';
     try {
-        let res = convertDateToSpanishText(dStr).toUpperCase();
-        if (!res.startsWith('EL ')) res = 'EL ' + res;
-        return res;
-    } catch(e) {
-        return String(dStr).toUpperCase();
+      let text = convertDateToSpanishText(String(value).slice(0, 10)).toUpperCase();
+      if (!text.startsWith('EL ')) text = `EL ${text}`;
+      return text;
+    } catch {
+      return clean(value);
     }
   };
 
-  const fechaBautismo = formatFecha(raw.fechaSacramento || raw.fecbau || data.celebration_date);
-  const nombresYApellidos = `${formatData(raw.nombres)} ${formatData(raw.apellidos)}`.trim();
-  const fechaNacimiento = formatFecha(raw.fechaNacimiento || raw.fecnac || data.fecha_nacimiento);
-  const lugarNacimiento = formatData(raw.lugarNacimiento || raw.lugarn || data.lugar_nacimiento);
-  const padre = formatData(raw.nombrePadre || raw.padre || data.nombre_padre);
-  const madre = formatData(raw.nombreMadre || raw.madre || data.nombre_madre);
-  const tipoUnion = formatData(raw.tipoUnionPadres || raw.tipohijo || data.tipo_union_padres);
-  const abuelosPaternos = formatData(raw.abuelosPaternos || raw.abuepat || data.abuelos_paternos);
-  const abuelosMaternos = formatData(raw.abuelosMaternos || raw.abuemat || data.abuelos_maternos);
-  const padrinos = formatData(raw.padrinos || data.padrinos);
-  
-  const cleanTitle = (nameStr) => nameStr.replace(/^(PBRO\.?|PADRE|FRAY|MONS\.?|SACERDOTE)\s+/i, '').trim();
+  const diocesis = clean(header.diocesis || data.dioceseName || data.diocese_name) || '[DIÓCESIS NO CONFIGURADA]';
+  const parroquia = clean(header.nombre || data.parishName || data.parish_name) || '[PARROQUIA NO CONFIGURADA]';
+  const ciudad = clean(header.ciudad || data.city);
+  const region = clean(header.region);
+  const location = [ciudad, region].filter(Boolean).join(', ') + ([ciudad, region].some(Boolean) ? ' · COLOMBIA' : '');
 
-  const pId = raw.parishId || raw.parish_id || header.entity_id || header.id || data.parish_id;
-  const listaSacerdotes = (pId && getParrocos) ? (getParrocos(pId) || []) : [];
+  const tipoLibro = clean(raw.tipoLibro || raw.book_type || data.book_type || 'ORDINARIO');
+  const libro = padRef(raw.Libro || raw.book_number || raw.numeroLibro || data.book_number || data.Libro);
+  const folio = padRef(raw.folio || raw.page_number || data.folio || data.page_number);
+  const numero = padRef(raw.numero || raw.number || raw.numeroActa || data.numero || data.number);
 
-  const getPárrocoActual = () => {
-    const sacerdoteActual = listaSacerdotes.find(p => String(p.estado) === '1' || String(p.estado).toUpperCase() === 'ACTIVO');
-    if (sacerdoteActual) return `${sacerdoteActual.nombre} ${sacerdoteActual.apellido || ''}`.trim();
-    return header.parroco || '';
-  };
-  
-  let parrocoFirma = formatData(getPárrocoActual());
-  parrocoFirma = parrocoFirma ? cleanTitle(parrocoFirma) : '';
+  const bautizado = `${clean(raw.nombres || raw.firstName)} ${clean(raw.apellidos || raw.lastName)}`.trim();
+  const fechaBautismo = dateText(raw.fechaSacramento || raw.fecbau || data.celebration_date);
+  const lugarBautismo = clean(raw.lugarBautismo || raw.lugbau || raw.place || data.lugar_bautismo);
+  const fechaNacimiento = dateText(raw.fechaNacimiento || raw.fecnac || data.fecha_nacimiento);
+  const lugarNacimiento = clean(raw.lugarNacimiento || raw.lugarn || data.lugar_nacimiento);
+  const sexo = clean(raw.sexo || raw.sex || data.sexo);
+  const identificacion = clean(raw.nuip || raw.identification || raw.serialRegistro || data.nuip);
+  const padre = clean(raw.nombrePadre || raw.padre || data.nombre_padre);
+  const madre = clean(raw.nombreMadre || raw.madre || data.nombre_madre);
+  const tipoUnion = clean(raw.tipoUnionPadres || raw.tipohijo || data.tipo_union_padres);
+  const abuelosPaternos = clean(raw.abuelosPaternos || raw.abuepat || data.abuelos_paternos);
+  const abuelosMaternos = clean(raw.abuelosMaternos || raw.abuemat || data.abuelos_maternos);
+  const padrinos = clean(raw.padrinos || data.padrinos);
 
-  let ministroRaw = formatData(raw.ministro || data.ministro);
-  let ministro = ministroRaw;
-  if (ministro) ministro = `PBRO. ${cleanTitle(ministro)}`;
+  const cleanTitle = (name) => clean(name).replace(/^(PBRO\.?|PADRE|FRAY|MONS\.?|SACERDOTE)\s+/i, '').trim();
+  const parishId = raw.parishId || raw.parish_id || header.entity_id || header.id || data.parish_id;
+  const priests = parishId && getParrocos ? getParrocos(parishId) || [] : [];
+  const activePriest = priests.find((priest) => String(priest.estado) === '1' || String(priest.estado).toUpperCase() === 'ACTIVO');
+  const signatureName = cleanTitle(activePriest ? `${activePriest.nombre} ${activePriest.apellido || ''}` : header.parroco || '');
 
-  // El "DOY FE" pertenece al asiento histórico: nunca se reconstruye desde
-  // el ministro ni desde el párroco que expide hoy la certificación.
-  const daFeRaw = formatData(raw.daFe || raw.dafe || raw.da_fe || data.daFe || data.da_fe);
-  const daFe = daFeRaw ? `PBRO. ${cleanTitle(daFeRaw)}` : '';
+  const ministerRaw = clean(raw.ministro || data.ministro);
+  const minister = ministerRaw ? `PBRO. ${cleanTitle(ministerRaw)}` : '';
+  const faithRaw = clean(raw.daFe || raw.dafe || raw.da_fe || data.daFe || data.da_fe);
+  const faith = faithRaw ? `PBRO. ${cleanTitle(faithRaw)}` : '';
 
-  // 🚀 INTELIGENCIA DE NOTAS: Si la nota viene formateada por el Modal, se respeta tal cual.
-  const noteTextRaw = data.notaMarginal || data.nota_marginal || raw.notaMarginal || raw.nota_marginal || '';
-  let finalNote = formatData(noteTextRaw);
-  
-  // Si NO viene del modal, le aplicamos la limpieza para quitar los textos basura del Excel antiguo
+  const noteSource = data.notaMarginal || data.nota_marginal || raw.notaMarginal || raw.nota_marginal || '';
+  let note = clean(noteSource);
   if (!data.fromModal) {
-      finalNote = finalNote.replace(/LA INFORMACI[OÓ]N SUMINISTRADA ES FIEL.*/ig, '').trim();
-      finalNote = finalNote.replace(/ESTA INFORMACI[OÓ]N SUMINISTRADA ES FIEL.*/ig, '').trim();
-      finalNote = finalNote.replace(/SE EXPIDE EN.*/ig, '').trim();
-      finalNote = finalNote.replace(/ES COPIA FIEL.*/ig, '').trim();
-      finalNote = finalNote.replace(/\.+$/, '').trim();
+    note = note
+      .replace(/LA INFORMACI[OÓ]N SUMINISTRADA ES FIEL.*/ig, '')
+      .replace(/ESTA INFORMACI[OÓ]N SUMINISTRADA ES FIEL.*/ig, '')
+      .replace(/SE EXPIDE EN.*/ig, '')
+      .replace(/ES COPIA FIEL.*/ig, '')
+      .replace(/\.+$/, '')
+      .trim();
   }
-  
-  if (!finalNote || finalNote === '---' || finalNote === 'NULL') {
-      finalNote = "SIN NOTAS MARGINALES ADICIONALES HASTA LA FECHA.";
-  }
+  if (!note) note = 'SIN NOTAS MARGINALES ADICIONALES HASTA LA FECHA.';
 
-  const getFechaExpedicion = () => {
+  const issueDate = (() => {
     try {
       return convertDateToSpanishText(getLocalDateISO()).replace(/^EL\s+/i, '').toUpperCase();
     } catch {
       return getLocalDateISO();
     }
-  };
+  })();
 
-  const telefono = formatData(header.telefono || '');
-  const email = header.email ? header.email.toLowerCase().trim() : '';
-  const recordStatus = String(data.status || raw.status || raw.estado || '').trim().toLowerCase();
-  const isAnnulled = ['anulada', 'annulled'].includes(recordStatus) || raw.isAnnulled === true || raw.anulado === true;
-  const isReversed = ['reversed', 'revertida'].includes(recordStatus);
-  const isReplaced = ['replaced', 'deleted'].includes(recordStatus);
-  const isNonCurrent = isAnnulled || isReversed || isReplaced;
-
-  const LinedRow = ({ label, value }) => (
-      <div style={{ display: 'flex', borderBottom: '1.5px solid #000', minHeight: '30px', boxSizing: 'border-box' }}>
-          <div style={{ padding: '4px 10px', fontWeight: 'bold', fontSize: '11px', whiteSpace: 'nowrap', borderRight: '1.5px solid #000', width: '180px', display: 'flex', alignItems: 'center', backgroundColor: '#fbfbfb' }}>
-              {label}
-          </div>
-          <div style={{ padding: '4px 10px', fontFamily: '"Courier New", Courier, monospace', fontSize: '13px', fontWeight: 'bold', textTransform: 'uppercase', flex: 1, display: 'flex', alignItems: 'center' }}>
-              {value}
-          </div>
-      </div>
-  );
+  const status = String(data.status || raw.status || raw.estado || '').trim().toLowerCase();
+  const isAnnulled = ['anulada', 'annulled'].includes(status) || raw.isAnnulled === true || raw.anulado === true;
+  const isReversed = ['reversed', 'revertida'].includes(status);
+  const isReplaced = ['replaced', 'deleted'].includes(status);
+  const inactiveLabel = isAnnulled ? 'ANULADA' : isReversed ? 'REVERTIDA' : isReplaced ? 'NO VIGENTE' : '';
 
   return (
-    <div ref={ref} style={{
-        width: '8.5in', height: '11in', padding: '0.6in 0.8in', color: '#000', backgroundColor: 'white', 
-        boxSizing: 'border-box', margin: '0 auto', display: 'flex', flexDirection: 'column', position: 'relative',
-        overflow: 'hidden'
-    }}>
-        <style dangerouslySetInnerHTML={{__html: `
-            @media print {
-                @page { size: letter portrait; margin: 0; }
-                body { margin: 0; background: white; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-            }
-        `}} />
-
-        <div style={{ textAlign: 'center', marginBottom: '20px', fontFamily: 'Arial, sans-serif', color: '#000' }}>
-            <div style={{ fontSize: '15px', fontWeight: 'bold', textTransform: 'uppercase' }}>{diocesis}</div>
-            <div style={{ fontSize: '15px', fontWeight: 'bold', textTransform: 'uppercase', marginTop: '3px' }}>{parroquia}</div>
-            <div style={{ fontSize: '15px', fontWeight: 'bold', textTransform: 'uppercase', marginTop: '3px' }}>{ubicacionFinal}</div>
+    <DocumentFrame refProp={ref}>
+      {inactiveLabel ? (
+        <div style={{ position: 'absolute', inset: 0, zIndex: 10, pointerEvents: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ transform: 'rotate(-34deg)', fontSize: 68, fontWeight: 900, color: 'rgba(153,27,27,.09)', border: '8px solid rgba(153,27,27,.09)', padding: '20px 34px', borderRadius: 18 }}>
+            {inactiveLabel}
+          </div>
         </div>
+      ) : null}
 
-        {isNonCurrent && (
-            <div style={{ border: '2px solid #991b1b', padding: '9px 12px', marginBottom: '14px', textAlign: 'center', fontFamily: 'Arial, sans-serif', fontSize: '12px', fontWeight: '900', color: '#991b1b', letterSpacing: '0.8px' }}>
-                {isAnnulled
-                  ? 'PARTIDA ANULADA — CONSERVADA ÚNICAMENTE PARA TRAZABILIDAD DEL ARCHIVO'
-                  : isReversed
-                    ? 'PARTIDA REVERTIDA — SIN EFECTO REGISTRAL VIGENTE'
-                    : 'PARTIDA REEMPLAZADA / NO VIGENTE — CONSERVADA ÚNICAMENTE PARA TRAZABILIDAD'}
-            </div>
-        )}
+      <EcclesialHeader
+        diocese={diocesis}
+        parish={parroquia}
+        location={location}
+        eyebrow="ARCHIVO SACRAMENTAL"
+        title="Partida de Bautismo"
+        subtitle="Certificación eclesiástica · Iglesia Católica"
+      />
 
-        <div style={{ fontFamily: 'Arial, sans-serif', fontSize: '13px', textAlign: 'justify', marginBottom: '12px', lineHeight: '1.6' }}>
-            El suscrito Párroco <strong>CERTIFICA</strong> que en el archivo parroquial reposa un acta que a la letra dice:
+      {inactiveLabel ? (
+        <div style={{ margin: '0 10px 10px', border: `1px solid ${p.danger}`, borderRadius: 8, padding: '7px 10px', textAlign: 'center', fontSize: 7.2, fontWeight: 900, color: p.danger, letterSpacing: '0.08em' }}>
+          PARTIDA {inactiveLabel} · CONSERVADA ÚNICAMENTE PARA TRAZABILIDAD DEL ARCHIVO
         </div>
+      ) : null}
 
-        <div style={{ border: '1.5px solid black', borderRadius: '4px', width: '100%', overflow: 'hidden' }}>
-            <div style={{ display: 'flex', borderBottom: '1.5px solid black', backgroundColor: '#f4f4f5' }}>
-                <div style={{ flex: 1, padding: '6px 12px', borderRight: '1.5px solid black', display: 'flex', gap: '8px', alignItems: 'center' }}>
-                    <span style={{ fontWeight: 'bold', fontSize: '11px', fontFamily: 'Arial, sans-serif' }}>LIBRO:</span>
-                    <span style={{ fontFamily: '"Courier New", Courier, monospace', fontSize: '14px', fontWeight: 'bold' }}>{libro}</span>
-                </div>
-                <div style={{ flex: 1, padding: '6px 12px', borderRight: '1.5px solid black', display: 'flex', gap: '8px', alignItems: 'center' }}>
-                    <span style={{ fontWeight: 'bold', fontSize: '11px', fontFamily: 'Arial, sans-serif' }}>FOLIO:</span>
-                    <span style={{ fontFamily: '"Courier New", Courier, monospace', fontSize: '14px', fontWeight: 'bold' }}>{folio}</span>
-                </div>
-                <div style={{ flex: 1, padding: '6px 12px', display: 'flex', gap: '8px', alignItems: 'center' }}>
-                    <span style={{ fontWeight: 'bold', fontSize: '11px', fontFamily: 'Arial, sans-serif' }}>NÚMERO:</span>
-                    <span style={{ fontFamily: '"Courier New", Courier, monospace', fontSize: '14px', fontWeight: 'bold' }}>{acta}</span>
-                </div>
-            </div>
+      <div style={{ margin: '0 10px 11px' }}>
+        <RegistryBand
+          items={[
+            { label: 'Tipo de libro', value: tipoLibro, mono: false },
+            { label: 'Libro', value: libro },
+            { label: 'Folio', value: folio },
+            { label: 'Número', value: numero, highlight: true }
+          ]}
+        />
+      </div>
 
-            <LinedRow label="BAUTIZADO(A):" value={nombresYApellidos} />
-            <LinedRow label="FECHA DE BAUTISMO:" value={fechaBautismo} />
-            <LinedRow label="FECHA DE NACIMIENTO:" value={fechaNacimiento} />
-            <LinedRow label="LUGAR DE NACIMIENTO:" value={lugarNacimiento} />
-            <LinedRow label="PADRE:" value={padre} />
-            <LinedRow label="MADRE:" value={madre} />
-            <LinedRow label="TIPO DE UNIÓN:" value={tipoUnion} />
-            <LinedRow label="ABUELOS PATERNOS:" value={abuelosPaternos} />
-            <LinedRow label="ABUELOS MATERNOS:" value={abuelosMaternos} />
-            <LinedRow label="PADRINOS:" value={padrinos} />
-            <LinedRow label="MINISTRO:" value={ministro} />
-            <LinedRow label="DOY FE:" value={daFe} />
+      <div style={{ margin: '0 12px 10px', fontFamily: 'Georgia, serif', fontSize: 9.3, lineHeight: 1.5, textAlign: 'justify', color: p.text }}>
+        El suscrito Párroco <strong style={{ color: p.ink }}>CERTIFICA</strong> que en el archivo parroquial reposa el asiento bautismal identificado arriba, correspondiente a:
+      </div>
 
-            <div style={{ padding: '8px 12px', minHeight: '60px', backgroundColor: '#fff' }}>
-                <span style={{ fontWeight: 'bold', fontSize: '11px', fontFamily: 'Arial, sans-serif', display: 'block', marginBottom: '6px' }}>ANOTACIONES MARGINALES:</span>
-                <span style={{ fontFamily: '"Courier New", Courier, monospace', fontSize: '13px', fontWeight: 'bold', whiteSpace: 'pre-wrap', lineHeight: '1.4' }}>{finalNote}</span>
-            </div>
+      <DataCard tone="wash" style={{ margin: '0 10px 11px', textAlign: 'center', padding: '10px 12px' }}>
+        <div style={{ fontSize: 6.7, fontWeight: 900, color: p.faint, letterSpacing: '0.16em' }}>BAUTIZADO(A)</div>
+        <div style={{ marginTop: 4, fontFamily: 'Georgia, serif', fontSize: 16, fontWeight: 800, color: p.navy }}>
+          {bautizado || '—'}
         </div>
+      </DataCard>
 
-        <div style={{ fontFamily: 'Arial, sans-serif', fontSize: '13px', textAlign: 'justify', lineHeight: '1.6', marginTop: '15px' }}>
-            Es copia fiel del original. Se expide en <strong>{ciudad.toUpperCase()}</strong> el día <strong>{getFechaExpedicion()}</strong>.
+      <div style={{ margin: '0 10px 10px' }}>
+        <SectionLabel>Identidad y nacimiento</SectionLabel>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+          <DataCard>
+            <DetailRow label="Nacimiento" value={fechaNacimiento} />
+            <DetailRow label="Lugar" value={lugarNacimiento} />
+            <DetailRow label="Sexo" value={sexo} last />
+          </DataCard>
+          <DataCard>
+            <DetailRow label="Identificación" value={identificacion} />
+            <DetailRow label="Padre" value={padre} />
+            <DetailRow label="Madre" value={madre} last />
+          </DataCard>
         </div>
+      </div>
 
-        <div style={{ marginTop: 'auto', display: 'flex', justifyContent: 'center', alignItems: 'flex-end', fontFamily: 'Arial, sans-serif', paddingBottom: '10px', paddingTop: '80px' }}>
-            <div style={{ textAlign: 'center', width: '320px' }}>
-                <div style={{ borderTop: '1.5px solid black', width: '100%', marginBottom: '8px' }}></div>
-                <div style={{ fontWeight: 'bold', fontSize: '14px', textTransform: 'uppercase' }}>{parrocoFirma ? `PBRO. ${parrocoFirma}` : ''}</div>
-                <div style={{ fontSize: '12px', marginTop: '3px' }}>PÁRROCO</div>
-            </div>
+      <div style={{ margin: '0 10px 10px' }}>
+        <SectionLabel accent="gold">Celebración bautismal</SectionLabel>
+        <DataCard tone="ivory">
+          <div style={{ display: 'grid', gridTemplateColumns: '1.15fr 1.2fr 1fr', gap: 12 }}>
+            <DataField label="Fecha del Bautismo" value={fechaBautismo} prominent />
+            <DataField label="Lugar del Bautismo" value={lugarBautismo} />
+            <DataField label="Ministro" value={minister} />
+          </div>
+          <div style={{ marginTop: 9, display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 12 }}>
+            <DataField label="Padrinos" value={padrinos} />
+            <DataField label="Tipo de unión" value={tipoUnion} />
+            <DataField label="Doy fe" value={faith} />
+          </div>
+        </DataCard>
+      </div>
+
+      <div style={{ margin: '0 10px 10px' }}>
+        <SectionLabel>Ascendencia</SectionLabel>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+          <DataCard><DataField label="Abuelos paternos" value={abuelosPaternos} /></DataCard>
+          <DataCard><DataField label="Abuelos maternos" value={abuelosMaternos} /></DataCard>
         </div>
+      </div>
 
-        <div style={{ paddingTop: '12px', textAlign: 'center', fontSize: '10px', color: '#555', borderTop: '1.5px solid #eee', fontFamily: 'Arial, sans-serif' }}>
-            {header.direccion && header.direccion !== '---' && <span>{header.direccion.toUpperCase()}</span>}
-            {telefono && telefono !== '---' && <span> • TEL: {telefono}</span>}
-            {email && <span> • {email}</span>}
-        </div>
+      <div style={{ margin: '0 10px 10px' }}>
+        <NotesBox>{note}</NotesBox>
+      </div>
 
-    </div>
+      <div style={{ margin: '4px 12px 0', fontFamily: 'Georgia, serif', fontSize: 9.1, lineHeight: 1.5, textAlign: 'justify', color: p.text }}>
+        Es copia fiel del registro que obra en el archivo parroquial. Se expide en <strong>{ciudad || '[CIUDAD NO CONFIGURADA]'}</strong> el día <strong>{issueDate}</strong>.
+      </div>
+
+      <div style={{ marginTop: 46, display: 'flex', justifyContent: 'center' }}>
+        <SignatureLine
+          name={signatureName ? `PBRO. ${signatureName}` : ''}
+          role="PÁRROCO"
+          width={300}
+          note="Firma y sello parroquial"
+        />
+      </div>
+
+      <div style={{ margin: 'auto 10px 0' }}>
+        <DocumentFooter
+          address={clean(header.direccion)}
+          phone={clean(header.telefono)}
+          email={header.email ? String(header.email).trim().toLowerCase() : ''}
+          trace="SACRAMENTUM · CERTIFICACIÓN DEL ARCHIVO BAUTISMAL"
+        />
+      </div>
+    </DocumentFrame>
   );
 });
 

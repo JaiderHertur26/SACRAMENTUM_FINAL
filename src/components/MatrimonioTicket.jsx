@@ -1,8 +1,23 @@
 import React from 'react';
-import { Heart, Scissors } from 'lucide-react';
+import { Heart } from 'lucide-react';
+import {
+  CutLine,
+  DataCard,
+  DataField,
+  DocumentFooter,
+  EcclesialHeader,
+  EcclesialPrintStyles,
+  RegistryBand,
+  SectionLabel,
+  SignatureLine,
+  TicketFrame,
+  DOCUMENT_PALETTE
+} from '@/components/sacramental/EcclesialDocumentPrimitives';
 
 const MatrimonioTicket = ({ data, parishInfo }) => {
   if (!data) return null;
+
+  const p = DOCUMENT_PALETTE;
   const raw = data?.raw_data || data || {};
   const inst = parishInfo || {};
 
@@ -24,8 +39,8 @@ const MatrimonioTicket = ({ data, parishInfo }) => {
     const str = String(value);
     const match = str.match(/^(\d{4})-(\d{2})-(\d{2})(?:T(\d{2}):(\d{2}))?/);
     if (!match) return clean(value);
-    const [, y, m, d, hh, mm] = match;
-    const date = new Date(Number(y), Number(m) - 1, Number(d));
+    const [, y, m, day, hh, mm] = match;
+    const date = new Date(Number(y), Number(m) - 1, Number(day));
     const dateText = date.toLocaleDateString('es-CO', { day: '2-digit', month: 'long', year: 'numeric' }).toUpperCase();
     return withTime && hh && mm ? `${dateText} · ${hh}:${mm}` : dateText;
   };
@@ -34,8 +49,7 @@ const MatrimonioTicket = ({ data, parishInfo }) => {
   const parroquia = clean(inst.nombre || data.parishName || data.parish_name || raw.lugarCeremonia);
   const ciudad = clean(inst.ciudad || data.city);
   const region = clean(inst.region);
-  const parts = [ciudad, region].filter(Boolean);
-  const ubicacion = parts.length ? `${parts.join(', ')} - COLOMBIA` : '';
+  const location = [ciudad, region].filter(Boolean).join(', ') + ([ciudad, region].some(Boolean) ? ' · COLOMBIA' : '');
 
   const registro = clean(data.numeroRegistro || data.numero_registro || raw.numeroRegistro || raw.numero_registro || data.numero);
   const bookType = clean(data.bookType || data.book_type || data.tipoLibro || raw.bookType || raw.book_type || raw.tipoLibro || 'ORDINARIO');
@@ -48,85 +62,151 @@ const MatrimonioTicket = ({ data, parishInfo }) => {
   const witness2 = clean(raw.testigo2Nombres);
 
   const baptismRef = (prefix) => {
-    const p = clean(raw[`${prefix}BautismoLugar`]);
+    const placeValue = clean(raw[`${prefix}BautismoLugar`]);
     const b = clean(raw[`${prefix}BautismoLibro`]);
     const f = clean(raw[`${prefix}BautismoFolio`]);
     const n = clean(raw[`${prefix}BautismoNumero`]);
-    return { place: p, ref: [b && `L ${b}`, f && `F ${f}`, n && `N ${n}`].filter(Boolean).join(' · ') };
+    return {
+      place: placeValue,
+      ref: [b && `L ${b}`, f && `F ${f}`, n && `N ${n}`].filter(Boolean).join(' · ')
+    };
   };
+
   const groomBaptism = baptismRef('novio');
   const brideBaptism = baptismRef('novia');
 
-  const Field = ({ label, value, compact = false }) => (
-    <div style={{ minWidth: 0 }}>
-      <div style={{ fontSize: compact ? 7.1 : 7.6, letterSpacing: '0.11em', fontWeight: 800, color: '#6B7280' }}>{label}</div>
-      <div style={{ fontSize: compact ? 8.8 : 9.4, fontWeight: 700, color: '#111827', marginTop: 2, lineHeight: 1.15 }}>{value || '—'}</div>
+  const HeaderRight = ({ label }) => (
+    <div style={{ width: 150, flex: '0 0 auto', textAlign: 'right' }}>
+      <div style={{ fontSize: 6.5, fontWeight: 900, color: p.gold, letterSpacing: '0.12em' }}>{label}</div>
+      <div style={{ marginTop: 3, fontSize: 12.5, fontWeight: 900, color: p.ink, fontFamily: '"Courier New", monospace' }}>
+        {registro || 'PENDIENTE'}
+      </div>
+      <div style={{ marginTop: 1, fontSize: 6.2, color: p.faint }}>N.º DE REGISTRO</div>
     </div>
   );
 
-  const Header = ({ copyLabel }) => (
-    <>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-        <div style={{ width: 38, height: 38, borderRadius: '50%', border: '1.5px solid #C9A227', position: 'relative', flex: '0 0 auto' }}>
-          <span style={{ position: 'absolute', left: '50%', top: 8, width: 2, height: 22, background: '#1F3F60', transform: 'translateX(-50%)', borderRadius: 2 }} />
-          <span style={{ position: 'absolute', left: 8, top: '50%', width: 22, height: 2, background: '#1F3F60', transform: 'translateY(-50%)', borderRadius: 2 }} />
+  const CoupleCard = () => (
+    <DataCard tone="wash" style={{ marginTop: 8, padding: '8px 10px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr auto 1fr', alignItems: 'center', gap: 12 }}>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ fontSize: 6.4, color: p.faint, fontWeight: 900, letterSpacing: '0.12em' }}>NOVIO</div>
+          <div style={{ marginTop: 3, fontFamily: 'Georgia, serif', fontSize: 11.3, fontWeight: 800, color: p.navy }}>{groom || '—'}</div>
         </div>
-        <div style={{ flex: 1 }}>
-          <div style={{ fontSize: 10.5, fontWeight: 900, color: '#1F3F60', letterSpacing: '0.06em' }}>{diocesis}</div>
-          <div style={{ fontSize: 11.5, fontWeight: 900, color: '#111827', marginTop: 1 }}>{parroquia}</div>
-          <div style={{ fontSize: 8, color: '#6B7280', marginTop: 1 }}>{ubicacion}</div>
-        </div>
-        <div style={{ textAlign: 'right' }}>
-          <div style={{ fontSize: 7.1, fontWeight: 900, color: '#9A7B16', letterSpacing: '0.13em' }}>{copyLabel}</div>
-          <div style={{ fontSize: 13, fontWeight: 900, color: '#111827', fontFamily: '"Courier New", monospace', marginTop: 2 }}>{registro || 'PENDIENTE'}</div>
+        <Heart size={15} color={p.gold} fill="none" />
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ fontSize: 6.4, color: p.faint, fontWeight: 900, letterSpacing: '0.12em' }}>NOVIA</div>
+          <div style={{ marginTop: 3, fontFamily: 'Georgia, serif', fontSize: 11.3, fontWeight: 800, color: p.burgundy }}>{bride || '—'}</div>
         </div>
       </div>
-      <div style={{ height: 3, background: 'linear-gradient(90deg,#1F3F60 0%,#1F3F60 68%,#C9A227 68%,#C9A227 100%)', marginTop: 9, marginBottom: 9 }} />
-    </>
+    </DataCard>
   );
 
   const TicketHalf = ({ family = false }) => (
-    <div style={{ height: '4.78in', border: '1px solid #D7DCE2', borderRadius: 12, padding: '0.18in 0.22in', boxSizing: 'border-box', position: 'relative', overflow: 'hidden', background: '#fff' }}>
-      <Header copyLabel={family ? 'COPIA PARA LOS CONTRAYENTES' : 'ARCHIVO PARROQUIAL'} />
-      <div style={{ textAlign: 'center', marginBottom: 9 }}>
-        <div style={{ fontFamily: 'Georgia, serif', fontSize: 16, fontWeight: 800, color: '#1F2937' }}>{family ? 'Constancia de Radicación' : 'Boleta de Expediente Matrimonial'}</div>
-        <div style={{ fontSize: 7.5, letterSpacing: '0.16em', color: '#9A7B16', fontWeight: 900, marginTop: 3 }}>{bookType} · EXPEDIENTE MATRIMONIAL</div>
-      </div>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr auto 1fr', alignItems: 'center', border: '1px solid #E5E7EB', borderRadius: 10, padding: '9px 12px', background: family ? '#FCFBF6' : '#F8FAFC', marginBottom: 9 }}>
-        <div style={{ textAlign: 'center' }}><div style={{ fontSize: 7.2, color: '#6B7280', fontWeight: 800, letterSpacing: '0.12em' }}>NOVIO</div><div style={{ fontSize: 11.5, fontWeight: 900, color: '#1F3F60', marginTop: 3 }}>{groom || '—'}</div></div>
-        <Heart size={15} style={{ margin: '0 12px', color: '#C9A227' }} />
-        <div style={{ textAlign: 'center' }}><div style={{ fontSize: 7.2, color: '#6B7280', fontWeight: 800, letterSpacing: '0.12em' }}>NOVIA</div><div style={{ fontSize: 11.5, fontWeight: 900, color: '#7A2948', marginTop: 3 }}>{bride || '—'}</div></div>
-      </div>
+    <TicketFrame tone={family ? 'ivory' : 'plain'}>
+      <EcclesialHeader
+        compact
+        diocese={diocesis}
+        parish={parroquia}
+        location={location}
+        eyebrow="PASTORAL MATRIMONIAL"
+        title={family ? 'Constancia de Radicación Matrimonial' : 'Boleta de Expediente Matrimonial'}
+        subtitle="Expediente previo · no constituye partida"
+        right={<HeaderRight label={family ? 'COPIA PARA LOS CONTRAYENTES' : 'ARCHIVO PARROQUIAL'} />}
+      />
+
+      <RegistryBand
+        compact
+        items={[
+          { label: 'Tipo de libro previsto', value: bookType, mono: false },
+          { label: 'Fecha y hora prevista', value: formatDate(plannedDate, true) || 'POR DEFINIR', mono: false, highlight: true },
+          { label: 'Lugar previsto', value: place || '—', mono: false }
+        ]}
+      />
+
+      <CoupleCard />
+
       {!family ? (
         <>
-          <div style={{ display: 'grid', gridTemplateColumns: '1.05fr 1fr 1fr', gap: 8, marginBottom: 8 }}>
-            <Field label="FECHA Y HORA PREVISTA" value={formatDate(plannedDate, true)} />
-            <Field label="LUGAR DE CEREMONIA" value={place} />
-            <Field label="SACERDOTE / DIÁCONO" value={minister} />
+          <div style={{ marginTop: 8 }}>
+            <SectionLabel>Celebración y expediente</SectionLabel>
+            <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr 1fr', gap: '7px 11px' }}>
+              <DataField label="Sacerdote / Diácono" value={minister} />
+              <DataField label="Testigo 1" value={witness1} />
+              <DataField label="Testigo 2" value={witness2} />
+            </div>
           </div>
-          <div style={{ borderTop: '1px solid #E5E7EB', paddingTop: 7, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-            <div><div style={{ fontSize: 7.5, fontWeight: 900, color: '#1F3F60', letterSpacing: '0.13em', marginBottom: 5 }}>ANTECEDENTE BAUTISMAL · NOVIO</div><Field compact label="PARROQUIA" value={groomBaptism.place} /><div style={{ marginTop: 4 }}><Field compact label="REFERENCIA" value={groomBaptism.ref} /></div></div>
-            <div><div style={{ fontSize: 7.5, fontWeight: 900, color: '#7A2948', letterSpacing: '0.13em', marginBottom: 5 }}>ANTECEDENTE BAUTISMAL · NOVIA</div><Field compact label="PARROQUIA" value={brideBaptism.place} /><div style={{ marginTop: 4 }}><Field compact label="REFERENCIA" value={brideBaptism.ref} /></div></div>
+
+          <div style={{ marginTop: 8 }}>
+            <SectionLabel accent="gold">Antecedentes bautismales</SectionLabel>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+              <DataCard>
+                <div style={{ fontSize: 6.6, fontWeight: 900, color: p.navy, letterSpacing: '0.11em' }}>NOVIO</div>
+                <div style={{ marginTop: 5, display: 'grid', gap: 5 }}>
+                  <DataField label="Parroquia" value={groomBaptism.place} />
+                  <DataField label="Referencia" value={groomBaptism.ref} mono />
+                </div>
+              </DataCard>
+              <DataCard>
+                <div style={{ fontSize: 6.6, fontWeight: 900, color: p.burgundy, letterSpacing: '0.11em' }}>NOVIA</div>
+                <div style={{ marginTop: 5, display: 'grid', gap: 5 }}>
+                  <DataField label="Parroquia" value={brideBaptism.place} />
+                  <DataField label="Referencia" value={brideBaptism.ref} mono />
+                </div>
+              </DataCard>
+            </div>
           </div>
-          <div style={{ marginTop: 8, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}><Field compact label="TESTIGO 1" value={witness1} /><Field compact label="TESTIGO 2" value={witness2} /></div>
-          <div style={{ position: 'absolute', left: 18, right: 18, bottom: 14, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}><div style={{ fontSize: 7.2, color: '#6B7280', maxWidth: '63%', lineHeight: 1.25 }}>USO INTERNO. El Nº de Registro queda reservado al crear el expediente. Libro, Folio y Número se asignan únicamente al asentar el acta definitiva.</div><div style={{ width: 150, textAlign: 'center' }}><div style={{ borderTop: '1px solid #111827', paddingTop: 4, fontSize: 7.5, fontWeight: 800 }}>RESPONSABLE DEL EXPEDIENTE</div></div></div>
+
+          <div style={{ marginTop: 'auto', display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: 18 }}>
+            <div style={{ maxWidth: 390, fontSize: 6.7, lineHeight: 1.35, color: p.muted }}>
+              Uso interno. Libro, Folio y Número se asignan únicamente cuando el matrimonio es celebrado y asentado definitivamente.
+            </div>
+            <SignatureLine role="RESPONSABLE DEL EXPEDIENTE" width={210} />
+          </div>
         </>
       ) : (
         <>
-          <div style={{ padding: '9px 12px', border: '1px solid #E8DFC1', borderRadius: 10, background: '#FFFCF0', textAlign: 'center', marginBottom: 10 }}><div style={{ fontSize: 8.2, fontWeight: 900, color: '#8A6D12', letterSpacing: '0.08em' }}>EXPEDIENTE RADICADO · REGISTRO Nº {registro}</div><div style={{ fontSize: 8, color: '#6B7280', marginTop: 4 }}>Fecha de trámite: {formatDate(raw.fechaExpediente || data.fechaExpediente || localDateISO())}</div></div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}><Field label="FECHA Y HORA PREVISTA" value={formatDate(plannedDate, true)} /><Field label="LUGAR" value={place} /><Field label="SACERDOTE / DIÁCONO ASISTENTE" value={minister} /><Field label="TIPO DE LIBRO PREVISTO" value={bookType} /></div>
-          <div style={{ marginTop: 13, padding: '10px 12px', borderLeft: '3px solid #1F3F60', background: '#F8FAFC' }}><div style={{ fontSize: 8, fontWeight: 900, color: '#1F3F60', marginBottom: 3 }}>IMPORTANTE</div><div style={{ fontSize: 8, color: '#4B5563', lineHeight: 1.35 }}>Esta constancia acredita únicamente la radicación del expediente matrimonial. No certifica la celebración del sacramento y no sustituye una Partida de Matrimonio.</div></div>
-          <div style={{ position: 'absolute', left: 18, right: 18, bottom: 14, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}><div style={{ fontSize: 7.2, color: '#6B7280' }}>SACRAMENTUM · REGISTRO ECLESIAL AUDITABLE</div><div style={{ width: 150, textAlign: 'center' }}><div style={{ borderTop: '1px solid #111827', paddingTop: 4, fontSize: 7.5, fontWeight: 800 }}>SELLO / FIRMA PARROQUIAL</div></div></div>
+          <div style={{ marginTop: 9, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '9px 13px' }}>
+            <DataField label="Fecha y hora prevista" value={formatDate(plannedDate, true)} />
+            <DataField label="Lugar de ceremonia" value={place} />
+            <DataField label="Sacerdote / Diácono asistente" value={minister} />
+            <DataField label="Fecha de radicación" value={formatDate(raw.fechaExpediente || data.fechaExpediente || localDateISO())} />
+          </div>
+
+          <div style={{ marginTop: 10, padding: '8px 10px', border: `1px solid ${p.goldSoft}`, borderLeft: `3px solid ${p.gold}`, borderRadius: 8, background: '#FFFCF1' }}>
+            <div style={{ fontSize: 6.8, fontWeight: 900, color: p.warning, letterSpacing: '0.11em' }}>IMPORTANTE</div>
+            <div style={{ marginTop: 3, fontSize: 7.4, lineHeight: 1.35, color: p.text }}>
+              Esta constancia acredita únicamente la radicación del expediente matrimonial. No certifica la celebración del sacramento y no sustituye una Partida de Matrimonio.
+            </div>
+          </div>
+
+          <div style={{ marginTop: 'auto', display: 'flex', justifyContent: 'flex-end' }}>
+            <SignatureLine role="FIRMA / SELLO PARROQUIAL" width={210} />
+          </div>
         </>
       )}
-    </div>
+
+      <div style={{ marginTop: 8 }}>
+        <DocumentFooter trace={family ? 'SACRAMENTUM · CONSTANCIA DE RADICACIÓN' : 'SACRAMENTUM · EXPEDIENTE MATRIMONIAL'} />
+      </div>
+    </TicketFrame>
   );
 
   return (
-    <div style={{ width: '8.5in', height: '11in', padding: '0.24in 0.3in', boxSizing: 'border-box', background: '#fff', color: '#111827', fontFamily: 'Arial, sans-serif', margin: '0 auto' }}>
-      <style dangerouslySetInnerHTML={{__html: `@media print { @page { size: letter portrait; margin: 0; } html, body { background: white !important; } body { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; } }`}} />
+    <div
+      style={{
+        width: '8.5in',
+        height: '11in',
+        padding: '0.24in 0.3in',
+        boxSizing: 'border-box',
+        background: '#fff',
+        color: p.ink,
+        fontFamily: 'Arial, sans-serif',
+        margin: '0 auto'
+      }}
+    >
+      <EcclesialPrintStyles />
       <TicketHalf />
-      <div style={{ height: '0.38in', display: 'flex', alignItems: 'center', position: 'relative' }}><div style={{ position: 'absolute', left: 0, right: 0, borderTop: '1px dashed #9CA3AF' }} /><div style={{ margin: '0 auto', background: '#fff', padding: '0 10px', color: '#9CA3AF', fontSize: 7, fontWeight: 800, letterSpacing: '0.14em', display: 'flex', alignItems: 'center', gap: 6 }}><Scissors size={10} /> CORTE AQUÍ <Scissors size={10} /></div></div>
+      <CutLine />
       <TicketHalf family />
     </div>
   );
