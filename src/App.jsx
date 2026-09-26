@@ -83,6 +83,7 @@ const MatrimonioPartidasPage = lazy(() => import('@/pages/parish/MatrimonioParti
 const MarriageDossierPage = lazy(() => import('@/pages/parish/MarriageDossierPage'));
 const ConfirmationNotificationPage = lazy(() => import('@/pages/parish/ConfirmationNotificationPage'));
 const SacramentalBooksPage = lazy(() => import('@/pages/parish/SacramentalBooksPage'));
+const ParishOperationalReportsPage = lazy(() => import('@/pages/parish/ParishOperationalReportsPage'));
 const FuneralRegistryPage = lazy(() => import('@/pages/parish/FuneralRegistryPage'));
 const FuneralPartidasPage = lazy(() => import('@/pages/parish/FuneralPartidasPage'));
 
@@ -181,6 +182,7 @@ const AppContent = () => {
                 <Route path="/parroquia/ajustes" element={<ProtectedRoute requiredRole={ROLE_TYPES.PARISH}><ParroquiaAjustesPage /></ProtectedRoute>} />
                 <Route path="/datos-auxiliares" element={<ProtectedRoute requiredRole={ROLE_TYPES.PARISH}><DatosAuxiliaresPage /></ProtectedRoute>} />
                 <Route path="/parroquia/libros" element={<ProtectedRoute requiredRole={ROLE_TYPES.PARISH}><SacramentalBooksPage /></ProtectedRoute>} />
+                <Route path="/parroquia/reportes-registrales" element={<ProtectedRoute requiredRole={ROLE_TYPES.PARISH}><ParishOperationalReportsPage /></ProtectedRoute>} />
                 <Route path="/parroquia/archivo-historico" element={<ProtectedRoute requiredRole={ROLE_TYPES.PARISH}><LegacyArchivePage /></ProtectedRoute>} />
 
                 {/* --- BAPTISM ROUTES --- */}

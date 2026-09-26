@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { ClipboardCheck, FileArchive, HeartHandshake, Loader2, RefreshCw, Save, ShieldCheck, UsersRound } from 'lucide-react';
+import { ClipboardCheck, Download, Eye, FileArchive, HeartHandshake, Loader2, RefreshCw, Save, ShieldCheck, UsersRound, X } from 'lucide-react';
 import DashboardLayout from '@/components/DashboardLayout';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
@@ -84,11 +84,14 @@ export default function MarriageDossierPage(){
   const [pendingId,setPendingId]=useState('');
   const [tab,setTab]=useState('general');
   const [busy,setBusy]=useState(false);
+  const [pdfBusy,setPdfBusy]=useState(false);
+  const [previewUrl,setPreviewUrl]=useState('');
   const [meta,setMeta]=useState({dossierNumber:'',dossierDate:'',plannedMarriageDate:'',ceremonyPlace:'',status:'draft'});
   const [answers,setAnswers]=useState(emptyAnswers);
 
   const refresh=async()=>{ if(!parishId)return; setBusy(true); try{ setSources(await loadMarriageDossierSources(parishId)); }catch(e){toast({title:'No se pudieron cargar los expedientes',description:e.message,variant:'destructive'});}finally{setBusy(false);} };
   useEffect(()=>{refresh();},[parishId]);
+  useEffect(()=>()=>{if(previewUrl) URL.revokeObjectURL(previewUrl);},[previewUrl]);
 
   const selected=useMemo(()=>sources.dossiers.find(d=>d.id===selectedId)||null,[sources,selectedId]);
   useEffect(()=>{
@@ -166,13 +169,40 @@ export default function MarriageDossierPage(){
     }catch(e){toast({title:'No se pudo guardar',description:e.message,variant:'destructive'});}finally{setBusy(false);}
   };
 
+  const pdfOptions=()=>({
+    dossier:meta,
+    answers,
+    pendingMarriage,
+    parishName:user?.parishName,
+    dioceseName:user?.dioceseName,
+  });
+
+  const downloadPdf=async()=>{
+    setPdfBusy(true);
+    try{
+      const {downloadMarriageDossierPdf}=await import('@/services/marriageDossierPdf');
+      downloadMarriageDossierPdf(pdfOptions());
+    }catch(e){toast({title:'No se pudo generar el expediente PDF',description:e.message,variant:'destructive'});}
+    finally{setPdfBusy(false);}
+  };
+
+  const previewPdf=async()=>{
+    setPdfBusy(true);
+    try{
+      const {createMarriageDossierPdfBlob}=await import('@/services/marriageDossierPdf');
+      const blob=createMarriageDossierPdfBlob(pdfOptions());
+      setPreviewUrl(URL.createObjectURL(blob));
+    }catch(e){toast({title:'No se pudo abrir la vista previa',description:e.message,variant:'destructive'});}
+    finally{setPdfBusy(false);}
+  };
+
   const tabs=[['general','General'],['novio','Entrevista novio'],['novia','Entrevista novia'],['testigos','Testigos'],['documentos','Documentos'],['acta','Acta']];
 
   return <DashboardLayout entityName={user?.parishName||'Parroquia'}>
     <div className="mx-auto max-w-7xl space-y-7 pb-24">
       <div className="flex flex-col justify-between gap-4 lg:flex-row lg:items-end">
         <div><p className="text-[9px] font-black uppercase tracking-[.22em] text-[#4B7BA7]">Matrimonio · investigación canónica</p><h1 className="font-serif text-4xl font-black text-slate-950">Expediente Matrimonial</h1><p className="mt-2 max-w-3xl text-sm text-slate-500">Versión digital superior del expediente antiguo: entrevistas reservadas, testigos, documentos, dispensas y acta, vinculados al matrimonio y preservando INSMATRI.</p></div>
-        <div className="flex gap-2"><Button variant="outline" onClick={refresh}><RefreshCw className="mr-2 h-4 w-4"/>Actualizar</Button><Button onClick={newDossier} className="bg-slate-950 text-white"><FileArchive className="mr-2 h-4 w-4"/>Nuevo expediente</Button></div>
+        <div className="flex flex-wrap gap-2"><Button variant="outline" onClick={refresh}><RefreshCw className="mr-2 h-4 w-4"/>Actualizar</Button><Button variant="outline" onClick={previewPdf} disabled={pdfBusy}><Eye className="mr-2 h-4 w-4"/>Vista previa PDF</Button><Button variant="outline" onClick={downloadPdf} disabled={pdfBusy}><Download className="mr-2 h-4 w-4"/>Descargar PDF</Button><Button onClick={newDossier} className="bg-slate-950 text-white"><FileArchive className="mr-2 h-4 w-4"/>Nuevo expediente</Button></div>
       </div>
 
       <div className="grid gap-5 xl:grid-cols-[320px_1fr]">
@@ -219,5 +249,13 @@ export default function MarriageDossierPage(){
         </section>
       </div>
     </div>
+
+    {previewUrl&&<div className="fixed inset-0 z-[120] flex flex-col bg-slate-950/85 backdrop-blur-sm" role="dialog" aria-modal="true">
+      <div className="flex items-center justify-between border-b border-white/10 bg-slate-950 px-5 py-3 text-white">
+        <div><p className="text-[9px] font-black uppercase tracking-widest text-[#D4AF37]">Expediente matrimonial oficial</p><p className="font-black">Vista previa del mismo PDF descargable</p></div>
+        <button type="button" onClick={()=>setPreviewUrl('')} aria-label="Cerrar vista previa" className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/15"><X className="h-5 w-5"/></button>
+      </div>
+      <div className="min-h-0 flex-1 bg-slate-800 p-3"><iframe title="Vista previa expediente matrimonial" src={previewUrl+'#toolbar=1&navpanes=0&view=FitH'} className="h-full w-full rounded-xl border-0 bg-white"/></div>
+    </div>}
   </DashboardLayout>;
 }

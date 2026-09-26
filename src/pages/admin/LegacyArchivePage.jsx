@@ -32,6 +32,8 @@ export default function LegacyArchivePage() {
   const [profileKey,setProfileKey] = useState('');
   const [search,setSearch] = useState('');
   const [selected,setSelected] = useState(null);
+  const [reportSearch,setReportSearch] = useState('');
+  const [selectedReport,setSelectedReport] = useState(null);
   const [tab,setTab] = useState('datos');
   const [loading,setLoading] = useState(true);
 
@@ -70,6 +72,16 @@ export default function LegacyArchivePage() {
     const q=search.trim().toLowerCase();
     return records.filter(r=>JSON.stringify(r).toLowerCase().includes(q));
   },[records,search]);
+
+  const visibleReports = useMemo(() => {
+    const q=reportSearch.trim().toLowerCase();
+    if (!q) return reports;
+    return reports.filter(item => JSON.stringify({
+      report_key:item.report_key,frx:item.frx_filename,frt:item.frt_filename,
+      category:item.category,title:item.title,status:item.audit_status,
+      current:item.current_equivalent,gap:item.gap,fields:item.legacy_fields,
+    }).toLowerCase().includes(q));
+  },[reports,reportSearch]);
 
   return <DashboardLayout entityName={user?.dioceseName || user?.parishName || 'SACRAMENTUM'}>
     <div className="mx-auto max-w-7xl space-y-7 pb-24">
@@ -143,6 +155,33 @@ export default function LegacyArchivePage() {
               )}
             </div>;
           })}
+        </div>
+      </div>}
+
+      {reports.length>0&&<div className="rounded-[2rem] border bg-white p-5 shadow-sm">
+        <div className="mb-4 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+          <div>
+            <div className="flex items-center gap-2"><Table2 className="h-5 w-5 text-[#4B7BA7]"/><h2 className="font-black">Catálogo técnico FRX / FRT</h2></div>
+            <p className="mt-1 text-xs text-slate-500">{reports.length} diseños históricos preservados · campos, textos y expresiones FoxPro auditados.</p>
+          </div>
+          <div className="relative min-w-[320px]"><Search className="absolute left-3 top-3 h-4 w-4 text-slate-400"/><input value={reportSearch} onChange={e=>setReportSearch(e.target.value)} placeholder="Buscar reporte, título, campo o brecha..." className="w-full rounded-xl border py-2.5 pl-9 pr-3 text-sm"/></div>
+        </div>
+        <div className="grid gap-5 xl:grid-cols-[1.15fr_.85fr]">
+          <div className="max-h-[430px] overflow-auto rounded-2xl border">
+            <table className="w-full text-xs">
+              <thead className="sticky top-0 bg-slate-50"><tr><th className="p-3 text-left">Archivo</th><th className="p-3 text-left">Categoría</th><th className="p-3 text-left">Estado auditado</th><th className="p-3 text-left">Prioridad</th></tr></thead>
+              <tbody>{visibleReports.map(item=><tr key={item.id} onClick={()=>setSelectedReport(item)} className={"cursor-pointer border-t hover:bg-blue-50/40 "+(selectedReport?.id===item.id?'bg-blue-50':'')}><td className="p-3"><p className="font-mono text-[10px] font-black">{item.frx_filename}</p><p className="mt-1 max-w-sm truncate text-[10px] text-slate-500">{item.title||item.report_key}</p></td><td className="p-3">{item.category||'—'}</td><td className="p-3">{item.audit_status||'—'}</td><td className="p-3">{item.priority||'—'}</td></tr>)}</tbody>
+            </table>
+          </div>
+          <div className="rounded-2xl border bg-slate-50/50 p-4">
+            {!selectedReport?<div className="flex min-h-52 flex-col items-center justify-center text-center text-slate-400"><Table2 className="mb-2 h-8 w-8"/><p className="font-black">Seleccione un diseño legacy</p><p className="mt-1 text-xs">Verá su estructura técnica preservada.</p></div>:<div className="space-y-4">
+              <div><p className="text-[9px] font-black uppercase tracking-widest text-[#4B7BA7]">{selectedReport.category||'Diseño legacy'}</p><h3 className="mt-1 font-black">{selectedReport.title||selectedReport.frx_filename}</h3><p className="mt-1 font-mono text-[10px] text-slate-500">{selectedReport.frx_filename} · {selectedReport.frt_filename||'sin FRT'}</p></div>
+              <div><p className="text-[9px] font-black uppercase tracking-widest text-slate-400">Equivalente actual</p><p className="mt-1 text-xs font-bold">{selectedReport.current_equivalent||'Sin equivalente documentado'}</p></div>
+              <div><p className="text-[9px] font-black uppercase tracking-widest text-slate-400">Brecha auditada</p><p className="mt-1 text-xs leading-relaxed text-slate-600">{selectedReport.gap||'Sin brecha descrita'}</p></div>
+              <div><p className="text-[9px] font-black uppercase tracking-widest text-slate-400">Campos legacy ({selectedReport.legacy_fields?.length||0})</p><div className="mt-2 flex max-h-28 flex-wrap gap-1 overflow-auto">{(selectedReport.legacy_fields||[]).map(x=><span key={x} className="rounded-full border bg-white px-2 py-1 font-mono text-[9px]">{x}</span>)}</div></div>
+              <div><p className="text-[9px] font-black uppercase tracking-widest text-slate-400">Texto estático / expresiones</p><JsonBlock value={{texto:selectedReport.static_text,expresiones:selectedReport.expressions}}/></div>
+            </div>}
+          </div>
         </div>
       </div>}
 
