@@ -16,6 +16,7 @@ import useSacramentalAuxiliaries from '@/hooks/useSacramentalAuxiliaries';
 import { motion } from 'framer-motion';
 import { registerHistoricalConfirmation } from '@/services/historicalRegistryService';
 import { getMarginalNoteTemplates } from '@/services/marginalNotesTemplatesService';
+import HistoricalEntryModePanel from '@/components/sacramental/HistoricalEntryModePanel';
 
 const ConfirmationCelebratedPage = () => {
     const navigate = useNavigate();
@@ -39,7 +40,8 @@ const ConfirmationCelebratedPage = () => {
         Libro: '', folio: '', numero: '',
         fechaSacramento: '', lugarSacramento: '', apellidos: '', nombres: '', 
         sexo: '', fechaNacimiento: '', lugarNacimiento: '', edad: '', nombrePadre: '', nombreMadre: '', 
-        lugarBautismo: '', padrinos: '', ministro: '', daFe: '', notaMarginal: ''
+        lugarBautismo: '', padrinos: '', ministro: '', daFe: '', notaMarginal: '',
+        historicalEntryMode: 'structured', referenceName: '', literalTranscription: ''
     });
 
     useEffect(() => {
@@ -120,6 +122,21 @@ const ConfirmationCelebratedPage = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        const narrative = formData.historicalEntryMode === 'narrative';
+        const required = narrative
+            ? [formData.Libro, formData.folio, formData.numero, formData.literalTranscription]
+            : [formData.Libro, formData.folio, formData.numero, formData.fechaSacramento, formData.apellidos, formData.nombres];
+        if (required.some((value) => !String(value || '').trim())) {
+            toast({
+                title: 'Datos históricos incompletos',
+                description: narrative
+                    ? 'Libro, Folio, Número y Transcripción literal son obligatorios.'
+                    : 'Libro, Folio, Número, Fecha de Confirmación, Apellidos y Nombres son obligatorios.',
+                variant: 'destructive'
+            });
+            return;
+        }
+
         setIsSubmitting(true);
         try {
             const finalRawData = {
@@ -140,11 +157,14 @@ const ConfirmationCelebratedPage = () => {
                 padrinos: formData.padrinos || '',
                 ministro: formData.ministro || '',
                 daFe: formData.daFe || '',
-                notaMarginal: formData.notaMarginal || ''
+                notaMarginal: formData.notaMarginal || '',
+                historicalEntryMode: formData.historicalEntryMode,
+                referenceName: formData.referenceName || '',
+                literalTranscription: formData.literalTranscription || ''
             };
 
             let crossNote = null;
-            if (selectedBaptismId) {
+            if (!narrative && selectedBaptismId) {
                 const templates = await getMarginalNoteTemplates(parishId);
                 const templateNota = templates.bautismo_confirmado;
                 const misDatos = getMisDatosList(parishId);
@@ -228,6 +248,21 @@ const ConfirmationCelebratedPage = () => {
                             </div>
                         </section>
 
+                        <HistoricalEntryModePanel
+                            mode={formData.historicalEntryMode}
+                            onModeChange={(mode) => {
+                                setFormData(prev => ({ ...prev, historicalEntryMode: mode }));
+                                if (mode === 'narrative') setSelectedBaptismId(null);
+                            }}
+                            referenceName={formData.referenceName}
+                            onReferenceNameChange={(value) => setFormData(prev => ({ ...prev, referenceName: value }))}
+                            transcription={formData.literalTranscription}
+                            onTranscriptionChange={(value) => setFormData(prev => ({ ...prev, literalTranscription: value }))}
+                            sacramentLabel="Confirmación"
+                        />
+
+                        {formData.historicalEntryMode === 'structured' ? (
+                          <>
                         {/* 02. CELEBRACIÓN */}
                         <section>
                             <SectionHeader number="02" title="Asiento del Sacramento" icon={Calendar} />
@@ -322,10 +357,13 @@ const ConfirmationCelebratedPage = () => {
                             </div>
                         </section>
 
+                          </>
+                        ) : null}
+
                         <div className="flex justify-end gap-4 border-t border-slate-100 pt-12">
                             <Button type="button" variant="ghost" onClick={() => navigate(-1)} className="px-10 py-8 rounded-2xl text-slate-400 font-black uppercase text-[10px] hover:bg-slate-50 transition-all">Descartar</Button>
                             <Button type="submit" disabled={isSubmitting} className="bg-gradient-to-r from-[#4B7BA7] to-[#2C3E50] text-white px-12 py-8 rounded-2xl font-black uppercase text-[10px] shadow-xl hover:scale-[1.02] active:scale-95 transition-all">
-                                {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin mr-3" /> : <Save className="w-5 h-5 mr-3" />} Asentar Permanentemente
+                                {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin mr-3" /> : <Save className="w-5 h-5 mr-3" />} {formData.historicalEntryMode === 'narrative' ? 'Guardar texto completo' : 'Guardar registro por campos'}
                             </Button>
                         </div>
                     </div>

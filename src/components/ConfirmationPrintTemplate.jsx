@@ -10,6 +10,7 @@ import {
   DocumentFrame,
   EcclesialHeader,
   NotesBox,
+  NarrativeTranscriptionBlock,
   RegistryBand,
   SectionLabel,
   SignatureLine,
@@ -58,6 +59,10 @@ const ConfirmationPrintTemplate = forwardRef(({ data, parroquiaInfo, incluirNota
   const libro = padRef(raw.Libro || raw.libro || raw.book_number);
   const folio = padRef(raw.folio || raw.page_number);
   const numero = padRef(raw.numero || raw.numeroActa || raw.entry_number || raw.number);
+  const historicalEntryMode = String(raw.historicalEntryMode || raw.historical_entry_mode || '').toLowerCase();
+  const literalTranscription = String(raw.literalTranscription || raw.literal_transcription || '');
+  const referenceName = clean(raw.referenceName || raw.reference_name);
+  const isNarrative = historicalEntryMode === 'narrative' && literalTranscription.trim().length > 0;
 
   const confirmado = `${clean(raw.nombres || raw.firstName)} ${clean(raw.apellidos || raw.lastName)}`.trim();
   const fechaConfirmacion = dateText(raw.fechaSacramento || raw.fechaConfirmacion || raw.celebration_date);
@@ -156,6 +161,22 @@ const ConfirmationPrintTemplate = forwardRef(({ data, parroquiaInfo, incluirNota
         />
       </div>
 
+      {isNarrative ? (
+        <>
+          <div style={{ margin: '0 12px 10px', fontFamily: 'Georgia, serif', fontSize: 9.3, lineHeight: 1.5, textAlign: 'justify', color: p.text }}>
+            El suscrito Párroco <strong style={{ color: p.ink }}>CERTIFICA</strong> que en el archivo parroquial reposa el asiento de Confirmación identificado arriba, conservado en forma narrativa en el libro físico.
+          </div>
+
+          <NarrativeTranscriptionBlock
+            transcription={literalTranscription}
+          />
+
+          <div style={{ margin: '0 10px 10px' }}>
+            <NotesBox>{note}</NotesBox>
+          </div>
+        </>
+      ) : (
+        <>
       <div style={{ margin: '0 12px 10px', fontFamily: 'Georgia, serif', fontSize: 9.3, lineHeight: 1.5, textAlign: 'justify', color: p.text }}>
         El suscrito Párroco <strong style={{ color: p.ink }}>CERTIFICA</strong> que en el archivo parroquial reposa el asiento de Confirmación identificado arriba, correspondiente a:
       </div>
@@ -210,8 +231,10 @@ const ConfirmationPrintTemplate = forwardRef(({ data, parroquiaInfo, incluirNota
       <div style={{ margin: '0 10px 10px' }}>
         <NotesBox>{note}</NotesBox>
       </div>
+        </>
+      )}
 
-      {incluirNotaAdicional ? (
+      {incluirNotaAdicional && !isNarrative ? (
         <div style={{ margin: '2px 12px 10px', opacity: 0.55 }}>
           <div style={{ borderBottom: `1px solid ${p.muted}`, height: 18 }} />
           <div style={{ borderBottom: `1px solid ${p.muted}`, height: 18 }} />

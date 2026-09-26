@@ -20,6 +20,7 @@ const InfoBox = ({ data, marginalNotes = [] }) => {
     if (!data) return null;
 
     const isReplacement = data.isSupplementary || String(data.tipoIdentidad || '').includes('reposicion');
+    const isNarrative = data.historicalEntryMode === 'narrative' && String(data.literalTranscription || '').trim().length > 0;
     const baptismArchiveReference = [
         data.libroBautismo ? `L:${String(data.libroBautismo).padStart(4,'0')}` : '',
         data.folioBautismo ? `F:${String(data.folioBautismo).padStart(4,'0')}` : '',
@@ -41,11 +42,18 @@ const InfoBox = ({ data, marginalNotes = [] }) => {
                 <h3 className="text-white font-black text-xs uppercase tracking-[0.2em] flex items-center gap-3">
                     <Info className="w-4 h-4 text-[#D4AF37]" /> Inspección de Registro Parroquial
                 </h3>
-                {isReplacement && (
-                    <span className="bg-amber-400 text-slate-900 text-[9px] font-black uppercase px-3 py-1 rounded-full flex items-center gap-1 shadow-sm">
-                        <AlertOctagon className="w-3 h-3"/> Acta por Decreto
-                    </span>
-                )}
+                <div className="flex items-center gap-2">
+                    {isNarrative && (
+                        <span className="bg-amber-100 text-amber-900 text-[9px] font-black uppercase px-3 py-1 rounded-full border border-amber-200 shadow-sm">
+                            Transcripción literal
+                        </span>
+                    )}
+                    {isReplacement && (
+                        <span className="bg-amber-400 text-slate-900 text-[9px] font-black uppercase px-3 py-1 rounded-full flex items-center gap-1 shadow-sm">
+                            <AlertOctagon className="w-3 h-3"/> Acta por Decreto
+                        </span>
+                    )}
+                </div>
             </div>
 
             <div className="p-8 space-y-8">
@@ -57,13 +65,17 @@ const InfoBox = ({ data, marginalNotes = [] }) => {
                         </span>
                     </div>
                     <div className="md:col-span-2 space-y-1">
-                        <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest block">Confirmado (Apellidos y Nombres)</span>
+                        <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest block">
+                            {isNarrative ? 'Referencia de búsqueda' : 'Confirmado (Apellidos y Nombres)'}
+                        </span>
                         <span className="text-xl font-black text-slate-900 uppercase tracking-tight block">
-                            {data.apellidos} {data.nombres}
+                            {isNarrative ? (data.referenceName || 'Asiento histórico narrativo') : `${data.apellidos || ''} ${data.nombres || ''}`.trim()}
                         </span>
                     </div>
                 </div>
 
+                {!isNarrative ? (
+                  <>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     <DetailItem icon={MapPin} label="Lugar Nacimiento" value={data.lugarNacimiento} />
                     <DetailItem icon={User} label="Fecha Nacimiento" value={data.fechaNacimiento || data.birthDate} />
@@ -105,6 +117,15 @@ const InfoBox = ({ data, marginalNotes = [] }) => {
                         </span>
                     </div>
                 </div>
+
+                  </>
+                ) : (
+                  <div className="rounded-[2rem] border border-amber-200 bg-[#fffdf8] p-7 shadow-sm">
+                    <p className="text-[9px] font-black uppercase tracking-[0.2em] text-amber-700">Transcripción literal del asiento original</p>
+                    {data.referenceName ? <p className="mt-2 text-xs font-black uppercase text-slate-500">Referencia: {data.referenceName}</p> : null}
+                    <p className="mt-5 whitespace-pre-wrap font-serif text-[15px] leading-7 text-slate-800">{data.literalTranscription}</p>
+                  </div>
+                )}
 
                 <div className="p-6 rounded-[2rem] border bg-amber-50/30 border-amber-200/60 shadow-sm">
                     <h4 className="text-[10px] font-black text-amber-800 uppercase tracking-[0.2em] mb-2 flex items-center gap-2">
@@ -188,6 +209,8 @@ const ConfirmationPartidasPage = () => {
                     (r.apellidos && r.apellidos.includes(term)) ||
                     (r.nombrePadre && r.nombrePadre.includes(term)) ||
                     (r.nombreMadre && r.nombreMadre.includes(term)) ||
+                    (r.referenceName && String(r.referenceName).toUpperCase().includes(term)) ||
+                    (r.literalTranscription && String(r.literalTranscription).toUpperCase().includes(term)) ||
                     (`${r.Libro}:${r.folio}:${r.numero}`.includes(term))
                 );
             }
@@ -236,9 +259,9 @@ const ConfirmationPartidasPage = () => {
             header: 'Archivo',
             render: (r) => <span className="font-black text-[12px] text-[#4B7BA7] bg-blue-50 px-2.5 py-1 rounded-xl border border-blue-100 uppercase text-center min-w-[110px] inline-block shadow-sm">L:{r.Libro} F:{r.folio} N:{r.numero}</span>
         },
-        { header: 'Apellidos', render: (r) => <span className="font-black text-slate-900 uppercase text-xs">{r.apellidos}</span> },
-        { header: 'Nombres', render: (r) => <span className="font-black text-slate-900 uppercase text-xs">{r.nombres}</span> },
-        { header: 'Fecha', render: (r) => <span className="font-black text-slate-900 uppercase text-xs">{r.fechaSacramento}</span> },    
+        { header: 'Apellidos', render: (r) => r.historicalEntryMode === 'narrative' ? <span className="font-black text-amber-700 uppercase text-[10px]">Transcripción literal</span> : <span className="font-black text-slate-900 uppercase text-xs">{r.apellidos}</span> },
+        { header: 'Nombres', render: (r) => <span className="font-black text-slate-900 uppercase text-xs">{r.historicalEntryMode === 'narrative' ? (r.referenceName || 'Asiento histórico narrativo') : r.nombres}</span> },
+        { header: 'Fecha', render: (r) => <span className="font-black text-slate-900 uppercase text-xs">{r.historicalEntryMode === 'narrative' ? '—' : r.fechaSacramento}</span> },
         {
             header: 'Estado',
             render: (r) => {
@@ -271,7 +294,7 @@ const ConfirmationPartidasPage = () => {
                         <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 w-5 h-5" />
                         <input 
                             type="text" 
-                            placeholder="LOCALIZAR POR APELLIDOS, NOMBRES, PADRES O LIBRO:FOLIO:NÚMERO..." 
+                            placeholder="LOCALIZAR POR NOMBRE, REFERENCIA, TEXTO LITERAL O LIBRO:FOLIO:NÚMERO..."
                             className="w-full pl-12 pr-6 py-4 bg-slate-50 border-none rounded-2xl focus:ring-4 focus:ring-[#4B7BA7]/10 outline-none text-xs font-black uppercase placeholder:text-slate-300 transition-all" 
                             value={searchTerm} 
                             onChange={e => { setSearchTerm(e.target.value); setCurrentPage(1); }} 

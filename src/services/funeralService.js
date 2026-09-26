@@ -34,6 +34,9 @@ const hydrateFuneralRow = (row) => {
     sexo: normalizeLegacySex(row.sexo || resolved.sexo || raw.sexo || raw.sex || raw.gender || raw.legacy_normalized?.gender || ''),
     da_fe: daFeDisplay,
     ministro: ministerDisplay,
+    historicalEntryMode: raw.historicalEntryMode || raw.historical_entry_mode || 'structured',
+    referenceName: raw.referenceName || raw.reference_name || '',
+    literalTranscription: raw.literalTranscription || raw.literal_transcription || '',
     raw_data: raw
   };
 };

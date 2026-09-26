@@ -10,6 +10,7 @@ import {
   DocumentFrame,
   EcclesialHeader,
   NotesBox,
+  NarrativeTranscriptionBlock,
   RegistryBand,
   SectionLabel,
   SignatureLine,
@@ -58,6 +59,10 @@ const BaptismPrintTemplate = forwardRef(({ data, parroquiaInfo }, ref) => {
   const libro = padRef(raw.Libro || raw.book_number || raw.numeroLibro || data.book_number || data.Libro);
   const folio = padRef(raw.folio || raw.page_number || data.folio || data.page_number);
   const numero = padRef(raw.numero || raw.number || raw.numeroActa || data.numero || data.number);
+  const historicalEntryMode = String(raw.historicalEntryMode || raw.historical_entry_mode || '').toLowerCase();
+  const literalTranscription = String(raw.literalTranscription || raw.literal_transcription || '');
+  const referenceName = clean(raw.referenceName || raw.reference_name);
+  const isNarrative = historicalEntryMode === 'narrative' && literalTranscription.trim().length > 0;
 
   const bautizado = `${clean(raw.nombres || raw.firstName)} ${clean(raw.apellidos || raw.lastName)}`.trim();
   const fechaBautismo = dateText(raw.fechaSacramento || raw.fecbau || data.celebration_date);
@@ -154,6 +159,22 @@ const BaptismPrintTemplate = forwardRef(({ data, parroquiaInfo }, ref) => {
         />
       </div>
 
+      {isNarrative ? (
+        <>
+          <div style={{ margin: '0 12px 10px', fontFamily: 'Georgia, serif', fontSize: 9.3, lineHeight: 1.5, textAlign: 'justify', color: p.text }}>
+            El suscrito Párroco <strong style={{ color: p.ink }}>CERTIFICA</strong> que en el archivo parroquial reposa el asiento bautismal identificado arriba, conservado en forma narrativa en el libro físico.
+          </div>
+
+          <NarrativeTranscriptionBlock
+            transcription={literalTranscription}
+          />
+
+          <div style={{ margin: '0 10px 10px' }}>
+            <NotesBox>{note}</NotesBox>
+          </div>
+        </>
+      ) : (
+        <>
       <div style={{ margin: '0 12px 10px', fontFamily: 'Georgia, serif', fontSize: 9.3, lineHeight: 1.5, textAlign: 'justify', color: p.text }}>
         El suscrito Párroco <strong style={{ color: p.ink }}>CERTIFICA</strong> que en el archivo parroquial reposa el asiento bautismal identificado arriba, correspondiente a:
       </div>
@@ -208,6 +229,8 @@ const BaptismPrintTemplate = forwardRef(({ data, parroquiaInfo }, ref) => {
       <div style={{ margin: '0 10px 10px' }}>
         <NotesBox>{note}</NotesBox>
       </div>
+        </>
+      )}
 
       <div style={{ margin: '4px 12px 0', fontFamily: 'Georgia, serif', fontSize: 9.1, lineHeight: 1.5, textAlign: 'justify', color: p.text }}>
         Es copia fiel del registro que obra en el archivo parroquial. Se expide en <strong>{ciudad || '[CIUDAD NO CONFIGURADA]'}</strong> el día <strong>{issueDate}</strong>.

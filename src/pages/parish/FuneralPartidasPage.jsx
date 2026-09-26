@@ -106,7 +106,9 @@ const FuneralPartidasPage = () => {
         row.folio,
         row.number,
         row.numero_registro,
-        row.fecha_defuncion
+        row.fecha_defuncion,
+        row.referenceName,
+        row.literalTranscription
       ].join(' ').toUpperCase();
 
       return haystack.includes(term);
@@ -188,7 +190,7 @@ const FuneralPartidasPage = () => {
               </div>
             </div>
             <p className="mt-3 text-sm text-slate-500">
-              Consulte por nombre, Libro/Folio/Número o N.º de Registro interno.
+              Consulte por nombre, referencia, texto literal, Libro/Folio/Número o N.º de Registro interno.
             </p>
           </div>
 
@@ -204,7 +206,7 @@ const FuneralPartidasPage = () => {
             <input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Buscar difunto, libro, folio, número o registro..."
+              placeholder="Buscar difunto, referencia, texto literal, libro, folio, número o registro..."
               className="w-full rounded-xl border border-slate-200 bg-slate-50 py-2.5 pl-10 pr-4 text-sm outline-none focus:border-[#4B7BA7] focus:bg-white"
             />
           </div>
@@ -237,10 +239,12 @@ const FuneralPartidasPage = () => {
                     <tr key={row.id} className="border-t border-slate-100 hover:bg-slate-50/60">
                       <td className="px-4 py-4">
                         <p className="text-[11px] font-black uppercase text-slate-900">
-                          {row.nombres} {row.apellidos}
+                          {row.historicalEntryMode === 'narrative'
+                            ? (row.referenceName || 'Asiento histórico narrativo')
+                            : `${row.nombres || ''} ${row.apellidos || ''}`.trim()}
                         </p>
-                        <p className="mt-1 font-mono text-[9px] text-slate-400">
-                          REG. {row.numero_registro || '—'}
+                        <p className={row.historicalEntryMode === 'narrative' ? 'mt-1 text-[9px] font-black uppercase tracking-wider text-amber-700' : 'mt-1 font-mono text-[9px] text-slate-400'}>
+                          {row.historicalEntryMode === 'narrative' ? 'Transcripción literal' : `REG. ${row.numero_registro || '—'}`}
                         </p>
                       </td>
                       <td className="px-4 py-4 text-[9px] font-black uppercase text-slate-500">{labelStatus(row.book_type || 'ordinario', 'Ordinario')}</td>
@@ -256,14 +260,16 @@ const FuneralPartidasPage = () => {
                       </td>
                       <td className="px-4 py-4 text-right">
                         <div className="flex justify-end gap-2">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => printFuneralSlip(row)}
-                            className="rounded-xl"
-                          >
-                            <Printer className="mr-1.5 h-4 w-4" /> Constancia
-                          </Button>
+                          {row.historicalEntryMode !== 'narrative' && (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => printFuneralSlip(row)}
+                              className="rounded-xl"
+                            >
+                              <Printer className="mr-1.5 h-4 w-4" /> Constancia
+                            </Button>
+                          )}
                           <Button
                             variant="outline"
                             size="sm"
@@ -289,8 +295,15 @@ const FuneralPartidasPage = () => {
                 <div>
                   <p className="text-[9px] font-black uppercase tracking-widest text-[#4B7BA7]">Partida de Exequias</p>
                   <h2 className="mt-1 text-lg font-black uppercase text-slate-950">
-                    {selected.nombres} {selected.apellidos}
+                    {selected.historicalEntryMode === 'narrative'
+                      ? (selected.referenceName || 'Asiento histórico narrativo')
+                      : `${selected.nombres || ''} ${selected.apellidos || ''}`.trim()}
                   </h2>
+                  {selected.historicalEntryMode === 'narrative' && (
+                    <span className="mt-2 inline-flex rounded-full border border-amber-200 bg-amber-50 px-2.5 py-1 text-[8px] font-black uppercase tracking-wider text-amber-700">
+                      Transcripción literal
+                    </span>
+                  )}
                 </div>
                 <button
                   type="button"
@@ -310,16 +323,24 @@ const FuneralPartidasPage = () => {
                   <Info label="Registro interno" value={selected.numero_registro || '—'} />
                 </div>
 
-                <div className="mt-6 grid gap-4 md:grid-cols-2">
-                  <Detail label="Fecha de defunción" value={dateText(selected.fecha_defuncion)} />
-                  <Detail label="Lugar de defunción" value={selected.lugar_defuncion} />
-                  <Detail label="Fecha de exequias" value={dateText(selected.fecha_exequias)} />
-                  <Detail label="Lugar de exequias" value={selected.lugar_exequias} />
-                  <Detail label="Cementerio" value={selected.cementerio} />
-                  <Detail label="Ministro" value={selected.ministro} />
-                  <Detail label="Padre" value={selected.nombre_padre} />
-                  <Detail label="Madre" value={selected.nombre_madre} />
-                </div>
+                {selected.historicalEntryMode === 'narrative' ? (
+                  <div className="mt-6 rounded-2xl border border-amber-200 bg-[#fffdf8] p-6 shadow-sm">
+                    <p className="text-[9px] font-black uppercase tracking-[0.2em] text-amber-700">Transcripción literal del asiento original</p>
+                    {selected.referenceName ? <p className="mt-2 text-xs font-black uppercase text-slate-500">Referencia: {selected.referenceName}</p> : null}
+                    <p className="mt-5 whitespace-pre-wrap font-serif text-[15px] leading-7 text-slate-800">{selected.literalTranscription}</p>
+                  </div>
+                ) : (
+                  <div className="mt-6 grid gap-4 md:grid-cols-2">
+                    <Detail label="Fecha de defunción" value={dateText(selected.fecha_defuncion)} />
+                    <Detail label="Lugar de defunción" value={selected.lugar_defuncion} />
+                    <Detail label="Fecha de exequias" value={dateText(selected.fecha_exequias)} />
+                    <Detail label="Lugar de exequias" value={selected.lugar_exequias} />
+                    <Detail label="Cementerio" value={selected.cementerio} />
+                    <Detail label="Ministro" value={selected.ministro} />
+                    <Detail label="Padre" value={selected.nombre_padre} />
+                    <Detail label="Madre" value={selected.nombre_madre} />
+                  </div>
+                )}
 
                 <div className="mt-6 rounded-2xl border border-slate-200 bg-slate-50 p-5">
                   <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -352,14 +373,16 @@ const FuneralPartidasPage = () => {
                 </div>
 
                 <div className="mt-6 flex flex-wrap justify-end gap-3">
-                  <Button
-                    variant="outline"
-                    onClick={() => printFuneralSlip(selected)}
-                    className="rounded-xl px-6"
-                  >
-                    <Printer className="mr-2 h-4 w-4" />
-                    Imprimir Constancia
-                  </Button>
+                  {selected.historicalEntryMode !== 'narrative' && (
+                    <Button
+                      variant="outline"
+                      onClick={() => printFuneralSlip(selected)}
+                      className="rounded-xl px-6"
+                    >
+                      <Printer className="mr-2 h-4 w-4" />
+                      Imprimir Constancia
+                    </Button>
+                  )}
                   <Button onClick={printCertificate} className="rounded-xl bg-[#4B7BA7] px-6">
                     <Printer className="mr-2 h-4 w-4" />
                     Imprimir Partida

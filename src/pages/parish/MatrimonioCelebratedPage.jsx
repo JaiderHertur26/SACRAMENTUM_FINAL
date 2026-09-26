@@ -12,12 +12,7 @@ import { registerHistoricalMarriage } from '@/services/historicalRegistryService
 import AuxiliaryAutocomplete from '@/components/AuxiliaryAutocomplete';
 import ChurchLocationAutocomplete from '@/components/ChurchLocationAutocomplete';
 import useSacramentalAuxiliaries from '@/hooks/useSacramentalAuxiliaries';
-
-const getLocalDateISO = () => {
-    const now = new Date();
-    const local = new Date(now.getTime() - now.getTimezoneOffset() * 60000);
-    return local.toISOString().slice(0, 10);
-};
+import HistoricalEntryModePanel from '@/components/sacramental/HistoricalEntryModePanel';
 
 const MatrimonioCelebratedPage = () => {
     const { user } = useAuth();
@@ -44,7 +39,7 @@ const MatrimonioCelebratedPage = () => {
         folio: '',
         numero: '',
         expediente: '',
-        fechaMatrimonio: getLocalDateISO(),
+        fechaMatrimonio: '',
         
         // Row 2
         lugarCelebracion: '',
@@ -77,7 +72,10 @@ const MatrimonioCelebratedPage = () => {
         testigo: '',
         presencia: '',
         daFeId: '', // Changed from daFe to daFeId for select mapping
-        daFeNombre: ''
+        daFeNombre: '',
+        historicalEntryMode: 'structured',
+        referenceName: '',
+        literalTranscription: ''
     };
 
     const [formData, setFormData] = useState(initialFormData);
@@ -157,6 +155,24 @@ const MatrimonioCelebratedPage = () => {
     };
 
     const validateForm = async () => {
+        if (formData.historicalEntryMode === 'narrative') {
+            const narrativeRequired = [
+                { field: 'libro', label: 'Libro' },
+                { field: 'folio', label: 'Folio' },
+                { field: 'numero', label: 'Número' },
+                { field: 'literalTranscription', label: 'Transcripción literal' }
+            ];
+            for (const req of narrativeRequired) {
+                if (!String(formData[req.field] || '').trim()) {
+                    toast({
+                        title: 'Campo requerido',
+                        description: `El campo '${req.label}' es obligatorio para una transcripción literal.`,
+                        variant: 'destructive'
+                    });
+                    return false;
+                }
+            }
+        } else {
         const required = [
             { field: 'libro', label: 'Libro' },
             { field: 'folio', label: 'Folio' },
@@ -178,6 +194,7 @@ const MatrimonioCelebratedPage = () => {
                 });
                 return false;
             }
+        }
         }
 
         // Validate Number Duplication
@@ -204,13 +221,24 @@ const MatrimonioCelebratedPage = () => {
         try {
             const contextId = parishId;
             
-            const newRecord = {
+            const newRecord = formData.historicalEntryMode === 'narrative'
+              ? {
+                  book_number: formData.libro,
+                  page_number: formData.folio,
+                  entry_number: formData.numero,
+                  historicalEntryMode: 'narrative',
+                  referenceName: formData.referenceName || '',
+                  literalTranscription: formData.literalTranscription || ''
+                }
+              : {
                 // Core
                 book_number: formData.libro,
                 page_number: formData.folio,
                 entry_number: formData.numero,
                 sacramentDate: formData.fechaMatrimonio,
                 place: formData.lugarCelebracion,
+                historicalEntryMode: 'structured',
+                referenceName: formData.referenceName || '',
                 
                 // Groom
                 groomName: formData.esposoNombres,
@@ -258,7 +286,9 @@ const MatrimonioCelebratedPage = () => {
             if (result.success) {
                 toast({
                     title: "Registro Guardado",
-                    description: `Matrimonio de ${formData.esposoApellidos} y ${formData.esposaApellidos} digitalizado sin alterar el consecutivo ordinario.`,
+                    description: formData.historicalEntryMode === 'narrative'
+                        ? `Transcripción literal L-${formData.libro} F-${formData.folio} N-${formData.numero} registrada sin alterar el consecutivo ordinario.`
+                        : `Matrimonio de ${formData.esposoApellidos} y ${formData.esposaApellidos} digitalizado sin alterar el consecutivo ordinario.`,
                     className: "bg-green-50 border-green-200 text-green-900"
                 });
                 
@@ -272,7 +302,8 @@ const MatrimonioCelebratedPage = () => {
                     numero: (parseInt(prev.numero || 0) + 1).toString(),
                     presencia: prev.presencia,
                     daFeId: prev.daFeId,
-                    daFeNombre: prev.daFeNombre
+                    daFeNombre: prev.daFeNombre,
+                    historicalEntryMode: prev.historicalEntryMode
                 }));
                 
                 setTotalRegs(prev => prev + 1);
@@ -322,27 +353,42 @@ const MatrimonioCelebratedPage = () => {
                 <form onSubmit={handleSubmit} className="relative overflow-hidden rounded-[2rem] border border-slate-200 bg-white p-6 pt-9 shadow-xl shadow-blue-900/5 md:p-8 md:pt-10 space-y-6">
 <div className="absolute left-0 top-0 h-1.5 w-full bg-gradient-to-r from-[#D4AF37] via-[#4B7BA7] to-[#D4AF37]" />
                     
-                    {/* SECTION 1: Basic Info */}
-                    <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
-                        <div className="md:col-span-1">
-                            <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Libro</label>
-                            <input type="number" name="libro" value={formData.libro} onChange={handleChange} className="w-full px-2 py-2 border border-slate-300 rounded-xl focus:ring-4 focus:ring-[#4B7BA7]/10 focus:border-[#4B7BA7] outline-none text-center font-bold" />
+                    {/* IDENTIFICACIÓN CANÓNICA COMÚN A AMBOS MODOS */}
+                    <div className="grid grid-cols-1 gap-4 rounded-2xl border border-slate-100 bg-slate-50 p-5 md:grid-cols-3">
+                        <div>
+                            <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Libro original</label>
+                            <input type="number" name="libro" value={formData.libro} onChange={handleChange} className="w-full px-3 py-3 border border-slate-300 bg-white rounded-xl focus:ring-4 focus:ring-[#4B7BA7]/10 focus:border-[#4B7BA7] outline-none text-center font-bold" />
                         </div>
-                        <div className="md:col-span-1">
-                            <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Folio</label>
-                            <input type="number" name="folio" value={formData.folio} onChange={handleChange} className="w-full px-2 py-2 border border-slate-300 rounded-xl focus:ring-4 focus:ring-[#4B7BA7]/10 focus:border-[#4B7BA7] outline-none text-center font-bold" />
+                        <div>
+                            <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Folio original</label>
+                            <input type="number" name="folio" value={formData.folio} onChange={handleChange} className="w-full px-3 py-3 border border-slate-300 bg-white rounded-xl focus:ring-4 focus:ring-[#4B7BA7]/10 focus:border-[#4B7BA7] outline-none text-center font-bold" />
                         </div>
-                        <div className="md:col-span-1">
-                            <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Número</label>
-                            <input type="number" name="numero" value={formData.numero} onChange={handleChange} className="w-full px-2 py-2 border border-slate-300 rounded-xl focus:ring-4 focus:ring-[#4B7BA7]/10 focus:border-[#4B7BA7] outline-none text-center font-bold" />
+                        <div>
+                            <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Número original</label>
+                            <input type="number" name="numero" value={formData.numero} onChange={handleChange} className="w-full px-3 py-3 border border-slate-300 bg-white rounded-xl focus:ring-4 focus:ring-[#4B7BA7]/10 focus:border-[#4B7BA7] outline-none text-center font-bold" />
                         </div>
-                        <div className="md:col-span-3">
+                    </div>
+
+                    <HistoricalEntryModePanel
+                        mode={formData.historicalEntryMode}
+                        onModeChange={(mode) => setFormData(prev => ({ ...prev, historicalEntryMode: mode }))}
+                        referenceName={formData.referenceName}
+                        onReferenceNameChange={(value) => setFormData(prev => ({ ...prev, referenceName: value }))}
+                        transcription={formData.literalTranscription}
+                        onTranscriptionChange={(value) => setFormData(prev => ({ ...prev, literalTranscription: value }))}
+                        sacramentLabel="Matrimonio"
+                    />
+
+                    {formData.historicalEntryMode === 'structured' ? (
+                      <>
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                        <div>
                             <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Expediente No.</label>
                             <input type="text" name="expediente" value={formData.expediente} onChange={handleChange} className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-4 focus:ring-[#4B7BA7]/10 focus:border-[#4B7BA7] outline-none" />
                         </div>
-                        <div className="md:col-span-3">
+                        <div>
                             <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Fecha Matrimonio</label>
-                            <input type="date" name="fechaMatrimonio" value={formData.fechaMatrimonio} onChange={handleChange} className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-4 focus:ring-[#4B7BA7]/10 focus:border-[#4B7BA7] outline-none" />
+                            <input type="date" name="fechaMatrimonio" required value={formData.fechaMatrimonio} onChange={handleChange} className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-4 focus:ring-[#4B7BA7]/10 focus:border-[#4B7BA7] outline-none" />
                         </div>
                     </div>
 
@@ -547,6 +593,9 @@ const MatrimonioCelebratedPage = () => {
                         </p>
                     </div>
 
+                      </>
+                    ) : null}
+
                     {/* ACTION BUTTONS */}
                     <div className="flex justify-between items-center pt-6 border-t border-slate-100">
                         <Button 
@@ -578,7 +627,7 @@ const MatrimonioCelebratedPage = () => {
                                 ) : (
                                     <Save className="w-4 h-4 mr-2" />
                                 )}
-                                {isSubmitting ? 'Guardando...' : 'Guardar'}
+                                {isSubmitting ? 'Guardando...' : formData.historicalEntryMode === 'narrative' ? 'Guardar texto completo' : 'Guardar registro por campos'}
                             </Button>
                         </div>
                     </div>

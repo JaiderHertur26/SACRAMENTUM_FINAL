@@ -103,6 +103,9 @@ export const mapMarriageRow = (row) => {
     witnesses: raw.witnesses ?? raw.testigos ?? legacy.witnesses ?? witnessNames,
     testigos: raw.testigos ?? raw.witnesses ?? legacy.witnesses ?? witnessNames,
 
+    historicalEntryMode: raw.historicalEntryMode || raw.historical_entry_mode || 'structured',
+    referenceName: raw.referenceName || raw.reference_name || '',
+    literalTranscription: raw.literalTranscription || raw.literal_transcription || '',
     createdAt: row.created_at,
     updatedAt: row.updated_at,
     raw_data: raw

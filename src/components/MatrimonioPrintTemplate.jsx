@@ -8,6 +8,7 @@ import {
   DocumentFrame,
   EcclesialHeader,
   NotesBox,
+  NarrativeTranscriptionBlock,
   RegistryBand,
   SectionLabel,
   SignatureLine,
@@ -60,6 +61,10 @@ const MatrimonioPrintTemplate = forwardRef(({ data, parroquiaInfo }, ref) => {
   const libro = pad4(data.book_number || raw.book_number || raw.libro);
   const folio = pad4(data.page_number || data.folio || raw.page_number || raw.folio);
   const numero = pad4(data.entry_number || data.number || raw.entry_number || raw.numero);
+  const historicalEntryMode = String(raw.historicalEntryMode || raw.historical_entry_mode || '').toLowerCase();
+  const literalTranscription = String(raw.literalTranscription || raw.literal_transcription || '');
+  const referenceName = clean(raw.referenceName || raw.reference_name);
+  const isNarrative = historicalEntryMode === 'narrative' && literalTranscription.trim().length > 0;
   const tipo = clean(data.bookType || data.book_type || data.tipoLibro || raw.bookType || raw.book_type || raw.tipoLibro || 'ORDINARIO');
 
   const person = (prefix, normalized) => ({
@@ -151,6 +156,22 @@ const MatrimonioPrintTemplate = forwardRef(({ data, parroquiaInfo }, ref) => {
         />
       </div>
 
+      {isNarrative ? (
+        <>
+          <div style={{ margin: '0 12px 10px', fontFamily: 'Georgia, serif', fontSize: 9.3, lineHeight: 1.5, textAlign: 'justify', color: p.text }}>
+            El suscrito Párroco <strong style={{ color: p.ink }}>CERTIFICA</strong> que en el archivo parroquial reposa el asiento matrimonial identificado arriba, conservado en forma narrativa en el libro físico.
+          </div>
+
+          <NarrativeTranscriptionBlock
+            transcription={literalTranscription}
+          />
+
+          <div style={{ margin: '10px 10px 0' }}>
+            <NotesBox>{note}</NotesBox>
+          </div>
+        </>
+      ) : (
+        <>
       <div style={{ margin: '0 12px 10px', fontFamily: 'Georgia, serif', fontSize: 9.3, lineHeight: 1.5, textAlign: 'justify', color: p.text }}>
         El suscrito Párroco <strong style={{ color: p.ink }}>CERTIFICA</strong> que en el archivo parroquial reposa el asiento matrimonial identificado arriba, correspondiente a los siguientes contrayentes:
       </div>
@@ -175,6 +196,8 @@ const MatrimonioPrintTemplate = forwardRef(({ data, parroquiaInfo }, ref) => {
       <div style={{ margin: '10px 10px 0' }}>
         <NotesBox>{note}</NotesBox>
       </div>
+        </>
+      )}
 
       <div style={{ margin: '10px 12px 0', fontFamily: 'Georgia, serif', fontSize: 9.1, lineHeight: 1.5, color: p.text, textAlign: 'justify' }}>
         Es copia fiel del registro que obra en el archivo parroquial. Se expide en <strong>{ciudad || '[CIUDAD NO CONFIGURADA]'}</strong> el día <strong>{dateText(localDateISO()).replace(/^EL\s+/, '')}</strong>.

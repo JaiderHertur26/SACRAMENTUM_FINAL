@@ -33,6 +33,8 @@ import MarginalNotesRecordPanel from '@/components/MarginalNotesRecordPanel';
 import AuxiliaryAutocomplete from '@/components/AuxiliaryAutocomplete';
 import ChurchLocationAutocomplete from '@/components/ChurchLocationAutocomplete';
 import useSacramentalAuxiliaries from '@/hooks/useSacramentalAuxiliaries';
+import HistoricalEntryModePanel from '@/components/sacramental/HistoricalEntryModePanel';
+import { registerHistoricalNarrative } from '@/services/historicalRegistryService';
 
 const SACRAMENTS = [
   'Bautismo',
@@ -139,7 +141,10 @@ const FuneralRegistryPage = () => {
     book_number: '',
     folio: '',
     number: '',
-    book_type: 'ordinario'
+    book_type: 'ordinario',
+    historicalEntryMode: 'structured',
+    referenceName: '',
+    literalTranscription: ''
   });
   const [params, setParams] = useState(defaultParams);
   const [records, setRecords] = useState([]);
@@ -441,23 +446,23 @@ const FuneralRegistryPage = () => {
   };
 
   const registerHistorical = async () => {
-    if (
-      !historical.book_number ||
-      !historical.folio ||
-      !historical.number ||
-      !historical.nombres ||
-      !historical.apellidos ||
-      !historical.fecha_defuncion
-    ) {
+    const narrative = historical.historicalEntryMode === 'narrative';
+    const required = narrative
+      ? [historical.book_number, historical.folio, historical.number, historical.literalTranscription]
+      : [historical.book_number, historical.folio, historical.number, historical.nombres, historical.apellidos, historical.fecha_defuncion];
+
+    if (required.some((value) => !String(value || '').trim())) {
       toast({
         title: 'Datos históricos incompletos',
-        description: 'Libro, folio, número, nombres, apellidos y fecha de defunción son obligatorios.',
+        description: narrative
+          ? 'Libro, folio, número y Transcripción literal son obligatorios.'
+          : 'Libro, folio, número, nombres, apellidos y fecha de defunción son obligatorios.',
         variant: 'destructive'
       });
       return;
     }
 
-    const validation = validateCore(historical);
+    const validation = narrative ? null : validateCore(historical);
     if (validation) {
       toast({
         title: 'Revise el asiento histórico',
@@ -472,21 +477,30 @@ const FuneralRegistryPage = () => {
     try {
       const payload = normalizeForm(historical);
 
-      const { data, error } = await supabase.rpc('register_historical_funeral', {
-        p_parish_id: parishId,
-        p_record: payload
-      });
-
-      if (error) throw error;
-
-      const result = Array.isArray(data) ? data[0] : data;
+      const result = narrative
+        ? await registerHistoricalNarrative({
+            parishId,
+            sacramentType: 'exequias',
+            record: payload
+          })
+        : await (async () => {
+            const { data, error } = await supabase.rpc('register_historical_funeral', {
+              p_parish_id: parishId,
+              p_record: payload
+            });
+            if (error) throw error;
+            return Array.isArray(data) ? data[0] : data;
+          })();
 
       setHistorical({
         ...emptyForm,
         book_number: '',
         folio: '',
         number: '',
-        book_type: 'ordinario'
+        book_type: 'ordinario',
+        historicalEntryMode: historical.historicalEntryMode,
+        referenceName: '',
+        literalTranscription: ''
       });
 
       await refresh();
@@ -1050,6 +1064,19 @@ const FuneralRegistryPage = () => {
                   </Field>
                 </div>
 
+                <HistoricalEntryModePanel
+                  mode={historical.historicalEntryMode}
+                  onModeChange={(mode) => setHistoricalField('historicalEntryMode', mode)}
+                  referenceName={historical.referenceName}
+                  onReferenceNameChange={(value) => setHistoricalField('referenceName', value)}
+                  transcription={historical.literalTranscription}
+                  onTranscriptionChange={(value) => setHistoricalField('literalTranscription', value)}
+                  sacramentLabel="Exequias"
+                  compact
+                />
+
+                {historical.historicalEntryMode === 'structured' ? (
+                  <>
                 <div className="grid md:grid-cols-2 gap-5">
                   <Field label="Apellidos">
                     <Input
@@ -1264,6 +1291,9 @@ const FuneralRegistryPage = () => {
                   />
                 </Field>
 
+                  </>
+                ) : null}
+
                 <div className="flex justify-end border-t pt-5">
                   <Button
                     disabled={busy}
@@ -1271,7 +1301,7 @@ const FuneralRegistryPage = () => {
                     className="bg-amber-700 hover:bg-amber-800 text-white"
                   >
                     <ArchiveRestore className="w-4 h-4 mr-2" />
-                    Digitalizar asiento histórico
+                    {historical.historicalEntryMode === 'narrative' ? 'Guardar texto completo' : 'Guardar registro por campos'}
                   </Button>
                 </div>
               </div>

@@ -13,6 +13,7 @@ import { useToast } from '@/components/ui/use-toast';
 import AuxiliaryAutocomplete from '@/components/AuxiliaryAutocomplete';
 import useSacramentalAuxiliaries from '@/hooks/useSacramentalAuxiliaries';
 import { registerHistoricalBaptism } from '@/services/historicalRegistryService';
+import HistoricalEntryModePanel from '@/components/sacramental/HistoricalEntryModePanel';
 
 const BaptismCelebratedPage = () => {
     const navigate = useNavigate();
@@ -57,7 +58,10 @@ const BaptismCelebratedPage = () => {
         ministro: '',
         daFe: '',
         observaciones: '',
-        notaMarginal: ''
+        notaMarginal: '',
+        historicalEntryMode: 'structured',
+        referenceName: '',
+        literalTranscription: ''
     });
 
     useEffect(() => {
@@ -111,13 +115,22 @@ const BaptismCelebratedPage = () => {
             return;
         }
 
-        const requiredRefs = [formData.Libro, formData.folio, formData.numero, formData.fechaSacramento, formData.apellidos, formData.nombres];
+        const narrative = formData.historicalEntryMode === 'narrative';
+        const requiredRefs = narrative
+            ? [formData.Libro, formData.folio, formData.numero, formData.literalTranscription]
+            : [formData.Libro, formData.folio, formData.numero, formData.fechaSacramento, formData.apellidos, formData.nombres];
         if (requiredRefs.some(value => !String(value || '').trim())) {
-            toast({ title: "Datos incompletos", description: "Libro, Folio, Número, Fecha de Bautismo, Apellidos y Nombres son obligatorios.", variant: "destructive" });
+            toast({
+                title: "Datos incompletos",
+                description: narrative
+                    ? "Libro, Folio, Número y Transcripción literal son obligatorios."
+                    : "Libro, Folio, Número, Fecha de Bautismo, Apellidos y Nombres son obligatorios.",
+                variant: "destructive"
+            });
             return;
         }
 
-        if (formData.fechaNacimiento && formData.fechaSacramento && formData.fechaNacimiento > formData.fechaSacramento) {
+        if (!narrative && formData.fechaNacimiento && formData.fechaSacramento && formData.fechaNacimiento > formData.fechaSacramento) {
             toast({ title: "Fechas inconsistentes", description: "La fecha de nacimiento no puede ser posterior a la fecha de Bautismo.", variant: "destructive" });
             return;
         }
@@ -190,6 +203,18 @@ const BaptismCelebratedPage = () => {
                             <p className="mt-3 text-[10px] font-bold uppercase tracking-wider text-amber-700">No use el próximo consecutivo del sistema. Copie estos tres datos exactamente del libro físico original.</p>
                         </section>
 
+                        <HistoricalEntryModePanel
+                            mode={formData.historicalEntryMode}
+                            onModeChange={(mode) => setFormData(prev => ({ ...prev, historicalEntryMode: mode }))}
+                            referenceName={formData.referenceName}
+                            onReferenceNameChange={(value) => setFormData(prev => ({ ...prev, referenceName: value }))}
+                            transcription={formData.literalTranscription}
+                            onTranscriptionChange={(value) => setFormData(prev => ({ ...prev, literalTranscription: value }))}
+                            sacramentLabel="Bautismo"
+                        />
+
+                        {formData.historicalEntryMode === 'structured' ? (
+                          <>
                         {/* 02. CELEBRACIÓN */}
                         <section>
                             <SectionHeader number="02" title="Asiento del Sacramento" icon={Calendar} />
@@ -293,10 +318,13 @@ const BaptismCelebratedPage = () => {
                             <p className="mt-3 text-[10px] font-medium text-slate-500">Estos campos son opcionales. No invente ni complete notas que no consten en el libro físico.</p>
                         </section>
 
+                          </>
+                        ) : null}
+
                         <div className="flex justify-end gap-4 border-t border-slate-100 pt-12">
                             <Button type="button" variant="ghost" onClick={() => navigate(-1)} className="px-10 py-8 rounded-2xl text-slate-400 font-black uppercase text-[10px] hover:bg-slate-50 transition-all">Descartar</Button>
                             <Button type="submit" disabled={isSubmitting} className="bg-gradient-to-r from-[#4B7BA7] to-[#2C3E50] text-white px-12 py-8 rounded-2xl font-black uppercase text-[10px] shadow-xl hover:scale-[1.02] active:scale-95 transition-all">
-                                {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin mr-3" /> : <Save className="w-5 h-5 mr-3" />} Digitalizar partida existente
+                                {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin mr-3" /> : <Save className="w-5 h-5 mr-3" />} {formData.historicalEntryMode === 'narrative' ? 'Guardar texto completo' : 'Guardar registro por campos'}
                             </Button>
                         </div>
                     </div>

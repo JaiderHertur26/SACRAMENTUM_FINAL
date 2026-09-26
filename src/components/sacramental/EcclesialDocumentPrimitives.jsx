@@ -307,6 +307,54 @@ export const NotesBox = ({ title = 'ANOTACIONES MARGINALES', children, compact =
   );
 };
 
+
+export const NarrativeTranscriptionBlock = ({
+  transcription,
+  referenceName = '',
+  title = 'TRANSCRIPCIÓN LITERAL DEL ASIENTO ORIGINAL'
+}) => {
+  const p = DOCUMENT_PALETTE;
+  return (
+    <div style={{ margin: '0 10px 12px' }}>
+      {referenceName ? (
+        <DataCard tone="wash" style={{ marginBottom: 10, textAlign: 'center' }}>
+          <div style={{ fontSize: 6.7, fontWeight: 900, color: p.faint, letterSpacing: '0.14em' }}>REFERENCIA DE BÚSQUEDA</div>
+          <div style={{ marginTop: 4, fontFamily: 'Georgia, serif', fontSize: 13.5, fontWeight: 800, color: p.navy }}>
+            {referenceName}
+          </div>
+        </DataCard>
+      ) : null}
+
+      <div style={{ border: `1px solid ${p.goldSoft}`, borderRadius: 12, overflow: 'hidden', background: p.ivory }}>
+        <div style={{ padding: '8px 12px', borderBottom: `1px solid ${p.goldSoft}`, background: '#FFFDF7' }}>
+          <div style={{ fontSize: 7.2, fontWeight: 900, color: p.warning, letterSpacing: '0.14em', textAlign: 'center' }}>
+            {title}
+          </div>
+        </div>
+        <div
+          style={{
+            minHeight: 250,
+            padding: '20px 24px',
+            fontFamily: 'Georgia, "Times New Roman", serif',
+            fontSize: 11.1,
+            lineHeight: 1.75,
+            textAlign: 'justify',
+            color: p.ink,
+            whiteSpace: 'pre-wrap',
+            overflowWrap: 'break-word'
+          }}
+        >
+          {transcription || '—'}
+        </div>
+      </div>
+
+      <div style={{ marginTop: 7, padding: '0 7px', fontSize: 6.8, lineHeight: 1.4, color: p.muted, textAlign: 'justify' }}>
+        El texto anterior se reproduce como transcripción del asiento físico original. Su forma narrativa se conserva sin convertirla artificialmente en campos separados.
+      </div>
+    </div>
+  );
+};
+
 export const SignatureLine = ({ name, role = 'PÁRROCO', width = 250, note = null }) => {
   const p = DOCUMENT_PALETTE;
   return (

@@ -153,6 +153,16 @@ body {
   border-radius:8px; background:#FFFCF1; color:#344054; font-size:7.6px; line-height:1.4;
 }
 .disclaimer strong { color:#8A6D12; letter-spacing:.08em; }
+.narrative-ref {
+  margin:0 10px 10px; padding:10px 12px; border:1px solid #D9E0E8; border-radius:10px;
+  background:#F7F9FC; text-align:center;
+}
+.narrative-ref span { display:block; font-size:6.7px; font-weight:900; color:#98A2B3; letter-spacing:.14em; text-transform:uppercase; }
+.narrative-ref strong { display:block; margin-top:4px; font:800 13.5px Georgia,'Times New Roman',serif; color:#173A5E; text-transform:uppercase; }
+.narrative-box { margin:0 10px 12px; border:1px solid #D9C784; border-radius:12px; overflow:hidden; background:#FCFBF6; }
+.narrative-head { padding:8px 12px; border-bottom:1px solid #D9C784; background:#FFFDF7; text-align:center; font-size:7.2px; font-weight:900; color:#8A6D12; letter-spacing:.14em; }
+.narrative-text { min-height:250px; padding:20px 24px; font:400 11.1px/1.75 Georgia,'Times New Roman',serif; color:#172033; text-align:justify; white-space:pre-wrap; overflow-wrap:break-word; }
+.narrative-note { margin:-4px 17px 10px; font-size:6.8px; line-height:1.4; color:#667085; text-align:justify; }
 `;
 
 const headerHtml = ({ institution, eyebrow, title, subtitle }) => `
@@ -210,6 +220,19 @@ export const buildFuneralPartidaHtml = ({ record, notes = [], printNotes = true,
     : '';
 
   const fullName = `${record?.nombres || ''} ${record?.apellidos || ''}`.trim();
+  const historicalEntryMode = String(raw.historicalEntryMode || raw.historical_entry_mode || '').toLowerCase();
+  const literalTranscription = String(raw.literalTranscription || raw.literal_transcription || '');
+  const referenceName = String(raw.referenceName || raw.reference_name || '').trim();
+  const isNarrative = historicalEntryMode === 'narrative' && literalTranscription.trim().length > 0;
+
+  const narrativeHtml = isNarrative ? `
+    <p class="intro">El suscrito Párroco <strong>CERTIFICA</strong> que en el archivo parroquial reposa el registro de Exequias identificado arriba, conservado en forma narrativa en el libro físico.</p>
+    <div class="narrative-box">
+      <div class="narrative-head">TRANSCRIPCIÓN LITERAL DEL ASIENTO ORIGINAL</div>
+      <div class="narrative-text">${escapeHtml(literalTranscription)}</div>
+    </div>
+    <div class="narrative-note">El texto anterior se reproduce como transcripción del asiento físico original. Su forma narrativa se conserva sin convertirla artificialmente en campos separados.</div>
+  ` : '';
 
   const body = `
     ${headerHtml({
@@ -226,6 +249,7 @@ export const buildFuneralPartidaHtml = ({ record, notes = [], printNotes = true,
       <div><span>Número</span><strong>${escapeHtml(record?.number || '—')}</strong></div>
     </div>
 
+    ${isNarrative ? narrativeHtml : `
     <p class="intro">El suscrito Párroco <strong>CERTIFICA</strong> que en el archivo parroquial reposa el registro de Exequias identificado arriba, correspondiente a:</p>
 
     <div class="subject"><span>Fiel difunto</span><strong>${escapeHtml(fullName || '—')}</strong></div>
@@ -263,6 +287,7 @@ export const buildFuneralPartidaHtml = ({ record, notes = [], printNotes = true,
         ${sacraments ? `<div class="field" style="margin-top:9px"><span>Sacramentos recibidos</span><strong>${escapeHtml(sacraments)}</strong></div>` : ''}
       </div>
     </div>
+    `}
 
     <div class="section">
       <div class="notes">
