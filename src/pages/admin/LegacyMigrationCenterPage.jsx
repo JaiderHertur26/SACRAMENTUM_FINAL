@@ -5,13 +5,13 @@ import { useToast } from '@/components/ui/use-toast';
 import { useAuth } from '@/context/AuthContext';
 import {
   UploadCloud, Database, ShieldCheck, AlertTriangle, CheckCircle2, Loader2,
-  FileJson, FileText, History, RefreshCw, Play, Eye, LockKeyhole, GitMerge, Archive
+  FileJson, FileText, History, RefreshCw, Play, Eye, LockKeyhole, GitMerge, Archive, Church
 } from 'lucide-react';
 import {
   analyzeLegacyRows, applyLegacyBatch, createLegacyBatch, getLegacyMigrationSummary,
-  listLegacyBatches, listLegacySourceInstallations, loadParishesForMigration,
+  listLegacyBatches, listLegacySourceInstallations, loadParishesForMigration, loadMigrationTerritory,
   importLegacyInstallationFolder, mapLegacySourceInstallation, materializeLegacyInstallation, parseLegacyJsonFile,
-  registerLegacySourceInstallation, sha256File, stageLegacyRows
+  registerLegacySourceInstallation, createParishFromLegacyInstallation, sha256File, stageLegacyRows
 } from '@/services/legacyMigrationService';
 import { LEGACY_IMPORT_PROFILES, profileOptions } from '@/config/legacyImportProfiles';
 import { normalizeRole } from '@/lib/authz';
@@ -69,6 +69,10 @@ const LegacyMigrationCenterPage = () => {
   const [installations,setInstallations] = useState([]);
   const [sourceInstallationId,setSourceInstallationId] = useState('');
   const [mappingParishId,setMappingParishId] = useState('');
+  const [territory,setTerritory] = useState({vicaries:[],deaneries:[]});
+  const [legacyVicaryId,setLegacyVicaryId] = useState('');
+  const [legacyDeaneryId,setLegacyDeaneryId] = useState('');
+  const [legacyCreateConfirmed,setLegacyCreateConfirmed] = useState(false);
   const [batches,setBatches] = useState([]);
   const [currentBatch,setCurrentBatch] = useState(null);
   const [busy,setBusy] = useState('');
@@ -83,6 +87,10 @@ const LegacyMigrationCenterPage = () => {
   const selectedInstallation = useMemo(
     () => installations.find(item => item.id===sourceInstallationId) || null,
     [installations,sourceInstallationId]
+  );
+  const legacyDeaneries = useMemo(
+    () => (territory.deaneries || []).filter(item => !legacyVicaryId || item.vicaria_id===legacyVicaryId),
+    [territory.deaneries,legacyVicaryId]
   );
   const archiveOnlyUntilMapped = Boolean(
     importProfile?.requiresParish
@@ -132,10 +140,29 @@ const LegacyMigrationCenterPage = () => {
   },[role,userDioceseId]);
 
   useEffect(()=>{
+    if (role!=='diocese' || !userDioceseId) {
+      setTerritory({vicaries:[],deaneries:[]});
+      return;
+    }
+    loadMigrationTerritory(userDioceseId)
+      .then(setTerritory)
+      .catch(e=>setError(e.message));
+  },[role,userDioceseId]);
+
+  useEffect(()=>{
     if (selectedInstallation?.mapped_parish_id) {
       setParishId(selectedInstallation.mapped_parish_id);
     }
-  },[selectedInstallation?.mapped_parish_id]);
+    setLegacyVicaryId('');
+    setLegacyDeaneryId('');
+    setLegacyCreateConfirmed(false);
+  },[sourceInstallationId,selectedInstallation?.mapped_parish_id]);
+
+  useEffect(()=>{
+    if (legacyDeaneryId && !legacyDeaneries.some(item=>item.id===legacyDeaneryId)) {
+      setLegacyDeaneryId('');
+    }
+  },[legacyVicaryId,legacyDeaneryId,legacyDeaneries]);
 
   const importFullInstallation = async (pickedFiles) => {
     const files=Array.from(pickedFiles || []);
@@ -257,6 +284,53 @@ const LegacyMigrationCenterPage = () => {
       });
     } catch(e) { setError(e.message); }
     finally { setBusy(''); }
+  };
+
+  const createParishFromSelectedInstallation = async () => {
+    if (
+      role!=='diocese'
+      || !sourceInstallationId
+      || !selectedInstallation
+      || selectedInstallation.mapped_parish_id
+      || !legacyCreateConfirmed
+    ) return;
+
+    setBusy('creating-legacy-parish');
+    setError('');
+    try {
+      const result = await createParishFromLegacyInstallation({
+        installationId: sourceInstallationId,
+        vicaryId: legacyVicaryId || null,
+        deaneryId: legacyDeaneryId || null,
+      });
+
+      const [freshParishes, refreshedInstallations] = await Promise.all([
+        loadParishesForMigration(userDioceseId),
+        refreshInstallations(),
+      ]);
+      setParishes(freshParishes || []);
+      setParishId(result?.parish_id || '');
+      setMappingParishId('');
+      setLegacyCreateConfirmed(false);
+
+      const mapped = refreshedInstallations.find(item=>item.id===sourceInstallationId);
+      if (mapped?.mapped_parish_id) setParishId(mapped.mapped_parish_id);
+
+      if (currentBatch?.id) {
+        setCurrentBatch(await getLegacyMigrationSummary(currentBatch.id));
+      }
+      await refreshBatches();
+
+      toast({
+        title:'Parroquia creada desde identidad legacy',
+        description: `${result?.name || 'La parroquia'} quedó creada, territorializada y vinculada a toda la instalación SACRAMENTA.`,
+        className:'bg-green-50 text-green-900 border-green-200'
+      });
+    } catch(e) {
+      setError(e.message);
+    } finally {
+      setBusy('');
+    }
   };
 
   const materializeSelectedInstallation = async () => {
@@ -419,6 +493,77 @@ const LegacyMigrationCenterPage = () => {
             <div><label className="text-[10px] font-black uppercase tracking-widest text-slate-400">{allowParishSelection ? 'Parroquia moderna · si está verificada' : 'Parroquia moderna · no aplica'}</label><select disabled={!allowParishSelection || Boolean(selectedInstallation?.mapped_parish_id)} className="w-full mt-2 border rounded-xl px-4 py-3 font-bold bg-white disabled:bg-slate-50 disabled:text-slate-400" value={parishId} onChange={e=>setParishId(e.target.value)}><option value="">Aún no vincular a una parroquia…</option>{parishes.map(p=><option key={p.id} value={p.id}>{p.name}{p.city?` · ${p.city}`:''}</option>)}</select></div>
             <div className="md:col-span-2"><label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Instalación SACRAMENTA de origen</label><select className="w-full mt-2 border rounded-xl px-4 py-3 font-bold bg-white" value={sourceInstallationId} onChange={e=>{setSourceInstallationId(e.target.value);setParishId('');}}><option value="">{profileKey==='MISDATOS'?'Se creará desde MISDATOS al guardar…':'Seleccione la instalación antigua…'}</option>{installations.map(item=><option key={item.id} value={item.id}>{item.legacy_parish_name||item.source_name} · {item.mapping_status==='mapped'?'VINCULADA':'SIN VINCULAR'}</option>)}</select>{selectedInstallation&&<div className={`mt-2 rounded-xl border px-3 py-2 text-xs ${selectedInstallation.mapped_parish_id?'border-green-100 bg-green-50 text-green-800':'border-amber-100 bg-amber-50 text-amber-800'}`}><b>{selectedInstallation.legacy_parish_name||selectedInstallation.source_name}</b> · {selectedInstallation.legacy_diocese_name||'Diócesis no informada'} · {selectedInstallation.mapping_status==='mapped'?'Parroquia moderna verificada':'Preservación solamente; no materializar todavía'}</div>}</div>
             {selectedInstallation&&!selectedInstallation.mapped_parish_id&&<div className="md:col-span-2 rounded-2xl border border-amber-200 bg-amber-50 p-4"><div className="flex flex-col gap-3 md:flex-row md:items-end"><label className="flex-1"><span className="text-[9px] font-black uppercase tracking-wider text-amber-800">Vincular instalación cuando esté verificada</span><select value={mappingParishId} onChange={e=>setMappingParishId(e.target.value)} className="mt-2 w-full rounded-xl border border-amber-200 bg-white px-3 py-2.5 font-bold"><option value="">Seleccione parroquia moderna…</option>{parishes.map(p=><option key={p.id} value={p.id}>{p.name}{p.city?` · ${p.city}`:''}</option>)}</select></label><Button type="button" variant="outline" disabled={!mappingParishId||busy==='mapping'} onClick={mapSelectedInstallation}>{busy==='mapping'?<Loader2 className="mr-2 h-4 w-4 animate-spin"/>:<GitMerge className="mr-2 h-4 w-4"/>}Vincular instalación</Button></div><p className="mt-2 text-[10px] text-amber-800">No vincule por parecido de nombre. Debe corresponder exactamente a la misma parroquia histórica.</p></div>}
+
+            {selectedInstallation&&!selectedInstallation.mapped_parish_id&&role==='diocese'&&<div className="md:col-span-2 rounded-[1.5rem] border border-blue-200 bg-gradient-to-br from-blue-50 to-white p-5">
+              <div className="flex items-start gap-3">
+                <div className="rounded-xl bg-[#4B7BA7] p-2.5 text-white"><Church className="h-5 w-5"/></div>
+                <div className="flex-1">
+                  <p className="text-[9px] font-black uppercase tracking-[0.18em] text-[#4B7BA7]">Identidad legacy verificada · crear parroquia moderna</p>
+                  <h3 className="mt-1 text-lg font-black text-slate-950">{selectedInstallation.legacy_parish_name||selectedInstallation.source_name}</h3>
+                  <div className="mt-2 grid gap-1 text-xs text-slate-600 md:grid-cols-2">
+                    <p><b>Ciudad:</b> {selectedInstallation.legacy_city||selectedInstallation.metadata?.ciudad||'—'}</p>
+                    <p><b>NIT:</b> {selectedInstallation.metadata?.nronit||'—'}</p>
+                    <p><b>Dirección:</b> {selectedInstallation.metadata?.direccion||'—'}</p>
+                    <p><b>Teléfono:</b> {selectedInstallation.metadata?.telefono||'—'}</p>
+                  </div>
+                  <p className="mt-3 text-[11px] leading-relaxed text-slate-600">
+                    Use esta opción sólo cuando la parroquia histórica no exista todavía en SACRAMENTUM. Se copiarán únicamente los datos institucionales que constan en MISDATOS; la Diócesis debe seleccionar expresamente la Vicaría y el Decanato correctos.
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-4 grid gap-3 md:grid-cols-2">
+                <label>
+                  <span className="text-[9px] font-black uppercase tracking-wider text-slate-500">Vicaría · requerida</span>
+                  <select
+                    value={legacyVicaryId}
+                    onChange={e=>setLegacyVicaryId(e.target.value)}
+                    className="mt-2 w-full rounded-xl border border-blue-100 bg-white px-3 py-2.5 font-bold"
+                  >
+                    <option value="">Seleccione Vicaría…</option>
+                    {(territory.vicaries||[]).map(item=><option key={item.id} value={item.id}>{item.name}</option>)}
+                  </select>
+                </label>
+                <label>
+                  <span className="text-[9px] font-black uppercase tracking-wider text-slate-500">Decanato · requerido</span>
+                  <select
+                    value={legacyDeaneryId}
+                    onChange={e=>setLegacyDeaneryId(e.target.value)}
+                    className="mt-2 w-full rounded-xl border border-blue-100 bg-white px-3 py-2.5 font-bold"
+                  >
+                    <option value="">Seleccione Decanato…</option>
+                    {legacyDeaneries.map(item=><option key={item.id} value={item.id}>{item.name}</option>)}
+                  </select>
+                </label>
+              </div>
+
+              <label className="mt-4 flex items-start gap-3 rounded-xl border border-blue-100 bg-white px-4 py-3 text-xs text-slate-700">
+                <input
+                  type="checkbox"
+                  checked={legacyCreateConfirmed}
+                  onChange={e=>setLegacyCreateConfirmed(e.target.checked)}
+                  className="mt-0.5 h-4 w-4"
+                />
+                <span>
+                  Confirmo que esta identidad corresponde a una parroquia real de mi jurisdicción y que no existe ya con otro nombre en SACRAMENTUM.
+                </span>
+              </label>
+
+              <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <p className="text-[10px] font-bold text-blue-800">
+                  Después de crearla, toda la instalación quedará vinculada y podrá materializarse por lotes auditables.
+                </p>
+                <Button
+                  type="button"
+                  disabled={!legacyCreateConfirmed||!legacyVicaryId||!legacyDeaneryId||!!busy}
+                  onClick={createParishFromSelectedInstallation}
+                  className="shrink-0 bg-[#4B7BA7] text-white hover:bg-[#3F6C95]"
+                >
+                  {busy==='creating-legacy-parish'?<Loader2 className="mr-2 h-4 w-4 animate-spin"/>:<Church className="mr-2 h-4 w-4"/>}
+                  Crear parroquia y vincular
+                </Button>
+              </div>
+            </div>}
 
             {selectedInstallation?.mapped_parish_id&&<div className="md:col-span-2 rounded-2xl border border-emerald-200 bg-emerald-50 p-4">
               <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">

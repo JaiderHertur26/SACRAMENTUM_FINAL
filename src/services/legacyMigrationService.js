@@ -404,6 +404,36 @@ export async function loadParishesForMigration(dioceseId = null) {
   return data || [];
 }
 
+export async function loadMigrationTerritory(dioceseId) {
+  if (!dioceseId) return { vicaries: [], deaneries: [] };
+  const [vicaryResult, deaneryResult] = await Promise.all([
+    supabase.from('vicarias').select('id,name,diocese_id').eq('diocese_id',dioceseId).order('name'),
+    supabase.from('decanatos').select('id,name,diocese_id,vicaria_id').eq('diocese_id',dioceseId).order('name'),
+  ]);
+  if (vicaryResult.error) throw vicaryResult.error;
+  if (deaneryResult.error) throw deaneryResult.error;
+  return {
+    vicaries: vicaryResult.data || [],
+    deaneries: deaneryResult.data || [],
+  };
+}
+
+export async function createParishFromLegacyInstallation({
+  installationId,
+  vicaryId = null,
+  deaneryId = null,
+} = {}) {
+  if (!installationId) throw new Error('Seleccione una instalación SACRAMENTA.');
+
+  const { data, error } = await supabase.rpc('create_parish_from_legacy_installation_v56', {
+    p_source_installation_id: installationId,
+    p_vicary_id: vicaryId || null,
+    p_deanery_id: deaneryId || null,
+  });
+  if (error) throw error;
+  return data || null;
+}
+
 export async function getLegacyMigrationSummary(batchId) {
   const { data: batch, error } = await supabase.from('legacy_import_batches').select('*').eq('id',batchId).single();
   if (error) throw error;
