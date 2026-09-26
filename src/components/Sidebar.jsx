@@ -245,7 +245,7 @@ const Sidebar = ({ isOpen, onClose, onLogout, role, menuItems: externalMenuItems
             { label: 'Usuarios Institucionales', path: '/admin/users', icon: Users },
             { label: 'Migración Histórica', path: '/admin/migration-center', icon: Archive },
             { label: 'Archivo Histórico Maestro', path: '/admin/legacy-archive', icon: Database },
-            { label: 'Plantillas Documentales', path: '/documentos/plantillas', icon: FileText },
+            { label: 'Centro Documental Eclesial', path: '/documentos/plantillas', icon: FileText },
         ];
     } 
     // 2. DIÓCESIS
@@ -258,7 +258,7 @@ const Sidebar = ({ isOpen, onClose, onLogout, role, menuItems: externalMenuItems
             { label: 'Chat Diocesano', path: '/communications', icon: MessageCircleMore, badgeCount: chatCount },
             { label: 'Migración Histórica', path: '/diocese/migration-center', icon: Archive },
             { label: 'Archivo Histórico Maestro', path: '/diocese/legacy-archive', icon: Database },
-            { label: 'Plantillas Documentales', path: '/documentos/plantillas', icon: FileText },
+            { label: 'Centro Documental Eclesial', path: '/documentos/plantillas', icon: FileText },
         ];
     } 
     // 3. PARROQUIA
@@ -315,7 +315,7 @@ const Sidebar = ({ isOpen, onClose, onLogout, role, menuItems: externalMenuItems
             { label: 'Libros Sacramentales', path: '/parroquia/libros', icon: BookOpen },
             { label: 'Reportes Registrales', path: '/parroquia/reportes-registrales', icon: BarChart3 },
             { label: 'Archivo Histórico', path: '/parroquia/archivo-historico', icon: Archive },
-            { label: 'Plantillas Documentales', path: '/documentos/plantillas', icon: FileText },
+            { label: 'Centro Documental Eclesial', path: '/documentos/plantillas', icon: FileText },
             { label: 'Datos Auxiliares', path: '/datos-auxiliares', icon: Database },
             { label: 'Parámetros', path: '/parroquia/bautismo/parametros', icon: Sliders },
             {
@@ -336,7 +336,7 @@ const Sidebar = ({ isOpen, onClose, onLogout, role, menuItems: externalMenuItems
         return [
             { label: 'Inicio', path: '/chancery/dashboard', icon: LayoutDashboard },
             { label: 'Buscador Unificado', path: '/buscar', icon: Search },
-            { label: 'Plantillas Documentales', path: '/documentos/plantillas', icon: FileText },
+            { label: 'Centro Documental Eclesial', path: '/documentos/plantillas', icon: FileText },
             {
                 label: 'Decretos',
                 icon: FileText,
