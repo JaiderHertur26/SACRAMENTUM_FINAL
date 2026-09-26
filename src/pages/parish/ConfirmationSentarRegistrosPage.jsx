@@ -215,8 +215,13 @@ const ConfirmationSentarRegistrosPage = () => {
     };
 
 
+    const hasPendingLinkedBaptism = (record) => (
+        Boolean(record?.linkedBaptismPendingId) && !record?.linkedBaptismRecordId
+    );
+
     const currentConfirmation = pendingConfirmations[currentIndex];
     const currentIsFuture = currentConfirmation ? isDateInFuture(currentConfirmation.fechaSacramento) : false;
+    const currentBaptismReferencePending = hasPendingLinkedBaptism(currentConfirmation);
 
     const handleReprint = () => {
         if (!currentConfirmation) return;
@@ -226,7 +231,7 @@ const ConfirmationSentarRegistrosPage = () => {
 
     // 🚀 LÓGICA DE ASENTAMIENTO INDIVIDUAL CON AUTO-ENLACE
     const handleRegisterIndividual = async () => {
-        if (!currentConfirmation || isSaving || currentIsFuture) return;
+        if (!currentConfirmation || isSaving || currentIsFuture || currentBaptismReferencePending) return;
 
         setIsSaving(true);
         try {
@@ -291,7 +296,7 @@ const ConfirmationSentarRegistrosPage = () => {
     const handleSelectAll = (checked) => {
         if (checked) {
             const validIds = pendingConfirmations
-                .filter(b => !isDateInFuture(b.fechaSacramento))
+                .filter(b => !isDateInFuture(b.fechaSacramento) && !hasPendingLinkedBaptism(b))
                 .map(b => b.id);
             setSelectedIds(validIds);
         } else {
@@ -299,8 +304,8 @@ const ConfirmationSentarRegistrosPage = () => {
         }
     };
 
-    const toggleSelection = (id, isFuture) => {
-        if (isFuture) return; 
+    const toggleSelection = (id, isFuture, baptismPending = false) => {
+        if (isFuture || baptismPending) return;
         if (selectedIds.includes(id)) setSelectedIds(selectedIds.filter(i => i !== id));
         else setSelectedIds([...selectedIds, id]);
     };
@@ -329,6 +334,10 @@ const ConfirmationSentarRegistrosPage = () => {
 
             for (const id of selectedIds) {
                 const conf = pendingConfirmations.find(c => c.id === id);
+                if (!conf) throw new Error('Uno de los registros seleccionados ya no está disponible.');
+                if (hasPendingLinkedBaptism(conf)) {
+                    throw new Error('Hay una Confirmación seleccionada cuyo Bautismo vinculado todavía no ha sido asentado.');
+                }
                 const curBook = String(cLibro).padStart(4, '0');
                 const curFolio = String(cFolio).padStart(4, '0');
                 const curEntry = String(cNumero).padStart(4, '0');
@@ -480,6 +489,18 @@ const ConfirmationSentarRegistrosPage = () => {
                                 </div>
                             )}
 
+                            {currentBaptismReferencePending && (
+                                <div className="flex items-center gap-4 bg-blue-50 p-6 rounded-2xl border border-blue-200 text-[#315F89]">
+                                    <Lock className="w-8 h-8 flex-shrink-0" />
+                                    <div>
+                                        <p className="font-black uppercase text-sm">Esperando partida de Bautismo</p>
+                                        <p className="text-xs font-bold opacity-80">
+                                            Esta Confirmación fue creada desde un Bautismo de candidato mayor. Primero debe asentarse el Bautismo; SACRAMENTUM incorporará automáticamente su Libro, Folio y Número.
+                                        </p>
+                                    </div>
+                                </div>
+                            )}
+
                             <div className="grid grid-cols-2 gap-10 opacity-100 bg-slate-50/50 p-6 rounded-2xl border border-slate-100">
                                 <div><label className="text-[10px] font-black text-slate-400 uppercase">Nº Registro Previo</label><p className="font-black text-[#4B7BA7] text-lg">#{currentConfirmation?.numeroRegistro || '---'}</p></div>
                                 <div><label className="text-[10px] font-black text-slate-400 uppercase">Lugar de Confirmación</label><p className="font-bold text-slate-700 uppercase">{currentConfirmation?.lugarSacramento || '---'}</p></div>
@@ -489,14 +510,22 @@ const ConfirmationSentarRegistrosPage = () => {
                                 <Button variant="outline" onClick={handleReprint} className="rounded-xl border-slate-300 text-slate-600 hover:bg-slate-50"><Printer className="mr-2 w-4 h-4" /> Re-imprimir Boleta</Button>
                                 <Button 
                                     onClick={handleRegisterIndividual} 
-                                    disabled={isSaving || currentIsFuture} 
+                                    disabled={isSaving || currentIsFuture || currentBaptismReferencePending}
                                     className={cn(
                                         "px-12 py-8 rounded-2xl font-black uppercase text-[10px] shadow-xl transition-all",
-                                        currentIsFuture ? "bg-slate-100 text-slate-400 cursor-not-allowed border border-slate-200 shadow-none" : "bg-[#4B7BA7] hover:bg-[#3F6C95] text-white hover:scale-105 shadow-blue-900/15"
+                                        (currentIsFuture || currentBaptismReferencePending)
+                                            ? "bg-slate-100 text-slate-400 cursor-not-allowed border border-slate-200 shadow-none"
+                                            : "bg-[#4B7BA7] hover:bg-[#3F6C95] text-white hover:scale-105 shadow-blue-900/15"
                                     )}
                                 >
-                                    {isSaving ? <Loader2 className="animate-spin mr-2 w-5 h-5" /> : (currentIsFuture ? <Lock className="mr-2 w-5 h-5" /> : <Save className="mr-2 w-5 h-5" />)}
-                                    {currentIsFuture ? "Bloqueado por Fecha" : "Firmar y Sellar Permanente"}
+                                    {isSaving
+                                        ? <Loader2 className="animate-spin mr-2 w-5 h-5" />
+                                        : ((currentIsFuture || currentBaptismReferencePending)
+                                            ? <Lock className="mr-2 w-5 h-5" />
+                                            : <Save className="mr-2 w-5 h-5" />)}
+                                    {currentBaptismReferencePending
+                                        ? "Primero Asentar Bautismo"
+                                        : (currentIsFuture ? "Bloqueado por Fecha" : "Firmar y Sellar Permanente")}
                                 </Button>
                             </div>
                         </div>
@@ -509,7 +538,7 @@ const ConfirmationSentarRegistrosPage = () => {
                         <table className="w-full text-left">
                             <thead className="bg-slate-50 border-b font-black text-[10px] text-slate-400 uppercase">
                                 <tr>
-                                    <th className="px-8 py-6 w-16 text-center"><button onClick={() => handleSelectAll(selectedIds.length !== pendingConfirmations.filter(b => !isDateInFuture(b.fechaSacramento)).length)}>{selectedIds.length > 0 && selectedIds.length === pendingConfirmations.filter(b => !isDateInFuture(b.fechaSacramento)).length ? <CheckSquare className="text-[#4B7BA7]" /> : <Square />}</button></th>
+                                    <th className="px-8 py-6 w-16 text-center"><button onClick={() => handleSelectAll(selectedIds.length !== pendingConfirmations.filter(b => !isDateInFuture(b.fechaSacramento) && !hasPendingLinkedBaptism(b)).length)}>{selectedIds.length > 0 && selectedIds.length === pendingConfirmations.filter(b => !isDateInFuture(b.fechaSacramento) && !hasPendingLinkedBaptism(b)).length ? <CheckSquare className="text-[#4B7BA7]" /> : <Square />}</button></th>
                                     <th className="px-6 py-6">ESTADO</th>
                                     <th className="px-6 py-6">Confirmando</th>
                                     <th className="px-6 py-6">Fecha Sacramento</th>
@@ -519,27 +548,33 @@ const ConfirmationSentarRegistrosPage = () => {
                             <tbody className="divide-y divide-slate-100">
                                 {pendingConfirmations.map(conf => {
                                     const isFuture = isDateInFuture(conf.fechaSacramento);
+                                    const baptismPending = hasPendingLinkedBaptism(conf);
+                                    const isBlocked = isFuture || baptismPending;
                                     const isSelected = selectedIds.includes(conf.id);
                                     return (
                                         <tr 
                                             key={conf.id} 
-                                            onClick={() => toggleSelection(conf.id, isFuture)} 
+                                            onClick={() => toggleSelection(conf.id, isFuture, baptismPending)}
                                             className={cn(
                                                 "transition-colors", 
-                                                isFuture ? "bg-slate-50/50 cursor-not-allowed opacity-60" : "cursor-pointer hover:bg-blue-50/30",
+                                                isBlocked ? "bg-slate-50/50 cursor-not-allowed opacity-60" : "cursor-pointer hover:bg-blue-50/30",
                                                 isSelected ? "bg-blue-50/60" : ""
                                             )}
                                         >
                                             <td className="px-8 py-4 text-center">
-                                                {!isFuture && (
+                                                {!isBlocked && (
                                                     <div className={cn("w-5 h-5 rounded border-2 flex items-center justify-center mx-auto", isSelected ? "bg-[#4B7BA7] border-[#4B7BA7]" : "border-slate-300")}>
                                                         {isSelected && <CheckCircle2 className="w-3 h-3 text-white" />}
                                                     </div>
                                                 )}
-                                                {isFuture && <Lock className="w-4 h-4 text-slate-300 mx-auto" />}
+                                                {isBlocked && <Lock className="w-4 h-4 text-slate-300 mx-auto" />}
                                             </td>
                                             <td className="px-6 py-4">
-                                                {isFuture ? <span className="text-[8px] font-black bg-slate-100 text-slate-500 px-2 py-1 rounded-full uppercase border border-slate-200">Futuro</span> : <span className="text-[8px] font-black bg-green-100 text-green-700 px-2 py-1 rounded-full uppercase border border-green-200">Listo</span>}
+                                                {baptismPending
+                                                    ? <span className="text-[8px] font-black bg-blue-50 text-[#315F89] px-2 py-1 rounded-full uppercase border border-blue-200">Esperando Bautismo</span>
+                                                    : isFuture
+                                                        ? <span className="text-[8px] font-black bg-slate-100 text-slate-500 px-2 py-1 rounded-full uppercase border border-slate-200">Futuro</span>
+                                                        : <span className="text-[8px] font-black bg-green-100 text-green-700 px-2 py-1 rounded-full uppercase border border-green-200">Listo</span>}
                                             </td>
                                             <td className="px-6 py-4">
                                                 <p className="font-black uppercase text-xs text-slate-800">{conf.apellidos}, {conf.nombres}</p>
