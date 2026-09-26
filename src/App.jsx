@@ -35,6 +35,7 @@ const AdminGeneralDashboard = lazy(() => import('@/pages/admin/AdminGeneralDashb
 const DioceseListPage = lazy(() => import('@/pages/admin/DioceseListPage'));
 const UserListPage = lazy(() => import('@/pages/admin/UserListPage'));
 const LegacyMigrationCenterPage = lazy(() => import('@/pages/admin/LegacyMigrationCenterPage'));
+const LegacyArchivePage = lazy(() => import('@/pages/admin/LegacyArchivePage'));
 
 /* =========================
    DIOCESE PAGES
@@ -79,6 +80,9 @@ const MatrimonioSentarRegistrosPage = lazy(() => import('@/pages/parish/Matrimon
 const MarriageIndexPage = lazy(() => import('@/pages/parish/MarriageIndexPage'));
 const MatrimonioParametersPage = lazy(() => import('@/pages/parish/MatrimonioParametersPage'));
 const MatrimonioPartidasPage = lazy(() => import('@/pages/parish/MatrimonioPartidasPage'));
+const MarriageDossierPage = lazy(() => import('@/pages/parish/MarriageDossierPage'));
+const ConfirmationNotificationPage = lazy(() => import('@/pages/parish/ConfirmationNotificationPage'));
+const SacramentalBooksPage = lazy(() => import('@/pages/parish/SacramentalBooksPage'));
 const FuneralRegistryPage = lazy(() => import('@/pages/parish/FuneralRegistryPage'));
 const FuneralPartidasPage = lazy(() => import('@/pages/parish/FuneralPartidasPage'));
 
@@ -157,6 +161,7 @@ const AppContent = () => {
                 <Route path="/admin/users" element={<ProtectedRoute requiredRole={ROLE_TYPES.ADMIN_GENERAL}><UserListPage /></ProtectedRoute>} />
                 <Route path="/admin/settings" element={<Navigate to="/admin/dashboard" replace />} />
                 <Route path="/admin/migration-center" element={<ProtectedRoute requiredRole={ROLE_TYPES.ADMIN_GENERAL}><LegacyMigrationCenterPage /></ProtectedRoute>} />
+                <Route path="/admin/legacy-archive" element={<ProtectedRoute requiredRole={ROLE_TYPES.ADMIN_GENERAL}><LegacyArchivePage /></ProtectedRoute>} />
                 <Route path="/admin/users/diocese" element={<Navigate to="/admin/users" replace />} />
 
                 {/* -------- DIOCESE -------- */}
@@ -165,6 +170,7 @@ const AppContent = () => {
                 <Route path="/diocese/settings" element={<Navigate to="/diocese/dashboard" replace />} />
                 <Route path="/diocese/parishes" element={<Navigate to="/diocese/ecclesiastical" replace />} />
                 <Route path="/diocese/migration-center" element={<ProtectedRoute requiredRole={ROLE_TYPES.DIOCESE}><LegacyMigrationCenterPage /></ProtectedRoute>} />
+                <Route path="/diocese/legacy-archive" element={<ProtectedRoute requiredRole={ROLE_TYPES.DIOCESE}><LegacyArchivePage /></ProtectedRoute>} />
                 <Route path="/diocese/reports" element={<ProtectedRoute requiredRole={ROLE_TYPES.DIOCESE}><DiocesanSacramentalReportsPage /></ProtectedRoute>} />
 
                 {/* -------- PARISH -------- */}
@@ -174,6 +180,7 @@ const AppContent = () => {
                 <Route path="/parish/decrees/:decreeId" element={<ProtectedRoute requiredRole={ROLE_TYPES.PARISH}><ParishDecreeDetailPage /></ProtectedRoute>} />
                 <Route path="/parroquia/ajustes" element={<ProtectedRoute requiredRole={ROLE_TYPES.PARISH}><ParroquiaAjustesPage /></ProtectedRoute>} />
                 <Route path="/datos-auxiliares" element={<ProtectedRoute requiredRole={ROLE_TYPES.PARISH}><DatosAuxiliaresPage /></ProtectedRoute>} />
+                <Route path="/parroquia/libros" element={<ProtectedRoute requiredRole={ROLE_TYPES.PARISH}><SacramentalBooksPage /></ProtectedRoute>} />
 
                 {/* --- BAPTISM ROUTES --- */}
                 <Route path="/parroquia/bautismo/nuevo" element={<ProtectedRoute requiredRole={ROLE_TYPES.PARISH}><BaptismNewPage /></ProtectedRoute>} />
@@ -218,6 +225,7 @@ const AppContent = () => {
                 <Route path="/parroquia/confirmacion/partidas" element={<ProtectedRoute requiredRole={ROLE_TYPES.PARISH}><ConfirmationPartidasPage /></ProtectedRoute>} />
                 <Route path="/parroquia/confirmacion/indice" element={<ProtectedRoute requiredRole={ROLE_TYPES.PARISH}><ConfirmationIndexPage /></ProtectedRoute>} />
                 <Route path="/parroquia/confirmacion/parametros" element={<ProtectedRoute requiredRole={ROLE_TYPES.PARISH}><ConfirmationParametersPage /></ProtectedRoute>} />
+                <Route path="/parroquia/confirmacion/notificacion" element={<ProtectedRoute requiredRole={ROLE_TYPES.PARISH}><ConfirmationNotificationPage /></ProtectedRoute>} />
 
                 {/* --- MATRIMONIO ROUTES --- */}
                 <Route path="/parroquia/matrimonio/nuevo" element={<ProtectedRoute requiredRole={ROLE_TYPES.PARISH}><MatrimonioNewPage /></ProtectedRoute>} />
@@ -228,6 +236,7 @@ const AppContent = () => {
                 <Route path="/parroquia/matrimonio/partidas" element={<ProtectedRoute requiredRole={ROLE_TYPES.PARISH}><MatrimonioPartidasPage /></ProtectedRoute>} />
                 <Route path="/parroquia/matrimonio/indice" element={<ProtectedRoute requiredRole={ROLE_TYPES.PARISH}><MarriageIndexPage /></ProtectedRoute>} />
                 <Route path="/parroquia/matrimonio/parametros" element={<ProtectedRoute requiredRole={ROLE_TYPES.PARISH}><MatrimonioParametersPage /></ProtectedRoute>} />
+                <Route path="/parroquia/matrimonio/expedientes" element={<ProtectedRoute requiredRole={ROLE_TYPES.PARISH}><MarriageDossierPage /></ProtectedRoute>} />
 
                 {/* --- EXEQUIAS --- */}
                 <Route path="/parroquia/exequias" element={<ProtectedRoute requiredRole={ROLE_TYPES.PARISH}><FuneralRegistryPage /></ProtectedRoute>} />
@@ -253,6 +262,7 @@ const AppContent = () => {
                 {/* -------- CHANCERY -------- */}
                 <Route path="/chancery/dashboard" element={<ProtectedRoute requiredRole={ROLE_TYPES.CHANCERY}><ChanceryDashboard /></ProtectedRoute>} />
                 <Route path="/chancery/pending" element={<ProtectedRoute requiredRole={ROLE_TYPES.CHANCERY}><ChanceryPendingPage /></ProtectedRoute>} />
+                <Route path="/chancery/legacy-archive" element={<ProtectedRoute requiredRole={ROLE_TYPES.CHANCERY}><LegacyArchivePage /></ProtectedRoute>} />
                 <Route path="/chancery/certifications" element={<Navigate to="/chancery/dashboard" replace />} />
                 <Route path="/chancery/backups" element={<Navigate to="/chancery/dashboard" replace />} />
 

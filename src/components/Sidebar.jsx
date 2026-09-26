@@ -244,6 +244,7 @@ const Sidebar = ({ isOpen, onClose, onLogout, role, menuItems: externalMenuItems
             { label: 'Diócesis/Arquidiócesis', path: '/admin/dioceses', icon: Church },
             { label: 'Usuarios Institucionales', path: '/admin/users', icon: Users },
             { label: 'Migración Histórica', path: '/admin/migration-center', icon: Archive },
+            { label: 'Archivo Histórico Maestro', path: '/admin/legacy-archive', icon: Database },
             { label: 'Plantillas Documentales', path: '/documentos/plantillas', icon: FileText },
         ];
     } 
@@ -256,6 +257,7 @@ const Sidebar = ({ isOpen, onClose, onLogout, role, menuItems: externalMenuItems
             { label: 'Informes Sacramentales', path: '/diocese/reports', icon: BarChart3 },
             { label: 'Chat Diocesano', path: '/communications', icon: MessageCircleMore, badgeCount: chatCount },
             { label: 'Migración Histórica', path: '/diocese/migration-center', icon: Archive },
+            { label: 'Archivo Histórico Maestro', path: '/diocese/legacy-archive', icon: Database },
             { label: 'Plantillas Documentales', path: '/documentos/plantillas', icon: FileText },
         ];
     } 
@@ -285,7 +287,8 @@ const Sidebar = ({ isOpen, onClose, onLogout, role, menuItems: externalMenuItems
                     { label: 'Confirmación Celebrada', path: '/parroquia/confirmacion/celebrado' },
                     { label: 'Sentar Registros', path: '/parroquia/confirmacion/sentar-registros' },
                     { label: 'Partidas', path: '/parroquia/confirmacion/partidas' },
-                    { label: 'Índice General', path: '/parroquia/confirmacion/indice', icon: List }
+                    { label: 'Índice General', path: '/parroquia/confirmacion/indice', icon: List },
+                    { label: 'Emitir Notificación', path: '/parroquia/confirmacion/notificacion', icon: Mail }
                 ]
             },
             { 
@@ -297,6 +300,7 @@ const Sidebar = ({ isOpen, onClose, onLogout, role, menuItems: externalMenuItems
                     { label: 'Sentar Registros', path: '/parroquia/matrimonio/sentar-registros' },
                     { label: 'Partidas', path: '/parroquia/matrimonio/partidas' },
                     { label: 'Índice General', path: '/parroquia/matrimonio/indice', icon: List },
+                    { label: 'Expediente Matrimonial', path: '/parroquia/matrimonio/expedientes', icon: FileText },
                     { label: 'Emitir Notificación', path: '/parroquia/matrimonio/notificacion', icon: Mail }
                 ]
             },
@@ -308,6 +312,7 @@ const Sidebar = ({ isOpen, onClose, onLogout, role, menuItems: externalMenuItems
                     { label: 'Partidas de Exequias', path: '/parroquia/exequias/partidas', icon: List }
                 ]
             },
+            { label: 'Libros Sacramentales', path: '/parroquia/libros', icon: BookOpen },
             { label: 'Plantillas Documentales', path: '/documentos/plantillas', icon: FileText },
             { label: 'Datos Auxiliares', path: '/datos-auxiliares', icon: Database },
             { label: 'Parámetros', path: '/parroquia/bautismo/parametros', icon: Sliders },
@@ -339,6 +344,7 @@ const Sidebar = ({ isOpen, onClose, onLogout, role, menuItems: externalMenuItems
                 ]
             },
             { label: 'Pendientes', path: '/chancery/pending', icon: ScrollText },
+            { label: 'Archivo Histórico Maestro', path: '/chancery/legacy-archive', icon: Database },
             { label: 'Chat Diocesano', path: '/communications', icon: MessageCircleMore, badgeCount: chatCount }
         ];
     }

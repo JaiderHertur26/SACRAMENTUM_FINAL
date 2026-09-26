@@ -9,7 +9,9 @@ import {
 } from 'lucide-react';
 import {
   analyzeLegacyRows, applyLegacyBatch, createLegacyBatch, getLegacyMigrationSummary,
-  listLegacyBatches, loadParishesForMigration, parseLegacyJsonFile, sha256File, stageLegacyRows
+  listLegacyBatches, listLegacySourceInstallations, loadParishesForMigration,
+  importLegacyInstallationFolder, mapLegacySourceInstallation, parseLegacyJsonFile,
+  registerLegacySourceInstallation, sha256File, stageLegacyRows
 } from '@/services/legacyMigrationService';
 import { LEGACY_IMPORT_PROFILES, profileOptions } from '@/config/legacyImportProfiles';
 import { normalizeRole } from '@/lib/authz';
@@ -32,6 +34,8 @@ const TARGET_ENTITY_LABELS = Object.freeze({
   legacy_priest_directory: 'Directorio histórico de párrocos',
   legacy_reference_catalog: 'Catálogo histórico auxiliar',
   legacy_marginal_note: 'Notas históricas / marginales',
+  legacy_archive: 'Archivo histórico universal',
+  legacy_report_definition: 'Catálogo técnico FRX/FRT',
 });
 
 const targetEntityLabel = (value) => TARGET_ENTITY_LABELS[value] || value || '—';
@@ -62,15 +66,29 @@ const LegacyMigrationCenterPage = () => {
   const [hash,setHash] = useState('');
   const [parishes,setParishes] = useState([]);
   const [parishId,setParishId] = useState('');
+  const [installations,setInstallations] = useState([]);
+  const [sourceInstallationId,setSourceInstallationId] = useState('');
+  const [mappingParishId,setMappingParishId] = useState('');
   const [batches,setBatches] = useState([]);
   const [currentBatch,setCurrentBatch] = useState(null);
   const [busy,setBusy] = useState('');
   const [progress,setProgress] = useState(null);
+  const [bulkSummary,setBulkSummary] = useState(null);
   const [error,setError] = useState('');
 
   const importProfile = profileKey ? LEGACY_IMPORT_PROFILES[profileKey] : null;
   const isHistoricalBallot = ['INSBAUTI','INSCONFI'].includes(profileKey);
-  const allowParishSelection = true;
+  const allowParishSelection = importProfile?.requiresParish !== false;
+  const selectedInstallation = useMemo(
+    () => installations.find(item => item.id===sourceInstallationId) || null,
+    [installations,sourceInstallationId]
+  );
+  const archiveOnlyUntilMapped = Boolean(
+    importProfile?.requiresParish
+    && selectedInstallation
+    && !selectedInstallation.mapped_parish_id
+    && !parishId
+  );
   const counts = useMemo(() => analysis.reduce((acc,r)=>{ acc[r.status]=(acc[r.status]||0)+1; return acc; },{}),[analysis]);
   const noteCounts = useMemo(() => analysis.reduce((acc,r)=>{
     if (String(profileKey).startsWith('NTMAT')) {
@@ -96,11 +114,59 @@ const LegacyMigrationCenterPage = () => {
     catch(e){ console.error(e); }
   };
 
+  const refreshInstallations = async () => {
+    const rows = await listLegacySourceInstallations({dioceseId: role==='admin_general' ? null : userDioceseId});
+    setInstallations(rows || []);
+    return rows || [];
+  };
+
   useEffect(()=>{
-    Promise.all([loadParishesForMigration(role==='admin_general' ? null : userDioceseId), refreshBatches()])
+    Promise.all([
+      loadParishesForMigration(role==='admin_general' ? null : userDioceseId),
+      refreshBatches(),
+      refreshInstallations()
+    ])
       .then(([p])=>setParishes(p || []))
       .catch(e=>setError(e.message));
   },[role,userDioceseId]);
+
+  useEffect(()=>{
+    if (selectedInstallation?.mapped_parish_id) {
+      setParishId(selectedInstallation.mapped_parish_id);
+    }
+  },[selectedInstallation?.mapped_parish_id]);
+
+  const importFullInstallation = async (pickedFiles) => {
+    const files=Array.from(pickedFiles || []);
+    if (!files.length) return;
+    setBusy('bulk'); setError(''); setBulkSummary(null);
+    setProgress({message:'Leyendo instalación completa…'});
+    try {
+      const summary=await importLegacyInstallationFolder({
+        files,
+        parishId:parishId || null,
+        dioceseId:role==='admin_general' ? null : userDioceseId,
+        onProgress:(p)=>{
+          if(p.phase==='reading') setProgress({message:`Leyendo ${p.file} · ${p.index}/${p.total}`});
+          else if(p.phase==='manifest') setProgress({message:`Registrando derivado ${p.file} · ${p.index}/${p.total}`});
+          else if(p.phase==='staging') setProgress({message:`Preservando ${p.file} · ${p.staged ?? 0}/${p.rows ?? 0} filas`});
+          else if(p.phase==='done') setProgress({message:'Instalación preservada completamente.'});
+        }
+      });
+      setBulkSummary(summary);
+      setSourceInstallationId(summary.installationId || '');
+      await Promise.all([refreshInstallations(),refreshBatches()]);
+      toast({
+        title:'Instalación legacy preservada',
+        description:`${summary.primaryFiles} archivos fuente · ${summary.rows} filas leídas · ${summary.review} en revisión. Nada fue descartado.`,
+        className:'bg-green-50 text-green-900 border-green-200'
+      });
+    } catch(e) {
+      setError(e.message);
+    } finally {
+      setBusy(''); setProgress(null);
+    }
+  };
 
   const onFile = async (picked) => {
     if (!picked) return;
@@ -126,15 +192,39 @@ const LegacyMigrationCenterPage = () => {
 
   const stage = async () => {
     if (!file || !profileKey || !analysis.length) return;
-    if (!parishId) { setError('Selecciona la parroquia propietaria. Toda importación debe quedar ligada a una parroquia.'); return; }
+    if (importProfile?.requiresParish !== false && !parishId && !sourceInstallationId && profileKey!=='MISDATOS') {
+      setError('Selecciona la parroquia propietaria o la instalación SACRAMENTA de origen.');
+      return;
+    }
     setBusy('staging'); setError(''); setProgress({message:'Creando lote seguro...'});
     try {
+      let activeInstallationId = sourceInstallationId;
+
+      if (profileKey==='MISDATOS' && !activeInstallationId) {
+        const identity = rows[0] || {};
+        activeInstallationId = await registerLegacySourceInstallation({
+          identity,
+          mappedParishId: parishId || null,
+          sourceName: identity?.nombre || file.name
+        });
+        setSourceInstallationId(activeInstallationId);
+        await refreshInstallations();
+      }
+
       const chosenParish = parishes.find(p=>p.id===parishId);
       const batchId = await createLegacyBatch({
         filename:file.name, profileKey, hash, sourceName:`${profileKey}.json`,
         parishId: parishId || null,
-        dioceseId: chosenParish?.diocese_id || userDioceseId || null,
-        metadata:{ file_size:file.size, analyzed_client_side:true, structure_version:'fase3-relational-v3', source_scope:hash, reconciliation_mode:['INSBAUTI','INSCONFI'].includes(profileKey) ? 'historical_boleta_crossmatch' : 'standard', boleta_counts:['INSBAUTI','INSCONFI'].includes(profileKey) ? { reported:boletaCounts.reported, not_seated:boletaCounts.notSeated } : undefined }
+        dioceseId: chosenParish?.diocese_id || selectedInstallation?.owner_diocese_id || userDioceseId || null,
+        metadata:{
+          file_size:file.size,
+          analyzed_client_side:true,
+          structure_version:'legacy-master-v45',
+          source_scope:hash,
+          source_installation_id:activeInstallationId || null,
+          reconciliation_mode:['INSBAUTI','INSCONFI'].includes(profileKey) ? 'historical_boleta_crossmatch' : 'standard',
+          boleta_counts:['INSBAUTI','INSCONFI'].includes(profileKey) ? { reported:boletaCounts.reported, not_seated:boletaCounts.notSeated } : undefined
+        }
       });
       await stageLegacyRows(batchId,analysis,200,({staged,total})=>setProgress({message:`Guardando staging ${staged}/${total}` }),hash);
       const batch = await getLegacyMigrationSummary(batchId);
@@ -145,8 +235,35 @@ const LegacyMigrationCenterPage = () => {
     finally { setBusy(''); setProgress(null); }
   };
 
+  const mapSelectedInstallation = async () => {
+    if (!sourceInstallationId || !mappingParishId) return;
+    setBusy('mapping'); setError('');
+    try {
+      await mapLegacySourceInstallation({
+        installationId:sourceInstallationId,
+        parishId:mappingParishId
+      });
+      const refreshed = await refreshInstallations();
+      const mapped = refreshed.find(item=>item.id===sourceInstallationId);
+      setParishId(mapped?.mapped_parish_id || mappingParishId);
+      setMappingParishId('');
+      if (currentBatch?.id) setCurrentBatch(await getLegacyMigrationSummary(currentBatch.id));
+      await refreshBatches();
+      toast({
+        title:'Instalación legacy vinculada',
+        description:'Los lotes archivados de esta instalación ya tienen parroquia propietaria verificada.',
+        className:'bg-green-50 text-green-900 border-green-200'
+      });
+    } catch(e) { setError(e.message); }
+    finally { setBusy(''); }
+  };
+
   const applyValid = async () => {
     if (!currentBatch?.id) return;
+    if (importProfile?.requiresParish && !currentBatch.parish_id) {
+      setError('Este lote está preservado, pero no puede materializarse hasta vincular su instalación legacy con una parroquia moderna.');
+      return;
+    }
     setBusy('applying'); setError('');
     try {
       const result = await applyLegacyBatch(currentBatch.id,{
@@ -200,6 +317,51 @@ const LegacyMigrationCenterPage = () => {
         <div className="bg-amber-50 border border-amber-100 rounded-[2rem] p-6"><div className="flex gap-3"><LockKeyhole className="w-5 h-5 text-amber-700 shrink-0"/><div><h3 className="font-black text-amber-950">Ámbito seguro</h3><p className="text-xs text-amber-800 mt-1">Solo Administrador General o Diócesis pueden ejecutar migraciones. Cancillería puede auditar posteriormente.</p></div></div></div>
       </div>
 
+      <div className="rounded-[2rem] border border-emerald-100 bg-gradient-to-br from-emerald-50 to-white p-6 shadow-sm">
+        <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+          <div className="max-w-3xl">
+            <div className="inline-flex items-center gap-2 rounded-full bg-emerald-900 px-3 py-1 text-[9px] font-black uppercase tracking-[0.2em] text-white">
+              <Archive className="h-3.5 w-3.5"/> Instalación completa
+            </div>
+            <h2 className="mt-3 text-2xl font-black text-slate-950">Preservar toda una base SACRAMENTA</h2>
+            <p className="mt-2 text-sm leading-relaxed text-slate-600">
+              Seleccione la carpeta JSON convertida. SACRAMENTUM detecta MISDATOS, crea la identidad de la instalación antigua,
+              registra cada archivo, conserva cada fila original y deja las tablas sin equivalente moderno en el Archivo Histórico Maestro.
+              Los archivos <b>*_transformado.json</b> se registran como derivados, sin duplicar sus filas.
+            </p>
+            <p className="mt-2 text-xs font-bold text-emerald-800">
+              Si no se ha verificado una parroquia moderna equivalente, deje la parroquia vacía: la instalación queda preservada sin mezclar datos.
+            </p>
+          </div>
+          <label className={`inline-flex min-w-64 cursor-pointer items-center justify-center rounded-2xl px-6 py-4 font-black transition ${busy==='bulk'?'bg-slate-200 text-slate-500':'bg-emerald-800 text-white hover:bg-emerald-900'}`}>
+            {busy==='bulk'?<Loader2 className="mr-2 h-5 w-5 animate-spin"/>:<UploadCloud className="mr-2 h-5 w-5"/>}
+            {busy==='bulk'?'Preservando instalación…':'Seleccionar carpeta completa'}
+            <input
+              type="file"
+              accept="application/json,.json"
+              multiple
+              webkitdirectory=""
+              directory=""
+              disabled={!!busy}
+              className="hidden"
+              onChange={e=>importFullInstallation(e.target.files)}
+            />
+          </label>
+        </div>
+
+        {bulkSummary&&<div className="mt-5 grid grid-cols-2 gap-3 border-t border-emerald-100 pt-5 md:grid-cols-6">
+          {statCard('Archivos',bulkSummary.files,FileJson,'green')}
+          {statCard('Fuentes',bulkSummary.primaryFiles,Database,'blue')}
+          {statCard('Derivados',bulkSummary.derivedFiles,FileText,'slate')}
+          {statCard('Filas leídas',bulkSummary.rows,Database,'green')}
+          {statCard('Revisión',bulkSummary.review,AlertTriangle,'amber')}
+          {statCard('Errores',bulkSummary.error,AlertTriangle,bulkSummary.error?'red':'slate')}
+        </div>}
+        {bulkSummary&&<div className="mt-3 rounded-xl border border-emerald-100 bg-white px-4 py-3 text-xs text-emerald-900">
+          <b>{bulkSummary.sourceName}</b> · instalación {String(bulkSummary.installationId||'').slice(0,8)}… · {bulkSummary.emptyFiles} tablas vacías documentadas · {bulkSummary.batches.length} lotes primarios preservados.
+        </div>}
+      </div>
+
       <div className="bg-white border border-slate-100 rounded-[2rem] shadow-sm overflow-hidden">
         <div className="p-6 border-b border-slate-100 flex items-center gap-3"><div className="p-2.5 bg-blue-50 text-blue-700 rounded-xl"><UploadCloud className="w-5 h-5"/></div><div><h2 className="font-black">1. Cargar y analizar estructura</h2><p className="text-xs text-slate-500">El análisis ocurre antes de tocar Supabase.</p></div></div>
         <div className="p-6 grid grid-cols-1 lg:grid-cols-3 gap-5">
@@ -210,7 +372,9 @@ const LegacyMigrationCenterPage = () => {
           </label>
           <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4 content-start">
             <div><label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Perfil detectado</label><select className="w-full mt-2 border rounded-xl px-4 py-3 font-bold bg-white" value={profileKey} onChange={e=>setProfileKey(e.target.value)}>{!profileKey&&<option value="">Seleccione…</option>}{profileOptions.map(p=><option key={p.key} value={p.key}>{p.key} · {p.label}</option>)}</select></div>
-            <div><label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Parroquia propietaria · obligatoria</label><select disabled={!allowParishSelection} className="w-full mt-2 border rounded-xl px-4 py-3 font-bold bg-white disabled:bg-slate-50 disabled:text-slate-400" value={parishId} onChange={e=>setParishId(e.target.value)}><option value="">Seleccione la parroquia propietaria…</option>{parishes.map(p=><option key={p.id} value={p.id}>{p.name}{p.city?` · ${p.city}`:''}</option>)}</select></div>
+            <div><label className="text-[10px] font-black uppercase tracking-widest text-slate-400">{allowParishSelection ? 'Parroquia moderna · si está verificada' : 'Parroquia moderna · no aplica'}</label><select disabled={!allowParishSelection || Boolean(selectedInstallation?.mapped_parish_id)} className="w-full mt-2 border rounded-xl px-4 py-3 font-bold bg-white disabled:bg-slate-50 disabled:text-slate-400" value={parishId} onChange={e=>setParishId(e.target.value)}><option value="">Aún no vincular a una parroquia…</option>{parishes.map(p=><option key={p.id} value={p.id}>{p.name}{p.city?` · ${p.city}`:''}</option>)}</select></div>
+            <div className="md:col-span-2"><label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Instalación SACRAMENTA de origen</label><select className="w-full mt-2 border rounded-xl px-4 py-3 font-bold bg-white" value={sourceInstallationId} onChange={e=>{setSourceInstallationId(e.target.value);setParishId('');}}><option value="">{profileKey==='MISDATOS'?'Se creará desde MISDATOS al guardar…':'Seleccione la instalación antigua…'}</option>{installations.map(item=><option key={item.id} value={item.id}>{item.legacy_parish_name||item.source_name} · {item.mapping_status==='mapped'?'VINCULADA':'SIN VINCULAR'}</option>)}</select>{selectedInstallation&&<div className={`mt-2 rounded-xl border px-3 py-2 text-xs ${selectedInstallation.mapped_parish_id?'border-green-100 bg-green-50 text-green-800':'border-amber-100 bg-amber-50 text-amber-800'}`}><b>{selectedInstallation.legacy_parish_name||selectedInstallation.source_name}</b> · {selectedInstallation.legacy_diocese_name||'Diócesis no informada'} · {selectedInstallation.mapping_status==='mapped'?'Parroquia moderna verificada':'Preservación solamente; no materializar todavía'}</div>}</div>
+            {selectedInstallation&&!selectedInstallation.mapped_parish_id&&<div className="md:col-span-2 rounded-2xl border border-amber-200 bg-amber-50 p-4"><div className="flex flex-col gap-3 md:flex-row md:items-end"><label className="flex-1"><span className="text-[9px] font-black uppercase tracking-wider text-amber-800">Vincular instalación cuando esté verificada</span><select value={mappingParishId} onChange={e=>setMappingParishId(e.target.value)} className="mt-2 w-full rounded-xl border border-amber-200 bg-white px-3 py-2.5 font-bold"><option value="">Seleccione parroquia moderna…</option>{parishes.map(p=><option key={p.id} value={p.id}>{p.name}{p.city?` · ${p.city}`:''}</option>)}</select></label><Button type="button" variant="outline" disabled={!mappingParishId||busy==='mapping'} onClick={mapSelectedInstallation}>{busy==='mapping'?<Loader2 className="mr-2 h-4 w-4 animate-spin"/>:<GitMerge className="mr-2 h-4 w-4"/>}Vincular instalación</Button></div><p className="mt-2 text-[10px] text-amber-800">No vincule por parecido de nombre. Debe corresponder exactamente a la misma parroquia histórica.</p></div>}
             <div className="md:col-span-2 flex flex-wrap gap-2"><Button variant="outline" disabled={!rows.length||!profileKey} onClick={reanalyze} className="rounded-xl gap-2"><GitMerge className="w-4 h-4"/> Reanalizar con este perfil</Button>{file&&<div className="px-4 py-2 rounded-xl bg-slate-50 text-xs text-slate-600"><b>{file.name}</b> · {rows.length} filas · SHA-256 {hash.slice(0,12)}…</div>}</div>
           </div>
         </div>
@@ -230,7 +394,7 @@ const LegacyMigrationCenterPage = () => {
       </>}
 
       {currentBatch&&<div className="bg-white border border-blue-100 rounded-[2rem] p-6 shadow-sm"><div className="flex flex-col lg:flex-row justify-between gap-5"><div><span className="text-[9px] font-black uppercase tracking-[0.2em] text-blue-600">Lote {currentBatch.id.slice(0,8)}</span><h3 className="text-xl font-black mt-1">Staging listo</h3><p className="text-sm text-slate-500 mt-1">{currentBatch.valid_count} válidos · {currentBatch.review_count} en revisión · {currentBatch.error_count} errores</p>{currentBatch.metadata?.reconciliation&&<div className="flex flex-wrap gap-2 mt-3 text-[9px] font-black uppercase"><span className="px-2.5 py-1 rounded-full bg-green-50 text-green-700">Conciliados {currentBatch.metadata.reconciliation.matched||0}</span><span className="px-2.5 py-1 rounded-full bg-slate-100 text-slate-700">Reportadas sin partida {currentBatch.metadata.reconciliation.unmatched||0}</span><span className="px-2.5 py-1 rounded-full bg-amber-50 text-amber-700">Ambiguos {currentBatch.metadata.reconciliation.ambiguous||0}</span><span className="px-2.5 py-1 rounded-full bg-orange-50 text-orange-700">Revisión {currentBatch.metadata.reconciliation.review||0}</span></div>}
-          {currentBatch.metadata?.note_reconciliation&&<div className="flex flex-wrap gap-2 mt-3 text-[9px] font-black uppercase"><span className="px-2.5 py-1 rounded-full bg-green-50 text-green-700">Notas enlazadas {currentBatch.metadata.note_reconciliation.total_matched ?? currentBatch.metadata.note_reconciliation.matched ?? 0}</span><span className="px-2.5 py-1 rounded-full bg-slate-100 text-slate-700">En espera de partida {currentBatch.metadata.note_reconciliation.total_pending ?? currentBatch.metadata.note_reconciliation.pending ?? 0}</span><span className="px-2.5 py-1 rounded-full bg-amber-50 text-amber-700">Referencias ambiguas {currentBatch.metadata.note_reconciliation.total_ambiguous ?? currentBatch.metadata.note_reconciliation.ambiguous ?? 0}</span></div>}</div><Button disabled={!!busy||!currentBatch.valid_count} onClick={applyValid} className="rounded-xl px-6 gap-2 bg-green-700 hover:bg-green-800 text-white font-bold border border-green-700 [&_svg]:text-white disabled:bg-slate-200 disabled:text-slate-500 disabled:border-slate-200 disabled:[&_svg]:text-slate-500">{busy==='applying'?<Loader2 className="w-4 h-4 animate-spin"/>:<Play className="w-4 h-4"/>} {['INSBAUTI','INSCONFI'].includes(profileKey)?'Importar todas las boletas':'Importar únicamente válidos'}</Button></div>{progress&&<div className="mt-4 p-3 rounded-xl bg-blue-50 text-blue-800 text-xs font-bold">{progress.message}</div>}</div>}
+          {currentBatch.metadata?.note_reconciliation&&<div className="flex flex-wrap gap-2 mt-3 text-[9px] font-black uppercase"><span className="px-2.5 py-1 rounded-full bg-green-50 text-green-700">Notas enlazadas {currentBatch.metadata.note_reconciliation.total_matched ?? currentBatch.metadata.note_reconciliation.matched ?? 0}</span><span className="px-2.5 py-1 rounded-full bg-slate-100 text-slate-700">En espera de partida {currentBatch.metadata.note_reconciliation.total_pending ?? currentBatch.metadata.note_reconciliation.pending ?? 0}</span><span className="px-2.5 py-1 rounded-full bg-amber-50 text-amber-700">Referencias ambiguas {currentBatch.metadata.note_reconciliation.total_ambiguous ?? currentBatch.metadata.note_reconciliation.ambiguous ?? 0}</span></div>}</div><Button disabled={!!busy||!currentBatch.valid_count||(importProfile?.requiresParish&&!currentBatch.parish_id)} onClick={applyValid} className="rounded-xl px-6 gap-2 bg-green-700 hover:bg-green-800 text-white font-bold border border-green-700 [&_svg]:text-white disabled:bg-slate-200 disabled:text-slate-500 disabled:border-slate-200 disabled:[&_svg]:text-slate-500">{busy==='applying'?<Loader2 className="w-4 h-4 animate-spin"/>:<Play className="w-4 h-4"/>} {importProfile?.requiresParish&&!currentBatch.parish_id?'Preservado · falta vincular parroquia':(['INSBAUTI','INSCONFI'].includes(profileKey)?'Importar todas las boletas':'Importar únicamente válidos')}</Button></div>{progress&&<div className="mt-4 p-3 rounded-xl bg-blue-50 text-blue-800 text-xs font-bold">{progress.message}</div>}</div>}
 
       {error&&<div className="bg-red-50 border border-red-200 rounded-2xl p-5 text-red-800"><div className="flex gap-3"><AlertTriangle className="w-5 h-5 shrink-0"/><div><h3 className="font-black">Operación detenida</h3><p className="text-sm mt-1">{error}</p></div></div></div>}
 
