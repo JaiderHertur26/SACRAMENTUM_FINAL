@@ -1,0 +1,4 @@
+-- SACRAMENTUM V48 · Reaplicación idempotente registrada por Supabase
+-- Esta versión existe para mantener el historial local alineado con el historial remoto.
+-- El cambio efectivo ya está definido en 20260926145601_parish_legacy_archive_and_materialization_v48.sql
+-- y fue reaplicado de forma idempotente en producción. No requiere operaciones adicionales.

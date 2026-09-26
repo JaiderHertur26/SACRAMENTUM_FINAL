@@ -82,12 +82,12 @@ export default function LegacyArchivePage() {
         <Button variant="outline" onClick={refresh} disabled={loading} className="rounded-xl"><RefreshCw className={"mr-2 h-4 w-4 "+(loading?'animate-spin':'')}/>Actualizar</Button>
       </div>
 
-      <div className="grid gap-3 md:grid-cols-3 xl:grid-cols-6">
+      <div className={"grid gap-3 "+(role==='parish'?'md:grid-cols-4':'md:grid-cols-3 xl:grid-cols-6')}>
         <div className="rounded-2xl border bg-white p-5"><p className="text-[9px] font-black uppercase tracking-widest text-slate-400">Filas preservadas</p><p className="mt-2 text-3xl font-black">{summary.total}</p></div>
         <div className="rounded-2xl border bg-white p-5"><p className="text-[9px] font-black uppercase tracking-widest text-slate-400">Perfiles / tablas</p><p className="mt-2 text-3xl font-black">{profiles.length}</p></div>
-        <div className="rounded-2xl border bg-white p-5"><p className="text-[9px] font-black uppercase tracking-widest text-slate-400">Instalaciones</p><p className="mt-2 text-3xl font-black">{installations.length}</p></div>
-        <div className="rounded-2xl border bg-white p-5"><p className="text-[9px] font-black uppercase tracking-widest text-slate-400">Archivos fuente</p><p className="mt-2 text-3xl font-black">{sourceFiles.length}</p></div>
-        <div className="rounded-2xl border bg-white p-5"><p className="text-[9px] font-black uppercase tracking-widest text-slate-400">Diseños FRX</p><p className="mt-2 text-3xl font-black">{reports.length}</p></div>
+        {role!=='parish'&&<div className="rounded-2xl border bg-white p-5"><p className="text-[9px] font-black uppercase tracking-widest text-slate-400">Instalaciones</p><p className="mt-2 text-3xl font-black">{installations.length}</p></div>}
+        {role!=='parish'&&<div className="rounded-2xl border bg-white p-5"><p className="text-[9px] font-black uppercase tracking-widest text-slate-400">Archivos fuente</p><p className="mt-2 text-3xl font-black">{sourceFiles.length}</p></div>}
+        <div className="rounded-2xl border bg-white p-5"><p className="text-[9px] font-black uppercase tracking-widest text-slate-400">Diseños documentales</p><p className="mt-2 text-3xl font-black">{reports.length}</p></div>
         <div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-5"><p className="text-[9px] font-black uppercase tracking-widest text-emerald-700">Principio</p><p className="mt-2 text-sm font-black text-emerald-950">Nada se descarta por no tener destino actual</p></div>
       </div>
 
