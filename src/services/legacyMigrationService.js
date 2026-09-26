@@ -132,6 +132,15 @@ export async function reviewLegacyRow({ rowId, normalizedData, status, issueCode
 export async function applyLegacyBatch(batchId, { chunkSize = 250, onProgress = null, profileKey = null } = {}) {
   const batch = await getLegacyMigrationSummary(batchId);
   const effectiveProfile = String(profileKey || batch?.profile_key || '').toUpperCase();
+
+  const { data: provenance, error: provenanceError } = await supabase.rpc(
+    'assert_legacy_batch_provenance_v65',
+    { p_batch_id: batchId }
+  );
+  if (provenanceError) {
+    throw new Error(provenanceError.message || 'La procedencia del lote legacy no permite materializarlo.');
+  }
+
   const markMaterialized = async (metadata = {}) => {
     try {
       await markLegacySourceFileMaterialized(batchId, {
@@ -301,12 +310,16 @@ export async function materializeLegacyInstallation({
     .eq('id', installationId)
     .single();
   if (installationError) throw installationError;
-  if (!installation?.mapped_parish_id) {
-    throw new Error('La instalación debe estar vinculada a una parroquia moderna antes de materializarse.');
-  }
 
   onProgress?.({ phase:'preparing-canonical', installationId });
   const canonicalPreparation = await prepareCanonicalLegacyBatches(installationId);
+
+  onProgress?.({ phase:'reconciling-provenance', installationId });
+  const { data: provenanceReconciliation, error: provenanceReconciliationError } = await supabase.rpc(
+    'reconcile_legacy_provenance_v65',
+    { p_source_installation_id: installationId }
+  );
+  if (provenanceReconciliationError) throw provenanceReconciliationError;
 
   const { data: batches, error: batchesError } = await supabase
     .from('legacy_import_batches')
@@ -356,8 +369,10 @@ export async function materializeLegacyInstallation({
     failed: 0,
     remaining: 0,
     skipped: 0,
+    blockedByOrigin: 0,
     results: [],
     canonicalPreparation,
+    provenanceReconciliation: provenanceReconciliation || null,
   };
 
   for (let index = 0; index < installationBatches.length; index += 1) {
@@ -374,6 +389,25 @@ export async function materializeLegacyInstallation({
       imported: summary.imported,
       failed: summary.failed,
     });
+
+    const provenanceBlocked = (
+      batch?.metadata?.provenance_blocked === true
+      || String(batch?.metadata?.provenance_blocked || '').toLowerCase() === 'true'
+    );
+
+    if (provenanceBlocked) {
+      summary.skipped += 1;
+      summary.blockedByOrigin += 1;
+      summary.results.push({
+        batchId: batch.id,
+        filename,
+        profileKey,
+        skipped: true,
+        blockedByOrigin: true,
+        reason: 'Origen parroquial preservado pero pendiente de vincular a una parroquia moderna verificada',
+      });
+      continue;
+    }
 
     if (!materializableProfiles.has(profileKey)) {
       summary.skipped += 1;
@@ -429,6 +463,32 @@ export async function materializeLegacyInstallation({
 
   onProgress?.({ phase: 'materialized', ...summary });
   return summary;
+}
+
+export async function mapLegacySourceOrigin({ originId, parishId } = {}) {
+  if (!originId || !parishId) throw new Error('Origen y parroquia son obligatorios.');
+  const { data, error } = await supabase.rpc('map_legacy_source_origin_v66', {
+    p_origin_id: originId,
+    p_parish_id: parishId,
+  });
+  if (error) throw error;
+  return data || null;
+}
+
+export async function createParishFromLegacyOrigin({
+  originId,
+  vicaryId,
+  deaneryId,
+} = {}) {
+  if (!originId) throw new Error('Seleccione un origen parroquial legacy.');
+  if (!vicaryId || !deaneryId) throw new Error('Seleccione Vicaría y Decanato verificados.');
+  const { data, error } = await supabase.rpc('create_parish_from_legacy_origin_v66', {
+    p_origin_id: originId,
+    p_vicary_id: vicaryId,
+    p_deanery_id: deaneryId,
+  });
+  if (error) throw error;
+  return data || null;
 }
 
 export async function loadParishesForMigration(dioceseId = null) {

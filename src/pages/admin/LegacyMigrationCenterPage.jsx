@@ -12,6 +12,7 @@ import {
   listLegacyBatches, listLegacySourceInstallations, loadParishesForMigration, loadMigrationTerritory,
   importLegacyInstallationFolder, mapLegacySourceInstallation, materializeLegacyInstallation, parseLegacyJsonFile,
   registerLegacySourceInstallation, createParishFromLegacyInstallation, reconcileLegacyInstallationTerritory,
+  mapLegacySourceOrigin, createParishFromLegacyOrigin,
   sha256File, stageLegacyRows
 } from '@/services/legacyMigrationService';
 import { LEGACY_IMPORT_PROFILES, profileOptions } from '@/config/legacyImportProfiles';
@@ -87,6 +88,11 @@ const LegacyMigrationCenterPage = () => {
   const [error,setError] = useState('');
   const [reportDefinitions,setReportDefinitions] = useState([]);
   const [sourceOrigins,setSourceOrigins] = useState([]);
+  const [originToResolve,setOriginToResolve] = useState('');
+  const [originMappingParishId,setOriginMappingParishId] = useState('');
+  const [originVicaryId,setOriginVicaryId] = useState('');
+  const [originDeaneryId,setOriginDeaneryId] = useState('');
+  const [originResolutionConfirmed,setOriginResolutionConfirmed] = useState(false);
 
   const importProfile = profileKey ? LEGACY_IMPORT_PROFILES[profileKey] : null;
   const isHistoricalBallot = ['INSBAUTI','INSCONFI'].includes(profileKey);
@@ -98,6 +104,14 @@ const LegacyMigrationCenterPage = () => {
   const legacyDeaneries = useMemo(
     () => (territory.deaneries || []).filter(item => !legacyVicaryId || item.vicaria_id===legacyVicaryId),
     [territory.deaneries,legacyVicaryId]
+  );
+  const originDeaneries = useMemo(
+    () => (territory.deaneries || []).filter(item => !originVicaryId || item.vicaria_id===originVicaryId),
+    [territory.deaneries,originVicaryId]
+  );
+  const selectedOrigin = useMemo(
+    () => sourceOrigins.find(item => item.id===originToResolve) || null,
+    [sourceOrigins,originToResolve]
   );
   const archiveOnlyUntilMapped = Boolean(
     importProfile?.requiresParish
@@ -162,13 +176,19 @@ const LegacyMigrationCenterPage = () => {
     return rows || [];
   };
 
+  const refreshOrigins = async () => {
+    const rows = await listLegacySourceOrigins({limit:200});
+    setSourceOrigins(rows || []);
+    return rows || [];
+  };
+
   useEffect(()=>{
     Promise.all([
       loadParishesForMigration(role==='admin_general' ? null : userDioceseId),
       refreshBatches(),
       refreshInstallations(),
       listLegacyReportDefinitions({limit:500}),
-      listLegacySourceOrigins({limit:200})
+      refreshOrigins()
     ])
       .then(([p,,,reports,origins])=>{
         setParishes(p || []);
@@ -435,12 +455,81 @@ const LegacyMigrationCenterPage = () => {
     }
   };
 
+  const resetOriginResolution = () => {
+    setOriginToResolve('');
+    setOriginMappingParishId('');
+    setOriginVicaryId('');
+    setOriginDeaneryId('');
+    setOriginResolutionConfirmed(false);
+  };
+
+  const mapSelectedOriginToExistingParish = async () => {
+    if (
+      role!=='diocese'
+      || !selectedOrigin
+      || !originMappingParishId
+      || !originResolutionConfirmed
+    ) return;
+
+    setBusy('mapping-origin');
+    setError('');
+    try {
+      const result = await mapLegacySourceOrigin({
+        originId:selectedOrigin.id,
+        parishId:originMappingParishId,
+      });
+      await Promise.all([refreshOrigins(),refreshBatches()]);
+      resetOriginResolution();
+      toast({
+        title:'Origen parroquial reconciliado',
+        description:`${result?.legacy_parish_name || 'La identidad histórica'} quedó vinculada exclusivamente a ${result?.parish_name || 'la parroquia seleccionada'} · ${result?.archive_rows_relinked || 0} filas archivadas reconciliadas · ${result?.batches_unblocked || 0} lotes desbloqueados.`,
+        className:'bg-green-50 text-green-900 border-green-200'
+      });
+    } catch(e) {
+      setError(e.message);
+    } finally {
+      setBusy('');
+    }
+  };
+
+  const createParishFromSelectedOrigin = async () => {
+    if (
+      role!=='diocese'
+      || !selectedOrigin
+      || !originVicaryId
+      || !originDeaneryId
+      || !originResolutionConfirmed
+    ) return;
+
+    setBusy('creating-origin-parish');
+    setError('');
+    try {
+      const result = await createParishFromLegacyOrigin({
+        originId:selectedOrigin.id,
+        vicaryId:originVicaryId,
+        deaneryId:originDeaneryId,
+      });
+      const [freshParishes] = await Promise.all([
+        loadParishesForMigration(userDioceseId),
+        refreshOrigins(),
+        refreshBatches(),
+      ]);
+      setParishes(freshParishes || []);
+      resetOriginResolution();
+      toast({
+        title:'Parroquia recuperada desde origen legacy',
+        description:`${result?.name || 'La parroquia'} quedó creada en ${result?.vicary_name || 'la Vicaría'} / ${result?.deanery_name || 'el Decanato'} y sólo los datos de ese origen fueron desbloqueados.`,
+        className:'bg-green-50 text-green-900 border-green-200'
+      });
+    } catch(e) {
+      setError(e.message);
+    } finally {
+      setBusy('');
+    }
+  };
+
   const materializeSelectedInstallation = async () => {
     if (!sourceInstallationId) return;
-    if (!selectedInstallation?.mapped_parish_id) {
-      setError('Primero vincule esta instalación SACRAMENTA con la parroquia moderna correcta.');
-      return;
-    }
 
     setBusy('materializing-installation');
     setError('');
@@ -454,6 +543,8 @@ const LegacyMigrationCenterPage = () => {
         onProgress: (p) => {
           if (p.phase === 'preparing-canonical') {
             setProgress({message:'Reconstruyendo lotes canónicos desde el Archivo Histórico Maestro…'});
+          } else if (p.phase === 'reconciling-provenance') {
+            setProgress({message:'Verificando procedencia física y parroquial de cada lote antes de materializar…'});
           } else if (p.phase === 'materializing') {
             setProgress({
               message: `Materializando ${p.file || p.profileKey || 'lote'} · ${p.index}/${p.total} · incorporados ${p.imported || 0}`
@@ -468,7 +559,7 @@ const LegacyMigrationCenterPage = () => {
       await Promise.all([refreshInstallations(), refreshBatches()]);
       toast({
         title:'Instalación materializada',
-        description:`${result.processedBatches} lotes procesados · ${result.imported} filas incorporadas · ${result.skipped} lotes conservados sin materializar · ${result.failed} incidencias.`,
+        description:`${result.processedBatches} lotes procesados · ${result.imported} filas incorporadas · ${result.skipped} lotes conservados sin materializar · ${result.blockedByOrigin || 0} bloqueados por origen pendiente · ${result.failed} incidencias.`,
         className: result.failed ? undefined : 'bg-green-50 text-green-900 border-green-200',
         ...(result.failed ? { variant:'destructive' } : {})
       });
@@ -587,9 +678,108 @@ const LegacyMigrationCenterPage = () => {
               {origin.physical_path&&<p className="mt-1 break-all font-mono text-[10px] text-slate-400">{origin.physical_path}</p>}
               {origin.metadata?.identity_basis&&<p className="mt-2 text-[10px] text-slate-500"><b>Base de identificación:</b> {origin.metadata.identity_basis}</p>}
               {origin.metadata?.do_not_use_as_parish_identity&&<p className="mt-2 rounded-xl border border-red-100 bg-red-50 px-3 py-2 text-[10px] font-bold text-red-700">Snapshot compuesto: conservar como fuente, nunca usar como identidad parroquial.</p>}
+              {role==='diocese'&&!mapped&&origin.legacy_parish_name&&['parish_snapshot','parish_snapshot_family'].includes(origin.origin_kind)&&(
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="mt-4 w-full border-amber-200 bg-white text-amber-800 hover:bg-amber-50"
+                  onClick={()=>{
+                    setOriginToResolve(origin.id);
+                    setOriginMappingParishId('');
+                    setOriginVicaryId('');
+                    setOriginDeaneryId('');
+                    setOriginResolutionConfirmed(false);
+                  }}
+                >
+                  <GitMerge className="mr-2 h-4 w-4"/> Resolver este origen
+                </Button>
+              )}
             </div>;
           })}
         </div>
+
+        {selectedOrigin&&role==='diocese'&&(
+          <div className="mt-6 rounded-[1.5rem] border border-amber-200 bg-amber-50/60 p-5">
+            <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+              <div>
+                <p className="text-[9px] font-black uppercase tracking-[0.18em] text-amber-700">Reconciliación por origen · V66</p>
+                <h3 className="mt-1 text-xl font-black text-slate-950">{selectedOrigin.legacy_parish_name}</h3>
+                <p className="mt-1 text-xs text-slate-600">{selectedOrigin.display_name} · {selectedOrigin.physical_path || 'Ruta física preservada'}</p>
+                <p className="mt-2 max-w-3xl text-[11px] leading-relaxed text-slate-600">
+                  Resuelva únicamente esta identidad histórica. Ningún otro PQUIA del paquete será reasignado por esta acción.
+                </p>
+              </div>
+              <Button type="button" variant="ghost" onClick={resetOriginResolution}>Cerrar</Button>
+            </div>
+
+            <div className="mt-5 grid gap-5 xl:grid-cols-2">
+              <div className="rounded-2xl border border-amber-100 bg-white p-4">
+                <p className="text-[10px] font-black uppercase tracking-wider text-slate-500">Vincular a parroquia ya existente</p>
+                <select
+                  value={originMappingParishId}
+                  onChange={e=>setOriginMappingParishId(e.target.value)}
+                  className="mt-3 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-bold"
+                >
+                  <option value="">Seleccione parroquia moderna verificada…</option>
+                  {parishes.map(p=><option key={p.id} value={p.id}>{p.name}{p.city?` · ${p.city}`:''}</option>)}
+                </select>
+                <Button
+                  type="button"
+                  variant="outline"
+                  disabled={!originResolutionConfirmed||!originMappingParishId||!!busy}
+                  onClick={mapSelectedOriginToExistingParish}
+                  className="mt-3 w-full"
+                >
+                  {busy==='mapping-origin'?<Loader2 className="mr-2 h-4 w-4 animate-spin"/>:<GitMerge className="mr-2 h-4 w-4"/>}
+                  Vincular sólo este origen
+                </Button>
+              </div>
+
+              <div className="rounded-2xl border border-blue-100 bg-white p-4">
+                <p className="text-[10px] font-black uppercase tracking-wider text-[#4B7BA7]">Crear parroquia si aún no existe</p>
+                <div className="mt-3 grid gap-3 md:grid-cols-2">
+                  <select
+                    value={originVicaryId}
+                    onChange={e=>{setOriginVicaryId(e.target.value);setOriginDeaneryId('');}}
+                    className="w-full rounded-xl border border-blue-100 bg-white px-3 py-2.5 text-sm font-bold"
+                  >
+                    <option value="">Seleccione Vicaría…</option>
+                    {(territory.vicaries||[]).map(item=><option key={item.id} value={item.id}>{item.name}</option>)}
+                  </select>
+                  <select
+                    value={originDeaneryId}
+                    onChange={e=>setOriginDeaneryId(e.target.value)}
+                    className="w-full rounded-xl border border-blue-100 bg-white px-3 py-2.5 text-sm font-bold"
+                  >
+                    <option value="">Seleccione Decanato…</option>
+                    {originDeaneries.map(item=><option key={item.id} value={item.id}>{item.name}</option>)}
+                  </select>
+                </div>
+                <Button
+                  type="button"
+                  disabled={!originResolutionConfirmed||!originVicaryId||!originDeaneryId||!!busy}
+                  onClick={createParishFromSelectedOrigin}
+                  className="mt-3 w-full bg-[#4B7BA7] text-white hover:bg-[#3F6C95]"
+                >
+                  {busy==='creating-origin-parish'?<Loader2 className="mr-2 h-4 w-4 animate-spin"/>:<Church className="mr-2 h-4 w-4"/>}
+                  Crear parroquia desde este origen
+                </Button>
+              </div>
+            </div>
+
+            <label className="mt-4 flex items-start gap-3 rounded-xl border border-amber-200 bg-white px-4 py-3 text-xs text-slate-700">
+              <input
+                type="checkbox"
+                checked={originResolutionConfirmed}
+                onChange={e=>setOriginResolutionConfirmed(e.target.checked)}
+                className="mt-0.5 h-4 w-4"
+              />
+              <span>
+                Confirmo que he verificado la identidad histórica <b>{selectedOrigin.legacy_parish_name}</b> y que el destino seleccionado corresponde exactamente a esa parroquia.
+              </span>
+            </label>
+          </div>
+        )}
       </section>}
 
       <div className="rounded-[2rem] border border-emerald-100 bg-gradient-to-br from-emerald-50 to-white p-6 shadow-sm">
@@ -776,11 +966,11 @@ const LegacyMigrationCenterPage = () => {
               </div>
             </div>}
 
-            {selectedInstallation?.mapped_parish_id&&<div className="md:col-span-2 rounded-2xl border border-emerald-200 bg-emerald-50 p-4">
+            {selectedInstallation&&<div className="md:col-span-2 rounded-2xl border border-emerald-200 bg-emerald-50 p-4">
               <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                 <div>
-                  <p className="text-[9px] font-black uppercase tracking-[0.16em] text-emerald-700">Instalación verificada · lista para aprovechamiento integral</p>
-                  <p className="mt-1 text-xs leading-relaxed text-emerald-900">SACRAMENTUM conservará intacta la fuente y materializará en los módulos modernos únicamente los perfiles que ya tienen reglas seguras de conversión. Lo desconocido seguirá disponible en el Archivo Histórico Maestro.</p>
+                  <p className="text-[9px] font-black uppercase tracking-[0.16em] text-emerald-700">Materialización inteligente por origen</p>
+                  <p className="mt-1 text-xs leading-relaxed text-emerald-900">SACRAMENTUM verificará cada lote contra su PQUIA/origen antes de escribir en módulos modernos. Los orígenes pendientes se conservarán bloqueados y el resto podrá materializarse sin mezclar parroquias.</p>
                 </div>
                 <Button
                   type="button"
