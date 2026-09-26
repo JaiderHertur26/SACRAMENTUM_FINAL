@@ -366,50 +366,58 @@ export function buildDiocesanSacramentalPdf({
         }
       },
     });
-    currentY = (doc.lastAutoTable?.finalY || currentY + 4) + 9;
+    currentY = (doc.lastAutoTable?.finalY || currentY + 4) + 5;
   }
-  currentY = ensureSpace(doc, currentY, 63);
+
+  const pageHeight = doc.internal.pageSize.getHeight();
+  const availableBottom = pageHeight - 20;
+  const closingBlockHeight = 44;
+
+  if (currentY + closingBlockHeight > availableBottom) {
+    currentY = ensureSpace(doc, currentY, closingBlockHeight);
+  }
+
   drawSectionTitle(doc, 'Constancia y nota metodológica', currentY);
-  currentY += 6;
+  currentY += 5;
 
   doc.setFillColor(248, 250, 252);
   doc.setDrawColor(...COLORS.line);
-  doc.roundedRect(15, currentY, 180, 34, 2, 2, 'FD');
+  doc.roundedRect(15, currentY, 180, 16, 2, 2, 'FD');
   doc.setFont('times', 'normal');
-  doc.setFontSize(8.4);
+  doc.setFontSize(6.9);
   doc.setTextColor(...COLORS.ink);
-  const method = `La tabla principal contabiliza actos o registros sacramentales. La distribución por edades contabiliza personas; en Matrimonio pueden contarse dos contrayentes cuando existen fechas de nacimiento válidas. Los registros anulados, revertidos o cancelados no duplican la estadística activa. Las fechas incompatibles o insuficientes no se fuerzan para calcular edades. Rangos etarios incluidos en este documento: ${ageBandText}.`;
-  doc.text(doc.splitTextToSize(method, 170), 20, currentY + 7);
+  const method = `La tabla principal contabiliza actos o registros sacramentales. La distribución por edades contabiliza personas; en Matrimonio pueden contarse dos contrayentes cuando existen fechas de nacimiento válidas. Los registros anulados, revertidos o cancelados no duplican la estadística activa. Rangos etarios incluidos: ${ageBandText}.`;
+  doc.text(doc.splitTextToSize(method, 170), 20, currentY + 5.2);
 
-  currentY += 43;
+  currentY += 20;
   doc.setFont('times', 'italic');
-  doc.setFontSize(9.2);
+  doc.setFontSize(7.4);
   doc.setTextColor(...COLORS.slate);
-  const certification = 'Se expide el presente informe como constancia estadística institucional de la actividad sacramental registrada en el sistema para el ámbito y periodo señalados.';
+  const certification = 'Se expide el presente informe como constancia estadística institucional de la actividad sacramental registrada para el ámbito y periodo señalados.';
   doc.text(doc.splitTextToSize(certification, 170), 20, currentY);
-  currentY += 17;
 
   const bishop = diocese?.bishop_name || diocese?.bishop || 'Obispo / Arzobispo';
+  const signatureY = currentY + 12;
   doc.setDrawColor(...COLORS.ink);
   doc.setLineWidth(0.25);
-  doc.line(25, currentY + 16, 88, currentY + 16);
-  doc.line(122, currentY + 16, 185, currentY + 16);
+  doc.line(25, signatureY, 88, signatureY);
+  doc.line(122, signatureY, 185, signatureY);
   doc.setFont('helvetica', 'bold');
-  doc.setFontSize(8.2);
+  doc.setFontSize(7.4);
   doc.setTextColor(...COLORS.ink);
-  doc.text(String(responsibleName || 'Responsable de la información'), 56.5, currentY + 21, { align: 'center', maxWidth: 62 });
-  doc.text(String(bishop), 153.5, currentY + 21, { align: 'center', maxWidth: 62 });
+  doc.text(String(responsibleName || 'Responsable de la información'), 56.5, signatureY + 4, { align: 'center', maxWidth: 62 });
+  doc.text(String(bishop), 153.5, signatureY + 4, { align: 'center', maxWidth: 62 });
   doc.setFont('helvetica', 'normal');
-  doc.setFontSize(7.2);
+  doc.setFontSize(6.2);
   doc.setTextColor(...COLORS.slate);
-  doc.text('RESPONSABLE DE LA INFORMACIÓN', 56.5, currentY + 26, { align: 'center' });
-  doc.text('AUTORIDAD ECLESIÁSTICA', 153.5, currentY + 26, { align: 'center' });
+  doc.text('RESPONSABLE DE LA INFORMACIÓN', 56.5, signatureY + 8, { align: 'center' });
+  doc.text('AUTORIDAD ECLESIÁSTICA', 153.5, signatureY + 8, { align: 'center' });
 
   doc.setFont('helvetica', 'normal');
-  doc.setFontSize(7.2);
+  doc.setFontSize(6.2);
   doc.setTextColor(...COLORS.slate);
-  doc.text(`Fecha de expedición: ${formatDate(report.generated_at || new Date())}`, 15, currentY + 37);
-  doc.text(`Ámbito: ${report?.scope?.name || 'Jurisdicción'} · Periodo: ${report?.filters?.year_from ?? ''}-${report?.filters?.year_to ?? ''}`, 195, currentY + 37, { align: 'right' });
+  doc.text(`Fecha de expedición: ${formatDate(report.generated_at || new Date())}`, 15, signatureY + 13);
+  doc.text(`Ámbito: ${report?.scope?.name || 'Jurisdicción'} · Periodo: ${report?.filters?.year_from ?? ''}-${report?.filters?.year_to ?? ''}`, 195, signatureY + 13, { align: 'right' });
 
   addFooterToAllPages(doc, report.report_number);
   return doc;
