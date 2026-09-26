@@ -414,6 +414,11 @@ export function buildDiocesanSacramentalPdf({
   addFooterToAllPages(doc, report.report_number);
   return doc;
 }
+export function createDiocesanSacramentalPdfBlob(options = {}) {
+  const doc = buildDiocesanSacramentalPdf(options);
+  return doc.output('blob');
+}
+
 export function downloadDiocesanSacramentalPdf(options = {}) {
   const doc = buildDiocesanSacramentalPdf(options);
   const reportNumber = options?.report?.report_number || 'informe-sacramental';

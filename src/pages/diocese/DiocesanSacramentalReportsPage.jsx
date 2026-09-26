@@ -4,8 +4,8 @@ import { useAuth } from '@/context/AuthContext';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 import {
-  BarChart3, Church, Download, FileDown, FileText, Landmark, Loader2,
-  Plus, Printer, RefreshCw, Trash2, UsersRound, CalendarRange, Filter, ShieldCheck,
+  BarChart3, Church, Download, Eye, FileDown, FileText, Landmark, Loader2,
+  Plus, RefreshCw, Trash2, UsersRound, CalendarRange, Filter, ShieldCheck, X,
 } from 'lucide-react';
 import {
   generateDiocesanSacramentalReport,
@@ -77,6 +77,8 @@ const DiocesanSacramentalReportsPage = () => {
   const [loadingStructure, setLoadingStructure] = useState(true);
   const [generating, setGenerating] = useState(false);
   const [exportingPdf, setExportingPdf] = useState(false);
+  const [previewingPdf, setPreviewingPdf] = useState(false);
+  const [previewPdfUrl, setPreviewPdfUrl] = useState('');
   const [report, setReport] = useState(null);
   const [recentReports, setRecentReports] = useState([]);
   const [showAgeDistribution, setShowAgeDistribution] = useState(true);
@@ -92,6 +94,12 @@ const DiocesanSacramentalReportsPage = () => {
   });
 
   const dioceseId = user?.diocese_id || user?.dioceseId || null;
+
+  useEffect(() => {
+    return () => {
+      if (previewPdfUrl) URL.revokeObjectURL(previewPdfUrl);
+    };
+  }, [previewPdfUrl]);
 
   useEffect(() => {
     let active = true;
@@ -211,6 +219,7 @@ const DiocesanSacramentalReportsPage = () => {
         ...filters,
         ageRanges: normalizedAgeRanges,
       });
+      setPreviewPdfUrl('');
       setReport(result);
       const history = await loadRecentDiocesanReports(dioceseId).catch(() => []);
       setRecentReports(history);
@@ -237,18 +246,20 @@ const DiocesanSacramentalReportsPage = () => {
     URL.revokeObjectURL(url);
   };
 
+  const getPdfOptions = () => ({
+    report,
+    showAgeDistribution,
+    selectedAgeBands: (report?.filters?.age_ranges || []).map(formatAgeRangeLabel),
+    responsibleName: user?.full_name || user?.username || 'Usuario diocesano',
+    dioceseFallback: structure.diocese,
+  });
+
   const downloadProfessionalPdf = async () => {
     if (!report || exportingPdf) return;
     setExportingPdf(true);
     try {
       const { downloadDiocesanSacramentalPdf } = await import('@/services/diocesanReportPdf');
-      const filename = downloadDiocesanSacramentalPdf({
-        report,
-        showAgeDistribution,
-        selectedAgeBands: (report?.filters?.age_ranges || []).map(formatAgeRangeLabel),
-        responsibleName: user?.full_name || user?.username || 'Usuario diocesano',
-        dioceseFallback: structure.diocese,
-      });
+      const filename = downloadDiocesanSacramentalPdf(getPdfOptions());
       toast({
         title: 'PDF eclesial generado',
         description: `${filename} fue preparado con el consolidado estadístico actual.`,
@@ -263,6 +274,38 @@ const DiocesanSacramentalReportsPage = () => {
     } finally {
       setExportingPdf(false);
     }
+  };
+
+  const openPdfPreview = async () => {
+    if (!report || previewingPdf) return;
+    setPreviewingPdf(true);
+    try {
+      const { createDiocesanSacramentalPdfBlob } = await import('@/services/diocesanReportPdf');
+      const blob = createDiocesanSacramentalPdfBlob(getPdfOptions());
+      const nextUrl = URL.createObjectURL(blob);
+      setPreviewPdfUrl(nextUrl);
+    } catch (error) {
+      console.error(error);
+      toast({
+        title: 'No fue posible abrir la vista previa',
+        description: error?.message || 'Intenta nuevamente.',
+        variant: 'destructive',
+      });
+    } finally {
+      setPreviewingPdf(false);
+    }
+  };
+
+  const closePdfPreview = () => setPreviewPdfUrl('');
+
+  const downloadPreviewPdf = () => {
+    if (!previewPdfUrl || !report) return;
+    const a = document.createElement('a');
+    a.href = previewPdfUrl;
+    a.download = `Informe_Sacramental_${report.report_number || 'informe-sacramental'}.pdf`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
   };
 
   const totals = report?.totals || {};
@@ -299,7 +342,14 @@ const DiocesanSacramentalReportsPage = () => {
                 {exportingPdf ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <FileDown className="w-4 h-4 mr-2" />}
                 Descargar PDF profesional
               </Button>
-              <Button variant="outline" onClick={() => window.print()}><Printer className="w-4 h-4 mr-2" /> Imprimir vista</Button>
+              <Button
+                variant="outline"
+                onClick={openPdfPreview}
+                disabled={previewingPdf}
+              >
+                {previewingPdf ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Eye className="w-4 h-4 mr-2" />}
+                Vista previa PDF
+              </Button>
             </div>
           )}
         </div>
@@ -523,6 +573,49 @@ const DiocesanSacramentalReportsPage = () => {
           </>
         )}
       </div>
+
+      {previewPdfUrl && (
+        <div
+          className="fixed inset-0 z-[120] flex flex-col bg-slate-950/80 backdrop-blur-sm"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Vista previa del informe sacramental en PDF"
+        >
+          <div className="flex items-center justify-between gap-4 border-b border-white/10 bg-slate-950 px-4 py-3 text-white md:px-6">
+            <div className="min-w-0">
+              <p className="text-[10px] font-black uppercase tracking-[0.18em] text-[#D4AF37]">Documento oficial</p>
+              <h2 className="truncate text-sm font-black md:text-base">Vista previa del PDF · {report?.report_number}</h2>
+              <p className="mt-0.5 hidden text-xs text-slate-400 sm:block">Esta vista es exactamente el mismo PDF profesional que se descarga.</p>
+            </div>
+            <div className="flex shrink-0 items-center gap-2">
+              <Button
+                type="button"
+                onClick={downloadPreviewPdf}
+                className="bg-[#D4AF37] text-slate-950 hover:bg-[#c49d27]"
+              >
+                <Download className="mr-2 h-4 w-4" />
+                <span className="hidden sm:inline">Descargar este PDF</span>
+                <span className="sm:hidden">Descargar</span>
+              </Button>
+              <button
+                type="button"
+                onClick={closePdfPreview}
+                className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/15 bg-white/5 text-white transition hover:bg-white/10"
+                aria-label="Cerrar vista previa"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+          </div>
+          <div className="min-h-0 flex-1 bg-slate-800 p-2 md:p-4">
+            <iframe
+              title={`Vista previa PDF ${report?.report_number || ''}`}
+              src={`${previewPdfUrl}#toolbar=1&navpanes=0&view=FitH`}
+              className="h-full w-full rounded-xl border-0 bg-white shadow-2xl"
+            />
+          </div>
+        </div>
+      )}
 
       {report && (
         <section className="hidden print:block diocesan-report-print bg-white text-black">
