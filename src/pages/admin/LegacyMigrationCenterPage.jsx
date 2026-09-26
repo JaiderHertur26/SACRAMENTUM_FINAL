@@ -350,7 +350,9 @@ const LegacyMigrationCenterPage = () => {
         installationId: sourceInstallationId,
         chunkSize: 250,
         onProgress: (p) => {
-          if (p.phase === 'materializing') {
+          if (p.phase === 'preparing-canonical') {
+            setProgress({message:'Reconstruyendo lotes canónicos desde el Archivo Histórico Maestro…'});
+          } else if (p.phase === 'materializing') {
             setProgress({
               message: `Materializando ${p.file || p.profileKey || 'lote'} · ${p.index}/${p.total} · incorporados ${p.imported || 0}`
             });
@@ -581,13 +583,18 @@ const LegacyMigrationCenterPage = () => {
                   Materializar instalación completa
                 </Button>
               </div>
-              {installationMaterialization&&<div className="mt-4 grid grid-cols-2 gap-2 md:grid-cols-5">
-                {statCard('Lotes',installationMaterialization.totalBatches,Database,'slate')}
-                {statCard('Procesados',installationMaterialization.processedBatches,CheckCircle2,'green')}
-                {statCard('Filas incorporadas',installationMaterialization.imported,Database,'blue')}
-                {statCard('Conservados',installationMaterialization.skipped,Archive,'amber')}
-                {statCard('Incidencias',installationMaterialization.failed,AlertTriangle,installationMaterialization.failed?'red':'slate')}
-              </div>}
+              {installationMaterialization&&<>
+                <div className="mt-4 rounded-xl border border-blue-100 bg-white px-4 py-3 text-xs text-slate-700">
+                  <b>Archivo canónico preparado:</b> {installationMaterialization.canonicalPreparation?.rows || 0} filas · {installationMaterialization.canonicalPreparation?.active_rows || 0} activas · {installationMaterialization.canonicalPreparation?.deleted_rows_preserved || 0} eliminadas preservadas · {installationMaterialization.canonicalPreparation?.created_batches || 0} lotes nuevos · {installationMaterialization.canonicalPreparation?.reused_batches || 0} reutilizados.
+                </div>
+                <div className="mt-3 grid grid-cols-2 gap-2 md:grid-cols-5">
+                  {statCard('Lotes',installationMaterialization.totalBatches,Database,'slate')}
+                  {statCard('Procesados',installationMaterialization.processedBatches,CheckCircle2,'green')}
+                  {statCard('Filas incorporadas',installationMaterialization.imported,Database,'blue')}
+                  {statCard('Conservados',installationMaterialization.skipped,Archive,'amber')}
+                  {statCard('Incidencias',installationMaterialization.failed,AlertTriangle,installationMaterialization.failed?'red':'slate')}
+                </div>
+              </>}
             </div>}
 
             <div className="md:col-span-2 flex flex-wrap gap-2"><Button variant="outline" disabled={!rows.length||!profileKey} onClick={reanalyze} className="rounded-xl gap-2"><GitMerge className="w-4 h-4"/> Reanalizar con este perfil</Button>{file&&<div className="px-4 py-2 rounded-xl bg-slate-50 text-xs text-slate-600"><b>{file.name}</b> · {rows.length} filas · SHA-256 {hash.slice(0,12)}…</div>}</div>

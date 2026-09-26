@@ -257,6 +257,15 @@ export async function applyLegacyBatch(batchId, { chunkSize = 250, onProgress = 
   };
 }
 
+export async function prepareCanonicalLegacyBatches(installationId) {
+  if (!installationId) throw new Error('Seleccione una instalación SACRAMENTA.');
+  const { data, error } = await supabase.rpc('prepare_canonical_legacy_batches_v60', {
+    p_source_installation_id: installationId,
+  });
+  if (error) throw error;
+  return data || null;
+}
+
 export async function materializeLegacyInstallation({
   installationId,
   onProgress = null,
@@ -273,6 +282,9 @@ export async function materializeLegacyInstallation({
   if (!installation?.mapped_parish_id) {
     throw new Error('La instalación debe estar vinculada a una parroquia moderna antes de materializarse.');
   }
+
+  onProgress?.({ phase:'preparing-canonical', installationId });
+  const canonicalPreparation = await prepareCanonicalLegacyBatches(installationId);
 
   const { data: batches, error: batchesError } = await supabase
     .from('legacy_import_batches')
@@ -323,6 +335,7 @@ export async function materializeLegacyInstallation({
     remaining: 0,
     skipped: 0,
     results: [],
+    canonicalPreparation,
   };
 
   for (let index = 0; index < installationBatches.length; index += 1) {
