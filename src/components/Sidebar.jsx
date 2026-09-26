@@ -4,7 +4,7 @@ import {
     Church, LogOut, Settings as SettingsIcon, LayoutDashboard, 
     Users, Network, ChevronRight, Database, Sliders, 
     HeartHandshake as Handshake, ScrollText, Heart, List, 
-    FileText, Bell, Mail, Landmark, Search, Archive, BarChart3, MessageCircleMore
+    FileText, Bell, Mail, Landmark, Search, Archive, BarChart3, MessageCircleMore, BookOpen
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/context/AuthContext';
