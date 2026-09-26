@@ -313,6 +313,7 @@ const Sidebar = ({ isOpen, onClose, onLogout, role, menuItems: externalMenuItems
                 ]
             },
             { label: 'Libros Sacramentales', path: '/parroquia/libros', icon: BookOpen },
+            { label: 'Archivo Histórico', path: '/parroquia/archivo-historico', icon: Archive },
             { label: 'Plantillas Documentales', path: '/documentos/plantillas', icon: FileText },
             { label: 'Datos Auxiliares', path: '/datos-auxiliares', icon: Database },
             { label: 'Parámetros', path: '/parroquia/bautismo/parametros', icon: Sliders },

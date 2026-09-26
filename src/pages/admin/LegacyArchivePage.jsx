@@ -22,6 +22,7 @@ export default function LegacyArchivePage() {
   const { user, profile } = useAuth();
   const { toast } = useToast();
   const dioceseId = profile?.diocese_id || user?.dioceseId || user?.diocese_id || null;
+  const parishId = profile?.parish_id || user?.parishId || user?.parish_id || null;
   const role = profile?.role || user?.role;
   const [summary,setSummary] = useState({total:0,byProfile:{},byStatus:{}});
   const [records,setRecords] = useState([]);
@@ -37,13 +38,18 @@ export default function LegacyArchivePage() {
   const refresh = async () => {
     setLoading(true);
     try {
+      const isParish = role === 'parish';
       const scope = role === 'admin_general' ? null : dioceseId;
       const [s,r,defs,sources,files] = await Promise.all([
-        loadLegacyArchiveSummary({dioceseId:scope}),
-        listLegacyArchiveRecords({dioceseId:scope,profileKey,search,limit:300}),
+        loadLegacyArchiveSummary(),
+        listLegacyArchiveRecords({
+          dioceseId:isParish ? null : scope,
+          parishId:isParish ? parishId : null,
+          profileKey,search,limit:300
+        }),
         listLegacyReportDefinitions({limit:500}),
-        listLegacySourceInstallations({dioceseId:scope,limit:200}),
-        listLegacySourceFiles({limit:500}),
+        isParish ? Promise.resolve([]) : listLegacySourceInstallations({dioceseId:scope,limit:200}),
+        isParish ? Promise.resolve([]) : listLegacySourceFiles({limit:500}),
       ]);
       setSummary(s); setRecords(r); setReports(defs); setInstallations(sources); setSourceFiles(files);
       if (selected) setSelected(r.find(x=>x.id===selected.id) || null);
@@ -70,8 +76,8 @@ export default function LegacyArchivePage() {
       <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
         <div>
           <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-slate-950 px-3 py-1 text-[9px] font-black uppercase tracking-[0.22em] text-white"><Archive className="h-3.5 w-3.5"/> Preservación integral legacy</div>
-          <h1 className="text-4xl font-black tracking-tight text-slate-950">Archivo Histórico Maestro</h1>
-          <p className="mt-2 max-w-3xl text-sm text-slate-500">Bóveda de toda la base SACRAMENTA anterior. Conserva cada fila original aunque todavía no exista un módulo moderno equivalente.</p>
+          <h1 className="text-4xl font-black tracking-tight text-slate-950">{role==='parish'?'Archivo Histórico Parroquial':'Archivo Histórico Maestro'}</h1>
+          <p className="mt-2 max-w-3xl text-sm text-slate-500">{role==='parish' ? 'Consulta segura de la base SACRAMENTA histórica de esta parroquia. Conserva cada fila original y permite localizar información que todavía no tiene equivalente moderno.' : 'Bóveda de toda la base SACRAMENTA anterior. Conserva cada fila original aunque todavía no exista un módulo moderno equivalente.'}</p>
         </div>
         <Button variant="outline" onClick={refresh} disabled={loading} className="rounded-xl"><RefreshCw className={"mr-2 h-4 w-4 "+(loading?'animate-spin':'')}/>Actualizar</Button>
       </div>

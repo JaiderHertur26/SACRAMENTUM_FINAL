@@ -181,6 +181,7 @@ const AppContent = () => {
                 <Route path="/parroquia/ajustes" element={<ProtectedRoute requiredRole={ROLE_TYPES.PARISH}><ParroquiaAjustesPage /></ProtectedRoute>} />
                 <Route path="/datos-auxiliares" element={<ProtectedRoute requiredRole={ROLE_TYPES.PARISH}><DatosAuxiliaresPage /></ProtectedRoute>} />
                 <Route path="/parroquia/libros" element={<ProtectedRoute requiredRole={ROLE_TYPES.PARISH}><SacramentalBooksPage /></ProtectedRoute>} />
+                <Route path="/parroquia/archivo-historico" element={<ProtectedRoute requiredRole={ROLE_TYPES.PARISH}><LegacyArchivePage /></ProtectedRoute>} />
 
                 {/* --- BAPTISM ROUTES --- */}
                 <Route path="/parroquia/bautismo/nuevo" element={<ProtectedRoute requiredRole={ROLE_TYPES.PARISH}><BaptismNewPage /></ProtectedRoute>} />
