@@ -78,3 +78,12 @@ export async function listLegacySourceFiles({ installationId = null, limit = 500
   if (error) throw error;
   return data || [];
 }
+
+export async function compareLegacySourceSnapshots(installationId) {
+  if (!installationId) return { summary: {}, profiles: [] };
+  const { data, error } = await supabase.rpc('compare_legacy_source_snapshots_v59', {
+    p_source_installation_id: installationId,
+  });
+  if (error) throw error;
+  return data || { summary: {}, profiles: [] };
+}

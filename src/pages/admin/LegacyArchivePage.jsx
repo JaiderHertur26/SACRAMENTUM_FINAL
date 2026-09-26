@@ -10,6 +10,7 @@ import {
   listLegacyReportDefinitions,
   listLegacySourceFiles,
   listLegacySourceInstallations,
+  compareLegacySourceSnapshots,
 } from '@/services/legacyArchiveService';
 
 const JsonBlock = ({ value }) => (
@@ -29,6 +30,9 @@ export default function LegacyArchivePage() {
   const [reports,setReports] = useState([]);
   const [installations,setInstallations] = useState([]);
   const [sourceFiles,setSourceFiles] = useState([]);
+  const [comparisonInstallationId,setComparisonInstallationId] = useState('');
+  const [snapshotComparison,setSnapshotComparison] = useState(null);
+  const [comparisonBusy,setComparisonBusy] = useState(false);
   const [profileKey,setProfileKey] = useState('');
   const [search,setSearch] = useState('');
   const [selected,setSelected] = useState(null);
@@ -61,6 +65,55 @@ export default function LegacyArchivePage() {
   };
 
   useEffect(()=>{ refresh(); },[profileKey]);
+
+  useEffect(() => {
+    if (role === 'parish' || !installations.length) return;
+    setComparisonInstallationId((current) => current || installations[0].id);
+  }, [installations, role]);
+
+  const loadSnapshotComparison = async (installationId = comparisonInstallationId) => {
+    if (!installationId || comparisonBusy) return;
+    setComparisonBusy(true);
+    try {
+      const result = await compareLegacySourceSnapshots(installationId);
+      setSnapshotComparison(result);
+    } catch (error) {
+      toast({
+        title:'No se pudieron comparar los snapshots',
+        description:error?.message,
+        variant:'destructive'
+      });
+    } finally {
+      setComparisonBusy(false);
+    }
+  };
+
+  useEffect(() => {
+    if (!comparisonInstallationId || role === 'parish') {
+      setSnapshotComparison(null);
+      return;
+    }
+    loadSnapshotComparison(comparisonInstallationId);
+  }, [comparisonInstallationId, role]);
+
+  const snapshotStatus = (status) => ({
+    current_has_fewer_rows:'Actual perdió filas',
+    historical_only:'Sólo existe en histórico',
+    current_has_more_rows:'Actual tiene más filas',
+    current_only:'Sólo existe en actual',
+    same_count_changed_file:'Mismo conteo · archivo cambió',
+    identical_manifest:'Manifiesto idéntico',
+    empty_both:'Vacío en ambos',
+    changed:'Cambió',
+  }[status] || status || 'Sin comparar');
+
+  const snapshotStatusClass = (status) => {
+    if (['current_has_fewer_rows','historical_only'].includes(status)) return 'bg-red-50 text-red-700 border-red-100';
+    if (['current_has_more_rows','current_only'].includes(status)) return 'bg-blue-50 text-blue-700 border-blue-100';
+    if (status === 'same_count_changed_file') return 'bg-amber-50 text-amber-700 border-amber-100';
+    if (status === 'identical_manifest') return 'bg-green-50 text-green-700 border-green-100';
+    return 'bg-slate-100 text-slate-600 border-slate-200';
+  };
 
   const profiles = useMemo(
     () => Object.entries(summary.byProfile || {}).sort((a,b)=>b[1]-a[1]),
@@ -156,6 +209,46 @@ export default function LegacyArchivePage() {
             </div>;
           })}
         </div>
+      </div>}
+
+      {role!=='parish'&&installations.length>0&&<div className="rounded-[2rem] border bg-white p-5 shadow-sm">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+          <div>
+            <div className="flex items-center gap-2"><Database className="h-5 w-5 text-[#4B7BA7]"/><h2 className="font-black">Comparador de snapshots SACRAMENTA</h2></div>
+            <p className="mt-1 max-w-3xl text-xs text-slate-500">Compara la copia histórica preservada con la copia actual por tabla y hash. Detecta vaciados o pérdidas sin destruir ninguna versión.</p>
+          </div>
+          <div className="flex min-w-[360px] gap-2">
+            <select value={comparisonInstallationId} onChange={e=>setComparisonInstallationId(e.target.value)} className="min-w-0 flex-1 rounded-xl border px-3 py-2.5 text-xs font-bold">
+              {installations.map(source=><option key={source.id} value={source.id}>{source.legacy_parish_name||source.source_name}</option>)}
+            </select>
+            <Button variant="outline" onClick={()=>loadSnapshotComparison()} disabled={!comparisonInstallationId||comparisonBusy}>
+              <RefreshCw className={"mr-2 h-4 w-4 "+(comparisonBusy?'animate-spin':'')}/>Comparar
+            </Button>
+          </div>
+        </div>
+
+        {snapshotComparison&&<div className="mt-5 space-y-4">
+          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
+            <div className="rounded-2xl border bg-slate-50 p-4"><p className="text-[9px] font-black uppercase tracking-widest text-slate-400">Filas históricas</p><p className="mt-1 text-2xl font-black">{Number(snapshotComparison.summary?.historical_rows||0).toLocaleString('es-CO')}</p></div>
+            <div className="rounded-2xl border bg-slate-50 p-4"><p className="text-[9px] font-black uppercase tracking-widest text-slate-400">Filas copia actual</p><p className="mt-1 text-2xl font-black">{Number(snapshotComparison.summary?.current_rows||0).toLocaleString('es-CO')}</p></div>
+            <div className="rounded-2xl border border-red-100 bg-red-50 p-4"><p className="text-[9px] font-black uppercase tracking-widest text-red-600">Tablas con pérdida</p><p className="mt-1 text-2xl font-black text-red-800">{snapshotComparison.summary?.profiles_with_loss||0}</p></div>
+            <div className="rounded-2xl border border-amber-100 bg-amber-50 p-4"><p className="text-[9px] font-black uppercase tracking-widest text-amber-600">Mismo conteo · cambió</p><p className="mt-1 text-2xl font-black text-amber-800">{snapshotComparison.summary?.profiles_same_count_changed_file||0}</p></div>
+            <div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-4"><p className="text-[9px] font-black uppercase tracking-widest text-emerald-700">Protección</p><p className="mt-1 text-xs font-black text-emerald-950">La versión profunda queda preservada aunque la copia actual esté vacía.</p></div>
+          </div>
+
+          <div className="max-h-[520px] overflow-auto rounded-2xl border">
+            <table className="w-full text-xs">
+              <thead className="sticky top-0 bg-slate-50"><tr><th className="p-3 text-left">Tabla</th><th className="p-3 text-right">Histórico</th><th className="p-3 text-right">Actual</th><th className="p-3 text-right">Diferencia</th><th className="p-3 text-left">Diagnóstico</th></tr></thead>
+              <tbody>{(snapshotComparison.profiles||[]).map(item=><tr key={item.profile_key} className="border-t">
+                <td className="p-3 font-mono font-black">{item.profile_key}</td>
+                <td className="p-3 text-right font-black">{Number(item.historical_rows||0).toLocaleString('es-CO')}</td>
+                <td className="p-3 text-right font-black">{Number(item.current_rows||0).toLocaleString('es-CO')}</td>
+                <td className={"p-3 text-right font-black "+(Number(item.row_delta||0)<0?'text-red-700':Number(item.row_delta||0)>0?'text-blue-700':'text-slate-500')}>{Number(item.row_delta||0)>0?'+':''}{Number(item.row_delta||0).toLocaleString('es-CO')}</td>
+                <td className="p-3"><span className={"inline-flex rounded-full border px-2.5 py-1 text-[9px] font-black uppercase "+snapshotStatusClass(item.comparison_status)}>{snapshotStatus(item.comparison_status)}</span></td>
+              </tr>)}</tbody>
+            </table>
+          </div>
+        </div>}
       </div>}
 
       {reports.length>0&&<div className="rounded-[2rem] border bg-white p-5 shadow-sm">
