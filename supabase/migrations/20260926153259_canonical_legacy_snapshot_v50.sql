@@ -1,0 +1,18 @@
+-- SACRAMENTUM V50 · Canonical legacy snapshot ingestion marker
+-- Production migration 20260926153259 was executed operationally through Supabase CLI.
+-- User-specific sacramental rows are intentionally NOT stored in Git.
+--
+-- Verified production result:
+--   source installation: SACRAMENTA_PLUS historical installation
+--   canonical archive rows: 6,412
+--   active rows: 6,407
+--   deleted rows preserved: 5
+--   canonical profiles with rows: 17
+--   source file manifests: 56 (29 historical snapshot + 27 current snapshot)
+--
+-- Historical snapshot and current snapshot are distinguished by SHA-256
+-- in legacy_source_files. The source remains unmapped to a modern parish
+-- until its ecclesial identity is reconciled explicitly.
+--
+-- This marker intentionally contains no sacramental personal data.
+select 1;

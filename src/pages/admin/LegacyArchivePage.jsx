@@ -99,20 +99,48 @@ export default function LegacyArchivePage() {
         <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
           {installations.slice(0,12).map(source=>{
             const files=sourceFiles.filter(file=>file.source_installation_id===source.id);
-            const rowCount=files.reduce((sum,file)=>sum+Number(file.row_count||0),0);
+            const historicalFiles=files.filter(file=>file.metadata?.snapshot==='historical');
+            const currentFiles=files.filter(file=>file.metadata?.snapshot==='current');
+            const canonicalRows=Number(source.metadata?.canonical_rows||0);
+            const canonicalActive=Number(source.metadata?.canonical_active_rows||0);
+            const canonicalDeleted=Number(source.metadata?.canonical_deleted_rows||0);
             return <div key={source.id} className="rounded-2xl border border-slate-100 bg-slate-50/60 p-4">
               <div className="flex items-start justify-between gap-3">
                 <div>
-                  <p className="text-[9px] font-black uppercase tracking-widest text-blue-600">{source.mapping_status==='mapped'?'Vinculada':'Sin vincular'}</p>
+                  <p className={"text-[9px] font-black uppercase tracking-widest "+(source.mapping_status==='mapped'?'text-emerald-700':'text-amber-700')}>
+                    {source.mapping_status==='mapped'?'Vinculada a parroquia moderna':'Fuente preservada · pendiente de vincular'}
+                  </p>
                   <p className="mt-1 font-black text-slate-900">{source.legacy_parish_name||source.source_name}</p>
                 </div>
                 <ShieldCheck className={"h-4 w-4 "+(source.mapping_status==='mapped'?'text-emerald-600':'text-amber-600')}/>
               </div>
               <p className="mt-2 text-xs text-slate-500">{source.legacy_diocese_name||'Diócesis no informada'}{source.legacy_city?' · '+source.legacy_city:''}</p>
-              <div className="mt-3 flex gap-2 text-[9px] font-black uppercase">
-                <span className="rounded-full bg-white px-2 py-1">{files.length} archivos</span>
-                <span className="rounded-full bg-white px-2 py-1">{rowCount} filas manifestadas</span>
+
+              {canonicalRows>0&&<div className="mt-4 rounded-xl border border-blue-100 bg-white p-3">
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <p className="text-[9px] font-black uppercase tracking-widest text-[#4B7BA7]">Snapshot canónico preservado</p>
+                    <p className="mt-1 text-xl font-black text-slate-950">{canonicalRows.toLocaleString('es-CO')} filas</p>
+                  </div>
+                  <Database className="h-5 w-5 text-[#4B7BA7]"/>
+                </div>
+                <div className="mt-2 grid grid-cols-2 gap-2 text-[10px] font-bold text-slate-600">
+                  <span>{canonicalActive.toLocaleString('es-CO')} activas</span>
+                  <span>{canonicalDeleted.toLocaleString('es-CO')} eliminadas preservadas</span>
+                </div>
+              </div>}
+
+              <div className="mt-3 flex flex-wrap gap-2 text-[9px] font-black uppercase">
+                <span className="rounded-full bg-white px-2 py-1">{historicalFiles.length} archivos históricos</span>
+                <span className="rounded-full bg-white px-2 py-1">{currentFiles.length} archivos actuales</span>
+                <span className="rounded-full bg-white px-2 py-1">{source.metadata?.canonical_profile_count||0} perfiles canónicos</span>
               </div>
+
+              {source.mapping_status!=='mapped'&&source.metadata?.mapping_note&&(
+                <p className="mt-3 rounded-xl border border-amber-100 bg-amber-50 px-3 py-2 text-[10px] font-bold leading-relaxed text-amber-800">
+                  {source.metadata.mapping_note}
+                </p>
+              )}
             </div>;
           })}
         </div>
