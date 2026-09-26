@@ -21,6 +21,7 @@ const SACRAMENT_LABELS = {
 };
 
 const fmtNumber = (value) => Number(value || 0).toLocaleString('es-CO');
+const pdfAgeLabel = (value) => String(value || '').replace(/–/g, '-');
 const formatDate = (value) => {
   if (!value) return '';
   const date = new Date(value);
@@ -194,13 +195,20 @@ const addFooterToAllPages = (doc, reportNumber) => {
 export function buildDiocesanSacramentalPdf({
   report,
   showAgeDistribution = true,
+  selectedAgeBands = [],
   responsibleName = '',
   dioceseFallback = null,
 } = {}) {
   if (!report) throw new Error('No hay un informe sacramental generado para exportar.');
   const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4', compress: true });
   const annualRows = getAnnualRows(report);
-  const ageRows = getAgeRows(report);
+  const allAgeRows = getAgeRows(report);
+  const ageRows = selectedAgeBands.length
+    ? allAgeRows.filter((row) => selectedAgeBands.includes(row.band))
+    : allAgeRows;
+  const ageBandText = selectedAgeBands.length
+    ? selectedAgeBands.map(pdfAgeLabel).join(', ')
+    : 'Todas las bandas etarias disponibles';
   const totals = report.totals || {};
   const totalActs = Number(totals.total || 0);
   const diocese = { ...(dioceseFallback || {}), ...(report.diocese || {}) };
@@ -219,7 +227,7 @@ export function buildDiocesanSacramentalPdf({
     keywords: 'sacramentos, estadística, diócesis, parroquia, informe eclesial',
   });
 
-  const { ageText } = addDocumentHeader(doc, { report, diocese, scopeTypeLabel });
+  addDocumentHeader(doc, { report, diocese, scopeTypeLabel });
   drawSectionTitle(doc, 'Síntesis pastoral', 94);
   const cardY = 100;
   const gap = 3;
@@ -316,7 +324,7 @@ export function buildDiocesanSacramentalPdf({
       head: [['Año', 'Rango de edad', 'Bautismos', 'Confirmaciones', 'Contrayentes', 'Exequias']],
       body: ageRows.map((row) => [
         row.year,
-        row.band,
+        pdfAgeLabel(row.band),
         fmtNumber(row.bautismo),
         fmtNumber(row.confirmacion),
         fmtNumber(row.matrimonio),
@@ -370,7 +378,7 @@ export function buildDiocesanSacramentalPdf({
   doc.setFont('times', 'normal');
   doc.setFontSize(8.4);
   doc.setTextColor(...COLORS.ink);
-  const method = `La tabla principal contabiliza actos o registros sacramentales. La distribución por edades contabiliza personas; en Matrimonio pueden contarse dos contrayentes cuando existen fechas de nacimiento válidas. Los registros anulados, revertidos o cancelados no duplican la estadística activa. Las fechas incompatibles o insuficientes no se fuerzan para calcular edades. Filtro de edad aplicado: ${ageText}.`;
+  const method = `La tabla principal contabiliza actos o registros sacramentales. La distribución por edades contabiliza personas; en Matrimonio pueden contarse dos contrayentes cuando existen fechas de nacimiento válidas. Los registros anulados, revertidos o cancelados no duplican la estadística activa. Las fechas incompatibles o insuficientes no se fuerzan para calcular edades. Rangos etarios incluidos en este documento: ${ageBandText}.`;
   doc.text(doc.splitTextToSize(method, 170), 20, currentY + 7);
 
   currentY += 43;

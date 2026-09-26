@@ -23,16 +23,14 @@ const SACRAMENT_LABELS = {
 
 const SACRAMENT_ORDER = ['bautismo', 'confirmacion', 'matrimonio', 'exequias'];
 
-const AGE_RANGE_PRESETS = [
-  { value: 'all', label: 'Todas las edades', min: '', max: '' },
-  { value: '0-6', label: '0 a 6 años · Primera infancia', min: 0, max: 6 },
-  { value: '7-12', label: '7 a 12 años · Niñez', min: 7, max: 12 },
-  { value: '13-17', label: '13 a 17 años · Adolescencia', min: 13, max: 17 },
-  { value: '18-25', label: '18 a 25 años · Juventud', min: 18, max: 25 },
-  { value: '26-40', label: '26 a 40 años · Adulto joven', min: 26, max: 40 },
-  { value: '41-60', label: '41 a 60 años · Adulto', min: 41, max: 60 },
-  { value: '61+', label: '61 años o más · Adulto mayor', min: 61, max: '' },
-  { value: 'custom', label: 'Personalizado · Definir mínimo y máximo', min: null, max: null },
+const AGE_BAND_OPTIONS = [
+  { value: '0–6 años', label: '0–6 años' },
+  { value: '7–12 años', label: '7–12 años' },
+  { value: '13–17 años', label: '13–17 años' },
+  { value: '18–29 años', label: '18–29 años' },
+  { value: '30–44 años', label: '30–44 años' },
+  { value: '45–59 años', label: '45–59 años' },
+  { value: '60 años o más', label: '60 años o más' },
 ];
 
 function getAnnualRows(report) {
@@ -86,7 +84,7 @@ const DiocesanSacramentalReportsPage = () => {
   const [report, setReport] = useState(null);
   const [recentReports, setRecentReports] = useState([]);
   const [showAgeDistribution, setShowAgeDistribution] = useState(true);
-  const [agePreset, setAgePreset] = useState('all');
+  const [selectedAgeBands, setSelectedAgeBands] = useState(() => AGE_BAND_OPTIONS.map((item) => item.value));
 
   const [filters, setFilters] = useState({
     yearFrom: currentYear,
@@ -130,6 +128,10 @@ const DiocesanSacramentalReportsPage = () => {
 
   const annualRows = useMemo(() => getAnnualRows(report), [report]);
   const ageRows = useMemo(() => getAgeRows(report), [report]);
+  const filteredAgeRows = useMemo(
+    () => ageRows.filter((row) => selectedAgeBands.includes(row.band)),
+    [ageRows, selectedAgeBands]
+  );
 
   const updateFilter = (name, value) => {
     setFilters((prev) => ({
@@ -139,20 +141,12 @@ const DiocesanSacramentalReportsPage = () => {
     }));
   };
 
-  const handleAgePresetChange = (value) => {
-    setAgePreset(value);
-    const preset = AGE_RANGE_PRESETS.find((item) => item.value === value);
-    if (!preset || value === 'custom') return;
-    setFilters((prev) => ({
-      ...prev,
-      ageMin: preset.min,
-      ageMax: preset.max,
-    }));
-  };
-
-  const updateCustomAge = (name, value) => {
-    setAgePreset('custom');
-    updateFilter(name, value);
+  const toggleAgeBand = (value) => {
+    setSelectedAgeBands((prev) => (
+      prev.includes(value)
+        ? prev.filter((item) => item !== value)
+        : [...prev, value]
+    ));
   };
 
   const handleGenerate = async (event) => {
@@ -165,8 +159,8 @@ const DiocesanSacramentalReportsPage = () => {
       toast({ title: 'Rango inválido', description: 'El año inicial no puede superar al año final.', variant: 'destructive' });
       return;
     }
-    if (filters.ageMin !== '' && filters.ageMax !== '' && Number(filters.ageMin) > Number(filters.ageMax)) {
-      toast({ title: 'Rango de edad inválido', description: 'La edad mínima no puede superar la edad máxima.', variant: 'destructive' });
+    if (showAgeDistribution && selectedAgeBands.length === 0) {
+      toast({ title: 'Selecciona al menos un rango de edad', description: 'Marca uno o varios rangos para incluirlos en este informe.', variant: 'destructive' });
       return;
     }
 
@@ -207,6 +201,7 @@ const DiocesanSacramentalReportsPage = () => {
       const filename = downloadDiocesanSacramentalPdf({
         report,
         showAgeDistribution,
+        selectedAgeBands,
         responsibleName: user?.full_name || user?.username || 'Usuario diocesano',
         dioceseFallback: structure.diocese,
       });
@@ -300,49 +295,69 @@ const DiocesanSacramentalReportsPage = () => {
             </label>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-6 gap-4 mt-4 pt-4 border-t border-slate-100">
-            <label className="block xl:col-span-2">
-              <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Rango de edad</span>
-              <select
-                value={agePreset}
-                onChange={(e) => handleAgePresetChange(e.target.value)}
-                className="mt-2 w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm font-bold bg-white"
-              >
-                {AGE_RANGE_PRESETS.map((preset) => (
-                  <option key={preset.value} value={preset.value}>{preset.label}</option>
-                ))}
-              </select>
-            </label>
+          <div className="mt-4 border-t border-slate-100 pt-4">
+            <div className="flex flex-col gap-3 xl:flex-row xl:items-end xl:justify-between">
+              <div className="min-w-0 flex-1">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <div>
+                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Rangos de edad incluidos en este documento</span>
+                    <p className="mt-1 text-xs text-slate-500">Puedes marcar varios rangos; todos los seleccionados aparecerán juntos en la tabla y en el PDF.</p>
+                  </div>
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setSelectedAgeBands(AGE_BAND_OPTIONS.map((item) => item.value))}
+                      className="text-[10px] font-black uppercase tracking-wider text-[#4B7BA7] hover:underline"
+                    >
+                      Seleccionar todos
+                    </button>
+                    <span className="text-slate-300">·</span>
+                    <button
+                      type="button"
+                      onClick={() => setSelectedAgeBands([])}
+                      className="text-[10px] font-black uppercase tracking-wider text-slate-500 hover:underline"
+                    >
+                      Limpiar
+                    </button>
+                  </div>
+                </div>
 
-            {agePreset === 'custom' ? (
-              <>
-                <label className="block">
-                  <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Edad mínima</span>
-                  <input type="number" min="0" max="120" value={filters.ageMin} onChange={(e) => updateCustomAge('ageMin', e.target.value)} placeholder="Ej. 20" className="mt-2 w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm" />
-                </label>
-                <label className="block">
-                  <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Edad máxima</span>
-                  <input type="number" min="0" max="120" value={filters.ageMax} onChange={(e) => updateCustomAge('ageMax', e.target.value)} placeholder="Ej. 35" className="mt-2 w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm" />
-                </label>
-              </>
-            ) : (
-              <div className="xl:col-span-2 rounded-xl border border-blue-100 bg-blue-50/50 px-4 py-2.5 self-end min-h-[42px]">
-                <p className="text-[9px] font-black uppercase tracking-widest text-[#4B7BA7]">Intervalo aplicado</p>
-                <p className="mt-1 text-xs font-bold text-slate-700">
-                  {AGE_RANGE_PRESETS.find((item) => item.value === agePreset)?.label || 'Todas las edades'}
-                </p>
+                <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7">
+                  {AGE_BAND_OPTIONS.map((band) => {
+                    const checked = selectedAgeBands.includes(band.value);
+                    return (
+                      <label
+                        key={band.value}
+                        className={[
+                          'flex cursor-pointer items-center gap-2 rounded-xl border px-3 py-2.5 transition',
+                          checked
+                            ? 'border-[#4B7BA7] bg-blue-50/70 text-[#315E86] shadow-sm'
+                            : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300',
+                        ].join(' ')}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={checked}
+                          onChange={() => toggleAgeBand(band.value)}
+                          className="h-4 w-4"
+                        />
+                        <span className="text-xs font-black">{band.label}</span>
+                      </label>
+                    );
+                  })}
+                </div>
               </div>
-            )}
 
-            <label className="flex items-center gap-3 self-end rounded-xl border border-slate-200 px-4 py-2.5 min-h-[42px]">
-              <input type="checkbox" checked={showAgeDistribution} onChange={(e) => setShowAgeDistribution(e.target.checked)} className="w-4 h-4" />
-              <span className="text-xs font-bold text-slate-700">Mostrar distribución por edades</span>
-            </label>
-            <div className="self-end">
-              <Button type="submit" disabled={generating || loadingStructure} className="w-full bg-[#D4AF37] hover:bg-[#b99426] text-slate-950 font-black">
-                {generating ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <FileText className="w-4 h-4 mr-2" />}
-                Generar acta estadística
-              </Button>
+              <div className="grid min-w-[330px] grid-cols-1 gap-3 sm:grid-cols-2">
+                <label className="flex items-center gap-3 rounded-xl border border-slate-200 px-4 py-2.5 min-h-[42px]">
+                  <input type="checkbox" checked={showAgeDistribution} onChange={(e) => setShowAgeDistribution(e.target.checked)} className="w-4 h-4" />
+                  <span className="text-xs font-bold text-slate-700">Mostrar distribución por edades</span>
+                </label>
+                <Button type="submit" disabled={generating || loadingStructure} className="w-full bg-[#D4AF37] hover:bg-[#b99426] text-slate-950 font-black">
+                  {generating ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <FileText className="w-4 h-4 mr-2" />}
+                  Generar acta estadística
+                </Button>
+              </div>
             </div>
           </div>
         </form>
@@ -433,7 +448,7 @@ const DiocesanSacramentalReportsPage = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {ageRows.length ? ageRows.map((row) => (
+                      {filteredAgeRows.length ? filteredAgeRows.map((row) => (
                         <tr key={`${row.year}-${row.band}`} className="border-t border-slate-100">
                           <td className="px-5 py-3 font-black">{row.year}</td>
                           <td className="px-5 py-3 font-semibold">{row.band}</td>
@@ -480,7 +495,7 @@ const DiocesanSacramentalReportsPage = () => {
               <p><strong>Nivel:</strong> {scopeTypeLabel}</p>
               <p><strong>Periodo:</strong> {report.filters?.year_from} – {report.filters?.year_to}</p>
               <p><strong>Parroquias comprendidas:</strong> {report.scope?.parish_count ?? 0}</p>
-              <p><strong>Filtro de edad:</strong> {report.filters?.age_min == null && report.filters?.age_max == null ? 'Sin restricción' : `${report.filters?.age_min ?? 0} a ${report.filters?.age_max ?? 'más'} años`}</p>
+              <p><strong>Rangos etarios:</strong> {selectedAgeBands.join(', ') || 'No incluidos'}</p>
               <p><strong>Fecha de expedición:</strong> {new Date(report.generated_at).toLocaleDateString('es-CO', { day: '2-digit', month: 'long', year: 'numeric' })}</p>
             </div>
 
@@ -498,18 +513,18 @@ const DiocesanSacramentalReportsPage = () => {
               </tbody>
             </table>
 
-            {showAgeDistribution && ageRows.length > 0 && (
+            {showAgeDistribution && filteredAgeRows.length > 0 && (
               <div className="mt-5">
                 <h2 className="text-[11pt] font-bold text-center uppercase mb-2">Distribución etaria de personas</h2>
                 <table className="acta-table">
                   <thead><tr><th>Año</th><th>Edad</th><th>Bautismos</th><th>Confirmaciones</th><th>Contrayentes</th><th>Exequias</th></tr></thead>
-                  <tbody>{ageRows.map((row) => <tr key={`${row.year}-${row.band}`}><td>{row.year}</td><td>{row.band}</td><td>{row.bautismo}</td><td>{row.confirmacion}</td><td>{row.matrimonio}</td><td>{row.exequias}</td></tr>)}</tbody>
+                  <tbody>{filteredAgeRows.map((row) => <tr key={`${row.year}-${row.band}`}><td>{row.year}</td><td>{row.band}</td><td>{row.bautismo}</td><td>{row.confirmacion}</td><td>{row.matrimonio}</td><td>{row.exequias}</td></tr>)}</tbody>
                 </table>
               </div>
             )}
 
             <div className="mt-5 text-[8.5pt] leading-relaxed text-slate-600 border-t border-slate-300 pt-3">
-              <strong>Nota metodológica.</strong> La tabla principal contabiliza actos/registros sacramentales. La distribución por edades contabiliza personas: Bautismo, Confirmación y Exequias aportan una persona por registro; Matrimonio puede aportar dos contrayentes cuando existen fechas de nacimiento válidas. Los registros anulados, revertidos o cancelados no duplican la estadística activa. Las fechas anómalas o incompatibles no se fuerzan para el cálculo de edad.
+              <strong>Nota metodológica.</strong> La tabla principal contabiliza actos/registros sacramentales. La distribución por edades contabiliza personas y presenta conjuntamente los rangos seleccionados para este documento: {selectedAgeBands.join(', ')}. Bautismo, Confirmación y Exequias aportan una persona por registro; Matrimonio puede aportar dos contrayentes cuando existen fechas de nacimiento válidas. Los registros anulados, revertidos o cancelados no duplican la estadística activa.
             </div>
 
             <div className="grid grid-cols-2 gap-16 mt-16 text-center text-[10pt] avoid-break">
