@@ -16,6 +16,7 @@ import {
 } from '@/services/legacyMigrationService';
 import { LEGACY_IMPORT_PROFILES, profileOptions } from '@/config/legacyImportProfiles';
 import { normalizeRole } from '@/lib/authz';
+import { listLegacyReportDefinitions, listLegacySourceOrigins } from '@/services/legacyArchiveService';
 import { labelMigrationStatus } from '@/utils/uiLabels';
 
 
@@ -84,6 +85,8 @@ const LegacyMigrationCenterPage = () => {
   const [bulkSummary,setBulkSummary] = useState(null);
   const [installationMaterialization,setInstallationMaterialization] = useState(null);
   const [error,setError] = useState('');
+  const [reportDefinitions,setReportDefinitions] = useState([]);
+  const [sourceOrigins,setSourceOrigins] = useState([]);
 
   const importProfile = profileKey ? LEGACY_IMPORT_PROFILES[profileKey] : null;
   const isHistoricalBallot = ['INSBAUTI','INSCONFI'].includes(profileKey);
@@ -116,6 +119,32 @@ const LegacyMigrationCenterPage = () => {
     }
     return acc;
   },{reported:0,notSeated:0}),[analysis,profileKey]);
+  const reportCoverage = useMemo(() => {
+    const byCategory = new Map();
+    let implemented = 0;
+    let legacyOnly = 0;
+    for (const row of reportDefinitions) {
+      const category = row.category || 'Sin categoría';
+      const item = byCategory.get(category) || { category, total:0, implemented:0, legacyOnly:0, equivalents:new Set() };
+      item.total += 1;
+      if (String(row.audit_status || '').toUpperCase().includes('IMPLEMENTADO')) {
+        item.implemented += 1;
+        implemented += 1;
+      } else {
+        item.legacyOnly += 1;
+        legacyOnly += 1;
+      }
+      if (row.current_equivalent) item.equivalents.add(row.current_equivalent);
+      byCategory.set(category,item);
+    }
+    return {
+      total: reportDefinitions.length,
+      implemented,
+      legacyOnly,
+      categories:[...byCategory.values()].map(item=>({...item,equivalents:[...item.equivalents]})).sort((a,b)=>b.total-a.total)
+    };
+  },[reportDefinitions]);
+
   const issuesTop = useMemo(() => {
     const map = new Map();
     analysis.flatMap(r => r.issue_details?.issues || []).forEach(i=>map.set(i.code,(map.get(i.code)||0)+1));
@@ -137,9 +166,15 @@ const LegacyMigrationCenterPage = () => {
     Promise.all([
       loadParishesForMigration(role==='admin_general' ? null : userDioceseId),
       refreshBatches(),
-      refreshInstallations()
+      refreshInstallations(),
+      listLegacyReportDefinitions({limit:500}),
+      listLegacySourceOrigins({limit:200})
     ])
-      .then(([p])=>setParishes(p || []))
+      .then(([p,,,reports,origins])=>{
+        setParishes(p || []);
+        setReportDefinitions(reports || []);
+        setSourceOrigins(origins || []);
+      })
       .catch(e=>setError(e.message));
   },[role,userDioceseId]);
 
@@ -503,6 +538,59 @@ const LegacyMigrationCenterPage = () => {
         </div>
         <div className="bg-amber-50 border border-amber-100 rounded-[2rem] p-6"><div className="flex gap-3"><LockKeyhole className="w-5 h-5 text-amber-700 shrink-0"/><div><h3 className="font-black text-amber-950">Ámbito seguro</h3><p className="text-xs text-amber-800 mt-1">Solo Administrador General o Diócesis pueden ejecutar migraciones. Cancillería puede auditar posteriormente.</p></div></div></div>
       </div>
+
+      <section className="rounded-[2rem] border border-indigo-100 bg-gradient-to-br from-indigo-50 via-white to-blue-50 p-6 shadow-sm">
+        <div className="flex flex-col gap-5 xl:flex-row xl:items-start xl:justify-between">
+          <div className="max-w-3xl">
+            <div className="inline-flex items-center gap-2 rounded-full bg-indigo-900 px-3 py-1 text-[9px] font-black uppercase tracking-[0.2em] text-white"><FileText className="h-3.5 w-3.5"/> Inteligencia documental legacy</div>
+            <h2 className="mt-3 text-2xl font-black text-slate-950">Mapa funcional del programa antiguo</h2>
+            <p className="mt-2 text-sm leading-relaxed text-slate-600">Los FRX/FRT preservados no son archivos muertos: cada reporte está catalogado con su finalidad, campos legacy y equivalente moderno. Este panel permite comprobar qué parte del sistema antiguo ya tiene continuidad funcional en SACRAMENTUM.</p>
+          </div>
+          <div className="grid min-w-[320px] grid-cols-3 gap-2">
+            {statCard('Reportes FRX',reportCoverage.total,Archive,'blue')}
+            {statCard('Cubiertos',reportCoverage.implemented,CheckCircle2,'green')}
+            {statCard('Sólo legacy',reportCoverage.legacyOnly,History,'amber')}
+          </div>
+        </div>
+        <div className="mt-5 max-h-[360px] overflow-auto rounded-2xl border border-indigo-100 bg-white">
+          <table className="w-full text-xs">
+            <thead className="sticky top-0 bg-slate-50"><tr><th className="p-3 text-left">Familia</th><th className="p-3 text-right">FRX</th><th className="p-3 text-right">Cubiertos</th><th className="p-3 text-left">Equivalente moderno</th></tr></thead>
+            <tbody>{reportCoverage.categories.map(item=><tr key={item.category} className="border-t align-top"><td className="p-3 font-black text-slate-800">{item.category}</td><td className="p-3 text-right font-mono">{item.total}</td><td className="p-3 text-right font-black text-emerald-700">{item.implemented}</td><td className="p-3 text-slate-500">{item.equivalents.slice(0,3).join(' · ') || 'Preservación histórica'}</td></tr>)}</tbody>
+          </table>
+        </div>
+      </section>
+
+      {sourceOrigins.length>0&&<section className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+          <div>
+            <p className="text-[9px] font-black uppercase tracking-[.22em] text-[#4B7BA7]">Procedencia física V65</p>
+            <h2 className="mt-1 text-2xl font-black text-slate-950">Orígenes identificados dentro de SACRAMENTA</h2>
+            <p className="mt-2 max-w-3xl text-sm text-slate-500">Cada snapshot conserva su identidad propia. SACRAMENTUM no mezcla una conversión compuesta con una parroquia ni materializa una parroquia histórica sin vínculo moderno verificado.</p>
+          </div>
+          <div className="rounded-xl border border-slate-100 bg-slate-50 px-4 py-2 text-xs font-bold text-slate-600">{sourceOrigins.length} orígenes registrados</div>
+        </div>
+        <div className="mt-5 grid gap-3 lg:grid-cols-2">
+          {sourceOrigins.map(origin=>{
+            const mapped=Boolean(origin.mapped_parish_id);
+            const blocked=origin.identity_status==='mixed'||origin.identity_status==='verified_unmapped';
+            return <div key={origin.id} className="rounded-2xl border border-slate-100 bg-slate-50/60 p-4">
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <p className="font-black text-slate-900">{origin.display_name}</p>
+                  <p className="mt-1 text-[10px] font-bold uppercase tracking-wider text-slate-400">{origin.origin_kind} · {origin.origin_key}</p>
+                </div>
+                <span className={`rounded-full px-2.5 py-1 text-[9px] font-black uppercase ${mapped?'bg-emerald-100 text-emerald-800':blocked?'bg-amber-100 text-amber-800':'bg-blue-100 text-blue-800'}`}>
+                  {mapped?'Vinculado':origin.identity_status==='mixed'?'No materializar':origin.identity_status==='verified_unmapped'?'Falta vincular':origin.identity_status}
+                </span>
+              </div>
+              {origin.legacy_parish_name&&<p className="mt-3 text-xs text-slate-600"><b>Identidad histórica:</b> {origin.legacy_parish_name}</p>}
+              {origin.physical_path&&<p className="mt-1 break-all font-mono text-[10px] text-slate-400">{origin.physical_path}</p>}
+              {origin.metadata?.identity_basis&&<p className="mt-2 text-[10px] text-slate-500"><b>Base de identificación:</b> {origin.metadata.identity_basis}</p>}
+              {origin.metadata?.do_not_use_as_parish_identity&&<p className="mt-2 rounded-xl border border-red-100 bg-red-50 px-3 py-2 text-[10px] font-bold text-red-700">Snapshot compuesto: conservar como fuente, nunca usar como identidad parroquial.</p>}
+            </div>;
+          })}
+        </div>
+      </section>}
 
       <div className="rounded-[2rem] border border-emerald-100 bg-gradient-to-br from-emerald-50 to-white p-6 shadow-sm">
         <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">

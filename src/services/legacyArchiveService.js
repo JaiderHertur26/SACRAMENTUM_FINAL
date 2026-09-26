@@ -67,6 +67,18 @@ export async function listLegacySourceInstallations({ dioceseId = null, limit = 
   return data || [];
 }
 
+export async function listLegacySourceOrigins({ installationId = null, limit = 200 } = {}) {
+  let q = supabase
+    .from('legacy_source_origins')
+    .select('*')
+    .order('display_name')
+    .limit(limit);
+  if (installationId) q = q.eq('source_installation_id', installationId);
+  const { data,error } = await q;
+  if (error) throw error;
+  return data || [];
+}
+
 export async function listLegacySourceFiles({ installationId = null, limit = 500 } = {}) {
   let q = supabase
     .from('legacy_source_files')
