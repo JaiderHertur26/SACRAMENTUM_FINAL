@@ -192,6 +192,196 @@ const addFooterToAllPages = (doc, reportNumber) => {
   }
 };
 
+const valueOrDash = (value) => (value == null || value === '' ? '—' : fmtNumber(value));
+
+const getBaptismAgeTotals = (report) => {
+  const map = new Map();
+  for (const item of report?.age_distribution || []) {
+    if (item.sacrament_type !== 'bautismo') continue;
+    map.set(item.band, Number(map.get(item.band) || 0) + Number(item.persons || 0));
+  }
+  return [...map.entries()].map(([band, total]) => ({ band, total }));
+};
+
+const buildParishCuriaPdf = ({
+  report,
+  responsibleName = '',
+  dioceseFallback = null,
+}) => {
+  const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4', compress: true });
+  const diocese = { ...(dioceseFallback || {}), ...(report?.diocese || {}) };
+  const totals = report?.totals || {};
+  const breakdown = report?.curia_breakdown || {};
+  const supplement = report?.pastoral_supplement || {};
+  const unions = breakdown?.baptism_parent_unions || {};
+  const ageTotals = getBaptismAgeTotals(report);
+  const pastorName = breakdown?.pastor_name || responsibleName || 'Párroco';
+  const bishopName = diocese?.bishop_name || diocese?.bishop || 'Autoridad eclesiástica';
+
+  doc.setProperties({
+    title: `Reporte Estadístico a la Curia ${report?.report_number || ''}`,
+    subject: 'Informe parroquial pastoral y sacramental',
+    author: report?.scope?.name || diocese?.name || 'SACRAMENTUM',
+    creator: 'SACRAMENTUM · Sistema Eclesial de Registro Sacramental',
+  });
+
+  drawPageFrame(doc);
+  drawCrossOrnament(doc, 105, 19.5);
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(8.5);
+  doc.setTextColor(...COLORS.blue);
+  doc.text(String(diocese?.name || 'JURISDICCIÓN ECLESIÁSTICA').toUpperCase(), 105, 29, { align: 'center' });
+  doc.setFont('times', 'bold');
+  doc.setFontSize(16);
+  doc.setTextColor(...COLORS.ink);
+  doc.text('REPORTE ESTADÍSTICO PASTORAL Y SACRAMENTAL', 105, 37.5, { align: 'center' });
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(7.5);
+  doc.setTextColor(...COLORS.slate);
+  doc.text('A LA CURIA DIOCESANA / ARQUIDIOCESANA', 105, 43, { align: 'center' });
+
+  doc.setFillColor(...COLORS.goldSoft);
+  doc.setDrawColor(230, 220, 179);
+  doc.roundedRect(15, 48, 180, 23, 2.5, 2.5, 'FD');
+  drawInfoPair(doc, 'Parroquia', report?.scope?.name || breakdown?.parish_name || '—', 21, 57, 72);
+  drawInfoPair(doc, 'Periodo', `${report?.filters?.year_from ?? '—'} - ${report?.filters?.year_to ?? '—'}`, 110, 57, 35);
+  drawInfoPair(doc, 'Informe', report?.report_number || '—', 153, 57, 34);
+
+  drawSectionTitle(doc, 'Resumen de Bautismos', 81);
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(6.8);
+  doc.setTextColor(...COLORS.slate);
+  doc.text('POR EDADES', 16, 87);
+  doc.text('POR TIPO DE UNIÓN DE LOS PADRES', 109, 87);
+
+  const agePairs = [];
+  for (let i = 0; i < ageTotals.length; i += 2) {
+    agePairs.push([
+      pdfAgeLabel(ageTotals[i]?.band || ''),
+      valueOrDash(ageTotals[i]?.total),
+      pdfAgeLabel(ageTotals[i + 1]?.band || ''),
+      ageTotals[i + 1] ? valueOrDash(ageTotals[i + 1].total) : '',
+    ]);
+  }
+  if (!agePairs.length) agePairs.push(['Sin datos etarios', '—', '', '']);
+
+  autoTable(doc, {
+    startY: 89,
+    margin: { left: 15, right: 108 },
+    tableWidth: 87,
+    head: [['Rango', 'N.º', 'Rango', 'N.º']],
+    body: agePairs,
+    theme: 'grid',
+    styles: { font: 'helvetica', fontSize: 6.4, cellPadding: 1.5, lineColor: COLORS.line, lineWidth: 0.14 },
+    headStyles: { fillColor: COLORS.blueSoft, textColor: COLORS.blue, fontStyle: 'bold' },
+    columnStyles: { 1: { halign: 'right', cellWidth: 12 }, 3: { halign: 'right', cellWidth: 12 } },
+  });
+  const ageFinalY = doc.lastAutoTable?.finalY || 94;
+
+  const unionRows = [
+    ['Matrimonio católico', unions.matrimonio_catolico],
+    ['Matrimonio civil', unions.matrimonio_civil],
+    ['Unión libre', unions.union_libre],
+    ['Madre soltera', unions.madre_soltera],
+    ['Padre soltero', unions.padre_soltero],
+    ['Otro caso', unions.otro],
+    ['Sin dato', unions.sin_dato],
+  ];
+  autoTable(doc, {
+    startY: 89,
+    margin: { left: 108, right: 15 },
+    tableWidth: 87,
+    head: [['Situación', 'N.º']],
+    body: unionRows.map(([label, value]) => [label, valueOrDash(value)]),
+    theme: 'grid',
+    styles: { font: 'helvetica', fontSize: 6.4, cellPadding: 1.35, lineColor: COLORS.line, lineWidth: 0.14 },
+    headStyles: { fillColor: COLORS.blueSoft, textColor: COLORS.blue, fontStyle: 'bold' },
+    columnStyles: { 1: { halign: 'right', cellWidth: 14, fontStyle: 'bold' } },
+  });
+  const unionFinalY = doc.lastAutoTable?.finalY || 94;
+  let y = Math.max(ageFinalY, unionFinalY) + 4;
+
+  doc.setFillColor(...COLORS.goldSoft);
+  doc.setDrawColor(230, 220, 179);
+  doc.roundedRect(15, y, 180, 10, 1.5, 1.5, 'FD');
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(7.2);
+  doc.setTextColor(...COLORS.ink);
+  doc.text('Catecúmenos mayores de 7 años preparados para el Bautismo', 20, y + 6.2);
+  doc.text(valueOrDash(supplement.catechumensOver7), 152, y + 6.2, { align: 'right' });
+  doc.text('TOTAL BAUTISMOS', 160, y + 6.2);
+  doc.text(fmtNumber(totals.bautismo), 190, y + 6.2, { align: 'right' });
+  y += 18;
+
+  drawSectionTitle(doc, 'Resumen de Matrimonios', y);
+  autoTable(doc, {
+    startY: y + 4,
+    margin: { left: 15, right: 15 },
+    head: [['Situación canónica informada', 'N.º']],
+    body: [
+      ['Matrimonios entre católicos bautizados', valueOrDash(supplement.marriageCatholicsBaptized)],
+      ['Matrimonio entre católico y no bautizado', valueOrDash(supplement.marriageCatholicUnbaptized)],
+      ['Matrimonio entre católico y no católico', valueOrDash(supplement.marriageCatholicNonCatholic)],
+      ['TOTAL MATRIMONIOS REGISTRADOS EN SACRAMENTUM', fmtNumber(totals.matrimonio)],
+    ],
+    theme: 'grid',
+    styles: { font: 'helvetica', fontSize: 6.7, cellPadding: 1.5, lineColor: COLORS.line, lineWidth: 0.14 },
+    headStyles: { fillColor: COLORS.blue, textColor: COLORS.white, fontStyle: 'bold' },
+    columnStyles: { 1: { halign: 'right', cellWidth: 24, fontStyle: 'bold' } },
+    didParseCell: (data) => {
+      if (data.section === 'body' && data.row.index === 3) {
+        data.cell.styles.fillColor = COLORS.goldSoft;
+        data.cell.styles.fontStyle = 'bold';
+      }
+    },
+  });
+  y = (doc.lastAutoTable?.finalY || y + 20) + 7;
+
+  drawSectionTitle(doc, 'Síntesis pastoral del periodo', y);
+  const pastoralRows = [
+    ['Confirmaciones registradas', fmtNumber(totals.confirmacion)],
+    ['Primeras Comuniones', valueOrDash(supplement.firstCommunions)],
+    ['Exequias registradas', fmtNumber(totals.exequias)],
+    ['Catequistas / Formadores', valueOrDash(supplement.catechists)],
+    ['Células pastorales con Eucaristía dominical distinta a la parroquia', valueOrDash(supplement.pastoralCells)],
+  ];
+  autoTable(doc, {
+    startY: y + 4,
+    margin: { left: 15, right: 15 },
+    body: pastoralRows,
+    theme: 'grid',
+    styles: { font: 'helvetica', fontSize: 6.7, cellPadding: 1.45, lineColor: COLORS.line, lineWidth: 0.14 },
+    columnStyles: { 1: { halign: 'right', cellWidth: 24, fontStyle: 'bold' } },
+  });
+  y = (doc.lastAutoTable?.finalY || y + 20) + 6;
+
+  doc.setFont('times', 'italic');
+  doc.setFontSize(6.4);
+  doc.setTextColor(...COLORS.slate);
+  const note = 'Los datos sacramentales provienen de los registros activos de SACRAMENTUM. Los campos pastorales complementarios corresponden a información declarada para el periodo y no son inferidos por el sistema.';
+  doc.text(doc.splitTextToSize(note, 176), 17, y);
+  y += 10;
+
+  const signatureY = Math.min(y + 10, 258);
+  doc.setDrawColor(...COLORS.ink);
+  doc.setLineWidth(0.25);
+  doc.line(25, signatureY, 88, signatureY);
+  doc.line(122, signatureY, 185, signatureY);
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(7.2);
+  doc.setTextColor(...COLORS.ink);
+  doc.text(String(pastorName), 56.5, signatureY + 4.5, { align: 'center', maxWidth: 62 });
+  doc.text(String(bishopName), 153.5, signatureY + 4.5, { align: 'center', maxWidth: 62 });
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(6.1);
+  doc.setTextColor(...COLORS.slate);
+  doc.text('PÁRROCO', 56.5, signatureY + 8.5, { align: 'center' });
+  doc.text('AUTORIDAD ECLESIÁSTICA', 153.5, signatureY + 8.5, { align: 'center' });
+
+  addFooterToAllPages(doc, report.report_number);
+  return doc;
+};
+
 export function buildDiocesanSacramentalPdf({
   report,
   showAgeDistribution = true,
@@ -200,6 +390,15 @@ export function buildDiocesanSacramentalPdf({
   dioceseFallback = null,
 } = {}) {
   if (!report) throw new Error('No hay un informe sacramental generado para exportar.');
+
+  if ((report?.scope?.type || report?.filters?.scope_type) === 'parroquia' && report?.curia_breakdown) {
+    return buildParishCuriaPdf({
+      report,
+      responsibleName,
+      dioceseFallback,
+    });
+  }
+
   const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4', compress: true });
   const annualRows = getAnnualRows(report);
   const allAgeRows = getAgeRows(report);
