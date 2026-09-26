@@ -23,6 +23,18 @@ const SACRAMENT_LABELS = {
 
 const SACRAMENT_ORDER = ['bautismo', 'confirmacion', 'matrimonio', 'exequias'];
 
+const AGE_RANGE_PRESETS = [
+  { value: 'all', label: 'Todas las edades', min: '', max: '' },
+  { value: '0-6', label: '0 a 6 años · Primera infancia', min: 0, max: 6 },
+  { value: '7-12', label: '7 a 12 años · Niñez', min: 7, max: 12 },
+  { value: '13-17', label: '13 a 17 años · Adolescencia', min: 13, max: 17 },
+  { value: '18-25', label: '18 a 25 años · Juventud', min: 18, max: 25 },
+  { value: '26-40', label: '26 a 40 años · Adulto joven', min: 26, max: 40 },
+  { value: '41-60', label: '41 a 60 años · Adulto', min: 41, max: 60 },
+  { value: '61+', label: '61 años o más · Adulto mayor', min: 61, max: '' },
+  { value: 'custom', label: 'Personalizado · Definir mínimo y máximo', min: null, max: null },
+];
+
 function getAnnualRows(report) {
   if (!report) return [];
   const map = new Map();
@@ -74,6 +86,7 @@ const DiocesanSacramentalReportsPage = () => {
   const [report, setReport] = useState(null);
   const [recentReports, setRecentReports] = useState([]);
   const [showAgeDistribution, setShowAgeDistribution] = useState(true);
+  const [agePreset, setAgePreset] = useState('all');
 
   const [filters, setFilters] = useState({
     yearFrom: currentYear,
@@ -126,6 +139,22 @@ const DiocesanSacramentalReportsPage = () => {
     }));
   };
 
+  const handleAgePresetChange = (value) => {
+    setAgePreset(value);
+    const preset = AGE_RANGE_PRESETS.find((item) => item.value === value);
+    if (!preset || value === 'custom') return;
+    setFilters((prev) => ({
+      ...prev,
+      ageMin: preset.min,
+      ageMax: preset.max,
+    }));
+  };
+
+  const updateCustomAge = (name, value) => {
+    setAgePreset('custom');
+    updateFilter(name, value);
+  };
+
   const handleGenerate = async (event) => {
     event?.preventDefault();
     if (filters.scopeType !== 'general' && !filters.scopeId) {
@@ -134,6 +163,10 @@ const DiocesanSacramentalReportsPage = () => {
     }
     if (Number(filters.yearFrom) > Number(filters.yearTo)) {
       toast({ title: 'Rango inválido', description: 'El año inicial no puede superar al año final.', variant: 'destructive' });
+      return;
+    }
+    if (filters.ageMin !== '' && filters.ageMax !== '' && Number(filters.ageMin) > Number(filters.ageMax)) {
+      toast({ title: 'Rango de edad inválido', description: 'La edad mínima no puede superar la edad máxima.', variant: 'destructive' });
       return;
     }
 
@@ -267,16 +300,41 @@ const DiocesanSacramentalReportsPage = () => {
             </label>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-4 pt-4 border-t border-slate-100">
-            <label className="block">
-              <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Edad mínima · opcional</span>
-              <input type="number" min="0" max="120" value={filters.ageMin} onChange={(e) => updateFilter('ageMin', e.target.value)} placeholder="Sin mínimo" className="mt-2 w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm" />
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-6 gap-4 mt-4 pt-4 border-t border-slate-100">
+            <label className="block xl:col-span-2">
+              <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Rango de edad</span>
+              <select
+                value={agePreset}
+                onChange={(e) => handleAgePresetChange(e.target.value)}
+                className="mt-2 w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm font-bold bg-white"
+              >
+                {AGE_RANGE_PRESETS.map((preset) => (
+                  <option key={preset.value} value={preset.value}>{preset.label}</option>
+                ))}
+              </select>
             </label>
-            <label className="block">
-              <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Edad máxima · opcional</span>
-              <input type="number" min="0" max="120" value={filters.ageMax} onChange={(e) => updateFilter('ageMax', e.target.value)} placeholder="Sin máximo" className="mt-2 w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm" />
-            </label>
-            <label className="flex items-center gap-3 md:col-span-1 self-end rounded-xl border border-slate-200 px-4 py-2.5 min-h-[42px]">
+
+            {agePreset === 'custom' ? (
+              <>
+                <label className="block">
+                  <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Edad mínima</span>
+                  <input type="number" min="0" max="120" value={filters.ageMin} onChange={(e) => updateCustomAge('ageMin', e.target.value)} placeholder="Ej. 20" className="mt-2 w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm" />
+                </label>
+                <label className="block">
+                  <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Edad máxima</span>
+                  <input type="number" min="0" max="120" value={filters.ageMax} onChange={(e) => updateCustomAge('ageMax', e.target.value)} placeholder="Ej. 35" className="mt-2 w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm" />
+                </label>
+              </>
+            ) : (
+              <div className="xl:col-span-2 rounded-xl border border-blue-100 bg-blue-50/50 px-4 py-2.5 self-end min-h-[42px]">
+                <p className="text-[9px] font-black uppercase tracking-widest text-[#4B7BA7]">Intervalo aplicado</p>
+                <p className="mt-1 text-xs font-bold text-slate-700">
+                  {AGE_RANGE_PRESETS.find((item) => item.value === agePreset)?.label || 'Todas las edades'}
+                </p>
+              </div>
+            )}
+
+            <label className="flex items-center gap-3 self-end rounded-xl border border-slate-200 px-4 py-2.5 min-h-[42px]">
               <input type="checkbox" checked={showAgeDistribution} onChange={(e) => setShowAgeDistribution(e.target.checked)} className="w-4 h-4" />
               <span className="text-xs font-bold text-slate-700">Mostrar distribución por edades</span>
             </label>
