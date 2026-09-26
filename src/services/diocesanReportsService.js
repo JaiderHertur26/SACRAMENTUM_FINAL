@@ -48,15 +48,14 @@ export async function generateDiocesanSacramentalReport({
     customAgeDistribution = ages || [];
   }
 
-  if (scopeType === 'parroquia' && scopeId) {
-    const { data: breakdown, error: breakdownError } = await supabase.rpc('get_parish_curia_report_breakdown', {
-      p_year_from: Number(yearFrom),
-      p_year_to: Number(yearTo),
-      p_parish_id: scopeId,
-    });
-    if (breakdownError) throw breakdownError;
-    curiaBreakdown = breakdown || null;
-  }
+  const { data: breakdown, error: breakdownError } = await supabase.rpc('get_curia_report_breakdown', {
+    p_year_from: Number(yearFrom),
+    p_year_to: Number(yearTo),
+    p_scope_type: scopeType,
+    p_scope_id: scopeType === 'general' ? null : scopeId || null,
+  });
+  if (breakdownError) throw breakdownError;
+  curiaBreakdown = breakdown || null;
 
   const { data, error } = await supabase.rpc('generate_diocesan_sacramental_report', {
     p_year_from: Number(yearFrom),
@@ -69,7 +68,7 @@ export async function generateDiocesanSacramentalReport({
 
   if (error) throw error;
 
-  if (scopeType === 'parroquia' && data?.report_id) {
+  if (data?.report_id) {
     const { error: snapshotError } = await supabase.rpc('attach_parish_curia_report_snapshot', {
       p_report_id: data.report_id,
       p_curia_breakdown: curiaBreakdown || {},
@@ -83,7 +82,7 @@ export async function generateDiocesanSacramentalReport({
     ...data,
     age_distribution: customAgeDistribution ?? data?.age_distribution ?? [],
     curia_breakdown: curiaBreakdown,
-    pastoral_supplement: scopeType === 'parroquia' ? (pastoralSupplement || {}) : null,
+    pastoral_supplement: pastoralSupplement || {},
     filters: {
       ...(data?.filters || {}),
       age_ranges: ageRanges,

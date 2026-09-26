@@ -226,24 +226,21 @@ const DiocesanSacramentalReportsPage = () => {
       }
     }
 
-    let normalizedPastoralSupplement = null;
-    if (filters.scopeType === 'parroquia') {
-      normalizedPastoralSupplement = Object.fromEntries(
-        Object.entries(pastoralSupplement).map(([key, value]) => {
-          if (value === '' || value == null) return [key, null];
-          const number = Number(value);
-          return [key, Number.isInteger(number) && number >= 0 ? number : Number.NaN];
-        })
-      );
+    const normalizedPastoralSupplement = Object.fromEntries(
+      Object.entries(pastoralSupplement).map(([key, value]) => {
+        if (value === '' || value == null) return [key, null];
+        const number = Number(value);
+        return [key, Number.isInteger(number) && number >= 0 ? number : Number.NaN];
+      })
+    );
 
-      if (Object.values(normalizedPastoralSupplement).some((value) => Number.isNaN(value))) {
-        toast({
-          title: 'Revisa los datos pastorales complementarios',
-          description: 'Los valores deben ser números enteros iguales o mayores que cero.',
-          variant: 'destructive',
-        });
-        return;
-      }
+    if (Object.values(normalizedPastoralSupplement).some((value) => Number.isNaN(value))) {
+      toast({
+        title: 'Revisa los datos pastorales complementarios',
+        description: 'Los valores deben ser números enteros iguales o mayores que cero.',
+        variant: 'destructive',
+      });
+      return;
     }
 
     setGenerating(true);
@@ -491,8 +488,7 @@ const DiocesanSacramentalReportsPage = () => {
               ))}
             </div>
 
-            {filters.scopeType === 'parroquia' && (
-              <div className="mt-5 rounded-2xl border border-amber-200 bg-amber-50/40 p-5">
+            <div className="mt-5 rounded-2xl border border-amber-200 bg-amber-50/40 p-5">
                 <div className="mb-4">
                   <p className="text-[10px] font-black uppercase tracking-[0.16em] text-amber-700">Datos pastorales complementarios · Reporte a la Curia</p>
                   <p className="mt-1 text-xs text-slate-600">
@@ -524,7 +520,6 @@ const DiocesanSacramentalReportsPage = () => {
                   ))}
                 </div>
               </div>
-            )}
 
             <div className="mt-4 flex flex-col gap-3 border-t border-slate-100 pt-4 sm:flex-row sm:items-center sm:justify-end">
               <label className="flex items-center gap-3 rounded-xl border border-slate-200 px-4 py-2.5 min-h-[42px]">

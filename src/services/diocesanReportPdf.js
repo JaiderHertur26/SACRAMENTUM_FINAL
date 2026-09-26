@@ -215,12 +215,22 @@ const buildParishCuriaPdf = ({
   const supplement = report?.pastoral_supplement || {};
   const unions = breakdown?.baptism_parent_unions || {};
   const ageTotals = getBaptismAgeTotals(report);
-  const pastorName = breakdown?.pastor_name || responsibleName || 'Párroco';
+  const scopeType = report?.scope?.type || report?.filters?.scope_type || breakdown?.scope_type || 'general';
+  const isParishScope = scopeType === 'parroquia';
+  const leftSignerName = isParishScope
+    ? (breakdown?.pastor_name || responsibleName || 'Párroco')
+    : (responsibleName || 'Responsable de la información');
+  const leftSignerRole = isParishScope ? 'PÁRROCO' : 'RESPONSABLE DE LA INFORMACIÓN';
+  const scopeLabel = isParishScope ? 'Parroquia' : ({
+    general: 'Jurisdicción',
+    vicaria: 'Vicaría',
+    decanato: 'Decanato',
+  }[scopeType] || 'Ámbito pastoral');
   const bishopName = diocese?.bishop_name || diocese?.bishop || 'Autoridad eclesiástica';
 
   doc.setProperties({
     title: `Reporte Estadístico a la Curia ${report?.report_number || ''}`,
-    subject: 'Informe parroquial pastoral y sacramental',
+    subject: 'Informe pastoral y sacramental a la Curia',
     author: report?.scope?.name || diocese?.name || 'SACRAMENTUM',
     creator: 'SACRAMENTUM · Sistema Eclesial de Registro Sacramental',
   });
@@ -243,9 +253,11 @@ const buildParishCuriaPdf = ({
   doc.setFillColor(...COLORS.goldSoft);
   doc.setDrawColor(230, 220, 179);
   doc.roundedRect(15, 48, 180, 23, 2.5, 2.5, 'FD');
-  drawInfoPair(doc, 'Parroquia', report?.scope?.name || breakdown?.parish_name || '—', 21, 57, 72);
+  drawInfoPair(doc, scopeLabel, report?.scope?.name || breakdown?.scope_name || '—', 21, 57, 72);
   drawInfoPair(doc, 'Periodo', `${report?.filters?.year_from ?? '—'} - ${report?.filters?.year_to ?? '—'}`, 110, 57, 35);
-  drawInfoPair(doc, 'Informe', report?.report_number || '—', 153, 57, 34);
+  drawInfoPair(doc, isParishScope ? 'Informe' : 'Parroquias / Informe', isParishScope
+    ? (report?.report_number || '—')
+    : `${breakdown?.parish_count ?? report?.scope?.parish_count ?? 0} · ${report?.report_number || '—'}`, 153, 57, 34);
 
   drawSectionTitle(doc, 'Resumen de Bautismos', 81);
   doc.setFont('helvetica', 'bold');
@@ -358,7 +370,7 @@ const buildParishCuriaPdf = ({
   doc.setFont('times', 'italic');
   doc.setFontSize(6.4);
   doc.setTextColor(...COLORS.slate);
-  const note = 'Los datos sacramentales provienen de los registros activos de SACRAMENTUM. Los campos pastorales complementarios corresponden a información declarada para el periodo y no son inferidos por el sistema.';
+  const note = 'Los datos sacramentales provienen de los registros activos de SACRAMENTUM para el ámbito seleccionado. Los campos pastorales complementarios corresponden a información declarada para el periodo y no son inferidos por el sistema.';
   doc.text(doc.splitTextToSize(note, 176), 17, y);
   y += 10;
 
@@ -370,12 +382,12 @@ const buildParishCuriaPdf = ({
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(7.2);
   doc.setTextColor(...COLORS.ink);
-  doc.text(String(pastorName), 56.5, signatureY + 4.5, { align: 'center', maxWidth: 62 });
+  doc.text(String(leftSignerName), 56.5, signatureY + 4.5, { align: 'center', maxWidth: 62 });
   doc.text(String(bishopName), 153.5, signatureY + 4.5, { align: 'center', maxWidth: 62 });
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(6.1);
   doc.setTextColor(...COLORS.slate);
-  doc.text('PÁRROCO', 56.5, signatureY + 8.5, { align: 'center' });
+  doc.text(leftSignerRole, 56.5, signatureY + 8.5, { align: 'center' });
   doc.text('AUTORIDAD ECLESIÁSTICA', 153.5, signatureY + 8.5, { align: 'center' });
 
   addFooterToAllPages(doc, report.report_number);
@@ -391,7 +403,7 @@ export function buildDiocesanSacramentalPdf({
 } = {}) {
   if (!report) throw new Error('No hay un informe sacramental generado para exportar.');
 
-  if ((report?.scope?.type || report?.filters?.scope_type) === 'parroquia' && report?.curia_breakdown) {
+  if (report?.curia_breakdown) {
     return buildParishCuriaPdf({
       report,
       responsibleName,
