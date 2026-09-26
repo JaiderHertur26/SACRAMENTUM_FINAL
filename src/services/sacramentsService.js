@@ -169,6 +169,13 @@ export const purificarRegistroBautismo = (raw) => {
             || rawPayload.catechumen_preparation_status
             || ''
         ).trim().toLowerCase(),
+        ageAtBaptism: raw.ageAtBaptism ?? rawPayload.ageAtBaptism ?? null,
+        requiresOver8File: raw.requiresOver8File ?? rawPayload.requiresOver8File ?? false,
+        over8FileSigned: raw.over8FileSigned ?? rawPayload.over8FileSigned ?? null,
+        requiresConfirmationQuestion: raw.requiresConfirmationQuestion ?? rawPayload.requiresConfirmationQuestion ?? false,
+        willReceiveConfirmation: raw.willReceiveConfirmation ?? rawPayload.willReceiveConfirmation ?? false,
+        linkedConfirmationPendingId: raw.linkedConfirmationPendingId || rawPayload.linkedConfirmationPendingId || '',
+        linkedConfirmationNumeroRegistro: raw.linkedConfirmationNumeroRegistro || rawPayload.linkedConfirmationNumeroRegistro || '',
 
         nuip: String(raw.nuip || raw.documentNumber || ''),
         serialRegistro: String(raw.serialRegistro || raw.serial_registro || raw.serialRegCivil || ''),
@@ -215,7 +222,7 @@ export const purificarRegistroBautismo = (raw) => {
 // ☁️ BORRADOR CLOUD-NATIVE: PostgreSQL reserva el Nº de Registro y crea el
 // pendiente dentro de una sola transacción. El navegador nunca adelanta el
 // contador oficial por su cuenta.
-export const saveBaptismToSource = async (data, parishId, mode = 'pending') => {
+export const saveBaptismToSource = async (data, parishId, mode = 'pending', options = {}) => {
     const targetParishId = parishId || data?.parishId || data?.parish_id || null;
     if (!targetParishId) {
         return { success: false, message: 'No se pudo determinar la parroquia del usuario. Operación cancelada por seguridad.' };
@@ -234,16 +241,21 @@ export const saveBaptismToSource = async (data, parishId, mode = 'pending') => {
         status: 'pending'
     });
 
+    const confirmationData = options?.confirmationData || null;
+
     try {
-        const { data: rpcData, error } = await supabase.rpc('create_pending_baptism', {
+        const { data: rpcData, error } = await supabase.rpc('create_pending_baptism_with_confirmation_flow', {
             p_parish_id: targetParishId,
-            p_record: purificado
+            p_baptism_record: purificado,
+            p_confirmation_record: confirmationData
         });
         if (error) throw error;
 
         const row = Array.isArray(rpcData) ? rpcData[0] : rpcData;
-        const pendingId = row?.pending_id || row?.pendingId || purificado.id;
-        const numeroRegistro = row?.numero_registro || row?.numeroRegistro || purificado.numeroRegistro || '';
+        const pendingId = row?.baptism_pending_id || row?.pending_id || row?.pendingId || purificado.id;
+        const numeroRegistro = row?.baptism_numero_registro || row?.numero_registro || row?.numeroRegistro || purificado.numeroRegistro || '';
+        const confirmationPendingId = row?.confirmation_pending_id || '';
+        const confirmationNumeroRegistro = row?.confirmation_numero_registro || '';
 
         const { data: persistedPending, error: verifyError } = await supabase
             .from('pending_baptisms')
@@ -259,9 +271,40 @@ export const saveBaptismToSource = async (data, parishId, mode = 'pending') => {
             ...purificado,
             id: pendingId,
             numeroRegistro,
+            linkedConfirmationPendingId: confirmationPendingId || '',
+            linkedConfirmationNumeroRegistro: confirmationNumeroRegistro || '',
             status: 'pending',
             reportado: false
         };
+
+        let confirmationDraft = null;
+        if (purificado.willReceiveConfirmation === true) {
+            if (!confirmationPendingId) {
+                throw new Error('Supabase no devolvió el borrador de Confirmación vinculado.');
+            }
+
+            const { data: persistedConfirmation, error: confirmationVerifyError } = await supabase
+                .from('pending_confirmations')
+                .select('id,parish_id,status,reportado,raw_data')
+                .eq('id', confirmationPendingId)
+                .eq('parish_id', targetParishId)
+                .maybeSingle();
+
+            if (confirmationVerifyError || !persistedConfirmation) {
+                throw new Error(confirmationVerifyError?.message || 'Supabase no confirmó la Confirmación vinculada.');
+            }
+
+            const confirmationRaw = persistedConfirmation.raw_data || {};
+            confirmationDraft = {
+                ...confirmationData,
+                ...confirmationRaw,
+                id: confirmationPendingId,
+                numeroRegistro: confirmationNumeroRegistro || confirmationRaw.numeroRegistro || '',
+                numero_registro: confirmationNumeroRegistro || confirmationRaw.numero_registro || '',
+                status: 'pending',
+                reportado: false
+            };
+        }
 
         // Caché de compatibilidad solamente después de confirmar la transacción.
         if (typeof window !== 'undefined' && window.localStorage) {
@@ -271,15 +314,30 @@ export const saveBaptismToSource = async (data, parishId, mode = 'pending') => {
                 ...currentLocal.filter(b => b.id !== pendingId),
                 cloudDraft
             ]));
+
+            if (confirmationDraft) {
+                const confirmationKey = `pendingConfirmations_${targetParishId}`;
+                const currentConfirmations = safeJsonParse(localStorage.getItem(confirmationKey), []);
+                localStorage.setItem(confirmationKey, JSON.stringify([
+                    ...currentConfirmations.filter(c => c.id !== confirmationPendingId),
+                    confirmationDraft
+                ]));
+            }
             window.dispatchEvent(new Event('storage'));
         }
 
-        return { success: true, id: pendingId, numeroRegistro, record: cloudDraft };
+        return {
+            success: true,
+            id: pendingId,
+            numeroRegistro,
+            record: cloudDraft,
+            confirmation: confirmationDraft
+        };
     } catch (e) {
         console.error('Supabase create_pending_baptism error:', e);
         const rawMessage = String(e?.message || 'No fue posible crear el borrador de Bautismo.');
-        const message = rawMessage.includes('create_pending_baptism') || rawMessage.includes('schema cache')
-            ? 'Falta aplicar la migración de Bautismo Cloud-Native (Fase 5A) en Supabase.'
+        const message = rawMessage.includes('create_pending_baptism_with_confirmation_flow') || rawMessage.includes('schema cache')
+            ? 'Falta aplicar la migración V42 del flujo Bautismo + Confirmación en Supabase.'
             : rawMessage;
         return { success: false, message };
     }
@@ -522,6 +580,11 @@ export const purificarRegistroConfirmacion = (raw) => {
         status: raw.status || payload.status || payload.estado || 'seated',
         tipoIdentidad: raw.tipoIdentidad || payload.tipoIdentidad || '',
         source,
+        sourceFlow: payload.sourceFlow || payload.source_flow || '',
+        linkedBaptismPendingId: payload.linkedBaptismPendingId || payload.linked_baptism_pending_id || '',
+        linkedBaptismRecordId: payload.linkedBaptismRecordId || payload.linked_baptism_record_id || '',
+        linkedBaptismNumeroRegistro: payload.linkedBaptismNumeroRegistro || payload.linked_baptism_numero_registro || '',
+        baptismReferencePending: payload.baptismReferencePending === true || payload.baptism_reference_pending === true,
         historicalEntryMode: payload.historicalEntryMode || payload.historical_entry_mode || 'structured',
         referenceName: payload.referenceName || payload.reference_name || '',
         literalTranscription: payload.literalTranscription || payload.literal_transcription || '',
