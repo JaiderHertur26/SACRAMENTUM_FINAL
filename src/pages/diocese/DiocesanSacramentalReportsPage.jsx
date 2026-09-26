@@ -4,7 +4,7 @@ import { useAuth } from '@/context/AuthContext';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 import {
-  BarChart3, Church, Download, FileText, Landmark, Loader2,
+  BarChart3, Church, Download, FileDown, FileText, Landmark, Loader2,
   Printer, RefreshCw, UsersRound, CalendarRange, Filter, ShieldCheck,
 } from 'lucide-react';
 import {
@@ -70,6 +70,7 @@ const DiocesanSacramentalReportsPage = () => {
   const [structure, setStructure] = useState({ diocese: null, vicarias: [], decanatos: [], parishes: [] });
   const [loadingStructure, setLoadingStructure] = useState(true);
   const [generating, setGenerating] = useState(false);
+  const [exportingPdf, setExportingPdf] = useState(false);
   const [report, setReport] = useState(null);
   const [recentReports, setRecentReports] = useState([]);
   const [showAgeDistribution, setShowAgeDistribution] = useState(true);
@@ -165,6 +166,33 @@ const DiocesanSacramentalReportsPage = () => {
     URL.revokeObjectURL(url);
   };
 
+  const downloadProfessionalPdf = async () => {
+    if (!report || exportingPdf) return;
+    setExportingPdf(true);
+    try {
+      const { downloadDiocesanSacramentalPdf } = await import('@/services/diocesanReportPdf');
+      const filename = downloadDiocesanSacramentalPdf({
+        report,
+        showAgeDistribution,
+        responsibleName: user?.full_name || user?.username || 'Usuario diocesano',
+        dioceseFallback: structure.diocese,
+      });
+      toast({
+        title: 'PDF eclesial generado',
+        description: `${filename} fue preparado con el consolidado estadístico actual.`,
+      });
+    } catch (error) {
+      console.error(error);
+      toast({
+        title: 'No fue posible generar el PDF',
+        description: error?.message || 'Intenta nuevamente.',
+        variant: 'destructive',
+      });
+    } finally {
+      setExportingPdf(false);
+    }
+  };
+
   const totals = report?.totals || {};
   const totalActos = Number(totals.total || 0);
   const scopeTypeLabel = {
@@ -190,7 +218,15 @@ const DiocesanSacramentalReportsPage = () => {
           {report && (
             <div className="flex flex-wrap gap-2">
               <Button variant="outline" onClick={downloadCsv}><Download className="w-4 h-4 mr-2" /> Exportar CSV</Button>
-              <Button onClick={() => window.print()} className="bg-[#4B7BA7] hover:bg-[#3c678d]"><Printer className="w-4 h-4 mr-2" /> Imprimir acta / PDF</Button>
+              <Button
+                onClick={downloadProfessionalPdf}
+                disabled={exportingPdf}
+                className="bg-[#4B7BA7] hover:bg-[#3c678d]"
+              >
+                {exportingPdf ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <FileDown className="w-4 h-4 mr-2" />}
+                Descargar PDF profesional
+              </Button>
+              <Button variant="outline" onClick={() => window.print()}><Printer className="w-4 h-4 mr-2" /> Imprimir vista</Button>
             </div>
           )}
         </div>
