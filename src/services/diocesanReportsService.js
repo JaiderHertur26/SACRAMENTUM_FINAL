@@ -26,20 +26,45 @@ export async function generateDiocesanSacramentalReport({
   yearTo,
   scopeType = 'general',
   scopeId = null,
-  ageMin = null,
-  ageMax = null,
+  ageRanges = [],
 }) {
+  let customAgeDistribution = null;
+
+  if (ageRanges.length > 0) {
+    const { data: ages, error: agesError } = await supabase.rpc('get_diocesan_custom_age_distribution', {
+      p_year_from: Number(yearFrom),
+      p_year_to: Number(yearTo),
+      p_scope_type: scopeType,
+      p_scope_id: scopeType === 'general' ? null : scopeId || null,
+      p_age_ranges: ageRanges.map(({ min, max }) => ({
+        min: Number(min),
+        max: max === '' || max == null ? null : Number(max),
+      })),
+    });
+
+    if (agesError) throw agesError;
+    customAgeDistribution = ages || [];
+  }
+
   const { data, error } = await supabase.rpc('generate_diocesan_sacramental_report', {
     p_year_from: Number(yearFrom),
     p_year_to: Number(yearTo),
     p_scope_type: scopeType,
     p_scope_id: scopeType === 'general' ? null : scopeId || null,
-    p_age_min: ageMin === '' || ageMin == null ? null : Number(ageMin),
-    p_age_max: ageMax === '' || ageMax == null ? null : Number(ageMax),
+    p_age_min: null,
+    p_age_max: null,
   });
 
   if (error) throw error;
-  return data;
+
+  return {
+    ...data,
+    age_distribution: customAgeDistribution ?? data?.age_distribution ?? [],
+    filters: {
+      ...(data?.filters || {}),
+      age_ranges: ageRanges,
+    },
+  };
 }
 
 export function reportToCsv(report) {
@@ -63,8 +88,11 @@ export function reportToCsv(report) {
   rows.push(['Jurisdicción', report.diocese?.name || '']);
   rows.push(['Ámbito', report.scope?.name || '']);
   rows.push(['Años', `${report.filters?.year_from ?? ''} - ${report.filters?.year_to ?? ''}`]);
-  rows.push(['Edad mínima', report.filters?.age_min ?? '']);
-  rows.push(['Edad máxima', report.filters?.age_max ?? '']);
+  rows.push(['Rangos de edad', (report.filters?.age_ranges || []).map((range) => (
+    range.max === '' || range.max == null
+      ? `${range.min} años o más`
+      : `${range.min}–${range.max} años`
+  )).join(' | ')]);
 
   return rows.map((row) => row.map((cell) => {
     const value = String(cell ?? '');

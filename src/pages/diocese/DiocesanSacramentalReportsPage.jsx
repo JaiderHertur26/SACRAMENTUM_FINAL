@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 import {
   BarChart3, Church, Download, FileDown, FileText, Landmark, Loader2,
-  Printer, RefreshCw, UsersRound, CalendarRange, Filter, ShieldCheck,
+  Plus, Printer, RefreshCw, Trash2, UsersRound, CalendarRange, Filter, ShieldCheck,
 } from 'lucide-react';
 import {
   generateDiocesanSacramentalReport,
@@ -23,15 +23,11 @@ const SACRAMENT_LABELS = {
 
 const SACRAMENT_ORDER = ['bautismo', 'confirmacion', 'matrimonio', 'exequias'];
 
-const AGE_BAND_OPTIONS = [
-  { value: '0–6 años', label: '0–6 años' },
-  { value: '7–12 años', label: '7–12 años' },
-  { value: '13–17 años', label: '13–17 años' },
-  { value: '18–29 años', label: '18–29 años' },
-  { value: '30–44 años', label: '30–44 años' },
-  { value: '45–59 años', label: '45–59 años' },
-  { value: '60 años o más', label: '60 años o más' },
-];
+const formatAgeRangeLabel = (range) => {
+  if (range?.min === '' || range?.min == null) return 'Defina el rango';
+  if (range?.max === '' || range?.max == null) return `${range.min} años o más`;
+  return `${range.min}–${range.max} años`;
+};
 
 function getAnnualRows(report) {
   if (!report) return [];
@@ -84,15 +80,15 @@ const DiocesanSacramentalReportsPage = () => {
   const [report, setReport] = useState(null);
   const [recentReports, setRecentReports] = useState([]);
   const [showAgeDistribution, setShowAgeDistribution] = useState(true);
-  const [selectedAgeBands, setSelectedAgeBands] = useState(() => AGE_BAND_OPTIONS.map((item) => item.value));
+  const [ageRanges, setAgeRanges] = useState([
+    { id: 1, min: '', max: '' },
+  ]);
 
   const [filters, setFilters] = useState({
     yearFrom: currentYear,
     yearTo: currentYear,
     scopeType: 'general',
     scopeId: '',
-    ageMin: '',
-    ageMax: '',
   });
 
   const dioceseId = user?.diocese_id || user?.dioceseId || null;
@@ -128,10 +124,6 @@ const DiocesanSacramentalReportsPage = () => {
 
   const annualRows = useMemo(() => getAnnualRows(report), [report]);
   const ageRows = useMemo(() => getAgeRows(report), [report]);
-  const filteredAgeRows = useMemo(
-    () => ageRows.filter((row) => selectedAgeBands.includes(row.band)),
-    [ageRows, selectedAgeBands]
-  );
 
   const updateFilter = (name, value) => {
     setFilters((prev) => ({
@@ -141,12 +133,21 @@ const DiocesanSacramentalReportsPage = () => {
     }));
   };
 
-  const toggleAgeBand = (value) => {
-    setSelectedAgeBands((prev) => (
-      prev.includes(value)
-        ? prev.filter((item) => item !== value)
-        : [...prev, value]
-    ));
+  const updateAgeRange = (id, field, value) => {
+    setAgeRanges((prev) => prev.map((range) => (
+      range.id === id ? { ...range, [field]: value } : range
+    )));
+  };
+
+  const addAgeRange = () => {
+    setAgeRanges((prev) => {
+      const nextId = Math.max(0, ...prev.map((range) => Number(range.id) || 0)) + 1;
+      return [...prev, { id: nextId, min: '', max: '' }];
+    });
+  };
+
+  const removeAgeRange = (id) => {
+    setAgeRanges((prev) => prev.filter((range) => range.id !== id));
   };
 
   const handleGenerate = async (event) => {
@@ -159,14 +160,57 @@ const DiocesanSacramentalReportsPage = () => {
       toast({ title: 'Rango inválido', description: 'El año inicial no puede superar al año final.', variant: 'destructive' });
       return;
     }
-    if (showAgeDistribution && selectedAgeBands.length === 0) {
-      toast({ title: 'Selecciona al menos un rango de edad', description: 'Marca uno o varios rangos para incluirlos en este informe.', variant: 'destructive' });
-      return;
+    let normalizedAgeRanges = [];
+
+    if (showAgeDistribution) {
+      if (ageRanges.length === 0) {
+        toast({ title: 'Agrega al menos un rango de edad', description: 'Define uno o varios intervalos para incluirlos en este informe.', variant: 'destructive' });
+        return;
+      }
+
+      normalizedAgeRanges = ageRanges.map((range) => ({
+        min: range.min === '' ? null : Number(range.min),
+        max: range.max === '' ? null : Number(range.max),
+      }));
+
+      const invalidRange = normalizedAgeRanges.some((range) => (
+        range.min == null
+        || !Number.isInteger(range.min)
+        || range.min < 0
+        || range.min > 200
+        || (
+          range.max != null
+          && (
+            !Number.isInteger(range.max)
+            || range.max < range.min
+            || range.max > 200
+          )
+        )
+      ));
+
+      if (invalidRange) {
+        toast({ title: 'Revisa los rangos de edad', description: 'Cada rango necesita una edad inicial válida; la edad final es opcional y no puede ser menor.', variant: 'destructive' });
+        return;
+      }
+
+      normalizedAgeRanges.sort((a, b) => a.min - b.min);
+      for (let index = 1; index < normalizedAgeRanges.length; index += 1) {
+        const previous = normalizedAgeRanges[index - 1];
+        const current = normalizedAgeRanges[index];
+        const previousMax = previous.max == null ? Number.POSITIVE_INFINITY : previous.max;
+        if (current.min <= previousMax) {
+          toast({ title: 'Los rangos se superponen', description: 'Ajusta los intervalos para que cada edad pertenezca a un solo rango.', variant: 'destructive' });
+          return;
+        }
+      }
     }
 
     setGenerating(true);
     try {
-      const result = await generateDiocesanSacramentalReport(filters);
+      const result = await generateDiocesanSacramentalReport({
+        ...filters,
+        ageRanges: normalizedAgeRanges,
+      });
       setReport(result);
       const history = await loadRecentDiocesanReports(dioceseId).catch(() => []);
       setRecentReports(history);
@@ -201,7 +245,7 @@ const DiocesanSacramentalReportsPage = () => {
       const filename = downloadDiocesanSacramentalPdf({
         report,
         showAgeDistribution,
-        selectedAgeBands,
+        selectedAgeBands: (report?.filters?.age_ranges || []).map(formatAgeRangeLabel),
         responsibleName: user?.full_name || user?.username || 'Usuario diocesano',
         dioceseFallback: structure.diocese,
       });
@@ -223,6 +267,7 @@ const DiocesanSacramentalReportsPage = () => {
 
   const totals = report?.totals || {};
   const totalActos = Number(totals.total || 0);
+  const reportAgeRangeLabels = (report?.filters?.age_ranges || []).map(formatAgeRangeLabel);
   const scopeTypeLabel = {
     general: 'Jurisdicción completa',
     vicaria: 'Vicaría',
@@ -296,68 +341,81 @@ const DiocesanSacramentalReportsPage = () => {
           </div>
 
           <div className="mt-4 border-t border-slate-100 pt-4">
-            <div className="flex flex-col gap-3 xl:flex-row xl:items-end xl:justify-between">
-              <div className="min-w-0 flex-1">
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <div>
-                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Rangos de edad incluidos en este documento</span>
-                    <p className="mt-1 text-xs text-slate-500">Puedes marcar varios rangos; todos los seleccionados aparecerán juntos en la tabla y en el PDF.</p>
-                  </div>
-                  <div className="flex gap-2">
-                    <button
-                      type="button"
-                      onClick={() => setSelectedAgeBands(AGE_BAND_OPTIONS.map((item) => item.value))}
-                      className="text-[10px] font-black uppercase tracking-wider text-[#4B7BA7] hover:underline"
-                    >
-                      Seleccionar todos
-                    </button>
-                    <span className="text-slate-300">·</span>
-                    <button
-                      type="button"
-                      onClick={() => setSelectedAgeBands([])}
-                      className="text-[10px] font-black uppercase tracking-wider text-slate-500 hover:underline"
-                    >
-                      Limpiar
-                    </button>
-                  </div>
-                </div>
-
-                <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7">
-                  {AGE_BAND_OPTIONS.map((band) => {
-                    const checked = selectedAgeBands.includes(band.value);
-                    return (
-                      <label
-                        key={band.value}
-                        className={[
-                          'flex cursor-pointer items-center gap-2 rounded-xl border px-3 py-2.5 transition',
-                          checked
-                            ? 'border-[#4B7BA7] bg-blue-50/70 text-[#315E86] shadow-sm'
-                            : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300',
-                        ].join(' ')}
-                      >
-                        <input
-                          type="checkbox"
-                          checked={checked}
-                          onChange={() => toggleAgeBand(band.value)}
-                          className="h-4 w-4"
-                        />
-                        <span className="text-xs font-black">{band.label}</span>
-                      </label>
-                    );
-                  })}
-                </div>
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              <div>
+                <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Rangos de edad para este documento</span>
+                <p className="mt-1 text-xs text-slate-500">Construye los intervalos que necesites. Cada rango aparecerá por separado dentro del mismo informe y del mismo PDF.</p>
               </div>
+              <Button type="button" variant="outline" onClick={addAgeRange} className="font-black">
+                <Plus className="mr-2 h-4 w-4" /> Agregar rango
+              </Button>
+            </div>
 
-              <div className="grid min-w-[330px] grid-cols-1 gap-3 sm:grid-cols-2">
-                <label className="flex items-center gap-3 rounded-xl border border-slate-200 px-4 py-2.5 min-h-[42px]">
-                  <input type="checkbox" checked={showAgeDistribution} onChange={(e) => setShowAgeDistribution(e.target.checked)} className="w-4 h-4" />
-                  <span className="text-xs font-bold text-slate-700">Mostrar distribución por edades</span>
-                </label>
-                <Button type="submit" disabled={generating || loadingStructure} className="w-full bg-[#D4AF37] hover:bg-[#b99426] text-slate-950 font-black">
-                  {generating ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <FileText className="w-4 h-4 mr-2" />}
-                  Generar acta estadística
-                </Button>
-              </div>
+            <div className="mt-4 space-y-3">
+              {ageRanges.length === 0 ? (
+                <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-5 py-6 text-center">
+                  <p className="text-sm font-bold text-slate-600">No hay rangos definidos.</p>
+                  <button type="button" onClick={addAgeRange} className="mt-2 text-xs font-black text-[#4B7BA7] hover:underline">
+                    Agregar el primer rango
+                  </button>
+                </div>
+              ) : ageRanges.map((range, index) => (
+                <div key={range.id} className="grid grid-cols-1 gap-3 rounded-2xl border border-slate-200 bg-slate-50/60 p-4 md:grid-cols-[70px_1fr_1fr_1.2fr_44px] md:items-end">
+                  <div className="self-center">
+                    <p className="text-[9px] font-black uppercase tracking-widest text-slate-400">Rango</p>
+                    <p className="mt-1 text-lg font-black text-[#4B7BA7]">#{index + 1}</p>
+                  </div>
+                  <label className="block">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Desde edad</span>
+                    <input
+                      type="number"
+                      min="0"
+                      max="200"
+                      step="1"
+                      value={range.min}
+                      onChange={(e) => updateAgeRange(range.id, 'min', e.target.value)}
+                      placeholder="Ej. 0"
+                      className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-bold"
+                    />
+                  </label>
+                  <label className="block">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Hasta edad · opcional</span>
+                    <input
+                      type="number"
+                      min="0"
+                      max="200"
+                      step="1"
+                      value={range.max}
+                      onChange={(e) => updateAgeRange(range.id, 'max', e.target.value)}
+                      placeholder="Vacío = o más"
+                      className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-bold"
+                    />
+                  </label>
+                  <div className="rounded-xl border border-blue-100 bg-blue-50/60 px-4 py-2.5">
+                    <p className="text-[9px] font-black uppercase tracking-widest text-[#4B7BA7]">Así aparecerá</p>
+                    <p className="mt-1 text-sm font-black text-slate-800">{formatAgeRangeLabel(range)}</p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => removeAgeRange(range.id)}
+                    className="flex h-11 w-11 items-center justify-center rounded-xl border border-red-100 bg-white text-red-500 transition hover:bg-red-50"
+                    aria-label={`Eliminar rango ${index + 1}`}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-4 flex flex-col gap-3 border-t border-slate-100 pt-4 sm:flex-row sm:items-center sm:justify-end">
+              <label className="flex items-center gap-3 rounded-xl border border-slate-200 px-4 py-2.5 min-h-[42px]">
+                <input type="checkbox" checked={showAgeDistribution} onChange={(e) => setShowAgeDistribution(e.target.checked)} className="w-4 h-4" />
+                <span className="text-xs font-bold text-slate-700">Incluir análisis por edades</span>
+              </label>
+              <Button type="submit" disabled={generating || loadingStructure} className="bg-[#D4AF37] hover:bg-[#b99426] text-slate-950 font-black sm:min-w-[245px]">
+                {generating ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <FileText className="w-4 h-4 mr-2" />}
+                Generar acta estadística
+              </Button>
             </div>
           </div>
         </form>
@@ -448,7 +506,7 @@ const DiocesanSacramentalReportsPage = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {filteredAgeRows.length ? filteredAgeRows.map((row) => (
+                      {ageRows.length ? ageRows.map((row) => (
                         <tr key={`${row.year}-${row.band}`} className="border-t border-slate-100">
                           <td className="px-5 py-3 font-black">{row.year}</td>
                           <td className="px-5 py-3 font-semibold">{row.band}</td>
@@ -495,7 +553,7 @@ const DiocesanSacramentalReportsPage = () => {
               <p><strong>Nivel:</strong> {scopeTypeLabel}</p>
               <p><strong>Periodo:</strong> {report.filters?.year_from} – {report.filters?.year_to}</p>
               <p><strong>Parroquias comprendidas:</strong> {report.scope?.parish_count ?? 0}</p>
-              <p><strong>Rangos etarios:</strong> {selectedAgeBands.join(', ') || 'No incluidos'}</p>
+              <p><strong>Rangos etarios:</strong> {reportAgeRangeLabels.join(', ') || 'No incluidos'}</p>
               <p><strong>Fecha de expedición:</strong> {new Date(report.generated_at).toLocaleDateString('es-CO', { day: '2-digit', month: 'long', year: 'numeric' })}</p>
             </div>
 
@@ -513,18 +571,18 @@ const DiocesanSacramentalReportsPage = () => {
               </tbody>
             </table>
 
-            {showAgeDistribution && filteredAgeRows.length > 0 && (
+            {showAgeDistribution && ageRows.length > 0 && (
               <div className="mt-5">
                 <h2 className="text-[11pt] font-bold text-center uppercase mb-2">Distribución etaria de personas</h2>
                 <table className="acta-table">
                   <thead><tr><th>Año</th><th>Edad</th><th>Bautismos</th><th>Confirmaciones</th><th>Contrayentes</th><th>Exequias</th></tr></thead>
-                  <tbody>{filteredAgeRows.map((row) => <tr key={`${row.year}-${row.band}`}><td>{row.year}</td><td>{row.band}</td><td>{row.bautismo}</td><td>{row.confirmacion}</td><td>{row.matrimonio}</td><td>{row.exequias}</td></tr>)}</tbody>
+                  <tbody>{ageRows.map((row) => <tr key={`${row.year}-${row.band}`}><td>{row.year}</td><td>{row.band}</td><td>{row.bautismo}</td><td>{row.confirmacion}</td><td>{row.matrimonio}</td><td>{row.exequias}</td></tr>)}</tbody>
                 </table>
               </div>
             )}
 
             <div className="mt-5 text-[8.5pt] leading-relaxed text-slate-600 border-t border-slate-300 pt-3">
-              <strong>Nota metodológica.</strong> La tabla principal contabiliza actos/registros sacramentales. La distribución por edades contabiliza personas y presenta conjuntamente los rangos seleccionados para este documento: {selectedAgeBands.join(', ')}. Bautismo, Confirmación y Exequias aportan una persona por registro; Matrimonio puede aportar dos contrayentes cuando existen fechas de nacimiento válidas. Los registros anulados, revertidos o cancelados no duplican la estadística activa.
+              <strong>Nota metodológica.</strong> La tabla principal contabiliza actos/registros sacramentales. La distribución por edades contabiliza personas y presenta conjuntamente los rangos seleccionados para este documento: {reportAgeRangeLabels.join(', ')}. Bautismo, Confirmación y Exequias aportan una persona por registro; Matrimonio puede aportar dos contrayentes cuando existen fechas de nacimiento válidas. Los registros anulados, revertidos o cancelados no duplican la estadística activa.
             </div>
 
             <div className="grid grid-cols-2 gap-16 mt-16 text-center text-[10pt] avoid-break">
