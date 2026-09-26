@@ -376,9 +376,19 @@ const BaptismSentarRegistrosPage = () => {
                                 </div>
                             )}
 
-                            <div className="grid grid-cols-2 gap-10 opacity-100">
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 opacity-100">
                                 <div><label className="text-[10px] font-black text-slate-400 uppercase">Nº Registro Previo</label><p className="font-black text-[#4B7BA7] text-lg">#{currentBaptism?.numeroRegistro || '---'}</p></div>
                                 <div><label className="text-[10px] font-black text-slate-400 uppercase">Dirección</label><p className="font-bold text-slate-700 uppercase">{currentBaptism?.direccion || '---'}</p></div>
+                                <div className="rounded-xl border border-amber-200 bg-amber-50/50 px-4 py-3">
+                                    <label className="text-[9px] font-black text-amber-700 uppercase">Situación catecumenal</label>
+                                    <p className="mt-1 text-xs font-black text-slate-800">
+                                        {currentBaptism?.catechumenPreparationStatus === 'prepared'
+                                            ? 'CATECÚMENO MAYOR DE 7 AÑOS PREPARADO'
+                                            : currentBaptism?.catechumenPreparationStatus === 'not_prepared'
+                                                ? 'MAYOR DE 7 AÑOS · NO CLASIFICADO COMO PREPARADO'
+                                                : 'NO APLICA / NO CONSTA'}
+                                    </p>
+                                </div>
                             </div>
 
                             <div className="flex justify-between items-center pt-8 border-t">

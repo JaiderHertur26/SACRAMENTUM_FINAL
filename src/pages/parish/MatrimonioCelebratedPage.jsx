@@ -13,6 +13,11 @@ import AuxiliaryAutocomplete from '@/components/AuxiliaryAutocomplete';
 import ChurchLocationAutocomplete from '@/components/ChurchLocationAutocomplete';
 import useSacramentalAuxiliaries from '@/hooks/useSacramentalAuxiliaries';
 import HistoricalEntryModePanel from '@/components/sacramental/HistoricalEntryModePanel';
+import {
+  ECCLESIAL_STATUS_OPTIONS,
+  deriveCanonicalMarriageCategory,
+  getCanonicalMarriageCategoryLabel,
+} from '@/utils/marriageCanonicalStatus';
 
 const MatrimonioCelebratedPage = () => {
     const { user } = useAuth();
@@ -50,6 +55,7 @@ const MatrimonioCelebratedPage = () => {
         esposoPadres: '',
         esposoFechaNac: '',
         esposoLugarNac: '',
+        esposoEcclesialStatus: '',
         esposoLugarBautismo: '',
         esposoFechaBautismo: '',
         esposoLibro: '',
@@ -62,6 +68,7 @@ const MatrimonioCelebratedPage = () => {
         esposaPadres: '',
         esposaFechaNac: '',
         esposaLugarNac: '',
+        esposaEcclesialStatus: '',
         esposaLugarBautismo: '',
         esposaFechaBautismo: '',
         esposaLibro: '',
@@ -79,6 +86,10 @@ const MatrimonioCelebratedPage = () => {
     };
 
     const [formData, setFormData] = useState(initialFormData);
+    const canonicalMarriageCategory = deriveCanonicalMarriageCategory(
+        formData.esposoEcclesialStatus,
+        formData.esposaEcclesialStatus
+    );
 
     // Carga institucional y directorio histórico de ministros.
     useEffect(() => {
@@ -246,6 +257,7 @@ const MatrimonioCelebratedPage = () => {
                 groomParents: [{ name: formData.esposoPadres, role: 'parents' }], // Simplified for this view
                 groomBirthDate: formData.esposoFechaNac,
                 groomBirthPlace: formData.esposoLugarNac,
+                groomEcclesialStatus: formData.esposoEcclesialStatus || 'unknown',
                 
                 // Bride
                 brideName: formData.esposaNombres,
@@ -253,6 +265,8 @@ const MatrimonioCelebratedPage = () => {
                 brideParents: [{ name: formData.esposaPadres, role: 'parents' }], // Simplified for this view
                 brideBirthDate: formData.esposaFechaNac,
                 brideBirthPlace: formData.esposaLugarNac,
+                brideEcclesialStatus: formData.esposaEcclesialStatus || 'unknown',
+                canonicalMarriageCategory,
 
                 // Ministers & Witnesses
                 minister: formData.presencia,
@@ -451,6 +465,22 @@ const MatrimonioCelebratedPage = () => {
                         </div>
 
                         <div className="mb-4">
+                            <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Condición eclesial del esposo</label>
+                            <select
+                                name="esposoEcclesialStatus"
+                                value={formData.esposoEcclesialStatus}
+                                onChange={handleChange}
+                                className="w-full px-3 py-2 border border-slate-300 rounded-xl bg-white font-bold"
+                            >
+                                <option value="">NO CONSTA / NO CLASIFICAR</option>
+                                {ECCLESIAL_STATUS_OPTIONS.map((option) => (
+                                    <option key={option.value} value={option.value}>{option.label.toUpperCase()}</option>
+                                ))}
+                            </select>
+                            <p className="mt-1 text-[10px] text-slate-500">Seleccione sólo si esta condición consta o puede verificarse documentalmente.</p>
+                        </div>
+
+                        <div className="mb-4">
                             <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Lugar de Bautismo</label>
                             <ChurchLocationAutocomplete
                                 value={formData.esposoLugarBautismo}
@@ -526,6 +556,22 @@ const MatrimonioCelebratedPage = () => {
                         </div>
 
                         <div className="mb-4">
+                            <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Condición eclesial de la esposa</label>
+                            <select
+                                name="esposaEcclesialStatus"
+                                value={formData.esposaEcclesialStatus}
+                                onChange={handleChange}
+                                className="w-full px-3 py-2 border border-slate-300 rounded-xl bg-white font-bold"
+                            >
+                                <option value="">NO CONSTA / NO CLASIFICAR</option>
+                                {ECCLESIAL_STATUS_OPTIONS.map((option) => (
+                                    <option key={option.value} value={option.value}>{option.label.toUpperCase()}</option>
+                                ))}
+                            </select>
+                            <p className="mt-1 text-[10px] text-slate-500">Seleccione sólo si esta condición consta o puede verificarse documentalmente.</p>
+                        </div>
+
+                        <div className="mb-4">
                             <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Lugar de Bautismo</label>
                             <ChurchLocationAutocomplete
                                 value={formData.esposaLugarBautismo}
@@ -555,6 +601,12 @@ const MatrimonioCelebratedPage = () => {
                                 <input type="text" name="esposaNumero" value={formData.esposaNumero} onChange={handleChange} className="w-full px-2 py-1.5 border border-slate-300 rounded-xl text-sm text-center" />
                             </div>
                         </div>
+                    </div>
+
+                    <div className="rounded-2xl border border-[#D4AF37]/35 bg-[#D4AF37]/8 px-5 py-4">
+                        <p className="text-[10px] font-black uppercase tracking-[0.16em] text-[#8A6A12]">Clasificación canónica</p>
+                        <p className="mt-1 text-sm font-black text-slate-900">{getCanonicalMarriageCategoryLabel(canonicalMarriageCategory)}</p>
+                        <p className="mt-1 text-[10px] text-slate-500">En partidas históricas esta clasificación es auxiliar y sólo debe completarse cuando la documentación permita establecerla.</p>
                     </div>
 
                     <hr className="border-slate-100 my-4" />

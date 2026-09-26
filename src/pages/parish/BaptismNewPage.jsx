@@ -15,6 +15,17 @@ import useSacramentalAuxiliaries from '@/hooks/useSacramentalAuxiliaries';
 import { getNextBaptismRegistrationPreview } from '@/services/sacramentParametersService';
 import { getParishPrintProfile, saveBaptismToSource } from '@/services/sacramentsService';
 
+const ageOnDate = (birthDate, eventDate) => {
+    if (!birthDate || !eventDate) return null;
+    const birth = new Date(`${String(birthDate).slice(0, 10)}T12:00:00`);
+    const event = new Date(`${String(eventDate).slice(0, 10)}T12:00:00`);
+    if (Number.isNaN(birth.getTime()) || Number.isNaN(event.getTime()) || event < birth) return null;
+    let age = event.getFullYear() - birth.getFullYear();
+    const monthDiff = event.getMonth() - birth.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && event.getDate() < birth.getDate())) age -= 1;
+    return age;
+};
+
 const BaptismNewPage = () => {
     const { user } = useAuth(); 
     const { getMisDatosList, getParrocos } = useAppData();
@@ -35,7 +46,8 @@ const BaptismNewPage = () => {
         numeroRegistro: '', Libro: '---', folio: '---', numero: '---',
         fechaSacramento: '', horaSacramento: '10:00', lugarBautismo: nombreParroquia,
         apellidos: '', nombres: '', sexo: '', 
-        fechaNacimiento: '', lugarNacimiento: '', 
+        fechaNacimiento: '', lugarNacimiento: '',
+        catechumenPreparationStatus: '',
         nuip: '', serialRegistro: '', oficinaRegistro: '', fechaExpedicionRegistro: '', 
         nombrePadre: '', cedulaPadre: '', nombreMadre: '', cedulaMadre: '', tipoUnionPadres: '', 
         abuelosPaternos: '', abuelosMaternos: '', direccion: '', 
@@ -85,6 +97,9 @@ const BaptismNewPage = () => {
         }
     }, [aux.priestOptions, aux.currentPriest?.nombreCompleto]);
 
+    const baptismAge = ageOnDate(formData.fechaNacimiento, formData.fechaSacramento);
+    const requiresCatechumenClassification = baptismAge !== null && baptismAge > 7;
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         const uppercaseFields = ['nombres', 'apellidos', 'lugarNacimiento', 'lugarBautismo', 'direccion', 'oficinaRegistro', 'padrinos', 'nombrePadre', 'nombreMadre', 'abuelosPaternos', 'abuelosMaternos', 'ministro', 'daFe'];
@@ -103,14 +118,29 @@ const BaptismNewPage = () => {
             toast({ title: 'Fechas inconsistentes', description: 'La fecha de nacimiento no puede ser posterior a la fecha de Bautismo.', variant: 'destructive' });
             return;
         }
+        if (requiresCatechumenClassification && !['prepared', 'not_prepared'].includes(formData.catechumenPreparationStatus)) {
+            toast({
+                title: 'Situación catecumenal requerida',
+                description: 'Para un bautizado mayor de 7 años indique si fue catecúmeno preparado para el Bautismo.',
+                variant: 'destructive'
+            });
+            return;
+        }
+
+        const baptismPayload = {
+            ...formData,
+            catechumenPreparationStatus: requiresCatechumenClassification
+                ? formData.catechumenPreparationStatus
+                : 'not_applicable'
+        };
 
         setIsSubmitting(true);
         try {
-            const res = await saveBaptismToSource(formData, parishId, 'pending');
+            const res = await saveBaptismToSource(baptismPayload, parishId, 'pending');
 
             if (res.success) {
                 const dataToPrint = {
-                    ...formData,
+                    ...baptismPayload,
                     ...(res.record || {}),
                     id: res.id,
                     numeroRegistro: res.numeroRegistro || formData.numeroRegistro
@@ -217,6 +247,23 @@ const BaptismNewPage = () => {
                                         <AuxiliaryAutocomplete name="lugarNacimiento" value={formData.lugarNacimiento} onChange={handleChange} options={aux.cityOptions} className={inputClass} placeholder="EMPIECE A ESCRIBIR LA CIUDAD..." />
                                     </div>
                                 </div>
+
+                                {requiresCatechumenClassification && (
+                                    <div className="mt-6 rounded-2xl border border-amber-200 bg-amber-50/50 p-5">
+                                        <p className="text-[10px] font-black uppercase tracking-[0.16em] text-amber-700">Situación catecumenal · mayor de 7 años</p>
+                                        <p className="mt-1 text-xs text-slate-600">Edad calculada en la fecha del Bautismo: <strong>{baptismAge} años</strong>. Indique si fue catecúmeno preparado para recibir el Bautismo.</p>
+                                        <select
+                                            name="catechumenPreparationStatus"
+                                            value={formData.catechumenPreparationStatus}
+                                            onChange={handleChange}
+                                            className="mt-3 w-full md:w-1/2 px-4 py-3 rounded-xl border border-amber-200 bg-white text-sm font-black text-slate-800"
+                                        >
+                                            <option value="">SELECCIONE...</option>
+                                            <option value="prepared">SÍ · CATECÚMENO PREPARADO</option>
+                                            <option value="not_prepared">NO · NO SE REGISTRA COMO CATECÚMENO PREPARADO</option>
+                                        </select>
+                                    </div>
+                                )}
                             </section>
 
                             <section>

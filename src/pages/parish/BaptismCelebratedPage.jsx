@@ -15,6 +15,17 @@ import useSacramentalAuxiliaries from '@/hooks/useSacramentalAuxiliaries';
 import { registerHistoricalBaptism } from '@/services/historicalRegistryService';
 import HistoricalEntryModePanel from '@/components/sacramental/HistoricalEntryModePanel';
 
+const ageOnDate = (birthDate, eventDate) => {
+    if (!birthDate || !eventDate) return null;
+    const birth = new Date(`${String(birthDate).slice(0, 10)}T12:00:00`);
+    const event = new Date(`${String(eventDate).slice(0, 10)}T12:00:00`);
+    if (Number.isNaN(birth.getTime()) || Number.isNaN(event.getTime()) || event < birth) return null;
+    let age = event.getFullYear() - birth.getFullYear();
+    const monthDiff = event.getMonth() - birth.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && event.getDate() < birth.getDate())) age -= 1;
+    return age;
+};
+
 const BaptismCelebratedPage = () => {
     const navigate = useNavigate();
     const { user } = useAuth();
@@ -41,6 +52,7 @@ const BaptismCelebratedPage = () => {
         sexo: '',
         fechaNacimiento: '',
         lugarNacimiento: '',
+        catechumenPreparationStatus: '',
         nuip: '',
         numeroRegistro: '',
         serialRegistro: '',
@@ -100,6 +112,9 @@ const BaptismCelebratedPage = () => {
         });
     }, [formData.fechaSacramento, aux.priestAtDate]);
 
+    const baptismAge = ageOnDate(formData.fechaNacimiento, formData.fechaSacramento);
+    const isOverSevenAtBaptism = baptismAge !== null && baptismAge > 7;
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         const uppercaseFields = ['nombres', 'apellidos', 'lugarNacimiento', 'lugarBautismo', 'padrinos', 'nombrePadre', 'nombreMadre', 'abuelosPaternos', 'abuelosMaternos', 'ministro', 'daFe', 'oficinaRegistro', 'direccion', 'observaciones', 'notaMarginal', 'serialRegistro'];
@@ -137,6 +152,11 @@ const BaptismCelebratedPage = () => {
 
         const recordToSave = {
             ...formData,
+            catechumenPreparationStatus: narrative
+                ? ''
+                : (isOverSevenAtBaptism
+                    ? (formData.catechumenPreparationStatus || 'unknown')
+                    : 'not_applicable'),
             Libro: String(formData.Libro).trim(),
             folio: String(formData.folio).trim(),
             numero: String(formData.numero).trim(),
@@ -246,6 +266,23 @@ const BaptismCelebratedPage = () => {
                                     <AuxiliaryAutocomplete name="lugarNacimiento" value={formData.lugarNacimiento} onChange={handleChange} options={aux.cityOptions} className={inputClass} placeholder="EMPIECE A ESCRIBIR LA CIUDAD..." />
                                 </div>
                             </div>
+
+                            {isOverSevenAtBaptism && (
+                                <div className="mt-6 rounded-2xl border border-amber-200 bg-amber-50/40 p-5">
+                                    <p className="text-[10px] font-black uppercase tracking-[0.16em] text-amber-700">Situación catecumenal histórica</p>
+                                    <p className="mt-1 text-xs text-slate-600">Edad calculada al Bautismo: <strong>{baptismAge} años</strong>. Complete este dato sólo si consta o puede verificarse.</p>
+                                    <select
+                                        name="catechumenPreparationStatus"
+                                        value={formData.catechumenPreparationStatus}
+                                        onChange={handleChange}
+                                        className="mt-3 w-full md:w-2/3 px-4 py-3 rounded-xl border border-amber-200 bg-white text-sm font-black text-slate-800"
+                                    >
+                                        <option value="">NO CONSTA / DESCONOCIDO</option>
+                                        <option value="prepared">SÍ · CATECÚMENO PREPARADO</option>
+                                        <option value="not_prepared">NO · NO SE REGISTRA COMO CATECÚMENO PREPARADO</option>
+                                    </select>
+                                </div>
+                            )}
                         </section>
 
                         {/* 04. REGISTRO CIVIL */}

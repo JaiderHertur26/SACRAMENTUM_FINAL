@@ -162,6 +162,13 @@ export const purificarRegistroBautismo = (raw) => {
         sexo: normalizeLegacySex(raw.sexo || raw.gender || legacyResolved.sexo || rawPayload.sexo || rawPayload.gender || ''),
         fechaNacimiento: raw.fechaNacimiento || raw.fecha_nacimiento || raw.birthDate || '',
         lugarNacimiento: String(raw.lugarNacimiento || raw.lugar_nacimiento || raw.placeOfBirth || '').trim().toUpperCase(),
+        catechumenPreparationStatus: String(
+            raw.catechumenPreparationStatus
+            || raw.catechumen_preparation_status
+            || rawPayload.catechumenPreparationStatus
+            || rawPayload.catechumen_preparation_status
+            || ''
+        ).trim().toLowerCase(),
 
         nuip: String(raw.nuip || raw.documentNumber || ''),
         serialRegistro: String(raw.serialRegistro || raw.serial_registro || raw.serialRegCivil || ''),

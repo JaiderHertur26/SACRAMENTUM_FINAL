@@ -214,6 +214,8 @@ const buildParishCuriaPdf = ({
   const breakdown = report?.curia_breakdown || {};
   const supplement = report?.pastoral_supplement || {};
   const unions = breakdown?.baptism_parent_unions || {};
+  const catechumenStats = breakdown?.baptism_catechumen_stats || {};
+  const marriageCategories = breakdown?.marriage_canonical_categories || {};
   const ageTotals = getBaptismAgeTotals(report);
   const scopeType = report?.scope?.type || report?.filters?.scope_type || breakdown?.scope_type || 'general';
   const isParishScope = scopeType === 'parroquia';
@@ -320,7 +322,7 @@ const buildParishCuriaPdf = ({
   doc.setFontSize(7.2);
   doc.setTextColor(...COLORS.ink);
   doc.text('Catecúmenos mayores de 7 años preparados para el Bautismo', 20, y + 6.2);
-  doc.text(valueOrDash(supplement.catechumensOver7), 152, y + 6.2, { align: 'right' });
+  doc.text(valueOrDash(catechumenStats.prepared_over7), 152, y + 6.2, { align: 'right' });
   doc.text('TOTAL BAUTISMOS', 160, y + 6.2);
   doc.text(fmtNumber(totals.bautismo), 190, y + 6.2, { align: 'right' });
   y += 18;
@@ -331,9 +333,10 @@ const buildParishCuriaPdf = ({
     margin: { left: 15, right: 15 },
     head: [['Situación canónica informada', 'N.º']],
     body: [
-      ['Matrimonios entre católicos bautizados', valueOrDash(supplement.marriageCatholicsBaptized)],
-      ['Matrimonio entre católico y no bautizado', valueOrDash(supplement.marriageCatholicUnbaptized)],
-      ['Matrimonio entre católico y no católico', valueOrDash(supplement.marriageCatholicNonCatholic)],
+      ['Matrimonios entre católicos bautizados', valueOrDash(marriageCategories.both_catholic_baptized)],
+      ['Matrimonio mixto · Católico con bautizado no católico', valueOrDash(marriageCategories.mixed_marriage)],
+      ['Disparidad de culto · Católico con no bautizado', valueOrDash(marriageCategories.disparity_of_cult)],
+      ['Sin clasificación canónica en el registro', valueOrDash(marriageCategories.unclassified)],
       ['TOTAL MATRIMONIOS REGISTRADOS EN SACRAMENTUM', fmtNumber(totals.matrimonio)],
     ],
     theme: 'grid',
@@ -341,7 +344,7 @@ const buildParishCuriaPdf = ({
     headStyles: { fillColor: COLORS.blue, textColor: COLORS.white, fontStyle: 'bold' },
     columnStyles: { 1: { halign: 'right', cellWidth: 24, fontStyle: 'bold' } },
     didParseCell: (data) => {
-      if (data.section === 'body' && data.row.index === 3) {
+      if (data.section === 'body' && data.row.index === 4) {
         data.cell.styles.fillColor = COLORS.goldSoft;
         data.cell.styles.fontStyle = 'bold';
       }
@@ -352,7 +355,6 @@ const buildParishCuriaPdf = ({
   drawSectionTitle(doc, 'Síntesis pastoral del periodo', y);
   const pastoralRows = [
     ['Confirmaciones registradas', fmtNumber(totals.confirmacion)],
-    ['Primeras Comuniones', valueOrDash(supplement.firstCommunions)],
     ['Exequias registradas', fmtNumber(totals.exequias)],
     ['Catequistas / Formadores', valueOrDash(supplement.catechists)],
     ['Células pastorales con Eucaristía dominical distinta a la parroquia', valueOrDash(supplement.pastoralCells)],
@@ -370,7 +372,7 @@ const buildParishCuriaPdf = ({
   doc.setFont('times', 'italic');
   doc.setFontSize(6.4);
   doc.setTextColor(...COLORS.slate);
-  const note = 'Los datos sacramentales provienen de los registros activos de SACRAMENTUM para el ámbito seleccionado. Los campos pastorales complementarios corresponden a información declarada para el periodo y no son inferidos por el sistema.';
+  const note = 'Las estadísticas sacramentales, incluida la situación catecumenal del Bautismo y la clasificación canónica del Matrimonio, provienen de los registros activos de SACRAMENTUM para el ámbito seleccionado. Sólo Catequistas/Formadores y Células pastorales corresponden a información pastoral complementaria declarada para el periodo.';
   doc.text(doc.splitTextToSize(note, 176), 17, y);
   y += 10;
 

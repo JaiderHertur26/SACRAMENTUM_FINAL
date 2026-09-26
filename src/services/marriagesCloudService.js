@@ -73,6 +73,7 @@ export const mapMarriageRow = (row) => {
     groomSex: normalizeLegacySex(resolved.party_1_gender ?? party1.gender ?? raw.sexo1 ?? raw.sex1 ?? ''),
     groomBirthDate: raw.groomBirthDate ?? raw.novioFechaNac ?? party1.birth_date ?? '',
     groomBirthPlace: raw.groomBirthPlace ?? raw.novioLugarNac ?? party1.birth_place ?? '',
+    groomEcclesialStatus: raw.groomEcclesialStatus ?? raw.novioEcclesialStatus ?? raw.metadata?.esposo?.ecclesialStatus ?? '',
     groomBaptismPlace: raw.groomBaptismPlace ?? raw.novioBautismoLugar ?? party1.baptism_place ?? '',
     groomBaptismDate: raw.groomBaptismDate ?? raw.novioBautismoFecha ?? party1.baptism_date ?? '',
     groomBaptismBook: raw.groomBaptismBook ?? raw.novioBautismoLibro ?? party1.baptism_book ?? '',
@@ -87,6 +88,7 @@ export const mapMarriageRow = (row) => {
     brideSex: normalizeLegacySex(resolved.party_2_gender ?? party2.gender ?? raw.sexo2 ?? raw.sex2 ?? ''),
     brideBirthDate: raw.brideBirthDate ?? raw.noviaFechaNac ?? party2.birth_date ?? '',
     brideBirthPlace: raw.brideBirthPlace ?? raw.noviaLugarNac ?? party2.birth_place ?? '',
+    brideEcclesialStatus: raw.brideEcclesialStatus ?? raw.noviaEcclesialStatus ?? raw.metadata?.esposa?.ecclesialStatus ?? '',
     brideBaptismPlace: raw.brideBaptismPlace ?? raw.noviaBautismoLugar ?? party2.baptism_place ?? '',
     brideBaptismDate: raw.brideBaptismDate ?? raw.noviaBautismoFecha ?? party2.baptism_date ?? '',
     brideBaptismBook: raw.brideBaptismBook ?? raw.noviaBautismoLibro ?? party2.baptism_book ?? '',
@@ -102,6 +104,7 @@ export const mapMarriageRow = (row) => {
     legacyDaFeCode: resolved.legacy_dafe_code ?? legacy.legacy_dafe_code ?? '',
     witnesses: raw.witnesses ?? raw.testigos ?? legacy.witnesses ?? witnessNames,
     testigos: raw.testigos ?? raw.witnesses ?? legacy.witnesses ?? witnessNames,
+    canonicalMarriageCategory: raw.canonicalMarriageCategory ?? raw.canonical_marriage_category ?? 'other_or_undetermined',
 
     historicalEntryMode: raw.historicalEntryMode || raw.historical_entry_mode || 'structured',
     referenceName: raw.referenceName || raw.reference_name || '',

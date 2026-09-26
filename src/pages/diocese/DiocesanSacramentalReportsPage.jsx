@@ -86,11 +86,6 @@ const DiocesanSacramentalReportsPage = () => {
     { id: 1, min: '', max: '' },
   ]);
   const [pastoralSupplement, setPastoralSupplement] = useState({
-    catechumensOver7: '',
-    marriageCatholicsBaptized: '',
-    marriageCatholicUnbaptized: '',
-    marriageCatholicNonCatholic: '',
-    firstCommunions: '',
     catechists: '',
     pastoralCells: '',
   });
@@ -492,16 +487,11 @@ const DiocesanSacramentalReportsPage = () => {
                 <div className="mb-4">
                   <p className="text-[10px] font-black uppercase tracking-[0.16em] text-amber-700">Datos pastorales complementarios · Reporte a la Curia</p>
                   <p className="mt-1 text-xs text-slate-600">
-                    Complete únicamente lo que SACRAMENTUM todavía no puede calcular automáticamente. Los campos vacíos aparecerán como “—” y no se inventarán cifras.
+                    Las estadísticas sacramentales se calculan directamente desde Bautismos, Confirmaciones, Matrimonios y Exequias. Aquí sólo se consignan datos pastorales que no pertenecen a una partida sacramental.
                   </p>
                 </div>
                 <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-4">
                   {[
-                    ['catechumensOver7', 'Catecúmenos mayores de 7 años preparados para Bautismo'],
-                    ['marriageCatholicsBaptized', 'Matrimonios entre católicos bautizados'],
-                    ['marriageCatholicUnbaptized', 'Católico con no bautizado'],
-                    ['marriageCatholicNonCatholic', 'Católico con no católico'],
-                    ['firstCommunions', 'Primeras Comuniones'],
                     ['catechists', 'Catequistas / Formadores'],
                     ['pastoralCells', 'Células pastorales con Eucaristía dominical distinta'],
                   ].map(([name, label]) => (

@@ -15,6 +15,12 @@ import useSacramentalAuxiliaries from '@/hooks/useSacramentalAuxiliaries';
 import SearchBaptismPartidaModal from '@/components/modals/SearchBaptismPartidaModal';
 import useParroquiaFromMisDatos from '@/hooks/useParroquiaFromMisDatos';
 import { savePendingMarriageCloud } from '@/services/marriagesCloudService';
+import {
+  ECCLESIAL_STATUS_OPTIONS,
+  deriveCanonicalMarriageCategory,
+  getCanonicalMarriageCategoryLabel,
+  statusImpliesBaptized,
+} from '@/utils/marriageCanonicalStatus';
 import { supabase } from '@/lib/supabaseClient';
 import MatrimonioTicket from '@/components/MatrimonioTicket';
 import { getParishPrintProfile } from '@/services/sacramentsService';
@@ -58,6 +64,24 @@ const ageOnDate = (birthValue, eventValue) => {
 const SacramentSection = ({ prefix, label, formData, handleChange, churches = [], cities = [], parishName = '' }) => (
     <div className="mt-6 bg-slate-50 p-4 rounded-lg border border-slate-200">
         <h4 className="font-bold text-slate-700 text-sm uppercase mb-3 border-b border-slate-300 pb-2">Sacramentos - {label}</h4>
+
+        <div className="mb-4 rounded-xl border border-blue-100 bg-white p-3">
+            <label className="block text-[10px] font-black uppercase tracking-wider text-slate-500 mb-1">Condición eclesial</label>
+            <select
+                name={`${prefix}EcclesialStatus`}
+                value={formData[`${prefix}EcclesialStatus`] || ''}
+                onChange={handleChange}
+                className="w-full h-10 px-3 border border-slate-300 rounded-xl text-sm font-bold bg-white"
+            >
+                <option value="">SELECCIONE...</option>
+                {ECCLESIAL_STATUS_OPTIONS.map((option) => (
+                    <option key={option.value} value={option.value}>{option.label.toUpperCase()}</option>
+                ))}
+            </select>
+            <p className="mt-1 text-[10px] text-slate-500">
+                {ECCLESIAL_STATUS_OPTIONS.find((option) => option.value === formData[`${prefix}EcclesialStatus`])?.description || 'Defina esta condición para clasificar correctamente el matrimonio.'}
+            </p>
+        </div>
         
         {/* Bautismo */}
         <div className="mb-4">
@@ -66,10 +90,11 @@ const SacramentSection = ({ prefix, label, formData, handleChange, churches = []
                     type="checkbox" 
                     name={`${prefix}Bautizado`} 
                     checked={formData[`${prefix}Bautizado`]} 
-                    onChange={handleChange}
-                    className="w-4 h-4 text-[#4B7BA7] border-slate-300 rounded focus:ring-[#4B7BA7]"
+                    readOnly
+                    disabled
+                    className="w-4 h-4 text-[#4B7BA7] border-slate-300 rounded"
                 />
-                <label className="font-bold text-slate-700 text-sm">Bautizado</label>
+                <label className="font-bold text-slate-700 text-sm">Bautizado · derivado de la condición eclesial</label>
             </div>
             
             {formData[`${prefix}Bautizado`] && (
@@ -189,6 +214,7 @@ const MatrimonioNewPage = () => {
     novioExpedida: '',
     
     // Novio Sacraments
+    novioEcclesialStatus: '',
     novioBautizado: false,
     novioBautismoLugar: '',
     novioBautismoLibro: '',
@@ -214,6 +240,7 @@ const MatrimonioNewPage = () => {
     noviaExpedida: '',
 
     // Novia Sacraments
+    noviaEcclesialStatus: '',
     noviaBautizado: false,
     noviaBautismoLugar: '',
     noviaBautismoLibro: '',
@@ -238,6 +265,10 @@ const MatrimonioNewPage = () => {
   };
 
   const [formData, setFormData] = useState(initialFormData);
+  const canonicalMarriageCategory = deriveCanonicalMarriageCategory(
+      formData.novioEcclesialStatus,
+      formData.noviaEcclesialStatus
+  );
 
   // Auto-populate Parish Name from Hook
   useEffect(() => {
@@ -282,6 +313,27 @@ const MatrimonioNewPage = () => {
 
   const handleChange = (e) => {
       const { name, value, type, checked } = e.target;
+
+      if (name === 'novioEcclesialStatus' || name === 'noviaEcclesialStatus') {
+          const prefix = name.startsWith('novio') ? 'novio' : 'novia';
+          const baptized = statusImpliesBaptized(value);
+          setFormData(prev => ({
+              ...prev,
+              [name]: value,
+              [`${prefix}Bautizado`]: baptized,
+              ...(!baptized ? {
+                  [`${prefix}BautismoLugar`]: '',
+                  [`${prefix}BautismoLibro`]: '',
+                  [`${prefix}BautismoFolio`]: '',
+                  [`${prefix}BautismoNumero`]: '',
+                  [`${prefix}BautismoFecha`]: '',
+                  [`${prefix}Confirmado`]: false,
+                  [`${prefix}ConfirmacionLugar`]: ''
+              } : {})
+          }));
+          return;
+      }
+
       setFormData(prev => ({
           ...prev,
           [name]: type === 'checkbox' ? checked : value
@@ -293,9 +345,11 @@ const MatrimonioNewPage = () => {
           { field: 'novioNombres', label: 'Nombres del Novio' },
           { field: 'novioApellidos', label: 'Apellidos del Novio' },
           { field: 'novioFechaNac', label: 'Fecha de nacimiento del Novio' },
+          { field: 'novioEcclesialStatus', label: 'Condición eclesial del Novio' },
           { field: 'noviaNombres', label: 'Nombres de la Novia' },
           { field: 'noviaApellidos', label: 'Apellidos de la Novia' },
           { field: 'noviaFechaNac', label: 'Fecha de nacimiento de la Novia' },
+          { field: 'noviaEcclesialStatus', label: 'Condición eclesial de la Novia' },
           { field: 'fechaHoraPrevista', label: 'Fecha y Hora Prevista' }
       ];
 
@@ -317,6 +371,20 @@ const MatrimonioNewPage = () => {
           toast({
               title: "Fechas no válidas",
               description: "Verifique las fechas de nacimiento y la fecha prevista del matrimonio.",
+              variant: "destructive"
+          });
+          return false;
+      }
+
+      const canonicalCategory = deriveCanonicalMarriageCategory(
+          formData.novioEcclesialStatus,
+          formData.noviaEcclesialStatus
+      );
+
+      if (canonicalCategory === 'other_or_undetermined') {
+          toast({
+              title: "Situación canónica por revisar",
+              description: "La combinación seleccionada no permite clasificar el expediente como matrimonio entre católicos bautizados, matrimonio mixto o disparidad de culto. Revise la condición eclesial de ambos contrayentes.",
               variant: "destructive"
           });
           return false;
@@ -348,10 +416,16 @@ const MatrimonioNewPage = () => {
     try {
         if (!parishId) throw new Error('La cuenta no tiene una parroquia asignada.');
 
+        const canonicalMarriageCategory = deriveCanonicalMarriageCategory(
+            formData.novioEcclesialStatus,
+            formData.noviaEcclesialStatus
+        );
+
         const reserved = await savePendingMarriageCloud({
             parishId,
             formData: {
                 ...formData,
+                canonicalMarriageCategory,
                 status: 'pending',
                 type: 'marriage_expediente',
                 parishId,
@@ -361,7 +435,13 @@ const MatrimonioNewPage = () => {
 
         const reservedNumber = reserved?.numeroRegistro || reserved?.numero;
         if (!reservedNumber) throw new Error('Supabase no devolvió el Nº de Registro matrimonial reservado.');
-        const ticketRecord = { ...formData, ...(reserved || {}), numero: reservedNumber, numeroRegistro: reservedNumber };
+        const ticketRecord = {
+            ...formData,
+            canonicalMarriageCategory,
+            ...(reserved || {}),
+            numero: reservedNumber,
+            numeroRegistro: reservedNumber
+        };
         setTicketData(ticketRecord);
         setFormData(prev => ({ ...prev, numero: reservedNumber }));
         setIsSaved(true);
@@ -441,6 +521,7 @@ const MatrimonioNewPage = () => {
           novioFechaNac: partida.fechaNacimiento || partida.birthDate || prev.novioFechaNac,
           novioLugarNac: partida.lugarNacimiento || partida.birthPlace || prev.novioLugarNac,
           
+          novioEcclesialStatus: 'catholic_baptized',
           novioBautizado: true,
           novioBautismoLugar: partida.lugarBautismo || partida.place || prev.novioBautismoLugar,
           novioBautismoLibro: partida.book_number || partida.libro || prev.novioBautismoLibro,
@@ -472,6 +553,7 @@ const MatrimonioNewPage = () => {
           noviaFechaNac: partida.fechaNacimiento || partida.birthDate || prev.noviaFechaNac,
           noviaLugarNac: partida.lugarNacimiento || partida.birthPlace || prev.noviaLugarNac,
           
+          noviaEcclesialStatus: 'catholic_baptized',
           noviaBautizado: true,
           noviaBautismoLugar: partida.lugarBautismo || partida.place || prev.noviaBautismoLugar,
           noviaBautismoLibro: partida.book_number || partida.libro || prev.noviaBautismoLibro,
@@ -639,6 +721,12 @@ const MatrimonioNewPage = () => {
                                 title="En registros actuales Da Fe corresponde al Párroco actual."
                             />
                         </div>
+                    </div>
+
+                    <div className="rounded-2xl border border-[#D4AF37]/35 bg-[#D4AF37]/8 px-5 py-4">
+                        <p className="text-[10px] font-black uppercase tracking-[0.16em] text-[#8A6A12]">Clasificación canónica del expediente</p>
+                        <p className="mt-1 text-sm font-black text-slate-900">{getCanonicalMarriageCategoryLabel(canonicalMarriageCategory)}</p>
+                        <p className="mt-1 text-[11px] text-slate-500">Se determina automáticamente a partir de la condición eclesial de ambos contrayentes.</p>
                     </div>
 
                     {/* TABS SECTION */}

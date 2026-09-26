@@ -18,6 +18,7 @@ import { getMatrimonioParameters } from '@/services/sacramentParametersService';
 import MatrimonioTicket from '@/components/MatrimonioTicket';
 import { getParishPrintProfile } from '@/services/sacramentsService';
 import { institutionalConfirm } from '@/lib/institutionalDialog';
+import { getCanonicalMarriageCategoryLabel } from '@/utils/marriageCanonicalStatus';
 
 
 const getMarriageDateValue = (marriage) => (
@@ -361,9 +362,13 @@ const MatrimonioSentarRegistrosPage = () => {
                                 </div>
                             )}
 
-                            <div className="grid grid-cols-2 gap-10">
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                                 <div><label className="text-[10px] font-black text-slate-400 uppercase">Fecha Sacramento</label><p className="font-black text-[#4B7BA7] text-lg">{fechaMatrimonio}</p></div>
                                 <div><label className="text-[10px] font-black text-slate-400 uppercase">Lugar</label><p className="font-bold text-slate-700 uppercase">{currentMarriage?.lugarCeremonia || currentMarriage?.lugarMatrimonio || nombreParroquia}</p></div>
+                                <div className="rounded-xl border border-[#D4AF37]/30 bg-[#D4AF37]/8 px-4 py-3">
+                                    <label className="text-[9px] font-black text-[#8A6A12] uppercase">Clasificación canónica</label>
+                                    <p className="mt-1 text-xs font-black text-slate-800">{getCanonicalMarriageCategoryLabel(currentMarriage?.canonicalMarriageCategory)}</p>
+                                </div>
                             </div>
 
                             <div className="flex justify-between items-center gap-3 pt-8 border-t">
@@ -398,6 +403,7 @@ const MatrimonioSentarRegistrosPage = () => {
                                     </th>
                                     <th className="px-6 py-6">ESTADO</th>
                                     <th className="px-6 py-6">Contrayentes</th>
+                                    <th className="px-6 py-6">Clasificación</th>
                                     <th className="px-6 py-6">Fecha Sacramento</th>
                                 </tr>
                             </thead>
@@ -438,6 +444,9 @@ const MatrimonioSentarRegistrosPage = () => {
                                             <td className="px-6 py-4">
                                                 <p className="font-black uppercase text-xs text-slate-800">{hName} {hSur}</p>
                                                 <p className="text-[10px] font-bold text-[#4B7BA7] uppercase">& {wName} {wSur}</p>
+                                            </td>
+                                            <td className="px-6 py-4 text-[10px] font-bold text-slate-600">
+                                                {getCanonicalMarriageCategoryLabel(marriage.canonicalMarriageCategory)}
                                             </td>
                                             <td className={cn("px-6 py-4 text-[11px] font-black uppercase", isFuture ? "text-amber-700" : "text-slate-600")}>
                                                 {dateStr || 'SIN FECHA'}
