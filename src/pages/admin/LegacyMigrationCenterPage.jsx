@@ -10,7 +10,7 @@ import {
 import {
   analyzeLegacyRows, applyLegacyBatch, createLegacyBatch, getLegacyMigrationSummary,
   listLegacyBatches, listLegacySourceInstallations, loadParishesForMigration,
-  importLegacyInstallationFolder, mapLegacySourceInstallation, parseLegacyJsonFile,
+  importLegacyInstallationFolder, mapLegacySourceInstallation, materializeLegacyInstallation, parseLegacyJsonFile,
   registerLegacySourceInstallation, sha256File, stageLegacyRows
 } from '@/services/legacyMigrationService';
 import { LEGACY_IMPORT_PROFILES, profileOptions } from '@/config/legacyImportProfiles';
@@ -74,6 +74,7 @@ const LegacyMigrationCenterPage = () => {
   const [busy,setBusy] = useState('');
   const [progress,setProgress] = useState(null);
   const [bulkSummary,setBulkSummary] = useState(null);
+  const [installationMaterialization,setInstallationMaterialization] = useState(null);
   const [error,setError] = useState('');
 
   const importProfile = profileKey ? LEGACY_IMPORT_PROFILES[profileKey] : null;
@@ -258,6 +259,49 @@ const LegacyMigrationCenterPage = () => {
     finally { setBusy(''); }
   };
 
+  const materializeSelectedInstallation = async () => {
+    if (!sourceInstallationId) return;
+    if (!selectedInstallation?.mapped_parish_id) {
+      setError('Primero vincule esta instalación SACRAMENTA con la parroquia moderna correcta.');
+      return;
+    }
+
+    setBusy('materializing-installation');
+    setError('');
+    setInstallationMaterialization(null);
+    setProgress({message:'Preparando materialización integral de la instalación…'});
+
+    try {
+      const result = await materializeLegacyInstallation({
+        installationId: sourceInstallationId,
+        chunkSize: 250,
+        onProgress: (p) => {
+          if (p.phase === 'materializing') {
+            setProgress({
+              message: `Materializando ${p.file || p.profileKey || 'lote'} · ${p.index}/${p.total} · incorporados ${p.imported || 0}`
+            });
+          } else if (p.phase === 'materialized') {
+            setProgress({message:'Materialización integral completada.'});
+          }
+        }
+      });
+
+      setInstallationMaterialization(result);
+      await Promise.all([refreshInstallations(), refreshBatches()]);
+      toast({
+        title:'Instalación materializada',
+        description:`${result.processedBatches} lotes procesados · ${result.imported} filas incorporadas · ${result.skipped} lotes conservados sin materializar · ${result.failed} incidencias.`,
+        className: result.failed ? undefined : 'bg-green-50 text-green-900 border-green-200',
+        ...(result.failed ? { variant:'destructive' } : {})
+      });
+    } catch(e) {
+      setError(e.message);
+    } finally {
+      setBusy('');
+      setProgress(null);
+    }
+  };
+
   const applyValid = async () => {
     if (!currentBatch?.id) return;
     if (importProfile?.requiresParish && !currentBatch.parish_id) {
@@ -375,6 +419,32 @@ const LegacyMigrationCenterPage = () => {
             <div><label className="text-[10px] font-black uppercase tracking-widest text-slate-400">{allowParishSelection ? 'Parroquia moderna · si está verificada' : 'Parroquia moderna · no aplica'}</label><select disabled={!allowParishSelection || Boolean(selectedInstallation?.mapped_parish_id)} className="w-full mt-2 border rounded-xl px-4 py-3 font-bold bg-white disabled:bg-slate-50 disabled:text-slate-400" value={parishId} onChange={e=>setParishId(e.target.value)}><option value="">Aún no vincular a una parroquia…</option>{parishes.map(p=><option key={p.id} value={p.id}>{p.name}{p.city?` · ${p.city}`:''}</option>)}</select></div>
             <div className="md:col-span-2"><label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Instalación SACRAMENTA de origen</label><select className="w-full mt-2 border rounded-xl px-4 py-3 font-bold bg-white" value={sourceInstallationId} onChange={e=>{setSourceInstallationId(e.target.value);setParishId('');}}><option value="">{profileKey==='MISDATOS'?'Se creará desde MISDATOS al guardar…':'Seleccione la instalación antigua…'}</option>{installations.map(item=><option key={item.id} value={item.id}>{item.legacy_parish_name||item.source_name} · {item.mapping_status==='mapped'?'VINCULADA':'SIN VINCULAR'}</option>)}</select>{selectedInstallation&&<div className={`mt-2 rounded-xl border px-3 py-2 text-xs ${selectedInstallation.mapped_parish_id?'border-green-100 bg-green-50 text-green-800':'border-amber-100 bg-amber-50 text-amber-800'}`}><b>{selectedInstallation.legacy_parish_name||selectedInstallation.source_name}</b> · {selectedInstallation.legacy_diocese_name||'Diócesis no informada'} · {selectedInstallation.mapping_status==='mapped'?'Parroquia moderna verificada':'Preservación solamente; no materializar todavía'}</div>}</div>
             {selectedInstallation&&!selectedInstallation.mapped_parish_id&&<div className="md:col-span-2 rounded-2xl border border-amber-200 bg-amber-50 p-4"><div className="flex flex-col gap-3 md:flex-row md:items-end"><label className="flex-1"><span className="text-[9px] font-black uppercase tracking-wider text-amber-800">Vincular instalación cuando esté verificada</span><select value={mappingParishId} onChange={e=>setMappingParishId(e.target.value)} className="mt-2 w-full rounded-xl border border-amber-200 bg-white px-3 py-2.5 font-bold"><option value="">Seleccione parroquia moderna…</option>{parishes.map(p=><option key={p.id} value={p.id}>{p.name}{p.city?` · ${p.city}`:''}</option>)}</select></label><Button type="button" variant="outline" disabled={!mappingParishId||busy==='mapping'} onClick={mapSelectedInstallation}>{busy==='mapping'?<Loader2 className="mr-2 h-4 w-4 animate-spin"/>:<GitMerge className="mr-2 h-4 w-4"/>}Vincular instalación</Button></div><p className="mt-2 text-[10px] text-amber-800">No vincule por parecido de nombre. Debe corresponder exactamente a la misma parroquia histórica.</p></div>}
+
+            {selectedInstallation?.mapped_parish_id&&<div className="md:col-span-2 rounded-2xl border border-emerald-200 bg-emerald-50 p-4">
+              <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                <div>
+                  <p className="text-[9px] font-black uppercase tracking-[0.16em] text-emerald-700">Instalación verificada · lista para aprovechamiento integral</p>
+                  <p className="mt-1 text-xs leading-relaxed text-emerald-900">SACRAMENTUM conservará intacta la fuente y materializará en los módulos modernos únicamente los perfiles que ya tienen reglas seguras de conversión. Lo desconocido seguirá disponible en el Archivo Histórico Maestro.</p>
+                </div>
+                <Button
+                  type="button"
+                  disabled={!!busy}
+                  onClick={materializeSelectedInstallation}
+                  className="shrink-0 bg-emerald-800 text-white hover:bg-emerald-900"
+                >
+                  {busy==='materializing-installation'?<Loader2 className="mr-2 h-4 w-4 animate-spin"/>:<Play className="mr-2 h-4 w-4"/>}
+                  Materializar instalación completa
+                </Button>
+              </div>
+              {installationMaterialization&&<div className="mt-4 grid grid-cols-2 gap-2 md:grid-cols-5">
+                {statCard('Lotes',installationMaterialization.totalBatches,Database,'slate')}
+                {statCard('Procesados',installationMaterialization.processedBatches,CheckCircle2,'green')}
+                {statCard('Filas incorporadas',installationMaterialization.imported,Database,'blue')}
+                {statCard('Conservados',installationMaterialization.skipped,Archive,'amber')}
+                {statCard('Incidencias',installationMaterialization.failed,AlertTriangle,installationMaterialization.failed?'red':'slate')}
+              </div>}
+            </div>}
+
             <div className="md:col-span-2 flex flex-wrap gap-2"><Button variant="outline" disabled={!rows.length||!profileKey} onClick={reanalyze} className="rounded-xl gap-2"><GitMerge className="w-4 h-4"/> Reanalizar con este perfil</Button>{file&&<div className="px-4 py-2 rounded-xl bg-slate-50 text-xs text-slate-600"><b>{file.name}</b> · {rows.length} filas · SHA-256 {hash.slice(0,12)}…</div>}</div>
           </div>
         </div>

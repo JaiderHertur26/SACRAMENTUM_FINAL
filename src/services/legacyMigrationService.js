@@ -152,11 +152,13 @@ export async function applyLegacyBatch(batchId, { chunkSize = 250, onProgress = 
       failed: Number(materialized.failed || 0),
       remaining: Number(materialized.pending_review || 0)
     });
-    await markMaterialized({
-      materialized_count:Number(materialized.imported || 0),
-      pending_review:Number(materialized.pending_review || 0),
-      target:'marginal_notes'
-    });
+    if (Number(materialized.failed || 0) === 0 && Number(materialized.pending_review || 0) === 0) {
+      await markMaterialized({
+        materialized_count:Number(materialized.imported || 0),
+        pending_review:0,
+        target:'marginal_notes'
+      });
+    }
     return {
       imported:Number(materialized.imported||0),
       failed:Number(materialized.failed||0),
@@ -235,13 +237,15 @@ export async function applyLegacyBatch(batchId, { chunkSize = 250, onProgress = 
     throw diocesesMaterializeError;
   }
 
-  await markMaterialized({
-    imported:totalImported,
-    failed:totalFailed,
-    remaining,
-    auxiliary_materialized:Number(materialized?.materialized || 0),
-    dioceses_materialized:Number(diocesesMaterialized?.materialized || 0),
-  });
+  if (totalFailed === 0 && remaining === 0) {
+    await markMaterialized({
+      imported:totalImported,
+      failed:0,
+      remaining:0,
+      auxiliary_materialized:Number(materialized?.materialized || 0),
+      dioceses_materialized:Number(diocesesMaterialized?.materialized || 0),
+    });
+  }
 
   return {
     imported: totalImported,
@@ -251,6 +255,145 @@ export async function applyLegacyBatch(batchId, { chunkSize = 250, onProgress = 
     diocesesMaterialized,
     noteReconciliation
   };
+}
+
+export async function materializeLegacyInstallation({
+  installationId,
+  onProgress = null,
+  chunkSize = 250,
+} = {}) {
+  if (!installationId) throw new Error('Seleccione una instalación SACRAMENTA.');
+
+  const { data: installation, error: installationError } = await supabase
+    .from('legacy_source_installations')
+    .select('*')
+    .eq('id', installationId)
+    .single();
+  if (installationError) throw installationError;
+  if (!installation?.mapped_parish_id) {
+    throw new Error('La instalación debe estar vinculada a una parroquia moderna antes de materializarse.');
+  }
+
+  const { data: batches, error: batchesError } = await supabase
+    .from('legacy_import_batches')
+    .select('*')
+    .order('created_at', { ascending: true })
+    .limit(1000);
+  if (batchesError) throw batchesError;
+
+  const materializableProfiles = new Set([
+    'BAUTIZOS','CONFIRMA','MATRIMON','DIFUNTOS',
+    'INSBAUTI','INSCONFI','INSMATRI',
+    'PARROCOS','OBISPOS','DIOCESIS','IGLESIAS','CIUDADES',
+    'CERTIFICADOS','CPTOANULA','ANULACION',
+    'NTBAU001','NTBAU002','NTCON001','NTDEF001','NTMAT001','NTMAT002',
+    'REPORTES_FRX'
+  ]);
+
+  const priority = (profileKey) => {
+    if (['BAUTIZOS','CONFIRMA','MATRIMON','DIFUNTOS'].includes(profileKey)) return 10;
+    if (['INSBAUTI','INSCONFI','INSMATRI'].includes(profileKey)) return 20;
+    if (['PARROCOS','OBISPOS','DIOCESIS','IGLESIAS','CIUDADES','CERTIFICADOS'].includes(profileKey)) return 30;
+    if (profileKey === 'CPTOANULA') return 40;
+    if (profileKey === 'ANULACION') return 50;
+    if (['NTBAU001','NTBAU002','NTCON001','NTDEF001','NTMAT001','NTMAT002'].includes(profileKey)) return 60;
+    if (profileKey === 'REPORTES_FRX') return 70;
+    return 100;
+  };
+
+  const installationBatches = (batches || [])
+    .filter((batch) => (
+      batch?.metadata?.source_installation_id === installationId
+      || batch?.source_installation_id === installationId
+    ))
+    .sort((a,b) => {
+      const pa=priority(String(a.profile_key || '').toUpperCase());
+      const pb=priority(String(b.profile_key || '').toUpperCase());
+      if (pa !== pb) return pa - pb;
+      return String(a.created_at || '').localeCompare(String(b.created_at || ''));
+    });
+
+  const summary = {
+    installationId,
+    parishId: installation.mapped_parish_id,
+    totalBatches: installationBatches.length,
+    processedBatches: 0,
+    imported: 0,
+    failed: 0,
+    remaining: 0,
+    skipped: 0,
+    results: [],
+  };
+
+  for (let index = 0; index < installationBatches.length; index += 1) {
+    const batch = installationBatches[index];
+    const profileKey = String(batch.profile_key || '').toUpperCase();
+    const filename = batch.original_filename || batch.source_name || profileKey || 'Lote legacy';
+
+    onProgress?.({
+      phase: 'materializing',
+      index: index + 1,
+      total: installationBatches.length,
+      file: filename,
+      profileKey,
+      imported: summary.imported,
+      failed: summary.failed,
+    });
+
+    if (!materializableProfiles.has(profileKey)) {
+      summary.skipped += 1;
+      summary.results.push({
+        batchId: batch.id,
+        filename,
+        profileKey,
+        skipped: true,
+        reason: 'Perfil preservado únicamente en Archivo Histórico Maestro',
+      });
+      continue;
+    }
+
+    if (!Number(batch.valid_count || 0) && profileKey !== 'REPORTES_FRX') {
+      summary.skipped += 1;
+      summary.results.push({
+        batchId: batch.id,
+        filename,
+        profileKey,
+        skipped: true,
+        reason: Number(batch.imported_count || 0) > 0
+          ? 'Lote ya materializado o sin filas válidas pendientes'
+          : 'Sin filas válidas materializables',
+      });
+      continue;
+    }
+
+    try {
+      const result = await applyLegacyBatch(batch.id, {
+        chunkSize,
+        profileKey,
+      });
+      summary.processedBatches += 1;
+      summary.imported += Number(result.imported || 0);
+      summary.failed += Number(result.failed || 0);
+      summary.remaining += Number(result.remaining || 0);
+      summary.results.push({
+        batchId: batch.id,
+        filename,
+        profileKey,
+        ...result,
+      });
+    } catch (error) {
+      summary.failed += 1;
+      summary.results.push({
+        batchId: batch.id,
+        filename,
+        profileKey,
+        error: error?.message || String(error),
+      });
+    }
+  }
+
+  onProgress?.({ phase: 'materialized', ...summary });
+  return summary;
 }
 
 export async function loadParishesForMigration(dioceseId = null) {

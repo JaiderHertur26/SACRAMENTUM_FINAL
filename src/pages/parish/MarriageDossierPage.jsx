@@ -7,12 +7,40 @@ import { useAuth } from '@/context/AuthContext';
 import { loadMarriageDossierSources, saveMarriageDossier } from '@/services/marriageDossierService';
 
 const emptyAnswers = {
-  groom:{ freedomToMarry:'', previousMarriage:'', kinship:'', cohabitation:'', faithPractice:'', intentionPermanence:'', intentionChildren:'', observations:'' },
-  bride:{ freedomToMarry:'', previousMarriage:'', kinship:'', cohabitation:'', faithPractice:'', intentionPermanence:'', intentionChildren:'', observations:'' },
-  witness1:{ name:'', document:'', relationship:'', yearsKnown:'', confirmsFreedom:'', observations:'' },
-  witness2:{ name:'', document:'', relationship:'', yearsKnown:'', confirmsFreedom:'', observations:'' },
-  documents:{ groomBaptism:'', brideBaptism:'', premaritalCourse:'', civilDocuments:'', dispensations:'', proclamations:'', other:'' },
-  act:{ declaration:'', observations:'', pastorCertification:'' }
+  groom:{
+    freedomToMarry:'', previousMarriage:'', previousMarriageResolution:'', kinship:'',
+    cohabitation:'', civilUnion:'', childrenPreviousUnion:'', faithPractice:'',
+    ecclesialStatus:'', confirmationStatus:'', freeConsent:'', coercionOrFear:'',
+    understandingMarriage:'', intentionPermanence:'', intentionFidelity:'',
+    intentionChildren:'', holyOrdersOrVows:'', familyOpposition:'', observations:''
+  },
+  bride:{
+    freedomToMarry:'', previousMarriage:'', previousMarriageResolution:'', kinship:'',
+    cohabitation:'', civilUnion:'', childrenPreviousUnion:'', faithPractice:'',
+    ecclesialStatus:'', confirmationStatus:'', freeConsent:'', coercionOrFear:'',
+    understandingMarriage:'', intentionPermanence:'', intentionFidelity:'',
+    intentionChildren:'', holyOrdersOrVows:'', familyOpposition:'', observations:''
+  },
+  witness1:{
+    name:'', document:'', age:'', address:'', relationship:'', yearsKnown:'',
+    knowsBoth:'', confirmsFreedom:'', knowsPreviousMarriage:'', knowsKinship:'',
+    knowsCoercion:'', credibility:'', observations:''
+  },
+  witness2:{
+    name:'', document:'', age:'', address:'', relationship:'', yearsKnown:'',
+    knowsBoth:'', confirmsFreedom:'', knowsPreviousMarriage:'', knowsKinship:'',
+    knowsCoercion:'', credibility:'', observations:''
+  },
+  documents:{
+    groomBaptism:'', brideBaptism:'', groomConfirmation:'', brideConfirmation:'',
+    premaritalCourse:'', civilDocuments:'', identityDocuments:'',
+    dispensations:'', licenses:'', proclamations:'', previousMarriageProof:'',
+    mixedMarriageRequirements:'', other:''
+  },
+  act:{
+    canonicalAssessment:'', impediments:'', dispensationsGranted:'',
+    declaration:'', observations:'', pastorCertification:''
+  }
 };
 
 const Q = ({ label, value, onChange, multiline=false, options=null }) => <label className="block">
@@ -23,16 +51,27 @@ const Q = ({ label, value, onChange, multiline=false, options=null }) => <label 
 </label>;
 
 const Interview = ({ title, data, setData }) => <div className="space-y-5">
-  <div><h3 className="font-serif text-2xl font-black text-slate-900">{title}</h3><p className="text-xs text-slate-500">Entrevista personal reservada. Debe diligenciarse con fidelidad a las respuestas del contrayente.</p></div>
+  <div><h3 className="font-serif text-2xl font-black text-slate-900">{title}</h3><p className="text-xs text-slate-500">Entrevista personal reservada. Conserva la investigación del expediente tradicional, con datos estructurados para revisión canónica y archivo histórico.</p></div>
   <div className="grid gap-4 md:grid-cols-2">
     <Q label="¿Es libre para contraer matrimonio?" value={data.freedomToMarry} onChange={v=>setData('freedomToMarry',v)} options={['SÍ','NO','REQUIERE ACLARACIÓN']}/>
     <Q label="¿Ha contraído matrimonio anteriormente?" value={data.previousMarriage} onChange={v=>setData('previousMarriage',v)} options={['NO','SÍ · CANÓNICO','SÍ · CIVIL','OTRO']}/>
+    {data.previousMarriage&&data.previousMarriage!=='NO'&&<Q label="Situación / resolución del vínculo anterior" value={data.previousMarriageResolution} onChange={v=>setData('previousMarriageResolution',v)} multiline/>}
     <Q label="¿Existe parentesco entre los contrayentes?" value={data.kinship} onChange={v=>setData('kinship',v)} options={['NO','SÍ','NO CONSTA']}/>
     <Q label="Situación de convivencia actual" value={data.cohabitation} onChange={v=>setData('cohabitation',v)} options={['NO CONVIVEN','CONVIVEN','OTRA SITUACIÓN']}/>
+    <Q label="¿Existe unión o matrimonio civil entre ellos?" value={data.civilUnion} onChange={v=>setData('civilUnion',v)} options={['NO','SÍ','NO CONSTA']}/>
+    <Q label="¿Tiene hijos de una unión anterior?" value={data.childrenPreviousUnion} onChange={v=>setData('childrenPreviousUnion',v)} options={['NO','SÍ','NO CONSTA']}/>
+    <Q label="Condición eclesial / religión" value={data.ecclesialStatus} onChange={v=>setData('ecclesialStatus',v)} multiline/>
+    <Q label="¿Ha recibido la Confirmación?" value={data.confirmationStatus} onChange={v=>setData('confirmationStatus',v)} options={['SÍ','NO','NO CONSTA']}/>
     <Q label="Práctica de la fe" value={data.faithPractice} onChange={v=>setData('faithPractice',v)} multiline/>
+    <Q label="¿Presta consentimiento libremente?" value={data.freeConsent} onChange={v=>setData('freeConsent',v)} options={['SÍ','NO','REQUIERE ACLARACIÓN']}/>
+    <Q label="¿Existe presión, temor grave o coacción?" value={data.coercionOrFear} onChange={v=>setData('coercionOrFear',v)} options={['NO','SÍ','REQUIERE ACLARACIÓN']}/>
+    <Q label="Comprensión del matrimonio cristiano" value={data.understandingMarriage} onChange={v=>setData('understandingMarriage',v)} multiline/>
     <Q label="Intención de permanencia / indisolubilidad" value={data.intentionPermanence} onChange={v=>setData('intentionPermanence',v)} options={['SÍ','NO','REQUIERE PROFUNDIZAR']}/>
+    <Q label="Intención de fidelidad" value={data.intentionFidelity} onChange={v=>setData('intentionFidelity',v)} options={['SÍ','NO','REQUIERE PROFUNDIZAR']}/>
     <Q label="Apertura a los hijos" value={data.intentionChildren} onChange={v=>setData('intentionChildren',v)} options={['SÍ','NO','REQUIERE PROFUNDIZAR']}/>
-    <Q label="Observaciones reservadas" value={data.observations} onChange={v=>setData('observations',v)} multiline/>
+    <Q label="¿Órdenes sagradas o votos religiosos?" value={data.holyOrdersOrVows} onChange={v=>setData('holyOrdersOrVows',v)} options={['NO','SÍ','NO CONSTA']}/>
+    <Q label="¿Existe oposición familiar relevante?" value={data.familyOpposition} onChange={v=>setData('familyOpposition',v)} options={['NO','SÍ','NO CONSTA']}/>
+    <div className="md:col-span-2"><Q label="Observaciones reservadas" value={data.observations} onChange={v=>setData('observations',v)} multiline/></div>
   </div>
 </div>;
 
@@ -67,6 +106,33 @@ export default function MarriageDossierPage(){
 
   const pendingMarriage=useMemo(()=>sources.pending.find(p=>p.id===pendingId)||null,[sources.pending,pendingId]);
 
+  const readiness = useMemo(() => {
+    const missing = [];
+    for (const [key,label] of [['groom','novio'],['bride','novia']]) {
+      const data = answers[key] || {};
+      if (!data.freedomToMarry) missing.push(`Libertad para contraer · ${label}`);
+      if (!data.previousMarriage) missing.push(`Matrimonio anterior · ${label}`);
+      if (!data.kinship) missing.push(`Parentesco · ${label}`);
+      if (!data.freeConsent) missing.push(`Consentimiento libre · ${label}`);
+      if (!data.intentionPermanence) missing.push(`Indisolubilidad · ${label}`);
+      if (!data.intentionFidelity) missing.push(`Fidelidad · ${label}`);
+      if (!data.intentionChildren) missing.push(`Apertura a los hijos · ${label}`);
+    }
+    for (const [key,label] of [['witness1','Testigo 1'],['witness2','Testigo 2']]) {
+      const data = answers[key] || {};
+      if (!String(data.name || '').trim()) missing.push(`${label} · nombre`);
+      if (!data.confirmsFreedom) missing.push(`${label} · libertad matrimonial`);
+    }
+    const documents = answers.documents || {};
+    if (!String(documents.groomBaptism || '').trim()) missing.push('Partida de Bautismo del novio');
+    if (!String(documents.brideBaptism || '').trim()) missing.push('Partida de Bautismo de la novia');
+    if (!String(documents.premaritalCourse || '').trim()) missing.push('Curso prematrimonial');
+    const act = answers.act || {};
+    if (!String(act.canonicalAssessment || '').trim()) missing.push('Valoración canónica');
+    if (!String(act.pastorCertification || '').trim()) missing.push('Certificación del párroco');
+    return { complete: missing.length === 0, missing };
+  }, [answers]);
+
   const setSection=(section,key,value)=>setAnswers(prev=>({...prev,[section]:{...(prev[section]||{}),[key]:value}}));
 
   const newDossier=()=>{
@@ -77,6 +143,14 @@ export default function MarriageDossierPage(){
   const save=async()=>{
     if(!parishId)return;
     if(!pendingId&&!selected?.is_legacy){toast({title:'Seleccione un matrimonio por celebrar',variant:'destructive'});return;}
+    if(meta.status==='ready'&&!readiness.complete){
+      toast({
+        title:'Expediente aún incompleto',
+        description:`Faltan ${readiness.missing.length} elementos esenciales. Puede guardarlo como borrador, pero no marcarlo como listo.`,
+        variant:'destructive'
+      });
+      return;
+    }
     setBusy(true);
     try{
       const id=await saveMarriageDossier({
@@ -123,13 +197,23 @@ export default function MarriageDossierPage(){
               <label className="block"><span className="text-[10px] font-black uppercase text-slate-500">Estado</span><select value={meta.status} onChange={e=>setMeta(p=>({...p,status:e.target.value}))} className="mt-2 w-full rounded-xl border px-3 py-2.5 font-bold"><option value="draft">Borrador</option><option value="ready">Completo / listo</option><option value="historical">Histórico</option><option value="archived">Archivado</option></select></label>
             </div>
             {pendingMarriage&&<div className="rounded-2xl border border-blue-100 bg-blue-50/50 p-5"><p className="text-[9px] font-black uppercase tracking-widest text-[#4B7BA7]">Vinculado al registro por celebrar</p><p className="mt-1 font-black text-slate-900">{[pendingMarriage.novioNombres,pendingMarriage.novioApellidos].filter(Boolean).join(' ')} + {[pendingMarriage.noviaNombres,pendingMarriage.noviaApellidos].filter(Boolean).join(' ')}</p><p className="mt-1 text-xs text-slate-500">La partida final quedará vinculada automáticamente al expediente cuando el matrimonio sea sentado.</p></div>}
+            <div className={"rounded-2xl border p-5 "+(readiness.complete?'border-emerald-100 bg-emerald-50':'border-amber-100 bg-amber-50')}>
+              <div className="flex items-start gap-3">
+                <ShieldCheck className={"mt-0.5 h-5 w-5 "+(readiness.complete?'text-emerald-700':'text-amber-700')}/>
+                <div>
+                  <p className={"font-black "+(readiness.complete?'text-emerald-950':'text-amber-950')}>{readiness.complete?'Expediente con mínimos completos':'Expediente todavía en preparación'}</p>
+                  <p className={"mt-1 text-xs "+(readiness.complete?'text-emerald-800':'text-amber-800')}>{readiness.complete?'Puede marcarse como Completo / listo.':'Faltan '+readiness.missing.length+' elementos esenciales antes de marcarlo como listo.'}</p>
+                  {!readiness.complete&&<p className="mt-2 text-[10px] leading-relaxed text-amber-800">{readiness.missing.slice(0,8).join(' · ')}{readiness.missing.length>8?' · …':''}</p>}
+                </div>
+              </div>
+            </div>
           </div>}
 
           {tab==='novio'&&<Interview title="Entrevista personal del novio" data={answers.groom||{}} setData={(k,v)=>setSection('groom',k,v)}/>}
           {tab==='novia'&&<Interview title="Entrevista personal de la novia" data={answers.bride||{}} setData={(k,v)=>setSection('bride',k,v)}/>}
-          {tab==='testigos'&&<div className="grid gap-6 lg:grid-cols-2">{['witness1','witness2'].map((key,i)=><div key={key} className="rounded-2xl border p-5"><h3 className="mb-4 font-black">Testigo {i+1}</h3><div className="space-y-4"><Q label="Nombre completo" value={answers[key]?.name} onChange={v=>setSection(key,'name',v)}/><Q label="Documento" value={answers[key]?.document} onChange={v=>setSection(key,'document',v)}/><Q label="Relación con los contrayentes" value={answers[key]?.relationship} onChange={v=>setSection(key,'relationship',v)}/><Q label="Años de conocimiento" value={answers[key]?.yearsKnown} onChange={v=>setSection(key,'yearsKnown',v)}/><Q label="¿Confirma que son libres para casarse?" value={answers[key]?.confirmsFreedom} onChange={v=>setSection(key,'confirmsFreedom',v)} options={['SÍ','NO','NO SABE']}/><Q label="Observaciones" value={answers[key]?.observations} onChange={v=>setSection(key,'observations',v)} multiline/></div></div>)}</div>}
-          {tab==='documentos'&&<div className="grid gap-4 md:grid-cols-2"><Q label="Partida de Bautismo del novio" value={answers.documents?.groomBaptism} onChange={v=>setSection('documents','groomBaptism',v)}/><Q label="Partida de Bautismo de la novia" value={answers.documents?.brideBaptism} onChange={v=>setSection('documents','brideBaptism',v)}/><Q label="Curso prematrimonial" value={answers.documents?.premaritalCourse} onChange={v=>setSection('documents','premaritalCourse',v)}/><Q label="Documentos civiles" value={answers.documents?.civilDocuments} onChange={v=>setSection('documents','civilDocuments',v)}/><Q label="Dispensas / licencias" value={answers.documents?.dispensations} onChange={v=>setSection('documents','dispensations',v)} multiline/><Q label="Proclamas" value={answers.documents?.proclamations} onChange={v=>setSection('documents','proclamations',v)} multiline/><div className="md:col-span-2"><Q label="Otros documentos" value={answers.documents?.other} onChange={v=>setSection('documents','other',v)} multiline/></div></div>}
-          {tab==='acta'&&<div className="space-y-4"><Q label="Declaración / conclusión del expediente" value={answers.act?.declaration} onChange={v=>setSection('act','declaration',v)} multiline/><Q label="Observaciones finales" value={answers.act?.observations} onChange={v=>setSection('act','observations',v)} multiline/><Q label="Certificación del párroco" value={answers.act?.pastorCertification} onChange={v=>setSection('act','pastorCertification',v)} multiline/><div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-4 text-xs font-medium text-emerald-900"><ShieldCheck className="mr-2 inline h-4 w-4"/>Al guardar se crea trazabilidad en el registro de auditoría. El expediente legacy conserva además su fuente INSMATRI original.</div></div>}
+          {tab==='testigos'&&<div className="grid gap-6 lg:grid-cols-2">{['witness1','witness2'].map((key,i)=><div key={key} className="rounded-2xl border p-5"><h3 className="mb-4 font-black">Testigo {i+1}</h3><div className="space-y-4"><Q label="Nombre completo" value={answers[key]?.name} onChange={v=>setSection(key,'name',v)}/><Q label="Documento" value={answers[key]?.document} onChange={v=>setSection(key,'document',v)}/><Q label="Edad" value={answers[key]?.age} onChange={v=>setSection(key,'age',v)}/><Q label="Dirección / domicilio" value={answers[key]?.address} onChange={v=>setSection(key,'address',v)}/><Q label="Relación con los contrayentes" value={answers[key]?.relationship} onChange={v=>setSection(key,'relationship',v)}/><Q label="Años de conocimiento" value={answers[key]?.yearsKnown} onChange={v=>setSection(key,'yearsKnown',v)}/><Q label="¿Conoce suficientemente a ambos?" value={answers[key]?.knowsBoth} onChange={v=>setSection(key,'knowsBoth',v)} options={['SÍ','NO','PARCIALMENTE']}/><Q label="¿Confirma que son libres para casarse?" value={answers[key]?.confirmsFreedom} onChange={v=>setSection(key,'confirmsFreedom',v)} options={['SÍ','NO','NO SABE']}/><Q label="¿Conoce matrimonio o vínculo anterior?" value={answers[key]?.knowsPreviousMarriage} onChange={v=>setSection(key,'knowsPreviousMarriage',v)} options={['NO','SÍ','NO SABE']}/><Q label="¿Conoce parentesco entre ellos?" value={answers[key]?.knowsKinship} onChange={v=>setSection(key,'knowsKinship',v)} options={['NO','SÍ','NO SABE']}/><Q label="¿Conoce presión, temor o coacción?" value={answers[key]?.knowsCoercion} onChange={v=>setSection(key,'knowsCoercion',v)} options={['NO','SÍ','NO SABE']}/><Q label="Valoración de credibilidad del testigo" value={answers[key]?.credibility} onChange={v=>setSection(key,'credibility',v)} options={['IDÓNEO','REQUIERE ACLARACIÓN','NO VALORADO']}/><Q label="Observaciones" value={answers[key]?.observations} onChange={v=>setSection(key,'observations',v)} multiline/></div></div>)}</div>}
+          {tab==='documentos'&&<div className="grid gap-4 md:grid-cols-2"><Q label="Partida de Bautismo del novio" value={answers.documents?.groomBaptism} onChange={v=>setSection('documents','groomBaptism',v)}/><Q label="Partida de Bautismo de la novia" value={answers.documents?.brideBaptism} onChange={v=>setSection('documents','brideBaptism',v)}/><Q label="Constancia de Confirmación del novio" value={answers.documents?.groomConfirmation} onChange={v=>setSection('documents','groomConfirmation',v)}/><Q label="Constancia de Confirmación de la novia" value={answers.documents?.brideConfirmation} onChange={v=>setSection('documents','brideConfirmation',v)}/><Q label="Curso prematrimonial" value={answers.documents?.premaritalCourse} onChange={v=>setSection('documents','premaritalCourse',v)}/><Q label="Documentos de identidad" value={answers.documents?.identityDocuments} onChange={v=>setSection('documents','identityDocuments',v)}/><Q label="Documentos / registro civil" value={answers.documents?.civilDocuments} onChange={v=>setSection('documents','civilDocuments',v)}/><Q label="Proclamas" value={answers.documents?.proclamations} onChange={v=>setSection('documents','proclamations',v)} multiline/><Q label="Dispensas" value={answers.documents?.dispensations} onChange={v=>setSection('documents','dispensations',v)} multiline/><Q label="Licencias / permisos" value={answers.documents?.licenses} onChange={v=>setSection('documents','licenses',v)} multiline/><Q label="Prueba de resolución de vínculo anterior" value={answers.documents?.previousMarriageProof} onChange={v=>setSection('documents','previousMarriageProof',v)} multiline/><Q label="Requisitos de matrimonio mixto / disparidad de culto" value={answers.documents?.mixedMarriageRequirements} onChange={v=>setSection('documents','mixedMarriageRequirements',v)} multiline/><div className="md:col-span-2"><Q label="Otros documentos" value={answers.documents?.other} onChange={v=>setSection('documents','other',v)} multiline/></div></div>}
+          {tab==='acta'&&<div className="space-y-4"><Q label="Valoración canónica del expediente" value={answers.act?.canonicalAssessment} onChange={v=>setSection('act','canonicalAssessment',v)} multiline/><Q label="Impedimentos / situaciones que requieren resolución" value={answers.act?.impediments} onChange={v=>setSection('act','impediments',v)} multiline/><Q label="Dispensas o licencias concedidas" value={answers.act?.dispensationsGranted} onChange={v=>setSection('act','dispensationsGranted',v)} multiline/><Q label="Declaración / conclusión del expediente" value={answers.act?.declaration} onChange={v=>setSection('act','declaration',v)} multiline/><Q label="Observaciones finales" value={answers.act?.observations} onChange={v=>setSection('act','observations',v)} multiline/><Q label="Certificación del párroco" value={answers.act?.pastorCertification} onChange={v=>setSection('act','pastorCertification',v)} multiline/><div className={`rounded-2xl border p-4 text-xs font-medium ${readiness.complete?'border-emerald-100 bg-emerald-50 text-emerald-900':'border-amber-100 bg-amber-50 text-amber-900'}`}><ShieldCheck className="mr-2 inline h-4 w-4"/><b>{readiness.complete?'Expediente íntegro para revisión final.':`Faltan ${readiness.missing.length} elementos esenciales.`}</b> {readiness.complete?'Puede marcarse como Completo / listo.':'Puede conservarse como borrador; SACRAMENTUM no permitirá marcarlo como listo hasta completarlos.'}{!readiness.complete&&<div className="mt-2 max-h-28 overflow-auto text-[10px]">{readiness.missing.slice(0,12).join(' · ')}{readiness.missing.length>12?' …':''}</div>}</div><div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-4 text-xs font-medium text-emerald-900"><ShieldCheck className="mr-2 inline h-4 w-4"/>Al guardar se crea trazabilidad en el registro de auditoría. El expediente legacy conserva además su fuente INSMATRI original.</div></div>}
 
           <div className="mt-8 flex justify-end border-t pt-5"><Button onClick={save} disabled={busy} className="rounded-xl bg-[#D4AF37] font-black text-slate-950 hover:bg-[#c49d27]">{busy?<Loader2 className="mr-2 h-4 w-4 animate-spin"/>:<Save className="mr-2 h-4 w-4"/>}Guardar expediente</Button></div>
         </section>
