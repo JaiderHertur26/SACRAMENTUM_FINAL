@@ -87,3 +87,30 @@ export async function compareLegacySourceSnapshots(installationId) {
   if (error) throw error;
   return data || { summary: {}, profiles: [] };
 }
+
+export async function loadLegacyInstallationIntegrity(installationId) {
+  if (!installationId) return null;
+  const { data, error } = await supabase.rpc('legacy_installation_integrity_v64', {
+    p_source_installation_id: installationId,
+  });
+  if (error) throw error;
+  return data || null;
+}
+
+export async function downloadLegacySourceFile(sourceFile) {
+  if (!sourceFile?.storage_path) {
+    throw new Error('Este archivo fue inventariado antes de la bóveda binaria V63. Vuelva a seleccionar la instalación completa para preservar su original físico.');
+  }
+
+  const bucket = sourceFile.storage_bucket || 'legacy-source-vault';
+  const { data, error } = await supabase.storage
+    .from(bucket)
+    .download(sourceFile.storage_path);
+
+  if (error) throw error;
+  return {
+    blob:data,
+    filename:sourceFile.filename || 'legacy-source-file',
+    sha256:sourceFile.sha256 || '',
+  };
+}

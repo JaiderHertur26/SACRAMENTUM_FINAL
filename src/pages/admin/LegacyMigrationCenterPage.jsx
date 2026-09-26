@@ -11,7 +11,8 @@ import {
   analyzeLegacyRows, applyLegacyBatch, createLegacyBatch, getLegacyMigrationSummary,
   listLegacyBatches, listLegacySourceInstallations, loadParishesForMigration, loadMigrationTerritory,
   importLegacyInstallationFolder, mapLegacySourceInstallation, materializeLegacyInstallation, parseLegacyJsonFile,
-  registerLegacySourceInstallation, createParishFromLegacyInstallation, sha256File, stageLegacyRows
+  registerLegacySourceInstallation, createParishFromLegacyInstallation, reconcileLegacyInstallationTerritory,
+  sha256File, stageLegacyRows
 } from '@/services/legacyMigrationService';
 import { LEGACY_IMPORT_PROFILES, profileOptions } from '@/config/legacyImportProfiles';
 import { normalizeRole } from '@/lib/authz';
@@ -72,6 +73,9 @@ const LegacyMigrationCenterPage = () => {
   const [territory,setTerritory] = useState({vicaries:[],deaneries:[]});
   const [legacyVicaryId,setLegacyVicaryId] = useState('');
   const [legacyDeaneryId,setLegacyDeaneryId] = useState('');
+  const [verifiedVicaryName,setVerifiedVicaryName] = useState('');
+  const [verifiedDeaneryName,setVerifiedDeaneryName] = useState('');
+  const [createMissingTerritory,setCreateMissingTerritory] = useState(false);
   const [legacyCreateConfirmed,setLegacyCreateConfirmed] = useState(false);
   const [batches,setBatches] = useState([]);
   const [currentBatch,setCurrentBatch] = useState(null);
@@ -155,6 +159,9 @@ const LegacyMigrationCenterPage = () => {
     }
     setLegacyVicaryId('');
     setLegacyDeaneryId('');
+    setVerifiedVicaryName('');
+    setVerifiedDeaneryName('');
+    setCreateMissingTerritory(false);
     setLegacyCreateConfirmed(false);
   },[sourceInstallationId,selectedInstallation?.mapped_parish_id]);
 
@@ -175,9 +182,10 @@ const LegacyMigrationCenterPage = () => {
         parishId:parishId || null,
         dioceseId:role==='admin_general' ? null : userDioceseId,
         onProgress:(p)=>{
-          if(p.phase==='reading') setProgress({message:`Leyendo ${p.file} · ${p.index}/${p.total}`});
+          if(p.phase==='reading') setProgress({message:`Leyendo JSON ${p.file} · ${p.index}/${p.total}`});
+          else if(p.phase==='archiving') setProgress({message:`Bóveda binaria ${p.file} · ${p.index}/${p.total}`});
           else if(p.phase==='manifest') setProgress({message:`Registrando derivado ${p.file} · ${p.index}/${p.total}`});
-          else if(p.phase==='staging') setProgress({message:`Preservando ${p.file} · ${p.staged ?? 0}/${p.rows ?? 0} filas`});
+          else if(p.phase==='staging') setProgress({message:`Normalizando ${p.file} · ${p.staged ?? 0}/${p.rows ?? 0} filas`});
           else if(p.phase==='done') setProgress({message:'Instalación preservada completamente.'});
         }
       });
@@ -186,7 +194,7 @@ const LegacyMigrationCenterPage = () => {
       await Promise.all([refreshInstallations(),refreshBatches()]);
       toast({
         title:'Instalación legacy preservada',
-        description:`${summary.primaryFiles} archivos fuente · ${summary.rows} filas leídas · ${summary.review} en revisión. Nada fue descartado.`,
+        description:`${summary.binaryPreserved}/${summary.files} archivos originales en bóveda · ${summary.rows} filas JSON leídas · ${summary.review} en revisión. Nada fue descartado.`,
         className:'bg-green-50 text-green-900 border-green-200'
       });
     } catch(e) {
@@ -333,6 +341,65 @@ const LegacyMigrationCenterPage = () => {
     }
   };
 
+  const reconcileVerifiedTerritory = async () => {
+    if (
+      role!=='diocese'
+      || !sourceInstallationId
+      || !selectedInstallation
+      || selectedInstallation.mapped_parish_id
+      || !legacyCreateConfirmed
+      || !verifiedVicaryName.trim()
+      || !verifiedDeaneryName.trim()
+    ) return;
+
+    setBusy('reconciling-territory');
+    setError('');
+    try {
+      const result = await reconcileLegacyInstallationTerritory({
+        installationId: sourceInstallationId,
+        vicaryName: verifiedVicaryName.trim(),
+        deaneryName: verifiedDeaneryName.trim(),
+        createMissingTerritory,
+        evidence: {
+          verification_mode: 'diocese_user_confirmed',
+          legacy_parish_name: selectedInstallation.legacy_parish_name || null,
+          legacy_nit: selectedInstallation.metadata?.nronit || null,
+          legacy_address: selectedInstallation.metadata?.direccion || null,
+        },
+      });
+
+      const [freshParishes, refreshedInstallations, freshTerritory] = await Promise.all([
+        loadParishesForMigration(userDioceseId),
+        refreshInstallations(),
+        loadMigrationTerritory(userDioceseId),
+      ]);
+      setParishes(freshParishes || []);
+      setTerritory(freshTerritory || {vicaries:[],deaneries:[]});
+      setParishId(result?.parish_id || '');
+      setMappingParishId('');
+      setLegacyCreateConfirmed(false);
+      setCreateMissingTerritory(false);
+
+      const mapped = refreshedInstallations.find(item=>item.id===sourceInstallationId);
+      if (mapped?.mapped_parish_id) setParishId(mapped.mapped_parish_id);
+
+      if (currentBatch?.id) {
+        setCurrentBatch(await getLegacyMigrationSummary(currentBatch.id));
+      }
+      await refreshBatches();
+
+      toast({
+        title:'Jerarquía legacy reconciliada',
+        description:`${result?.parish_name || 'La parroquia'} quedó vinculada a ${result?.vicary_name || 'la Vicaría'} / ${result?.deanery_name || 'el Decanato'} con trazabilidad completa.`,
+        className:'bg-green-50 text-green-900 border-green-200'
+      });
+    } catch(e) {
+      setError(e.message);
+    } finally {
+      setBusy('');
+    }
+  };
+
   const materializeSelectedInstallation = async () => {
     if (!sourceInstallationId) return;
     if (!selectedInstallation?.mapped_parish_id) {
@@ -445,9 +512,9 @@ const LegacyMigrationCenterPage = () => {
             </div>
             <h2 className="mt-3 text-2xl font-black text-slate-950">Preservar toda una base SACRAMENTA</h2>
             <p className="mt-2 text-sm leading-relaxed text-slate-600">
-              Seleccione la carpeta JSON convertida. SACRAMENTUM detecta MISDATOS, crea la identidad de la instalación antigua,
-              registra cada archivo, conserva cada fila original y deja las tablas sin equivalente moderno en el Archivo Histórico Maestro.
-              Los archivos <b>*_transformado.json</b> se registran como derivados, sin duplicar sus filas.
+              Seleccione la carpeta completa de la instalación SACRAMENTA. SACRAMENTUM conserva físicamente cada archivo original
+              —DBF, FPT, DBC, DCX, FRX, FRT, JSON y cualquier otro— en una bóveda privada con SHA-256 y ruta histórica.
+              Los JSON reconocidos se normalizan además al Archivo Histórico Maestro; los archivos todavía sin traductor permanecen íntegros para futuras extracciones.
             </p>
             <p className="mt-2 text-xs font-bold text-emerald-800">
               Si no se ha verificado una parroquia moderna equivalente, deje la parroquia vacía: la instalación queda preservada sin mezclar datos.
@@ -458,7 +525,6 @@ const LegacyMigrationCenterPage = () => {
             {busy==='bulk'?'Preservando instalación…':'Seleccionar carpeta completa'}
             <input
               type="file"
-              accept="application/json,.json"
               multiple
               webkitdirectory=""
               directory=""
@@ -469,16 +535,18 @@ const LegacyMigrationCenterPage = () => {
           </label>
         </div>
 
-        {bulkSummary&&<div className="mt-5 grid grid-cols-2 gap-3 border-t border-emerald-100 pt-5 md:grid-cols-6">
-          {statCard('Archivos',bulkSummary.files,FileJson,'green')}
-          {statCard('Fuentes',bulkSummary.primaryFiles,Database,'blue')}
-          {statCard('Derivados',bulkSummary.derivedFiles,FileText,'slate')}
+        {bulkSummary&&<div className="mt-5 grid grid-cols-2 gap-3 border-t border-emerald-100 pt-5 md:grid-cols-4 xl:grid-cols-8">
+          {statCard('Archivos totales',bulkSummary.files,Archive,'green')}
+          {statCard('En bóveda',bulkSummary.binaryPreserved,ShieldCheck,'green')}
+          {statCard('Binarios no JSON',bulkSummary.binaryFiles,Database,'blue')}
+          {statCard('JSON',bulkSummary.jsonFiles,FileJson,'blue')}
+          {statCard('Fuentes normalizadas',bulkSummary.primaryFiles,Database,'blue')}
           {statCard('Filas leídas',bulkSummary.rows,Database,'green')}
           {statCard('Revisión',bulkSummary.review,AlertTriangle,'amber')}
           {statCard('Errores',bulkSummary.error,AlertTriangle,bulkSummary.error?'red':'slate')}
         </div>}
         {bulkSummary&&<div className="mt-3 rounded-xl border border-emerald-100 bg-white px-4 py-3 text-xs text-emerald-900">
-          <b>{bulkSummary.sourceName}</b> · instalación {String(bulkSummary.installationId||'').slice(0,8)}… · {bulkSummary.emptyFiles} tablas vacías documentadas · {bulkSummary.batches.length} lotes primarios preservados.
+          <b>{bulkSummary.sourceName}</b> · instalación {String(bulkSummary.installationId||'').slice(0,8)}… · {bulkSummary.emptyFiles} tablas vacías documentadas · {bulkSummary.batches.length} lotes normalizados · {bulkSummary.unreadableJsonFiles||0} JSON ilegibles preservados para revisión.
         </div>}
       </div>
 
@@ -564,6 +632,59 @@ const LegacyMigrationCenterPage = () => {
                   {busy==='creating-legacy-parish'?<Loader2 className="mr-2 h-4 w-4 animate-spin"/>:<Church className="mr-2 h-4 w-4"/>}
                   Crear parroquia y vincular
                 </Button>
+              </div>
+
+              <div className="mt-6 border-t border-blue-100 pt-5">
+                <div className="rounded-2xl border border-indigo-100 bg-indigo-50/60 p-4">
+                  <p className="text-[9px] font-black uppercase tracking-[0.18em] text-indigo-700">Jerarquía verificada aún no cargada</p>
+                  <p className="mt-1 text-xs leading-relaxed text-indigo-900">
+                    Si la Vicaría o el Decanato correctos no aparecen arriba, consigne sus nombres verificados. SACRAMENTUM puede crear la jerarquía faltante, crear o vincular la parroquia y dejar evidencia auditable del proceso.
+                  </p>
+                  <div className="mt-4 grid gap-3 md:grid-cols-2">
+                    <label>
+                      <span className="text-[9px] font-black uppercase tracking-wider text-slate-500">Nombre de la Vicaría verificada</span>
+                      <input
+                        type="text"
+                        value={verifiedVicaryName}
+                        onChange={e=>setVerifiedVicaryName(e.target.value)}
+                        placeholder="Ej. Vicaría Espíritu Santo"
+                        className="mt-2 w-full rounded-xl border border-indigo-100 bg-white px-3 py-2.5 text-sm font-bold"
+                      />
+                    </label>
+                    <label>
+                      <span className="text-[9px] font-black uppercase tracking-wider text-slate-500">Nombre del Decanato verificado</span>
+                      <input
+                        type="text"
+                        value={verifiedDeaneryName}
+                        onChange={e=>setVerifiedDeaneryName(e.target.value)}
+                        placeholder="Ej. Decanato Santa Teresita del Niño Jesús"
+                        className="mt-2 w-full rounded-xl border border-indigo-100 bg-white px-3 py-2.5 text-sm font-bold"
+                      />
+                    </label>
+                  </div>
+                  <label className="mt-4 flex items-start gap-3 rounded-xl border border-indigo-100 bg-white px-4 py-3 text-xs text-slate-700">
+                    <input
+                      type="checkbox"
+                      checked={createMissingTerritory}
+                      onChange={e=>setCreateMissingTerritory(e.target.checked)}
+                      className="mt-0.5 h-4 w-4"
+                    />
+                    <span>
+                      Autorizar la creación de la Vicaría y/o Decanato si todavía no existen en esta diócesis.
+                    </span>
+                  </label>
+                  <div className="mt-4 flex justify-end">
+                    <Button
+                      type="button"
+                      disabled={!legacyCreateConfirmed||!verifiedVicaryName.trim()||!verifiedDeaneryName.trim()||!!busy}
+                      onClick={reconcileVerifiedTerritory}
+                      className="bg-indigo-700 text-white hover:bg-indigo-800"
+                    >
+                      {busy==='reconciling-territory'?<Loader2 className="mr-2 h-4 w-4 animate-spin"/>:<GitMerge className="mr-2 h-4 w-4"/>}
+                      Reconciliar jerarquía y parroquia
+                    </Button>
+                  </div>
+                </div>
               </div>
             </div>}
 

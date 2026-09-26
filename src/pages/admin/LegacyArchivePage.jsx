@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Archive, Database, FileSearch2, History, RefreshCw, Search, ShieldCheck, Table2 } from 'lucide-react';
+import { Archive, Database, Download, FileArchive, FileSearch2, History, RefreshCw, Search, ShieldCheck, Table2 } from 'lucide-react';
 import DashboardLayout from '@/components/DashboardLayout';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
@@ -11,6 +11,8 @@ import {
   listLegacySourceFiles,
   listLegacySourceInstallations,
   compareLegacySourceSnapshots,
+  downloadLegacySourceFile,
+  loadLegacyInstallationIntegrity,
 } from '@/services/legacyArchiveService';
 
 const JsonBlock = ({ value }) => (
@@ -32,6 +34,7 @@ export default function LegacyArchivePage() {
   const [sourceFiles,setSourceFiles] = useState([]);
   const [comparisonInstallationId,setComparisonInstallationId] = useState('');
   const [snapshotComparison,setSnapshotComparison] = useState(null);
+  const [installationIntegrity,setInstallationIntegrity] = useState(null);
   const [comparisonBusy,setComparisonBusy] = useState(false);
   const [profileKey,setProfileKey] = useState('');
   const [search,setSearch] = useState('');
@@ -75,11 +78,15 @@ export default function LegacyArchivePage() {
     if (!installationId || comparisonBusy) return;
     setComparisonBusy(true);
     try {
-      const result = await compareLegacySourceSnapshots(installationId);
+      const [result,integrity] = await Promise.all([
+        compareLegacySourceSnapshots(installationId),
+        loadLegacyInstallationIntegrity(installationId),
+      ]);
       setSnapshotComparison(result);
+      setInstallationIntegrity(integrity);
     } catch (error) {
       toast({
-        title:'No se pudieron comparar los snapshots',
+        title:'No se pudo auditar la instalación',
         description:error?.message,
         variant:'destructive'
       });
@@ -91,6 +98,7 @@ export default function LegacyArchivePage() {
   useEffect(() => {
     if (!comparisonInstallationId || role === 'parish') {
       setSnapshotComparison(null);
+      setInstallationIntegrity(null);
       return;
     }
     loadSnapshotComparison(comparisonInstallationId);
@@ -125,6 +133,34 @@ export default function LegacyArchivePage() {
     const q=search.trim().toLowerCase();
     return records.filter(r=>JSON.stringify(r).toLowerCase().includes(q));
   },[records,search]);
+
+  const vaultFiles = useMemo(() => {
+    const scoped = comparisonInstallationId
+      ? sourceFiles.filter(file => file.source_installation_id === comparisonInstallationId)
+      : sourceFiles;
+    return [...scoped].sort((a,b) => String(a.relative_path || a.filename || '')
+      .localeCompare(String(b.relative_path || b.filename || ''),undefined,{numeric:true}));
+  },[sourceFiles,comparisonInstallationId]);
+
+  const downloadSourceFile = async (sourceFile) => {
+    try {
+      const result = await downloadLegacySourceFile(sourceFile);
+      const url = URL.createObjectURL(result.blob);
+      const anchor = document.createElement('a');
+      anchor.href = url;
+      anchor.download = result.filename;
+      document.body.appendChild(anchor);
+      anchor.click();
+      anchor.remove();
+      setTimeout(() => URL.revokeObjectURL(url),1000);
+    } catch (error) {
+      toast({
+        title:'No se pudo recuperar el archivo fuente',
+        description:error?.message,
+        variant:'destructive',
+      });
+    }
+  };
 
   const visibleReports = useMemo(() => {
     const q=reportSearch.trim().toLowerCase();
@@ -228,6 +264,40 @@ export default function LegacyArchivePage() {
         </div>
 
         {snapshotComparison&&<div className="mt-5 space-y-4">
+          {installationIntegrity&&<div className="rounded-2xl border border-blue-100 bg-gradient-to-br from-blue-50 to-white p-5">
+            <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+              <div>
+                <p className="text-[9px] font-black uppercase tracking-[0.18em] text-[#4B7BA7]">Integridad de la instalación</p>
+                <h3 className="mt-1 text-xl font-black text-slate-950">{installationIntegrity.source_name}</h3>
+                <p className="mt-1 text-xs text-slate-500">
+                  Mide cobertura técnica del archivo fuente, territorio, Archivo Histórico Maestro, lotes canónicos y materialización.
+                </p>
+              </div>
+              <div className="flex items-center gap-4">
+                <div className="text-right">
+                  <p className="text-[9px] font-black uppercase tracking-widest text-slate-400">Preparación</p>
+                  <p className="text-3xl font-black text-[#315F89]">{installationIntegrity.readiness_percent||0}%</p>
+                </div>
+                <div className={"rounded-2xl border px-4 py-3 text-xs font-black uppercase "+(installationIntegrity.ready_for_materialization?"border-emerald-200 bg-emerald-50 text-emerald-800":"border-amber-200 bg-amber-50 text-amber-800")}>
+                  {installationIntegrity.ready_for_materialization?'Lista para materializar':'Requiere atención'}
+                </div>
+              </div>
+            </div>
+            <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-6">
+              <div className="rounded-xl border bg-white p-3"><p className="text-[9px] font-black uppercase text-slate-400">Archivos</p><p className="mt-1 text-xl font-black">{installationIntegrity.files?.inventoried||0}</p></div>
+              <div className="rounded-xl border bg-white p-3"><p className="text-[9px] font-black uppercase text-slate-400">Binarios</p><p className="mt-1 text-xl font-black">{installationIntegrity.files?.binary_preserved||0}/{installationIntegrity.files?.inventoried||0}</p></div>
+              <div className="rounded-xl border bg-white p-3"><p className="text-[9px] font-black uppercase text-slate-400">Archivo maestro</p><p className="mt-1 text-xl font-black">{Number(installationIntegrity.archive?.rows||0).toLocaleString('es-CO')}</p></div>
+              <div className="rounded-xl border bg-white p-3"><p className="text-[9px] font-black uppercase text-slate-400">Perfiles</p><p className="mt-1 text-xl font-black">{installationIntegrity.archive?.profiles||0}</p></div>
+              <div className="rounded-xl border bg-white p-3"><p className="text-[9px] font-black uppercase text-slate-400">Filas materializadas</p><p className="mt-1 text-xl font-black">{Number(installationIntegrity.batches?.target_rows||0).toLocaleString('es-CO')}</p></div>
+              <div className="rounded-xl border bg-white p-3"><p className="text-[9px] font-black uppercase text-slate-400">Revisión / errores</p><p className="mt-1 text-xl font-black">{installationIntegrity.batches?.review||0} / {installationIntegrity.batches?.errors||0}</p></div>
+            </div>
+            {(installationIntegrity.needs_attention||[]).filter(Boolean).length>0&&<div className="mt-4 rounded-xl border border-amber-100 bg-amber-50 px-4 py-3">
+              <p className="text-[9px] font-black uppercase tracking-widest text-amber-700">Pendientes para integridad total</p>
+              <div className="mt-2 flex flex-wrap gap-2">
+                {(installationIntegrity.needs_attention||[]).filter(Boolean).map((item,index)=><span key={index} className="rounded-full border border-amber-200 bg-white px-3 py-1 text-[10px] font-bold text-amber-900">{item}</span>)}
+              </div>
+            </div>}
+          </div>}
           <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
             <div className="rounded-2xl border bg-slate-50 p-4"><p className="text-[9px] font-black uppercase tracking-widest text-slate-400">Filas históricas</p><p className="mt-1 text-2xl font-black">{Number(snapshotComparison.summary?.historical_rows||0).toLocaleString('es-CO')}</p></div>
             <div className="rounded-2xl border bg-slate-50 p-4"><p className="text-[9px] font-black uppercase tracking-widest text-slate-400">Filas copia actual</p><p className="mt-1 text-2xl font-black">{Number(snapshotComparison.summary?.current_rows||0).toLocaleString('es-CO')}</p></div>
@@ -249,6 +319,36 @@ export default function LegacyArchivePage() {
             </table>
           </div>
         </div>}
+      </div>}
+
+      {role!=='parish'&&sourceFiles.length>0&&<div className="rounded-[2rem] border bg-white p-5 shadow-sm">
+        <div className="mb-4 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+          <div>
+            <div className="flex items-center gap-2"><FileArchive className="h-5 w-5 text-[#4B7BA7]"/><h2 className="font-black">Bóveda binaria de archivos fuente</h2></div>
+            <p className="mt-1 max-w-3xl text-xs text-slate-500">
+              Conserva el archivo original exacto de cada instalación. Los archivos anteriores a V63 permanecen inventariados y se completan al volver a seleccionar su carpeta fuente.
+            </p>
+          </div>
+          <div className="rounded-xl border bg-slate-50 px-4 py-2 text-xs font-bold text-slate-600">
+            {vaultFiles.filter(file=>file.storage_path).length}/{vaultFiles.length} con copia binaria
+          </div>
+        </div>
+        <div className="max-h-[460px] overflow-auto rounded-2xl border">
+          <table className="w-full text-xs">
+            <thead className="sticky top-0 bg-slate-50"><tr><th className="p-3 text-left">Archivo fuente</th><th className="p-3 text-left">Perfil</th><th className="p-3 text-right">Tamaño</th><th className="p-3 text-left">Integridad</th><th className="p-3 text-right">Original</th></tr></thead>
+            <tbody>{vaultFiles.map(file=><tr key={file.id} className="border-t">
+              <td className="p-3"><p className="font-mono text-[10px] font-black">{file.relative_path||file.filename}</p><p className="mt-1 text-[9px] text-slate-400">{file.filename}</p></td>
+              <td className="p-3"><span className="rounded-full bg-slate-100 px-2 py-1 text-[9px] font-black uppercase">{file.profile_key||'SIN PERFIL'}</span></td>
+              <td className="p-3 text-right font-mono">{Number(file.source_size||0).toLocaleString('es-CO')} B</td>
+              <td className="p-3"><p className="font-mono text-[9px]">{file.sha256?file.sha256.slice(0,16)+'…':'—'}</p><p className={"mt-1 text-[9px] font-black uppercase "+(file.storage_path?'text-emerald-700':'text-amber-700')}>{file.storage_path?'Binario preservado':'Pendiente de reingesta V63'}</p></td>
+              <td className="p-3 text-right">
+                <Button size="sm" variant="outline" disabled={!file.storage_path} onClick={()=>downloadSourceFile(file)} title={file.storage_path?'Descargar original':'Vuelva a cargar la carpeta para preservar el binario'}>
+                  <Download className="mr-2 h-3.5 w-3.5"/>Original
+                </Button>
+              </td>
+            </tr>)}</tbody>
+          </table>
+        </div>
       </div>}
 
       {reports.length>0&&<div className="rounded-[2rem] border bg-white p-5 shadow-sm">

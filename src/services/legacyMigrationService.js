@@ -10,6 +10,28 @@ const unwrapRpc = (data) => Array.isArray(data) ? data[0] : data;
 
 const arrayBufferToHex = (buffer) => Array.from(new Uint8Array(buffer)).map(b => b.toString(16).padStart(2,'0')).join('');
 
+const LEGACY_SOURCE_VAULT_BUCKET = 'legacy-source-vault';
+
+const sanitizeStorageSegment = (value) => String(value || '')
+  .trim()
+  .replace(/[\\/:*?"<>|#%&{}$!@+=~]/g,'_')
+  .replace(/\s+/g,' ')
+  .slice(0,180) || 'unnamed';
+
+const safeLegacyRelativePath = (file) => {
+  const raw = String(file?.webkitRelativePath || file?.name || 'legacy-file');
+  return raw.split(/[\\/]+/).filter(Boolean).map(sanitizeStorageSegment).join('/');
+};
+
+const inferLegacySourceProfile = (file, detectedProfile = '') => {
+  if (detectedProfile) return detectedProfile;
+  const ext = String(file?.name || '').split('.').pop()?.toUpperCase() || '';
+  if (['DBF','FPT','DBC','DCT','DCX'].includes(ext)) return 'LEGACY_DATABASE_BINARY';
+  if (['FRX','FRT'].includes(ext)) return 'LEGACY_REPORT_BINARY';
+  if (ext === 'JSON') return 'LEGACY_ARCHIVE';
+  return 'LEGACY_SOURCE_BINARY';
+};
+
 export async function sha256File(file) {
   if (!file) return '';
   const digest = await crypto.subtle.digest('SHA-256', await file.arrayBuffer());
@@ -447,6 +469,28 @@ export async function createParishFromLegacyInstallation({
   return data || null;
 }
 
+export async function reconcileLegacyInstallationTerritory({
+  installationId,
+  vicaryName,
+  deaneryName,
+  createMissingTerritory = false,
+  evidence = {},
+} = {}) {
+  if (!installationId) throw new Error('Seleccione una instalación SACRAMENTA.');
+  if (!String(vicaryName || '').trim()) throw new Error('Indique la Vicaría verificada.');
+  if (!String(deaneryName || '').trim()) throw new Error('Indique el Decanato verificado.');
+
+  const { data, error } = await supabase.rpc('reconcile_legacy_installation_territory_v61', {
+    p_source_installation_id: installationId,
+    p_vicary_name: String(vicaryName).trim(),
+    p_deanery_name: String(deaneryName).trim(),
+    p_create_missing_territory: Boolean(createMissingTerritory),
+    p_evidence: evidence || {},
+  });
+  if (error) throw error;
+  return data || null;
+}
+
 export async function getLegacyMigrationSummary(batchId) {
   const { data: batch, error } = await supabase.from('legacy_import_batches').select('*').eq('id',batchId).single();
   if (error) throw error;
@@ -527,6 +571,68 @@ export async function registerLegacySourceFile({
   return data;
 }
 
+export async function preserveLegacySourceBinary({
+  installationId,
+  file,
+  hash = '',
+  profileKey = '',
+  rowCount = 0,
+  status = 'preserved',
+  metadata = {},
+} = {}) {
+  if (!installationId || !file) throw new Error('Instalación y archivo fuente son obligatorios.');
+
+  const digest = hash || await sha256File(file);
+  const detectedProfile = inferLegacySourceProfile(file, profileKey);
+  const sourceFileId = await registerLegacySourceFile({
+    installationId,
+    file,
+    hash: digest,
+    profileKey: detectedProfile,
+    rowCount,
+    status,
+    metadata: {
+      ...metadata,
+      exact_binary_source: true,
+      extension: String(file.name || '').split('.').pop()?.toUpperCase() || '',
+    },
+  });
+
+  const relativePath = safeLegacyRelativePath(file);
+  const storagePath = `${installationId}/${digest}/${relativePath}`;
+  const contentType = file.type || 'application/octet-stream';
+
+  const { error: uploadError } = await supabase.storage
+    .from(LEGACY_SOURCE_VAULT_BUCKET)
+    .upload(storagePath, file, {
+      cacheControl: '31536000',
+      contentType,
+      upsert: false,
+    });
+
+  if (uploadError) {
+    const message = String(uploadError.message || uploadError);
+    if (!/already exists|duplicate|resource already exists/i.test(message)) {
+      throw new Error(`No se pudo preservar ${file.name} en la bóveda: ${message}`);
+    }
+  }
+
+  const { data, error } = await supabase.rpc('attach_legacy_source_blob_v63', {
+    p_source_file_id: sourceFileId,
+    p_storage_path: storagePath,
+    p_content_type: contentType,
+  });
+  if (error) throw error;
+
+  return {
+    sourceFileId,
+    hash: digest,
+    storagePath,
+    profileKey: detectedProfile,
+    attachment: data || null,
+  };
+}
+
 export async function finalizeLegacyBatchPreserved(batchId,{status='preserved'}={}) {
   const {data,error}=await supabase.rpc('finalize_legacy_batch_preserved_v47',{
     p_batch_id:batchId,
@@ -551,23 +657,38 @@ export async function importLegacyInstallationFolder({
   dioceseId = null,
   onProgress = null,
 } = {}) {
-  const jsonFiles = Array.from(files || [])
-    .filter(file => /\.json$/i.test(file.name))
-    .sort((a,b)=>a.name.localeCompare(b.name,undefined,{numeric:true}));
+  const allFiles = Array.from(files || [])
+    .filter(file => file?.name)
+    .sort((a,b)=>String(a.webkitRelativePath || a.name)
+      .localeCompare(String(b.webkitRelativePath || b.name),undefined,{numeric:true}));
 
-  if (!jsonFiles.length) throw new Error('La carpeta no contiene archivos JSON.');
+  if (!allFiles.length) throw new Error('La carpeta seleccionada no contiene archivos.');
 
+  const jsonFiles = allFiles.filter(file => /\.json$/i.test(file.name));
   const parsed = [];
+
   for (let index=0; index<jsonFiles.length; index+=1) {
     const file=jsonFiles[index];
     onProgress?.({phase:'reading',file:file.name,index:index+1,total:jsonFiles.length});
-    const info=await parseLegacyJsonFile(file);
-    parsed.push({file,...info});
+    try {
+      const info=await parseLegacyJsonFile(file);
+      parsed.push({file,...info,parseError:null});
+    } catch (error) {
+      parsed.push({
+        file,
+        parsed:null,
+        rows:[],
+        profileKey:'LEGACY_ARCHIVE',
+        parseError:error?.message || String(error),
+      });
+    }
   }
 
-  const identityEntry = parsed.find(item => item.profileKey === 'MISDATOS' && item.rows?.length);
-  const folderName = String(jsonFiles[0]?.webkitRelativePath || '').split('/')[0]
-    || String(jsonFiles[0]?.name || 'Instalación SACRAMENTA');
+  const identityEntry = parsed.find(item => (
+    !item.parseError && item.profileKey === 'MISDATOS' && item.rows?.length
+  ));
+  const folderName = String(allFiles[0]?.webkitRelativePath || '').split('/')[0]
+    || String(allFiles[0]?.name || 'Instalación SACRAMENTA');
   const identity = identityEntry?.rows?.[0] || {
     nombre: folderName,
     diocesis: '',
@@ -584,10 +705,14 @@ export async function importLegacyInstallationFolder({
   const summary={
     installationId,
     sourceName:identity?.nombre || folderName,
-    files:0,
+    files:allFiles.length,
+    jsonFiles:jsonFiles.length,
+    binaryFiles:allFiles.length-jsonFiles.length,
+    binaryPreserved:0,
     primaryFiles:0,
     derivedFiles:0,
     emptyFiles:0,
+    unreadableJsonFiles:0,
     rows:0,
     valid:0,
     review:0,
@@ -595,12 +720,57 @@ export async function importLegacyInstallationFolder({
     batches:[],
   };
 
+  const parsedByPath=new Map(parsed.map(item=>[
+    String(item.file.webkitRelativePath || item.file.name),
+    item,
+  ]));
+  const hashByPath=new Map();
+
+  // Fase 1: preservar físicamente todos los archivos originales.
+  for (let index=0; index<allFiles.length; index+=1) {
+    const file=allFiles[index];
+    const key=String(file.webkitRelativePath || file.name);
+    const parsedItem=parsedByPath.get(key) || null;
+    const hash=await sha256File(file);
+    hashByPath.set(key,hash);
+
+    onProgress?.({
+      phase:'archiving',
+      file:file.name,
+      index:index+1,
+      total:allFiles.length,
+    });
+
+    await preserveLegacySourceBinary({
+      installationId,
+      file,
+      hash,
+      profileKey:inferLegacySourceProfile(file,parsedItem?.profileKey || ''),
+      rowCount:parsedItem?.rows?.length || 0,
+      status:parsedItem?.parseError ? 'review' : (file.size ? 'preserved' : 'empty'),
+      metadata:{
+        full_installation_archive:true,
+        parse_error:parsedItem?.parseError || null,
+      },
+    });
+    summary.binaryPreserved+=1;
+  }
+
+  // Fase 2: normalizar únicamente los JSON que puedan leerse.
   for (let index=0; index<parsed.length; index+=1) {
     const item=parsed[index];
     const {file,rows}=item;
+    const key=String(file.webkitRelativePath || file.name);
+    const hash=hashByPath.get(key) || await sha256File(file);
+
+    if (item.parseError) {
+      summary.unreadableJsonFiles+=1;
+      summary.review+=1;
+      continue;
+    }
+
     const isDerived=/_transformado(?:\s*\(\d+\))?\.json$/i.test(file.name);
-    const hash=await sha256File(file);
-    const effectiveProfile=item.profileKey || (rows.length ? 'LEGACY_ARCHIVE' : 'LEGACY_ARCHIVE');
+    const effectiveProfile=item.profileKey || 'LEGACY_ARCHIVE';
 
     onProgress?.({
       phase:isDerived?'manifest':'staging',
@@ -610,7 +780,6 @@ export async function importLegacyInstallationFolder({
       rows:rows.length,
     });
 
-    summary.files+=1;
     summary.rows+=rows.length;
 
     if (isDerived) {
@@ -624,7 +793,8 @@ export async function importLegacyInstallationFolder({
         status:rows.length?'preserved':'empty',
         metadata:{
           derived_copy:true,
-          preservation_note:'Archivo transformado derivado; se conserva en el manifiesto pero no se duplica en la bóveda fila a fila.',
+          binary_preserved:true,
+          preservation_note:'Derivado transformado preservado como binario; no duplica filas en la bóveda lógica.',
         },
       });
       continue;
@@ -652,6 +822,7 @@ export async function importLegacyInstallationFolder({
         relative_path:file.webkitRelativePath || file.name,
         bulk_installation_import:true,
         preservation_first:true,
+        binary_vault:true,
         target_entity:profile?.targetEntity || 'legacy_archive',
         source_file_size:file.size || 0,
         source_last_modified:file.lastModified || 0,
@@ -670,7 +841,6 @@ export async function importLegacyInstallationFolder({
         });
       },hash);
     } else {
-      // Aun las tablas vacías quedan documentadas en el manifiesto.
       await supabase.rpc('archive_legacy_batch_snapshot_v43',{p_batch_id:batchId});
     }
 
@@ -683,6 +853,7 @@ export async function importLegacyInstallationFolder({
       rowCount:rows.length,
       status:rows.length ? 'preserved' : 'empty',
       metadata:{
+        binary_preserved:true,
         target_entity:profile?.targetEntity || 'legacy_archive',
         requires_parish:profile?.requiresParish !== false,
       },
