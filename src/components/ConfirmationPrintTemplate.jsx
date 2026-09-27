@@ -73,6 +73,7 @@ const ConfirmationPrintTemplate = forwardRef(({ data, parroquiaInfo, incluirNota
   const padre = clean(raw.nombrePadre || raw.fatherName || data.nombre_padre);
   const madre = clean(raw.nombreMadre || raw.motherName || data.nombre_madre);
   const padrinos = clean(raw.padrinos || raw.godparents || data.padrinos);
+  const responsable = clean(raw.responsable || data.responsable || raw.responsa);
 
   const lugarBautismo = clean(raw.lugarBautismo || raw.baptismPlace || data.lugar_bautismo);
   const libroBautismo = padRef(raw.libroBautismo || raw.baptismBook);
@@ -199,7 +200,8 @@ const ConfirmationPrintTemplate = forwardRef(({ data, parroquiaInfo, incluirNota
           <DataCard>
             <DetailRow label="Padre" value={padre} />
             <DetailRow label="Madre" value={madre} />
-            <DetailRow label="Padrino / Madrina" value={padrinos} last />
+            <DetailRow label="Padrino / Madrina" value={padrinos} last={!responsable} />
+            {responsable && <DetailRow label="Responsable / acudiente" value={responsable} last />}
           </DataCard>
         </div>
       </div>

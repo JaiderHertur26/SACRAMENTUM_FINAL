@@ -104,6 +104,7 @@ const InfoBox = ({ data, marginalNotes = [] }) => {
                     <DetailItem icon={Droplet} label="Lugar Bautismo Origen" value={data.lugarBautismo || data.baptismPlace} />
                     <DetailItem icon={BookOpen} label="Archivo Bautismo" value={baptismArchiveReference} />
                     <DetailItem icon={Users} label="Padrinos" value={data.padrinos || data.godparents} />
+                    {data.responsable && <DetailItem icon={User} label="Responsable / acudiente" value={data.responsable} />}
                     <DetailItem icon={PenTool} label="Ministro Celebrante" value={resolvedMinister} />
                 </div>
 

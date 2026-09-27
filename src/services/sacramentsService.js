@@ -557,6 +557,7 @@ export const purificarRegistroConfirmacion = (raw) => {
         edad: payload.edad || legacy.age_text || '',
         nuip: raw.nuip || payload.nuip || '',
         direccion: String(raw.direccion || payload.direccion || '').trim().toUpperCase(),
+        responsable: String(raw.responsable || payload.responsable || payload.responsa || legacy.responsible || '').trim().toUpperCase(),
         nombrePadre: String(raw.nombre_padre || payload.nombrePadre || legacy.father_name || '').trim().toUpperCase(),
         cedulaPadre: raw.cedula_padre || payload.cedulaPadre || '',
         nombreMadre: String(raw.nombre_madre || payload.nombreMadre || legacy.mother_name || '').trim().toUpperCase(),
