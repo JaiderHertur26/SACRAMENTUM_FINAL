@@ -461,6 +461,16 @@ export async function materializeLegacyInstallation({
     }
   }
 
+  if (installation.mapped_parish_id) {
+    onProgress?.({ phase:'materializing-supporting-data', parishId:installation.mapped_parish_id });
+    const { data: supportingData, error: supportingDataError } = await supabase.rpc(
+      'materialize_legacy_supporting_data_v75',
+      { p_parish_id: installation.mapped_parish_id }
+    );
+    if (supportingDataError) throw supportingDataError;
+    summary.supportingData = supportingData || null;
+  }
+
   onProgress?.({ phase: 'materialized', ...summary });
   return summary;
 }

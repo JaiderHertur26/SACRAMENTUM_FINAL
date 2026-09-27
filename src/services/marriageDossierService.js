@@ -12,12 +12,25 @@ export async function listMarriageDossiers(parishId) {
   return data || [];
 }
 
+export async function listLegacyMarriageChildren(parishId) {
+  if (!parishId) return [];
+  const { data, error } = await supabase
+    .from('legacy_marriage_children')
+    .select('id,legacy_entry_number,marriage_id,marriage_dossier_id,child_name,birth_date,baptism_place,metadata')
+    .eq('parish_id', parishId)
+    .order('legacy_entry_number')
+    .order('birth_date');
+  if (error) throw error;
+  return data || [];
+}
+
 export async function loadMarriageDossierSources(parishId) {
-  const [dossiers,pending] = await Promise.all([
+  const [dossiers,pending,legacyChildren] = await Promise.all([
     listMarriageDossiers(parishId),
     listPendingMarriagesCloud(parishId),
+    listLegacyMarriageChildren(parishId),
   ]);
-  return { dossiers, pending };
+  return { dossiers, pending, legacyChildren };
 }
 
 export async function saveMarriageDossier({

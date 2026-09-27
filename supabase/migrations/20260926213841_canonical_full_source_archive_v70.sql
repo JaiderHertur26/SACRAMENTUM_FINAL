@@ -1,0 +1,4 @@
+﻿-- Historical compatibility marker.
+-- Production first created the physical-artifact table in an exploratory V70 pass.
+-- The complete, idempotent canonical archive schema is applied in 20260926214838.
+-- This marker preserves the exact remote migration version without duplicating partial SQL.

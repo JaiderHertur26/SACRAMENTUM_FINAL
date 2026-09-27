@@ -94,16 +94,27 @@ async function loadDecrees({ parishId, sacrament }) {
     raw: row.payload || {},
   }));
 }
-async function loadPrints({ parishId }) {
-  const { data, error } = await supabase
-    .from('registry_audit_log')
-    .select('id,entity_type,entity_id,action,metadata,after_data,created_at')
-    .eq('parish_id', parishId)
-    .eq('action', 'print_requested')
-    .order('created_at', { ascending: false })
-    .limit(1000);
-  if (error) throw error;
-  return (data || []).map((row) => ({
+async function loadPrints({ parishId, sacrament }) {
+  const [modernResult, legacyResult] = await Promise.all([
+    supabase
+      .from('registry_audit_log')
+      .select('id,entity_type,entity_id,action,metadata,after_data,created_at')
+      .eq('parish_id', parishId)
+      .eq('action', 'print_requested')
+      .order('created_at', { ascending: false })
+      .limit(1000),
+    supabase
+      .from('legacy_print_events')
+      .select('id,sacrament_type,sacrament_id,book_number,folio,number,printed_on,legacy_user,metadata')
+      .eq('parish_id', parishId)
+      .eq('sacrament_type', sacrament)
+      .order('printed_on', { ascending: false })
+      .limit(5000),
+  ]);
+  if (modernResult.error) throw modernResult.error;
+  if (legacyResult.error) throw legacyResult.error;
+
+  const modern = (modernResult.data || []).map((row) => ({
     id: row.id,
     source: 'print',
     names: clean(row.after_data?.display_name || row.metadata?.display_name || row.entity_type) || 'Partida',
@@ -115,6 +126,21 @@ async function loadPrints({ parishId }) {
     status: 'impresa',
     raw: { ...row.after_data, ...row.metadata, entity_id: row.entity_id },
   }));
+
+  const legacy = (legacyResult.data || []).map((row) => ({
+    id: `legacy-print-${row.id}`,
+    source: 'legacy_print',
+    names: 'Partida impresa · archivo SACRAMENTA',
+    date: row.printed_on || '',
+    book: clean(row.book_number),
+    folio: clean(row.folio),
+    number: clean(row.number),
+    registryNumber: '',
+    status: 'impresa · legacy',
+    raw: { ...row.metadata, entity_id: row.sacrament_id, legacy_user: row.legacy_user, preserved: true },
+  }));
+
+  return [...modern, ...legacy];
 }
 
 export async function loadParishOperationalReport({
@@ -124,7 +150,7 @@ export async function loadParishOperationalReport({
   if (!SACRAMENT_CONFIG[sacrament]) throw new Error('Sacramento no soportado.');
   let rows = [];
   if (reportType === 'prints') {
-    rows = await loadPrints({ parishId });
+    rows = await loadPrints({ parishId, sacrament });
   } else if (reportType === 'decree') {
     rows = await loadDecrees({ parishId, sacrament });
   } else if (reportType === 'completed' || reportType === 'index') {

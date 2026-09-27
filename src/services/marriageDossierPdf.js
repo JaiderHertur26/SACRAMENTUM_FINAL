@@ -115,7 +115,7 @@ const drawInterview=(doc,title,data,startY=48,headerOptions={})=>{
   }
 };
 
-export function buildMarriageDossierPdf({dossier,answers,pendingMarriage,parishName,dioceseName}={}){
+export function buildMarriageDossierPdf({dossier,answers,pendingMarriage,legacyChildren=[],parishName,dioceseName}={}){
   const doc=new jsPDF({unit:'mm',format:'a4',orientation:'portrait',compress:true});
   const meta=dossier||{}; const data=answers||{};  header(doc,{dioceseName,parishName,dossierNumber:meta.dossierNumber,pageTitle:'Hoja I · Identificación y entrevista del novio'});
   let y=48;
@@ -154,6 +154,23 @@ export function buildMarriageDossierPdf({dossier,answers,pendingMarriage,parishN
     doc.addPage();
     header(doc,{dioceseName,parishName,dossierNumber:meta.dossierNumber,pageTitle:'Hoja III · Documentación · continuación'});
     y=48;
+  }
+  if((legacyChildren||[]).length){
+    y=section(doc,'Hijos recuperados del expediente legacy',y);
+    for(const child of legacyChildren){
+      if(y>258){
+        doc.addPage();
+        header(doc,{dioceseName,parishName,dossierNumber:meta.dossierNumber,pageTitle:'Hoja III · Hijos y documentación · continuación'});
+        y=section(doc,'Hijos recuperados del expediente legacy · continuación',48);
+      }
+      field(doc,'Nombre',child.child_name,18,y,72);
+      field(doc,'Nacimiento',child.birth_date,96,y,34);
+      field(doc,'Lugar de Bautismo',child.baptism_place,136,y,50);
+      y+=10;
+    }
+    doc.setFont('helvetica','italic'); doc.setFontSize(6.2); doc.setTextColor(...SLATE);
+    doc.text('Información preservada desde DATOSHIJOS del sistema SACRAMENTA.',18,y);
+    y+=7;
   }
   y=section(doc,'Documentación verificada',y);
   const docs=data.documents||{};

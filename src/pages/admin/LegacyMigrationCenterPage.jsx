@@ -17,7 +17,13 @@ import {
 } from '@/services/legacyMigrationService';
 import { LEGACY_IMPORT_PROFILES, profileOptions } from '@/config/legacyImportProfiles';
 import { normalizeRole } from '@/lib/authz';
-import { listLegacyReportDefinitions, listLegacySourceOrigins } from '@/services/legacyArchiveService';
+import {
+  listLegacyReportDefinitions,
+  listLegacySourceOrigins,
+  loadLegacyPhysicalArchiveSummary,
+  listLegacyPhysicalArtifacts,
+  loadLegacySupportingDataSummary,
+} from '@/services/legacyArchiveService';
 import { labelMigrationStatus } from '@/utils/uiLabels';
 
 
@@ -93,6 +99,10 @@ const LegacyMigrationCenterPage = () => {
   const [originVicaryId,setOriginVicaryId] = useState('');
   const [originDeaneryId,setOriginDeaneryId] = useState('');
   const [originResolutionConfirmed,setOriginResolutionConfirmed] = useState(false);
+  const [physicalArchiveSummary,setPhysicalArchiveSummary] = useState(null);
+  const [physicalArtifacts,setPhysicalArtifacts] = useState([]);
+  const [physicalArchiveLoading,setPhysicalArchiveLoading] = useState(false);
+  const [supportingDataSummary,setSupportingDataSummary] = useState(null);
 
   const importProfile = profileKey ? LEGACY_IMPORT_PROFILES[profileKey] : null;
   const isHistoricalBallot = ['INSBAUTI','INSCONFI'].includes(profileKey);
@@ -182,6 +192,27 @@ const LegacyMigrationCenterPage = () => {
     return rows || [];
   };
 
+  const refreshPhysicalArchive = async (installationId = sourceInstallationId) => {
+    if (!installationId) {
+      setPhysicalArchiveSummary(null);
+      setPhysicalArtifacts([]);
+      return null;
+    }
+
+    setPhysicalArchiveLoading(true);
+    try {
+      const [summary, artifacts] = await Promise.all([
+        loadLegacyPhysicalArchiveSummary(installationId),
+        listLegacyPhysicalArtifacts({ installationId, limit: 250 }),
+      ]);
+      setPhysicalArchiveSummary(summary || null);
+      setPhysicalArtifacts(artifacts || []);
+      return summary || null;
+    } finally {
+      setPhysicalArchiveLoading(false);
+    }
+  };
+
   useEffect(()=>{
     Promise.all([
       loadParishesForMigration(role==='admin_general' ? null : userDioceseId),
@@ -219,6 +250,24 @@ const LegacyMigrationCenterPage = () => {
     setCreateMissingTerritory(false);
     setLegacyCreateConfirmed(false);
   },[sourceInstallationId,selectedInstallation?.mapped_parish_id]);
+
+  useEffect(()=>{
+    refreshPhysicalArchive(sourceInstallationId).catch((e)=>{
+      console.error(e);
+      setPhysicalArchiveSummary(null);
+      setPhysicalArtifacts([]);
+    });
+  },[sourceInstallationId]);
+
+  useEffect(()=>{
+    const targetParishId = selectedInstallation?.mapped_parish_id || parishId || null;
+    loadLegacySupportingDataSummary(targetParishId)
+      .then(setSupportingDataSummary)
+      .catch((e)=>{
+        console.error(e);
+        setSupportingDataSummary(null);
+      });
+  },[selectedInstallation?.mapped_parish_id,parishId,sourceInstallationId]);
 
   useEffect(()=>{
     if (legacyDeaneryId && !legacyDeaneries.some(item=>item.id===legacyDeaneryId)) {
@@ -780,6 +829,104 @@ const LegacyMigrationCenterPage = () => {
             </label>
           </div>
         )}
+      </section>}
+
+      {sourceInstallationId&&<section className="rounded-[2rem] border border-cyan-100 bg-gradient-to-br from-cyan-50 via-white to-slate-50 p-6 shadow-sm">
+        <div className="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
+          <div className="max-w-3xl">
+            <div className="inline-flex items-center gap-2 rounded-full bg-slate-950 px-3 py-1 text-[9px] font-black uppercase tracking-[0.2em] text-white">
+              <Database className="h-3.5 w-3.5"/> Archivo físico canónico V70/V71
+            </div>
+            <h2 className="mt-3 text-2xl font-black text-slate-950">Fuente física completa de SACRAMENTA</h2>
+            <p className="mt-2 text-sm leading-relaxed text-slate-600">
+              Esta capa conserva cada DBF/FPT con su ruta histórica, SHA-256, esquema y todas sus filas físicas —incluidos registros marcados como eliminados—.
+              Los archivos duplicados se conservan como evidencia física, pero una misma fila no se duplica como hecho lógico.
+            </p>
+          </div>
+          <Button
+            type="button"
+            variant="outline"
+            disabled={physicalArchiveLoading}
+            onClick={()=>refreshPhysicalArchive(sourceInstallationId)}
+            className="rounded-xl"
+          >
+            {physicalArchiveLoading?<Loader2 className="mr-2 h-4 w-4 animate-spin"/>:<RefreshCw className="mr-2 h-4 w-4"/>}
+            Verificar archivo físico
+          </Button>
+        </div>
+
+        {physicalArchiveSummary&&<div className="mt-5 grid grid-cols-2 gap-3 md:grid-cols-4 xl:grid-cols-8">
+          {statCard('DBF físicos',physicalArchiveSummary.artifacts||0,Database,'blue')}
+          {statCard('Hashes únicos',physicalArchiveSummary.unique_dbf_hashes||0,ShieldCheck,'green')}
+          {statCard('Con FPT',physicalArchiveSummary.artifacts_with_memo||0,FileText,'blue')}
+          {statCard('DBF válidos',physicalArchiveSummary.parsed_artifacts||0,CheckCircle2,'green')}
+          {statCard('Binario no DBF',physicalArchiveSummary.binary_unparsed_artifacts||0,AlertTriangle,(physicalArchiveSummary.binary_unparsed_artifacts||0)?'amber':'slate')}
+          {statCard('Filas físicas',physicalArchiveSummary.physical_rows||0,Database,'green')}
+          {statCard('Eliminadas legacy',physicalArchiveSummary.deleted_rows||0,History,(physicalArchiveSummary.deleted_rows||0)?'amber':'slate')}
+          {statCard('Filas enlazadas',physicalArchiveSummary.linked_rows||0,GitMerge,'green')}
+        </div>}
+
+        {physicalArtifacts.length>0&&<div className="mt-5 max-h-[420px] overflow-auto rounded-2xl border border-cyan-100 bg-white">
+          <table className="w-full text-xs">
+            <thead className="sticky top-0 z-10 bg-slate-50">
+              <tr>
+                <th className="p-3 text-left">Archivo físico</th>
+                <th className="p-3 text-left">Perfil</th>
+                <th className="p-3 text-right">Filas</th>
+                <th className="p-3 text-right">Eliminadas</th>
+                <th className="p-3 text-left">Validación</th>
+                <th className="p-3 text-left">SHA-256</th>
+              </tr>
+            </thead>
+            <tbody>
+              {physicalArtifacts.map(item=><tr key={item.id} className="border-t align-top">
+                <td className="p-3">
+                  <p className="font-black text-slate-800">{item.filename}</p>
+                  <p className="mt-1 max-w-md break-all font-mono text-[9px] text-slate-400">{item.relative_path}</p>
+                </td>
+                <td className="p-3 font-bold text-slate-600">{item.profile_key||'—'}</td>
+                <td className="p-3 text-right font-mono">{item.row_count||0}</td>
+                <td className="p-3 text-right font-mono">{item.deleted_rows||0}</td>
+                <td className="p-3">
+                  {item.parse_status==='binary_unparsed'
+                    ? <div><span className="rounded-full bg-amber-100 px-2 py-1 text-[9px] font-black uppercase text-amber-800">Binario preservado</span><p className="mt-2 max-w-xs text-[9px] text-slate-500">{item.parse_reason||'No cumple estructura DBF'}</p></div>
+                    : <span className="rounded-full bg-emerald-100 px-2 py-1 text-[9px] font-black uppercase text-emerald-800">DBF validado</span>}
+                </td>
+                <td className="p-3 font-mono text-[9px] text-slate-400">{String(item.source_sha256||'').slice(0,16)}…</td>
+              </tr>)}
+            </tbody>
+          </table>
+        </div>}
+      </section>}
+
+      {supportingDataSummary&&<section className="rounded-[2rem] border border-amber-100 bg-gradient-to-br from-amber-50/70 to-white p-6 shadow-sm">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+          <div>
+            <div className="inline-flex items-center gap-2 rounded-full bg-amber-900 px-3 py-1 text-[9px] font-black uppercase tracking-[0.2em] text-white">
+              <History className="h-3.5 w-3.5"/> Datos operativos recuperados
+            </div>
+            <h2 className="mt-3 text-2xl font-black text-slate-950">Información legacy ya convertida en funciones modernas</h2>
+            <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-600">
+              SACRAMENTUM no sólo conserva estas tablas: materializa el historial de impresiones, los hijos ligados a expedientes matrimoniales y los parámetros históricos sin sobrescribir la configuración moderna.
+            </p>
+          </div>
+          <ShieldCheck className="h-9 w-9 shrink-0 text-amber-700"/>
+        </div>
+        <div className="mt-5 grid gap-3 md:grid-cols-3">
+          {statCard('Impresiones históricas',supportingDataSummary.printEvents||0,FileText,'amber')}
+          {statCard('Hijos de expedientes',supportingDataSummary.marriageChildren||0,GitMerge,'blue')}
+          {statCard('Snapshots de parámetros',supportingDataSummary.parameterSnapshots||0,History,'slate')}
+        </div>
+        {(supportingDataSummary.recentParameters||[]).length>0&&<div className="mt-5 rounded-2xl border border-amber-100 bg-white p-4">
+          <p className="text-[9px] font-black uppercase tracking-widest text-amber-700">Configuración histórica preservada</p>
+          <div className="mt-3 grid gap-2 md:grid-cols-2 xl:grid-cols-5">
+            {supportingDataSummary.recentParameters.slice(0,5).map(item=><div key={item.id} className="rounded-xl border bg-slate-50 p-3">
+              <p className="text-[9px] font-black uppercase text-slate-400">Clave legacy {item.legacy_key??'—'}</p>
+              <p className="mt-1 text-xs font-bold text-slate-700">Libro {item.settings?.libro??'—'} · Folio {item.settings?.folio??'—'} · N.º {item.settings?.numero??'—'}</p>
+              <p className="mt-1 text-[9px] text-slate-500">Partidas/folio: {item.settings?.parxfol??'—'} · Vista previa: {item.settings?.verpreview===true?'Sí':item.settings?.verpreview===false?'No':'—'}</p>
+            </div>)}
+          </div>
+        </div>}
       </section>}
 
       <div className="rounded-[2rem] border border-emerald-100 bg-gradient-to-br from-emerald-50 to-white p-6 shadow-sm">

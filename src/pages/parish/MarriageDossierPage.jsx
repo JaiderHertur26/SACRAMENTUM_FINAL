@@ -121,7 +121,7 @@ export default function MarriageDossierPage(){
   const { user }=useAuth();
   const { toast }=useToast();
   const parishId=user?.parishId||user?.parish_id;
-  const [sources,setSources]=useState({dossiers:[],pending:[]});
+  const [sources,setSources]=useState({dossiers:[],pending:[],legacyChildren:[]});
   const [selectedId,setSelectedId]=useState('');
   const [pendingId,setPendingId]=useState('');
   const [tab,setTab]=useState('general');
@@ -162,6 +162,19 @@ export default function MarriageDossierPage(){
   },[selectedId]);
 
   const pendingMarriage=useMemo(()=>sources.pending.find(p=>p.id===pendingId)||null,[sources.pending,pendingId]);
+  const linkedLegacyChildren=useMemo(()=>{
+    const marriageId=selected?.marriage_id||null;
+    const legacyNumber=String(
+      selected?.legacy_source?.numinsc
+      || selected?.legacy_source?.numero
+      || selected?.dossier_number
+      || ''
+    ).replace(/^0+/,'');
+    return (sources.legacyChildren||[]).filter(child=>(
+      (marriageId && child.marriage_id===marriageId)
+      || (legacyNumber && String(child.legacy_entry_number||'').replace(/^0+/,'')===legacyNumber)
+    ));
+  },[sources.legacyChildren,selected]);
 
   const readiness = useMemo(() => {
     const missing = [];
@@ -227,6 +240,7 @@ export default function MarriageDossierPage(){
     dossier:meta,
     answers,
     pendingMarriage,
+    legacyChildren:linkedLegacyChildren,
     parishName:user?.parishName,
     dioceseName:user?.dioceseName,
   });
@@ -266,6 +280,11 @@ export default function MarriageDossierPage(){
             {sources.dossiers.map(d=><button key={d.id} onClick={()=>setSelectedId(d.id)} className={"w-full rounded-2xl border p-4 text-left "+(selectedId===d.id?'border-blue-300 bg-blue-50':'border-slate-100 hover:bg-slate-50')}><div className="flex justify-between gap-2"><span className="text-xs font-black">{d.dossier_number||'SIN NÚMERO'}</span>{d.is_legacy&&<span className="rounded-full bg-amber-100 px-2 py-0.5 text-[8px] font-black text-amber-800">LEGACY</span>}</div><p className="mt-1 text-[10px] text-slate-500">{d.planned_marriage_date||d.dossier_date||'Sin fecha'} · {d.status}</p></button>)}
             {!sources.dossiers.length&&<p className="p-5 text-center text-xs text-slate-400">Aún no hay expedientes.</p>}
           </div>
+          {(sources.legacyChildren||[]).length>0&&<div className="mt-4 rounded-2xl border border-amber-100 bg-amber-50 p-4">
+            <p className="text-[9px] font-black uppercase tracking-widest text-amber-700">Datos matrimoniales recuperados</p>
+            <p className="mt-1 text-2xl font-black text-amber-950">{sources.legacyChildren.length}</p>
+            <p className="mt-1 text-[10px] leading-relaxed text-amber-800">Hijos preservados desde DATOSHIJOS y enlazados con matrimonios históricos cuando existe coincidencia.</p>
+          </div>}
         </aside>
 
         <section className="rounded-[2rem] border bg-white p-6 shadow-sm">
@@ -281,6 +300,16 @@ export default function MarriageDossierPage(){
               <label className="block"><span className="text-[10px] font-black uppercase text-slate-500">Estado</span><select value={meta.status} onChange={e=>setMeta(p=>({...p,status:e.target.value}))} className="mt-2 w-full rounded-xl border px-3 py-2.5 font-bold"><option value="draft">Borrador</option><option value="ready">Completo / listo</option><option value="historical">Histórico</option><option value="archived">Archivado</option></select></label>
             </div>
             {pendingMarriage&&<div className="rounded-2xl border border-blue-100 bg-blue-50/50 p-5"><p className="text-[9px] font-black uppercase tracking-widest text-[#4B7BA7]">Vinculado al registro por celebrar</p><p className="mt-1 font-black text-slate-900">{[pendingMarriage.novioNombres,pendingMarriage.novioApellidos].filter(Boolean).join(' ')} + {[pendingMarriage.noviaNombres,pendingMarriage.noviaApellidos].filter(Boolean).join(' ')}</p><p className="mt-1 text-xs text-slate-500">La partida final quedará vinculada automáticamente al expediente cuando el matrimonio sea sentado.</p></div>}
+            {linkedLegacyChildren.length>0&&<div className="rounded-2xl border border-amber-100 bg-amber-50/50 p-5">
+              <p className="text-[9px] font-black uppercase tracking-widest text-amber-700">Hijos recuperados del expediente antiguo</p>
+              <div className="mt-3 grid gap-2 md:grid-cols-2">
+                {linkedLegacyChildren.map(child=><div key={child.id} className="rounded-xl border border-amber-100 bg-white px-4 py-3">
+                  <p className="font-black text-slate-900">{child.child_name||'SIN NOMBRE'}</p>
+                  <p className="mt-1 text-[10px] text-slate-500">{child.birth_date||'Fecha no consta'} · Bautismo: {child.baptism_place||'No consta'}</p>
+                </div>)}
+              </div>
+              <p className="mt-3 text-[10px] font-bold text-amber-800">Información preservada desde DATOSHIJOS y vinculada por el número de inscripción matrimonial legacy.</p>
+            </div>}
             <div className={"rounded-2xl border p-5 "+(readiness.complete?'border-emerald-100 bg-emerald-50':'border-amber-100 bg-amber-50')}>
               <div className="flex items-start gap-3">
                 <ShieldCheck className={"mt-0.5 h-5 w-5 "+(readiness.complete?'text-emerald-700':'text-amber-700')}/>

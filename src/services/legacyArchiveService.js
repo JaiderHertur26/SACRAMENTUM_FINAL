@@ -109,6 +109,35 @@ export async function loadLegacyInstallationIntegrity(installationId) {
   return data || null;
 }
 
+export async function loadLegacyPhysicalArchiveSummary(installationId) {
+  if (!installationId) return null;
+  const { data, error } = await supabase.rpc('legacy_physical_archive_summary_v70', {
+    p_source_installation_id: installationId,
+  });
+  if (error) throw error;
+  return data || null;
+}
+
+export async function listLegacyPhysicalArtifacts({
+  installationId,
+  originId = null,
+  limit = 250,
+} = {}) {
+  if (!installationId) return [];
+  let q = supabase
+    .from('legacy_physical_source_artifacts')
+    .select('*')
+    .eq('source_installation_id', installationId)
+    .order('relative_path')
+    .limit(limit);
+
+  if (originId) q = q.eq('source_origin_id', originId);
+
+  const { data, error } = await q;
+  if (error) throw error;
+  return data || [];
+}
+
 export async function downloadLegacySourceFile(sourceFile) {
   if (!sourceFile?.storage_path) {
     throw new Error('Este archivo fue inventariado antes de la bóveda binaria V63. Vuelva a seleccionar la instalación completa para preservar su original físico.');
@@ -124,5 +153,34 @@ export async function downloadLegacySourceFile(sourceFile) {
     blob:data,
     filename:sourceFile.filename || 'legacy-source-file',
     sha256:sourceFile.sha256 || '',
+  };
+}
+
+
+export async function loadLegacySupportingDataSummary(parishId = null) {
+  const applyScope = (query) => (parishId ? query.eq('parish_id', parishId) : query);
+  const [prints, children, parameters] = await Promise.all([
+    applyScope(supabase.from('legacy_print_events').select('id', { count:'exact', head:true })),
+    applyScope(supabase.from('legacy_marriage_children').select('id', { count:'exact', head:true })),
+    applyScope(supabase.from('legacy_parameter_snapshots').select('id', { count:'exact', head:true })),
+  ]);
+  if (prints.error) throw prints.error;
+  if (children.error) throw children.error;
+  if (parameters.error) throw parameters.error;
+
+  const { data: recentParameters, error: parameterError } = await applyScope(
+    supabase
+      .from('legacy_parameter_snapshots')
+      .select('id,parish_id,legacy_key,settings,metadata,created_at')
+      .order('legacy_key')
+      .limit(25)
+  );
+  if (parameterError) throw parameterError;
+
+  return {
+    printEvents: prints.count || 0,
+    marriageChildren: children.count || 0,
+    parameterSnapshots: parameters.count || 0,
+    recentParameters: recentParameters || [],
   };
 }
