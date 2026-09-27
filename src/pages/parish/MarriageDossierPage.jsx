@@ -8,19 +8,32 @@ import { useAuth } from '@/context/AuthContext';
 import { loadMarriageDossierSources, saveMarriageDossier } from '@/services/marriageDossierService';
 
 const emptyPartyInterview = {
-  freedomToMarry:'', previousMarriage:'', previousCatholicMarriage:'', previousCivilMarriage:'',
+  fullName:'', documentId:'', documentIssuedAt:'', birthDate:'', birthPlace:'', father:'', mother:'',
+  religion:'', occupation:'', employer:'', residenceAddress:'', residenceCity:'', phones:'',
+  baptismStatus:'', baptismReference:'', confirmationStatus:'', confirmationPlace:'',
+  datingDuration:'', kinship:'', cohabitation:'', cohabitationDuration:'', otherReligion:'',
+  knowsFaithTruths:'', understandsSacrament:'', acceptsUnityIndissolubility:'',
+  acceptsLifelongMarriage:'', acceptsFamilyResponsibility:'', conditionedMarriage:'',
+  freeAndInformedConsent:'', familyApproval:'', previousCohabitation:'',
+  previousMarriage:'', previousCatholicMarriage:'', previousCivilMarriage:'',
   priorMarriageDocumentNumber:'', priorMarriageDocumentDate:'', priorMarriageDocumentIssuer:'',
-  kinship:'', cohabitation:'', religion:'', occupation:'', employer:'', residenceAddress:'',
-  residenceCity:'', phones:'', baptismStatus:'', baptismReference:'', confirmationStatus:'',
-  confirmationPlace:'', faithPractice:'', intentionPermanence:'', intentionChildren:'',
-  decreeRequired:'', decreeNumber:'', decreeDate:'', decreeIssuer:'', observations:''
+  intentionChildren:'', additionalToDeclare:'', additionalDeclaration:'', observations:''
+};
+
+const emptyWitness = {
+  name:'', document:'', issuedAt:'', address:'', city:'', phone:'', relationship:'',
+  knowsGroomDuration:'', knowsBrideDuration:'', knowsKinship:'', knowsPreviousMarriage:'',
+  confirmsFreedom:'', confirmsNoPressure:'', knowsFaithTruths:'', familiesAgree:'',
+  additionalToDeclare:'', additionalDeclaration:'', observations:''
 };
 
 const emptyAnswers = {
   groom:{ ...emptyPartyInterview },
   bride:{ ...emptyPartyInterview },
-  witness1:{ name:'', document:'', issuedAt:'', address:'', city:'', phone:'', relationship:'', yearsKnown:'', confirmsFreedom:'', observations:'' },
-  witness2:{ name:'', document:'', issuedAt:'', address:'', city:'', phone:'', relationship:'', yearsKnown:'', confirmsFreedom:'', observations:'' },
+  witness1:{ ...emptyWitness },
+  witness2:{ ...emptyWitness },
+  authorization:{ byDecree:'', decreeNumber:'', decreeDate:'', decreeIssuer:'' },
+  canonicalMarriageCategory:'',
   documents:{ groomBaptism:'', brideBaptism:'', premaritalCourse:'', civilDocuments:'', dispensations:'', proclamations:'', other:'' },
   children:[],
   act:{ declaration:'', observations:'', pastorCertification:'' }
@@ -44,36 +57,74 @@ const Q = ({ label, value, onChange, multiline=false, options=null, type='text' 
     : <input type={type} value={value||''} onChange={e=>onChange(e.target.value)} className="mt-2 w-full rounded-xl border px-3 py-2.5 text-sm"/>}
 </label>;
 
+const YES_NO = ['SÍ','NO','NO CONSTA'];
+
+const PartySnapshot = ({ data }) => <div className="rounded-2xl border border-blue-100 bg-blue-50/40 p-5">
+  <p className="text-[9px] font-black uppercase tracking-widest text-[#4B7BA7]">Datos heredados del registro por celebrar</p>
+  <div className="mt-3 grid gap-x-6 gap-y-2 text-xs md:grid-cols-2 xl:grid-cols-3">
+    <p><strong>Nombre:</strong> {data.fullName || '—'}</p>
+    <p><strong>Documento:</strong> {data.documentId || '—'}{data.documentIssuedAt ? ` · ${data.documentIssuedAt}` : ''}</p>
+    <p><strong>Nacimiento:</strong> {[data.birthDate,data.birthPlace].filter(Boolean).join(' · ') || '—'}</p>
+    <p><strong>Padres:</strong> {[data.father,data.mother].filter(Boolean).join(' / ') || '—'}</p>
+    <p><strong>Residencia:</strong> {[data.residenceAddress,data.residenceCity].filter(Boolean).join(' · ') || '—'}</p>
+    <p><strong>Teléfonos:</strong> {data.phones || '—'}</p>
+    <p><strong>Ocupación:</strong> {[data.occupation,data.employer].filter(Boolean).join(' · ') || '—'}</p>
+    <p><strong>Condición bautismal:</strong> {data.baptismStatus || '—'}</p>
+    <p><strong>Bautismo:</strong> {data.baptismReference || '—'}</p>
+    <p><strong>Confirmación:</strong> {[data.confirmationStatus,data.confirmationPlace].filter(Boolean).join(' · ') || '—'}</p>
+  </div>
+</div>;
+
 const Interview = ({ title, data, setData }) => <div className="space-y-5">
-  <div><h3 className="font-serif text-2xl font-black text-slate-900">{title}</h3><p className="text-xs text-slate-500">Entrevista personal reservada. Los datos ya conocidos por el registro previo se reutilizan y aquí se completa la investigación canónica.</p></div>
+  <div><h3 className="font-serif text-2xl font-black text-slate-900">{title}</h3><p className="text-xs text-slate-500">Entrevista personal reservada. Los datos objetivos se heredan del registro previo; aquí se documenta la investigación canónica.</p></div>
+  <PartySnapshot data={data}/>
   <div className="grid gap-4 md:grid-cols-2">
-    <Q label="Religión / confesión" value={data.religion} onChange={v=>setData('religion',v)}/>
-    <Q label="Ocupación" value={data.occupation} onChange={v=>setData('occupation',v)}/>
-    <Q label="Empresa / lugar de trabajo" value={data.employer} onChange={v=>setData('employer',v)}/>
-    <Q label="Dirección de residencia" value={data.residenceAddress} onChange={v=>setData('residenceAddress',v)}/>
-    <Q label="Ciudad de residencia" value={data.residenceCity} onChange={v=>setData('residenceCity',v)}/>
-    <Q label="Teléfonos" value={data.phones} onChange={v=>setData('phones',v)}/>
-    <Q label="Condición bautismal" value={data.baptismStatus} onChange={v=>setData('baptismStatus',v)} options={['CATÓLICO BAUTIZADO','BAUTIZADO NO CATÓLICO','NO BAUTIZADO','NO CONSTA']}/>
-    <Q label="Referencia de Bautismo" value={data.baptismReference} onChange={v=>setData('baptismReference',v)}/>
-    <Q label="Confirmación" value={data.confirmationStatus} onChange={v=>setData('confirmationStatus',v)} options={['CONFIRMADO','NO CONFIRMADO','NO CONSTA']}/>
-    <Q label="Lugar de Confirmación" value={data.confirmationPlace} onChange={v=>setData('confirmationPlace',v)}/>
-    <Q label="¿Es libre para contraer matrimonio?" value={data.freedomToMarry} onChange={v=>setData('freedomToMarry',v)} options={['SÍ','NO','REQUIERE ACLARACIÓN']}/>
-    <Q label="¿Ha contraído matrimonio anteriormente?" value={data.previousMarriage} onChange={v=>setData('previousMarriage',v)} options={['NO','SÍ · CANÓNICO','SÍ · CIVIL','SÍ · CANÓNICO Y CIVIL','OTRO']}/>
-    <Q label="Matrimonio católico anterior" value={data.previousCatholicMarriage} onChange={v=>setData('previousCatholicMarriage',v)} options={['NO','SÍ','NO CONSTA']}/>
-    <Q label="Matrimonio civil anterior" value={data.previousCivilMarriage} onChange={v=>setData('previousCivilMarriage',v)} options={['NO','SÍ','NO CONSTA']}/>
-    <Q label="Documento matrimonio anterior · número" value={data.priorMarriageDocumentNumber} onChange={v=>setData('priorMarriageDocumentNumber',v)}/>
-    <Q label="Documento matrimonio anterior · fecha" value={data.priorMarriageDocumentDate} onChange={v=>setData('priorMarriageDocumentDate',v)} type="date"/>
-    <Q label="Documento matrimonio anterior · expedido por" value={data.priorMarriageDocumentIssuer} onChange={v=>setData('priorMarriageDocumentIssuer',v)}/>
-    <Q label="¿Existe parentesco entre los contrayentes?" value={data.kinship} onChange={v=>setData('kinship',v)} options={['NO','SÍ','NO CONSTA']}/>
-    <Q label="Situación de convivencia actual" value={data.cohabitation} onChange={v=>setData('cohabitation',v)} options={['NO CONVIVEN','CONVIVEN','OTRA SITUACIÓN']}/>
-    <Q label="¿Requiere decreto / dispensa / licencia?" value={data.decreeRequired} onChange={v=>setData('decreeRequired',v)} options={['NO','SÍ','POR DEFINIR']}/>
-    <Q label="Decreto / dispensa · número" value={data.decreeNumber} onChange={v=>setData('decreeNumber',v)}/>
-    <Q label="Decreto / dispensa · fecha" value={data.decreeDate} onChange={v=>setData('decreeDate',v)} type="date"/>
-    <Q label="Decreto / dispensa · expedido por" value={data.decreeIssuer} onChange={v=>setData('decreeIssuer',v)}/>
-    <Q label="Práctica de la fe" value={data.faithPractice} onChange={v=>setData('faithPractice',v)} multiline/>
-    <Q label="Intención de permanencia / indisolubilidad" value={data.intentionPermanence} onChange={v=>setData('intentionPermanence',v)} options={['SÍ','NO','REQUIERE PROFUNDIZAR']}/>
+    <Q label="¿Cuánto tiempo llevan de novios?" value={data.datingDuration} onChange={v=>setData('datingDuration',v)}/>
+    <Q label="¿Existe algún parentesco entre ustedes?" value={data.kinship} onChange={v=>setData('kinship',v)} options={YES_NO}/>
+    <Q label="¿Conviven actualmente en unión libre?" value={data.cohabitation} onChange={v=>setData('cohabitation',v)} options={YES_NO}/>
+    {data.cohabitation === 'SÍ' && <Q label="¿Desde hace cuánto conviven?" value={data.cohabitationDuration} onChange={v=>setData('cohabitationDuration',v)}/>}
+    <Q label="¿Ha pertenecido o pertenece a otra religión?" value={data.otherReligion} onChange={v=>setData('otherReligion',v)} options={YES_NO}/>
+    {data.otherReligion === 'SÍ' && <Q label="Religión / confesión" value={data.religion} onChange={v=>setData('religion',v)}/>}
+    <Q label="¿Conoce las principales verdades de la fe?" value={data.knowsFaithTruths} onChange={v=>setData('knowsFaithTruths',v)} options={YES_NO}/>
+    <Q label="¿Comprende que el matrimonio católico es un sacramento?" value={data.understandsSacrament} onChange={v=>setData('understandsSacrament',v)} options={YES_NO}/>
+    <Q label="¿Acepta la unidad e indisolubilidad del matrimonio?" value={data.acceptsUnityIndissolubility} onChange={v=>setData('acceptsUnityIndissolubility',v)} options={YES_NO}/>
+    <Q label="¿Acepta que el matrimonio es para toda la vida?" value={data.acceptsLifelongMarriage} onChange={v=>setData('acceptsLifelongMarriage',v)} options={YES_NO}/>
+    <Q label="¿Asume la responsabilidad de formar una familia?" value={data.acceptsFamilyResponsibility} onChange={v=>setData('acceptsFamilyResponsibility',v)} options={YES_NO}/>
+    <Q label="¿Ha condicionado de alguna manera su consentimiento matrimonial?" value={data.conditionedMarriage} onChange={v=>setData('conditionedMarriage',v)} options={YES_NO}/>
+    <Q label="¿Se casa con entera libertad y conocimiento?" value={data.freeAndInformedConsent} onChange={v=>setData('freeAndInformedConsent',v)} options={YES_NO}/>
+    <Q label="¿Está de acuerdo su familia con este matrimonio?" value={data.familyApproval} onChange={v=>setData('familyApproval',v)} options={YES_NO}/>
+    <Q label="¿Ha convivido anteriormente en unión libre con otra persona?" value={data.previousCohabitation} onChange={v=>setData('previousCohabitation',v)} options={YES_NO}/>
+    <Q label="¿Ha contraído matrimonio anteriormente?" value={data.previousMarriage} onChange={v=>setData('previousMarriage',v)} options={['NO','SÍ · CANÓNICO','SÍ · CIVIL','SÍ · CANÓNICO Y CIVIL','NO CONSTA']}/>
+    {data.previousMarriage && data.previousMarriage !== 'NO' && <><Q label="Matrimonio católico anterior" value={data.previousCatholicMarriage} onChange={v=>setData('previousCatholicMarriage',v)} options={YES_NO}/><Q label="Matrimonio civil anterior" value={data.previousCivilMarriage} onChange={v=>setData('previousCivilMarriage',v)} options={YES_NO}/><Q label="Documento del vínculo anterior · número" value={data.priorMarriageDocumentNumber} onChange={v=>setData('priorMarriageDocumentNumber',v)}/><Q label="Fecha del documento" value={data.priorMarriageDocumentDate} onChange={v=>setData('priorMarriageDocumentDate',v)} type="date"/><Q label="Expedido por" value={data.priorMarriageDocumentIssuer} onChange={v=>setData('priorMarriageDocumentIssuer',v)}/></>}
     <Q label="Apertura a los hijos" value={data.intentionChildren} onChange={v=>setData('intentionChildren',v)} options={['SÍ','NO','REQUIERE PROFUNDIZAR']}/>
-    <Q label="Observaciones reservadas" value={data.observations} onChange={v=>setData('observations',v)} multiline/>
+    <Q label="¿Tiene algo más que declarar acerca de su matrimonio?" value={data.additionalToDeclare} onChange={v=>setData('additionalToDeclare',v)} options={YES_NO}/>
+    {data.additionalToDeclare === 'SÍ' && <div className="md:col-span-2"><Q label="Declaración adicional" value={data.additionalDeclaration} onChange={v=>setData('additionalDeclaration',v)} multiline/></div>}
+    <div className="md:col-span-2"><Q label="Observaciones reservadas del sacerdote" value={data.observations} onChange={v=>setData('observations',v)} multiline/></div>
+  </div>
+</div>;
+
+const WitnessInterview = ({ title, data, setData }) => <div className="rounded-2xl border p-5">
+  <h3 className="font-serif text-xl font-black text-slate-900">{title}</h3>
+  <p className="mt-1 text-xs text-slate-500">Datos personales y declaración testimonial del expediente.</p>
+  <div className="mt-4 grid gap-4 md:grid-cols-2">
+    <Q label="Nombre completo" value={data.name} onChange={v=>setData('name',v)}/>
+    <Q label="Documento" value={data.document} onChange={v=>setData('document',v)}/>
+    <Q label="Expedido en" value={data.issuedAt} onChange={v=>setData('issuedAt',v)}/>
+    <Q label="Teléfono" value={data.phone} onChange={v=>setData('phone',v)}/>
+    <Q label="Dirección" value={data.address} onChange={v=>setData('address',v)}/>
+    <Q label="Ciudad" value={data.city} onChange={v=>setData('city',v)}/>
+    <Q label="Relación con los contrayentes" value={data.relationship} onChange={v=>setData('relationship',v)}/>
+    <Q label="¿Hace cuánto conoce al novio?" value={data.knowsGroomDuration} onChange={v=>setData('knowsGroomDuration',v)}/>
+    <Q label="¿Hace cuánto conoce a la novia?" value={data.knowsBrideDuration} onChange={v=>setData('knowsBrideDuration',v)}/>
+    <Q label="¿Sabe de algún parentesco entre ellos?" value={data.knowsKinship} onChange={v=>setData('knowsKinship',v)} options={YES_NO}/>
+    <Q label="¿Sabe si alguno contrajo matrimonio religioso o civil anteriormente?" value={data.knowsPreviousMarriage} onChange={v=>setData('knowsPreviousMarriage',v)} options={YES_NO}/>
+    <Q label="¿Le consta que ambos se casan completamente libres?" value={data.confirmsFreedom} onChange={v=>setData('confirmsFreedom',v)} options={YES_NO}/>
+    <Q label="¿Le consta que no existe presión para casarse?" value={data.confirmsNoPressure} onChange={v=>setData('confirmsNoPressure',v)} options={YES_NO}/>
+    <Q label="¿Le consta que conocen las principales verdades de la fe?" value={data.knowsFaithTruths} onChange={v=>setData('knowsFaithTruths',v)} options={YES_NO}/>
+    <Q label="¿Las familias están de acuerdo con el matrimonio?" value={data.familiesAgree} onChange={v=>setData('familiesAgree',v)} options={YES_NO}/>
+    <Q label="¿Tiene algo más que declarar?" value={data.additionalToDeclare} onChange={v=>setData('additionalToDeclare',v)} options={YES_NO}/>
+    {data.additionalToDeclare === 'SÍ' && <div className="md:col-span-2"><Q label="Declaración adicional" value={data.additionalDeclaration} onChange={v=>setData('additionalDeclaration',v)} multiline/></div>}
+    <div className="md:col-span-2"><Q label="Observaciones del sacerdote" value={data.observations} onChange={v=>setData('observations',v)} multiline/></div>
   </div>
 </div>;
 
@@ -108,7 +159,16 @@ const partyFromPending = (row, prefix) => {
   const baptismNumber = row[`${prefix}BautismoNumero`] || row[isGroom ? 'groomBaptismNumber' : 'brideBaptismNumber'] || '';
   const baptismReference = [baptismPlace, baptismBook && `L ${baptismBook}`, baptismFolio && `F ${baptismFolio}`, baptismNumber && `N ${baptismNumber}`].filter(Boolean).join(' · ');
   const ecclesialStatus = row[`${prefix}EcclesialStatus`] || row[isGroom ? 'groomEcclesialStatus' : 'brideEcclesialStatus'] || '';
+  const names = row[`${prefix}Nombres`] || row[isGroom ? 'groomName' : 'brideName'] || '';
+  const surnames = row[`${prefix}Apellidos`] || row[isGroom ? 'groomSurname' : 'brideSurname'] || '';
   return {
+    fullName: [names,surnames].filter(Boolean).join(' ').trim(),
+    documentId: row[`${prefix}Cedula`] || '',
+    documentIssuedAt: row[`${prefix}Expedida`] || '',
+    birthDate: row[`${prefix}FechaNac`] || row[isGroom ? 'groomBirthDate' : 'brideBirthDate'] || '',
+    birthPlace: row[`${prefix}LugarNac`] || row[isGroom ? 'groomBirthPlace' : 'brideBirthPlace'] || '',
+    father: row[`${prefix}Padre`] || row[isGroom ? 'groomFather' : 'brideFather'] || '',
+    mother: row[`${prefix}Madre`] || row[isGroom ? 'groomMother' : 'brideMother'] || '',
     religion: ecclesialStatus === 'catholic_baptized' ? 'CATÓLICA' : ecclesialStatus === 'christian_non_catholic_baptized' ? 'CRISTIANA NO CATÓLICA' : '',
     occupation: row[`${prefix}Ocupacion`] || '',
     employer: row[`${prefix}Empresa`] || '',
@@ -118,12 +178,15 @@ const partyFromPending = (row, prefix) => {
     baptismStatus: ecclesialToBaptismStatus(ecclesialStatus),
     baptismReference,
     confirmationStatus: row[`${prefix}Confirmado`] === true ? 'CONFIRMADO' : row[`${prefix}Confirmado`] === false ? 'NO CONFIRMADO' : '',
-    confirmationPlace: row[`${prefix}ConfirmacionLugar`] || '',
-    decreeNumber: row.decretoNumero || '',
-    decreeDate: row.decretoFecha || '',
-    decreeIssuer: row.decretoExpedido || ''
+    confirmationPlace: row[`${prefix}ConfirmacionLugar`] || ''
   };
 };
+
+const witnessFromPending = (row, index) => ({
+  name: row?.[`testigo${index}Nombres`] || '',
+  document: row?.[`testigo${index}Cedula`] || '',
+  issuedAt: row?.[`testigo${index}Expedida`] || ''
+});
 
 const mergeBlank = (current, incoming) => Object.fromEntries(
   Object.keys({ ...incoming, ...current }).map((key) => [key, current?.[key] || incoming?.[key] || ''])
@@ -169,6 +232,8 @@ export default function MarriageDossierPage(){
       bride:{...emptyPartyInterview,...(saved.bride||{})},
       witness1:{...emptyAnswers.witness1,...(saved.witness1||{})},
       witness2:{...emptyAnswers.witness2,...(saved.witness2||{})},
+      authorization:{...emptyAnswers.authorization,...(saved.authorization||{})},
+      canonicalMarriageCategory:saved.canonicalMarriageCategory||'',
       documents:{...emptyAnswers.documents,...(saved.documents||{})},
       children:Array.isArray(saved.children)?saved.children:[],
       act:{...emptyAnswers.act,...(saved.act||{})}
@@ -181,6 +246,8 @@ export default function MarriageDossierPage(){
     if (!pendingMarriage) return;
     const groomSeed = partyFromPending(pendingMarriage,'novio');
     const brideSeed = partyFromPending(pendingMarriage,'novia');
+    const witness1Seed = witnessFromPending(pendingMarriage,1);
+    const witness2Seed = witnessFromPending(pendingMarriage,2);
     setMeta(prev=>({
       ...prev,
       plannedMarriageDate: prev.plannedMarriageDate || pendingMarriage.sacramentDate || pendingMarriage.fechaHoraPrevista?.slice?.(0,10) || '',
@@ -190,6 +257,16 @@ export default function MarriageDossierPage(){
       ...prev,
       groom: mergeBlank(prev.groom, groomSeed),
       bride: mergeBlank(prev.bride, brideSeed),
+      witness1: mergeBlank(prev.witness1, witness1Seed),
+      witness2: mergeBlank(prev.witness2, witness2Seed),
+      authorization: {
+        ...(prev.authorization || {}),
+        byDecree: prev.authorization?.byDecree || (pendingMarriage.porDecreto ? 'SÍ' : 'NO'),
+        decreeNumber: prev.authorization?.decreeNumber || pendingMarriage.decretoNumero || '',
+        decreeDate: prev.authorization?.decreeDate || pendingMarriage.decretoFecha || '',
+        decreeIssuer: prev.authorization?.decreeIssuer || pendingMarriage.decretoExpedido || ''
+      },
+      canonicalMarriageCategory: prev.canonicalMarriageCategory || pendingMarriage.canonicalMarriageCategory || '',
       documents: {
         ...(prev.documents || {}),
         groomBaptism: prev.documents?.groomBaptism || groomSeed.baptismReference || '',
@@ -262,9 +339,46 @@ export default function MarriageDossierPage(){
 
           {tab==='novio'&&<Interview title="Entrevista personal del novio" data={answers.groom||{}} setData={(k,v)=>setSection('groom',k,v)}/>}
           {tab==='novia'&&<Interview title="Entrevista personal de la novia" data={answers.bride||{}} setData={(k,v)=>setSection('bride',k,v)}/>}
-          {tab==='testigos'&&<div className="grid gap-6 lg:grid-cols-2">{['witness1','witness2'].map((key,i)=><div key={key} className="rounded-2xl border p-5"><h3 className="mb-4 font-black">Testigo {i+1}</h3><div className="grid gap-4 md:grid-cols-2"><Q label="Nombre completo" value={answers[key]?.name} onChange={v=>setSection(key,'name',v)}/><Q label="Documento" value={answers[key]?.document} onChange={v=>setSection(key,'document',v)}/><Q label="Expedido en" value={answers[key]?.issuedAt} onChange={v=>setSection(key,'issuedAt',v)}/><Q label="Teléfono" value={answers[key]?.phone} onChange={v=>setSection(key,'phone',v)}/><Q label="Dirección" value={answers[key]?.address} onChange={v=>setSection(key,'address',v)}/><Q label="Ciudad" value={answers[key]?.city} onChange={v=>setSection(key,'city',v)}/><Q label="Relación con los contrayentes" value={answers[key]?.relationship} onChange={v=>setSection(key,'relationship',v)}/><Q label="Años de conocimiento" value={answers[key]?.yearsKnown} onChange={v=>setSection(key,'yearsKnown',v)}/><Q label="¿Confirma que son libres para casarse?" value={answers[key]?.confirmsFreedom} onChange={v=>setSection(key,'confirmsFreedom',v)} options={['SÍ','NO','NO SABE']}/><div className="md:col-span-2"><Q label="Declaración / observaciones" value={answers[key]?.observations} onChange={v=>setSection(key,'observations',v)} multiline/></div></div></div>)}</div>}
+          {tab==='testigos'&&<div className="grid gap-6 xl:grid-cols-2"><WitnessInterview title="Primer testigo" data={answers.witness1||{}} setData={(k,v)=>setSection('witness1',k,v)}/><WitnessInterview title="Segundo testigo" data={answers.witness2||{}} setData={(k,v)=>setSection('witness2',k,v)}/></div>}
           {tab==='hijos'&&<ChildrenPanel childrenRows={answers.children||[]} onAdd={addChild} onUpdate={updateChild} onRemove={removeChild}/>}
-          {tab==='documentos'&&<div className="space-y-5"><DocumentShortcuts onOpen={(code)=>navigate(`/documentos/plantillas?template=${code}`)}/><div className="grid gap-4 md:grid-cols-2"><Q label="Partida de Bautismo del novio" value={answers.documents?.groomBaptism} onChange={v=>setSection('documents','groomBaptism',v)}/><Q label="Partida de Bautismo de la novia" value={answers.documents?.brideBaptism} onChange={v=>setSection('documents','brideBaptism',v)}/><Q label="Curso prematrimonial" value={answers.documents?.premaritalCourse} onChange={v=>setSection('documents','premaritalCourse',v)}/><Q label="Documentos civiles" value={answers.documents?.civilDocuments} onChange={v=>setSection('documents','civilDocuments',v)}/><Q label="Dispensas / licencias" value={answers.documents?.dispensations} onChange={v=>setSection('documents','dispensations',v)} multiline/><Q label="Proclamas" value={answers.documents?.proclamations} onChange={v=>setSection('documents','proclamations',v)} multiline/><div className="md:col-span-2"><Q label="Otros documentos" value={answers.documents?.other} onChange={v=>setSection('documents','other',v)} multiline/></div></div></div>}
+          {tab==='documentos'&&<div className="space-y-6">
+            <DocumentShortcuts onOpen={(code)=>navigate(`/documentos/plantillas?template=${code}`)}/>
+            <div className="rounded-2xl border border-amber-200 bg-amber-50/40 p-5">
+              <p className="text-[9px] font-black uppercase tracking-widest text-amber-700">Situación canónica y autorización</p>
+              <div className="mt-4 grid gap-4 md:grid-cols-2">
+                <label className="block">
+                  <span className="text-[10px] font-black uppercase text-slate-500">Clasificación canónica del matrimonio</span>
+                  <select
+                    value={answers.canonicalMarriageCategory || ''}
+                    onChange={e=>setAnswers(prev=>({...prev,canonicalMarriageCategory:e.target.value}))}
+                    className="mt-2 w-full rounded-xl border px-3 py-2.5 text-sm"
+                  >
+                    <option value="">Seleccione…</option>
+                    <option value="both_catholic_baptized">Matrimonio entre católicos bautizados</option>
+                    <option value="mixed_marriage">Matrimonio mixto</option>
+                    <option value="disparity_of_cult">Disparidad de culto</option>
+                    <option value="other_or_undetermined">Otra situación / por determinar</option>
+                  </select>
+                </label>
+                <Q label="¿Se celebra por decreto / dispensa / licencia?" value={answers.authorization?.byDecree} onChange={v=>setSection('authorization','byDecree',v)} options={['NO','SÍ','NO CONSTA']}/>
+                {answers.authorization?.byDecree === 'SÍ' && <>
+                  <Q label="Número del decreto / dispensa" value={answers.authorization?.decreeNumber} onChange={v=>setSection('authorization','decreeNumber',v)}/>
+                  <Q label="Fecha" value={answers.authorization?.decreeDate} onChange={v=>setSection('authorization','decreeDate',v)} type="date"/>
+                  <div className="md:col-span-2"><Q label="Expedido por" value={answers.authorization?.decreeIssuer} onChange={v=>setSection('authorization','decreeIssuer',v)}/></div>
+                </>}
+              </div>
+              <p className="mt-3 text-[10px] leading-relaxed text-amber-800">La clasificación y la autorización se conservan dentro del expediente matrimonial y permanecen vinculadas al registro por celebrar y a la partida definitiva.</p>
+            </div>
+            <div className="grid gap-4 md:grid-cols-2">
+              <Q label="Partida de Bautismo del novio" value={answers.documents?.groomBaptism} onChange={v=>setSection('documents','groomBaptism',v)}/>
+              <Q label="Partida de Bautismo de la novia" value={answers.documents?.brideBaptism} onChange={v=>setSection('documents','brideBaptism',v)}/>
+              <Q label="Curso prematrimonial" value={answers.documents?.premaritalCourse} onChange={v=>setSection('documents','premaritalCourse',v)}/>
+              <Q label="Documentos civiles" value={answers.documents?.civilDocuments} onChange={v=>setSection('documents','civilDocuments',v)}/>
+              <Q label="Dispensas / licencias" value={answers.documents?.dispensations} onChange={v=>setSection('documents','dispensations',v)} multiline/>
+              <Q label="Proclamas" value={answers.documents?.proclamations} onChange={v=>setSection('documents','proclamations',v)} multiline/>
+              <div className="md:col-span-2"><Q label="Otros documentos" value={answers.documents?.other} onChange={v=>setSection('documents','other',v)} multiline/></div>
+            </div>
+          </div>}
           {tab==='acta'&&<div className="space-y-4"><Q label="Declaración / conclusión del expediente" value={answers.act?.declaration} onChange={v=>setSection('act','declaration',v)} multiline/><Q label="Observaciones finales" value={answers.act?.observations} onChange={v=>setSection('act','observations',v)} multiline/><Q label="Certificación del párroco" value={answers.act?.pastorCertification} onChange={v=>setSection('act','pastorCertification',v)} multiline/><div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-4 text-xs font-medium text-emerald-900"><ShieldCheck className="mr-2 inline h-4 w-4"/>Al guardar se conserva la trazabilidad institucional del expediente y su vinculación con el registro matrimonial.</div></div>}
 
           <div className="mt-8 flex justify-end border-t pt-5"><Button onClick={save} disabled={busy} className="rounded-xl bg-[#D4AF37] font-black text-slate-950 hover:bg-[#c49d27]">{busy?<Loader2 className="mr-2 h-4 w-4 animate-spin"/>:<Save className="mr-2 h-4 w-4"/>}Guardar expediente</Button></div>
