@@ -98,22 +98,43 @@ export async function reviewLegacyRow({ rowId, normalizedData, status, issueCode
 export async function applyLegacyBatch(batchId, { chunkSize = 250, onProgress = null, profileKey = null } = {}) {
   const batch = await getLegacyMigrationSummary(batchId);
   const effectiveProfile = String(profileKey || batch?.profile_key || '').toUpperCase();
+  const isPendingSacramentalProfile = ['INSBAUTI','INSCONFI'].includes(effectiveProfile);
   const rpcName = ['NTMAT001','NTMAT002'].includes(effectiveProfile)
     ? 'apply_legacy_marginal_note_batch'
     : 'apply_legacy_import_batch_v2';
 
   let totalImported = 0;
   let totalFailed = 0;
+  let totalReconciled = 0;
+  let totalReviewed = 0;
   let remaining = 1;
+
   while (remaining > 0) {
-    const { data, error } = await supabase.rpc(rpcName,{ p_batch_id:batchId, p_limit:chunkSize });
+    const { data, error } = isPendingSacramentalProfile
+      ? await supabase.rpc('materialize_pending_legacy_sacramental_records',{ p_batch_id:batchId, p_limit:chunkSize })
+      : await supabase.rpc(rpcName,{ p_batch_id:batchId, p_limit:chunkSize });
     if (error) throw error;
+
     const result = unwrapRpc(data) || {};
-    totalImported += Number(result.imported || 0);
+    const importedNow = Number(result.imported || 0);
+    const reconciledNow = Number(result.reconciled || 0);
+    const reviewedNow = Number(result.reviewed || 0);
+
+    totalImported += importedNow;
+    totalReconciled += reconciledNow;
+    totalReviewed += reviewedNow;
     totalFailed += Number(result.failed || 0);
     remaining = Number(result.remaining || 0);
-    onProgress?.({ imported: totalImported, failed: totalFailed, remaining });
-    if (Number(result.imported || 0) === 0 && remaining > 0) break;
+
+    onProgress?.({
+      imported: totalImported,
+      reconciled: totalReconciled,
+      reviewed: totalReviewed,
+      failed: totalFailed,
+      remaining
+    });
+
+    if (importedNow === 0 && reconciledNow === 0 && reviewedNow === 0 && remaining > 0) break;
   }
 
   let noteReconciliation = null;
@@ -143,6 +164,8 @@ export async function applyLegacyBatch(batchId, { chunkSize = 250, onProgress = 
 
   return {
     imported: totalImported,
+    reconciled: totalReconciled,
+    reviewed: totalReviewed,
     failed: totalFailed,
     remaining,
     materialized,
