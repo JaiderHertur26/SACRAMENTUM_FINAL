@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Copy, FileText, Printer, Search, Sparkles, PencilLine, Save } from 'lucide-react';
+import { Copy, Database, FileText, Loader2, Printer, Search, Sparkles, PencilLine, Save } from 'lucide-react';
 import { useLocation, useSearchParams } from 'react-router-dom';
 import DashboardLayout from '@/components/DashboardLayout';
 import { useAuth } from '@/context/AuthContext';
@@ -7,6 +7,13 @@ import { useToast } from '@/components/ui/use-toast';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/Input';
 import { listDocumentTemplates, saveDocumentTemplateVersion } from '@/services/marginalNotesV2Service';
+import {
+  buildDocumentValuesFromRecord,
+  filterDocumentSourceRecords,
+  getDocumentRecordLabel,
+  getDocumentTemplateBinding,
+  loadDocumentSourceRecords,
+} from '@/services/documentTemplateBindingService';
 
 const extractTokens = (template = '') => {
   const found = [...String(template).matchAll(/<([^<>]+)>/g)].map((m) => m[1].trim()).filter(Boolean);
@@ -34,6 +41,11 @@ export default function DocumentTemplateLibraryPage() {
   const [editing, setEditing] = useState(false);
   const [editor, setEditor] = useState({ code:'', name:'', category:'document', templateText:'' });
   const [saving, setSaving] = useState(false);
+  const [sourceRecords, setSourceRecords] = useState([]);
+  const [sourceLoading, setSourceLoading] = useState(false);
+  const [sourceQuery, setSourceQuery] = useState('');
+  const [selectedRecordId, setSelectedRecordId] = useState('');
+  const [sourceOverride, setSourceOverride] = useState('');
   const printRef = useRef(null);
 
   useEffect(() => {
@@ -60,6 +72,19 @@ export default function DocumentTemplateLibraryPage() {
   const body = selected?.template_text || selected?.body_template || selected?.template || '';
   const tokens = useMemo(() => extractTokens(body), [body]);
   const preview = useMemo(() => fillTemplate(body, values), [body, values]);
+  const parishId = profile?.parish_id || user?.parish_id || user?.parishId || null;
+  const declaredBinding = useMemo(() => getDocumentTemplateBinding(selected), [selected]);
+  const effectiveSource = declaredBinding.source === 'multi'
+    ? (sourceOverride || declaredBinding.allowedSources?.[0] || '')
+    : declaredBinding.source;
+  const effectiveBinding = useMemo(
+    () => getDocumentTemplateBinding(selected, effectiveSource),
+    [selected, effectiveSource]
+  );
+  const filteredSourceRecords = useMemo(
+    () => filterDocumentSourceRecords(sourceRecords, effectiveSource, sourceQuery),
+    [sourceRecords, effectiveSource, sourceQuery]
+  );
 
   const role = profile?.role || user?.role;
   const canManage = ['admin_general','diocese','chancery'].includes(role);
@@ -86,7 +111,11 @@ export default function DocumentTemplateLibraryPage() {
         scopeType: role === 'admin_general' ? (selected?.scope_type || 'system') : 'diocese',
         dioceseId: profile?.diocese_id || user?.dioceseId || user?.diocese_id || selected?.diocese_id || null,
         parishId: null,
-        metadata: { source: 'document_template_library', previous_template_id: selected?.id || null }
+        metadata: {
+          ...(selected?.metadata || {}),
+          source: 'document_template_library',
+          previous_template_id: selected?.id || null
+        }
       });
       const data = await reload();
       const next = data.find(t => String(t.code).toUpperCase() === editor.code.trim().toUpperCase() && t.is_active !== false);
@@ -102,7 +131,82 @@ export default function DocumentTemplateLibraryPage() {
     const current = templates.find((t) => t.id === selectedId);
     const currentCode = cleanTemplateCode(current?.code || current?.legacy_code || '').toUpperCase();
     setValues(requestedTemplate && currentCode === requestedTemplate ? initialTemplateValues : {});
+    setSourceQuery('');
+    setSelectedRecordId('');
+    setSourceRecords([]);
+    const nextBinding = getDocumentTemplateBinding(current);
+    setSourceOverride(nextBinding.source === 'multi' ? (nextBinding.allowedSources?.[0] || '') : '');
   }, [selectedId, templates, requestedTemplate, initialTemplateValues]);
+
+  useEffect(() => {
+    let mounted = true;
+    let timer = null;
+    if (!selected || !parishId || !effectiveSource || ['manual','multi'].includes(effectiveSource)) {
+      setSourceRecords([]);
+      setSourceLoading(false);
+      return () => { mounted = false; };
+    }
+
+    timer = setTimeout(() => {
+      setSourceLoading(true);
+      loadDocumentSourceRecords({
+        source: effectiveSource,
+        parishId,
+        query: sourceQuery,
+        limit: 100
+      })
+        .then((rows) => {
+          if (!mounted) return;
+          setSourceRecords(rows || []);
+        })
+        .catch((error) => {
+          if (!mounted) return;
+          setSourceRecords([]);
+          toast({
+            title:'No se pudo cargar la fuente sacramental',
+            description:error.message,
+            variant:'destructive'
+          });
+        })
+        .finally(() => mounted && setSourceLoading(false));
+    }, sourceQuery.trim() ? 280 : 0);
+
+    return () => {
+      mounted = false;
+      if (timer) clearTimeout(timer);
+    };
+  }, [selected, parishId, effectiveSource, sourceQuery, toast]);
+
+  const linkRecord = async (recordId) => {
+    setSelectedRecordId(recordId);
+    if (!recordId) {
+      const currentCode = cleanTemplateCode(selected?.code || selected?.legacy_code || '').toUpperCase();
+      setValues(requestedTemplate && currentCode === requestedTemplate ? initialTemplateValues : {});
+      return;
+    }
+    const record = sourceRecords.find((item) => String(item.id) === String(recordId));
+    if (!record) return;
+    try {
+      const automaticValues = await buildDocumentValuesFromRecord({
+        source: effectiveSource,
+        record,
+        parishId,
+        user
+      });
+      const nextValues = Object.fromEntries(tokens.map((token) => [token, automaticValues[token] ?? '']));
+      const currentCode = cleanTemplateCode(selected?.code || selected?.legacy_code || '').toUpperCase();
+      setValues({
+        ...nextValues,
+        ...(requestedTemplate && currentCode === requestedTemplate ? initialTemplateValues : {})
+      });
+    } catch (error) {
+      toast({
+        title:'No se pudo vincular el registro',
+        description:error.message,
+        variant:'destructive'
+      });
+    }
+  };
 
   const copy = async () => {
     await navigator.clipboard.writeText(preview);
@@ -139,6 +243,75 @@ export default function DocumentTemplateLibraryPage() {
             {!selected ? <div className="bg-white border border-dashed rounded-3xl p-16 text-center text-slate-400"><FileText className="w-12 h-12 mx-auto mb-4" />Selecciona una plantilla.</div> : <>
               <div className="bg-white border rounded-3xl p-6">
                 <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-6"><div><div className="text-[10px] font-black uppercase tracking-widest text-blue-500">{selected.category || 'Documento'} · {cleanTemplateCode(selected.code)}</div><h2 className="text-2xl font-black text-slate-900 mt-1">{selected.name}</h2></div><div className="flex flex-wrap gap-2">{canManage && <Button variant="outline" onClick={beginEdit}><PencilLine className="w-4 h-4 mr-2" />Nueva versión</Button>}<Button variant="outline" onClick={copy}><Copy className="w-4 h-4 mr-2" />Copiar</Button><Button onClick={print} className="bg-blue-700 text-white"><Printer className="w-4 h-4 mr-2" />Imprimir</Button></div></div>
+                <div className="mb-5 rounded-2xl border border-emerald-200 bg-emerald-50/60 p-5">
+                  <div className="flex items-start gap-3">
+                    <Database className="mt-0.5 h-5 w-5 text-emerald-700" />
+                    <div className="min-w-0 flex-1">
+                      <div className="text-[10px] font-black uppercase tracking-widest text-emerald-700">Fuente de información</div>
+                      <div className="mt-1 text-sm font-black text-slate-900">{effectiveBinding.label}</div>
+                      <p className="mt-1 text-xs leading-relaxed text-slate-600">
+                        {effectiveSource === 'manual'
+                          ? 'Esta plantilla no corresponde a una partida existente y conserva captura manual.'
+                          : 'Seleccione el registro sacramental y SACRAMENTUM completará automáticamente los campos disponibles desde Supabase.'}
+                      </p>
+                    </div>
+                  </div>
+
+                  {declaredBinding.source === 'multi' && (
+                    <div className="mt-4">
+                      <label className="block text-[10px] font-black uppercase tracking-widest text-emerald-700">Sacramento</label>
+                      <select
+                        value={effectiveSource}
+                        onChange={(e) => {
+                          setSourceOverride(e.target.value);
+                          setSelectedRecordId('');
+                          setSourceQuery('');
+                        }}
+                        className="mt-2 w-full rounded-xl border border-emerald-200 bg-white px-3 py-2.5 text-sm font-bold text-slate-800"
+                      >
+                        {declaredBinding.allowedSources.map((source) => (
+                          <option key={source} value={source}>{getDocumentTemplateBinding(selected, source).label}</option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
+
+                  {effectiveSource !== 'manual' && (
+                    !parishId
+                      ? <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 p-3 text-xs font-bold text-amber-800">Para vincular registros, abra la plantilla desde una sesión parroquial o desde un flujo que suministre el registro correspondiente.</div>
+                      : <div className="mt-4 grid gap-3">
+                          <div className="relative">
+                            <Search className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
+                            <Input
+                              className="pl-9"
+                              value={sourceQuery}
+                              onChange={(e) => setSourceQuery(e.target.value)}
+                              placeholder="Buscar por nombre, Libro, Folio, Número o dato del registro..."
+                            />
+                          </div>
+                          <div className="relative">
+                            <select
+                              value={selectedRecordId}
+                              onChange={(e) => linkRecord(e.target.value)}
+                              disabled={sourceLoading}
+                              className="w-full rounded-xl border border-emerald-200 bg-white px-3 py-2.5 pr-10 text-sm text-slate-800 disabled:bg-slate-50"
+                            >
+                              <option value="">{sourceLoading ? 'Cargando registros...' : 'Seleccione el registro que alimentará el documento'}</option>
+                              {filteredSourceRecords.map((record) => (
+                                <option key={record.id} value={record.id}>{getDocumentRecordLabel(record, effectiveSource)}</option>
+                              ))}
+                            </select>
+                            {sourceLoading && <Loader2 className="absolute right-3 top-3 h-4 w-4 animate-spin text-emerald-700" />}
+                          </div>
+                          {!sourceLoading && sourceRecords.length > 0 && (
+                            <div className="text-[10px] font-bold uppercase tracking-wider text-emerald-700">
+                              {filteredSourceRecords.length} registros disponibles
+                            </div>
+                          )}
+                        </div>
+                  )}
+                </div>
+
                 {tokens.length > 0 && <div className="rounded-2xl bg-blue-50 border border-blue-100 p-5"><div className="flex items-center gap-2 mb-4 text-blue-800"><Sparkles className="w-4 h-4" /><span className="text-xs font-black uppercase tracking-widest">Datos variables</span></div><div className="grid md:grid-cols-2 gap-4">{tokens.map((token) => <div key={token}><label className="block text-[10px] font-black uppercase tracking-widest text-blue-500 mb-2">{token}</label><Input value={values[token] || ''} onChange={(e) => setValues((prev) => ({ ...prev, [token]: e.target.value }))} placeholder={`Completar ${token}`} /></div>)}</div></div>}
               </div>
 
