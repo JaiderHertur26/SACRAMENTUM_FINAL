@@ -256,22 +256,29 @@ const ChanceryDashboard = () => {
                             <div className="bg-amber-500 p-2 rounded-xl text-white shadow-lg shadow-amber-900/10"><FileStack className="w-5 h-5"/></div>
                             <h2 className="text-sm font-black text-slate-900 uppercase tracking-widest">Archivo Histórico de Decretos</h2>
                         </div>
-                        <div className="grid grid-cols-2 gap-6">
-                            <button 
-                                onClick={() => navigate('/chancery/decretos/archivo?type=correccion')}
-                                className="p-8 rounded-3xl bg-blue-50 hover:bg-blue-100 border border-blue-100 transition-all text-center group"
-                            >
-                                <div className="text-3xl font-black text-blue-700 group-hover:scale-110 transition-transform">{globalCorrectionsCount}</div>
-                                <div className="text-[9px] font-black text-blue-600 uppercase tracking-[0.2em] mt-2">Correcciones</div>
-                            </button>
-                            <button 
-                                onClick={() => navigate('/chancery/decretos/archivo?type=reposicion')}
-                                className="p-8 rounded-3xl bg-amber-50 hover:bg-amber-100 border border-amber-100 transition-all text-center group"
-                            >
-                                <div className="text-3xl font-black text-amber-700 group-hover:scale-110 transition-transform">{globalReplacementsCount}</div>
-                                <div className="text-[9px] font-black text-amber-600 uppercase tracking-[0.2em] mt-2">Reposiciones</div>
-                            </button>
-                        </div>
+                        <button
+                            onClick={() => navigate('/chancery/decretos/archivo')}
+                            className="w-full rounded-3xl border border-slate-200 bg-slate-50 p-7 text-left transition-all hover:border-slate-300 hover:bg-slate-100"
+                        >
+                            <div className="flex items-center justify-between gap-4">
+                                <div>
+                                    <p className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400">Archivo único</p>
+                                    <p className="mt-1 text-sm font-black uppercase tracking-wider text-slate-800">Todos los decretos sacramentales</p>
+                                    <p className="mt-2 text-xs font-medium text-slate-500">Filtre dentro del archivo por sacramento, corrección, reposición o estado histórico.</p>
+                                </div>
+                                <FileStack className="h-8 w-8 shrink-0 text-[#4B7BA7]" />
+                            </div>
+                            <div className="mt-5 grid grid-cols-2 gap-3">
+                                <div className="rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-center">
+                                    <div className="text-2xl font-black text-blue-700">{globalCorrectionsCount}</div>
+                                    <div className="text-[8px] font-black uppercase tracking-widest text-blue-600">Correcciones</div>
+                                </div>
+                                <div className="rounded-2xl border border-amber-100 bg-amber-50 px-4 py-3 text-center">
+                                    <div className="text-2xl font-black text-amber-700">{globalReplacementsCount}</div>
+                                    <div className="text-[8px] font-black uppercase tracking-widest text-amber-600">Reposiciones</div>
+                                </div>
+                            </div>
+                        </button>
                         <Button 
                             variant="ghost" 
                             className="w-full mt-6 py-6 rounded-2xl font-black uppercase tracking-widest text-[10px] text-[#4B7BA7]"
@@ -288,7 +295,7 @@ const ChanceryDashboard = () => {
                             <h3 className="text-sm font-black text-slate-900 uppercase tracking-widest">Expedientes Pendientes de la Jurisdicción</h3>
                             <p className="text-[10px] text-slate-400 font-bold uppercase mt-1">Últimos 5 expedientes pendientes reportados por las parroquias</p>
                         </div>
-                        <Button variant="link" onClick={() => navigate('/chancery/pending')} className="text-[#4B7BA7] font-black uppercase tracking-widest text-[10px]">Ver todo el archivo</Button>
+                        <Button variant="link" onClick={() => navigate('/chancery/pending')} className="text-[#4B7BA7] font-black uppercase tracking-widest text-[10px]">Ver todos los pendientes</Button>
                     </div>
                     <div className="p-4">
                         {dioceseStats.pendingCount > 0 ? (
