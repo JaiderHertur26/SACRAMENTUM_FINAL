@@ -385,6 +385,10 @@ const UnifiedSearchPage = () => {
                                 <div className="bg-white p-12 lg:p-20 rounded-[2rem] lg:rounded-[2.5rem] border border-dashed border-slate-200 text-center">
                                     <Search className="w-12 h-12 lg:w-16 lg:h-16 text-slate-200 mx-auto mb-4" />
                                     <p className="font-bold text-slate-400 uppercase tracking-widest text-[10px] lg:text-xs">No se localizaron registros para esta búsqueda</p>
+                                    <Button type="button" variant="outline" onClick={() => navigate('/documentos/plantillas?template=71071')} className="mt-6 rounded-xl">
+                                        <BookOpen className="mr-2 h-4 w-4" />
+                                        Abrir certificado negativo
+                                    </Button>
                                 </div>
                             ) : (
                                 <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 lg:gap-6">

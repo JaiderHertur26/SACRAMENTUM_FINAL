@@ -1,4 +1,5 @@
 ﻿import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '@/components/DashboardLayout';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/context/AuthContext';
@@ -44,6 +45,7 @@ const dateText = (value) => {
 };
 
 const FuneralPartidasPage = () => {
+  const navigate = useNavigate();
   const { user } = useAuth();
   const { toast } = useToast();
 
@@ -223,10 +225,16 @@ const FuneralPartidasPage = () => {
             </p>
           </div>
 
-          <Button variant="outline" onClick={load} disabled={loading} className="rounded-xl">
-            <RefreshCcw className={cn('mr-2 h-4 w-4', loading && 'animate-spin')} />
-            Actualizar
-          </Button>
+          <div className="flex flex-wrap gap-2">
+            <Button type="button" variant="outline" onClick={() => navigate('/documentos/plantillas?template=71112')} className="rounded-xl">
+              <Printer className="mr-2 h-4 w-4" />
+              Certificado de Exequias
+            </Button>
+            <Button variant="outline" onClick={load} disabled={loading} className="rounded-xl">
+              <RefreshCcw className={cn('mr-2 h-4 w-4', loading && 'animate-spin')} />
+              Actualizar
+            </Button>
+          </div>
         </div>
 
         <div className="mb-5 rounded-[1.5rem] border border-slate-200 bg-white p-4 shadow-sm">
