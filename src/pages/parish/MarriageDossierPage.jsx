@@ -44,13 +44,33 @@ const MARRIAGE_DOCUMENT_SHORTCUTS = [
   ['71012','Soltería · testigos'],
   ['71021','Permiso matrimonial'],
   ['71031','Curso prematrimonial'],
+  ['71041','Constancia de pronto matrimonio'],
+  ['71051','Vecindad y convivencia'],
   ['72011','Dispensa de proclamas'],
-  ['72021','Matrimonio mixto'],
-  ['72061','Disparidad de culto'],
+  ['72031','Dispensa de edad'],
+  ['73031','Partida existente · novio','groom'],
+  ['73031','Partida existente · novia','bride'],
   ['73101','Delegación para matrimonio']
 ];
 
-const buildMarriageDocumentContext = ({ code, pendingMarriage, answers, meta, user }) => {
+const canonicalMarriageDocuments = (category) => {
+  if (category === 'mixed_marriage') return [['72021','Matrimonio mixto']];
+  if (category === 'disparity_of_cult') return [['72061','Disparidad de culto']];
+  return [];
+};
+
+const ageAtDate = (birthDate, eventDate) => {
+  if (!birthDate || !eventDate) return '';
+  const birth = new Date(`${String(birthDate).slice(0,10)}T12:00:00`);
+  const event = new Date(`${String(eventDate).slice(0,10)}T12:00:00`);
+  if (Number.isNaN(birth.getTime()) || Number.isNaN(event.getTime()) || event < birth) return '';
+  let years = event.getFullYear() - birth.getFullYear();
+  const month = event.getMonth() - birth.getMonth();
+  if (month < 0 || (month === 0 && event.getDate() < birth.getDate())) years -= 1;
+  return String(years);
+};
+
+const buildMarriageDocumentContext = ({ code, variant='', pendingMarriage, answers, meta, user }) => {
   const groom = answers?.groom || {};
   const bride = answers?.bride || {};
   const witness1 = answers?.witness1 || {};
@@ -73,6 +93,12 @@ const buildMarriageDocumentContext = ({ code, pendingMarriage, answers, meta, us
     : bride.baptismStatus === 'NO BAUTIZADO' ? brideFull
       : '';
 
+  const plannedDate = meta?.plannedMarriageDate || pendingMarriage?.sacramentDate || pendingMarriage?.fechaSacramento || '';
+  const selectedParty = variant === 'bride' ? bride : groom;
+  const selectedFull = variant === 'bride' ? brideFull : groomFull;
+  const selectedParents = variant === 'bride' ? brideParents : groomParents;
+  const selectedPrefix = variant === 'bride' ? 'novia' : 'novio';
+
   return {
     Miparroquia:user?.parishName || '',
     Miciudad:user?.parishCity || user?.city || '',
@@ -84,9 +110,11 @@ const buildMarriageDocumentContext = ({ code, pendingMarriage, answers, meta, us
     Nombre1:groomFull,
     Nombre2:brideFull,
     Direccion:groom.residenceAddress || bride.residenceAddress || '',
-    Fecmat:meta?.plannedMarriageDate || '',
-    FechaMatrimonio:meta?.plannedMarriageDate || '',
-    Solicitante:groomFull,
+    Fecmat:plannedDate,
+    FechaMatrimonio:plannedDate,
+    Edad1:ageAtDate(groom.birthDate, plannedDate),
+    Edad2:ageAtDate(bride.birthDate, plannedDate),
+    Solicitante:variant ? selectedFull : groomFull,
     Pareja:brideFull,
     Nombres:groomNames,
     Apellidos:groomSurnames,
@@ -101,11 +129,18 @@ const buildMarriageDocumentContext = ({ code, pendingMarriage, answers, meta, us
     ElContrayente:groomFull,
     LaContrayente:brideFull,
     Parroco:pendingMarriage?.daFe || pendingMarriage?.presenciaria || '',
-    LibroBau:pendingMarriage?.novioBautismoLibro || '',
-    FolioBau:pendingMarriage?.novioBautismoFolio || '',
-    NumeroBau:pendingMarriage?.novioBautismoNumero || '',
-    ParroBau:pendingMarriage?.novioBautismoLugar || '',
-    SolicitanteBautismo:groomFull,
+    LibroBau:pendingMarriage?.[`${selectedPrefix}BautismoLibro`] || '',
+    FolioBau:pendingMarriage?.[`${selectedPrefix}BautismoFolio`] || '',
+    NumeroBau:pendingMarriage?.[`${selectedPrefix}BautismoNumero`] || '',
+    Diocesis:user?.dioceseName || user?.diocese_name || '',
+    ParroBau:pendingMarriage?.[`${selectedPrefix}BautismoLugar`] || '',
+    FechaBau:pendingMarriage?.[`${selectedPrefix}BautismoFecha`] || '',
+    SolicitanteBautismo:selectedFull,
+    FechaNac:selectedParty.birthDate || '',
+    LugarNac:selectedParty.birthPlace || '',
+    Padres:selectedParents,
+    TipoSexo:variant === 'bride' ? 'BAUTIZADA' : variant === 'groom' ? 'BAUTIZADO' : '',
+    FechaExp:new Date().toISOString().slice(0,10),
     PadresNovio:groomParents,
     PadresNovia:brideParents,
     CodigoDocumento:String(code || '')
@@ -254,10 +289,13 @@ const mergeBlank = (current, incoming) => Object.fromEntries(
   Object.keys({ ...incoming, ...current }).map((key) => [key, current?.[key] || incoming?.[key] || ''])
 );
 
-const DocumentShortcuts = ({ onOpen }) => <div className="rounded-2xl border border-blue-100 bg-blue-50/50 p-5">
-  <div className="flex items-start gap-3"><FileText className="mt-0.5 h-5 w-5 text-[#4B7BA7]"/><div><p className="text-[10px] font-black uppercase tracking-widest text-[#4B7BA7]">Documentos vinculados al expediente</p><p className="mt-1 text-xs text-slate-600">Abra directamente certificados, permisos y dispensas que pueden formar parte de este expediente.</p></div></div>
-  <div className="mt-4 flex flex-wrap gap-2">{MARRIAGE_DOCUMENT_SHORTCUTS.map(([code,label])=><Button key={code} type="button" variant="outline" onClick={()=>onOpen(code)} className="rounded-xl bg-white text-xs">{label}</Button>)}</div>
-</div>;
+const DocumentShortcuts = ({ onOpen, canonicalCategory='' }) => {
+  const shortcuts = [...MARRIAGE_DOCUMENT_SHORTCUTS, ...canonicalMarriageDocuments(canonicalCategory)];
+  return <div className="rounded-2xl border border-blue-100 bg-blue-50/50 p-5">
+    <div className="flex items-start gap-3"><FileText className="mt-0.5 h-5 w-5 text-[#4B7BA7]"/><div><p className="text-[10px] font-black uppercase tracking-widest text-[#4B7BA7]">Documentos vinculados al expediente</p><p className="mt-1 text-xs text-slate-600">Abra directamente certificados, permisos y dispensas que pueden formar parte de este expediente. Las dispensas por matrimonio mixto o disparidad de culto aparecen según la clasificación canónica seleccionada.</p></div></div>
+    <div className="mt-4 flex flex-wrap gap-2">{shortcuts.map(([code,label,variant=''])=><Button key={`${code}-${variant || 'default'}`} type="button" variant="outline" onClick={()=>onOpen(code,variant)} className="rounded-xl bg-white text-xs">{label}</Button>)}</div>
+  </div>;
+};
 
 export default function MarriageDossierPage(){
   const navigate=useNavigate();
@@ -404,10 +442,11 @@ export default function MarriageDossierPage(){
           {tab==='testigos'&&<div className="grid gap-6 xl:grid-cols-2"><WitnessInterview title="Primer testigo" data={answers.witness1||{}} setData={(k,v)=>setSection('witness1',k,v)}/><WitnessInterview title="Segundo testigo" data={answers.witness2||{}} setData={(k,v)=>setSection('witness2',k,v)}/></div>}
           {tab==='hijos'&&<ChildrenPanel childrenRows={answers.children||[]} onAdd={addChild} onUpdate={updateChild} onRemove={removeChild}/>}
           {tab==='documentos'&&<div className="space-y-6">
-            <DocumentShortcuts onOpen={(code)=>navigate(`/documentos/plantillas?template=${code}`, {
+            <DocumentShortcuts canonicalCategory={answers.canonicalMarriageCategory || pendingMarriage?.canonicalMarriageCategory || ''} onOpen={(code,variant='')=>navigate(`/documentos/plantillas?template=${code}`, {
               state:{
                 templateValues:buildMarriageDocumentContext({
                   code,
+                  variant,
                   pendingMarriage,
                   answers,
                   meta,
