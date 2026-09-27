@@ -7,7 +7,14 @@ import DecreeCenterHeader, {
   DECREE_SACRAMENT_META,
   decreeRouteFor
 } from '@/components/chancery/DecreeCenterHeader';
-import { ArrowRight, LockKeyhole, ShieldCheck } from 'lucide-react';
+import { ArrowRight, FileText, LockKeyhole, ShieldCheck } from 'lucide-react';
+
+const PARISH_REQUEST_DOCUMENTS = Object.freeze({
+  bautismo: [['73021','Solicitud de corrección'],['73071','Solicitud de reposición']],
+  confirmacion: [['73023','Solicitud de corrección'],['73071','Solicitud de reposición']],
+  matrimonio: [['73022','Solicitud de corrección'],['73071','Solicitud de reposición']],
+  exequias: [['73071','Solicitud de reposición']]
+});
 
 const ParishSacramentalDecreesCenterPage = () => {
   const { user } = useAuth();
@@ -89,6 +96,24 @@ const ParishSacramentalDecreesCenterPage = () => {
                       </button>
                     ))}
                   </div>
+
+                  {(PARISH_REQUEST_DOCUMENTS[sacramentKey] || []).length > 0 && (
+                    <div className="mt-4 border-t border-slate-200 pt-4">
+                      <p className="text-[9px] font-black uppercase tracking-widest text-slate-500">Preparar solicitud para Cancillería</p>
+                      <div className="mt-2 flex flex-wrap gap-2">
+                        {PARISH_REQUEST_DOCUMENTS[sacramentKey].map(([code,label]) => (
+                          <button
+                            key={sacramentKey + '-' + code}
+                            type="button"
+                            onClick={() => navigate('/documentos/plantillas?template=' + code)}
+                            className="inline-flex items-center rounded-xl border border-slate-200 bg-white px-3 py-2 text-[10px] font-bold text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-800"
+                          >
+                            <FileText className="mr-2 h-3.5 w-3.5" />{label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </article>
               );
             })}

@@ -411,9 +411,16 @@ const BaptismNewPage = () => {
                                                 Quedará registrado que el expediente para mayores de 8 años está pendiente de firma.
                                             </p>
                                         )}
-                                        <div className="mt-4 flex flex-wrap gap-2">
-                                            <Button type="button" variant="outline" onClick={()=>navigate('/documentos/plantillas?template=73041')} className="rounded-xl bg-white text-xs"><FileText className="mr-2 h-4 w-4"/>Solicitud de Bautismo</Button>
-                                            <Button type="button" variant="outline" onClick={()=>navigate('/documentos/plantillas?template=73061')} className="rounded-xl bg-white text-xs"><FileText className="mr-2 h-4 w-4"/>Permiso para Bautizar</Button>
+                                        <div className="mt-4">
+                                            <p className="mb-2 text-[9px] font-black uppercase tracking-widest text-amber-700">Documentos de apoyo del expediente</p>
+                                            <div className="flex flex-wrap gap-2">
+                                                <Button type="button" variant="outline" onClick={()=>navigate('/documentos/plantillas?template=71081')} className="rounded-xl bg-white text-xs"><FileText className="mr-2 h-4 w-4"/>Preparación para Bautismo</Button>
+                                                <Button type="button" variant="outline" onClick={()=>navigate('/documentos/plantillas?template=71091')} className="rounded-xl bg-white text-xs"><FileText className="mr-2 h-4 w-4"/>Declaración no Bautizado</Button>
+                                                <Button type="button" variant="outline" onClick={()=>navigate('/documentos/plantillas?template=71101')} className="rounded-xl bg-white text-xs"><FileText className="mr-2 h-4 w-4"/>Constancia no Bautizado</Button>
+                                                <Button type="button" variant="outline" onClick={()=>navigate('/documentos/plantillas?template=73041')} className="rounded-xl bg-white text-xs"><FileText className="mr-2 h-4 w-4"/>Solicitud de Bautismo</Button>
+                                                <Button type="button" variant="outline" onClick={()=>navigate('/documentos/plantillas?template=73061')} className="rounded-xl bg-white text-xs"><FileText className="mr-2 h-4 w-4"/>Permiso para Bautizar</Button>
+                                            </div>
+                                            <p className="mt-2 text-[10px] leading-relaxed text-amber-800">Son accesos documentales de apoyo. SACRAMENTUM no los marca automáticamente como obligatorios: su uso depende del expediente y de la situación canónica concreta.</p>
                                         </div>
                                     </div>
                                 )}
