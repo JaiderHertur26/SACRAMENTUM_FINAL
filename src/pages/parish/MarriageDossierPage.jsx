@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useState } from 'react';
-import { FileArchive, FileText, Loader2, Plus, RefreshCw, Save, ShieldCheck, Trash2 } from 'lucide-react';
+import { FileArchive, FileText, Loader2, Plus, Printer, RefreshCw, Save, ShieldCheck, Trash2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '@/components/DashboardLayout';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 import { useAuth } from '@/context/AuthContext';
 import { loadMarriageDossierSources, saveMarriageDossier } from '@/services/marriageDossierService';
+import { buildMarriageDossierHtml } from '@/utils/marriageDossierDocumentHtml';
 
 const emptyPartyInterview = {
   fullName:'', documentId:'', documentIssuedAt:'', birthDate:'', birthPlace:'', father:'', mother:'',
@@ -386,6 +387,24 @@ export default function MarriageDossierPage(){
     setMeta({dossierNumber:'',dossierDate:new Date().toISOString().slice(0,10),plannedMarriageDate:'',ceremonyPlace:user?.parishName||'',status:'draft'});
   };
 
+  const printDossier=()=>{
+    const popup=window.open('','_blank','width=980,height=1100');
+    if(!popup){
+      toast({title:'El navegador bloqueó la impresión',description:'Permita ventanas emergentes para imprimir el expediente matrimonial.',variant:'destructive'});
+      return;
+    }
+    popup.document.write(buildMarriageDossierHtml({
+      meta,
+      answers,
+      pendingMarriage,
+      institution:{
+        parishName:user?.parishName||'Parroquia',
+        dioceseName:user?.dioceseName||user?.diocese_name||''
+      }
+    }));
+    popup.document.close();
+  };
+
   const save=async()=>{
     if(!parishId)return;
     if(!pendingId&&!selectedId){toast({title:'Seleccione un matrimonio por celebrar',variant:'destructive'});return;}
@@ -410,7 +429,7 @@ export default function MarriageDossierPage(){
     <div className="mx-auto max-w-7xl space-y-7 pb-24">
       <div className="flex flex-col justify-between gap-4 lg:flex-row lg:items-end">
         <div><p className="text-[9px] font-black uppercase tracking-[.22em] text-[#4B7BA7]">Matrimonio · investigación canónica</p><h1 className="font-serif text-4xl font-black text-slate-950">Expediente Matrimonial</h1><p className="mt-2 max-w-3xl text-sm text-slate-500">Expediente canónico digital con entrevistas reservadas, testigos, hijos, documentos, dispensas y acta, vinculado al matrimonio por celebrar y a la partida definitiva.</p></div>
-        <div className="flex gap-2"><Button variant="outline" onClick={refresh}><RefreshCw className="mr-2 h-4 w-4"/>Actualizar</Button><Button onClick={newDossier} className="bg-slate-950 text-white"><FileArchive className="mr-2 h-4 w-4"/>Nuevo expediente</Button></div>
+        <div className="flex flex-wrap gap-2"><Button variant="outline" onClick={refresh}><RefreshCw className="mr-2 h-4 w-4"/>Actualizar</Button><Button variant="outline" onClick={printDossier}><Printer className="mr-2 h-4 w-4"/>Imprimir expediente</Button><Button onClick={newDossier} className="bg-slate-950 text-white"><FileArchive className="mr-2 h-4 w-4"/>Nuevo expediente</Button></div>
       </div>
 
       <div className="grid gap-5 xl:grid-cols-[320px_1fr]">
