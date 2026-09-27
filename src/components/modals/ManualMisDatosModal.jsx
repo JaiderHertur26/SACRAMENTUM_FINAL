@@ -10,7 +10,7 @@ import { loadMisDatosAutofillContext, mergeChurchIntoMisDatos } from '@/services
 const EMPTY_FORM = {
   iglesia_id: '', idcod: '', nombre: '', nronit: '', region: '', direccion: '',
   ciudad: '', telefono: '', nrofax: '', email: '', parroco: '', vicaria: '',
-  decanato: '', diocesis: '', obispo: '', canciller: '', serial: '', ruta: ''
+  decanato: '', diocesis: '', obispo: '', obispoAuxiliar: '', canciller: '', viceCanciller: '', serial: '', ruta: ''
 };
 
 const labelClass = 'text-[9px] font-black text-slate-500 uppercase ml-1';
@@ -166,7 +166,9 @@ const ManualMisDatosModal = ({ isOpen, onClose, onSave }) => {
               ['vicaria','Vicaría'],
               ['decanato','Decanato'],
               ['obispo','Obispo / Ordinario'],
-              ['canciller','Canciller']
+              ['obispoAuxiliar','Obispo Auxiliar (Opcional)'],
+              ['canciller','Canciller'],
+              ['viceCanciller','Vice-Canciller (Opcional)']
             ].map(([name,label]) => (
               <div className="space-y-1" key={name}>
                 <label className={labelClass}>{label}</label>

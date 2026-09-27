@@ -47,8 +47,10 @@ const ViewMisDatosModal = ({ isOpen, onClose, data }) => {
                         <DetailItem label="Vicaría" value={data.vicaria} />
                         <DetailItem label="Decanato" value={data.decanato} />
                         <DetailItem label="Diócesis / Arquidiócesis" value={data.diocesis} />
-                        <DetailItem label="Obispo Titular" value={data.obispo} />
+                        <DetailItem label="Obispo / Arzobispo" value={data.obispo} />
+                        <DetailItem label="Obispo Auxiliar" value={data.obispoAuxiliar || data.obispo_auxiliar} />
                         <DetailItem label="Canciller" value={data.canciller} />
+                        <DetailItem label="Vice-Canciller" value={data.viceCanciller || data.vice_canciller || data.vicecanciller} />
                         <DetailItem label="Serial de Archivo" value={data.serial} />
                     </div>
                 </div>

@@ -19,10 +19,6 @@ const normalizeChurch = (row = {}) => ({
   diocesis: upper(row.diocesis)
 });
 
-const bestName = (profile) => upper(
-  profile?.full_name || profile?.username || profile?.email || ''
-);
-
 export async function loadMisDatosAutofillContext(parishId) {
   if (!parishId) return { defaults: {}, churches: [] };
 
@@ -35,7 +31,7 @@ export async function loadMisDatosAutofillContext(parishId) {
   if (parishError) throw parishError;
   if (!parish) return { defaults: {}, churches: [] };
 
-  const [churchesResult, dioceseResult, vicaryResult, decanateResult, priestResult] = await Promise.all([
+  const [churchesResult, dioceseResult, vicaryResult, decanateResult, priestResult, chanceryResult] = await Promise.all([
     supabase.from('iglesias').select('*').eq('parish_id', parishId).order('nombre'),
     parish.diocese_id
       ? supabase.from('dioceses').select('*').eq('id', parish.diocese_id).maybeSingle()
@@ -50,44 +46,26 @@ export async function loadMisDatosAutofillContext(parishId) {
       .select('id,nombre,apellido,estado,fecha_ingreso,fecha_salida,email,telefono')
       .eq('parish_id', parishId)
       .order('fecha_ingreso', { ascending: false, nullsFirst: false })
-      .limit(1)
+      .limit(1),
+    parish.diocese_id
+      ? supabase
+          .from('chancelleries')
+          .select('id,chancellor_name,vice_chancellor_name')
+          .eq('diocese_id', parish.diocese_id)
+          .limit(1)
+          .maybeSingle()
+      : Promise.resolve({ data: null, error: null })
   ]);
 
-  for (const result of [churchesResult, dioceseResult, vicaryResult, decanateResult, priestResult]) {
+  for (const result of [churchesResult, dioceseResult, vicaryResult, decanateResult, priestResult, chanceryResult]) {
     if (result?.error) throw result.error;
   }
 
   const diocese = dioceseResult.data || null;
   const currentPriest = priestResult.data?.[0] || null;
-  let chancellorName = '';
-
-  if (parish.diocese_id) {
-    const { data: chancery, error: chanceryError } = await supabase
-      .from('chancelleries')
-      .select('id')
-      .eq('diocese_id', parish.diocese_id)
-      .maybeSingle();
-
-    if (chanceryError) {
-      console.warn('No fue posible resolver Cancillería para Mis Datos:', chanceryError);
-    }
-
-    if (chancery?.id) {
-      const { data: profile, error: profileError } = await supabase
-        .from('user_profiles')
-        .select('full_name,username,email,is_active')
-        .eq('chancery_id', chancery.id)
-        .eq('is_active', true)
-        .limit(1)
-        .maybeSingle();
-
-      if (profileError) {
-        console.warn('No fue posible resolver el usuario Canciller para Mis Datos:', profileError);
-      } else {
-        chancellorName = bestName(profile);
-      }
-    }
-  }
+  const chancery = chanceryResult.data || null;
+  const chancellorName = upper(chancery?.chancellor_name);
+  const viceChancellorName = upper(chancery?.vice_chancellor_name);
 
   const churches = (churchesResult.data || []).map(normalizeChurch);
   const matchingChurch = churches.find((item) => sameName(item.nombre, parish.name));
@@ -108,7 +86,9 @@ export async function loadMisDatosAutofillContext(parishId) {
     vicaria: upper(vicaryResult.data?.name),
     decanato: upper(decanateResult.data?.name),
     obispo: upper(diocese?.bishop_name || diocese?.bishop),
+    obispoAuxiliar: upper(diocese?.auxiliary_bishop),
     canciller: chancellorName,
+    viceCanciller: viceChancellorName,
     region: upper(diocese?.jurisdiccion_eclesiastica || diocese?.provincia_eclesiastica),
     serial: '',
     ruta: ''
@@ -142,7 +122,9 @@ export function mergeChurchIntoMisDatos(current = {}, church = {}, institutional
     vicaria: institutionalDefaults.vicaria || current.vicaria || '',
     decanato: institutionalDefaults.decanato || current.decanato || '',
     obispo: institutionalDefaults.obispo || current.obispo || '',
+    obispoAuxiliar: institutionalDefaults.obispoAuxiliar || current.obispoAuxiliar || current.obispo_auxiliar || '',
     canciller: institutionalDefaults.canciller || current.canciller || '',
+    viceCanciller: institutionalDefaults.viceCanciller || current.viceCanciller || current.vice_canciller || current.vicecanciller || '',
     region: institutionalDefaults.region || current.region || ''
   };
 }

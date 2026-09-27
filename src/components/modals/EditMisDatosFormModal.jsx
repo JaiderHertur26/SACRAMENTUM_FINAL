@@ -77,26 +77,25 @@ const EditMisDatosFormModal = ({ isOpen, onClose, record, onSave }) => {
                 <div className="border-t border-slate-200 pt-4 mt-2">
                     <h4 className="font-bold text-[#4B7BA7] mb-3 text-sm uppercase tracking-wider">Datos Eclesiásticos</h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label className="block text-sm font-bold text-slate-700 mb-1">Vicaría</label>
-                            <Input name="vicaria" value={formData.vicaria || ''} onChange={handleChange} />
-                        </div>
-                        <div>
-                            <label className="block text-sm font-bold text-slate-700 mb-1">Decanato</label>
-                            <Input name="decanato" value={formData.decanato || ''} onChange={handleChange} />
-                        </div>
-                        <div>
-                            <label className="block text-sm font-bold text-slate-700 mb-1">Diócesis</label>
-                            <Input name="diocesis" value={formData.diocesis || ''} onChange={handleChange} />
-                        </div>
-                        <div>
-                            <label className="block text-sm font-bold text-slate-700 mb-1">Obispo</label>
-                            <Input name="obispo" value={formData.obispo || ''} onChange={handleChange} />
-                        </div>
-                        <div>
-                            <label className="block text-sm font-bold text-slate-700 mb-1">Canciller</label>
-                            <Input name="canciller" value={formData.canciller || ''} onChange={handleChange} />
-                        </div>
+                        {[
+                            ['vicaria', 'Vicaría'],
+                            ['decanato', 'Decanato'],
+                            ['diocesis', 'Diócesis / Arquidiócesis'],
+                            ['obispo', 'Obispo / Arzobispo'],
+                            ['obispoAuxiliar', 'Obispo Auxiliar (Opcional)'],
+                            ['canciller', 'Canciller'],
+                            ['viceCanciller', 'Vice-Canciller (Opcional)']
+                        ].map(([name, label]) => (
+                            <div key={name}>
+                                <label className="block text-sm font-bold text-slate-700 mb-1">{label}</label>
+                                <Input
+                                    name={name}
+                                    value={formData[name] || ''}
+                                    readOnly
+                                    className="bg-slate-100 text-slate-700 font-bold cursor-not-allowed"
+                                />
+                            </div>
+                        ))}
                         <div>
                              <label className="block text-sm font-bold text-slate-700 mb-1">Serial</label>
                              <Input name="serial" value={formData.serial || ''} onChange={handleChange} />

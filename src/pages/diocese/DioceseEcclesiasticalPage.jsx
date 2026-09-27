@@ -412,6 +412,12 @@ const DioceseEcclesiasticalPage = () => {
                 <div className="rounded-2xl border bg-white p-4"><p className="text-[9px] font-black uppercase tracking-widest text-slate-400">Correo</p><p className="mt-1 break-all text-xs font-bold text-slate-700">{realDiocese.email || 'No registrado'}</p></div>
                 <div className="rounded-2xl border bg-white p-4"><p className="text-[9px] font-black uppercase tracking-widest text-slate-400">Fax</p><p className="mt-1 text-xs font-bold text-slate-700">{realDiocese.fax || 'No registrado'}</p></div>
               </div>
+              <div className="mt-3 flex flex-wrap gap-2 text-[10px] font-bold text-slate-700">
+                <span className="rounded-xl border bg-white px-3 py-2">Obispo / Arzobispo: {realDiocese.bishop || realDiocese.bishop_name || 'No registrado'}</span>
+                {realDiocese.auxiliary_bishop && (
+                  <span className="rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-amber-900">Obispo Auxiliar: {realDiocese.auxiliary_bishop}</span>
+                )}
+              </div>
             </div>
           )}
 
@@ -425,7 +431,13 @@ const DioceseEcclesiasticalPage = () => {
           {realChancery && (
             <div className="bg-white rounded-3xl border border-slate-100 overflow-hidden shadow-sm">
               <div className="bg-gradient-to-r from-[#D4AF37] to-[#B4932A] p-6 lg:px-10 flex justify-between items-center">
-                <div><h3 className="font-black text-2xl text-white uppercase">{realChancery.name}</h3><p className="text-[10px] font-bold text-white/80 uppercase tracking-widest mt-1"><MapPin className="w-3 h-3 inline mr-1" />{realChancery.city || 'Sede no especificada'} · {chanceryProfile?.full_name || chanceryProfile?.email || 'Sin cuenta activada'}</p></div>
+                <div>
+                  <h3 className="font-black text-2xl text-white uppercase">{realChancery.name}</h3>
+                  <p className="text-[10px] font-bold text-white/80 uppercase tracking-widest mt-1">
+                    <MapPin className="w-3 h-3 inline mr-1" />{realChancery.city || 'Sede no especificada'} · Canciller: {realChancery.chancellor_name || chanceryProfile?.full_name || chanceryProfile?.email || 'Sin asignar'}
+                  </p>
+                  {realChancery.vice_chancellor_name && <p className="text-[9px] font-black text-white/75 uppercase tracking-widest mt-1">Vice-Canciller: {realChancery.vice_chancellor_name}</p>}
+                </div>
                 <div className="flex gap-2"><button onClick={() => openModal('editChancellor', realChancery)} className="p-3 bg-white/15 rounded-xl text-white"><Edit className="w-4 h-4" /></button>{!chanceryProfile && <button onClick={handleDeleteChancery} className="p-3 bg-red-500/30 rounded-xl text-white"><Trash2 className="w-4 h-4" /></button>}</div>
               </div>
             </div>

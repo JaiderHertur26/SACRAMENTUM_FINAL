@@ -17,6 +17,7 @@ import ConfirmationDialog from '@/components/ui/ConfirmationDialog';
 import ManualMisDatosModal from '@/components/modals/ManualMisDatosModal';
 import ViewMisDatosModal from '@/components/modals/ViewMisDatosModal';
 import { institutionalAlert } from '@/lib/institutionalDialog';
+import { loadMisDatosAutofillContext } from '@/services/misDatosAutofillService';
 
 const MisDatosList = () => {
     const { user } = useAuth();
@@ -67,8 +68,31 @@ const MisDatosList = () => {
                 return { ...rawPayload, ...dbItem, id: dbItem.id };
             });
 
-            setItems(processedData || []);
-            localStorage.setItem('mis_datos', JSON.stringify(processedData || []));
+            let institutionalDefaults = {};
+            const parishId = user?.parishId || user?.parish_id;
+            if (parishId) {
+                try {
+                    const context = await loadMisDatosAutofillContext(parishId);
+                    institutionalDefaults = context?.defaults || {};
+                } catch (contextError) {
+                    console.warn('No fue posible refrescar las autoridades institucionales de Mis Datos:', contextError);
+                }
+            }
+
+            const hydratedData = processedData.map((item) => ({
+                ...item,
+                diocesis: institutionalDefaults.diocesis || item.diocesis || '',
+                vicaria: institutionalDefaults.vicaria || item.vicaria || '',
+                decanato: institutionalDefaults.decanato || item.decanato || '',
+                obispo: institutionalDefaults.obispo || item.obispo || '',
+                obispoAuxiliar: institutionalDefaults.obispoAuxiliar || item.obispoAuxiliar || item.obispo_auxiliar || '',
+                canciller: institutionalDefaults.canciller || item.canciller || '',
+                viceCanciller: institutionalDefaults.viceCanciller || item.viceCanciller || item.vice_canciller || item.vicecanciller || '',
+                region: institutionalDefaults.region || item.region || ''
+            }));
+
+            setItems(hydratedData || []);
+            localStorage.setItem('mis_datos', JSON.stringify(hydratedData || []));
         } catch (error) {
             console.error("Error cargando Mis Datos:", error);
             setItems(getMisDatosList(entityId) || []); 

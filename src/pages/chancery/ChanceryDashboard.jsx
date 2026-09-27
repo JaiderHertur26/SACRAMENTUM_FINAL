@@ -36,6 +36,7 @@ const ChanceryDashboard = () => {
         id: null,
         nombreCancilleria: '',
         canciller: '',
+        viceCanciller: '',
         cargo: 'Canciller Diocesano',
         direccion: '',
         ciudad: '',
@@ -44,22 +45,40 @@ const ChanceryDashboard = () => {
     });
 
     useEffect(() => {
-        const chanceryId = user?.chanceryId || user?.chancery_id;
-        if (!chanceryId) return;
-        const records = getMisDatosList(chanceryId);
-        if (records?.length > 0) {
-            const d = records[0];
+        let active = true;
+        const loadInstitutionalIdentity = async () => {
+            const chanceryId = user?.chanceryId || user?.chancery_id;
+            if (!chanceryId) return;
+
+            const records = getMisDatosList(chanceryId);
+            const d = records?.[0] || {};
+
+            let chanceryRow = null;
+            const { data: row, error } = await supabase
+                .from('chancelleries')
+                .select('name,city,chancellor_name,vice_chancellor_name')
+                .eq('id', chanceryId)
+                .maybeSingle();
+
+            if (!error) chanceryRow = row;
+            if (!active) return;
+
+            const accountChancellor = user?.full_name || user?.username || user?.email || '';
             setMisDatosForm({
-                id: d.id,
-                nombreCancilleria: d.nombreCancilleria || d.nombre || user.chancelleryName || '',
-                canciller: d.canciller || d.parroco || '', 
+                id: d.id || null,
+                nombreCancilleria: d.nombreCancilleria || d.nombre || chanceryRow?.name || user?.chancelleryName || '',
+                canciller: d.canciller || d.parroco || chanceryRow?.chancellor_name || accountChancellor,
+                viceCanciller: d.viceCanciller || d.vice_canciller || d.vicecanciller || chanceryRow?.vice_chancellor_name || '',
                 cargo: d.cargo || 'Canciller Diocesano',
                 direccion: d.direccion || '',
-                ciudad: d.ciudad || '',
+                ciudad: d.ciudad || chanceryRow?.city || '',
                 telefono: d.telefono || '',
                 email: d.email || ''
             });
-        }
+        };
+
+        loadInstitutionalIdentity();
+        return () => { active = false; };
     }, [user, isSettingsOpen, getMisDatosList]);
 
     useEffect(() => {
@@ -139,6 +158,8 @@ const ChanceryDashboard = () => {
                 ...misDatosForm,
                 nombre: misDatosForm.nombreCancilleria.toUpperCase(),
                 parroco: misDatosForm.canciller.toUpperCase(),
+                canciller: misDatosForm.canciller.toUpperCase(),
+                viceCanciller: (misDatosForm.viceCanciller || '').trim().toUpperCase(),
                 cargo: misDatosForm.cargo.toUpperCase(),
                 ciudad: misDatosForm.ciudad.toUpperCase()
             };
@@ -305,6 +326,11 @@ const ChanceryDashboard = () => {
                         </div>
 
                         <div className="space-y-1">
+                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Vice-Canciller (Opcional)</label>
+                            <Input value={misDatosForm.viceCanciller || ''} onChange={e => setMisDatosForm({...misDatosForm, viceCanciller: e.target.value})} className="py-6 font-bold" placeholder="Solo cuando la jurisdicción lo tenga" />
+                        </div>
+
+                        <div className="md:col-span-2 space-y-1">
                             <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Cargo Institucional</label>
                             <Input required value={misDatosForm.cargo} onChange={e => setMisDatosForm({...misDatosForm, cargo: e.target.value})} className="py-6 font-bold" />
                         </div>
