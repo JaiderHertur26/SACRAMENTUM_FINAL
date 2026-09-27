@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 import { 
     Save, X, Calendar, User, Users, BookOpen, PenTool, 
-    CheckCircle2, Loader2, ScrollText, MapPin, Hash, AlertCircle 
+    CheckCircle2, Loader2, ScrollText, MapPin, Hash, AlertCircle, FileText
 } from 'lucide-react';
 import BaptismTicket from '@/components/BaptismTicket';
 import AuxiliaryAutocomplete from '@/components/AuxiliaryAutocomplete';
@@ -411,6 +411,10 @@ const BaptismNewPage = () => {
                                                 Quedará registrado que el expediente para mayores de 8 años está pendiente de firma.
                                             </p>
                                         )}
+                                        <div className="mt-4 flex flex-wrap gap-2">
+                                            <Button type="button" variant="outline" onClick={()=>navigate('/documentos/plantillas?template=73041')} className="rounded-xl bg-white text-xs"><FileText className="mr-2 h-4 w-4"/>Solicitud de Bautismo</Button>
+                                            <Button type="button" variant="outline" onClick={()=>navigate('/documentos/plantillas?template=73061')} className="rounded-xl bg-white text-xs"><FileText className="mr-2 h-4 w-4"/>Permiso para Bautizar</Button>
+                                        </div>
                                     </div>
                                 )}
 
@@ -430,6 +434,10 @@ const BaptismNewPage = () => {
                                             <option value="yes">SÍ · CREAR TAMBIÉN CONFIRMACIÓN POR CELEBRAR</option>
                                             <option value="no">NO · SÓLO BAUTISMO</option>
                                         </select>
+
+                                        <div className="mt-4">
+                                            <Button type="button" variant="outline" onClick={()=>navigate('/documentos/plantillas?template=71111')} className="rounded-xl bg-white text-xs"><FileText className="mr-2 h-4 w-4"/>Preparación para la Confirmación</Button>
+                                        </div>
 
                                         {willReceiveConfirmation && (
                                             <div className="mt-5 rounded-2xl border border-blue-100 bg-white p-5">

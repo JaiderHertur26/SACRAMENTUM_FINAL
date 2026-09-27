@@ -1,26 +1,47 @@
 import { useEffect, useMemo, useState } from 'react';
-import { FileArchive, Loader2, Plus, RefreshCw, Save, ShieldCheck, Trash2 } from 'lucide-react';
+import { FileArchive, FileText, Loader2, Plus, RefreshCw, Save, ShieldCheck, Trash2 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '@/components/DashboardLayout';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 import { useAuth } from '@/context/AuthContext';
 import { loadMarriageDossierSources, saveMarriageDossier } from '@/services/marriageDossierService';
 
+const emptyPartyInterview = {
+  freedomToMarry:'', previousMarriage:'', previousCatholicMarriage:'', previousCivilMarriage:'',
+  priorMarriageDocumentNumber:'', priorMarriageDocumentDate:'', priorMarriageDocumentIssuer:'',
+  kinship:'', cohabitation:'', religion:'', occupation:'', employer:'', residenceAddress:'',
+  residenceCity:'', phones:'', baptismStatus:'', baptismReference:'', confirmationStatus:'',
+  confirmationPlace:'', faithPractice:'', intentionPermanence:'', intentionChildren:'',
+  decreeRequired:'', decreeNumber:'', decreeDate:'', decreeIssuer:'', observations:''
+};
+
 const emptyAnswers = {
-  groom:{ freedomToMarry:'', previousMarriage:'', kinship:'', cohabitation:'', faithPractice:'', intentionPermanence:'', intentionChildren:'', observations:'' },
-  bride:{ freedomToMarry:'', previousMarriage:'', kinship:'', cohabitation:'', faithPractice:'', intentionPermanence:'', intentionChildren:'', observations:'' },
-  witness1:{ name:'', document:'', relationship:'', yearsKnown:'', confirmsFreedom:'', observations:'' },
-  witness2:{ name:'', document:'', relationship:'', yearsKnown:'', confirmsFreedom:'', observations:'' },
+  groom:{ ...emptyPartyInterview },
+  bride:{ ...emptyPartyInterview },
+  witness1:{ name:'', document:'', issuedAt:'', address:'', city:'', phone:'', relationship:'', yearsKnown:'', confirmsFreedom:'', observations:'' },
+  witness2:{ name:'', document:'', issuedAt:'', address:'', city:'', phone:'', relationship:'', yearsKnown:'', confirmsFreedom:'', observations:'' },
   documents:{ groomBaptism:'', brideBaptism:'', premaritalCourse:'', civilDocuments:'', dispensations:'', proclamations:'', other:'' },
   children:[],
   act:{ declaration:'', observations:'', pastorCertification:'' }
 };
 
-const Q = ({ label, value, onChange, multiline=false, options=null }) => <label className="block">
+const MARRIAGE_DOCUMENT_SHORTCUTS = [
+  ['71011','Soltería · bautizado aquí'],
+  ['71012','Soltería · testigos'],
+  ['71021','Permiso matrimonial'],
+  ['71031','Curso prematrimonial'],
+  ['72011','Dispensa de proclamas'],
+  ['72021','Matrimonio mixto'],
+  ['72061','Disparidad de culto'],
+  ['73101','Delegación para matrimonio']
+];
+
+const Q = ({ label, value, onChange, multiline=false, options=null, type='text' }) => <label className="block">
   <span className="text-[10px] font-black uppercase tracking-wider text-slate-500">{label}</span>
   {options ? <select value={value||''} onChange={e=>onChange(e.target.value)} className="mt-2 w-full rounded-xl border bg-white px-3 py-2.5 text-sm font-bold"><option value="">SELECCIONE…</option>{options.map(o=><option key={o} value={o}>{o}</option>)}</select>
     : multiline ? <textarea value={value||''} onChange={e=>onChange(e.target.value)} rows={3} className="mt-2 w-full rounded-xl border px-3 py-2.5 text-sm"/>
-    : <input value={value||''} onChange={e=>onChange(e.target.value)} className="mt-2 w-full rounded-xl border px-3 py-2.5 text-sm"/>}
+    : <input type={type} value={value||''} onChange={e=>onChange(e.target.value)} className="mt-2 w-full rounded-xl border px-3 py-2.5 text-sm"/>}
 </label>;
 
 const Interview = ({ title, data, setData }) => <div className="space-y-5">
@@ -52,7 +73,13 @@ const ChildrenPanel = ({ childrenRows, onAdd, onUpdate, onRemove }) => <div clas
     </div>)}</div>}
 </div>;
 
+const DocumentShortcuts = ({ onOpen }) => <div className="rounded-2xl border border-blue-100 bg-blue-50/50 p-5">
+  <div className="flex items-start gap-3"><FileText className="mt-0.5 h-5 w-5 text-[#4B7BA7]"/><div><p className="text-[10px] font-black uppercase tracking-widest text-[#4B7BA7]">Documentos vinculados al expediente</p><p className="mt-1 text-xs text-slate-600">Abra directamente certificados, permisos y dispensas que pueden formar parte de este expediente.</p></div></div>
+  <div className="mt-4 flex flex-wrap gap-2">{MARRIAGE_DOCUMENT_SHORTCUTS.map(([code,label])=><Button key={code} type="button" variant="outline" onClick={()=>onOpen(code)} className="rounded-xl bg-white text-xs">{label}</Button>)}</div>
+</div>;
+
 export default function MarriageDossierPage(){
+  const navigate=useNavigate();
   const { user }=useAuth();
   const { toast }=useToast();
   const parishId=user?.parishId||user?.parish_id;
@@ -147,9 +174,8 @@ export default function MarriageDossierPage(){
           {tab==='novio'&&<Interview title="Entrevista personal del novio" data={answers.groom||{}} setData={(k,v)=>setSection('groom',k,v)}/>}
           {tab==='novia'&&<Interview title="Entrevista personal de la novia" data={answers.bride||{}} setData={(k,v)=>setSection('bride',k,v)}/>}
           {tab==='testigos'&&<div className="grid gap-6 lg:grid-cols-2">{['witness1','witness2'].map((key,i)=><div key={key} className="rounded-2xl border p-5"><h3 className="mb-4 font-black">Testigo {i+1}</h3><div className="space-y-4"><Q label="Nombre completo" value={answers[key]?.name} onChange={v=>setSection(key,'name',v)}/><Q label="Documento" value={answers[key]?.document} onChange={v=>setSection(key,'document',v)}/><Q label="Relación con los contrayentes" value={answers[key]?.relationship} onChange={v=>setSection(key,'relationship',v)}/><Q label="Años de conocimiento" value={answers[key]?.yearsKnown} onChange={v=>setSection(key,'yearsKnown',v)}/><Q label="¿Confirma que son libres para casarse?" value={answers[key]?.confirmsFreedom} onChange={v=>setSection(key,'confirmsFreedom',v)} options={['SÍ','NO','NO SABE']}/><Q label="Observaciones" value={answers[key]?.observations} onChange={v=>setSection(key,'observations',v)} multiline/></div></div>)}</div>}
-          {tab==='hijos'&&<div className="space-y-4"><div className="flex items-center justify-between gap-3"><div><h3 className="font-serif text-2xl font-black text-slate-900">Hijos de los contrayentes</h3><p className="text-xs text-slate-500">Registre únicamente los datos que consten en el expediente.</p></div><Button type="button" variant="outline" onClick={addChild} className="rounded-xl"><Plus className="mr-2 h-4 w-4"/>Agregar hijo</Button></div>{(answers.children||[]).length===0?<div className="rounded-2xl border-2 border-dashed p-8 text-center text-sm text-slate-400">No se han registrado hijos en este expediente.</div>:<div className="space-y-3">{(answers.children||[]).map((child,index)=><div key={index} className="grid gap-3 rounded-2xl border bg-slate-50/50 p-4 md:grid-cols-[2fr_1fr_2fr_auto]"><Q label="Nombre completo" value={child.name} onChange={v=>updateChild(index,'name',v)}/><label className="block"><span className="text-[10px] font-black uppercase tracking-wider text-slate-500">Fecha de nacimiento</span><input type="date" value={child.birthDate||''} onChange={e=>updateChild(index,'birthDate',e.target.value)} className="mt-2 w-full rounded-xl border px-3 py-2.5 text-sm"/></label><Q label="Lugar / parroquia de Bautismo" value={child.baptismPlace} onChange={v=>updateChild(index,'baptismPlace',v)}/><Button type="button" variant="ghost" onClick={()=>removeChild(index)} className="self-end rounded-xl text-red-600"><Trash2 className="h-4 w-4"/></Button><div className="md:col-span-4"><Q label="Observaciones" value={child.notes} onChange={v=>updateChild(index,'notes',v)} multiline/></div></div>)}</div>}</div>}
           {tab==='hijos'&&<ChildrenPanel childrenRows={answers.children||[]} onAdd={addChild} onUpdate={updateChild} onRemove={removeChild}/>}
-          {tab==='documentos'&&<div className="grid gap-4 md:grid-cols-2"><Q label="Partida de Bautismo del novio" value={answers.documents?.groomBaptism} onChange={v=>setSection('documents','groomBaptism',v)}/><Q label="Partida de Bautismo de la novia" value={answers.documents?.brideBaptism} onChange={v=>setSection('documents','brideBaptism',v)}/><Q label="Curso prematrimonial" value={answers.documents?.premaritalCourse} onChange={v=>setSection('documents','premaritalCourse',v)}/><Q label="Documentos civiles" value={answers.documents?.civilDocuments} onChange={v=>setSection('documents','civilDocuments',v)}/><Q label="Dispensas / licencias" value={answers.documents?.dispensations} onChange={v=>setSection('documents','dispensations',v)} multiline/><Q label="Proclamas" value={answers.documents?.proclamations} onChange={v=>setSection('documents','proclamations',v)} multiline/><div className="md:col-span-2"><Q label="Otros documentos" value={answers.documents?.other} onChange={v=>setSection('documents','other',v)} multiline/></div></div>}
+          {tab==='documentos'&&<div className="space-y-5"><DocumentShortcuts onOpen={(code)=>navigate(`/documentos/plantillas?template=${code}`)}/><div className="grid gap-4 md:grid-cols-2"><Q label="Partida de Bautismo del novio" value={answers.documents?.groomBaptism} onChange={v=>setSection('documents','groomBaptism',v)}/><Q label="Partida de Bautismo de la novia" value={answers.documents?.brideBaptism} onChange={v=>setSection('documents','brideBaptism',v)}/><Q label="Curso prematrimonial" value={answers.documents?.premaritalCourse} onChange={v=>setSection('documents','premaritalCourse',v)}/><Q label="Documentos civiles" value={answers.documents?.civilDocuments} onChange={v=>setSection('documents','civilDocuments',v)}/><Q label="Dispensas / licencias" value={answers.documents?.dispensations} onChange={v=>setSection('documents','dispensations',v)} multiline/><Q label="Proclamas" value={answers.documents?.proclamations} onChange={v=>setSection('documents','proclamations',v)} multiline/><div className="md:col-span-2"><Q label="Otros documentos" value={answers.documents?.other} onChange={v=>setSection('documents','other',v)} multiline/></div></div></div>}
           {tab==='acta'&&<div className="space-y-4"><Q label="Declaración / conclusión del expediente" value={answers.act?.declaration} onChange={v=>setSection('act','declaration',v)} multiline/><Q label="Observaciones finales" value={answers.act?.observations} onChange={v=>setSection('act','observations',v)} multiline/><Q label="Certificación del párroco" value={answers.act?.pastorCertification} onChange={v=>setSection('act','pastorCertification',v)} multiline/><div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-4 text-xs font-medium text-emerald-900"><ShieldCheck className="mr-2 inline h-4 w-4"/>Al guardar se conserva la trazabilidad institucional del expediente y su vinculación con el registro matrimonial.</div></div>}
 
           <div className="mt-8 flex justify-end border-t pt-5"><Button onClick={save} disabled={busy} className="rounded-xl bg-[#D4AF37] font-black text-slate-950 hover:bg-[#c49d27]">{busy?<Loader2 className="mr-2 h-4 w-4 animate-spin"/>:<Save className="mr-2 h-4 w-4"/>}Guardar expediente</Button></div>
