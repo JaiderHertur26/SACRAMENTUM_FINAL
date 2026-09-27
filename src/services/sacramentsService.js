@@ -177,10 +177,11 @@ export const purificarRegistroBautismo = (raw) => {
         linkedConfirmationPendingId: raw.linkedConfirmationPendingId || rawPayload.linkedConfirmationPendingId || '',
         linkedConfirmationNumeroRegistro: raw.linkedConfirmationNumeroRegistro || rawPayload.linkedConfirmationNumeroRegistro || '',
 
-        nuip: String(raw.nuip || raw.documentNumber || ''),
-        serialRegistro: String(raw.serialRegistro || raw.serial_registro || raw.serialRegCivil || ''),
-        oficinaRegistro: String(raw.oficinaRegistro || raw.oficina_registro || raw.registryOffice || '').toUpperCase(),
-        fechaExpedicionRegistro: raw.fechaExpedicionRegistro || raw.fecha_expedicion_registro || raw.fechaExpedicion || '',
+        nuip: String(raw.nuip || raw.NUIP || rawPayload.nuip || rawPayload.NUIP || raw.documentNumber || ''),
+        serialRegistro: String(raw.serialRegistro || raw.serial_registro || raw.serialRegCivil || raw.regcivil || raw.REGCIV || rawPayload.serialRegistro || rawPayload.regcivil || rawPayload.REGCIV || ''),
+        oficinaRegistro: String(raw.oficinaRegistro || raw.oficina_registro || raw.registryOffice || raw.notaria || raw.NOTARIA || rawPayload.oficinaRegistro || rawPayload.notaria || rawPayload.NOTARIA || '').trim().toUpperCase(),
+        fechaExpedicionRegistro: raw.fechaExpedicionRegistro || raw.fecha_expedicion_registro || raw.fechaExpedicion || raw.fecregis || raw.FECREGIS || rawPayload.fechaExpedicionRegistro || rawPayload.fecregis || rawPayload.FECREGIS || '',
+        responsable: String(raw.responsable || raw.responsa || raw.RESPONSA || rawPayload.responsable || rawPayload.responsa || rawPayload.RESPONSA || '').trim().toUpperCase(),
 
         tipoUnionPadres: normalizeLegacyUnionType(raw.tipoUnionPadres || raw.tipo_union_padres || legacyResolved.tipo_union_padres || raw.parentalUnion || rawPayload.tipoUnionPadres || rawPayload.tipo_union_padres || rawPayload.tipohijo || ''),
         nombrePadre: String(raw.nombrePadre || raw.nombre_padre || raw.fatherName || '').trim().toUpperCase(),

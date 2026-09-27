@@ -113,12 +113,24 @@ const InfoBox = ({ data, marginalNotes = [] }) => {
                     </div>
                 )}
 
+                {(data.nuip || data.serialRegistro || data.oficinaRegistro || data.fechaExpedicionRegistro || data.responsable || data.direccion) && (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 rounded-[2rem] border border-blue-100 bg-blue-50/40 p-6">
+                        <DetailItem icon={User} label="NUIP / NIP" value={data.nuip} />
+                        <DetailItem icon={BookOpen} label="Registro civil / serial" value={data.serialRegistro} />
+                        <DetailItem icon={MapPin} label="Notaría / oficina de registro" value={data.oficinaRegistro} />
+                        <DetailItem icon={User} label="Fecha de registro civil" value={formatCivilDate(data.fechaExpedicionRegistro)} />
+                        <DetailItem icon={Users} label="Responsable / acudiente" value={data.responsable} />
+                        <DetailItem icon={MapPin} label="Dirección" value={data.direccion} />
+                    </div>
+                )}
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="bg-slate-50/70 p-6 rounded-[2rem] border border-slate-200 space-y-4">
                         <h4 className="text-[10px] font-black text-slate-900 uppercase tracking-widest flex items-center gap-2">
                             <Users className="w-3.5 h-3.5 text-[#4B7BA7]" /> Línea Paterna
                         </h4>
                         <DetailItem label="Padre" value={data.nombrePadre} />
+                        {data.cedulaPadre && <DetailItem label="Cédula del padre" value={data.cedulaPadre} />}
                         <DetailItem label="Abuelos Paternos" value={data.abuelosPaternos} isItalic />
                     </div>
                     <div className="bg-slate-50/70 p-6 rounded-[2rem] border border-slate-200 space-y-4">
@@ -126,6 +138,7 @@ const InfoBox = ({ data, marginalNotes = [] }) => {
                             <Users className="w-3.5 h-3.5 text-[#4B7BA7]" /> Línea Materna
                         </h4>
                         <DetailItem label="Madre" value={data.nombreMadre} />
+                        {data.cedulaMadre && <DetailItem label="Cédula de la madre" value={data.cedulaMadre} />}
                         <DetailItem label="Abuelos Maternos" value={data.abuelosMaternos} isItalic />
                     </div>
                 </div>
