@@ -11,6 +11,7 @@ import MarriageReadingSummaryPanel from '@/components/MarriageReadingSummaryPane
 import ViewMarriagePartidaModal from '@/components/modals/ViewMarriagePartidaModal';
 import { listMarriagesCloud } from '@/services/marriagesCloudService';
 import { getParishPrintProfile } from '@/services/sacramentsService';
+import { getCanonicalMarriageCategoryLabel } from '@/utils/marriageCanonicalStatus';
 
 const InfoBox = ({ data }) => {
     if (!data) return null;
@@ -177,6 +178,11 @@ const handleViewClick = (row, e) => {
                  <span className="text-[9px] font-black uppercase tracking-wider text-slate-400">
                    {row.historicalEntryMode === 'narrative' ? 'TRANSCRIPCIÓN LITERAL' : String(row.bookType || 'ordinario').toUpperCase()}
                  </span>
+                 {row.canonicalMarriageCategory && row.canonicalMarriageCategory !== 'other_or_undetermined' && row.historicalEntryMode !== 'narrative' && (
+                   <span className="max-w-[220px] rounded border border-[#D4AF37]/30 bg-[#FFFCF0] px-2 py-1 text-[8px] font-black uppercase leading-tight text-[#8A6D12]">
+                     {getCanonicalMarriageCategoryLabel(row.canonicalMarriageCategory)}
+                   </span>
+                 )}
                  {row.newBaptismIdRepo && <span className="text-[10px] bg-amber-100 text-amber-800 px-1 rounded border border-amber-200">REPOSICIÓN</span>}
              </div>
         )
