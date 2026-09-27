@@ -55,8 +55,14 @@ const MARRIAGE_DOCUMENT_SHORTCUTS = [
 ];
 
 const canonicalMarriageDocuments = (category) => {
-  if (category === 'mixed_marriage') return [['72021','Matrimonio mixto']];
-  if (category === 'disparity_of_cult') return [['72061','Disparidad de culto']];
+  if (category === 'mixed_marriage') return [
+    ['72021','Matrimonio mixto'],
+    ['MODERN-7206-CAUCIONES','Cauciones canónicas']
+  ];
+  if (category === 'disparity_of_cult') return [
+    ['72061','Disparidad de culto'],
+    ['MODERN-7206-CAUCIONES','Cauciones canónicas']
+  ];
   return [];
 };
 
