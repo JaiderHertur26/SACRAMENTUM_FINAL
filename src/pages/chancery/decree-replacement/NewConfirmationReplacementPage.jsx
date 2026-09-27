@@ -10,7 +10,7 @@ import { supabase } from '@/lib/supabaseClient';
 import { convertDateToSpanishText } from '@/utils/dateTimeFormatters';
 import DecreeCenterHeader from '@/components/chancery/DecreeCenterHeader';
 import DecreeConceptEffects from '@/components/chancery/DecreeConceptEffects';
-import { normalizeDecreeConceptPolicy } from '@/utils/decreeConceptPolicy';
+import { filterDecreeConcepts, normalizeDecreeConceptPolicy } from '@/utils/decreeConceptPolicy';
 import {
   CanonicalParishSelector,
   CanonicalField,
@@ -70,13 +70,13 @@ const NewConfirmationReplacementPage = () => {
       if (!dId) throw new Error('No se pudo determinar la diócesis de Cancillería.');
       setDioceseId(dId);
       const [pRes, cRes] = await Promise.all([
-        supabase.from('parishes').select('id,name,city').eq('diocese_id', dId).order('name'),
-        supabase.from('conceptos_anulacion').select('id,codigo,concepto,tipo,seinscribe,gennota,gendocum,enlibro,expide').eq('diocese_id', dId).order('codigo')
+        supabase.from('parishes').select('id,name,city').eq('diocese_id', dId).eq('is_operational', true).order('name'),
+        supabase.from('conceptos_anulacion').select('id,codigo,concepto,tipo,sacrament_type,source_kind,source_reference,is_active,seinscribe,gennota,gendocum,enlibro,expide').eq('diocese_id', dId).eq('is_active', true).order('codigo')
       ]);
       if (pRes.error) throw pRes.error;
       if (cRes.error) throw cRes.error;
       setParishes(pRes.data || []);
-      setConcepts((cRes.data || []).filter(c => c.tipo === 'porReposicion' || String(c.concepto || '').toLowerCase().includes('reposici')));
+      setConcepts(filterDecreeConcepts(cRes.data || [], { decreeType: 'porReposicion', sacramentType: 'confirmacion' }));
     };
     load().catch(error => toast({ title: 'Configuración incompleta', description: error.message, variant: 'destructive' }));
   }, [user, toast]);

@@ -14,7 +14,7 @@ import { marginalNotesEngine } from '@/utils/marginalNotesEngine';
 import { getMarginalNoteTemplates } from '@/services/marginalNotesTemplatesService';
 import DecreeCenterHeader from '@/components/chancery/DecreeCenterHeader';
 import DecreeConceptEffects from '@/components/chancery/DecreeConceptEffects';
-import { normalizeDecreeConceptPolicy } from '@/utils/decreeConceptPolicy';
+import { filterDecreeConcepts, normalizeDecreeConceptPolicy } from '@/utils/decreeConceptPolicy';
 import {
   CanonicalParishSelector,
   CanonicalRecordFinder,
@@ -142,13 +142,13 @@ const NewConfirmationCorrectionPage = () => {
         setCurrentDioceseId(dioceseId);
 
         const [{ data: parishes, error: parishError }, { data: concepts, error: conceptError }] = await Promise.all([
-          supabase.from('parishes').select('id,name,city,diocese_id').eq('diocese_id', dioceseId).order('name'),
-          supabase.from('conceptos_anulacion').select('id,codigo,concepto,tipo,seinscribe,gennota,gendocum,enlibro,expide').eq('diocese_id', dioceseId).order('codigo')
+          supabase.from('parishes').select('id,name,city,diocese_id').eq('diocese_id', dioceseId).eq('is_operational', true).order('name'),
+          supabase.from('conceptos_anulacion').select('id,codigo,concepto,tipo,sacrament_type,source_kind,source_reference,is_active,seinscribe,gennota,gendocum,enlibro,expide').eq('diocese_id', dioceseId).eq('is_active', true).order('codigo')
         ]);
         if (parishError) throw parishError;
         if (conceptError) throw conceptError;
         setParishesList(parishes || []);
-        setConceptos((concepts || []).filter(c => c.tipo === 'porCorreccion' || String(c.concepto || '').toLowerCase().includes('correcc')));
+        setConceptos(filterDecreeConcepts(concepts || [], { decreeType: 'porCorreccion', sacramentType: 'confirmacion' }));
 
         const entityId = user.chanceryId || user.chancery_id || user.id;
         const misDatos = getMisDatosList(entityId);

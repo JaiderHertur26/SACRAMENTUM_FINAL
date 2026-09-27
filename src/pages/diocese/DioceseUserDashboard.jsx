@@ -39,7 +39,7 @@ const DioceseUserDashboard = () => {
 
           // 2. Descargamos los conteos reales desde la nube de Supabase
           const [parishRes, vicRes, decRes] = await Promise.all([
-              supabase.from('parishes').select('*', { count: 'exact', head: true }).eq('diocese_id', currentDioceseId),
+              supabase.from('parishes').select('*', { count: 'exact', head: true }).eq('diocese_id', currentDioceseId).eq('is_operational', true),
               supabase.from('vicarias').select('*', { count: 'exact', head: true }).eq('diocese_id', currentDioceseId),
               supabase.from('decanatos').select('*', { count: 'exact', head: true }).eq('diocese_id', currentDioceseId)
           ]);

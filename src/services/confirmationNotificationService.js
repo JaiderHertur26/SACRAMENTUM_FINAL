@@ -10,6 +10,7 @@ export async function loadConfirmationNotificationContext({ parishId, dioceseId 
     supabase.from('parishes')
       .select('id,name,city,diocese_id')
       .eq('diocese_id',dioceseId)
+      .eq('is_operational',true)
       .order('name')
   ]);
   if(confirmationsResult.error) throw confirmationsResult.error;

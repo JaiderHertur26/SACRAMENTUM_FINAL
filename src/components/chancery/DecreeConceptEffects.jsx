@@ -1,6 +1,6 @@
 import React from 'react';
 import { FileText, BookOpenCheck, ScrollText, ShieldCheck } from 'lucide-react';
-import { decreeConceptBookLabel, normalizeDecreeConceptPolicy } from '@/utils/decreeConceptPolicy';
+import { decreeConceptBookLabel, decreeConceptSacramentLabel, normalizeDecreeConceptPolicy } from '@/utils/decreeConceptPolicy';
 
 const Pill = ({ children }) => (
   <span className="rounded-full border border-slate-200 bg-white px-2.5 py-1 text-[9px] font-black uppercase tracking-wider text-slate-600">
@@ -21,6 +21,7 @@ export default function DecreeConceptEffects({ concept }) {
       </div>
     </div>
     <div className="mt-3 flex flex-wrap gap-2">
+      <Pill>Sacramento: {decreeConceptSacramentLabel(policy.sacramentType)}</Pill>
       {policy.registersEffect && <Pill><BookOpenCheck className="mr-1 inline h-3 w-3"/>Inscripción</Pill>}
       {policy.generatesMarginalNote && <Pill><ScrollText className="mr-1 inline h-3 w-3"/>Nota marginal</Pill>}
       {policy.generatesDocument && <Pill><FileText className="mr-1 inline h-3 w-3"/>Documento</Pill>}

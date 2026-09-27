@@ -8,6 +8,7 @@ import { Search, Edit, PowerOff, Plus, Loader2, Save } from 'lucide-react';
 import Table from '@/components/ui/Table';
 import { supabase } from '@/lib/supabaseClient';
 import { institutionalConfirm } from '@/lib/institutionalDialog';
+import { decreeConceptSacramentLabel } from '@/utils/decreeConceptPolicy';
 
 const EMPTY = {
   id: null,
@@ -15,6 +16,7 @@ const EMPTY = {
   concepto: '',
   expide: 'CANCILLERÍA',
   tipo: 'porCorreccion',
+  sacrament_type: 'general',
   seinscribe: true,
   gennota: true,
   gendocum: true,
@@ -78,7 +80,7 @@ const AnnulmentConceptsTab = () => {
 
       const { data, error } = await supabase
         .from('conceptos_anulacion')
-        .select('id,codigo,concepto,expide,tipo,seinscribe,gennota,gendocum,enlibro,created_at,diocese_id,is_active')
+        .select('id,codigo,concepto,expide,tipo,sacrament_type,source_kind,source_reference,seinscribe,gennota,gendocum,enlibro,created_at,diocese_id,is_active')
         .eq('diocese_id', targetDioceseId)
         .eq('is_active', true)
         .order('codigo', { ascending: true });
@@ -110,7 +112,7 @@ const AnnulmentConceptsTab = () => {
     return concepts
       .filter((row) => {
         if (!term) return true;
-        return [row.codigo, row.concepto, typeLabel(row.tipo)]
+        return [row.codigo, row.concepto, typeLabel(row.tipo), decreeConceptSacramentLabel(row.sacrament_type)]
           .filter(Boolean)
           .join(' ')
           .toLowerCase()
@@ -139,6 +141,7 @@ const AnnulmentConceptsTab = () => {
         row.tipo === 'porReposicion' || row.tipo === 'porRepeticion'
           ? row.tipo
           : 'porCorreccion',
+      sacrament_type: row.sacrament_type || 'general',
       seinscribe: row.seinscribe !== false,
       gennota: row.gennota !== false,
       gendocum: row.gendocum !== false,
@@ -185,6 +188,7 @@ const AnnulmentConceptsTab = () => {
         concepto: form.concepto.trim().toUpperCase(),
         expide: (form.expide || 'CANCILLERÍA').trim().toUpperCase(),
         tipo: form.tipo,
+        sacrament_type: form.sacrament_type || 'general',
         seinscribe: Boolean(form.seinscribe),
         gennota: Boolean(form.gennota),
         gendocum: Boolean(form.gendocum),
@@ -294,6 +298,19 @@ const AnnulmentConceptsTab = () => {
         <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
           {row.expide}
         </span>
+      )
+    },
+    {
+      header: 'Sacramento',
+      render: (row) => (
+        <div className="flex flex-col gap-1">
+          <span className="w-fit rounded-full border border-indigo-200 bg-indigo-50 px-3 py-1.5 text-[9px] font-black uppercase tracking-widest text-indigo-700">
+            {decreeConceptSacramentLabel(row.sacrament_type)}
+          </span>
+          {row.source_kind === 'legacy_catalog' && (
+            <span className="text-[8px] font-black uppercase tracking-widest text-slate-400">Catálogo histórico</span>
+          )}
+        </div>
       )
     },
     {
@@ -428,6 +445,24 @@ const AnnulmentConceptsTab = () => {
                 <option value="porRepeticion">Repetición / histórico</option>
               </select>
             </div>
+          </div>
+
+          <div>
+            <label className="mb-1.5 block text-[10px] font-black uppercase tracking-widest text-slate-500">
+              Sacramento
+            </label>
+            <select
+              value={form.sacrament_type}
+              onChange={(event) => setForm((current) => ({ ...current, sacrament_type: event.target.value }))}
+              className="h-10 w-full rounded-md border border-slate-200 bg-white px-3 text-sm font-semibold"
+            >
+              <option value="general">General / varios sacramentos</option>
+              <option value="bautismo">Bautismo</option>
+              <option value="confirmacion">Confirmación</option>
+              <option value="matrimonio">Matrimonio</option>
+              <option value="exequias">Exequias</option>
+            </select>
+            <p className="mt-1 text-[9px] leading-relaxed text-slate-400">El concepto sólo podrá utilizarse en este sacramento. “General” queda disponible para todos.</p>
           </div>
 
           <div>

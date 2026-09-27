@@ -36,7 +36,7 @@ const AdminGeneralDashboard = () => {
         supabase.from('pending_tokens').select('id,token,type,payload,created_by,created_at').eq('type', 'DIOCESE').order('created_at', { ascending: false }),
         supabase.from('dioceses').select('*').order('name'),
         supabase.from('user_profiles').select('id,email,username,full_name,role,diocese_id,status,is_active'),
-        supabase.from('parishes').select('*', { count: 'exact', head: true }),
+        supabase.from('parishes').select('*', { count: 'exact', head: true }).eq('is_operational', true),
         supabase.from('baptisms').select('*', { count: 'exact', head: true }),
         supabase.from('confirmations').select('*', { count: 'exact', head: true }),
         supabase.from('marriages').select('*', { count: 'exact', head: true }),

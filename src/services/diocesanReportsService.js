@@ -7,7 +7,7 @@ export async function loadDiocesanReportStructure(dioceseId) {
     supabase.from('dioceses').select('id,name,city,bishop_name,bishop').eq('id', dioceseId).maybeSingle(),
     supabase.from('vicarias').select('id,name,diocese_id').eq('diocese_id', dioceseId).order('name'),
     supabase.from('decanatos').select('id,name,diocese_id,vicaria_id').eq('diocese_id', dioceseId).order('name'),
-    supabase.from('parishes').select('id,name,diocese_id,vicary_id,decanate_id,deanery_id').eq('diocese_id', dioceseId).order('name'),
+    supabase.from('parishes').select('id,name,diocese_id,vicary_id,decanate_id,deanery_id').eq('diocese_id', dioceseId).eq('is_operational', true).order('name'),
   ]);
 
   const error = dioceseRes.error || vicariasRes.error || decanatosRes.error || parishesRes.error;

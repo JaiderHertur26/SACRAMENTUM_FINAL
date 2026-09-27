@@ -61,6 +61,14 @@ const getNote = (payload = {}, type) => {
   return payload.replacementNote || payload.notaMarginal || '';
 };
 
+const isLegacyHistoricalDecree = (row = {}) => {
+  const payload = row.payload || {};
+  return payload.legacyHistorical === true
+    || String(row.tipo || '').toLowerCase().includes('legacy')
+    || String(payload.recordOrigin || '').toLowerCase() === 'legacy_import'
+    || String(payload.source || '').toLowerCase().startsWith('legacy_');
+};
+
 const SacramentalDecreeArchivePage = () => {
   const { user } = useAuth();
   const { toast } = useToast();
@@ -117,7 +125,8 @@ const SacramentalDecreeArchivePage = () => {
       const { data: parishes, error } = await supabase
         .from('parishes')
         .select('id,name')
-        .eq('diocese_id', dioceseId);
+        .eq('diocese_id', dioceseId)
+        .eq('is_operational', true);
 
       if (error) throw error;
 
@@ -196,6 +205,14 @@ const SacramentalDecreeArchivePage = () => {
   }, [rows, query, sacrament, typeFilter]);
 
   const reverse = async (row) => {
+    if (isLegacyHistoricalDecree(row)) {
+      toast({
+        title: 'Registro histórico protegido',
+        description: 'Este decreto fue importado del sistema anterior. Se conserva como antecedente documental y no puede revertirse como si hubiera sido emitido por SACRAMENTUM.',
+        variant: 'destructive'
+      });
+      return;
+    }
     if (String(row.status || '').toLowerCase() === 'reversed') return;
 
     const type = TYPE_KEY(
@@ -318,8 +335,10 @@ const SacramentalDecreeArchivePage = () => {
       row.decree_number || payload.decreeNumber || 'Decreto'
     );
 
-    const title =
-      type === 'correccion'
+    const legacyHistorical = isLegacyHistoricalDecree(row);
+    const title = legacyHistorical
+      ? 'REGISTRO HISTÓRICO DE DECRETO'
+      : type === 'correccion'
         ? 'DECRETO DE CORRECCIÓN'
         : 'DECRETO DE REPOSICIÓN';
 
@@ -379,8 +398,9 @@ const SacramentalDecreeArchivePage = () => {
       payload.numero_registro ||
       '';
 
-    const relationText =
-      type === 'correccion'
+    const relationText = legacyHistorical
+      ? 'Este registro reproduce la relación histórica encontrada en el sistema anterior entre la partida original y la partida sustitutiva. SACRAMENTUM la conserva para trazabilidad documental; no constituye una nueva emisión ni una convalidación posterior del decreto.'
+      : type === 'correccion'
         ? 'La partida original queda anulada y se crea una nueva partida en el Libro Supletorio, conservando la relación jurídica y documental entre ambos asientos.'
         : 'No existe una partida original utilizable. Con fundamento en la evidencia incorporada al expediente, se crea una nueva partida en el Libro Supletorio.';
 
@@ -419,6 +439,7 @@ p{font-size:12px;text-align:justify}
 .evidence,.note{margin-top:18px;padding:13px;border-left:3px solid #d4af37;background:#fbfaf6;font-size:11px}
 .sig{margin-top:75px;text-align:center}
 .small{text-align:center;margin-top:30px;font:400 8px Arial,sans-serif;color:#7d8793}
+.legacy{margin:16px 0;padding:10px 12px;border:1px solid #d4af37;background:#fffaf0;font:700 9px Arial,sans-serif;color:#7a5b00;text-align:center;letter-spacing:.05em}
 </style>
 </head>
 <body>
@@ -426,6 +447,7 @@ p{font-size:12px;text-align:justify}
   <div class="k">Cancillería Diocesana · Gobierno Documental · SACRAMENTUM</div>
   <h1>${title} · ${sacramentLabel}</h1>
   <h2>${number}</h2>
+  ${legacyHistorical ? '<div class="legacy">HISTÓRICO IMPORTADO · NO EMITIDO POR SACRAMENTUM</div>' : ''}
 
   <div class="meta">
     <b>Fecha:</b> ${escapeHtml(
@@ -438,8 +460,9 @@ p{font-size:12px;text-align:justify}
         ''
     )}<br>
     <b>Titular:</b> ${escapeHtml(
-      payload.targetName || payload.newTargetName || ''
-    )}
+      payload.targetName || payload.newTargetName || (legacyHistorical ? 'No consta en el vínculo histórico' : '')
+    )}<br>
+    <b>Concepto:</b> ${escapeHtml(payload.conceptPolicy?.concept || payload.concept || payload.causa || '—')}
   </div>
 
   <div class="locations">
@@ -481,12 +504,13 @@ p{font-size:12px;text-align:justify}
 
   <div class="sig">
     ___________________________________<br>
-    <b>CANCILLERÍA DIOCESANA</b>
+    <b>${legacyHistorical ? 'CUSTODIA DEL ARCHIVO HISTÓRICO' : 'CANCILLERÍA DIOCESANA'}</b>
   </div>
 
   <div class="small">
-    Documento generado por SACRAMENTUM. El expediente digital conserva decreto,
-    evidencia cuando aplica, notas marginales, reversión y auditoría.
+    ${legacyHistorical
+      ? 'Ficha de trazabilidad generada por SACRAMENTUM a partir del archivo histórico importado. No equivale a una nueva expedición del decreto.'
+      : 'Documento generado por SACRAMENTUM. El expediente digital conserva decreto, evidencia cuando aplica, notas marginales, reversión y auditoría.'}
   </div>
 </div>
 <script>window.onload=()=>window.print()</script>
@@ -595,6 +619,7 @@ p{font-size:12px;text-align:justify}
                 );
                 const reversed =
                   String(row.status || '').toLowerCase() === 'reversed';
+                const legacyHistorical = isLegacyHistoricalDecree(row);
                 const Icon =
                   type === 'correccion' ? FileCheck2 : ArchiveRestore;
 
@@ -634,6 +659,11 @@ p{font-size:12px;text-align:justify}
                                 ? 'Corrección'
                                 : 'Reposición'}
                             </span>
+                            {legacyHistorical && (
+                              <span className="rounded-full border border-amber-300 bg-amber-50 px-2 py-1 text-[8px] font-black uppercase tracking-wider text-amber-800">
+                                Histórico importado
+                              </span>
+                            )}
                             {reversed && (
                               <span className="rounded-full border border-red-200 bg-red-50 px-2 py-1 text-[8px] font-black uppercase text-red-700">
                                 Revertido
@@ -644,8 +674,15 @@ p{font-size:12px;text-align:justify}
                           <p className="mt-1 text-sm font-bold uppercase text-slate-700">
                             {row.payload?.targetName ||
                               row.payload?.newTargetName ||
-                              'Expediente sacramental'}
+                              (legacyHistorical
+                                ? row.payload?.concept || 'Expediente histórico importado'
+                                : 'Expediente sacramental')}
                           </p>
+                          {legacyHistorical && (
+                            <p className="mt-1 text-[10px] font-bold text-amber-700">
+                              Importado del programa anterior · conservado únicamente como antecedente y trazabilidad.
+                            </p>
+                          )}
 
                           <p className="mt-1 text-xs text-slate-500">
                             {row.parish_name} ·{' '}
@@ -686,9 +723,9 @@ p{font-size:12px;text-align:justify}
                       <div className="flex gap-2">
                         <Button variant="outline" onClick={() => print(row)}>
                           <Printer className="mr-2 h-4 w-4" />
-                          Imprimir
+                          {legacyHistorical ? 'Ficha histórica' : 'Imprimir'}
                         </Button>
-                        {!reversed && (
+                        {!reversed && !legacyHistorical && (
                           <Button
                             variant="outline"
                             className="border-red-200 text-red-600 hover:bg-red-50"

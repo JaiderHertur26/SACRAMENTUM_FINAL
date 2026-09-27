@@ -22,7 +22,7 @@ export async function loadEcclesiasticalStructure(dioceseId, ownerAuthUserId = n
     supabase.from('chancelleries').select('*').eq('diocese_id', dioceseId),
     supabase.from('vicarias').select('*').eq('diocese_id', dioceseId).order('name'),
     supabase.from('decanatos').select('*').eq('diocese_id', dioceseId).order('name'),
-    supabase.from('parishes').select('*').eq('diocese_id', dioceseId).order('name'),
+    supabase.from('parishes').select('*').eq('diocese_id', dioceseId).eq('is_operational', true).order('name'),
     supabase.from('user_profiles')
       .select('id,auth_user_id,email,username,full_name,role,status,is_active,diocese_id,parish_id,chancery_id')
       .eq('diocese_id', dioceseId),

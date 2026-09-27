@@ -13,7 +13,7 @@ import { supabase } from '@/lib/supabaseClient';
 import CityAutocomplete from '@/components/CityAutocomplete';
 import DecreeCenterHeader from '@/components/chancery/DecreeCenterHeader';
 import DecreeConceptEffects from '@/components/chancery/DecreeConceptEffects';
-import { normalizeDecreeConceptPolicy } from '@/utils/decreeConceptPolicy';
+import { filterDecreeConcepts, normalizeDecreeConceptPolicy } from '@/utils/decreeConceptPolicy';
 import {
   CanonicalParishSelector,
   CanonicalField,
@@ -124,11 +124,11 @@ const NewDecreeReplacementPage = () => {
 
                 if (currentDioceseId) {
                     // Cargar Conceptos
-                    const { data: cData } = await supabase.from('conceptos_anulacion').select('id, codigo, concepto, tipo, seinscribe, gennota, gendocum, enlibro, expide').eq('diocese_id', currentDioceseId).order('codigo', { ascending: true });
-                    if (cData) setConceptos(cData.filter(c => c.tipo === 'porReposicion' || (c.concepto && c.concepto.toLowerCase().includes('reposici'))));
+                    const { data: cData } = await supabase.from('conceptos_anulacion').select('id, codigo, concepto, tipo, sacrament_type, source_kind, source_reference, is_active, seinscribe, gennota, gendocum, enlibro, expide').eq('diocese_id', currentDioceseId).eq('is_active', true).order('codigo', { ascending: true });
+                    if (cData) setConceptos(filterDecreeConcepts(cData, { decreeType: 'porReposicion', sacramentType: 'bautismo' }));
 
-                    // Cargar Parroquias de la Diócesis
-                    const { data: pData } = await supabase.from('parishes').select('id, name, city').eq('diocese_id', currentDioceseId).order('name', { ascending: true });
+                    // Cargar únicamente Parroquias operativas de la Diócesis
+                    const { data: pData } = await supabase.from('parishes').select('id, name, city').eq('diocese_id', currentDioceseId).eq('is_operational', true).order('name', { ascending: true });
                     if (pData) setParishesList(pData);
                 }
 

@@ -97,7 +97,8 @@ const ChanceryDashboard = () => {
                 const { data: parishesData } = await supabase
                     .from('parishes')
                     .select('id')
-                    .eq('diocese_id', targetDioceseId);
+                    .eq('diocese_id', targetDioceseId)
+                    .eq('is_operational', true);
 
                 const parishIds = parishesData ? parishesData.map(p => p.id) : [];
 

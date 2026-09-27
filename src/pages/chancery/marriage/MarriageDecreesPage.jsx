@@ -10,6 +10,7 @@ import { pickRecordValue, dateOnlyRecordValue, booleanRecordValue } from '@/util
 import DecreeCenterHeader from '@/components/chancery/DecreeCenterHeader';
 import DecreeConceptEffects from '@/components/chancery/DecreeConceptEffects';
 import { attachDecreeConceptPolicy } from '@/services/decreeRegistryService';
+import { filterDecreeConcepts } from '@/utils/decreeConceptPolicy';
 import {
   CanonicalParishSelector,
   CanonicalRecordFinder,
@@ -167,8 +168,8 @@ const MarriageDecreesPage = () => {
     try {
       const [marriageRows, parishResult, conceptResult] = await Promise.all([
         listMarriagesForDiocese(dioceseId),
-        supabase.from('parishes').select('id,name,city').eq('diocese_id',dioceseId).order('name'),
-        supabase.from('conceptos_anulacion').select('id,codigo,concepto,tipo,is_active,seinscribe,gennota,gendocum,enlibro,expide').eq('diocese_id',dioceseId).eq('is_active',true).order('codigo')
+        supabase.from('parishes').select('id,name,city').eq('diocese_id',dioceseId).eq('is_operational',true).order('name'),
+        supabase.from('conceptos_anulacion').select('id,codigo,concepto,tipo,sacrament_type,source_kind,source_reference,is_active,seinscribe,gennota,gendocum,enlibro,expide').eq('diocese_id',dioceseId).eq('is_active',true).order('codigo')
       ]);
       if (parishResult.error) throw parishResult.error;
       if (conceptResult.error) throw conceptResult.error;
@@ -218,9 +219,10 @@ const MarriageDecreesPage = () => {
   },[params]);
 
   const availableConcepts = useMemo(
-    () => concepts.filter((row) => mode === 'correction'
-      ? row.tipo === 'porCorreccion' || String(row.concepto || '').toLowerCase().includes('correcc')
-      : row.tipo === 'porReposicion' || String(row.concepto || '').toLowerCase().includes('reposici')),
+    () => filterDecreeConcepts(concepts, {
+      decreeType: mode === 'correction' ? 'porCorreccion' : 'porReposicion',
+      sacramentType: 'matrimonio'
+    }),
     [concepts, mode]
   );
 

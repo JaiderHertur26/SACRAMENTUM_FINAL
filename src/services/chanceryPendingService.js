@@ -67,6 +67,7 @@ export const loadChanceryPendingSacraments = async (user) => {
     .from('parishes')
     .select('id,name')
     .eq('diocese_id', dioceseId)
+    .eq('is_operational', true)
     .order('name', { ascending: true });
 
   if (parishError) throw parishError;

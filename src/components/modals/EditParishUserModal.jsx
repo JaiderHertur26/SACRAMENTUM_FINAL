@@ -30,6 +30,7 @@ const EditParishUserModal = ({ isOpen, onClose, onSuccess, user, dioceseId }) =>
           .from('parishes')
           .select('id,name')
           .eq('diocese_id', dioceseId)
+          .eq('is_operational', true)
           .order('name', { ascending: true });
         if (error) throw error;
         setParishes(data || []);

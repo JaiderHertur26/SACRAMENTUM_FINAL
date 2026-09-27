@@ -13,7 +13,7 @@ import { pickRecordValue, dateOnlyRecordValue, normalizeParentUnion, normalizeSe
 import { convertDateToSpanishText } from '@/utils/dateTimeFormatters';
 import DecreeCenterHeader from '@/components/chancery/DecreeCenterHeader';
 import DecreeConceptEffects from '@/components/chancery/DecreeConceptEffects';
-import { normalizeDecreeConceptPolicy } from '@/utils/decreeConceptPolicy';
+import { filterDecreeConcepts, normalizeDecreeConceptPolicy } from '@/utils/decreeConceptPolicy';
 import {
   CanonicalParishSelector,
   CanonicalRecordFinder,
@@ -130,10 +130,10 @@ const NewDecreeCorrectionPage = () => {
                 }
 
                 if (currentDioceseId) {
-                    const { data: cData } = await supabase.from('conceptos_anulacion').select('id, codigo, concepto, tipo, seinscribe, gennota, gendocum, enlibro, expide').eq('diocese_id', currentDioceseId).order('codigo', { ascending: true });
-                    if (cData) setConceptos(cData.filter(c => c.tipo === 'porCorreccion' || (c.concepto && c.concepto.toLowerCase().includes('correcc'))));
+                    const { data: cData } = await supabase.from('conceptos_anulacion').select('id, codigo, concepto, tipo, sacrament_type, source_kind, source_reference, is_active, seinscribe, gennota, gendocum, enlibro, expide').eq('diocese_id', currentDioceseId).eq('is_active', true).order('codigo', { ascending: true });
+                    if (cData) setConceptos(filterDecreeConcepts(cData, { decreeType: 'porCorreccion', sacramentType: 'bautismo' }));
 
-                    const { data: pData } = await supabase.from('parishes').select('id, name, city').eq('diocese_id', currentDioceseId).order('name', { ascending: true });
+                    const { data: pData } = await supabase.from('parishes').select('id, name, city').eq('diocese_id', currentDioceseId).eq('is_operational', true).order('name', { ascending: true });
                     if (pData) setParishesList(pData);
                 }
             } catch (error) { 

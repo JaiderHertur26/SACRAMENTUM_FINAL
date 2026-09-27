@@ -95,7 +95,7 @@ export const AppDataProvider = ({ children }) => {
               const [usersRes, diocesesRes, parishesRes, chancelleriesRes, vicariasRes, decanatosRes, misDatosRes] = await Promise.all([
                   supabase.from('user_profiles').select('*'),
                   supabase.from('dioceses').select('*'),
-                  supabase.from('parishes').select('*'),
+                  supabase.from('parishes').select('*').eq('is_operational', true),
                   supabase.from('chancelleries').select('*'),
                   supabase.from('vicarias').select('*'),
                   supabase.from('decanatos').select('*'),

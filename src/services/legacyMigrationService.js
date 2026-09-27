@@ -179,7 +179,7 @@ export async function applyLegacyBatch(batchId, { chunkSize = 250, onProgress = 
 }
 
 export async function loadParishesForMigration(dioceseId = null) {
-  let q = supabase.from('parishes').select('id,name,diocese_id,city').order('name');
+  let q = supabase.from('parishes').select('id,name,diocese_id,city').eq('is_operational', true).order('name');
   if (dioceseId) q = q.eq('diocese_id',dioceseId);
   const { data, error } = await q;
   if (error) throw error;
