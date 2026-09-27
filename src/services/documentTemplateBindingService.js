@@ -26,20 +26,53 @@ const dateOnly = (value) => value ? String(value).slice(0, 10) : '';
 const today = () => new Intl.DateTimeFormat('es-CO', { year:'numeric', month:'2-digit', day:'2-digit' }).format(new Date());
 const fullName = (...parts) => parts.map(norm).filter(Boolean).join(' ').replace(/\s+/g, ' ').trim();
 const rawOf = (record) => record?.raw_data || record?.rawData || {};
+const normalizedOf = (record) => rawOf(record)?.legacy_normalized || {};
+const resolvedOf = (record) => rawOf(record)?.legacy_resolved || {};
 const first = (...values) => values.find((value) => norm(value)) ?? '';
+const cleanCode = (value = '') => String(value || '').replace(/^LEGACY-/i, '').toUpperCase();
+
+const splitName = (full = '') => {
+  const value = norm(full);
+  if (!value) return { names:'', surnames:'' };
+  const parts = value.split(/\s+/);
+  if (parts.length <= 2) return { names:parts[0] || '', surnames:parts.slice(1).join(' ') };
+  const cut = Math.ceil(parts.length / 2);
+  return { names:parts.slice(0, cut).join(' '), surnames:parts.slice(cut).join(' ') };
+};
+
+const calcAge = (birthDate, atDate = new Date()) => {
+  if (!birthDate) return '';
+  const birth = new Date(String(birthDate).slice(0, 10) + 'T00:00:00');
+  const at = atDate instanceof Date ? atDate : new Date(String(atDate).slice(0, 10) + 'T00:00:00');
+  if (Number.isNaN(birth.getTime()) || Number.isNaN(at.getTime())) return '';
+  let age = at.getFullYear() - birth.getFullYear();
+  const beforeBirthday = at.getMonth() < birth.getMonth()
+    || (at.getMonth() === birth.getMonth() && at.getDate() < birth.getDate());
+  if (beforeBirthday) age -= 1;
+  return age >= 0 ? String(age) : '';
+};
 
 const parentText = (record) => {
   const raw = rawOf(record);
+  const normalized = normalizedOf(record);
   return fullName(
-    first(record?.nombrePadre, record?.nombre_padre, record?.groomFather, raw.nombrePadre, raw.padre),
-    first(record?.nombreMadre, record?.nombre_madre, record?.groomMother, raw.nombreMadre, raw.madre)
+    first(record?.nombrePadre, record?.nombre_padre, record?.groomFather, raw.nombrePadre, raw.nombre_padre, raw.padre, normalized.father_name),
+    first(record?.nombreMadre, record?.nombre_madre, record?.groomMother, raw.nombreMadre, raw.nombre_madre, raw.madre, normalized.mother_name)
   );
 };
 
+const registryCoordinates = (record) => {
+  const raw = rawOf(record);
+  const normalized = normalizedOf(record);
+  return {
+    book: first(record?.Libro, record?.book_number, record?.bookNumber, record?.libro, raw.Libro, raw.book_number, raw.libro, normalized.book_number),
+    folio: first(record?.folio, record?.page_number, record?.pageNumber, raw.folio, raw.page_number, normalized.folio),
+    number: first(record?.numero, record?.number, record?.entry_number, raw.numero, raw.number, raw.entry_number, normalized.number)
+  };
+};
+
 const registryRef = (record) => {
-  const book = first(record?.Libro, record?.book_number, record?.bookNumber, record?.libro);
-  const folio = first(record?.folio, record?.page_number, record?.pageNumber);
-  const number = first(record?.numero, record?.number, record?.entry_number);
+  const { book, folio, number } = registryCoordinates(record);
   return [book && `L. ${book}`, folio && `F. ${folio}`, number && `N. ${number}`].filter(Boolean).join(' · ');
 };
 
@@ -247,81 +280,124 @@ const commonInstitutionValues = (institution) => ({
 
 const baptismValues = (record) => {
   const raw = rawOf(record);
-  const nombres = first(record?.nombres, raw.nombres);
-  const apellidos = first(record?.apellidos, raw.apellidos);
+  const normalized = normalizedOf(record);
+  const resolved = resolvedOf(record);
+  const coords = registryCoordinates(record);
+  const nombres = first(record?.nombres, raw.nombres, normalized.names);
+  const apellidos = first(record?.apellidos, raw.apellidos, normalized.last_names);
   const name = fullName(nombres, apellidos);
-  const father = first(record?.nombrePadre, raw.nombrePadre, raw.padre);
-  const mother = first(record?.nombreMadre, raw.nombreMadre, raw.madre);
-  const padrino = first(raw.padrino, raw.godfather);
-  const madrina = first(raw.madrina, raw.godmother);
+  const father = first(record?.nombrePadre, raw.nombrePadre, raw.padre, normalized.father_name);
+  const mother = first(record?.nombreMadre, raw.nombreMadre, raw.madre, normalized.mother_name);
+  const birthDate = first(record?.fechaNacimiento, raw.fechaNacimiento, raw.fecnac, normalized.birth_date);
+  const baptismDate = first(record?.fechaSacramento, record?.celebration_date, raw.fechaSacramento, raw.fecbau, normalized.celebration_date);
+  const baptismPlace = first(record?.lugarBautismo, raw.lugarBautismo, raw.lugbau, normalized.celebration_place);
+  const birthPlace = first(record?.lugarNacimiento, raw.lugarNacimiento, raw.lugarn, raw.lugnac, normalized.birth_place);
+  const combinedGodparents = first(record?.padrinos, raw.padrinos, normalized.godparents);
+  const splitGodparents = String(combinedGodparents || '').split(/\s+Y\s+/i).map((item) => item.trim()).filter(Boolean);
+  const padrino = first(raw.padrino, raw.godfather, splitGodparents.length === 2 ? splitGodparents[0] : '');
+  const madrina = first(raw.madrina, raw.godmother, splitGodparents.length === 2 ? splitGodparents[1] : '');
+  const godparents = first(combinedGodparents, fullName(padrino, padrino && madrina ? 'y' : '', madrina));
+  const fatherDocument = first(record?.cedulaPadre, raw.cedulaPadre, raw.cedupad, normalized.father_document);
+  const motherDocument = first(record?.cedulaMadre, raw.cedulaMadre, raw.cedumad, normalized.mother_document);
+  const daFe = first(record?.daFe, raw.daFe, resolved.daFe, raw.dafe);
+  const gender = first(record?.sexo, resolved.sexo, raw.sexo, normalized.gender);
   return {
     Nombres: nombres,
     Apellidos: apellidos,
     Nombre: name,
     Titular: name,
+    Interesado: name,
     Solicitante: name,
-    Libro: first(record?.Libro, record?.book_number),
-    Folio: first(record?.folio, record?.page_number),
-    Numero: first(record?.numero, record?.number, record?.entry_number),
-    FecNac: first(record?.fechaNacimiento, raw.fechaNacimiento),
-    FechaNac: first(record?.fechaNacimiento, raw.fechaNacimiento),
-    LugarNac: first(record?.lugarNacimiento, raw.lugarNacimiento),
+    Libro: coords.book,
+    Folio: coords.folio,
+    Numero: coords.number,
+    LibroBau: coords.book,
+    FolioBau: coords.folio,
+    NumeroBau: coords.number,
+    FecNac: birthDate,
+    FechaNac: birthDate,
+    LugarNac: birthPlace,
     Padre: father,
     Madre: mother,
-    ccPadre: first(record?.cedulaPadre, raw.cedulaPadre),
-    ccMadre: first(record?.cedulaMadre, raw.cedulaMadre),
+    ccPadre: fatherDocument,
+    ccMadre: motherDocument,
     Padres: fullName(father, father && mother ? 'y' : '', mother),
     Padrino: padrino,
     Madrina: madrina,
-    Padrinos: first(record?.padrinos, raw.padrinos, fullName(padrino, padrino && madrina ? 'y' : '', madrina)),
-    AbuePater: first(record?.abuelosPaternos, raw.abuelosPaternos),
-    AbueMater: first(record?.abuelosMaternos, raw.abuelosMaternos),
-    Ministro: first(record?.ministro, raw.ministro),
-    DioFe: first(record?.daFe, raw.daFe, raw.dafe),
-    FechaBau: first(record?.fechaSacramento, record?.celebration_date),
-    ParroBau: first(record?.lugarBautismo, raw.lugarBautismo),
-    TipoSexo: first(record?.sexo, raw.sexo),
+    Padrinos: godparents,
+    ccPadrino: first(raw.ccPadrino, raw.cedulaPadrino, raw.godfatherDocument),
+    ccMadrina: first(raw.ccMadrina, raw.cedulaMadrina, raw.godmotherDocument),
+    AbuePater: first(record?.abuelosPaternos, raw.abuelosPaternos, raw.abuepat, normalized.paternal_grandparents),
+    AbueMater: first(record?.abuelosMaternos, raw.abuelosMaternos, raw.abuemat, normalized.maternal_grandparents),
+    Ministro: first(record?.ministro, raw.ministro, normalized.minister),
+    DioFe: daFe,
+    FechaBau: baptismDate,
+    ParroBau: baptismPlace,
+    TipoSexo: gender,
     Cedula: first(record?.nuip, raw.nuip),
     Cedula3: first(record?.nuip, raw.nuip),
-    Direccion: first(record?.direccion, raw.direccion),
-    Year1: dateOnly(first(record?.fechaNacimiento, raw.fechaNacimiento)).slice(0,4),
-    Year2: dateOnly(first(record?.fechaSacramento, record?.celebration_date)).slice(0,4),
+    Direccion: first(record?.direccion, raw.direccion, normalized.address),
+    Year1: dateOnly(birthDate).slice(0,4),
+    Year2: dateOnly(baptismDate).slice(0,4),
   };
 };
 
 const confirmationValues = (record) => {
   const raw = rawOf(record);
-  const nombres = first(record?.nombres, raw.nombres);
-  const apellidos = first(record?.apellidos, raw.apellidos);
+  const normalized = normalizedOf(record);
+  const resolved = resolvedOf(record);
+  const coords = registryCoordinates(record);
+  const nombres = first(record?.nombres, raw.nombres, normalized.names);
+  const apellidos = first(record?.apellidos, raw.apellidos, normalized.last_names);
   const name = fullName(nombres, apellidos);
-  const father = first(record?.nombrePadre, raw.nombrePadre);
-  const mother = first(record?.nombreMadre, raw.nombreMadre);
+  const father = first(record?.nombrePadre, raw.nombrePadre, raw.padre, normalized.father_name);
+  const mother = first(record?.nombreMadre, raw.nombreMadre, raw.madre, normalized.mother_name);
+  const birthDate = first(record?.fechaNacimiento, raw.fechaNacimiento, raw.fecnac, normalized.birth_date);
+  const confirmationDate = first(record?.fechaSacramento, record?.celebration_date, raw.fechaSacramento, raw.fechaConfirmacion, raw.feccon, normalized.celebration_date);
   return {
     Nombres: nombres,
     Apellidos: apellidos,
     Nombre: name,
     Titular: name,
+    Interesado: name,
     Solicitante: name,
-    Libro: first(record?.Libro, record?.book_number),
-    Folio: first(record?.folio, record?.page_number),
-    Numero: first(record?.numero, record?.number, record?.entry_number),
-    FecNac: first(record?.fechaNacimiento, raw.fechaNacimiento),
-    FechaNac: first(record?.fechaNacimiento, raw.fechaNacimiento),
+    Libro: coords.book,
+    Folio: coords.folio,
+    Numero: coords.number,
+    FecNac: birthDate,
+    FechaNac: birthDate,
     Padres: fullName(father, father && mother ? 'y' : '', mother),
     Padre: father,
     Madre: mother,
-    Ministro: first(record?.ministro, raw.ministro),
-    DioFe: first(record?.daFe, raw.daFe),
+    Ministro: first(record?.ministro, raw.ministro, normalized.minister),
+    DioFe: first(record?.daFe, raw.daFe, resolved.daFe, raw.dafe),
     Cedula: first(record?.nuip, raw.nuip),
-    Year1: dateOnly(first(record?.fechaNacimiento, raw.fechaNacimiento)).slice(0,4),
-    Year2: dateOnly(first(record?.fechaSacramento, record?.celebration_date)).slice(0,4),
+    Edad: first(record?.edad, raw.edad, normalized.age_text, calcAge(birthDate, confirmationDate)),
+    FechaCon: confirmationDate,
+    FechaConfirmacion: confirmationDate,
+    LibroBau: first(raw.libroBautismo, raw.libbau, normalized.baptism_book),
+    FolioBau: first(raw.folioBautismo, raw.folbau, normalized.baptism_folio),
+    NumeroBau: first(raw.numeroBautismo, raw.numbau, normalized.baptism_number),
+    ParroBau: first(raw.lugarBautismo, raw.lugbau, normalized.baptism_place),
+    Padrinos: first(record?.padrinos, raw.padrinos, raw.padri, normalized.sponsor),
+    Year1: dateOnly(birthDate).slice(0,4),
+    Year2: dateOnly(confirmationDate).slice(0,4),
   };
 };
 
 const marriageValues = (record) => {
   const raw = rawOf(record);
-  const groom = fullName(first(record?.groomName, raw.novioNombres), first(record?.groomSurname, raw.novioApellidos));
-  const bride = fullName(first(record?.brideName, raw.noviaNombres), first(record?.brideSurname, raw.noviaApellidos));
+  const normalized = normalizedOf(record);
+  const coords = registryCoordinates(record);
+  const groom = fullName(
+    first(record?.groomName, raw.novioNombres, raw.nombres1, normalized.party_1?.names),
+    first(record?.groomSurname, raw.novioApellidos, raw.apellidos1, normalized.party_1?.last_names)
+  );
+  const bride = fullName(
+    first(record?.brideName, raw.noviaNombres, raw.nombres2, normalized.party_2?.names),
+    first(record?.brideSurname, raw.noviaApellidos, raw.apellidos2, normalized.party_2?.last_names)
+  );
+  const marriageDate = first(record?.sacramentDate, record?.celebration_date, raw.fechaSacramento, raw.fecmat);
   return {
     Novio: groom,
     Novia: bride,
@@ -329,40 +405,61 @@ const marriageValues = (record) => {
     Esposa: bride,
     ElContrayente: groom,
     LaContrayente: bride,
+    Interesado: fullName(groom, groom && bride ? 'y' : '', bride),
     Solicitante: groom,
     Pareja: bride,
-    Cedula1: first(raw.novioCedula, raw.groomDocument),
-    Cedula2: first(raw.noviaCedula, raw.brideDocument),
-    Libro: first(record?.book_number, record?.Libro),
-    Folio: first(record?.folio, record?.page_number),
-    Numero: first(record?.number, record?.entry_number),
-    FecMat: first(record?.sacramentDate, record?.celebration_date),
-    FechaMatrimonio: first(record?.sacramentDate, record?.celebration_date),
-    Ministro: first(record?.minister, record?.ministro),
-    Delegado: first(record?.minister, record?.ministro),
-    Parroco: first(record?.daFe, record?.da_fe),
-    Confesion: first(raw.novioReligion, raw.noviaReligion),
-    Contrayente: first(raw.novioEcclesialStatus === 'unbaptized' ? groom : '', raw.noviaEcclesialStatus === 'unbaptized' ? bride : ''),
+    Cedula1: first(raw.novioCedula, raw.cedula1, raw.groomDocument),
+    Cedula2: first(raw.noviaCedula, raw.cedula2, raw.brideDocument),
+    Libro: coords.book,
+    Folio: coords.folio,
+    Numero: coords.number,
+    FecMat: marriageDate,
+    Fecmat: marriageDate,
+    FechaMatrimonio: marriageDate,
+    Ministro: first(record?.minister, record?.ministro, raw.ministro),
+    Delegado: first(record?.minister, record?.ministro, raw.ministro),
+    Parroco: first(record?.daFe, record?.da_fe, raw.daFe, raw.dafe),
+    Confesion: first(raw.novioReligion, raw.noviaReligion, raw.otrareligi, raw.otrarelig2),
+    Contrayente: first(
+      raw.novioEcclesialStatus === 'unbaptized' ? groom : '',
+      raw.noviaEcclesialStatus === 'unbaptized' ? bride : '',
+      raw.bautizado1 === false ? groom : '',
+      raw.bautizado2 === false ? bride : ''
+    ),
   };
 };
 
 const funeralValues = (record) => {
   const raw = rawOf(record);
+  const coords = registryCoordinates(record);
   const nombres = first(record?.nombres, raw.nombres, raw.nombre);
   const apellidos = first(record?.apellidos, raw.apellidos);
+  const deathDate = first(record?.fecha_defuncion, raw.fecha_defuncion, raw.fechaDefuncion);
+  const funeralDate = first(record?.fecha_exequias, raw.fecha_exequias, raw.fechaExequias, record?.celebration_date);
+  const birthDate = first(record?.fecha_nacimiento, raw.fecha_nacimiento, raw.fechaNacimiento);
+  const ageValue = first(record?.edad, raw.edad, raw.edadDeclarada, calcAge(birthDate, deathDate || funeralDate));
+  const ageUnit = first(raw.tipoEdad, raw.tipo_edad);
   return {
     Nombres: nombres,
     Apellidos: apellidos,
     Nombre: fullName(nombres, apellidos),
-    Fechae: first(record?.fecha_exequias, raw.fechaExequias, record?.celebration_date),
-    Fecham: first(record?.fecha_defuncion, raw.fechaDefuncion),
-    Edad: first(record?.edad, raw.edad),
+    Titular: fullName(nombres, apellidos),
+    Interesado: fullName(nombres, apellidos),
+    Solicitante: fullName(nombres, apellidos),
+    Fechae: funeralDate,
+    Fecham: deathDate,
+    Edad: ageValue ? fullName(ageValue, ageUnit) : '',
     Sexo: first(record?.sexo, raw.sexo),
     Padres: first(record?.padres, raw.padres, parentText(record)),
     Ministro: first(record?.ministro, raw.ministro),
-    Libro: first(record?.book_number, record?.Libro),
-    Folio: first(record?.folio, record?.page_number),
-    Numero: first(record?.number, record?.entry_number),
+    Libro: coords.book,
+    Folio: coords.folio,
+    Numero: coords.number,
+    LugarExequias: first(record?.lugar_exequias, raw.lugar_exequias, raw.lugarExequias),
+    LugarDefuncion: first(record?.lugar_defuncion, raw.lugar_defuncion, raw.lugarDefuncion),
+    Cementerio: first(record?.cementerio, raw.cementerio),
+    EstadoCivil: first(record?.estadoCivil, raw.estadoCivil, raw.estado_civil),
+    Conyuge: first(record?.conyuge, raw.conyuge),
   };
 };
 
@@ -373,13 +470,15 @@ const dossierValues = (record) => {
   const bride = data.bride || {};
   const w1 = data.witness1 || {};
   const w2 = data.witness2 || {};
+  const plannedDate = first(record?.planned_marriage_date, pending.sacramentDate, pending.fechaSacramento, pending.fechaHoraPrevista);
   const groomName = first(groom.fullName, fullName(pending.groomName, pending.groomSurname), fullName(pending.novioNombres, pending.novioApellidos));
   const brideName = first(bride.fullName, fullName(pending.brideName, pending.brideSurname), fullName(pending.noviaNombres, pending.noviaApellidos));
   const groomParents = fullName(groom.father, groom.father && groom.mother ? 'y' : '', groom.mother);
   const brideParents = fullName(bride.father, bride.father && bride.mother ? 'y' : '', bride.mother);
-  const catholic = groom.baptismStatus === 'BAUTIZADO CATÓLICO' ? groomName
-    : bride.baptismStatus === 'BAUTIZADO CATÓLICO' ? brideName : '';
-  const other = catholic === groomName ? brideName : groomName;
+  const groomCatholic = ['BAUTIZADO CATÓLICO','CATHOLIC_BAPTIZED'].includes(upper(groom.baptismStatus || pending.novioEcclesialStatus));
+  const brideCatholic = ['BAUTIZADO CATÓLICO','CATHOLIC_BAPTIZED'].includes(upper(bride.baptismStatus || pending.noviaEcclesialStatus));
+  const catholic = groomCatholic ? groomName : brideCatholic ? brideName : '';
+  const other = catholic === groomName ? brideName : catholic === brideName ? groomName : '';
   return {
     Novio: groomName,
     Novia: brideName,
@@ -387,46 +486,137 @@ const dossierValues = (record) => {
     Esposa: brideName,
     ElContrayente: groomName,
     LaContrayente: brideName,
+    Interesado: fullName(groomName, groomName && brideName ? 'y' : '', brideName),
     Solicitante: groomName,
     Pareja: brideName,
     Nombre1: groomName,
     Nombre2: brideName,
+    Nombres: splitName(groomName).names,
+    Apellidos: splitName(groomName).surnames,
     Cedula1: first(groom.documentId, pending.novioCedula),
     Cedula2: first(bride.documentId, pending.noviaCedula),
-    Direccion: first(groom.residenceAddress, bride.residenceAddress),
-    Fecmat: first(record?.planned_marriage_date, pending.sacramentDate, pending.fechaSacramento),
-    FechaMatrimonio: first(record?.planned_marriage_date, pending.sacramentDate, pending.fechaSacramento),
-    Edad1: first(groom.age, ''),
-    Edad2: first(bride.age, ''),
+    Direccion: first(groom.residenceAddress, bride.residenceAddress, pending.novioDireccion, pending.noviaDireccion),
+    Fecmat: plannedDate,
+    FecMat: plannedDate,
+    FechaMatrimonio: plannedDate,
+    Edad1: first(groom.age, calcAge(groom.birthDate, plannedDate)),
+    Edad2: first(bride.age, calcAge(bride.birthDate, plannedDate)),
     Testigo1: w1.name,
     Testigo2: w2.name,
-    Cedula3: groom.documentId,
+    DocumentoTestigo1: w1.document,
+    DocumentoTestigo2: w2.document,
+    Cedula3: first(groom.documentId, pending.novioCedula),
     Parentesco1: w1.relationship,
     Parentesco2: w2.relationship,
     Padres: groomParents,
     PadresNovio: groomParents,
     PadresNovia: brideParents,
-    Delegado: first(pending.minister, pending.ministro),
+    Delegado: first(pending.minister, pending.ministro, pending.presenciaria),
     Parroco: first(pending.daFe, pending.da_fe),
     Confesion: first(
       groom.religion && upper(groom.religion) !== 'CATÓLICA' ? groom.religion : '',
-      bride.religion && upper(bride.religion) !== 'CATÓLICA' ? bride.religion : ''
+      bride.religion && upper(bride.religion) !== 'CATÓLICA' ? bride.religion : '',
+      pending.novioReligion,
+      pending.noviaReligion
     ),
     Contrayente: first(
-      groom.baptismStatus === 'NO BAUTIZADO' ? groomName : '',
-      bride.baptismStatus === 'NO BAUTIZADO' ? brideName : ''
+      upper(groom.baptismStatus) === 'NO BAUTIZADO' ? groomName : '',
+      upper(bride.baptismStatus) === 'NO BAUTIZADO' ? brideName : '',
+      pending.novioEcclesialStatus === 'unbaptized' ? groomName : '',
+      pending.noviaEcclesialStatus === 'unbaptized' ? brideName : ''
     ),
     ParteCatolica: catholic,
     OtraParte: other,
-    DocumentoCatolico: catholic === groomName ? groom.documentId : bride.documentId,
-    DocumentoOtraParte: catholic === groomName ? bride.documentId : groom.documentId,
-    Causa1: first(data.documents?.dispensations, data.act?.observations),
+    DocumentoCatolico: catholic === groomName ? first(groom.documentId, pending.novioCedula) : catholic === brideName ? first(bride.documentId, pending.noviaCedula) : '',
+    DocumentoOtraParte: catholic === groomName ? first(bride.documentId, pending.noviaCedula) : catholic === brideName ? first(groom.documentId, pending.novioCedula) : '',
+    Causa1: first(data.documents?.dispensations, data.act?.observations, data.authorization?.decreeIssuer),
     Causa2: '',
     Causa3: '',
   };
 };
 
-export async function buildDocumentValuesFromRecord({ source, record, parishId, user = {} }) {
+const templateSpecificValues = ({ templateCode, source, record, base, subjectRole = 'groom', currentPriestName = '' }) => {
+  const code = cleanCode(templateCode);
+  const extra = {};
+
+  if (['73021','73022','73023'].includes(code)) {
+    extra.Labor = 'corrección';
+  }
+
+  if (code === '73031' && (source === 'baptism' || source === 'pending_baptism')) {
+    extra.LibroBau = base.Libro;
+    extra.FolioBau = base.Folio;
+    extra.NumeroBau = base.Numero;
+  }
+
+  if (code === '73071') {
+    const typeLabel = {
+      baptism:'Bautismo',
+      confirmation:'Confirmación',
+      marriage:'Matrimonio',
+      funeral:'Exequias'
+    }[source] || '';
+    extra.Partida = typeLabel;
+    extra.Interesado = first(base.Interesado, base.Titular, base.Nombre, fullName(base.Esposo, base.Esposa));
+    extra.Solicitante = first(base.Solicitante, extra.Interesado);
+  }
+
+  if (code === '71012' && source === 'marriage_dossier') {
+    const data = record?.dossier_data || {};
+    const pending = record?.pendingMarriage || {};
+    const party = subjectRole === 'bride' ? (data.bride || {}) : (data.groom || {});
+    const w1 = data.witness1 || {};
+    const w2 = data.witness2 || {};
+    const fallbackFull = subjectRole === 'bride'
+      ? fullName(pending.noviaNombres, pending.noviaApellidos)
+      : fullName(pending.novioNombres, pending.novioApellidos);
+    const person = first(party.fullName, fallbackFull);
+    const split = splitName(person);
+    extra.Nombres = split.names;
+    extra.Apellidos = split.surnames;
+    extra.Cedula3 = first(party.documentId, subjectRole === 'bride' ? pending.noviaCedula : pending.novioCedula);
+    extra.Padres = fullName(party.father, party.father && party.mother ? 'y' : '', party.mother);
+    extra.Testigo1 = w1.name;
+    extra.Testigo2 = w2.name;
+    extra.Cedula1 = w1.document;
+    extra.Cedula2 = w2.document;
+    extra.Parentesco1 = w1.relationship;
+    extra.Parentesco2 = w2.relationship;
+    extra.Solicitante = person;
+    extra.Interesado = person;
+  }
+
+  if (currentPriestName) {
+    extra.Parroco = first(base.Parroco, currentPriestName);
+  }
+
+  return extra;
+};
+
+export const EXPECTED_MANUAL_TEMPLATE_FIELDS = {
+  '71061':['Nombre','Cedula','Expedido'],
+  '71071':['Tipopartida','Nombre'],
+  '71091':['Testigo1','Cedula1','Testigo2','Cedula2','Parentesco1','Parentesco2'],
+  '71132':['ccPadrino','ccMadrina'],
+  '72011':['Causa1','Causa2','Causa3'],
+  '72021':['Causa1','Causa2','Causa3'],
+  '72031':['Causa1','Causa2','Causa3'],
+  '72061':['Causa1','Causa2','Causa3'],
+  '73011':['Efecto'],
+  '73012':['Efecto'],
+  '73013':['Efecto'],
+  '73071':['Motivo','Efectos']
+};
+
+export async function buildDocumentValuesFromRecord({
+  source,
+  record,
+  parishId,
+  user = {},
+  templateCode = '',
+  subjectRole = 'groom',
+  currentPriestName = ''
+}) {
   const institution = await getDocumentInstitution(parishId, {
     parishName: user?.parishName,
     dioceseName: user?.dioceseName || user?.diocese_name,
@@ -439,5 +629,17 @@ export async function buildDocumentValuesFromRecord({ source, record, parishId, 
   else if (source === 'marriage') specific = marriageValues(record);
   else if (source === 'marriage_dossier') specific = dossierValues(record);
   else if (source === 'funeral') specific = funeralValues(record);
-  return { ...common, ...specific };
+
+  const base = { ...common, ...specific };
+  return {
+    ...base,
+    ...templateSpecificValues({
+      templateCode,
+      source,
+      record,
+      base,
+      subjectRole,
+      currentPriestName
+    })
+  };
 }

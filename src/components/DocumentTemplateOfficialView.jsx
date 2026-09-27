@@ -99,10 +99,13 @@ export default function DocumentTemplateOfficialView({
 }) {
   const category = template?.category || 'document';
   const code = safe(template?.code || template?.legacy_code).replace(/^LEGACY-/i, '');
+  const registryBook = values?.Libro || (code === '73031' ? values?.LibroBau : '');
+  const registryFolio = values?.Folio || (code === '73031' ? values?.FolioBau : '');
+  const registryNumber = values?.Numero || (code === '73031' ? values?.NumeroBau : '');
   const registryItems = [
-    values?.Libro && { label:'Libro', value:values.Libro },
-    values?.Folio && { label:'Folio', value:values.Folio },
-    values?.Numero && { label:'Número', value:values.Numero }
+    registryBook && { label:'Libro', value:registryBook },
+    registryFolio && { label:'Folio', value:registryFolio },
+    registryNumber && { label:'Número', value:registryNumber }
   ].filter(Boolean);
   const signatures = signatureConfiguration({ category, values, priestName });
   const hasMissing = unresolved(text);

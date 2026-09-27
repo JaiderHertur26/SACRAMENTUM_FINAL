@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/Input';
 import { listDocumentTemplates, saveDocumentTemplateVersion } from '@/services/marginalNotesV2Service';
 import {
   buildDocumentValuesFromRecord,
+  EXPECTED_MANUAL_TEMPLATE_FIELDS,
   filterDocumentSourceRecords,
   getDocumentInstitution,
   getDocumentRecordLabel,
@@ -50,6 +51,7 @@ export default function DocumentTemplateLibraryPage() {
   const [selectedRecordId, setSelectedRecordId] = useState('');
   const [sourceOverride, setSourceOverride] = useState('');
   const [institution, setInstitution] = useState({ parishName:'', dioceseName:'', city:'' });
+  const [subjectRole, setSubjectRole] = useState('groom');
   const printRef = useRef(null);
 
   useEffect(() => {
@@ -90,6 +92,12 @@ export default function DocumentTemplateLibraryPage() {
     () => filterDocumentSourceRecords(sourceRecords, effectiveSource, sourceQuery),
     [sourceRecords, effectiveSource, sourceQuery]
   );
+  const selectedTemplateCode = cleanTemplateCode(selected?.code || selected?.legacy_code || '').toUpperCase();
+  const expectedManualFields = EXPECTED_MANUAL_TEMPLATE_FIELDS[selectedTemplateCode] || [];
+  const missingTokens = selectedRecordId ? tokens.filter((token) => !String(values[token] ?? '').trim()) : [];
+  const expectedManualMissing = missingTokens.filter((token) => expectedManualFields.includes(token));
+  const unexpectedMissing = missingTokens.filter((token) => !expectedManualFields.includes(token));
+  const autoFilledCount = selectedRecordId ? tokens.length - missingTokens.length : 0;
 
   useEffect(() => {
     let mounted = true;
@@ -129,6 +137,15 @@ export default function DocumentTemplateLibraryPage() {
       Diócesis: prev.Diócesis || institution.dioceseName || ''
     }));
   }, [institution]);
+
+  useEffect(() => {
+    const priestName = auxiliaries.currentPriest?.nombreCompleto || '';
+    if (!priestName) return;
+    setValues((prev) => ({
+      ...prev,
+      Parroco: prev.Parroco || priestName
+    }));
+  }, [auxiliaries.currentPriest?.nombreCompleto]);
 
   const role = profile?.role || user?.role;
   const canManage = ['admin_general','diocese','chancery'].includes(role);
@@ -190,7 +207,8 @@ export default function DocumentTemplateLibraryPage() {
     setSourceRecords([]);
     const nextBinding = getDocumentTemplateBinding(current);
     setSourceOverride(nextBinding.source === 'multi' ? (nextBinding.allowedSources?.[0] || '') : '');
-  }, [selectedId, templates, requestedTemplate, initialTemplateValues]);
+    setSubjectRole('groom');
+  }, [selectedId, templates, requestedTemplate, initialTemplateValues, institution]);
 
   useEffect(() => {
     let mounted = true;
@@ -231,7 +249,7 @@ export default function DocumentTemplateLibraryPage() {
     };
   }, [selected, parishId, effectiveSource, sourceQuery, toast]);
 
-  const linkRecord = async (recordId) => {
+  const linkRecord = async (recordId, roleOverride = subjectRole) => {
     setSelectedRecordId(recordId);
     if (!recordId) {
       const currentCode = cleanTemplateCode(selected?.code || selected?.legacy_code || '').toUpperCase();
@@ -255,7 +273,10 @@ export default function DocumentTemplateLibraryPage() {
         source: effectiveSource,
         record,
         parishId,
-        user
+        user,
+        templateCode: selected?.code || selected?.legacy_code || '',
+        subjectRole: roleOverride,
+        currentPriestName: auxiliaries.currentPriest?.nombreCompleto || ''
       });
       const nextValues = Object.fromEntries(tokens.map((token) => [token, automaticValues[token] ?? '']));
       const institutionalValues = Object.fromEntries(
@@ -372,9 +393,50 @@ export default function DocumentTemplateLibraryPage() {
                             </select>
                             {sourceLoading && <Loader2 className="absolute right-3 top-3 h-4 w-4 animate-spin text-emerald-700" />}
                           </div>
+
+                          {selectedTemplateCode === '71012' && selectedRecordId && (
+                            <div>
+                              <label className="block text-[10px] font-black uppercase tracking-widest text-emerald-700">Persona objeto de la certificación</label>
+                              <select
+                                value={subjectRole}
+                                onChange={(e) => {
+                                  const nextRole = e.target.value;
+                                  setSubjectRole(nextRole);
+                                  linkRecord(selectedRecordId, nextRole);
+                                }}
+                                className="mt-2 w-full rounded-xl border border-emerald-200 bg-white px-3 py-2.5 text-sm font-bold text-slate-800"
+                              >
+                                <option value="groom">Novio</option>
+                                <option value="bride">Novia</option>
+                              </select>
+                            </div>
+                          )}
+
                           {!sourceLoading && sourceRecords.length > 0 && (
                             <div className="text-[10px] font-bold uppercase tracking-wider text-emerald-700">
                               {filteredSourceRecords.length} registros disponibles
+                            </div>
+                          )}
+
+                          {selectedRecordId && (
+                            <div className="rounded-xl border border-emerald-200 bg-white p-3">
+                              <div className="flex flex-wrap items-center justify-between gap-2">
+                                <span className="text-[10px] font-black uppercase tracking-widest text-emerald-700">Cobertura automática</span>
+                                <span className="text-sm font-black text-slate-900">{autoFilledCount} / {tokens.length} campos</span>
+                              </div>
+                              {unexpectedMissing.length === 0 && (
+                                <p className="mt-2 text-xs font-bold text-emerald-700">Todos los campos que SACRAMENTUM debe conocer quedaron resueltos.</p>
+                              )}
+                              {unexpectedMissing.length > 0 && (
+                                <p className="mt-2 text-xs font-bold text-red-700">
+                                  Datos que deberían resolverse y siguen vacíos: {unexpectedMissing.join(', ')}.
+                                </p>
+                              )}
+                              {expectedManualMissing.length > 0 && (
+                                <p className="mt-2 text-xs text-amber-700">
+                                  Requieren información humana o documental adicional: {expectedManualMissing.join(', ')}.
+                                </p>
+                              )}
                             </div>
                           )}
                         </div>
