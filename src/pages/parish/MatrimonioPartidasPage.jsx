@@ -3,7 +3,9 @@ import DashboardLayout from '@/components/DashboardLayout';
 import { useAuth } from '@/context/AuthContext';
 import { useAppData } from '@/context/AppDataContext';
 import Table from '@/components/ui/Table';
-import { Search, ArrowUpDown, Info, CheckCircle, XCircle, Eye } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Search, ArrowUpDown, Info, CheckCircle, XCircle, Eye, FileText } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/components/ui/use-toast';
 import MarriageReadingSummaryPanel from '@/components/MarriageReadingSummaryPanel';
 import ViewMarriagePartidaModal from '@/components/modals/ViewMarriagePartidaModal';
@@ -87,6 +89,7 @@ const MatrimonioPartidasPage = () => {
   const { user } = useAuth();
   const { getMisDatosList } = useAppData();
   const { toast } = useToast();
+  const navigate = useNavigate();
   
   const [searchTerm, setSearchTerm] = useState('');
   const [records, setRecords] = useState([]);
@@ -193,7 +196,12 @@ const handleViewClick = (row, e) => {
           <h1 className="text-4xl font-black text-slate-900 tracking-tighter uppercase font-serif">Partidas de Matrimonio</h1>
           <p className="text-[#4B7BA7] text-[10px] font-black uppercase tracking-[0.3em] mt-2 ml-1">{user?.parishName || 'Parroquia'} • Archivo Parroquial Permanente</p>
         </div>
-        <div className="bg-slate-900 text-white px-6 py-3.5 rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl">Total en Archivo: {filteredRecords.length}</div>
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+          <Button type="button" variant="outline" onClick={() => navigate('/documentos/plantillas?template=73012')} className="rounded-2xl bg-white px-5 py-3 text-[10px] font-black uppercase tracking-widest text-[#4B7BA7]">
+            <FileText className="mr-2 h-4 w-4" /> Solicitud de partida
+          </Button>
+          <div className="bg-slate-900 text-white px-6 py-3.5 rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl">Total en Archivo: {filteredRecords.length}</div>
+        </div>
       </div>
       <div className="bg-white p-5 rounded-[2rem] shadow-sm border border-slate-100 flex gap-4 items-center">
          <div className="relative flex-1"><Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 w-5 h-5" /><input type="text" placeholder="LOCALIZAR POR CONTRAYENTES, REFERENCIA, TEXTO LITERAL O LIBRO:FOLIO:NÚMERO..." className="w-full pl-12 pr-6 py-4 bg-slate-50 border-none rounded-2xl focus:ring-4 focus:ring-[#4B7BA7]/10 outline-none text-xs font-black uppercase placeholder:text-slate-300 transition-all" value={searchTerm} onChange={e => setSearchTerm(e.target.value)}/></div>

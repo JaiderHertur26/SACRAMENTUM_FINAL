@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { 
     Search, Info, 
     CheckCircle as CircleCheckBig, XCircle, Eye, AlertOctagon, 
-    BookOpen, Loader2, User, Users, MapPin, PenTool, Scroll, ShieldCheck 
+    BookOpen, Loader2, User, Users, MapPin, PenTool, Scroll, ShieldCheck, FileText
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import ViewBaptismPartidaModal from '@/components/modals/ViewBaptismPartidaModal';
@@ -352,6 +352,9 @@ const BaptismPartidasPage = () => {
                 <p className="text-[#4B7BA7] text-[10px] font-black uppercase tracking-[0.3em] mt-2 ml-1">{nombreParroquia} • Archivo Parroquial Permanente</p>
             </div>
             <div className="flex flex-col sm:flex-row gap-2 items-end sm:items-center">
+                <Button type="button" variant="outline" onClick={() => navigate('/documentos/plantillas?template=73011')} className="rounded-2xl bg-white px-5 py-3 text-[10px] font-black uppercase tracking-widest text-[#4B7BA7]">
+                    <FileText className="mr-2 h-4 w-4" /> Solicitud de partida
+                </Button>
                 {searchTerm.trim() && (
                     <div className="bg-blue-50 text-[#4B7BA7] border border-blue-100 px-5 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest">
                         Coincidencias: {totalRecords}

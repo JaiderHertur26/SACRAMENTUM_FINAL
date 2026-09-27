@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { 
     Search, Info, 
     CheckCircle as CircleCheckBig, XCircle, Eye, AlertOctagon, 
-    BookOpen, Loader2, User, Users, MapPin, PenTool, Scroll, ShieldCheck, Droplet, Calendar 
+    BookOpen, Loader2, User, Users, MapPin, PenTool, Scroll, ShieldCheck, Droplet, Calendar, FileText
 } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import ViewConfirmationPartidaModal from '@/components/modals/ViewConfirmationPartidaModal';
@@ -284,8 +284,13 @@ const ConfirmationPartidasPage = () => {
                         <h1 className="text-4xl font-black text-slate-900 tracking-tighter uppercase font-serif">Partidas de Confirmación</h1>
                         <p className="text-[#4B7BA7] text-[10px] font-black uppercase tracking-[0.3em] mt-2 ml-1">{nombreParroquia} • Archivo Parroquial Permanente</p>
                     </div>
-                    <div className="bg-slate-900 text-white px-6 py-3.5 rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl">
-                        Total en Archivo: {totalRecords}
+                    <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+                        <Button type="button" variant="outline" onClick={() => navigate('/documentos/plantillas?template=73013')} className="rounded-2xl bg-white px-5 py-3 text-[10px] font-black uppercase tracking-widest text-[#4B7BA7]">
+                            <FileText className="mr-2 h-4 w-4" /> Solicitud de partida
+                        </Button>
+                        <div className="bg-slate-900 text-white px-6 py-3.5 rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl">
+                            Total en Archivo: {totalRecords}
+                        </div>
                     </div>
                 </div>
 

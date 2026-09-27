@@ -539,6 +539,14 @@ const BaptismNewPage = () => {
                                     <div><label className={labelClass}>Abuelos Maternos</label><textarea name="abuelosMaternos" value={formData.abuelosMaternos} onChange={handleChange} className={`${inputClass} h-24 py-3 resize-none`} /></div>
                                     <div className="md:col-span-2"><label className={labelClass}>Padrinos</label><textarea name="padrinos" value={formData.padrinos} onChange={handleChange} className={`${inputClass} h-16 resize-none`} placeholder="NOMBRES SEPARADOS POR COMAS" /></div>
                                 </div>
+                                <div className="mt-6 rounded-2xl border border-blue-100 bg-blue-50/40 p-5">
+                                    <p className="text-[9px] font-black uppercase tracking-widest text-[#4B7BA7]">Documentos de preparación prebautismal</p>
+                                    <div className="mt-3 flex flex-wrap gap-2">
+                                        <Button type="button" variant="outline" onClick={()=>navigate('/documentos/plantillas?template=71131')} className="rounded-xl bg-white text-xs"><FileText className="mr-2 h-4 w-4"/>Constancia / curso para padres</Button>
+                                        <Button type="button" variant="outline" onClick={()=>navigate('/documentos/plantillas?template=71132')} className="rounded-xl bg-white text-xs"><FileText className="mr-2 h-4 w-4"/>Constancia / curso para padrinos</Button>
+                                    </div>
+                                    <p className="mt-2 text-[10px] text-slate-500">Accesos opcionales al soporte documental del Bautismo; no sustituyen la verificación pastoral correspondiente.</p>
+                                </div>
                             </section>
 
                             <section>
