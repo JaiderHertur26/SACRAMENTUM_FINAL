@@ -14,7 +14,11 @@ const EMPTY = {
   codigo: '',
   concepto: '',
   expide: 'CANCILLERÍA',
-  tipo: 'porCorreccion'
+  tipo: 'porCorreccion',
+  seinscribe: true,
+  gennota: true,
+  gendocum: true,
+  enlibro: 0
 };
 
 const typeLabel = (tipo) => {
@@ -74,7 +78,7 @@ const AnnulmentConceptsTab = () => {
 
       const { data, error } = await supabase
         .from('conceptos_anulacion')
-        .select('id,codigo,concepto,expide,tipo,created_at,diocese_id,is_active')
+        .select('id,codigo,concepto,expide,tipo,seinscribe,gennota,gendocum,enlibro,created_at,diocese_id,is_active')
         .eq('diocese_id', targetDioceseId)
         .eq('is_active', true)
         .order('codigo', { ascending: true });
@@ -134,7 +138,11 @@ const AnnulmentConceptsTab = () => {
       tipo:
         row.tipo === 'porReposicion' || row.tipo === 'porRepeticion'
           ? row.tipo
-          : 'porCorreccion'
+          : 'porCorreccion',
+      seinscribe: row.seinscribe !== false,
+      gennota: row.gennota !== false,
+      gendocum: row.gendocum !== false,
+      enlibro: Number(row.enlibro || 0)
     });
     setModalOpen(true);
   };
@@ -177,6 +185,10 @@ const AnnulmentConceptsTab = () => {
         concepto: form.concepto.trim().toUpperCase(),
         expide: (form.expide || 'CANCILLERÍA').trim().toUpperCase(),
         tipo: form.tipo,
+        seinscribe: Boolean(form.seinscribe),
+        gennota: Boolean(form.gennota),
+        gendocum: Boolean(form.gendocum),
+        enlibro: Number(form.enlibro || 0),
         diocese_id: dioceseId,
         is_active: true,
         updated_at: new Date().toISOString()
@@ -294,6 +306,17 @@ const AnnulmentConceptsTab = () => {
         >
           {typeLabel(row.tipo)}
         </span>
+      )
+    },
+    {
+      header: 'Efectos',
+      render: (row) => (
+        <div className="flex max-w-[220px] flex-wrap gap-1.5">
+          {row.seinscribe && <span className="rounded border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[8px] font-black uppercase text-emerald-700">Inscribir</span>}
+          {row.gennota && <span className="rounded border border-amber-200 bg-amber-50 px-2 py-0.5 text-[8px] font-black uppercase text-amber-700">Nota marginal</span>}
+          {row.gendocum && <span className="rounded border border-blue-200 bg-blue-50 px-2 py-0.5 text-[8px] font-black uppercase text-blue-700">Documento</span>}
+          <span className="rounded border border-slate-200 bg-slate-50 px-2 py-0.5 text-[8px] font-black uppercase text-slate-600">{Number(row.enlibro||0)===1?'Confirmación':Number(row.enlibro||0)===2?'Bautismo / Matrimonio':'Libro según sacramento'}</span>
+        </div>
       )
     },
     {
@@ -437,6 +460,17 @@ const AnnulmentConceptsTab = () => {
                 }))
               }
             />
+          </div>
+
+          <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+            <div className="mb-3 text-[10px] font-black uppercase tracking-widest text-slate-500">Efectos automáticos del concepto</div>
+            <div className="grid gap-3 md:grid-cols-2">
+              <label className="flex items-center gap-3 rounded-xl border bg-white p-3 text-xs font-bold"><input type="checkbox" checked={form.seinscribe} onChange={e=>setForm(c=>({...c,seinscribe:e.target.checked}))}/>Inscribir el efecto en el registro sacramental</label>
+              <label className="flex items-center gap-3 rounded-xl border bg-white p-3 text-xs font-bold"><input type="checkbox" checked={form.gennota} onChange={e=>setForm(c=>({...c,gennota:e.target.checked}))}/>Generar nota marginal</label>
+              <label className="flex items-center gap-3 rounded-xl border bg-white p-3 text-xs font-bold"><input type="checkbox" checked={form.gendocum} onChange={e=>setForm(c=>({...c,gendocum:e.target.checked}))}/>Generar documento / constancia</label>
+              <label className="block rounded-xl border bg-white p-3 text-xs font-bold">Libro afectado<select value={form.enlibro} onChange={e=>setForm(c=>({...c,enlibro:Number(e.target.value)}))} className="mt-2 h-9 w-full rounded-lg border bg-white px-2 text-xs"><option value={0}>Según sacramento / general</option><option value={1}>Confirmación</option><option value={2}>Bautismo / Matrimonio</option></select></label>
+            </div>
+            <p className="mt-3 text-[10px] leading-relaxed text-slate-500">Estas reglas forman parte del concepto diocesano y permiten que Corrección y Reposición sepan qué acciones deben producir sin depender de decisiones manuales posteriores.</p>
           </div>
 
           <div className="flex justify-end gap-2 border-t border-slate-100 pt-4">
