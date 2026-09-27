@@ -96,6 +96,12 @@ Deno.serve(async (req) => {
         auxiliary_bishop: text(data.auxiliaryBishop, 200) || null,
         provincia_eclesiastica: text(data.provinciaEclesiastica, 200) || null,
         jurisdiccion_eclesiastica: text(data.jurisdiccionEclesiastica, 240) || null,
+        code: text(data.code, 80) || null,
+        nit: text(data.nit, 80) || null,
+        address: text(data.address, 240) || null,
+        phone: text(data.phone, 80) || null,
+        fax: text(data.fax, 80) || null,
+        email: lower(data.email) || null,
       }]).select('id').single();
       if (error) throw error;
 

@@ -66,7 +66,10 @@ const DioceseListPage = () => {
 
     return (
       (d.name && d.name.toLowerCase().includes(term)) ||
-      (d.city && d.city.toLowerCase().includes(term))
+      (d.city && d.city.toLowerCase().includes(term)) ||
+      (d.code && d.code.toLowerCase().includes(term)) ||
+      (d.nit && d.nit.toLowerCase().includes(term)) ||
+      (d.email && d.email.toLowerCase().includes(term))
     );
   });
 
@@ -87,6 +90,15 @@ const DioceseListPage = () => {
         >
           {row.type === 'archdiocese' ? 'Arquidiócesis' : 'Diócesis'}
         </span>
+      ),
+    },
+    {
+      header: 'Código / NIT',
+      render: (row) => (
+        <div className="text-[10px] font-bold text-slate-600">
+          <div>{row.code || '---'}</div>
+          <div className="text-slate-400">{row.nit || 'NIT no registrado'}</div>
+        </div>
       ),
     },
     {

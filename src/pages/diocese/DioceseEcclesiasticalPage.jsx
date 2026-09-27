@@ -51,6 +51,7 @@ const DioceseEcclesiasticalPage = () => {
 
   const [currentDioceseId, setCurrentDioceseId] = useState(null);
   const [realDioceseName, setRealDioceseName] = useState('Jurisdicción');
+  const [realDiocese, setRealDiocese] = useState(null);
   const [realChancery, setRealChancery] = useState(null);
   const [realVicaries, setRealVicaries] = useState([]);
   const [realDeaneries, setRealDeaneries] = useState([]);
@@ -91,6 +92,7 @@ const DioceseEcclesiasticalPage = () => {
 
       const structure = await loadEcclesiasticalStructure(dioceseId, user.id);
       setRealDioceseName(structure.diocese?.name || user?.dioceseName || 'Jurisdicción');
+      setRealDiocese(structure.diocese || null);
       setRealChancery(structure.chancery);
       setRealVicaries(structure.vicaries);
       setRealDeaneries(structure.deaneries);
@@ -390,6 +392,28 @@ const DioceseEcclesiasticalPage = () => {
           </div>
 
           {loadError && <div className="bg-red-50 border border-red-200 text-red-700 rounded-2xl p-5 flex gap-3"><AlertCircle className="w-5 h-5 shrink-0" /><div><p className="font-black">No se pudo cargar toda la estructura</p><p className="text-sm">{loadError}</p></div></div>}
+
+          {realDiocese && (realDiocese.code || realDiocese.nit || realDiocese.address || realDiocese.phone || realDiocese.email || realDiocese.fax) && (
+            <div className="rounded-3xl border border-blue-100 bg-gradient-to-br from-blue-50/70 to-white p-6 shadow-sm">
+              <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                <div>
+                  <p className="text-[9px] font-black uppercase tracking-[0.2em] text-[#4B7BA7]">Identidad institucional de la jurisdicción</p>
+                  <h2 className="mt-1 text-xl font-black text-slate-900">{realDiocese.name}</h2>
+                  <p className="mt-1 text-xs text-slate-500">Datos reutilizables en documentos, comunicaciones y membretes diocesanos.</p>
+                </div>
+                <div className="flex flex-wrap gap-2 text-[9px] font-black uppercase tracking-wider">
+                  {realDiocese.code && <span className="rounded-full border bg-white px-3 py-1 text-slate-600">Código {realDiocese.code}</span>}
+                  {realDiocese.nit && <span className="rounded-full border bg-white px-3 py-1 text-slate-600">NIT {realDiocese.nit}</span>}
+                </div>
+              </div>
+              <div className="mt-4 grid gap-3 md:grid-cols-2 lg:grid-cols-4">
+                <div className="rounded-2xl border bg-white p-4"><p className="text-[9px] font-black uppercase tracking-widest text-slate-400">Sede</p><p className="mt-1 text-xs font-bold text-slate-700">{realDiocese.address || 'Dirección no registrada'}{realDiocese.city ? ' · ' + realDiocese.city : ''}</p></div>
+                <div className="rounded-2xl border bg-white p-4"><p className="text-[9px] font-black uppercase tracking-widest text-slate-400">Teléfono</p><p className="mt-1 text-xs font-bold text-slate-700">{realDiocese.phone || 'No registrado'}</p></div>
+                <div className="rounded-2xl border bg-white p-4"><p className="text-[9px] font-black uppercase tracking-widest text-slate-400">Correo</p><p className="mt-1 break-all text-xs font-bold text-slate-700">{realDiocese.email || 'No registrado'}</p></div>
+                <div className="rounded-2xl border bg-white p-4"><p className="text-[9px] font-black uppercase tracking-widest text-slate-400">Fax</p><p className="mt-1 text-xs font-bold text-slate-700">{realDiocese.fax || 'No registrado'}</p></div>
+              </div>
+            </div>
+          )}
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <Button variant="secondary" onClick={() => openModal('createVicary')} className="h-16 rounded-2xl font-black uppercase tracking-widest text-[10px]"><Network className="w-5 h-5 mr-2" /> Crear Vicaría</Button>

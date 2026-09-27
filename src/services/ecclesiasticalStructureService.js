@@ -18,7 +18,7 @@ export async function loadEcclesiasticalStructure(dioceseId, ownerAuthUserId = n
   if (!dioceseId) throw new Error('No se pudo determinar la jurisdicción activa.');
 
   const queries = [
-    supabase.from('dioceses').select('id,name,type,city,bishop,bishop_name').eq('id', dioceseId).maybeSingle(),
+    supabase.from('dioceses').select('id,name,type,city,bishop,bishop_name,auxiliary_bishop,provincia_eclesiastica,jurisdiccion_eclesiastica,code,nit,address,phone,fax,email').eq('id', dioceseId).maybeSingle(),
     supabase.from('chancelleries').select('*').eq('diocese_id', dioceseId),
     supabase.from('vicarias').select('*').eq('diocese_id', dioceseId).order('name'),
     supabase.from('decanatos').select('*').eq('diocese_id', dioceseId).order('name'),

@@ -24,6 +24,12 @@ const INITIAL_FORM = {
   auxiliaryBishop: '',
   provinciaEclesiastica: '',
   jurisdiccionEclesiastica: '',
+  code: '',
+  nit: '',
+  address: '',
+  phone: '',
+  fax: '',
+  email: '',
 };
 
 const CreateDioceseModal = ({
@@ -73,6 +79,12 @@ const CreateDioceseModal = ({
       auxiliaryBishop: formData.auxiliaryBishop.trim(),
       provinciaEclesiastica: formData.provinciaEclesiastica.trim(),
       jurisdiccionEclesiastica: formData.jurisdiccionEclesiastica.trim(),
+      code: formData.code.trim(),
+      nit: formData.nit.trim(),
+      address: formData.address.trim(),
+      phone: formData.phone.trim(),
+      fax: formData.fax.trim(),
+      email: formData.email.trim().toLowerCase(),
     };
 
     if (
@@ -116,6 +128,12 @@ const CreateDioceseModal = ({
         auxiliaryBishop: cleanData.auxiliaryBishop,
         provinciaEclesiastica: cleanData.provinciaEclesiastica,
         jurisdiccionEclesiastica: cleanData.jurisdiccionEclesiastica,
+        code: cleanData.code,
+        nit: cleanData.nit,
+        address: cleanData.address,
+        phone: cleanData.phone,
+        fax: cleanData.fax,
+        email: cleanData.email,
       };
 
       const { data: savedToken, error } = await supabase
@@ -249,6 +267,18 @@ const CreateDioceseModal = ({
                       })
                     }
                   />
+                </div>
+              </div>
+
+              <div className="rounded-2xl border border-blue-100 bg-blue-50/40 p-4">
+                <p className="mb-3 text-[9px] font-black uppercase tracking-widest text-[#4B7BA7]">Identidad institucional · opcional</p>
+                <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                  <div><label className="mb-1 block text-[9px] font-black uppercase tracking-widest text-slate-500">Código institucional</label><input type="text" value={formData.code} onChange={(e)=>setFormData({...formData,code:e.target.value.toUpperCase()})} className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-xs font-bold" /></div>
+                  <div><label className="mb-1 block text-[9px] font-black uppercase tracking-widest text-slate-500">NIT</label><input type="text" value={formData.nit} onChange={(e)=>setFormData({...formData,nit:e.target.value})} className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-xs font-bold" /></div>
+                  <div className="md:col-span-2"><label className="mb-1 block text-[9px] font-black uppercase tracking-widest text-slate-500">Dirección sede</label><input type="text" value={formData.address} onChange={(e)=>setFormData({...formData,address:e.target.value})} className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-xs font-bold" /></div>
+                  <div><label className="mb-1 block text-[9px] font-black uppercase tracking-widest text-slate-500">Teléfono</label><input type="text" value={formData.phone} onChange={(e)=>setFormData({...formData,phone:e.target.value})} className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-xs font-bold" /></div>
+                  <div><label className="mb-1 block text-[9px] font-black uppercase tracking-widest text-slate-500">Fax</label><input type="text" value={formData.fax} onChange={(e)=>setFormData({...formData,fax:e.target.value})} className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-xs font-bold" /></div>
+                  <div className="md:col-span-2"><label className="mb-1 block text-[9px] font-black uppercase tracking-widest text-slate-500">Correo institucional</label><input type="email" value={formData.email} onChange={(e)=>setFormData({...formData,email:e.target.value})} className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-xs font-bold" /></div>
                 </div>
               </div>
 

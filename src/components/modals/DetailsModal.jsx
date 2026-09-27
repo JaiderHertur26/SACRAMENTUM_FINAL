@@ -8,12 +8,12 @@ const DetailsModal = ({ isOpen, onClose, data }) => {
   // Adaptadores para mapear los datos que vienen desde Supabase (formato snake_case) 
   const provincia = data.provincia_eclesiastica || data.ecclesiasticalProvince || data.provinciaEclesiastica || 'No registrada';
   const jurisdiccion = data.jurisdiccion_eclesiastica || data.jurisdiction || data.jurisdiccionEclesiastica || 'No registrada';
-  const obispo = data.bishop || 'No registrado';
+  const obispo = data.bishop || data.bishop_name || 'No registrado';
   const auxiliar = data.auxiliary_bishop || data.auxiliaryBishop || 'N/A';
   const adminUser = data.username && data.username !== 'Sin asignar' ? data.username : 'No asignado';
   
   // 🚀 FIX: Generamos un Código de Sistema único tomando el primer bloque del UUID de Supabase
-  const systemCode = data.id ? data.id.split('-')[0].toUpperCase() : (data.codigo || data.code || 'No asignado');
+  const systemCode = data.code || data.codigo || (data.id ? data.id.split('-')[0].toUpperCase() : 'No asignado');
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Detalles de Diócesis/Arquidiócesis">
@@ -50,6 +50,17 @@ const DetailsModal = ({ isOpen, onClose, data }) => {
           <div>
             <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider block mb-1">Obispo Auxiliar</label>
             <p className="text-slate-900">{auxiliar}</p>
+          </div>
+        </div>
+
+        <div className="rounded-2xl border border-blue-100 bg-blue-50/40 p-4">
+          <p className="mb-4 text-[10px] font-black uppercase tracking-widest text-[#4B7BA7]">Identidad institucional</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div><label className="text-xs font-semibold text-slate-500 uppercase tracking-wider block mb-1">NIT</label><p className="text-slate-900">{data.nit || 'No registrado'}</p></div>
+            <div><label className="text-xs font-semibold text-slate-500 uppercase tracking-wider block mb-1">Correo</label><p className="text-slate-900 break-all">{data.email || 'No registrado'}</p></div>
+            <div className="md:col-span-2"><label className="text-xs font-semibold text-slate-500 uppercase tracking-wider block mb-1">Dirección sede</label><p className="text-slate-900">{data.address || 'No registrada'}</p></div>
+            <div><label className="text-xs font-semibold text-slate-500 uppercase tracking-wider block mb-1">Teléfono</label><p className="text-slate-900">{data.phone || 'No registrado'}</p></div>
+            <div><label className="text-xs font-semibold text-slate-500 uppercase tracking-wider block mb-1">Fax</label><p className="text-slate-900">{data.fax || 'No registrado'}</p></div>
           </div>
         </div>
 

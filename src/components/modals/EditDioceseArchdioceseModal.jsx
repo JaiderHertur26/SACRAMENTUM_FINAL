@@ -13,6 +13,12 @@ const EMPTY_FORM = {
   auxiliaryBishop: '',
   ecclesiasticalProvince: '',
   jurisdiction: '',
+  code: '',
+  nit: '',
+  address: '',
+  phone: '',
+  fax: '',
+  email: '',
 };
 
 const EditDioceseArchdioceseModal = ({ isOpen, onClose, diocese, onUpdated }) => {
@@ -30,6 +36,12 @@ const EditDioceseArchdioceseModal = ({ isOpen, onClose, diocese, onUpdated }) =>
       auxiliaryBishop: diocese.auxiliary_bishop || '',
       ecclesiasticalProvince: diocese.provincia_eclesiastica || '',
       jurisdiction: diocese.jurisdiccion_eclesiastica || '',
+      code: diocese.code || diocese.codigo || '',
+      nit: diocese.nit || '',
+      address: diocese.address || '',
+      phone: diocese.phone || '',
+      fax: diocese.fax || '',
+      email: diocese.email || '',
     });
   }, [diocese]);
 
@@ -64,6 +76,12 @@ const EditDioceseArchdioceseModal = ({ isOpen, onClose, diocese, onUpdated }) =>
           auxiliary_bishop: formData.auxiliaryBishop.trim() || null,
           provincia_eclesiastica: province,
           jurisdiccion_eclesiastica: jurisdiction,
+          code: formData.code.trim() || null,
+          nit: formData.nit.trim() || null,
+          address: formData.address.trim() || null,
+          phone: formData.phone.trim() || null,
+          fax: formData.fax.trim() || null,
+          email: formData.email.trim().toLowerCase() || null,
           updated_at: new Date().toISOString(),
         })
         .eq('id', diocese.id)
@@ -113,6 +131,18 @@ const EditDioceseArchdioceseModal = ({ isOpen, onClose, diocese, onUpdated }) =>
         <div>
           <label className="text-sm font-medium text-slate-700 block mb-1">Nombre Oficial</label>
           <Input value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} disabled={loading} />
+        </div>
+
+        <div className="rounded-2xl border border-blue-100 bg-blue-50/40 p-4">
+          <p className="mb-3 text-[10px] font-black uppercase tracking-widest text-[#4B7BA7]">Identidad institucional</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div><label className="text-sm font-medium text-slate-700 block mb-1">Código institucional</label><Input value={formData.code} onChange={(e) => setFormData({ ...formData, code: e.target.value.toUpperCase() })} disabled={loading} /></div>
+            <div><label className="text-sm font-medium text-slate-700 block mb-1">NIT</label><Input value={formData.nit} onChange={(e) => setFormData({ ...formData, nit: e.target.value })} disabled={loading} /></div>
+            <div className="md:col-span-2"><label className="text-sm font-medium text-slate-700 block mb-1">Dirección sede</label><Input value={formData.address} onChange={(e) => setFormData({ ...formData, address: e.target.value })} disabled={loading} /></div>
+            <div><label className="text-sm font-medium text-slate-700 block mb-1">Teléfono</label><Input value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} disabled={loading} /></div>
+            <div><label className="text-sm font-medium text-slate-700 block mb-1">Fax</label><Input value={formData.fax} onChange={(e) => setFormData({ ...formData, fax: e.target.value })} disabled={loading} /></div>
+            <div className="md:col-span-2"><label className="text-sm font-medium text-slate-700 block mb-1">Correo institucional</label><Input type="email" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} disabled={loading} /></div>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
