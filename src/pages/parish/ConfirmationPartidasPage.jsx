@@ -286,7 +286,19 @@ const ConfirmationPartidasPage = () => {
                         <p className="text-[#4B7BA7] text-[10px] font-black uppercase tracking-[0.3em] mt-2 ml-1">{nombreParroquia} • Archivo Parroquial Permanente</p>
                     </div>
                     <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-                        <Button type="button" variant="outline" onClick={() => navigate('/documentos/plantillas?template=73013')} className="rounded-2xl bg-white px-5 py-3 text-[10px] font-black uppercase tracking-widest text-[#4B7BA7]">
+                        <Button type="button" variant="outline" onClick={() => {
+                            const row = selectedPartida;
+                            const confirmationYear = String(row?.fechaSacramento || '').slice(0,4);
+                            navigate('/documentos/plantillas?template=73013', {
+                                state:{ templateValues: row ? {
+                                    Nombre:[row.nombres,row.apellidos].filter(Boolean).join(' ').trim(),
+                                    Padres:[row.nombrePadre,row.nombreMadre].filter(Boolean).join(' y '),
+                                    FecNac:row.fechaNacimiento || '',
+                                    Year1:confirmationYear,
+                                    Year2:confirmationYear
+                                } : {} }
+                            });
+                        }} className="rounded-2xl bg-white px-5 py-3 text-[10px] font-black uppercase tracking-widest text-[#4B7BA7]">
                             <FileText className="mr-2 h-4 w-4" /> Solicitud de partida
                         </Button>
                         <div className="bg-slate-900 text-white px-6 py-3.5 rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl">

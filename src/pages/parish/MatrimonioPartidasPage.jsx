@@ -203,7 +203,16 @@ const handleViewClick = (row, e) => {
           <p className="text-[#4B7BA7] text-[10px] font-black uppercase tracking-[0.3em] mt-2 ml-1">{user?.parishName || 'Parroquia'} • Archivo Parroquial Permanente</p>
         </div>
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-          <Button type="button" variant="outline" onClick={() => navigate('/documentos/plantillas?template=73012')} className="rounded-2xl bg-white px-5 py-3 text-[10px] font-black uppercase tracking-widest text-[#4B7BA7]">
+          <Button type="button" variant="outline" onClick={() => {
+            const row = selectedPartida;
+            navigate('/documentos/plantillas?template=73012', {
+              state:{ templateValues: row ? {
+                Esposo:[row.groomName,row.groomSurname].filter(Boolean).join(' ').trim(),
+                Esposa:[row.brideName,row.brideSurname].filter(Boolean).join(' ').trim(),
+                FecMat:row.sacramentDate || row.celebration_date || ''
+              } : {} }
+            });
+          }} className="rounded-2xl bg-white px-5 py-3 text-[10px] font-black uppercase tracking-widest text-[#4B7BA7]">
             <FileText className="mr-2 h-4 w-4" /> Solicitud de partida
           </Button>
           <div className="bg-slate-900 text-white px-6 py-3.5 rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl">Total en Archivo: {filteredRecords.length}</div>
