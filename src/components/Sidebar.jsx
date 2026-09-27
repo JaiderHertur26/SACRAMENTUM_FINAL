@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { 
     Church, LogOut, Settings as SettingsIcon, LayoutDashboard, 
     Users, Network, ChevronRight, Database, Sliders, 
-    HeartHandshake as Handshake, ScrollText, Heart, List, 
+    HeartHandshake as Handshake, ScrollText, Heart, List, BookOpen,
     FileText, Bell, Mail, Landmark, Search, Archive, BarChart3, MessageCircleMore
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -285,7 +285,8 @@ const Sidebar = ({ isOpen, onClose, onLogout, role, menuItems: externalMenuItems
                     { label: 'Confirmación Celebrada', path: '/parroquia/confirmacion/celebrado' },
                     { label: 'Sentar Registros', path: '/parroquia/confirmacion/sentar-registros' },
                     { label: 'Partidas', path: '/parroquia/confirmacion/partidas' },
-                    { label: 'Índice General', path: '/parroquia/confirmacion/indice', icon: List }
+                    { label: 'Índice General', path: '/parroquia/confirmacion/indice', icon: List },
+                    { label: 'Emitir Notificación', path: '/parroquia/confirmacion/notificacion', icon: Mail }
                 ]
             },
             { 
@@ -297,6 +298,7 @@ const Sidebar = ({ isOpen, onClose, onLogout, role, menuItems: externalMenuItems
                     { label: 'Sentar Registros', path: '/parroquia/matrimonio/sentar-registros' },
                     { label: 'Partidas', path: '/parroquia/matrimonio/partidas' },
                     { label: 'Índice General', path: '/parroquia/matrimonio/indice', icon: List },
+                    { label: 'Expediente Matrimonial', path: '/parroquia/matrimonio/expedientes', icon: FileText },
                     { label: 'Emitir Notificación', path: '/parroquia/matrimonio/notificacion', icon: Mail }
                 ]
             },
@@ -308,6 +310,7 @@ const Sidebar = ({ isOpen, onClose, onLogout, role, menuItems: externalMenuItems
                     { label: 'Partidas de Exequias', path: '/parroquia/exequias/partidas', icon: List }
                 ]
             },
+            { label: 'Libros Sacramentales', path: '/parroquia/libros', icon: BookOpen },
             { label: 'Plantillas Documentales', path: '/documentos/plantillas', icon: FileText },
             { label: 'Datos Auxiliares', path: '/datos-auxiliares', icon: Database },
             { label: 'Parámetros', path: '/parroquia/bautismo/parametros', icon: Sliders },
