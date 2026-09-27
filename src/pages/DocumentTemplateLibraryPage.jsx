@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Copy, FileText, Printer, Search, Sparkles, PencilLine, Save } from 'lucide-react';
-import { useSearchParams } from 'react-router-dom';
+import { useLocation, useSearchParams } from 'react-router-dom';
 import DashboardLayout from '@/components/DashboardLayout';
 import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/components/ui/use-toast';
@@ -21,8 +21,10 @@ const cleanTemplateCode = (value = '') => String(value).replace(/^LEGACY-/i, '')
 export default function DocumentTemplateLibraryPage() {
   const { user, profile } = useAuth();
   const { toast } = useToast();
+  const location = useLocation();
   const [searchParams] = useSearchParams();
   const requestedTemplate = cleanTemplateCode(searchParams.get('template') || '').toUpperCase();
+  const initialTemplateValues = useMemo(() => location.state?.templateValues || {}, [location.state]);
   const requestedSearch = String(searchParams.get('q') || '').trim();
   const [templates, setTemplates] = useState([]);
   const [selectedId, setSelectedId] = useState('');
@@ -96,7 +98,11 @@ export default function DocumentTemplateLibraryPage() {
     } finally { setSaving(false); }
   };
 
-  useEffect(() => setValues({}), [selectedId]);
+  useEffect(() => {
+    const current = templates.find((t) => t.id === selectedId);
+    const currentCode = cleanTemplateCode(current?.code || current?.legacy_code || '').toUpperCase();
+    setValues(requestedTemplate && currentCode === requestedTemplate ? initialTemplateValues : {});
+  }, [selectedId, templates, requestedTemplate, initialTemplateValues]);
 
   const copy = async () => {
     await navigator.clipboard.writeText(preview);

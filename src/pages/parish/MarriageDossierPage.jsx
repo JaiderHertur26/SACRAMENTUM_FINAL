@@ -50,6 +50,68 @@ const MARRIAGE_DOCUMENT_SHORTCUTS = [
   ['73101','Delegación para matrimonio']
 ];
 
+const buildMarriageDocumentContext = ({ code, pendingMarriage, answers, meta, user }) => {
+  const groom = answers?.groom || {};
+  const bride = answers?.bride || {};
+  const witness1 = answers?.witness1 || {};
+  const witness2 = answers?.witness2 || {};
+  const groomNames = pendingMarriage?.novioNombres || String(groom.fullName || '').trim();
+  const groomSurnames = pendingMarriage?.novioApellidos || '';
+  const brideNames = pendingMarriage?.noviaNombres || String(bride.fullName || '').trim();
+  const brideSurnames = pendingMarriage?.noviaApellidos || '';
+  const groomFull = [groomNames,groomSurnames].filter(Boolean).join(' ').trim();
+  const brideFull = [brideNames,brideSurnames].filter(Boolean).join(' ').trim();
+  const groomParents = [groom.father,groom.mother].filter(Boolean).join(' y ');
+  const brideParents = [bride.father,bride.mother].filter(Boolean).join(' y ');
+  const category = answers?.canonicalMarriageCategory || pendingMarriage?.canonicalMarriageCategory || '';
+  const nonCatholicConfession = groom.religion && groom.religion !== 'CATÓLICA'
+    ? groom.religion
+    : bride.religion && bride.religion !== 'CATÓLICA'
+      ? bride.religion
+      : '';
+  const unbaptized = groom.baptismStatus === 'NO BAUTIZADO' ? groomFull
+    : bride.baptismStatus === 'NO BAUTIZADO' ? brideFull
+      : '';
+
+  return {
+    Miparroquia:user?.parishName || '',
+    Miciudad:user?.parishCity || user?.city || '',
+    Fecha:new Date().toISOString().slice(0,10),
+    Novio:groomFull,
+    Novia:brideFull,
+    Cedula1:groom.documentId || '',
+    Cedula2:bride.documentId || '',
+    Nombre1:groomFull,
+    Nombre2:brideFull,
+    Direccion:groom.residenceAddress || bride.residenceAddress || '',
+    Fecmat:meta?.plannedMarriageDate || '',
+    FechaMatrimonio:meta?.plannedMarriageDate || '',
+    Solicitante:groomFull,
+    Pareja:brideFull,
+    Nombres:groomNames,
+    Apellidos:groomSurnames,
+    Cedula3:groom.documentId || '',
+    Padres:groomParents,
+    Testigo1:witness1.name || '',
+    Testigo2:witness2.name || '',
+    Parentesco1:witness1.relationship || '',
+    Parentesco2:witness2.relationship || '',
+    Confesion:category === 'mixed_marriage' ? nonCatholicConfession : '',
+    Contrayente:category === 'disparity_of_cult' ? unbaptized : '',
+    ElContrayente:groomFull,
+    LaContrayente:brideFull,
+    Parroco:pendingMarriage?.daFe || pendingMarriage?.presenciaria || '',
+    LibroBau:pendingMarriage?.novioBautismoLibro || '',
+    FolioBau:pendingMarriage?.novioBautismoFolio || '',
+    NumeroBau:pendingMarriage?.novioBautismoNumero || '',
+    ParroBau:pendingMarriage?.novioBautismoLugar || '',
+    SolicitanteBautismo:groomFull,
+    PadresNovio:groomParents,
+    PadresNovia:brideParents,
+    CodigoDocumento:String(code || '')
+  };
+};
+
 const Q = ({ label, value, onChange, multiline=false, options=null, type='text' }) => <label className="block">
   <span className="text-[10px] font-black uppercase tracking-wider text-slate-500">{label}</span>
   {options ? <select value={value||''} onChange={e=>onChange(e.target.value)} className="mt-2 w-full rounded-xl border bg-white px-3 py-2.5 text-sm font-bold"><option value="">SELECCIONE…</option>{options.map(o=><option key={o} value={o}>{o}</option>)}</select>
@@ -342,7 +404,17 @@ export default function MarriageDossierPage(){
           {tab==='testigos'&&<div className="grid gap-6 xl:grid-cols-2"><WitnessInterview title="Primer testigo" data={answers.witness1||{}} setData={(k,v)=>setSection('witness1',k,v)}/><WitnessInterview title="Segundo testigo" data={answers.witness2||{}} setData={(k,v)=>setSection('witness2',k,v)}/></div>}
           {tab==='hijos'&&<ChildrenPanel childrenRows={answers.children||[]} onAdd={addChild} onUpdate={updateChild} onRemove={removeChild}/>}
           {tab==='documentos'&&<div className="space-y-6">
-            <DocumentShortcuts onOpen={(code)=>navigate(`/documentos/plantillas?template=${code}`)}/>
+            <DocumentShortcuts onOpen={(code)=>navigate(`/documentos/plantillas?template=${code}`, {
+              state:{
+                templateValues:buildMarriageDocumentContext({
+                  code,
+                  pendingMarriage,
+                  answers,
+                  meta,
+                  user
+                })
+              }
+            })}/>
             <div className="rounded-2xl border border-amber-200 bg-amber-50/40 p-5">
               <p className="text-[9px] font-black uppercase tracking-widest text-amber-700">Situación canónica y autorización</p>
               <div className="mt-4 grid gap-4 md:grid-cols-2">
