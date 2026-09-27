@@ -300,11 +300,16 @@ const BaptismNewPage = () => {
                     <h2 className="text-3xl font-black text-slate-900 mb-3 tracking-tighter uppercase">
                         {linkedConfirmationData ? 'Registros creados' : 'Borrador Creado'}
                     </h2>
-                    <p className="text-slate-500 mb-6 text-sm font-medium leading-relaxed">
+                    <p className="text-slate-500 mb-4 text-sm font-medium leading-relaxed">
                         {linkedConfirmationData
                             ? 'El Bautismo y la Confirmación quedaron registrados como sacramentos por celebrar.'
                             : 'El registro está en la nube listo para ser asentado oficialmente.'}
                     </p>
+                    <div className="mb-6 rounded-2xl border border-amber-200 bg-amber-50/60 p-4">
+                        <p className="text-[9px] font-black uppercase tracking-widest text-amber-700">N.º de Registro de Bautismo reservado</p>
+                        <p className="mt-1 font-mono text-2xl font-black text-slate-950">{ticketData?.numeroRegistro || 'ASIGNADO'}</p>
+                        <p className="mt-1 text-[10px] font-medium text-slate-500">La boleta puede imprimirse ahora o recuperarse posteriormente desde Sentar Registros.</p>
+                    </div>
                     {linkedConfirmationData && (
                         <div className="mb-8 rounded-2xl border border-blue-100 bg-blue-50/60 p-5 text-left">
                             <p className="text-[10px] font-black uppercase tracking-widest text-[#4B7BA7]">Confirmación vinculada</p>
@@ -314,8 +319,9 @@ const BaptismNewPage = () => {
                             </p>
                         </div>
                     )}
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid gap-3 sm:grid-cols-3">
                         <Button onClick={() => window.location.reload()} variant="outline" className="py-7 rounded-2xl border-slate-200 text-slate-700 font-black uppercase text-[10px] hover:bg-slate-50">Nueva Inscripción</Button>
+                        <Button onClick={() => window.print()} className="py-7 rounded-2xl bg-[#4B7BA7] text-white font-black uppercase text-[10px] shadow-xl shadow-blue-900/10"><Printer className="mr-2 h-4 w-4"/>Imprimir boleta</Button>
                         <Button variant="secondary" onClick={() => navigate('/parroquia/bautismo/sentar-registros')} className="py-7 rounded-2xl font-black uppercase text-[10px] shadow-xl shadow-blue-900/10">Sentar Libros</Button>
                     </div>
                 </div>

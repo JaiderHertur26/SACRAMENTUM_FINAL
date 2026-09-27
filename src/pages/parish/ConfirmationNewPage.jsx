@@ -242,9 +242,15 @@ const ConfirmationNewPage = () => {
                 <div className="print:hidden max-w-xl mx-auto bg-white p-12 rounded-[3rem] shadow-xl border border-slate-100 text-center mt-12 animate-in fade-in duration-500">
                     <div className="w-24 h-24 bg-green-50 rounded-[2rem] flex items-center justify-center mx-auto mb-8 border border-green-100"><CheckCircle2 className="w-12 h-12 text-green-500" /></div>
                     <h2 className="text-3xl font-black text-slate-900 mb-3 tracking-tighter uppercase">Borrador Creado</h2>
-                    <p className="text-slate-500 mb-10 text-sm font-medium leading-relaxed">El registro de confirmación está en la nube listo para ser asentado oficialmente.</p>
-                    <div className="grid grid-cols-2 gap-4">
+                    <p className="text-slate-500 mb-4 text-sm font-medium leading-relaxed">El registro de Confirmación está en la nube listo para ser asentado oficialmente.</p>
+                    <div className="mb-6 rounded-2xl border border-amber-200 bg-amber-50/60 p-4">
+                        <p className="text-[9px] font-black uppercase tracking-widest text-amber-700">N.º de Registro de Confirmación reservado</p>
+                        <p className="mt-1 font-mono text-2xl font-black text-slate-950">{ticketData?.numeroRegistro || 'ASIGNADO'}</p>
+                        <p className="mt-1 text-[10px] font-medium text-slate-500">La boleta puede imprimirse ahora o recuperarse posteriormente desde Sentar Registros.</p>
+                    </div>
+                    <div className="grid gap-3 sm:grid-cols-3">
                         <Button onClick={() => window.location.reload()} variant="outline" className="py-7 rounded-2xl border-slate-200 text-slate-700 font-black uppercase text-[10px] hover:bg-slate-50">Nueva Inscripción</Button>
+                        <Button onClick={() => window.print()} className="py-7 rounded-2xl bg-[#4B7BA7] text-white font-black uppercase text-[10px] shadow-xl shadow-blue-900/10"><Printer className="mr-2 h-4 w-4"/>Imprimir boleta</Button>
                         <Button variant="secondary" onClick={() => navigate('/parroquia/confirmacion/sentar-registros')} className="py-7 rounded-2xl font-black uppercase text-[10px] shadow-xl shadow-blue-900/10">Sentar Libros</Button>
                     </div>
                 </div>
