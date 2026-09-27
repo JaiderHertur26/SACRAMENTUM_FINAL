@@ -12,6 +12,8 @@ import { convertDateToSpanishText } from '@/utils/dateTimeFormatters';
 import { supabase } from '@/lib/supabaseClient';
 import CityAutocomplete from '@/components/CityAutocomplete';
 import DecreeCenterHeader from '@/components/chancery/DecreeCenterHeader';
+import DecreeConceptEffects from '@/components/chancery/DecreeConceptEffects';
+import { normalizeDecreeConceptPolicy } from '@/utils/decreeConceptPolicy';
 import {
   CanonicalParishSelector,
   CanonicalField,
@@ -122,7 +124,7 @@ const NewDecreeReplacementPage = () => {
 
                 if (currentDioceseId) {
                     // Cargar Conceptos
-                    const { data: cData } = await supabase.from('conceptos_anulacion').select('id, codigo, concepto, tipo').eq('diocese_id', currentDioceseId).order('codigo', { ascending: true });
+                    const { data: cData } = await supabase.from('conceptos_anulacion').select('id, codigo, concepto, tipo, seinscribe, gennota, gendocum, enlibro, expide').eq('diocese_id', currentDioceseId).order('codigo', { ascending: true });
                     if (cData) setConceptos(cData.filter(c => c.tipo === 'porReposicion' || (c.concepto && c.concepto.toLowerCase().includes('reposici'))));
 
                     // Cargar Parroquias de la Diócesis
@@ -286,6 +288,7 @@ const NewDecreeReplacementPage = () => {
             const payloadDecree = {
                 decreeNumber: bautismoDecree.numeroDecreto, numeroDecreto: bautismoDecree.numeroDecreto,
                 decreeDate: bautismoDecree.fechaDecreto, conceptoAnulacionId: bautismoDecree.conceptoAnulacionId,
+                conceptPolicy: normalizeDecreeConceptPolicy(conceptoMatch),
                 causa: conceptoText, targetName: `${bautismoNewPartida.lastName} ${bautismoNewPartida.firstName}`.trim(),
                 ...bautismoNewPartida, ministro: finalMin, daFe: finalDaFe, dafe: finalDaFe, ministerFaith: finalDaFe,
                 evidence,
@@ -335,6 +338,7 @@ const NewDecreeReplacementPage = () => {
         return `${p.name || ''} ${p.city || ''}`.toLowerCase().includes(q);
     });
     const selectedParish = parishesList.find((p) => p.id === bautismoDecree.targetParishId);
+    const selectedConcept = conceptos.find((c) => String(c.id) === String(bautismoDecree.conceptoAnulacionId)) || null;
 
     return (
         <DashboardLayout entityName={user?.dioceseName || "Cancillería"}>
@@ -382,6 +386,10 @@ const NewDecreeReplacementPage = () => {
                                     </CanonicalDecreeMetaGrid>
                                 }
                             />
+
+                            <div className="px-6 pt-5">
+                                <DecreeConceptEffects concept={selectedConcept} />
+                            </div>
 
                             <CanonicalSupplementaryPreview
                                 book={String(nextParams.libro || 1).padStart(4,'0')}

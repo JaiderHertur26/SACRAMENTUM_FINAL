@@ -14,6 +14,7 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 import { useAuth } from '@/context/AuthContext';
 import { supabase } from '@/lib/supabaseClient';
+import { decreeConceptBookLabel, normalizeDecreeConceptPolicy } from '@/utils/decreeConceptPolicy';
 
 const text = (value, fallback = '—') => {
   if (value === null || value === undefined || value === '') return fallback;
@@ -243,6 +244,10 @@ const ParishDecreeDetailPage = () => {
     payload.marginNote ||
     payload.notaNueva;
 
+  const conceptPolicy = payload.conceptPolicy
+    ? normalizeDecreeConceptPolicy(payload.conceptPolicy)
+    : null;
+
   const typeKey = String(decreeType || '').toLowerCase();
   const isCorrection = typeKey.includes('correc');
   const isReplacement = typeKey.includes('repos') || typeKey.includes('replacement');
@@ -255,7 +260,7 @@ const ParishDecreeDetailPage = () => {
     'datosNuevaPartida','evidence','decreeEvidence','recordData','reason','fundamento',
     'causa','concepto','observaciones','observations','motivo','originalNote',
     'annulledNote','notaAnulacion','notaOriginal','replacementNote','newNote',
-    'notaMarginal','marginNote','notaNueva'
+    'notaMarginal','marginNote','notaNueva','conceptPolicy'
   ]);
 
   const scalarExtras = Object.entries(payload)
@@ -369,6 +374,29 @@ const ParishDecreeDetailPage = () => {
                 <TextBlock title="Fundamento / Motivo" tone="amber">
                   {reason}
                 </TextBlock>
+              )}
+
+              {conceptPolicy && (
+                <section className="rounded-2xl border border-blue-100 bg-blue-50/50 p-5">
+                  <div className="flex flex-col justify-between gap-4 md:flex-row md:items-start">
+                    <div>
+                      <p className="text-[9px] font-black uppercase tracking-[0.18em] text-blue-700">Efectos definidos al emitir el decreto</p>
+                      <p className="mt-1 text-sm font-black uppercase text-slate-900">{conceptPolicy.code ? conceptPolicy.code + ' · ' : ''}{conceptPolicy.concept || 'Concepto diocesano'}</p>
+                      <div className="mt-3 flex flex-wrap gap-2 text-[9px] font-black uppercase tracking-wider">
+                        {conceptPolicy.registersEffect && <span className="rounded-full border border-emerald-200 bg-white px-3 py-1 text-emerald-700">Inscripción registral</span>}
+                        {conceptPolicy.generatesMarginalNote && <span className="rounded-full border border-amber-200 bg-white px-3 py-1 text-amber-700">Nota marginal</span>}
+                        {conceptPolicy.generatesDocument && <span className="rounded-full border border-blue-200 bg-white px-3 py-1 text-blue-700">Documento / constancia</span>}
+                        <span className="rounded-full border border-slate-200 bg-white px-3 py-1 text-slate-600">Libro: {decreeConceptBookLabel(conceptPolicy.bookMode)}</span>
+                        {conceptPolicy.issuer && <span className="rounded-full border border-slate-200 bg-white px-3 py-1 text-slate-600">Expide: {conceptPolicy.issuer}</span>}
+                      </div>
+                    </div>
+                    {conceptPolicy.generatesDocument && (
+                      <Button type="button" variant="outline" onClick={() => navigate('/documentos/plantillas?q=decreto')} className="shrink-0 rounded-xl bg-white print:hidden">
+                        <FileText className="mr-2 h-4 w-4" /> Preparar documento asociado
+                      </Button>
+                    )}
+                  </div>
+                </section>
               )}
 
               <div className="grid gap-4 lg:grid-cols-2">

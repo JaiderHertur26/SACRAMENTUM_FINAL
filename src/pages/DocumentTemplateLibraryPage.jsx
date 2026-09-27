@@ -23,10 +23,11 @@ export default function DocumentTemplateLibraryPage() {
   const { toast } = useToast();
   const [searchParams] = useSearchParams();
   const requestedTemplate = cleanTemplateCode(searchParams.get('template') || '').toUpperCase();
+  const requestedSearch = String(searchParams.get('q') || '').trim();
   const [templates, setTemplates] = useState([]);
   const [selectedId, setSelectedId] = useState('');
   const [values, setValues] = useState({});
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState(requestedSearch);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
   const [editor, setEditor] = useState({ code:'', name:'', category:'document', templateText:'' });

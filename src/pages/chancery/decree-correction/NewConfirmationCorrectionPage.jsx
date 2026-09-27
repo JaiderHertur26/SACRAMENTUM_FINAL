@@ -13,6 +13,8 @@ import { pickRecordValue, dateOnlyRecordValue, timeOnlyRecordValue, normalizePar
 import { marginalNotesEngine } from '@/utils/marginalNotesEngine';
 import { getMarginalNoteTemplates } from '@/services/marginalNotesTemplatesService';
 import DecreeCenterHeader from '@/components/chancery/DecreeCenterHeader';
+import DecreeConceptEffects from '@/components/chancery/DecreeConceptEffects';
+import { normalizeDecreeConceptPolicy } from '@/utils/decreeConceptPolicy';
 import {
   CanonicalParishSelector,
   CanonicalRecordFinder,
@@ -141,7 +143,7 @@ const NewConfirmationCorrectionPage = () => {
 
         const [{ data: parishes, error: parishError }, { data: concepts, error: conceptError }] = await Promise.all([
           supabase.from('parishes').select('id,name,city,diocese_id').eq('diocese_id', dioceseId).order('name'),
-          supabase.from('conceptos_anulacion').select('id,codigo,concepto,tipo').eq('diocese_id', dioceseId).order('codigo')
+          supabase.from('conceptos_anulacion').select('id,codigo,concepto,tipo,seinscribe,gennota,gendocum,enlibro,expide').eq('diocese_id', dioceseId).order('codigo')
         ]);
         if (parishError) throw parishError;
         if (conceptError) throw conceptError;
@@ -396,6 +398,11 @@ const NewConfirmationCorrectionPage = () => {
     setIsSearchModalOpen(false);
   };
 
+  const selectedConcept = useMemo(
+    () => conceptos.find((c) => String(c.id) === String(decreeData.conceptoAnulacion)) || null,
+    [conceptos, decreeData.conceptoAnulacion]
+  );
+
   const validateForm = () => {
     if (!targetParishId || !decreeData.numeroDeDecreto || !decreeData.conceptoAnulacion || !decreeReason.trim() || !foundRecord) return false;
     return ['fechaSacramento', 'nombres', 'apellidos'].every(field => newPartida[field]);
@@ -447,6 +454,7 @@ const NewConfirmationCorrectionPage = () => {
         decreeNumber: decreeData.numeroDeDecreto,
         decreeDate: decreeData.fechaEmision,
         conceptoAnulacionId: decreeData.conceptoAnulacion,
+        conceptPolicy: normalizeDecreeConceptPolicy(selectedConcept),
         reason: decreeReason.trim(),
         fundamento: decreeReason.trim(),
         observaciones: newPartida.observaciones,
@@ -600,6 +608,10 @@ const NewConfirmationCorrectionPage = () => {
                   </div>
                 }
               />
+
+              <div className="px-6 pt-5">
+                <DecreeConceptEffects concept={selectedConcept} />
+              </div>
 
               <CanonicalSupplementaryPreview
                 book={String(cloudParams.suplementarioLibro || 1).padStart(4,'0')}

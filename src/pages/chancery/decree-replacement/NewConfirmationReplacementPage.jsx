@@ -9,6 +9,8 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/lib/supabaseClient';
 import { convertDateToSpanishText } from '@/utils/dateTimeFormatters';
 import DecreeCenterHeader from '@/components/chancery/DecreeCenterHeader';
+import DecreeConceptEffects from '@/components/chancery/DecreeConceptEffects';
+import { normalizeDecreeConceptPolicy } from '@/utils/decreeConceptPolicy';
 import {
   CanonicalParishSelector,
   CanonicalField,
@@ -69,7 +71,7 @@ const NewConfirmationReplacementPage = () => {
       setDioceseId(dId);
       const [pRes, cRes] = await Promise.all([
         supabase.from('parishes').select('id,name,city').eq('diocese_id', dId).order('name'),
-        supabase.from('conceptos_anulacion').select('id,codigo,concepto,tipo').eq('diocese_id', dId).order('codigo')
+        supabase.from('conceptos_anulacion').select('id,codigo,concepto,tipo,seinscribe,gennota,gendocum,enlibro,expide').eq('diocese_id', dId).order('codigo')
       ]);
       if (pRes.error) throw pRes.error;
       if (cRes.error) throw cRes.error;
@@ -100,6 +102,7 @@ const NewConfirmationReplacementPage = () => {
 
   const setField = (name, value, raw = false) => setRecord(prev => ({ ...prev, [name]: raw ? value : upper(value) }));
   const parish = parishes.find(p => p.id === targetParishId);
+  const selectedConcept = concepts.find(c => String(c.id) === String(decree.conceptId)) || null;
 
   const handleSubmit = async () => {
     if (!targetParishId || !decree.number.trim() || !decree.date || !decree.conceptId || !record.nombres.trim() || !record.apellidos.trim() || !record.fechaSacramento) {
@@ -128,6 +131,7 @@ const NewConfirmationReplacementPage = () => {
       const payload = {
         sacrament: 'confirmacion', sacramentType: 'confirmacion', decretoType: 'reposicion',
         decreeNumber: upper(decree.number), decreeDate: decree.date, conceptoAnulacionId: decree.conceptId,
+        conceptPolicy: normalizeDecreeConceptPolicy(concept),
         causa: concept?.concepto || 'REPOSICIÓN', reason: decreeReason.trim(), fundamento: decreeReason.trim(), targetParishId, targetParishName: parish?.name || '',
         targetName: `${upper(record.apellidos)} ${upper(record.nombres)}`.trim(), ...normalized, evidence,
         newPartidaSummary: { book: next.book, page: next.folio, entry: next.number, nombres: record.nombres, apellidos: record.apellidos, daFe: finalDaFe }
@@ -209,6 +213,10 @@ const NewConfirmationReplacementPage = () => {
                   </CanonicalDecreeMetaGrid>
                 }
               />
+
+              <div className="px-6 pt-5">
+                <DecreeConceptEffects concept={selectedConcept} />
+              </div>
 
               <CanonicalSupplementaryPreview
                 book={String(next.book).padStart(4,'0')}
