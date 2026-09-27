@@ -385,7 +385,18 @@ const UnifiedSearchPage = () => {
                                 <div className="bg-white p-12 lg:p-20 rounded-[2rem] lg:rounded-[2.5rem] border border-dashed border-slate-200 text-center">
                                     <Search className="w-12 h-12 lg:w-16 lg:h-16 text-slate-200 mx-auto mb-4" />
                                     <p className="font-bold text-slate-400 uppercase tracking-widest text-[10px] lg:text-xs">No se localizaron registros para esta búsqueda</p>
-                                    <Button type="button" variant="outline" onClick={() => navigate('/documentos/plantillas?template=71071')} className="mt-6 rounded-xl">
+                                    <Button type="button" variant="outline" onClick={() => {
+                                        const sacramentLabel = sacramentOptions.find(option => option.value === searchParams.sacramentType)?.label || 'PARTIDA SACRAMENTAL';
+                                        navigate('/documentos/plantillas?template=71071', {
+                                            state:{ templateValues:{
+                                                Tipopartida:sacramentLabel,
+                                                Nombre:[searchParams.firstName,searchParams.lastName].filter(Boolean).join(' ').trim(),
+                                                Miparroquia:nombreEntidad || '',
+                                                Miciudad:user?.parishCity || user?.city || '',
+                                                Fecha:new Date().toISOString().slice(0,10)
+                                            }}
+                                        });
+                                    }} className="mt-6 rounded-xl">
                                         <BookOpen className="mr-2 h-4 w-4" />
                                         Abrir certificado negativo
                                     </Button>

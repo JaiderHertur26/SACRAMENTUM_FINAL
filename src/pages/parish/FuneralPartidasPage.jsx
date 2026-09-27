@@ -226,7 +226,24 @@ const FuneralPartidasPage = () => {
           </div>
 
           <div className="flex flex-wrap gap-2">
-            <Button type="button" variant="outline" onClick={() => navigate('/documentos/plantillas?template=71112')} className="rounded-xl">
+            <Button type="button" variant="outline" onClick={() => {
+              const row = selected;
+              navigate('/documentos/plantillas?template=71112', {
+                state:{ templateValues: row ? {
+                  Miparroquia:institution.parishName || parishName || '',
+                  Miciudad:institution.city || user?.city || '',
+                  Fecha:new Date().toISOString().slice(0,10),
+                  Fechae:row.fecha_exequias || '',
+                  Nombres:row.nombres || '',
+                  Apellidos:row.apellidos || '',
+                  Edad:row.edad || row.age || '',
+                  Sexo:row.sexo || row.gender || '',
+                  Fecham:row.fecha_defuncion || '',
+                  Padres:[row.nombre_padre,row.nombre_madre].filter(Boolean).join(' y '),
+                  Ministro:row.ministro || ''
+                } : {} }
+              });
+            }} className="rounded-xl">
               <Printer className="mr-2 h-4 w-4" />
               Certificado de Exequias
             </Button>
