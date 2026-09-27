@@ -264,6 +264,7 @@ const Sidebar = ({ isOpen, onClose, onLogout, role, menuItems: externalMenuItems
         return [
             { label: 'Inicio', path: '/parish/dashboard', icon: LayoutDashboard },
             { label: 'Buscador Unificado', path: '/buscar', icon: Search },
+            { label: 'Control Operativo', path: '/parish/operational-control', icon: BarChart3 },
             { label: 'Notificaciones Cancillería', path: '/parish/notifications', icon: Bell, badgeCount: notificationCount },
             { label: 'Notificaciones Sacramentales', path: '/parish/sacramental-notifications', icon: Mail, badgeCount: sacramentalCount },
             {

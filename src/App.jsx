@@ -47,6 +47,7 @@ const DiocesanSacramentalReportsPage = lazy(() => import('@/pages/diocese/Dioces
    PARISH PAGES
 ========================= */
 const ParishDashboard = lazy(() => import('@/pages/parish/ParishDashboard'));
+const ParishOperationalControlPage = lazy(() => import('@/pages/parish/ParishOperationalControlPage'));
 const ParroquiaAjustesPage = lazy(() => import('@/pages/parish/ParroquiaAjustesPage'));
 const DatosAuxiliaresPage = lazy(() => import('@/pages/parish/DatosAuxiliaresPage'));
 const ParishNotificationsPage = lazy(() => import('@/pages/parish/ParishNotificationsPage'));
@@ -172,6 +173,7 @@ const AppContent = () => {
 
                 {/* -------- PARISH -------- */}
                 <Route path="/parish/dashboard" element={<ProtectedRoute requiredRole={ROLE_TYPES.PARISH}><ParishDashboard /></ProtectedRoute>} />
+                <Route path="/parish/operational-control" element={<ProtectedRoute requiredRole={ROLE_TYPES.PARISH}><ParishOperationalControlPage /></ProtectedRoute>} />
                 <Route path="/parish/notifications" element={<ProtectedRoute requiredRole={ROLE_TYPES.PARISH}><ParishNotificationsPage /></ProtectedRoute>} />
                 <Route path="/parish/sacramental-notifications" element={<ProtectedRoute requiredRole={ROLE_TYPES.PARISH}><SacramentalNotificationsPage /></ProtectedRoute>} />
                 <Route path="/parish/decrees/:decreeId" element={<ProtectedRoute requiredRole={ROLE_TYPES.PARISH}><ParishDecreeDetailPage /></ProtectedRoute>} />
