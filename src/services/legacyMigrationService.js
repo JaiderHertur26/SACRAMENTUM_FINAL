@@ -99,6 +99,7 @@ export async function applyLegacyBatch(batchId, { chunkSize = 250, onProgress = 
   const batch = await getLegacyMigrationSummary(batchId);
   const effectiveProfile = String(profileKey || batch?.profile_key || '').toUpperCase();
   const isPendingSacramentalProfile = ['INSBAUTI','INSCONFI'].includes(effectiveProfile);
+  const isPendingMarriageProfile = effectiveProfile === 'INSMATRI';
   const rpcName = ['NTMAT001','NTMAT002'].includes(effectiveProfile)
     ? 'apply_legacy_marginal_note_batch'
     : 'apply_legacy_import_batch_v2';
@@ -112,7 +113,9 @@ export async function applyLegacyBatch(batchId, { chunkSize = 250, onProgress = 
   while (remaining > 0) {
     const { data, error } = isPendingSacramentalProfile
       ? await supabase.rpc('materialize_pending_legacy_sacramental_records',{ p_batch_id:batchId, p_limit:chunkSize })
-      : await supabase.rpc(rpcName,{ p_batch_id:batchId, p_limit:chunkSize });
+      : isPendingMarriageProfile
+        ? await supabase.rpc('materialize_pending_legacy_marriages',{ p_batch_id:batchId, p_limit:chunkSize })
+        : await supabase.rpc(rpcName,{ p_batch_id:batchId, p_limit:chunkSize });
     if (error) throw error;
 
     const result = unwrapRpc(data) || {};
