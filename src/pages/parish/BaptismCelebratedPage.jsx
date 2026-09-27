@@ -11,6 +11,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/components/ui/use-toast';
 import AuxiliaryAutocomplete from '@/components/AuxiliaryAutocomplete';
+import ChurchLocationAutocomplete from '@/components/ChurchLocationAutocomplete';
 import useSacramentalAuxiliaries from '@/hooks/useSacramentalAuxiliaries';
 import { registerHistoricalBaptism } from '@/services/historicalRegistryService';
 import HistoricalEntryModePanel from '@/components/sacramental/HistoricalEntryModePanel';
@@ -240,7 +241,7 @@ const BaptismCelebratedPage = () => {
                             <SectionHeader number="02" title="Asiento del Sacramento" icon={Calendar} />
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                                 <div><label className={labelClass}>Fecha Sacramento</label><input type="date" name="fechaSacramento" required value={formData.fechaSacramento} onChange={handleChange} className={inputClass} /></div>
-                                <div><label className={labelClass}>Lugar Bautismo</label><AuxiliaryAutocomplete name="lugarBautismo" value={formData.lugarBautismo} onChange={handleChange} options={aux.churchOptions} className={inputClass} placeholder="ESCRIBA PARROQUIA O LUGAR..." /></div>
+                                <div><label className={labelClass}>Lugar Bautismo</label><ChurchLocationAutocomplete name="lugarBautismo" value={formData.lugarBautismo} onChange={(value)=>handleChange({target:{name:'lugarBautismo',value:String(value||'').toUpperCase(),type:'text'}})} churches={aux.churches} cities={aux.cities} parishName={user?.parishName || user?.parish_name || ''} className={inputClass} placeholder="ESCRIBA PARROQUIA O LUGAR..." /></div>
                             </div>
                         </section>
 

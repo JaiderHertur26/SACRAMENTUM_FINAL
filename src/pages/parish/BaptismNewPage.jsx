@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import BaptismTicket from '@/components/BaptismTicket';
 import AuxiliaryAutocomplete from '@/components/AuxiliaryAutocomplete';
+import ChurchLocationAutocomplete from '@/components/ChurchLocationAutocomplete';
 import useSacramentalAuxiliaries from '@/hooks/useSacramentalAuxiliaries';
 import { getNextBaptismRegistrationPreview } from '@/services/sacramentParametersService';
 import { getParishPrintProfile, saveBaptismToSource } from '@/services/sacramentsService';
@@ -366,7 +367,7 @@ const BaptismNewPage = () => {
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                                     <div><label className={labelClass}>Fecha del Sacramento</label><input type="date" name="fechaSacramento" required value={formData.fechaSacramento} onChange={handleChange} className={inputClass} /></div>
                                     <div><label className={labelClass}>Hora del Sacramento</label><input type="time" name="horaSacramento" required value={formData.horaSacramento} onChange={handleChange} className={inputClass} /></div>
-                                    <div><label className={labelClass}>Parroquia / Lugar</label><AuxiliaryAutocomplete name="lugarBautismo" value={formData.lugarBautismo} onChange={handleChange} options={aux.churchOptions} className={inputClass} placeholder="ESCRIBA PARROQUIA O LUGAR..." /></div>
+                                    <div><label className={labelClass}>Parroquia / Lugar</label><ChurchLocationAutocomplete name="lugarBautismo" value={formData.lugarBautismo} onChange={(value)=>handleChange({target:{name:'lugarBautismo',value:String(value||'').toUpperCase(),type:'text'}})} churches={aux.churches} cities={aux.cities} parishName={user?.parishName || user?.parish_name || ''} className={inputClass} placeholder="ESCRIBA PARROQUIA O LUGAR..." /></div>
                                 </div>
                             </section>
 
@@ -460,7 +461,7 @@ const BaptismNewPage = () => {
                                                     </div>
                                                     <div>
                                                         <label className={labelClass}>Parroquia / Lugar</label>
-                                                        <AuxiliaryAutocomplete name="confirmacionLugarSacramento" value={formData.confirmacionLugarSacramento} onChange={handleChange} options={aux.churchOptions} className={inputClass} placeholder="LUGAR DE LA CONFIRMACIÓN..." />
+                                                        <ChurchLocationAutocomplete name="confirmacionLugarSacramento" value={formData.confirmacionLugarSacramento} onChange={(value)=>handleChange({target:{name:'confirmacionLugarSacramento',value:String(value||'').toUpperCase(),type:'text'}})} churches={aux.churches} cities={aux.cities} parishName={user?.parishName || user?.parish_name || ''} className={inputClass} placeholder="LUGAR DE LA CONFIRMACIÓN..." />
                                                     </div>
                                                     <div>
                                                         <label className={labelClass}>Padrino / Madrina</label>

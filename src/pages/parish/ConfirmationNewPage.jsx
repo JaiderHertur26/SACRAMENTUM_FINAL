@@ -304,7 +304,7 @@ const ConfirmationNewPage = () => {
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
                                     <div><label className={labelClass}>Fecha Confirmación</label><input type="date" name="fechaSacramento" required value={formData.fechaSacramento} onChange={handleChange} className={inputClass} /></div>
                                     <div><label className={labelClass}>Hora Confirmación</label><input type="time" name="hora" value={formData.hora} onChange={handleChange} className={inputClass} /></div>
-                                    <div><label className={labelClass}>Parroquia / Lugar</label><AuxiliaryAutocomplete name="lugarSacramento" value={formData.lugarSacramento} onChange={handleChange} options={aux.churchOptions} className={inputClass} placeholder="ESCRIBA PARROQUIA O LUGAR..." /></div>
+                                    <div><label className={labelClass}>Parroquia / Lugar</label><ChurchLocationAutocomplete name="lugarSacramento" value={formData.lugarSacramento} onChange={(value)=>handleChange({target:{name:'lugarSacramento',value:String(value||'').toUpperCase(),type:'text'}})} churches={aux.churches} cities={aux.cities} parishName={user?.parishName || user?.parish_name || ''} className={inputClass} placeholder="ESCRIBA PARROQUIA O LUGAR..." /></div>
                                 </div>
                             </section>
 
@@ -368,11 +368,13 @@ const ConfirmationNewPage = () => {
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div>
                                             <label className={labelClass}>Lugar y Parroquia de Bautismo</label>
-                                            <AuxiliaryAutocomplete
+                                            <ChurchLocationAutocomplete
                                                 name="lugarBautismo"
                                                 value={formData.lugarBautismo}
-                                                onChange={handleChange}
-                                                options={aux.churchOptions}
+                                                onChange={(value)=>handleChange({target:{name:'lugarBautismo',value:String(value||'').toUpperCase(),type:'text'}})}
+                                                churches={aux.churches}
+                                                cities={aux.cities}
+                                                parishName={user?.parishName || user?.parish_name || ''}
                                                 className={inputClass}
                                                 placeholder="BUSCAR PARROQUIA O LUGAR DE BAUTISMO..."
                                             />
