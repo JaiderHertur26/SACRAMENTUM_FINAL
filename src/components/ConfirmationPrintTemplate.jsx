@@ -51,6 +51,7 @@ const ConfirmationPrintTemplate = forwardRef(({ data, parroquiaInfo, incluirNota
 
   const diocesis = clean(header.diocesis || data.dioceseName || data.diocese_name) || '[DIÓCESIS NO CONFIGURADA]';
   const parroquia = clean(header.nombre || data.parishName || data.parish_name) || '[PARROQUIA NO CONFIGURADA]';
+  const nit = clean(header.nronit || header.nit || data.nronit || data.nit);
   const ciudad = clean(header.ciudad || data.city);
   const region = clean(header.region);
   const location = [ciudad, region].filter(Boolean).join(', ') + ([ciudad, region].some(Boolean) ? ' · COLOMBIA' : '');
@@ -139,6 +140,7 @@ const ConfirmationPrintTemplate = forwardRef(({ data, parroquiaInfo, incluirNota
       <EcclesialHeader
         diocese={diocesis}
         parish={parroquia}
+        nit={nit}
         location={location}
         eyebrow="ARCHIVO SACRAMENTAL"
         title="Partida de Confirmación"

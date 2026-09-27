@@ -54,6 +54,7 @@ const MatrimonioPrintTemplate = forwardRef(({ data, parroquiaInfo }, ref) => {
 
   const diocesis = clean(inst.diocesis || data.dioceseName || data.diocese_name);
   const parroquia = clean(inst.nombre || data.parishName || data.parish_name || raw.lugarCeremonia);
+  const nit = clean(inst.nronit || inst.nit || data.nronit || data.nit);
   const ciudad = clean(inst.ciudad || data.city);
   const region = clean(inst.region);
   const location = [ciudad, region].filter(Boolean).join(', ') + ([ciudad, region].some(Boolean) ? ' · COLOMBIA' : '');
@@ -133,6 +134,7 @@ const MatrimonioPrintTemplate = forwardRef(({ data, parroquiaInfo }, ref) => {
       <EcclesialHeader
         diocese={diocesis}
         parish={parroquia}
+        nit={nit}
         location={location}
         eyebrow="ARCHIVO SACRAMENTAL"
         title="Partida de Matrimonio"

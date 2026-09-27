@@ -44,14 +44,29 @@ const normalizeJurisdictionRegion = (value) => String(value || '')
 export const getParishPrintProfile = async (parishId) => {
     if (!parishId) return null;
 
-    const { data: parish, error: parishError } = await supabase
-        .from('parishes')
-        .select('id,diocese_id,name,city,parroco')
-        .eq('id', parishId)
-        .maybeSingle();
+    const [{ data: parish, error: parishError }, { data: identity, error: identityError }] = await Promise.all([
+        supabase
+            .from('parishes')
+            .select('id,diocese_id,name,city,parroco,nit,address,phone')
+            .eq('id', parishId)
+            .maybeSingle(),
+        supabase
+            .from('mis_datos')
+            .select('nronit,ciudad,direccion,telefono,email,payload')
+            .eq('entity_id', parishId)
+            .limit(1)
+            .maybeSingle()
+    ]);
 
     if (parishError) throw parishError;
+    if (identityError) console.warn('No fue posible cargar Mis Datos para el perfil de impresión:', identityError);
     if (!parish) return null;
+
+    let identityPayload = identity?.payload || {};
+    if (typeof identityPayload === 'string') {
+        try { identityPayload = JSON.parse(identityPayload); } catch { identityPayload = {}; }
+    }
+    if (Array.isArray(identityPayload)) identityPayload = identityPayload[0] || {};
 
     let diocese = null;
     if (parish.diocese_id) {
@@ -71,9 +86,13 @@ export const getParishPrintProfile = async (parishId) => {
         diocese_id: parish.diocese_id || null,
         diocesis: diocese?.name || '',
         nombre: parish.name || '',
-        ciudad: parish.city || '',
+        nronit: identity?.nronit || identityPayload.nronit || identityPayload.nit || parish.nit || '',
+        ciudad: identity?.ciudad || identityPayload.ciudad || parish.city || '',
+        direccion: identity?.direccion || identityPayload.direccion || parish.address || '',
+        telefono: identity?.telefono || identityPayload.telefono || parish.phone || '',
+        email: identity?.email || identityPayload.email || '',
         region: normalizeJurisdictionRegion(diocese?.jurisdiccion_eclesiastica),
-        parroco: parish.parroco || ''
+        parroco: identityPayload.parroco || parish.parroco || ''
     };
 };
 

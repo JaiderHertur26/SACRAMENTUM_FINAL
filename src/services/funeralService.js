@@ -153,20 +153,39 @@ export const getFuneralInstitutionCloud = async ({ parishId, fallbackParish, fal
   const result = {
     parishName: fallbackParish || 'PARROQUIA',
     dioceseName: fallbackDiocese || 'DIÓCESIS / ARQUIDIÓCESIS',
-    city: fallbackCity || ''
+    city: fallbackCity || '',
+    nit: ''
   };
 
   if (!parishId) return result;
 
-  const { data: parish, error: parishError } = await supabase
-    .from('parishes')
-    .select('name, city, diocese_id')
-    .eq('id', parishId)
-    .maybeSingle();
+  const [{ data: parish, error: parishError }, { data: institutional, error: institutionalError }] = await Promise.all([
+    supabase
+      .from('parishes')
+      .select('name, city, diocese_id, nit')
+      .eq('id', parishId)
+      .maybeSingle(),
+    supabase
+      .from('mis_datos')
+      .select('nronit,payload')
+      .eq('entity_id', parishId)
+      .limit(1)
+      .maybeSingle()
+  ]);
+
+  if (!institutionalError && institutional) {
+    let payload = institutional.payload || {};
+    if (typeof payload === 'string') {
+      try { payload = JSON.parse(payload); } catch { payload = {}; }
+    }
+    if (Array.isArray(payload)) payload = payload[0] || {};
+    result.nit = institutional.nronit || payload.nronit || payload.nit || '';
+  }
 
   if (!parishError && parish) {
     result.parishName = parish.name || result.parishName;
     result.city = parish.city || result.city;
+    result.nit = result.nit || parish.nit || '';
 
     if (parish.diocese_id) {
       const { data: diocese, error: dioceseError } = await supabase

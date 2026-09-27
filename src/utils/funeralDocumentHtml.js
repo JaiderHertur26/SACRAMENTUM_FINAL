@@ -101,7 +101,8 @@ body {
 .eyebrow { font-size:7.8px; font-weight:900; color:#B89532; letter-spacing:.19em; text-transform:uppercase; }
 .diocese { margin-top:3px; font-size:11px; font-weight:900; color:#173A5E; letter-spacing:.055em; text-transform:uppercase; }
 .parish { margin-top:2px; font-size:12.3px; font-weight:900; color:#172033; text-transform:uppercase; }
-.city { margin-top:2px; font-size:8.1px; color:#667085; letter-spacing:.04em; text-transform:uppercase; }
+.nit { margin-top:2px; font-size:7.1px; font-weight:800; color:#667085; letter-spacing:.055em; text-transform:uppercase; }
+.city { margin-top:1px; font-size:8.1px; color:#667085; letter-spacing:.04em; text-transform:uppercase; }
 .rule { height:3.5px; margin:12px 8px 11px; background:linear-gradient(90deg,#173A5E 0%,#173A5E 76%,#B89532 76%,#B89532 100%); }
 .title { text-align:center; margin-bottom:11px; }
 .title h1 { margin:0; font-family:Georgia,'Times New Roman',serif; font-size:21px; line-height:1.08; color:#172033; }
@@ -172,6 +173,7 @@ const headerHtml = ({ institution, eyebrow, title, subtitle }) => `
     <div class="eyebrow">${escapeHtml(eyebrow)}</div>
     <div class="diocese">${escapeHtml(institution.dioceseName || 'DIÓCESIS / ARQUIDIÓCESIS')}</div>
     <div class="parish">${escapeHtml(institution.parishName || 'PARROQUIA')}</div>
+    ${institution.nit ? `<div class="nit">NIT: ${escapeHtml(institution.nit)}</div>` : ''}
     <div class="city">${escapeHtml(institution.city || '')}</div>
   </div>
   <div></div>

@@ -84,6 +84,7 @@ export const EcclesialMark = ({ size = 48 }) => {
 export const EcclesialHeader = ({
   diocese,
   parish,
+  nit,
   location,
   eyebrow = 'REGISTRO ECLESIAL',
   title,
@@ -106,8 +107,13 @@ export const EcclesialHeader = ({
           <div style={{ marginTop: 2, fontSize: compact ? 10.6 : 12.3, fontWeight: 900, color: p.ink }}>
             {parish || 'PARROQUIA'}
           </div>
+          {nit ? (
+            <div style={{ marginTop: compact ? 1 : 2, fontSize: compact ? 6.3 : 7.1, fontWeight: 800, color: p.muted, letterSpacing: '0.055em' }}>
+              NIT: {nit}
+            </div>
+          ) : null}
           {location ? (
-            <div style={{ marginTop: 2, fontSize: compact ? 7 : 8.1, color: p.muted, letterSpacing: '0.04em' }}>
+            <div style={{ marginTop: nit ? 1 : 2, fontSize: compact ? 7 : 8.1, color: p.muted, letterSpacing: '0.04em' }}>
               {location}
             </div>
           ) : null}
