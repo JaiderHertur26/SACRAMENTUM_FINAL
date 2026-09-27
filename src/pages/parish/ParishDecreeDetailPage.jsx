@@ -58,6 +58,25 @@ const decreeStatusLabel = (value) => {
   return value || 'Vigente';
 };
 
+const roleLabel = (value) => {
+  const key = String(value || '').toLowerCase();
+  if (key === 'chancery') return 'Cancillería';
+  if (key === 'diocese') return 'Diócesis / Arquidiócesis';
+  if (key === 'parish') return 'Parroquia';
+  if (key === 'admin_general') return 'Administrador General';
+  return value || 'Usuario institucional';
+};
+
+const formatDateTime = (value) => {
+  if (!value) return '—';
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return String(value);
+  return new Intl.DateTimeFormat('es-CO', {
+    dateStyle: 'medium',
+    timeStyle: 'short'
+  }).format(date);
+};
+
 const DataItem = ({ label, value }) => (
   <div className="rounded-2xl border border-slate-100 bg-slate-50/70 p-4">
     <p className="text-[9px] font-black uppercase tracking-[0.18em] text-slate-400">{label}</p>
@@ -132,6 +151,7 @@ const ParishDecreeDetailPage = () => {
   const { user } = useAuth();
   const { toast } = useToast();
   const [decree, setDecree] = useState(null);
+  const [auditInfo, setAuditInfo] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -158,7 +178,46 @@ const ParishDecreeDetailPage = () => {
         });
       }
 
+      let trace = null;
+      if (data?.id) {
+        const { data: auditRows } = await supabase
+          .from('registry_audit_log')
+          .select('actor_user_id,action,created_at')
+          .eq('entity_type', 'decree')
+          .eq('entity_id', data.id)
+          .order('created_at', { ascending: true })
+          .limit(20);
+
+        const issueEvent = (auditRows || []).find((row) => ['issue','create','issued'].includes(String(row.action || '').toLowerCase()))
+          || (auditRows || [])[0]
+          || null;
+
+        if (issueEvent?.actor_user_id) {
+          const { data: actor } = await supabase
+            .from('user_profiles')
+            .select('full_name,username,role')
+            .eq('auth_user_id', issueEvent.actor_user_id)
+            .maybeSingle();
+
+          trace = {
+            action: issueEvent.action,
+            createdAt: issueEvent.created_at,
+            actorName: actor?.full_name || actor?.username || 'Usuario institucional',
+            actorRole: actor?.role || ''
+          };
+        } else if (issueEvent) {
+          trace = {
+            action: issueEvent.action,
+            createdAt: issueEvent.created_at,
+            actorName: 'Usuario institucional',
+            actorRole: ''
+          };
+        }
+      }
+
+      if (!active) return;
       setDecree(data || null);
+      setAuditInfo(trace);
       setLoading(false);
     };
 
@@ -363,6 +422,9 @@ const ParishDecreeDetailPage = () => {
                   <DataItem label="Tipo de decreto" value={decreeTypeLabel(decreeType)} />
                   <DataItem label="Estado" value={decreeStatusLabel(decree.status)} />
                   <DataItem label="Persona / Titular" value={targetName} />
+                  {auditInfo && <DataItem label="Ejecutado por" value={auditInfo.actorName} />}
+                  {auditInfo && <DataItem label="Rol institucional" value={roleLabel(auditInfo.actorRole)} />}
+                  {auditInfo && <DataItem label="Registro de auditoría" value={formatDateTime(auditInfo.createdAt)} />}
                 </div>
               </section>
 
