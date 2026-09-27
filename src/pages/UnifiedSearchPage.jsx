@@ -83,8 +83,9 @@ const UnifiedSearchPage = () => {
 
     const sacramentOptions = [
         { value: 'baptism', label: 'BAUTISMO' },
-        { value: 'confirmation', label: 'CONFIRMACIÓN' }
-        // Se omiten matrimonios por ahora según instrucción
+        { value: 'confirmation', label: 'CONFIRMACIÓN' },
+        { value: 'marriage', label: 'MATRIMONIO' },
+        { value: 'funeral', label: 'EXEQUIAS' }
     ];
 
     // 🚀 3. EL BUSCADOR (BASADO 100% EN TU CÓDIGO FUNCIONAL)
@@ -122,62 +123,115 @@ const UnifiedSearchPage = () => {
             }
 
             const type = searchParams.sacramentType;
+            const firstTerm = searchParams.firstName.trim().toUpperCase();
+            const lastTerm = searchParams.lastName.trim().toUpperCase();
             const fetchPromises = [];
-            
-            const tablesToSearch = [];
-            if (!type || type === 'baptism') tablesToSearch.push({ name: 'baptisms', label: 'BAUTISMO' });
-            if (!type || type === 'confirmation') tablesToSearch.push({ name: 'confirmations', label: 'CONFIRMACIÓN' });
 
-            // Consulta server-side: RLS define el alcance y PostgreSQL filtra antes de devolver filas.
-            tablesToSearch.forEach(table => {
-                let q = supabase
-                    .from(table.name)
-                    .select('id, parish_id, status, book_number, folio, number, apellidos, nombres, celebration_date, raw_data')
-                    .or('status.is.null,status.not.in.(anulada,annulled,deleted,reversed,revertida,replaced)');
-
+            const applyScope = (query) => {
                 if (!isGlobal && queryParishIds.length > 0) {
-                    q = queryParishIds.length === 1
-                        ? q.eq('parish_id', queryParishIds[0])
-                        : q.in('parish_id', queryParishIds);
+                    return queryParishIds.length === 1
+                        ? query.eq('parish_id', queryParishIds[0])
+                        : query.in('parish_id', queryParishIds);
                 }
+                return query;
+            };
 
-                if (searchParams.firstName.trim()) q = q.ilike('nombres', `%${searchParams.firstName.trim()}%`);
-                if (searchParams.lastName.trim()) q = q.ilike('apellidos', `%${searchParams.lastName.trim()}%`);
+            const activeStatusFilter = (query) =>
+                query.or('status.is.null,status.not.in.(anulada,annulled,deleted,reversed,revertida,replaced)');
+
+            if (!type || type === 'baptism' || type === 'confirmation') {
+                const baseTables = [];
+                if (!type || type === 'baptism') baseTables.push({ name:'baptisms', label:'BAUTISMO' });
+                if (!type || type === 'confirmation') baseTables.push({ name:'confirmations', label:'CONFIRMACIÓN' });
+
+                baseTables.forEach(table => {
+                    let q = supabase
+                        .from(table.name)
+                        .select('id,parish_id,status,book_number,folio,number,apellidos,nombres,celebration_date,raw_data');
+                    q = activeStatusFilter(applyScope(q));
+                    if (firstTerm) q = q.ilike('nombres', `%${firstTerm}%`);
+                    if (lastTerm) q = q.ilike('apellidos', `%${lastTerm}%`);
+                    if (searchParams.dateStart) q = q.gte('celebration_date', searchParams.dateStart);
+                    if (searchParams.dateEnd) q = q.lte('celebration_date', searchParams.dateEnd);
+                    q = q.order('celebration_date', { ascending:false, nullsFirst:false }).limit(500);
+                    fetchPromises.push(q.then(res => {
+                        if (res.error) throw res.error;
+                        return { kind:table.name, typeLabel:table.label, data:res.data || [] };
+                    }));
+                });
+            }
+
+            if (!type || type === 'marriage') {
+                let q = supabase.from('marriages').select('*');
+                q = activeStatusFilter(applyScope(q));
                 if (searchParams.dateStart) q = q.gte('celebration_date', searchParams.dateStart);
                 if (searchParams.dateEnd) q = q.lte('celebration_date', searchParams.dateEnd);
-
-                q = q.order('celebration_date', { ascending: false, nullsFirst: false }).limit(500);
+                q = q.order('celebration_date', { ascending:false, nullsFirst:false }).limit(1000);
                 fetchPromises.push(q.then(res => {
                     if (res.error) throw res.error;
-                    return { typeLabel: table.label, data: res.data || [] };
+                    return { kind:'marriages', typeLabel:'MATRIMONIO', data:res.data || [] };
                 }));
-            });
+            }
+
+            if (!type || type === 'funeral') {
+                let q = supabase.from('funerals').select('*');
+                q = applyScope(q);
+                if (searchParams.dateStart) q = q.gte('fecha_exequias', searchParams.dateStart);
+                if (searchParams.dateEnd) q = q.lte('fecha_exequias', searchParams.dateEnd);
+                q = q.order('fecha_exequias', { ascending:false, nullsFirst:false }).limit(1000);
+                fetchPromises.push(q.then(res => {
+                    if (res.error) throw res.error;
+                    return { kind:'funerals', typeLabel:'EXEQUIAS', data:res.data || [] };
+                }));
+            }
 
             const fetchedResults = await Promise.all(fetchPromises);
-
-            // PROCESAMIENTO HÍBRIDO (El secreto de tu código)
             let allProcessedData = [];
 
             fetchedResults.forEach(fetchResult => {
                 const tableProcessed = fetchResult.data.map(r => {
-                    // Esta es la línea clave que tienes en ConfirmationPartidasPage
-                    const raw = typeof r.raw_data === 'string' ? JSON.parse(r.raw_data) : (r.raw_data || {});
-                    
+                    const raw = typeof r.raw_data === 'string' ? (()=>{ try { return JSON.parse(r.raw_data); } catch { return {}; } })() : (r.raw_data || {});
+
+                    if (fetchResult.kind === 'marriages') {
+                        const groomNames = raw.novioNombres || raw.groomName || raw.nombres_esposo || raw.esposo?.nombres || '';
+                        const groomSurnames = raw.novioApellidos || raw.groomSurname || raw.apellidos_esposo || raw.esposo?.apellidos || '';
+                        const brideNames = raw.noviaNombres || raw.brideName || raw.nombres_esposa || raw.esposa?.nombres || '';
+                        const brideSurnames = raw.noviaApellidos || raw.brideSurname || raw.apellidos_esposa || raw.esposa?.apellidos || '';
+                        const combinedNames = `${groomNames} ${brideNames}`.toUpperCase();
+                        const combinedSurnames = `${groomSurnames} ${brideSurnames}`.toUpperCase();
+                        if (firstTerm && !combinedNames.includes(firstTerm)) return null;
+                        if (lastTerm && !combinedSurnames.includes(lastTerm)) return null;
+                        return {
+                            id:r.id, parishId:r.parish_id, type:'MATRIMONIO', status:r.status || 'vigente',
+                            Libro:r.book_number || raw.libro || '---', folio:r.folio || raw.folio || '---', numero:r.number || raw.numero || '---',
+                            nombres:`${groomNames} + ${brideNames}`.toUpperCase(),
+                            apellidos:`${groomSurnames} + ${brideSurnames}`.toUpperCase(),
+                            fechaSacramento:r.celebration_date || raw.fechaSacramento || raw.fechaMatrimonio || raw.fechaHoraPrevista || ''
+                        };
+                    }
+
+                    if (fetchResult.kind === 'funerals') {
+                        const names = r.nombres || raw.nombres || raw.firstName || '';
+                        const surnames = r.apellidos || raw.apellidos || raw.lastName || '';
+                        if (firstTerm && !String(names).toUpperCase().includes(firstTerm)) return null;
+                        if (lastTerm && !String(surnames).toUpperCase().includes(lastTerm)) return null;
+                        return {
+                            id:r.id, parishId:r.parish_id, type:'EXEQUIAS', status:r.status || 'vigente',
+                            Libro:r.book_number || raw.book_number || raw.libro || '---', folio:r.folio || raw.folio || '---', numero:r.number || raw.numero || '---',
+                            nombres:String(names).toUpperCase(), apellidos:String(surnames).toUpperCase(),
+                            fechaSacramento:r.fecha_exequias || raw.fecha_exequias || r.fecha_defuncion || raw.fecha_defuncion || ''
+                        };
+                    }
+
                     return {
-                        id: r.id,
-                        parishId: r.parish_id,
-                        type: fetchResult.typeLabel,
-                        status: r.status || 'vigente',
-                        Libro: r.book_number || raw.Libro || raw.libro || '---',
-                        folio: r.folio || raw.folio || raw.page_number || '---',
-                        numero: r.number || raw.numero || raw.entry_number || '---',
-                        // Unificamos nombres desde columna o JSON crudo
-                        apellidos: (r.apellidos || raw.apellidos || raw.lastName || '').toUpperCase(),
-                        nombres: (r.nombres || raw.nombres || raw.firstName || '').toUpperCase(),
-                        fechaSacramento: r.celebration_date || raw.fechaSacramento || raw.sacramentDate || raw.fechaBautismo || raw.fechaConfirmacion || ''
+                        id:r.id, parishId:r.parish_id, type:fetchResult.typeLabel, status:r.status || 'vigente',
+                        Libro:r.book_number || raw.Libro || raw.libro || '---', folio:r.folio || raw.folio || raw.page_number || '---', numero:r.number || raw.numero || raw.entry_number || '---',
+                        apellidos:(r.apellidos || raw.apellidos || raw.lastName || '').toUpperCase(),
+                        nombres:(r.nombres || raw.nombres || raw.firstName || '').toUpperCase(),
+                        fechaSacramento:r.celebration_date || raw.fechaSacramento || raw.sacramentDate || raw.fechaBautismo || raw.fechaConfirmacion || ''
                     };
-                });
-                
+                }).filter(Boolean);
+
                 allProcessedData = [...allProcessedData, ...tableProcessed];
             });
 
@@ -289,7 +343,7 @@ const UnifiedSearchPage = () => {
                         <div className="space-y-2">
                             <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Tipo de Acta</label>
                             <select value={searchParams.sacramentType} onChange={e => setSearchParams({...searchParams, sacramentType: e.target.value})} className="w-full h-12 lg:h-14 px-4 bg-slate-50 border-none rounded-2xl font-bold text-sm outline-none focus:ring-2 focus:ring-[#D4AF37]">
-                                <option value="">BAUTISMO Y CONFIRMACIÓN</option>
+                                <option value="">TODOS LOS SACRAMENTOS</option>
                                 {sacramentOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
                             </select>
                         </div>
@@ -352,6 +406,10 @@ const UnifiedSearchPage = () => {
                                                     <div className="flex items-center gap-3 text-slate-500">
                                                         <Calendar className="w-4 h-4 text-[#D4AF37] shrink-0" />
                                                         <span className="text-[10px] lg:text-xs font-bold uppercase">{r.fechaSacramento || 'Fecha no registrada'}</span>
+                                                    </div>
+                                                    <div className="flex items-center gap-3 text-slate-500">
+                                                        <BookOpen className="w-4 h-4 text-[#D4AF37] shrink-0" />
+                                                        <span className="text-[10px] lg:text-xs font-bold uppercase">Libro {r.Libro || '---'} · Folio {r.folio || '---'} · N.º {r.numero || '---'}</span>
                                                     </div>
                                                     <div className="flex items-center gap-3 text-slate-500">
                                                         <Church className="w-4 h-4 text-[#4B7BA7] shrink-0" />
