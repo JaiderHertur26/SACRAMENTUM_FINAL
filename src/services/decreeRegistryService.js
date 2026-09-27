@@ -74,9 +74,20 @@ export async function listDecrees({ parishIds = [], type = null, sacramentType =
     .filter((row) => !wanted || row.sacramentType === wanted);
 }
 
+export async function attachDecreeConceptPolicy({ decreeId, conceptId }) {
+  if (!decreeId || !conceptId) return false;
+  const { data, error } = await supabase.rpc('attach_decree_concept_policy', {
+    p_decree_id: decreeId,
+    p_concept_id: conceptId
+  });
+  if (error) throw error;
+  return data === true || Boolean(data);
+}
+
 export default {
   listDecrees,
   hydrateDecree,
   normalizeDecreeType,
-  normalizeSacramentType
+  normalizeSacramentType,
+  attachDecreeConceptPolicy
 };

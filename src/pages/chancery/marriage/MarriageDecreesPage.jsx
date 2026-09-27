@@ -8,6 +8,8 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { supabase } from '@/lib/supabaseClient';
 import { pickRecordValue, dateOnlyRecordValue, booleanRecordValue } from '@/utils/chanceryRecordHydration';
 import DecreeCenterHeader from '@/components/chancery/DecreeCenterHeader';
+import DecreeConceptEffects from '@/components/chancery/DecreeConceptEffects';
+import { attachDecreeConceptPolicy } from '@/services/decreeRegistryService';
 import {
   CanonicalParishSelector,
   CanonicalRecordFinder,
@@ -166,7 +168,7 @@ const MarriageDecreesPage = () => {
       const [marriageRows, parishResult, conceptResult] = await Promise.all([
         listMarriagesForDiocese(dioceseId),
         supabase.from('parishes').select('id,name,city').eq('diocese_id',dioceseId).order('name'),
-        supabase.from('conceptos_anulacion').select('id,codigo,concepto,tipo,is_active').eq('diocese_id',dioceseId).eq('is_active',true).order('codigo')
+        supabase.from('conceptos_anulacion').select('id,codigo,concepto,tipo,is_active,seinscribe,gennota,gendocum,enlibro,expide').eq('diocese_id',dioceseId).eq('is_active',true).order('codigo')
       ]);
       if (parishResult.error) throw parishResult.error;
       if (conceptResult.error) throw conceptResult.error;
@@ -223,6 +225,21 @@ const MarriageDecreesPage = () => {
   );
 
   const selectedConcept = availableConcepts.find((row) => String(row.id) === String(conceptId)) || null;
+  const attachPolicySafely = async (decreeId) => {
+    if (!decreeId || !conceptId) return true;
+    try {
+      await attachDecreeConceptPolicy({ decreeId, conceptId });
+      return true;
+    } catch (error) {
+      console.error('El decreto fue emitido, pero no se pudo fijar la política del concepto:', error);
+      toast({
+        title: 'Decreto emitido · política pendiente',
+        description: 'El decreto ya fue registrado. No lo emita de nuevo. Revise la conexión y complete la política desde el expediente.',
+        variant: 'destructive'
+      });
+      return false;
+    }
+  };
   const effectiveReason = () => {
     const base = reason.trim();
     const concept = selectedConcept ? `${selectedConcept.codigo || ''} - ${selectedConcept.concepto || ''}`.trim() : '';
@@ -243,6 +260,7 @@ const MarriageDecreesPage = () => {
     setSaving(true);
     try {
       const result = await applyMarriageCorrectionDecree({marriageId:selected.id,decreeDate,reason:effectiveReason(),changes,decreeNumber:decreeNumber.trim()});
+      if (result?.decree_id) await attachDecreeConceptPolicy({ decreeId: result.decree_id, conceptId });
       toast({title:'Corrección matrimonial emitida',description:`Nueva supletoria L-${result?.book_number||'—'} F-${result?.folio||'—'} N-${result?.number||'—'} · REG. ${result?.numero_registro||'—'}.`,className:'bg-green-50 border-green-200 text-green-900'});
       navigate('/chancery/decretos/archivo?sacrament=matrimonio&type=correccion');
     } catch(e){ toast({title:'No se pudo emitir',description:e.message,variant:'destructive'}); }
@@ -263,6 +281,7 @@ const MarriageDecreesPage = () => {
     setSaving(true);
     try {
       const result = await createMarriageRepositionDecree({parishId:selectedParishId,decreeDate,reason:effectiveReason(),record:{...form, conceptoDecreto:selectedConcept?.concepto || '', conceptoDecretoId:conceptId},evidence:{...evidence,reference:evidence.reference.trim(),issuer:evidence.issuer.trim(),description:evidence.description.trim()},decreeNumber:decreeNumber.trim()});
+      if (result?.decree_id) await attachDecreeConceptPolicy({ decreeId: result.decree_id, conceptId });
       toast({title:'Reposición matrimonial emitida',description:`Supletoria L-${result?.book_number||'—'} F-${result?.folio||'—'} N-${result?.number||'—'} · REG. ${result?.numero_registro||'—'}.`,className:'bg-green-50 border-green-200 text-green-900'});
       navigate('/chancery/decretos/archivo?sacrament=matrimonio&type=reposicion');
     } catch(e){toast({title:'No se pudo emitir',description:e.message,variant:'destructive'});} finally{setSaving(false);}
@@ -350,6 +369,10 @@ const MarriageDecreesPage = () => {
                   </div>
                 }
               />
+
+              <div className="px-6 pt-5">
+                <DecreeConceptEffects concept={selectedConcept} />
+              </div>
 
               {paramsLoading ? (
                 <div className="border-b border-amber-100 bg-amber-50/70 p-6 text-xs font-bold text-amber-800"><Loader2 className="mr-2 inline h-4 w-4 animate-spin" /> Consultando parámetros supletorios...</div>

@@ -16,6 +16,8 @@ import {
 } from '@/services/funeralsService';
 import { TABLE_NAMES } from '@/config/supabaseConfig';
 import DecreeCenterHeader from '@/components/chancery/DecreeCenterHeader';
+import DecreeConceptEffects from '@/components/chancery/DecreeConceptEffects';
+import { attachDecreeConceptPolicy } from '@/services/decreeRegistryService';
 import {
   CanonicalParishSelector,
   CanonicalRecordFinder,
@@ -309,7 +311,7 @@ const FuneralDecreesPage = () => {
           .order('name'),
         supabase
           .from('conceptos_anulacion')
-          .select('id,codigo,concepto,tipo,is_active')
+          .select('id,codigo,concepto,tipo,is_active,seinscribe,gennota,gendocum,enlibro,expide')
           .eq('diocese_id', dioceseId)
           .eq('is_active', true)
           .order('codigo')
@@ -477,6 +479,22 @@ const FuneralDecreesPage = () => {
     (row) => String(row.id) === String(conceptId)
   ) || null;
 
+  const attachPolicySafely = async (decreeId) => {
+    if (!decreeId || !conceptId) return true;
+    try {
+      await attachDecreeConceptPolicy({ decreeId, conceptId });
+      return true;
+    } catch (error) {
+      console.error('El decreto fue emitido, pero no se pudo fijar la política del concepto:', error);
+      toast({
+        title: 'Decreto emitido · política pendiente',
+        description: 'El decreto ya fue registrado. No lo emita de nuevo. Revise la conexión y complete la política desde el expediente.',
+        variant: 'destructive'
+      });
+      return false;
+    }
+  };
+
   const effectiveReason = () => {
     const concept = selectedConcept
       ? `${selectedConcept.codigo || ''} - ${selectedConcept.concepto || ''}`.trim()
@@ -557,13 +575,13 @@ const FuneralDecreesPage = () => {
         funeralId: selected.id,
         decreeDate,
         reason: effectiveReason(),
-        changes: {
-          ...changes,
-          conceptoDecreto: selectedConcept?.concepto || '',
-          conceptoDecretoId: conceptId
-        },
+        changes,
         decreeNumber: decreeNumber.trim()
       });
+
+      if (result?.decree_id) {
+        await attachDecreeConceptPolicy({ decreeId: result.decree_id, conceptId });
+      }
 
       toast({
         title: 'Corrección emitida correctamente',
@@ -633,6 +651,10 @@ const FuneralDecreesPage = () => {
         },
         decreeNumber: decreeNumber.trim()
       });
+
+      if (result?.decree_id) {
+        await attachDecreeConceptPolicy({ decreeId: result.decree_id, conceptId });
+      }
 
       toast({
         title: 'Reposición emitida correctamente',
@@ -766,6 +788,7 @@ const CanonicalWorkPanel = ({
   onSubmit
 }) => {
   const correction = mode === 'correction';
+  const selectedConcept = concepts.find((row) => String(row.id) === String(conceptId)) || null;
 
   if (!selectedParish) {
     return (
@@ -812,6 +835,10 @@ const CanonicalWorkPanel = ({
           </div>
         }
       />
+
+      <div className="px-6 pt-5">
+        <DecreeConceptEffects concept={selectedConcept} />
+      </div>
 
       {paramsLoading ? (
         <div className="border-b border-amber-100 bg-amber-50/70 p-6 text-xs font-bold text-amber-800">
