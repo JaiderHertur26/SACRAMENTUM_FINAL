@@ -8,7 +8,10 @@ const CONFIG = {
 };
 
 const PAGE_SIZE=1000;
-const inactiveStatus=new Set(['anulada','anulado','annulled','deleted','reverted','cancelled']);
+// El libro sacramental es archivo, no una lista de "vigentes". Una partida
+// anulada/corregida debe conservar su ubicación histórica y mostrarse con su
+// estado. Solo se excluyen borradores que nunca debieron formar parte del libro.
+const nonBookStatus=new Set(['pending','draft']);
 
 const applyFilters=(query,{parishId,cfg,book,yearFrom,yearTo})=>{
   let q=query.eq('parish_id',parishId);
@@ -45,7 +48,7 @@ export async function listSacramentalBookRecords({ parishId, sacrament, book = '
     from+=PAGE_SIZE;
   }
 
-  return rows.filter(r=>!inactiveStatus.has(String(r.status||'').toLowerCase()));
+  return rows.filter(r=>!nonBookStatus.has(String(r.status||'').toLowerCase()));
 }
 
 export async function listSacramentalBookNumbers({ parishId, sacrament }) {
