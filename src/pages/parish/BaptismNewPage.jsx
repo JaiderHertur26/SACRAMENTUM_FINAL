@@ -183,6 +183,28 @@ const BaptismNewPage = () => {
         setFormData(prev => ({ ...prev, [name]: finalValue }));
     };
 
+    const openDocumentTemplate = (code) => {
+        const fullName = [formData.nombres, formData.apellidos].filter(Boolean).join(' ').trim();
+        const parents = [formData.nombrePadre, formData.nombreMadre].filter(Boolean).join(' y ');
+        const templateValues = {
+            Miparroquia: parishInfo?.nombre || nombreParroquia || '',
+            Miciudad: parishInfo?.ciudad || user?.parishCity || user?.city || '',
+            Fecha: new Date().toISOString().slice(0, 10),
+            Nombre: fullName,
+            Nombres: formData.nombres || '',
+            Apellidos: formData.apellidos || '',
+            FecNac: formData.fechaNacimiento || '',
+            Padres: parents,
+            Padre: formData.nombrePadre || '',
+            Madre: formData.nombreMadre || '',
+            ccPadre: formData.cedulaPadre || '',
+            ccMadre: formData.cedulaMadre || '',
+            LugarNac: formData.lugarNacimiento || '',
+            Direccion: formData.direccion || ''
+        };
+        navigate(`/documentos/plantillas?template=${code}`, { state: { templateValues } });
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -421,11 +443,11 @@ const BaptismNewPage = () => {
                                         <div className="mt-4">
                                             <p className="mb-2 text-[9px] font-black uppercase tracking-widest text-amber-700">Documentos de apoyo del expediente</p>
                                             <div className="flex flex-wrap gap-2">
-                                                <Button type="button" variant="outline" onClick={()=>navigate('/documentos/plantillas?template=71081')} className="rounded-xl bg-white text-xs"><FileText className="mr-2 h-4 w-4"/>Preparación para Bautismo</Button>
-                                                <Button type="button" variant="outline" onClick={()=>navigate('/documentos/plantillas?template=71091')} className="rounded-xl bg-white text-xs"><FileText className="mr-2 h-4 w-4"/>Declaración no Bautizado</Button>
-                                                <Button type="button" variant="outline" onClick={()=>navigate('/documentos/plantillas?template=71101')} className="rounded-xl bg-white text-xs"><FileText className="mr-2 h-4 w-4"/>Constancia no Bautizado</Button>
-                                                <Button type="button" variant="outline" onClick={()=>navigate('/documentos/plantillas?template=73041')} className="rounded-xl bg-white text-xs"><FileText className="mr-2 h-4 w-4"/>Solicitud de Bautismo</Button>
-                                                <Button type="button" variant="outline" onClick={()=>navigate('/documentos/plantillas?template=73061')} className="rounded-xl bg-white text-xs"><FileText className="mr-2 h-4 w-4"/>Permiso para Bautizar</Button>
+                                                <Button type="button" variant="outline" onClick={()=>openDocumentTemplate('71081')} className="rounded-xl bg-white text-xs"><FileText className="mr-2 h-4 w-4"/>Preparación para Bautismo</Button>
+                                                <Button type="button" variant="outline" onClick={()=>openDocumentTemplate('71091')} className="rounded-xl bg-white text-xs"><FileText className="mr-2 h-4 w-4"/>Declaración no Bautizado</Button>
+                                                <Button type="button" variant="outline" onClick={()=>openDocumentTemplate('71101')} className="rounded-xl bg-white text-xs"><FileText className="mr-2 h-4 w-4"/>Constancia no Bautizado</Button>
+                                                <Button type="button" variant="outline" onClick={()=>openDocumentTemplate('73041')} className="rounded-xl bg-white text-xs"><FileText className="mr-2 h-4 w-4"/>Solicitud de Bautismo</Button>
+                                                <Button type="button" variant="outline" onClick={()=>openDocumentTemplate('73061')} className="rounded-xl bg-white text-xs"><FileText className="mr-2 h-4 w-4"/>Permiso para Bautizar</Button>
                                             </div>
                                             <p className="mt-2 text-[10px] leading-relaxed text-amber-800">Son accesos documentales de apoyo. SACRAMENTUM no los marca automáticamente como obligatorios: su uso depende del expediente y de la situación canónica concreta.</p>
                                         </div>
@@ -450,7 +472,7 @@ const BaptismNewPage = () => {
                                         </select>
 
                                         <div className="mt-4">
-                                            <Button type="button" variant="outline" onClick={()=>navigate('/documentos/plantillas?template=71111')} className="rounded-xl bg-white text-xs"><FileText className="mr-2 h-4 w-4"/>Preparación para la Confirmación</Button>
+                                            <Button type="button" variant="outline" onClick={()=>openDocumentTemplate('71111')} className="rounded-xl bg-white text-xs"><FileText className="mr-2 h-4 w-4"/>Preparación para la Confirmación</Button>
                                         </div>
 
                                         {willReceiveConfirmation && (
@@ -549,8 +571,8 @@ const BaptismNewPage = () => {
                                 <div className="mt-6 rounded-2xl border border-blue-100 bg-blue-50/40 p-5">
                                     <p className="text-[9px] font-black uppercase tracking-widest text-[#4B7BA7]">Documentos de preparación prebautismal</p>
                                     <div className="mt-3 flex flex-wrap gap-2">
-                                        <Button type="button" variant="outline" onClick={()=>navigate('/documentos/plantillas?template=71131')} className="rounded-xl bg-white text-xs"><FileText className="mr-2 h-4 w-4"/>Constancia / curso para padres</Button>
-                                        <Button type="button" variant="outline" onClick={()=>navigate('/documentos/plantillas?template=71132')} className="rounded-xl bg-white text-xs"><FileText className="mr-2 h-4 w-4"/>Constancia / curso para padrinos</Button>
+                                        <Button type="button" variant="outline" onClick={()=>openDocumentTemplate('71131')} className="rounded-xl bg-white text-xs"><FileText className="mr-2 h-4 w-4"/>Constancia / curso para padres</Button>
+                                        <Button type="button" variant="outline" onClick={()=>openDocumentTemplate('71132')} className="rounded-xl bg-white text-xs"><FileText className="mr-2 h-4 w-4"/>Constancia / curso para padrinos</Button>
                                     </div>
                                     <p className="mt-2 text-[10px] text-slate-500">Accesos opcionales al soporte documental del Bautismo; no sustituyen la verificación pastoral correspondiente.</p>
                                 </div>
