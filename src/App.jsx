@@ -60,7 +60,6 @@ const ParishSacramentalDecreeArchivePage = lazy(() => import('@/pages/parish/Par
 const BaptismNewPage = lazy(() => import('@/pages/parish/BaptismNewPage'));
 const BaptismCelebratedPage = lazy(() => import('@/pages/parish/BaptismCelebratedPage'));
 const BaptismSentarRegistrosPage = lazy(() => import('@/pages/parish/BaptismSentarRegistrosPage'));
-const BaptismIndexPage = lazy(() => import('@/pages/parish/BaptismIndexPage'));
 const BaptismParametersPage = lazy(() => import('@/pages/parish/BaptismParametersPage'));
 const BaptismPartidasPage = lazy(() => import('@/pages/parish/BaptismPartidasPage'));
 const BaptismDetailPage = lazy(() => import('@/pages/BaptismDetailPage'));
@@ -69,7 +68,6 @@ const BaptismDetailPage = lazy(() => import('@/pages/BaptismDetailPage'));
 const ConfirmationNewPage = lazy(() => import('@/pages/parish/ConfirmationNewPage'));
 const ConfirmationCelebratedPage = lazy(() => import('@/pages/parish/ConfirmationCelebratedPage'));
 const ConfirmationSentarRegistrosPage = lazy(() => import('@/pages/parish/ConfirmationSentarRegistrosPage'));
-const ConfirmationIndexPage = lazy(() => import('@/pages/parish/ConfirmationIndexPage'));
 const ConfirmationParametersPage = lazy(() => import('@/pages/parish/ConfirmationParametersPage'));
 const ConfirmationPartidasPage = lazy(() => import('@/pages/parish/ConfirmationPartidasPage'));
 const ConfirmationNotificationPage = lazy(() => import('@/pages/parish/ConfirmationNotificationPage'));
@@ -78,7 +76,6 @@ const ConfirmationNotificationPage = lazy(() => import('@/pages/parish/Confirmat
 const MatrimonioNewPage = lazy(() => import('@/pages/parish/MatrimonioNewPage'));
 const MatrimonioCelebratedPage = lazy(() => import('@/pages/parish/MatrimonioCelebratedPage'));
 const MatrimonioSentarRegistrosPage = lazy(() => import('@/pages/parish/MatrimonioSentarRegistrosPage'));
-const MarriageIndexPage = lazy(() => import('@/pages/parish/MarriageIndexPage'));
 const MatrimonioParametersPage = lazy(() => import('@/pages/parish/MatrimonioParametersPage'));
 const MatrimonioPartidasPage = lazy(() => import('@/pages/parish/MatrimonioPartidasPage'));
 const MarriageDossierPage = lazy(() => import('@/pages/parish/MarriageDossierPage'));
@@ -189,7 +186,7 @@ const AppContent = () => {
                 <Route path="/parroquia/bautismo/asentar" element={<Navigate to="/parroquia/bautismo/sentar-registros" replace />} />
                 <Route path="/parroquia/bautismo/partidas" element={<ProtectedRoute requiredRole={ROLE_TYPES.PARISH}><BaptismPartidasPage /></ProtectedRoute>} />
                 <Route path="/parroquia/bautismo/base-datos" element={<Navigate to="/parroquia/bautismo/partidas" replace />} />
-                <Route path="/parroquia/bautismo/indice" element={<ProtectedRoute requiredRole={ROLE_TYPES.PARISH}><BaptismIndexPage /></ProtectedRoute>} />
+                <Route path="/parroquia/bautismo/indice" element={<Navigate to="/parroquia/libros?sacrament=bautismo&view=indice" replace />} />
                 <Route path="/parroquia/bautismo/parametros" element={<ProtectedRoute requiredRole={ROLE_TYPES.PARISH}><BaptismParametersPage /></ProtectedRoute>} />
                 <Route path="/parroquia/parametros" element={<Navigate to="/parroquia/bautismo/parametros" replace />} />
                 <Route path="/parroquia/bautismo/:baptismPartidaId" element={<ProtectedRoute requiredRole={ROLE_TYPES.PARISH}><BaptismDetailPage /></ProtectedRoute>} />
@@ -222,7 +219,7 @@ const AppContent = () => {
                 <Route path="/parroquia/confirmacion/sentar-registros" element={<ProtectedRoute requiredRole={ROLE_TYPES.PARISH}><ConfirmationSentarRegistrosPage /></ProtectedRoute>} />
                 <Route path="/parroquia/confirmacion/asentar" element={<Navigate to="/parroquia/confirmacion/sentar-registros" replace />} />
                 <Route path="/parroquia/confirmacion/partidas" element={<ProtectedRoute requiredRole={ROLE_TYPES.PARISH}><ConfirmationPartidasPage /></ProtectedRoute>} />
-                <Route path="/parroquia/confirmacion/indice" element={<ProtectedRoute requiredRole={ROLE_TYPES.PARISH}><ConfirmationIndexPage /></ProtectedRoute>} />
+                <Route path="/parroquia/confirmacion/indice" element={<Navigate to="/parroquia/libros?sacrament=confirmacion&view=indice" replace />} />
                 <Route path="/parroquia/confirmacion/parametros" element={<ProtectedRoute requiredRole={ROLE_TYPES.PARISH}><ConfirmationParametersPage /></ProtectedRoute>} />
                 <Route path="/parroquia/confirmacion/notificacion" element={<ProtectedRoute requiredRole={ROLE_TYPES.PARISH}><ConfirmationNotificationPage /></ProtectedRoute>} />
 
@@ -233,7 +230,7 @@ const AppContent = () => {
                 <Route path="/parroquia/matrimonio/sentar-registros" element={<ProtectedRoute requiredRole={ROLE_TYPES.PARISH}><MatrimonioSentarRegistrosPage /></ProtectedRoute>} />
                 <Route path="/parroquia/matrimonio/asentar" element={<Navigate to="/parroquia/matrimonio/sentar-registros" replace />} />
                 <Route path="/parroquia/matrimonio/partidas" element={<ProtectedRoute requiredRole={ROLE_TYPES.PARISH}><MatrimonioPartidasPage /></ProtectedRoute>} />
-                <Route path="/parroquia/matrimonio/indice" element={<ProtectedRoute requiredRole={ROLE_TYPES.PARISH}><MarriageIndexPage /></ProtectedRoute>} />
+                <Route path="/parroquia/matrimonio/indice" element={<Navigate to="/parroquia/libros?sacrament=matrimonio&view=indice" replace />} />
                 <Route path="/parroquia/matrimonio/parametros" element={<ProtectedRoute requiredRole={ROLE_TYPES.PARISH}><MatrimonioParametersPage /></ProtectedRoute>} />
                 <Route path="/parroquia/matrimonio/expedientes" element={<ProtectedRoute requiredRole={ROLE_TYPES.PARISH}><MarriageDossierPage /></ProtectedRoute>} />
 

@@ -275,7 +275,6 @@ const Sidebar = ({ isOpen, onClose, onLogout, role, menuItems: externalMenuItems
                     { label: 'Digitalizar partida existente', path: '/parroquia/bautismo/celebrado' },
                     { label: 'Sentar Registros', path: '/parroquia/bautismo/sentar-registros' },
                     { label: 'Partidas', path: '/parroquia/bautismo/partidas' },
-                    { label: 'Índice General', path: '/parroquia/bautismo/indice', icon: List }
                 ]
             },
             { 
@@ -286,7 +285,6 @@ const Sidebar = ({ isOpen, onClose, onLogout, role, menuItems: externalMenuItems
                     { label: 'Confirmación Celebrada', path: '/parroquia/confirmacion/celebrado' },
                     { label: 'Sentar Registros', path: '/parroquia/confirmacion/sentar-registros' },
                     { label: 'Partidas', path: '/parroquia/confirmacion/partidas' },
-                    { label: 'Índice General', path: '/parroquia/confirmacion/indice', icon: List },
                     { label: 'Emitir Notificación', path: '/parroquia/confirmacion/notificacion', icon: Mail }
                 ]
             },
@@ -298,7 +296,6 @@ const Sidebar = ({ isOpen, onClose, onLogout, role, menuItems: externalMenuItems
                     { label: 'Matrimonio Celebrado', path: '/parroquia/matrimonio/celebrado' },
                     { label: 'Sentar Registros', path: '/parroquia/matrimonio/sentar-registros' },
                     { label: 'Partidas', path: '/parroquia/matrimonio/partidas' },
-                    { label: 'Índice General', path: '/parroquia/matrimonio/indice', icon: List },
                     { label: 'Expediente Matrimonial', path: '/parroquia/matrimonio/expedientes', icon: FileText },
                     { label: 'Emitir Notificación', path: '/parroquia/matrimonio/notificacion', icon: Mail }
                 ]
