@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 import { 
     Save, X, Calendar, User, Users, BookOpen, PenTool, 
-    CheckCircle2, Loader2, Hash, AlertCircle, Search, Droplet 
+    CheckCircle2, Loader2, Hash, AlertCircle, Search, Droplet, Printer
 } from 'lucide-react';
 import ConfirmationTicket from '@/components/ConfirmationTicket';
 import ChurchLocationAutocomplete from '@/components/ChurchLocationAutocomplete';
