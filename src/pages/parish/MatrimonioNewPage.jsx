@@ -216,6 +216,7 @@ const MatrimonioNewPage = () => {
     // Novio Sacraments
     novioEcclesialStatus: '',
     novioBautizado: false,
+    novioBautismoId: '',
     novioBautismoLugar: '',
     novioBautismoLibro: '',
     novioBautismoFolio: '',
@@ -242,6 +243,7 @@ const MatrimonioNewPage = () => {
     // Novia Sacraments
     noviaEcclesialStatus: '',
     noviaBautizado: false,
+    noviaBautismoId: '',
     noviaBautismoLugar: '',
     noviaBautismoLibro: '',
     noviaBautismoFolio: '',
@@ -523,6 +525,7 @@ const MatrimonioNewPage = () => {
           
           novioEcclesialStatus: 'catholic_baptized',
           novioBautizado: true,
+          novioBautismoId: partida.id || prev.novioBautismoId,
           novioBautismoLugar: partida.lugarBautismo || partida.place || prev.novioBautismoLugar,
           novioBautismoLibro: partida.book_number || partida.libro || prev.novioBautismoLibro,
           novioBautismoFolio: partida.page_number || partida.folio || prev.novioBautismoFolio,
@@ -555,6 +558,7 @@ const MatrimonioNewPage = () => {
           
           noviaEcclesialStatus: 'catholic_baptized',
           noviaBautizado: true,
+          noviaBautismoId: partida.id || prev.noviaBautismoId,
           noviaBautismoLugar: partida.lugarBautismo || partida.place || prev.noviaBautismoLugar,
           noviaBautismoLibro: partida.book_number || partida.libro || prev.noviaBautismoLibro,
           noviaBautismoFolio: partida.page_number || partida.folio || prev.noviaBautismoFolio,
