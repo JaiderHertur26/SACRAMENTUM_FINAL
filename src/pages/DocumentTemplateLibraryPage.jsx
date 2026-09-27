@@ -2,6 +2,8 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Copy, Database, FileText, Loader2, Printer, Search, Sparkles, PencilLine, Save } from 'lucide-react';
 import { useLocation, useSearchParams } from 'react-router-dom';
 import DashboardLayout from '@/components/DashboardLayout';
+import DocumentTemplateOfficialView from '@/components/DocumentTemplateOfficialView';
+import useSacramentalAuxiliaries from '@/hooks/useSacramentalAuxiliaries';
 import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/components/ui/use-toast';
 import { Button } from '@/components/ui/button';
@@ -73,6 +75,7 @@ export default function DocumentTemplateLibraryPage() {
   const tokens = useMemo(() => extractTokens(body), [body]);
   const preview = useMemo(() => fillTemplate(body, values), [body, values]);
   const parishId = profile?.parish_id || user?.parish_id || user?.parishId || null;
+  const auxiliaries = useSacramentalAuxiliaries(parishId, user?.parishName || '');
   const declaredBinding = useMemo(() => getDocumentTemplateBinding(selected), [selected]);
   const effectiveSource = declaredBinding.source === 'multi'
     ? (sourceOverride || declaredBinding.allowedSources?.[0] || '')
@@ -214,13 +217,13 @@ export default function DocumentTemplateLibraryPage() {
   };
 
   const print = () => {
-    const html = printRef.current?.innerHTML || '';
-    const win = window.open('', '_blank', 'width=900,height=700');
+    const html = printRef.current?.outerHTML || '';
+    const win = window.open('', '_blank', 'width=980,height=1120');
     if (!win) return;
-    win.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>${selected?.name || 'Documento'}</title><style>body{font-family:Georgia,serif;max-width:760px;margin:48px auto;padding:0 24px;color:#111;line-height:1.65;white-space:pre-wrap}h1{font-size:20px;text-align:center;margin-bottom:32px}</style></head><body>${html}</body></html>`);
+    win.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>${selected?.name || 'Documento eclesial'}</title><style>@page{size:letter portrait;margin:0}html,body{margin:0!important;padding:0!important;background:#fff!important}body{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}.sacramentum-document{box-shadow:none!important;margin:0 auto!important}</style></head><body>${html}</body></html>`);
     win.document.close();
     win.focus();
-    win.print();
+    setTimeout(() => win.print(), 150);
   };
 
   return (
@@ -315,11 +318,17 @@ export default function DocumentTemplateLibraryPage() {
                 {tokens.length > 0 && <div className="rounded-2xl bg-blue-50 border border-blue-100 p-5"><div className="flex items-center gap-2 mb-4 text-blue-800"><Sparkles className="w-4 h-4" /><span className="text-xs font-black uppercase tracking-widest">Datos variables</span></div><div className="grid md:grid-cols-2 gap-4">{tokens.map((token) => <div key={token}><label className="block text-[10px] font-black uppercase tracking-widest text-blue-500 mb-2">{token}</label><Input value={values[token] || ''} onChange={(e) => setValues((prev) => ({ ...prev, [token]: e.target.value }))} placeholder={`Completar ${token}`} /></div>)}</div></div>}
               </div>
 
-              <div className="bg-white border rounded-3xl p-8 md:p-12 shadow-sm">
-                <div ref={printRef} className="font-serif text-[15px] leading-8 whitespace-pre-wrap text-slate-900">
-                  <h1 className="text-xl font-bold text-center mb-8">{selected.name}</h1>
-                  {preview || 'La plantilla no contiene texto.'}
-                </div>
+              <div className="overflow-x-auto rounded-3xl border bg-slate-100/70 p-4 md:p-6 shadow-inner">
+                <DocumentTemplateOfficialView
+                  template={selected}
+                  text={preview || 'La plantilla no contiene texto.'}
+                  values={values}
+                  dioceseName={user?.dioceseName || user?.diocese_name || ''}
+                  parishName={user?.parishName || values?.Miparroquia || values?.MiParroquia || ''}
+                  city={values?.Miciudad || values?.MiCiudad || user?.city || user?.parishCity || ''}
+                  priestName={auxiliaries.currentPriest?.nombreCompleto || values?.Parroco || ''}
+                  refProp={printRef}
+                />
               </div>
               {editing && <div className="bg-white border border-blue-200 rounded-3xl p-6 space-y-5"><div><div className="text-[10px] font-black uppercase tracking-widest text-blue-500">Gobierno documental</div><h3 className="text-xl font-black mt-1">Crear nueva versión</h3><p className="text-xs text-slate-500 mt-1">No sobrescribe la versión anterior.</p></div><div className="grid md:grid-cols-3 gap-4"><div><label className="text-[10px] font-black uppercase text-slate-400">Código</label><Input className="mt-2" value={editor.code} onChange={e=>setEditor(v=>({...v,code:e.target.value}))}/></div><div><label className="text-[10px] font-black uppercase text-slate-400">Nombre</label><Input className="mt-2" value={editor.name} onChange={e=>setEditor(v=>({...v,name:e.target.value}))}/></div><div><label className="text-[10px] font-black uppercase text-slate-400">Categoría</label><Input className="mt-2" value={editor.category} onChange={e=>setEditor(v=>({...v,category:e.target.value}))}/></div></div><div><label className="text-[10px] font-black uppercase text-slate-400">Texto de la plantilla</label><textarea className="mt-2 w-full min-h-56 border rounded-2xl p-4 font-serif" value={editor.templateText} onChange={e=>setEditor(v=>({...v,templateText:e.target.value}))}/></div><div className="flex justify-end gap-2"><Button variant="outline" onClick={()=>setEditing(false)}>Cancelar</Button><Button disabled={saving} onClick={saveVersion} className="bg-blue-700 text-white"><Save className="w-4 h-4 mr-2"/>{saving?'Guardando...':'Guardar nueva versión'}</Button></div></div>}
               <div className="text-xs text-slate-500 px-2">Los marcadores que todavía aparezcan como <code>&lt;Campo&gt;</code> indican datos que no han sido completados. Las plantillas base conservan su redacción versionada y pueden actualizarse posteriormente sin alterar documentos históricos ya emitidos.</div>
