@@ -12,6 +12,7 @@ import { listDocumentTemplates, saveDocumentTemplateVersion } from '@/services/m
 import {
   buildDocumentValuesFromRecord,
   filterDocumentSourceRecords,
+  getDocumentInstitution,
   getDocumentRecordLabel,
   getDocumentTemplateBinding,
   loadDocumentSourceRecords,
@@ -48,6 +49,7 @@ export default function DocumentTemplateLibraryPage() {
   const [sourceQuery, setSourceQuery] = useState('');
   const [selectedRecordId, setSelectedRecordId] = useState('');
   const [sourceOverride, setSourceOverride] = useState('');
+  const [institution, setInstitution] = useState({ parishName:'', dioceseName:'', city:'' });
   const printRef = useRef(null);
 
   useEffect(() => {
@@ -75,7 +77,7 @@ export default function DocumentTemplateLibraryPage() {
   const tokens = useMemo(() => extractTokens(body), [body]);
   const preview = useMemo(() => fillTemplate(body, values), [body, values]);
   const parishId = profile?.parish_id || user?.parish_id || user?.parishId || null;
-  const auxiliaries = useSacramentalAuxiliaries(parishId, user?.parishName || '');
+  const auxiliaries = useSacramentalAuxiliaries(parishId, institution.parishName || user?.parishName || '');
   const declaredBinding = useMemo(() => getDocumentTemplateBinding(selected), [selected]);
   const effectiveSource = declaredBinding.source === 'multi'
     ? (sourceOverride || declaredBinding.allowedSources?.[0] || '')
@@ -88,6 +90,45 @@ export default function DocumentTemplateLibraryPage() {
     () => filterDocumentSourceRecords(sourceRecords, effectiveSource, sourceQuery),
     [sourceRecords, effectiveSource, sourceQuery]
   );
+
+  useEffect(() => {
+    let mounted = true;
+    const fallback = {
+      parishName: user?.parishName || '',
+      dioceseName: user?.dioceseName || user?.diocese_name || '',
+      city: user?.city || user?.parishCity || ''
+    };
+
+    if (!parishId) {
+      setInstitution(fallback);
+      return () => { mounted = false; };
+    }
+
+    getDocumentInstitution(parishId, fallback)
+      .then((resolved) => {
+        if (mounted) setInstitution(resolved || fallback);
+      })
+      .catch(() => {
+        if (mounted) setInstitution(fallback);
+      });
+
+    return () => { mounted = false; };
+  }, [parishId, user?.parishName, user?.dioceseName, user?.diocese_name, user?.city, user?.parishCity]);
+
+  useEffect(() => {
+    if (!institution.parishName && !institution.dioceseName && !institution.city) return;
+    setValues((prev) => ({
+      ...prev,
+      Miparroquia: prev.Miparroquia || institution.parishName || '',
+      MiParroquia: prev.MiParroquia || institution.parishName || '',
+      Parroquia: prev.Parroquia || institution.parishName || '',
+      Miciudad: prev.Miciudad || institution.city || '',
+      MiCiudad: prev.MiCiudad || institution.city || '',
+      Ciudad: prev.Ciudad || institution.city || '',
+      Diocesis: prev.Diocesis || institution.dioceseName || '',
+      Diócesis: prev.Diócesis || institution.dioceseName || ''
+    }));
+  }, [institution]);
 
   const role = profile?.role || user?.role;
   const canManage = ['admin_general','diocese','chancery'].includes(role);
@@ -133,7 +174,17 @@ export default function DocumentTemplateLibraryPage() {
   useEffect(() => {
     const current = templates.find((t) => t.id === selectedId);
     const currentCode = cleanTemplateCode(current?.code || current?.legacy_code || '').toUpperCase();
-    setValues(requestedTemplate && currentCode === requestedTemplate ? initialTemplateValues : {});
+    setValues({
+        Miparroquia: institution.parishName || '',
+        MiParroquia: institution.parishName || '',
+        Parroquia: institution.parishName || '',
+        Miciudad: institution.city || '',
+        MiCiudad: institution.city || '',
+        Ciudad: institution.city || '',
+        Diocesis: institution.dioceseName || '',
+        Diócesis: institution.dioceseName || '',
+        ...(requestedTemplate && currentCode === requestedTemplate ? initialTemplateValues : {})
+      });
     setSourceQuery('');
     setSelectedRecordId('');
     setSourceRecords([]);
@@ -184,7 +235,17 @@ export default function DocumentTemplateLibraryPage() {
     setSelectedRecordId(recordId);
     if (!recordId) {
       const currentCode = cleanTemplateCode(selected?.code || selected?.legacy_code || '').toUpperCase();
-      setValues(requestedTemplate && currentCode === requestedTemplate ? initialTemplateValues : {});
+      setValues({
+        Miparroquia: institution.parishName || '',
+        MiParroquia: institution.parishName || '',
+        Parroquia: institution.parishName || '',
+        Miciudad: institution.city || '',
+        MiCiudad: institution.city || '',
+        Ciudad: institution.city || '',
+        Diocesis: institution.dioceseName || '',
+        Diócesis: institution.dioceseName || '',
+        ...(requestedTemplate && currentCode === requestedTemplate ? initialTemplateValues : {})
+      });
       return;
     }
     const record = sourceRecords.find((item) => String(item.id) === String(recordId));
@@ -197,8 +258,13 @@ export default function DocumentTemplateLibraryPage() {
         user
       });
       const nextValues = Object.fromEntries(tokens.map((token) => [token, automaticValues[token] ?? '']));
+      const institutionalValues = Object.fromEntries(
+        ['Miparroquia','MiParroquia','Parroquia','Miciudad','MiCiudad','Ciudad','Diocesis','Diócesis']
+          .map((key) => [key, automaticValues[key] ?? ''])
+      );
       const currentCode = cleanTemplateCode(selected?.code || selected?.legacy_code || '').toUpperCase();
       setValues({
+        ...institutionalValues,
         ...nextValues,
         ...(requestedTemplate && currentCode === requestedTemplate ? initialTemplateValues : {})
       });
@@ -323,9 +389,9 @@ export default function DocumentTemplateLibraryPage() {
                   template={selected}
                   text={preview || 'La plantilla no contiene texto.'}
                   values={values}
-                  dioceseName={user?.dioceseName || user?.diocese_name || ''}
-                  parishName={user?.parishName || values?.Miparroquia || values?.MiParroquia || ''}
-                  city={values?.Miciudad || values?.MiCiudad || user?.city || user?.parishCity || ''}
+                  dioceseName={institution.dioceseName || user?.dioceseName || user?.diocese_name || ''}
+                  parishName={institution.parishName || user?.parishName || values?.Miparroquia || values?.MiParroquia || ''}
+                  city={institution.city || values?.Miciudad || values?.MiCiudad || user?.city || user?.parishCity || ''}
                   priestName={auxiliaries.currentPriest?.nombreCompleto || values?.Parroco || ''}
                   refProp={printRef}
                 />

@@ -56,7 +56,7 @@ export const getDocumentTemplateBinding = (template, overrideSource = '') => {
   };
 };
 
-const getInstitution = async (parishId, fallback = {}) => {
+export const getDocumentInstitution = async (parishId, fallback = {}) => {
   const result = {
     parishName: fallback.parishName || fallback.parish_name || '',
     dioceseName: fallback.dioceseName || fallback.diocese_name || '',
@@ -427,7 +427,7 @@ const dossierValues = (record) => {
 };
 
 export async function buildDocumentValuesFromRecord({ source, record, parishId, user = {} }) {
-  const institution = await getInstitution(parishId, {
+  const institution = await getDocumentInstitution(parishId, {
     parishName: user?.parishName,
     dioceseName: user?.dioceseName || user?.diocese_name,
     city: user?.city || user?.parishCity,
