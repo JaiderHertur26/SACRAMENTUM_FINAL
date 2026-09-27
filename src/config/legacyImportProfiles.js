@@ -119,6 +119,51 @@ const classifyLegacyMarriageNote = (value) => {
   if (v.includes('INCONSISTENCIAS') || v.includes('NO SE EXPIDE CERTIFICADO')) return 'restriccion_observacion';
   return 'otra';
 };
+const legacyNoteRef = (r, content, extra = {}) => ({
+  book_number:text(r.libro),
+  folio:text(r.folio),
+  number:text(r.numero),
+  content:text(content),
+  legacy_dafe_code:text(r.dafe),
+  legacy_updated_at:text(r.actualizad),
+  ...extra
+});
+
+const normalizeFreeLegacyNote = (r, sacramentType) =>
+  legacyNoteRef(r, r.nota, { sacrament_type:sacramentType, classification:'historical_free_text' });
+
+const normalizeBaptismMarriageLegacyNote = (r) => {
+  const parts = [
+    text(r.conyuge) ? `CONTRAJO MATRIMONIO CON ${text(r.conyuge)}` : '',
+    safeLegacyDate(r.fecmatr) ? `FECHA: ${safeLegacyDate(r.fecmatr)}` : '',
+    text(r.iglesia) ? `IGLESIA: ${text(r.iglesia)}` : '',
+    text(r.testigos) ? `TESTIGOS: ${text(r.testigos)}` : ''
+  ].filter(Boolean);
+  return legacyNoteRef(r, parts.join('. '), {
+    sacrament_type:'bautismo',
+    classification:'marriage_reference',
+    spouse:text(r.conyuge),
+    marriage_date:safeLegacyDate(r.fecmatr),
+    marriage_church:text(r.iglesia),
+    witnesses:text(r.testigos)
+  });
+};
+
+const normalizeMarriageStructuredLegacyNote = (r) => {
+  const parts = [
+    text(r.nombre) ? `NOMBRE: ${text(r.nombre)}` : '',
+    safeLegacyDate(r.fecnac) ? `FECHA DE NACIMIENTO: ${safeLegacyDate(r.fecnac)}` : '',
+    text(r.lugbau) ? `LUGAR DE BAUTISMO: ${text(r.lugbau)}` : ''
+  ].filter(Boolean);
+  return legacyNoteRef(r, parts.join('. '), {
+    sacrament_type:'matrimonio',
+    classification:'structured_historical_reference',
+    referenced_name:text(r.nombre),
+    birth_date:safeLegacyDate(r.fecnac),
+    baptism_place:text(r.lugbau)
+  });
+};
+
 const normalizeLegacyMarriageNote = (r) => ({
   book_number:text(r.libro),
   folio:text(r.folio),
@@ -238,12 +283,14 @@ export const LEGACY_IMPORT_PROFILES = {
   },
   OBISPOS: { label:'Directorio histórico de obispos', targetEntity:'legacy_reference_catalog', requiresParish: true, normalize:(r)=>({...r}), key:(r,i)=>sourceKey(r.codigo || r.id || r.nombre || 'OBISPO',i) },
   MISDATOS: { label:'Configuración de instalación antigua', targetEntity:'legacy_settings', requiresParish: true, normalize:(r)=>({...r}), key:(r)=>text(r.idcod || r.nombre) },
-  DATOSHIJOS: { label:'Datos hijos legacy', targetEntity:'legacy_settings', requiresParish: true, normalize:(r)=>({...r}), key:(r,i)=>sourceKey('DATOSHIJOS',i) },
-  IMPRESAS: { label:'Histórico de impresiones legacy', targetEntity:'legacy_settings', requiresParish: true, normalize:(r)=>({...r}), key:(r,i)=>sourceKey('IMPRESAS',i) },
-  NTBAU001: { label:'Notas marginales Bautismo lote 1', targetEntity:'legacy_marginal_note', requiresParish:true, normalize:(r)=>({...r}), key:(r,i)=>sourceKey(r.libro,r.folio,r.numero,i) },
-  NTBAU002: { label:'Notas marginales Bautismo lote 2', targetEntity:'legacy_marginal_note', requiresParish:true, normalize:(r)=>({...r}), key:(r,i)=>sourceKey(r.libro,r.folio,r.numero,i) },
-  NTMAT001: { label:'Notas históricas de Matrimonio lote 1', targetEntity:'legacy_marginal_note', requiresParish:true, normalize:normalizeLegacyMarriageNote, key:(r,i)=>sourceKey(r.libro,r.folio,r.numero,r.actualizad || r.dafe,i) },
-  NTMAT002: { label:'Notas históricas de Matrimonio lote 2', targetEntity:'legacy_marginal_note', requiresParish:true, normalize:normalizeLegacyMarriageNote, key:(r,i)=>sourceKey(r.libro,r.folio,r.numero,r.actualizad || r.dafe,i) }
+  DATOSHIJOS: { label:'Datos de hijos del expediente matrimonial', targetEntity:'marriage_dossier_child', requiresParish:true, normalize:(r)=>({...r}), key:(r,i)=>sourceKey(r.numero || r.numinsc || r.expediente || 'DATOSHIJOS',i) },
+  IMPRESAS: { label:'Histórico de impresiones', targetEntity:'print_history', requiresParish:true, normalize:(r)=>({...r}), key:(r,i)=>sourceKey(r.libro,r.folio,r.numero,r.fecha || r.actualizad,i) },
+  NTBAU001: { label:'Nota de Matrimonio en Bautismo', targetEntity:'marginal_note', requiresParish:true, normalize:normalizeBaptismMarriageLegacyNote, key:(r,i)=>sourceKey(r.libro,r.folio,r.numero,r.fecmatr || r.conyuge,i) },
+  NTBAU002: { label:'Notas marginales de Bautismo', targetEntity:'marginal_note', requiresParish:true, normalize:(r)=>normalizeFreeLegacyNote(r,'bautismo'), key:(r,i)=>sourceKey(r.libro,r.folio,r.numero,r.actualizad || r.dafe,i) },
+  NTCON001: { label:'Notas marginales de Confirmación', targetEntity:'marginal_note', requiresParish:true, normalize:(r)=>normalizeFreeLegacyNote(r,'confirmacion'), key:(r,i)=>sourceKey(r.libro,r.folio,r.numero,r.actualizad || r.dafe,i) },
+  NTMAT001: { label:'Notas estructuradas de Matrimonio', targetEntity:'marginal_note', requiresParish:true, normalize:normalizeMarriageStructuredLegacyNote, key:(r,i)=>sourceKey(r.libro,r.folio,r.numero,r.actualizad || r.dafe,i) },
+  NTMAT002: { label:'Notas marginales de Matrimonio', targetEntity:'marginal_note', requiresParish:true, normalize:(r)=>({ ...normalizeLegacyMarriageNote(r), sacrament_type:'matrimonio' }), key:(r,i)=>sourceKey(r.libro,r.folio,r.numero,r.actualizad || r.dafe,i) },
+  NTDEF001: { label:'Notas marginales de Exequias', targetEntity:'marginal_note', requiresParish:true, normalize:(r)=>normalizeFreeLegacyNote(r,'exequias'), key:(r,i)=>sourceKey(r.libro,r.folio,r.numero,r.actualizad || r.dafe,i) }
 };
 
 export const normalizeLegacyFilename = (filename='') => upper(filename).replace(/\.JSON$/i,'').replace(/\s*\(\d+\)\s*$/,'').replace(/[^A-Z0-9_]/g,'');
@@ -314,11 +361,12 @@ export const analyzeLegacyRow = (profileKey, raw, index=0) => {
     });
   }
 
-  if (profile.targetEntity==='legacy_marginal_note') {
+  if (['marginal_note','legacy_marginal_note'].includes(profile.targetEntity)) {
     if (!text(normalized.book_number)) add('MISSING_BOOK','Nota histórica sin Libro');
     if (!text(normalized.folio)) add('MISSING_FOLIO','Nota histórica sin Folio');
     if (!text(normalized.number)) add('MISSING_NUMBER','Nota histórica sin Número');
     if (!text(normalized.content)) add('MISSING_NOTE_CONTENT','Nota histórica sin contenido');
+    if (!text(normalized.sacrament_type)) add('MISSING_SACRAMENT_TYPE','No se pudo determinar el sacramento de la nota');
   }
   if (profile.targetEntity==='decree_link' && (!text(normalized.original_book) || !text(normalized.original_folio) || !text(normalized.original_number))) add('MISSING_ORIGINAL_REFERENCE','No se puede localizar la partida original');
   if (profile.targetEntity==='directory_diocese' && !text(normalized.name)) add('MISSING_NAME','Directorio diocesano sin nombre');
@@ -327,10 +375,10 @@ export const analyzeLegacyRow = (profileKey, raw, index=0) => {
   if (profile.targetEntity==='document_template' && !text(normalized.template_text)) add('MISSING_TEMPLATE','Plantilla documental vacía');
 
   const hardReview = issues.some(i => ['SUSPICIOUS_DATE','INVALID_DATE','INVALID_DATE_FORMAT','MISSING_BOOK_REVIEW','REPORTED_LEGACY_RECORD','MISSING_ORIGINAL_REFERENCE'].includes(i.code));
-  const requiredMissing = issues.some(i => ['MISSING_BOOK','MISSING_FOLIO','MISSING_NUMBER','MISSING_NAME','MISSING_VALUE','MISSING_TEMPLATE','MISSING_NOTE_CONTENT'].includes(i.code));
+  const requiredMissing = issues.some(i => ['MISSING_BOOK','MISSING_FOLIO','MISSING_NUMBER','MISSING_NAME','MISSING_VALUE','MISSING_TEMPLATE','MISSING_NOTE_CONTENT','MISSING_SACRAMENT_TYPE'].includes(i.code));
   const preserveAllBoletas = ['pending_baptism','pending_confirmation'].includes(profile.targetEntity);
-  const queueableLegacyNote = profile.targetEntity === 'legacy_marginal_note' && !requiredMissing;
-  const status = preserveAllBoletas || queueableLegacyNote
+  const importableMarginalNote = ['marginal_note','legacy_marginal_note'].includes(profile.targetEntity) && !requiredMissing;
+  const status = preserveAllBoletas || importableMarginalNote
     ? 'valid'
     : (hardReview || requiredMissing || ['pending_marriage','legacy_settings'].includes(profile.targetEntity) ? 'review' : 'valid');
   return {

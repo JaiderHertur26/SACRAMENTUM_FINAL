@@ -100,7 +100,8 @@ export async function applyLegacyBatch(batchId, { chunkSize = 250, onProgress = 
   const effectiveProfile = String(profileKey || batch?.profile_key || '').toUpperCase();
   const isPendingSacramentalProfile = ['INSBAUTI','INSCONFI'].includes(effectiveProfile);
   const isPendingMarriageProfile = effectiveProfile === 'INSMATRI';
-  const rpcName = ['NTMAT001','NTMAT002'].includes(effectiveProfile)
+  const sacramentalNoteProfiles = ['NTBAU001','NTBAU002','NTCON001','NTMAT001','NTMAT002','NTDEF001'];
+  const rpcName = sacramentalNoteProfiles.includes(effectiveProfile)
     ? 'apply_legacy_marginal_note_batch'
     : 'apply_legacy_import_batch_v2';
 
@@ -141,7 +142,7 @@ export async function applyLegacyBatch(batchId, { chunkSize = 250, onProgress = 
   }
 
   let noteReconciliation = null;
-  if (['NTMAT001','NTMAT002','MATRIMON'].includes(effectiveProfile) && batch?.parish_id) {
+  if (effectiveProfile === 'MATRIMON' && batch?.parish_id) {
     const { data, error } = await supabase.rpc('reconcile_legacy_matrimonial_notes', {
       p_parish_id: batch.parish_id
     });
