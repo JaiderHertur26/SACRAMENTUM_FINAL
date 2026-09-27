@@ -22,6 +22,7 @@ import {
 import { cn } from '@/lib/utils';
 import { labelStatus } from '@/utils/uiLabels';
 import { buildFuneralConstanciaHtml, buildFuneralPartidaHtml } from '@/utils/funeralDocumentHtml';
+import { registerRegistryPrint } from '@/services/marginalNotesV2Service';
 
 const escapeHtml = (value) =>
   String(value ?? '')
@@ -143,6 +144,22 @@ const FuneralPartidasPage = () => {
       return;
     }
 
+    registerRegistryPrint({
+      parishId,
+      sacramentType: 'exequias',
+      sacramentId: selected.id,
+      documentKind: 'partida',
+      selectedNoteKeys: printNotes ? notes.map((note) => String(note.id)) : [],
+      includedNotes: printNotes
+        ? notes.map((note) => ({ id: String(note.id), label: note.print_label || note.note_type || 'Nota marginal', content: note.content || '', policy: note.print_policy || 'optional' }))
+        : [],
+      metadata: {
+        book: selected.book_number || selected.Libro || '',
+        folio: selected.folio || selected.page_number || '',
+        number: selected.number || selected.numero || selected.entry_number || ''
+      }
+    }).catch((error) => console.warn('No fue posible auditar la impresión de Exequias:', error));
+
     popup.document.write(buildFuneralPartidaHtml({
       record: selected,
       notes,
@@ -165,6 +182,18 @@ const FuneralPartidasPage = () => {
       });
       return;
     }
+
+    registerRegistryPrint({
+      parishId,
+      sacramentType: 'exequias',
+      sacramentId: record.id,
+      documentKind: 'constancia',
+      metadata: {
+        book: record.book_number || record.Libro || '',
+        folio: record.folio || record.page_number || '',
+        number: record.number || record.numero || record.entry_number || ''
+      }
+    }).catch((error) => console.warn('No fue posible auditar la constancia de Exequias:', error));
 
     popup.document.write(buildFuneralConstanciaHtml({
       record,

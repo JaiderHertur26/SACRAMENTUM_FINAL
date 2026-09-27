@@ -381,18 +381,12 @@ const BaptismParametersPage = () => {
               </span>
             </label>
 
-            <label className="flex items-center gap-2 cursor-pointer select-none">
-              <input
-                type="checkbox"
-                name="reportPrinting"
-                checked={Boolean(localPrefs.reportPrinting)}
-                onChange={handleLocalPrefChange}
-                className="w-4 h-4 text-[#4B7BA7] border-slate-300 rounded focus:ring-[#4B7BA7]"
-              />
+            <div className="flex items-center gap-2 rounded-xl border border-emerald-100 bg-emerald-50/70 px-3 py-2">
+              <CheckSquare className="h-4 w-4 text-emerald-600" />
               <span className="text-slate-700 font-medium">
-                Reportar Impresión de Partidas
+                Historial institucional de impresiones · siempre activo
               </span>
-            </label>
+            </div>
           </div>
         </div>
 
