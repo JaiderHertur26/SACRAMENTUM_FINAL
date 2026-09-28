@@ -8,6 +8,7 @@ import { useSearchParams } from 'react-router-dom';
 import DecreeCenterHeader from '@/components/chancery/DecreeCenterHeader';
 import { supabase } from '@/lib/supabaseClient';
 import { listDecrees } from '@/services/decreeRegistryService';
+import { buildDecreeDocumentHtml } from '@/services/decreeDocumentHtml';
 import {
   Search,
   Printer,
@@ -82,6 +83,7 @@ const SacramentalDecreeArchivePage = () => {
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState('');
   const [typeFilter, setTypeFilter] = useState(forcedType || 'all');
+  const [printIdentity, setPrintIdentity] = useState({});
 
   useEffect(() => {
     setTypeFilter(forcedType || 'all');
@@ -122,16 +124,71 @@ const SacramentalDecreeArchivePage = () => {
     setLoading(true);
 
     try {
-      const { data: parishes, error } = await supabase
-        .from('parishes')
-        .select('id,name')
-        .eq('diocese_id', dioceseId)
-        .eq('is_operational', true);
+      const [parishResult, dioceseResult, chanceryResult] = await Promise.all([
+        supabase
+          .from('parishes')
+          .select('id,name,city,address,phone,nit')
+          .eq('diocese_id', dioceseId)
+          .eq('is_operational', true),
+        supabase
+          .from('dioceses')
+          .select('id,name,type,address,city,phone,email')
+          .eq('id', dioceseId)
+          .maybeSingle(),
+        supabase
+          .from('chancelleries')
+          .select('id,name,city,chancellor_name,vice_chancellor_name')
+          .eq('diocese_id', dioceseId)
+          .limit(1)
+          .maybeSingle()
+      ]);
 
-      if (error) throw error;
+      if (parishResult.error) throw parishResult.error;
+      if (dioceseResult.error) throw dioceseResult.error;
+      if (chanceryResult.error) throw chanceryResult.error;
 
-      const ids = (parishes || []).map((p) => p.id);
-      const names = new Map((parishes || []).map((p) => [p.id, p.name]));
+      const parishes = parishResult.data || [];
+      const diocese = dioceseResult.data || null;
+      const chancery = chanceryResult.data || null;
+
+      let identity = {};
+      if (chancery?.id) {
+        const { data: identityRow, error: identityError } = await supabase
+          .from('mis_datos')
+          .select('nombre,nronit,ciudad,direccion,telefono,email,payload')
+          .eq('entity_id', chancery.id)
+          .limit(1)
+          .maybeSingle();
+
+        if (identityError) {
+          console.warn('No fue posible cargar la identidad documental de Cancillería:', identityError);
+        } else if (identityRow) {
+          let payload = identityRow.payload || {};
+          if (typeof payload === 'string') {
+            try { payload = JSON.parse(payload); } catch { payload = {}; }
+          }
+          if (Array.isArray(payload)) payload = payload[0] || {};
+          identity = { ...payload, ...identityRow };
+        }
+      }
+
+      setPrintIdentity({
+        dioceseName: diocese?.name || user?.dioceseName || '',
+        chanceryName: identity.nombreCancilleria || identity.nombre || chancery?.name || 'OFICINA DE CANCILLERÍA',
+        chancellorName: identity.canciller || identity.parroco || chancery?.chancellor_name || '',
+        viceChancellorName: identity.viceCanciller || identity.vice_canciller || chancery?.vice_chancellor_name || '',
+        address: identity.direccion || diocese?.address || '',
+        city: identity.ciudad || chancery?.city || diocese?.city || '',
+        phone: identity.telefono || diocese?.phone || '',
+        email: identity.email || diocese?.email || '',
+        country: identity.pais || 'COLOMBIA',
+        correctionCode: identity.codigoDecretoCorreccion || identity.decreeCorrectionCode || '',
+        replacementCode: identity.codigoDecretoReposicion || identity.decreeReplacementCode || '',
+        version: identity.versionDecretos || identity.documentVersion || '001'
+      });
+
+      const ids = parishes.map((p) => p.id);
+      const parishMap = new Map(parishes.map((p) => [p.id, p]));
       const all = await listDecrees({ parishIds: ids });
 
       setRows(
@@ -142,14 +199,21 @@ const SacramentalDecreeArchivePage = () => {
             );
             return Boolean(type);
           })
-          .map((d) => ({
-            ...d,
-            parish_name:
-              names.get(d.parish_id) ||
-              d.payload?.parishName ||
-              d.payload?.targetParishName ||
-              ''
-          }))
+          .map((d) => {
+            const parish = parishMap.get(d.parish_id) || {};
+            return {
+              ...d,
+              parish_name:
+                parish.name ||
+                d.payload?.parishName ||
+                d.payload?.targetParishName ||
+                '',
+              parish_city: parish.city || d.payload?.parishCity || '',
+              parish_address: parish.address || '',
+              parish_phone: parish.phone || '',
+              parish_nit: parish.nit || ''
+            };
+          })
       );
     } catch (error) {
       toast({
@@ -324,199 +388,30 @@ const SacramentalDecreeArchivePage = () => {
   };
 
   const print = (row) => {
-    const payload = row.payload || {};
-    const type = TYPE_KEY(
-      row.tipo || payload.decreeType || payload.decretoType
-    );
-
-    if (!type) return;
-
-    const number = escapeHtml(
-      row.decree_number || payload.decreeNumber || 'Decreto'
-    );
-
-    const legacyHistorical = isLegacyHistoricalDecree(row);
-    const title = legacyHistorical
-      ? 'REGISTRO HISTÓRICO DE DECRETO'
-      : type === 'correccion'
-        ? 'DECRETO DE CORRECCIÓN'
-        : 'DECRETO DE REPOSICIÓN';
-
-    const sacramentLabel =
-      sacrament === 'confirmacion'
-        ? 'CONFIRMACIÓN'
-        : sacrament === 'matrimonio'
-        ? 'MATRIMONIO'
-        : sacrament === 'exequias'
-        ? 'EXEQUIAS'
-        : 'BAUTISMO';
-
-    const original = getOriginalLocation(payload);
-    const replacement = getReplacementLocation(payload);
-    const evidence = getEvidence(payload);
-    const note = getNote(payload, type);
-
-    const originalBlock =
-      type === 'correccion'
-        ? `
-          <div class="box">
-            <span>PARTIDA ORIGINAL · ANULADA</span>
-            <strong>
-              L-${escapeHtml(original.book || original.libro || '—')} ·
-              F-${escapeHtml(original.folio || original.page || '—')} ·
-              N-${escapeHtml(original.number || original.entry || '—')}
-            </strong>
-            ${
-              original.numeroRegistro || original.numero_registro
-                ? `<small>REG. ${escapeHtml(
-                    original.numeroRegistro || original.numero_registro
-                  )}</small>`
-                : ''
-            }
-          </div>
-        `
-        : '';
-
-    const evidenceBlock =
-      type === 'reposicion'
-        ? `
-          <div class="evidence">
-            <b>Evidencia registrada</b><br>
-            Tipo: ${escapeHtml(evidence.type || '—')}<br>
-            Referencia: ${escapeHtml(evidence.reference || '—')}<br>
-            Emisor / custodio: ${escapeHtml(evidence.issuer || '—')}<br>
-            Fecha: ${escapeHtml(evidence.date || '—')}<br>
-            <span>${escapeHtml(evidence.description || '')}</span>
-          </div>
-        `
-        : '';
-
-    const replacementRegistry =
-      replacement.numeroRegistro ||
-      replacement.numero_registro ||
-      payload.numeroRegistro ||
-      payload.numero_registro ||
-      '';
-
-    const relationText = legacyHistorical
-      ? 'Este registro reproduce la relación histórica encontrada en el sistema anterior entre la partida original y la partida sustitutiva. SACRAMENTUM la conserva para trazabilidad documental; no constituye una nueva emisión ni una convalidación posterior del decreto.'
-      : type === 'correccion'
-        ? 'La partida original queda anulada y se crea una nueva partida en el Libro Supletorio, conservando la relación jurídica y documental entre ambos asientos.'
-        : 'No existe una partida original utilizable. Con fundamento en la evidencia incorporada al expediente, se crea una nueva partida en el Libro Supletorio.';
-
-    const popup = window.open('', '_blank', 'width=900,height=1100');
+    const popup = window.open('', '_blank', 'width=980,height=1180');
 
     if (!popup) {
       toast({
         title: 'Ventana bloqueada',
-        description: 'Permita ventanas emergentes para imprimir.',
+        description: 'Permita ventanas emergentes para imprimir el decreto.',
         variant: 'destructive'
       });
       return;
     }
 
-    popup.document.write(`<!doctype html>
-<html lang="es">
-<head>
-<meta charset="utf-8">
-<title>${number}</title>
-<style>
-@page{size:Letter;margin:18mm}
-*{box-sizing:border-box}
-body{font-family:Georgia,serif;color:#172033;margin:0;line-height:1.6}
-.page{border:1.5px solid #274f78;padding:34px 42px;position:relative}
-.page:before{content:'';position:absolute;inset:8px;border:1px solid #d4af37;pointer-events:none}
-.k{text-align:center;font:700 9px Arial,sans-serif;letter-spacing:.22em;text-transform:uppercase;color:#9a7921}
-h1{text-align:center;font-size:21px;margin:8px 0 2px}
-h2{text-align:center;font-size:14px;font-weight:normal;margin:0 0 25px}
-.meta{border-top:1px solid #ccd4de;border-bottom:1px solid #ccd4de;padding:14px 0;font-size:12px;margin:20px 0}
-.locations{display:grid;grid-template-columns:${type === 'correccion' ? '1fr 1fr' : '1fr'};gap:12px;margin:18px 0}
-.box{padding:12px;background:#f8fafc;border:1px solid #dce3eb}
-.box span{display:block;font:700 8px Arial,sans-serif;letter-spacing:.12em;color:#7b8796}
-.box strong{display:block;margin-top:4px;font:700 11px Arial,sans-serif}
-.box small{display:block;margin-top:4px;font:700 9px Arial,sans-serif;color:#596575}
-p{font-size:12px;text-align:justify}
-.evidence,.note{margin-top:18px;padding:13px;border-left:3px solid #d4af37;background:#fbfaf6;font-size:11px}
-.sig{margin-top:75px;text-align:center}
-.small{text-align:center;margin-top:30px;font:400 8px Arial,sans-serif;color:#7d8793}
-.legacy{margin:16px 0;padding:10px 12px;border:1px solid #d4af37;background:#fffaf0;font:700 9px Arial,sans-serif;color:#7a5b00;text-align:center;letter-spacing:.05em}
-</style>
-</head>
-<body>
-<div class="page">
-  <div class="k">Cancillería Diocesana · Gobierno Documental · SACRAMENTUM</div>
-  <h1>${title} · ${sacramentLabel}</h1>
-  <h2>${number}</h2>
-  ${legacyHistorical ? '<div class="legacy">HISTÓRICO IMPORTADO · NO EMITIDO POR SACRAMENTUM</div>' : ''}
-
-  <div class="meta">
-    <b>Fecha:</b> ${escapeHtml(
-      row.decree_date || payload.decreeDate || ''
-    )}<br>
-    <b>Parroquia:</b> ${escapeHtml(
-      row.parish_name ||
-        payload.parishName ||
-        payload.targetParishName ||
-        ''
-    )}<br>
-    <b>Titular:</b> ${escapeHtml(
-      payload.targetName || payload.newTargetName || (legacyHistorical ? 'No consta en el vínculo histórico' : '')
-    )}<br>
-    <b>Concepto:</b> ${escapeHtml(payload.conceptPolicy?.concept || payload.concept || payload.causa || '—')}
-  </div>
-
-  <div class="locations">
-    ${originalBlock}
-    <div class="box">
-      <span>PARTIDA SUPLETORIA</span>
-      <strong>
-        L-${escapeHtml(replacement.book || replacement.libro || '—')} ·
-        F-${escapeHtml(replacement.folio || replacement.page || '—')} ·
-        N-${escapeHtml(replacement.number || replacement.entry || '—')}
-      </strong>
-      ${
-        replacementRegistry
-          ? `<small>REG. ${escapeHtml(replacementRegistry)}</small>`
-          : ''
+    const html = buildDecreeDocumentHtml({
+      row,
+      institution: printIdentity,
+      parish: {
+        name: row.parish_name,
+        city: row.parish_city,
+        address: row.parish_address,
+        phone: row.parish_phone,
+        nit: row.parish_nit
       }
-    </div>
-  </div>
+    });
 
-  <p>${relationText}</p>
-
-  <p><b>Fundamento:</b> ${escapeHtml(
-    payload.reason ||
-      payload.fundamento ||
-      payload.causa ||
-      payload.observaciones ||
-      ''
-  )}</p>
-
-  ${evidenceBlock}
-
-  ${
-    note
-      ? `<div class="note"><b>Nota marginal</b><br>${escapeHtml(
-          note
-        )}</div>`
-      : ''
-  }
-
-  <div class="sig">
-    ___________________________________<br>
-    <b>${legacyHistorical ? 'CUSTODIA DEL ARCHIVO HISTÓRICO' : 'CANCILLERÍA DIOCESANA'}</b>
-  </div>
-
-  <div class="small">
-    ${legacyHistorical
-      ? 'Ficha de trazabilidad generada por SACRAMENTUM a partir del archivo histórico importado. No equivale a una nueva expedición del decreto.'
-      : 'Documento generado por SACRAMENTUM. El expediente digital conserva decreto, evidencia cuando aplica, notas marginales, reversión y auditoría.'}
-  </div>
-</div>
-<script>window.onload=()=>window.print()</script>
-</body>
-</html>`);
-
+    popup.document.write(html);
     popup.document.close();
   };
 
