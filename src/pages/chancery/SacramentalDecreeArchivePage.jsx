@@ -39,6 +39,13 @@ const TYPE_KEY = (value) => {
   return null;
 };
 
+const SACRAMENT_TABLE = Object.freeze({
+  bautismo: 'baptisms',
+  confirmacion: 'confirmations',
+  matrimonio: 'marriages',
+  exequias: 'funerals'
+});
+
 const escapeHtml = (value) => String(value ?? '')
   .replaceAll('&', '&amp;')
   .replaceAll('<', '&lt;')
@@ -180,7 +187,9 @@ const SacramentalDecreeArchivePage = () => {
 
       setPrintIdentity({
         dioceseName: diocese?.name || user?.dioceseName || '',
-        chanceryName: identity.nombreCancilleria || identity.nombre || chancery?.name || 'OFICINA DE CANCILLERÍA',
+        officeName: identity.nombreOficinaCancilleria || identity.oficinaCancilleria || 'OFICINA DE CANCILLERÍA',
+        documentOfficeName: identity.nombreOficinaDocumentos || identity.oficinaDocumentos || 'OFICINA DE DOCUMENTOS DE CANCILLERÍA',
+        chanceryName: identity.nombreCancilleria || identity.nombre || chancery?.name || 'CANCILLERÍA',
         chancellorName: identity.canciller || identity.parroco || chancery?.chancellor_name || '',
         viceChancellorName: identity.viceCanciller || identity.vice_canciller || chancery?.vice_chancellor_name || '',
         address: identity.direccion || diocese?.address || '',
@@ -396,7 +405,7 @@ const SacramentalDecreeArchivePage = () => {
     }
   };
 
-  const print = (row) => {
+  const print = async (row) => {
     const popup = window.open('', '_blank', 'width=980,height=1180');
 
     if (!popup) {
@@ -408,20 +417,60 @@ const SacramentalDecreeArchivePage = () => {
       return;
     }
 
-    const html = buildDecreeDocumentHtml({
-      row,
-      institution: printIdentity,
-      parish: {
-        name: row.parish_name,
-        city: row.parish_city,
-        address: row.parish_address,
-        phone: row.parish_phone,
-        nit: row.parish_nit
-      }
-    });
-
-    popup.document.write(html);
+    popup.document.write('<!doctype html><html><body style="font-family:Arial,sans-serif;padding:40px">Preparando decreto…</body></html>');
     popup.document.close();
+
+    try {
+      const payload = row.payload || {};
+      const sacramentKey = SACRAMENT_KEY(
+        row.sacrament_type || payload.sacramentType || payload.sacramento
+      );
+      const table = SACRAMENT_TABLE[sacramentKey];
+      const recordId =
+        row.replacement_record_id ||
+        payload.replacementRecordId ||
+        payload.newRecordId ||
+        row.original_record_id ||
+        payload.originalRecordId ||
+        null;
+
+      let sacramentalRecord = {};
+      if (table && recordId) {
+        const { data, error } = await supabase
+          .from(table)
+          .select('*')
+          .eq('id', recordId)
+          .maybeSingle();
+
+        if (error) throw error;
+        sacramentalRecord = data || {};
+      }
+
+      const html = buildDecreeDocumentHtml({
+        row,
+        institution: printIdentity,
+        sacramentalRecord,
+        parish: {
+          name: row.parish_name,
+          city: row.parish_city,
+          address: row.parish_address,
+          phone: row.parish_phone,
+          nit: row.parish_nit
+        }
+      });
+
+      popup.document.open();
+      popup.document.write(html);
+      popup.document.close();
+    } catch (error) {
+      console.error('No fue posible preparar el decreto:', error);
+      popup.close();
+      toast({
+        title: 'No fue posible preparar el decreto',
+        description: error?.message || 'No se pudieron cargar los datos sacramentales vinculados.',
+        variant: 'destructive'
+      });
+    }
   };
 
   const updateType = (value) => {

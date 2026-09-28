@@ -114,29 +114,31 @@ const detailRow = (label, value, className = '') => {
   return `<div class="detail-row ${className}"><div class="detail-label">${escapeHtml(label)}</div><div class="detail-value">${escapeHtml(text)}</div></div>`;
 };
 
-const buildRecord = (payload, type) => {
+const buildRecord = (payload, type, sacramentalRecord = {}) => {
   const original = payload.before || payload.originalData || payload.originalRecord || {};
   const recordData = payload.recordData || payload.newRecord || payload.replacementData || {};
   const summary = payload.newPartidaSummary || payload.replacementLocation || {};
   const changes = type === 'correccion' ? (payload.changes || {}) : {};
-  return compactObject(original, recordData, summary, changes, payload);
+  const raw = sacramentalRecord?.raw_data || sacramentalRecord?.rawData || {};
+  const legacyNormalized = raw?.legacy_normalized || raw?.legacyNormalized || {};
+  return compactObject(original, recordData, summary, changes, raw, legacyNormalized, sacramentalRecord, payload);
 };
 
 const buildBaptismDetails = (r) => {
   const names = firstValue(r, ['nombres', 'firstName', 'first_name']);
   const surnames = firstValue(r, ['apellidos', 'lastName', 'last_name']);
   return [
-    detailRow('FECHA DE BAUTISMO:', formatDate(firstValue(r, ['fechaSacramento','sacramentDate','fecha_bautismo','fecbau']))),
+    detailRow('FECHA DE BAUTISMO:', formatDate(firstValue(r, ['fechaSacramento','sacramentDate','fecha_bautismo','celebration_date','fecbau']))),
     detailRow('NOMBRES:', upper(names)),
     detailRow('APELLIDOS:', upper(surnames)),
-    detailRow('FECHA NACIMIENTO:', formatDate(firstValue(r, ['fechaNacimiento','birthDate','fecha_nacimiento','fecnac']))),
-    detailRow('LUGAR NACIMIENTO:', upper(firstValue(r, ['lugarNacimiento','birthPlace','lugar_nacimiento','lugarn','lugnac']))),
-    detailRow('PADRE:', upper(firstValue(r, ['nombrePadre','padre','fatherName']))),
-    detailRow('MADRE:', upper(firstValue(r, ['nombreMadre','madre','motherName']))),
-    detailRow('TIPO DE UNIÓN:', upper(firstValue(r, ['tipoUnionPadres','tipoUnion','tipohijo']))),
-    detailRow('SEXO:', formatSex(firstValue(r, ['sexo','sex']))),
-    detailRow('ABUELOS PATERNOS:', upper(firstValue(r, ['abuelosPaternos','abuepat']))),
-    detailRow('ABUELOS MATERNOS:', upper(firstValue(r, ['abuelosMaternos','abuemat']))),
+    detailRow('FECHA NACIMIENTO:', formatDate(firstValue(r, ['fechaNacimiento','birthDate','fecha_nacimiento','birth_date','fecnac']))),
+    detailRow('LUGAR NACIMIENTO:', upper(firstValue(r, ['lugarNacimiento','birthPlace','lugar_nacimiento','birth_place','lugarn','lugnac']))),
+    detailRow('PADRE:', upper(firstValue(r, ['nombrePadre','nombre_padre','padre','fatherName','father_name']))),
+    detailRow('MADRE:', upper(firstValue(r, ['nombreMadre','nombre_madre','madre','motherName','mother_name']))),
+    detailRow('TIPO DE UNIÓN:', upper(firstValue(r, ['tipoUnionPadres','tipo_union_padres','tipoUnion','parent_union_type','tipohijo']))),
+    detailRow('SEXO:', formatSex(firstValue(r, ['sexo','sex','gender']))),
+    detailRow('ABUELOS PATERNOS:', upper(firstValue(r, ['abuelosPaternos','abuelos_paternos','paternal_grandparents','abuepat']))),
+    detailRow('ABUELOS MATERNOS:', upper(firstValue(r, ['abuelosMaternos','abuelos_maternos','maternal_grandparents','abuemat']))),
     detailRow('PADRINOS:', upper(firstValue(r, ['padrinos','godparents']))),
     detailRow('MINISTRO:', upper(firstValue(r, ['ministro','minister','sacerdote']))),
     detailRow('DA FE:', upper(firstValue(r, ['daFe','dafe','da_fe','ministerFaith'])))
@@ -239,21 +241,17 @@ const joinContact = (institution = {}) => [
   clean(institution.country || 'COLOMBIA')
 ].filter(Boolean).join(' · ');
 
-export function buildDecreeDocumentHtml({ row = {}, institution = {}, parish = {} } = {}) {
+export function buildDecreeDocumentHtml({ row = {}, institution = {}, parish = {}, sacramentalRecord = {} } = {}) {
   const payload = row.payload || {};
   const type = decreeTypeKey(row.tipo || payload.decreeType || payload.decretoType);
   const sacrament = sacramentKey(row.sacrament_type || payload.sacramentType || payload.sacramento || payload.sacrament);
   const original = locationData(payload.originalLocation || payload.originalPartidaSummary || payload.originalRecordSummary || {});
   const replacement = locationData(payload.replacementLocation || payload.newPartidaSummary || payload.newRecordSummary || payload.datosNuevaPartida || {});
   const evidence = payload.evidence || payload.decreeEvidence || payload.recordData?.evidence || {};
-  const record = buildRecord(payload, type);
-  const legacyHistorical = payload.legacyHistorical === true
-    || clean(row.tipo).toLowerCase().includes('legacy')
-    || clean(payload.recordOrigin).toLowerCase() === 'legacy_import'
-    || clean(payload.source).toLowerCase().startsWith('legacy_');
-
+  const record = buildRecord(payload, type, sacramentalRecord);
   const dioceseName = upper(institution.dioceseName || institution.diocese || 'DIÓCESIS / ARQUIDIÓCESIS');
-  const chanceryName = upper(institution.chanceryName || institution.name || 'OFICINA DE CANCILLERÍA');
+  const chanceryName = upper(institution.officeName || 'OFICINA DE CANCILLERÍA');
+  const documentOfficeName = upper(institution.documentOfficeName || 'OFICINA DE DOCUMENTOS DE CANCILLERÍA');
   const parishName = upper(row.parish_name || parish.name || payload.parishName || payload.targetParishName || 'PARROQUIA');
   const parishCity = upper(row.parish_city || parish.city || payload.parishCity || '');
   const decreeNumber = upper(row.decree_number || payload.decreeNumber || payload.numeroDecreto || '—');
@@ -262,11 +260,7 @@ export function buildDecreeDocumentHtml({ row = {}, institution = {}, parish = {
     firstValue(record, ['nombres','firstName']),
     firstValue(record, ['apellidos','lastName'])
   ].filter(Boolean).join(' '));
-  const concept = upper(payload.conceptPolicy?.concept || payload.concept || payload.causa || payload.reason || '');
-  const reason = upper(payload.reason || payload.fundamento || payload.causa || payload.observaciones || '');
-  const note = upper(type === 'correccion'
-    ? (payload.replacementNote || payload.originalNote || payload.notaMarginal || '')
-    : (payload.replacementNote || payload.notaMarginal || ''));
+  const reason = upper(payload.reason || payload.fundamento || payload.causa || payload.observaciones || payload.legacyRaw?.observacio || '');
   const officeEmail = clean(institution.email);
   const signer = upper(institution.chancellorName || institution.canciller || 'CANCILLER');
   const signerTitle = jurisdictionType(dioceseName) === 'Arquidiócesis' ? 'CANCILLER ARQUIDIOCESANO' : 'CANCILLER DIOCESANO';
@@ -310,10 +304,6 @@ export function buildDecreeDocumentHtml({ row = {}, institution = {}, parish = {
         ${detailRow('FECHA DEL DOCUMENTO:', formatDate(evidence.date))}
         ${detailRow('DESCRIPCIÓN:', upper(evidence.description))}
       </fieldset>`
-    : '';
-
-  const legacyBanner = legacyHistorical
-    ? '<div class="legacy">HISTÓRICO IMPORTADO · DOCUMENTO DE TRAZABILIDAD · NO REEXPEDIDO POR SACRAMENTUM</div>'
     : '';
 
   const importantNote = officeEmail
@@ -376,8 +366,6 @@ body{font-family:"Times New Roman",Times,serif;font-size:10.2pt;line-height:1.25
 .footer{border-top:1px solid #111;text-align:center;margin-top:4mm;padding-top:2mm}
 .footer strong{display:block;font-size:7.4pt;letter-spacing:.11em}
 .footer div{font-size:6.8pt;margin-top:.7mm}
-.legacy{margin:2mm 0 3mm;border:1px solid #a77a21;background:#fff8e6;text-align:center;padding:2mm;font-family:Arial,sans-serif;font-size:6.8pt;font-weight:700;letter-spacing:.08em;color:#76520c}
-.archive-note{text-align:center;font-family:Arial,sans-serif;font-size:6pt;color:#777;margin-top:1.8mm}
 @media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}.sheet{page-break-after:avoid}}
 </style>
 </head>
@@ -390,7 +378,6 @@ body{font-family:"Times New Roman",Times,serif;font-size:10.2pt;line-height:1.25
     <div class="title-box">DECRETO DE ${type === 'correccion' ? 'CORRECCIÓN' : 'REPOSICIÓN'} DE PARTIDA</div>
   </header>
   <div class="top-rule"></div>
-  ${legacyBanner}
 
   <div class="lead-grid">
     <div class="recipient">
@@ -407,16 +394,14 @@ body{font-family:"Times New Roman",Times,serif;font-size:10.2pt;line-height:1.25
 
   ${locationBoxes}
 
-  <div class="details">${details || detailRow('DATOS DEL ASIENTO:', 'CONSÚLTESE EL EXPEDIENTE DIGITAL DEL DECRETO')}</div>
+  <div class="details">${details}</div>
 
   ${evidenceBlock}
 
   <fieldset class="disposition">
     <legend>DISPOSICIÓN${type === 'correccion' ? ' Y NOTA MARGINAL' : ''}</legend>
     <div>${disposition}</div>
-    ${reason ? `<div class="observation">OBSERVACIÓN / FUNDAMENTO: ${escapeHtml(reason)}</div>` : ''}
-    ${note && note !== reason ? `<div class="observation">NOTA REGISTRAL: ${escapeHtml(note)}</div>` : ''}
-    ${concept ? `<div class="observation">CONCEPTO: ${escapeHtml(concept)}</div>` : ''}
+    ${reason ? `<div class="observation">OBSERVACIÓN: ${escapeHtml(reason)}</div>` : ''}
   </fieldset>
 
   <div class="important"><b>NOTA IMPORTANTE:</b> ${importantNote}</div>
@@ -430,11 +415,10 @@ body{font-family:"Times New Roman",Times,serif;font-size:10.2pt;line-height:1.25
   </div>
 
   <footer class="footer">
-    <strong>${escapeHtml(chanceryName)}</strong>
+    <strong>${escapeHtml(documentOfficeName)}</strong>
     ${footerContact ? `<div>${escapeHtml(footerContact)}</div>` : ''}
     ${officeEmail ? `<div>E-mail: ${escapeHtml(officeEmail)}</div>` : ''}
   </footer>
-  <div class="archive-note">${legacyHistorical ? 'Ficha de trazabilidad histórica generada por SACRAMENTUM; no equivale a una nueva expedición del decreto.' : 'Documento emitido y trazado digitalmente por SACRAMENTUM.'}</div>
 </div>
 <script>window.onload=()=>window.print()</script>
 </body>
