@@ -24,7 +24,7 @@ const TARGET_ENTITY_LABELS = Object.freeze({
   pending_baptism: 'Inscripciones de Bautismo',
   pending_confirmation: 'Inscripciones de Confirmación',
   pending_marriage: 'Inscripciones de Matrimonio',
-  decree_link: 'Vínculos de decretos',
+  decree_link: 'Ejecución de decretos históricos',
   annulment_concept: 'Conceptos de decreto',
   directory_diocese: 'Directorio de diócesis',
   directory_church: 'Directorio de iglesias',

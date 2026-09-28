@@ -70,6 +70,12 @@ const isLegacyHistoricalDecree = (row = {}) => {
     || String(payload.source || '').toLowerCase().startsWith('legacy_');
 };
 
+const isLegacyExecutedDecree = (row = {}) => {
+  const payload = row.payload || {};
+  return String(payload.issuanceMode || '').toLowerCase() === 'legacy_decree_execution'
+    || String(payload.source || '').toUpperCase() === 'ANULACION.DBF';
+};
+
 const SacramentalDecreeArchivePage = () => {
   const { user } = useAuth();
   const { toast } = useToast();
@@ -270,9 +276,12 @@ const SacramentalDecreeArchivePage = () => {
 
   const reverse = async (row) => {
     if (isLegacyHistoricalDecree(row)) {
+      const executed = isLegacyExecutedDecree(row);
       toast({
-        title: 'Registro histórico protegido',
-        description: 'Este decreto fue importado del sistema anterior. Se conserva como antecedente documental y no puede revertirse como si hubiera sido emitido por SACRAMENTUM.',
+        title: executed ? 'Corrección histórica protegida' : 'Registro histórico protegido',
+        description: executed
+          ? 'Esta corrección fue reconstruida desde ANULACION.DBF: la partida original y la partida creada por decreto ya quedaron enlazadas. No puede revertirse como si SACRAMENTUM la hubiera expedido hoy.'
+          : 'Este decreto fue importado del sistema anterior. Se conserva como antecedente documental y no puede revertirse como si hubiera sido emitido por SACRAMENTUM.',
         variant: 'destructive'
       });
       return;
@@ -515,6 +524,7 @@ const SacramentalDecreeArchivePage = () => {
                 const reversed =
                   String(row.status || '').toLowerCase() === 'reversed';
                 const legacyHistorical = isLegacyHistoricalDecree(row);
+                const legacyExecuted = isLegacyExecutedDecree(row);
                 const Icon =
                   type === 'correccion' ? FileCheck2 : ArchiveRestore;
 
@@ -556,7 +566,7 @@ const SacramentalDecreeArchivePage = () => {
                             </span>
                             {legacyHistorical && (
                               <span className="rounded-full border border-amber-300 bg-amber-50 px-2 py-1 text-[8px] font-black uppercase tracking-wider text-amber-800">
-                                Histórico importado
+                                {legacyExecuted ? 'Ejecutado desde base antigua' : 'Histórico importado'}
                               </span>
                             )}
                             {reversed && (
@@ -575,7 +585,9 @@ const SacramentalDecreeArchivePage = () => {
                           </p>
                           {legacyHistorical && (
                             <p className="mt-1 text-[10px] font-bold text-amber-700">
-                              Importado del programa anterior · conservado únicamente como antecedente y trazabilidad.
+                              {legacyExecuted
+                                ? 'Corrección reconstruida desde ANULACION.DBF: original anulada y nueva partida vinculada como creada por decreto.'
+                                : 'Importado del programa anterior · conservado únicamente como antecedente y trazabilidad.'}
                             </p>
                           )}
 
@@ -618,7 +630,7 @@ const SacramentalDecreeArchivePage = () => {
                       <div className="flex gap-2">
                         <Button variant="outline" onClick={() => print(row)}>
                           <Printer className="mr-2 h-4 w-4" />
-                          {legacyHistorical ? 'Ficha histórica' : 'Imprimir'}
+                          {legacyExecuted ? 'Ver decreto histórico' : legacyHistorical ? 'Ficha histórica' : 'Imprimir'}
                         </Button>
                         {!reversed && !legacyHistorical && (
                           <Button

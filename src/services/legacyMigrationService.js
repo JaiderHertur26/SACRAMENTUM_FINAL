@@ -103,7 +103,7 @@ export async function applyLegacyBatch(batchId, { chunkSize = 250, onProgress = 
   const sacramentalNoteProfiles = ['NTBAU001','NTBAU002','NTCON001','NTMAT001','NTMAT002','NTDEF001'];
   const rpcName = sacramentalNoteProfiles.includes(effectiveProfile)
     ? 'apply_legacy_marginal_note_batch'
-    : 'apply_legacy_import_batch_v2';
+    : 'apply_legacy_import_batch_v3';
 
   let totalImported = 0;
   let totalFailed = 0;
