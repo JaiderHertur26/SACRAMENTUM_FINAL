@@ -2208,9 +2208,11 @@
       "area": "Impresiones y plantillas",
       "priority": "P0",
       "criterion": "Decretos oficiales",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "AUDITORIA_DOCUMENTOS_OFICIALES_V102_2026-10-21.md: Documentación oficial V102: emisión/anulación por rol probadas con documentos sintéticos y auditoría; impresión física aún pendiente"
+      ],
+      "updated_at": "2026-10-21T21:50:45.910Z"
     },
     {
       "id": "22.03",
@@ -2764,9 +2766,10 @@
         "AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: V95 escalamiento vertical: 5 INSERT indebidos de admin reproducidos y eliminados por RLS",
         "AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96 vulnerabilidad de escalamiento vertical en mis_datos reproducida y corregida",
         "AUDITORIA_CONCEPTOS_DEC_REGLAS_V98_2026-10-21.md: V97 admin_general/diocese denegados para catálogo de decretos, Cancillería permitida",
-        "AUDITORIA_AUTORIDAD_MIGRACION_V101_2026-10-21.md: V100/101: Admin General ya no gestiona ni consulta lotes; creación no vinculada denegada tras parche"
+        "AUDITORIA_AUTORIDAD_MIGRACION_V101_2026-10-21.md: V100/101: Admin General ya no gestiona ni consulta lotes; creación no vinculada denegada tras parche",
+        "AUDITORIA_DOCUMENTOS_OFICIALES_V102_2026-10-21.md: V102: emisión, anulación y plantillas ajenas de Admin General reproducidas y bloqueadas; tres actores operativos mantienen funciones"
       ],
-      "updated_at": "2026-10-21T21:33:28.531Z"
+      "updated_at": "2026-10-21T21:50:46.308Z"
     },
     {
       "id": "27.02",
@@ -2806,9 +2809,10 @@
       "status": "EN_PROGRESO",
       "evidence": [
         "AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md: Asignador interno no ejecutable directamente (42501), con ruta institucional auditada operativa",
-        "AUDITORIA_AUTORIDAD_MIGRACION_V101_2026-10-21.md: V101: bypass por RPC create_legacy_import_batch sin scope reproducido y cerrado"
+        "AUDITORIA_AUTORIDAD_MIGRACION_V101_2026-10-21.md: V101: bypass por RPC create_legacy_import_batch sin scope reproducido y cerrado",
+        "AUDITORIA_DOCUMENTOS_OFICIALES_V102_2026-10-21.md: V102: llamadas RPC directas de Administrador General rechazadas sin alterar documentos; rol parroquial diocesano excluido"
       ],
-      "updated_at": "2026-10-21T21:33:29.147Z"
+      "updated_at": "2026-10-21T21:50:46.648Z"
     },
     {
       "id": "27.05",
@@ -2890,9 +2894,10 @@
       "evidence": [
         "AUDITORIA_INVENTARIO_RPC_V91.json: Cribado completo de 129 SECURITY DEFINER, una delegación interna revisada, pendientes pruebas ejecutables",
         "AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md: V92 revocó ejecución externa de una SECURITY DEFINER vulnerable; matriz restante pendiente",
-        "AUDITORIA_AUTORIDAD_MIGRACION_V101_2026-10-21.md: V99-101: autorizar RPC de importación con ámbitos, quedan numerosas funciones SECURITY DEFINER por auditar"
+        "AUDITORIA_AUTORIDAD_MIGRACION_V101_2026-10-21.md: V99-101: autorizar RPC de importación con ámbitos, quedan numerosas funciones SECURITY DEFINER por auditar",
+        "AUDITORIA_DOCUMENTOS_OFICIALES_V102_2026-10-21.md: V102: 3 funciones SECURITY DEFINER revalidadas por ámbito; permanece revisión individual de las demás RPC"
       ],
-      "updated_at": "2026-10-21T21:33:29.347Z"
+      "updated_at": "2026-10-21T21:50:46.996Z"
     },
     {
       "id": "28.01",
@@ -3326,9 +3331,10 @@
       "evidence": [
         "AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: Matriz V95: 60 resultados por 4 roles y 5 tablas, con resultados esperados documentados",
         "AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96 matriz 12 resultados por cuatro actores y tres tipos de escritura",
-        "AUDITORIA_AUTORIDAD_MIGRACION_V101_2026-10-21.md: V101: matriz de creación 4 casos y flujo Parroquia create/stage/apply/denegación Admin con resultados esperados"
+        "AUDITORIA_AUTORIDAD_MIGRACION_V101_2026-10-21.md: V101: matriz de creación 4 casos y flujo Parroquia create/stage/apply/denegación Admin con resultados esperados",
+        "AUDITORIA_DOCUMENTOS_OFICIALES_V102_2026-10-21.md: V102: 4 pruebas de denegación y matriz de 3 roles con documentos/plantillas ficticias y resultados documentados"
       ],
-      "updated_at": "2026-10-21T21:33:29.530Z"
+      "updated_at": "2026-10-21T21:50:47.154Z"
     },
     {
       "id": "32.03",
@@ -3340,9 +3346,10 @@
       "evidence": [
         "AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: Matriz SQL positiva y negativa validada en Supabase; 65 decisiones verificadas",
         "AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96 UPDATE 4 casos y INSERT/DELETE 8 casos reproducidos con resultado esperado",
-        "AUDITORIA_AUTORIDAD_MIGRACION_V101_2026-10-21.md: V101: comprobaciones SQL contra actores reales autenticados y referenciadas en informe"
+        "AUDITORIA_AUTORIDAD_MIGRACION_V101_2026-10-21.md: V101: comprobaciones SQL contra actores reales autenticados y referenciadas en informe",
+        "AUDITORIA_DOCUMENTOS_OFICIALES_V102_2026-10-21.md: V102: emisión y anulación generan eventos correctos; intentos de admin no registran anulación irregular"
       ],
-      "updated_at": "2026-10-21T21:33:29.714Z"
+      "updated_at": "2026-10-21T21:50:47.345Z"
     },
     {
       "id": "32.04",
@@ -3366,9 +3373,10 @@
         "AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: Boletas ficticias V93 comprobadas en cero tras ROLLBACK, conservación de históricos",
         "AUDITORIA_PARAMETROS_Y_LIBROS_V94_2026-10-21.md: V94: 3 registros de parámetros y 0 libros tras rollback; sin persistencia de QA",
         "AUDITORIA_CONCEPTOS_DEC_REGLAS_V98_2026-10-21.md: Hallazgos V97/V98 reproducidos sin mutaciones permanentes y corregidos",
-        "AUDITORIA_AUTORIDAD_MIGRACION_V101_2026-10-21.md: V99-101: tres hallazgos de importación reproducidos/corregidos sin mutar datos reales"
+        "AUDITORIA_AUTORIDAD_MIGRACION_V101_2026-10-21.md: V99-101: tres hallazgos de importación reproducidos/corregidos sin mutar datos reales",
+        "AUDITORIA_DOCUMENTOS_OFICIALES_V102_2026-10-21.md: V102: fallos P1 de segregación de documentos/plantillas corregidos en tres RPC"
       ],
-      "updated_at": "2026-10-21T21:33:29.902Z"
+      "updated_at": "2026-10-21T21:50:47.526Z"
     },
     {
       "id": "32.06",
@@ -3381,9 +3389,10 @@
         "AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: V95 reprodujo fallo antes y verificó reparación tras aplicar migración",
         "AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96 corrige hallazgo de identidad institucional y repite prueba antes/después",
         "AUDITORIA_CONCEPTOS_DEC_REGLAS_V98_2026-10-21.md: Pruebas antes/después V97 8 roles, V98 6 casos, ROLLBACK; regresión estática añadida",
-        "AUDITORIA_AUTORIDAD_MIGRACION_V101_2026-10-21.md: V101: regresión comparativa de rol Admin pre/post y ruta de importación propietaria positiva"
+        "AUDITORIA_AUTORIDAD_MIGRACION_V101_2026-10-21.md: V101: regresión comparativa de rol Admin pre/post y ruta de importación propietaria positiva",
+        "AUDITORIA_DOCUMENTOS_OFICIALES_V102_2026-10-21.md: V102: pruebas SQL antes/después en transacción ROLLBACK; emisión legítima preservada"
       ],
-      "updated_at": "2026-10-21T21:33:30.097Z"
+      "updated_at": "2026-10-21T21:50:47.714Z"
     },
     {
       "id": "32.07",
@@ -3398,9 +3407,10 @@
         "AUDITORIA_PARAMETROS_Y_LIBROS_V94_2026-10-21.md: V94: 227 pruebas sintéticas, 23 verificadores y build OK; siguen cinco HIGH npm audit",
         "AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96 250 pruebas sintéticas y 23 verificadores aprobados; cinco paquetes HIGH siguen bloqueando gate",
         "AUDITORIA_CONCEPTOS_DEC_REGLAS_V98_2026-10-21.md: V98 puerta de calidad 25/26: 264 sintéticas, 23 legacy, build; cinco HIGH dependencias siguen en FAIL",
-        "AUDITORIA_AUTORIDAD_MIGRACION_V101_2026-10-21.md: V101: 284 tests sintéticos, 23 verificadores y build; puerta 25/26, npm HIGH 5 pendientes"
+        "AUDITORIA_AUTORIDAD_MIGRACION_V101_2026-10-21.md: V101: 284 tests sintéticos, 23 verificadores y build; puerta 25/26, npm HIGH 5 pendientes",
+        "AUDITORIA_DOCUMENTOS_OFICIALES_V102_2026-10-21.md: V102: 294 sintéticas y 23 verificadores, build correcto; cinco HIGH impiden aprobar seguridad"
       ],
-      "updated_at": "2026-10-21T21:33:30.247Z"
+      "updated_at": "2026-10-21T21:50:47.909Z"
     },
     {
       "id": "32.08",
@@ -3413,9 +3423,10 @@
         "AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: Tras V95: 15 políticas, 0 bypass is_app_admin y 0 residuos en 5 catálogos",
         "AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96: mis_datos mantiene 1 fila real, 0 fixtures y 0 admin bypass en 3 políticas",
         "AUDITORIA_CONCEPTOS_DEC_REGLAS_V98_2026-10-21.md: Postprueba 4 conceptos históricos intactos, 0 QA, 1 trigger, 0 bypass admin",
-        "AUDITORIA_AUTORIDAD_MIGRACION_V101_2026-10-21.md: V101: 0 residuos sintéticos y cuenta real de lotes/filas/vínculos preservada en ensayos"
+        "AUDITORIA_AUTORIDAD_MIGRACION_V101_2026-10-21.md: V101: 0 residuos sintéticos y cuenta real de lotes/filas/vínculos preservada en ensayos",
+        "AUDITORIA_DOCUMENTOS_OFICIALES_V102_2026-10-21.md: V102: 0 documentos, plantillas y auditorías QA tras rollback, 3 definers conservados"
       ],
-      "updated_at": "2026-10-21T21:33:30.431Z"
+      "updated_at": "2026-10-21T21:50:48.103Z"
     },
     {
       "id": "32.09",

@@ -1,20 +1,23 @@
-SACRAMENTUM FINAL · V101 · 2026-10-21
+SACRAMENTUM FINAL · V102 · 2026-10-21
 
-CAMBIOS AUDITADOS
-- V99: Importación de conceptos del archivo CPTOANULA conserva source_kind=legacy_catalog y referencia al lote/fila de origen; validado también sobre la RPC real apply_legacy_import_batch_v3.
-- V100: Administrador General no gestiona ni consulta archivos parroquiales. Diócesis conserva operaciones territoriales, Cancillería lee archivos de su jurisdicción, Parroquia gestiona y consulta archivos propios.
-- V101: Cerrada la excepción que permitía al Administrador General crear lotes históricos sin parroquia ni diócesis.
-- E2E transaccional con rol Parroquia: crear lote CPTOANULA, cargar fila, importar, comprobar procedencia; Admin General denegado al intentar procesar ese lote; ROLLBACK y cero residuos.
-- Aislamiento horizontal confirmado: Parroquia ve sus propios lotes, pero no puede leer lotes, filas o vínculos de otra parroquia.
-- Regresión ampliada con 20 pruebas estáticas nuevas desde V98; 284 pruebas sintéticas previstas, 23 verificadores históricos, build Vite y control de CSS.
+DOCUMENTOS OFICIALES — SEGREGACIÓN INSTITUCIONAL
+- V102 corrigió tres vulnerabilidades reproducidas mediante RPC privilegiadas:
+  1. Administrador General ya no puede emitir documentos parroquiales/diocesanos.
+  2. Administrador General ya no puede anular documentos institucionales.
+  3. Administrador General no puede versionar plantillas de Parroquia o Diócesis; conserva solo plantillas generales del sistema.
+- Emisión y anulación legítimas de Parroquia, Diócesis y Cancillería comprobadas en transacciones reversibles.
+- Una Parroquia no pudo anular documento diocesano.
+- Interfaz Biblioteca Documental ajustada a autoridad real del editor.
+- Cero documentos, plantillas y auditorías QA persistidos.
+- 10 tests sintéticos permanentes agregados; total 294 previstos, más 23 verificadores históricos.
+- Datos históricos, consecutivos y emisiones reales existentes preservados.
 
-PENDIENTE
-- Cinco alertas HIGH de dependencias continúan bloqueando CI de seguridad.
-- Revisar todas las RPC SECURITY DEFINER restantes y la integridad y seguridad de otras fuentes históricas.
-- Pruebas E2E completas en sandbox independiente, 325 controles de auditoría, visual interno autenticado, concurrencia y respaldo restaurado.
-- No se declara certificación total.
+AUDITORÍA GENERAL ABIERTA
+- Cinco vulnerabilidades HIGH de dependencias sin resolver; CI seguridad debe permanecer en FAIL.
+- 128 funciones SECURITY DEFINER aún disponibles, cada una requiere su propia matriz de autoridad.
+- Pendientes: documentos físicos, decretos, respaldos restaurados, concurrencia, visual authenticated de todas las pantallas.
+- Los 325 controles del plan maestro no están completamente certificados.
 
-VER INFORMES
-AUDITORIA_IMPORTACION_CONCEPTOS_V99_2026-10-21.md
-AUDITORIA_AUTORIDAD_MIGRACION_V101_2026-10-21.md
+EVIDENCIA
+AUDITORIA_DOCUMENTOS_OFICIALES_V102_2026-10-21.md
 AUDITORIA_MAESTRA_SACRAMENTUM_V90.md

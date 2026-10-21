@@ -148,7 +148,15 @@ export default function DocumentTemplateLibraryPage() {
   }, [auxiliaries.currentPriest?.nombreCompleto]);
 
   const role = profile?.role || user?.role;
-  const canManage = ['admin_general','diocese','chancery'].includes(role);
+  // Las versiones siguen la misma jurisdicción validada por la RPC.
+  // Admin General sólo edita plantillas del sistema; Diócesis y
+  // Cancillería sólo plantillas de su propia Diócesis.
+  const ownDioceseId = profile?.diocese_id || user?.diocese_id || user?.dioceseId || null;
+  const canManage = (role === 'admin_general' && selected?.scope_type === 'system')
+    || (['diocese', 'chancery'].includes(role)
+      && selected?.scope_type === 'diocese'
+      && Boolean(ownDioceseId)
+      && String(selected?.diocese_id) === String(ownDioceseId));
   const reload = async () => {
     const data = await listDocumentTemplates();
     setTemplates(data);
