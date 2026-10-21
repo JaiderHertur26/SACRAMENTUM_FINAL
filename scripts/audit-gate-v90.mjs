@@ -29,7 +29,8 @@ exec('pruebas-sinteticas',node,['--test',
  'scripts/test-supplementary-preflight-v89.mjs',
  'scripts/test-privileged-sequences-v92.mjs',
  'scripts/test-pending-ownership-v93.mjs',
- 'scripts/test-parish-book-ownership-v94.mjs']);
+ 'scripts/test-parish-book-ownership-v94.mjs',
+ 'scripts/test-parish-auxiliary-ownership-v95.mjs']);
 const scripts=fs.readdirSync(path.join(root,'scripts')).filter(x=>/^verify-.*\.mjs$/.test(x)).sort();
 for(const file of scripts)exec('legacy/'+file,node,['scripts/'+file]);
 const npmOnWindows=process.platform==='win32';

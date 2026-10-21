@@ -464,9 +464,11 @@
       "area": "Jerarquía territorial",
       "priority": "P1",
       "criterion": "Catálogos eclesiales",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: Catálogos parroquiales: cinco tablas revisadas con pruebas positivas y negativas; falta examinar usos y consistencia completa"
+      ],
+      "updated_at": "2026-10-21T19:48:14.140Z"
     },
     {
       "id": "06.01",
@@ -502,9 +504,10 @@
       "status": "EN_PROGRESO",
       "evidence": [
         "AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: Inserciones RLS en dos tablas de boletas: 8/8 casos por cuatro roles, Parroquia únicamente permitida",
-        "AUDITORIA_PARAMETROS_Y_LIBROS_V94_2026-10-21.md: Parámetros/libros INSERT limitado a parroquia: dos rechazos explícitos para admin general"
+        "AUDITORIA_PARAMETROS_Y_LIBROS_V94_2026-10-21.md: Parámetros/libros INSERT limitado a parroquia: dos rechazos explícitos para admin general",
+        "AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: V95 insert: 20 llamadas 4 roles x 5 catálogos; solo Parroquia propia permitida; cinco cruces ajenos denegados"
       ],
-      "updated_at": "2026-10-21T18:13:49.411Z"
+      "updated_at": "2026-10-21T19:48:14.611Z"
     },
     {
       "id": "06.04",
@@ -515,9 +518,10 @@
       "status": "EN_PROGRESO",
       "evidence": [
         "AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: Actualizaciones RLS en dos tablas de boletas: 8/8 casos, sólo parroquia titular",
-        "AUDITORIA_PARAMETROS_Y_LIBROS_V94_2026-10-21.md: UPDATE de parámetros y libro: 8/8 pruebas por cuatro roles; parroquia propia conserva acceso"
+        "AUDITORIA_PARAMETROS_Y_LIBROS_V94_2026-10-21.md: UPDATE de parámetros y libro: 8/8 pruebas por cuatro roles; parroquia propia conserva acceso",
+        "AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: V95 update: 20 escenarios en 5 catálogos; 15 políticas de escritura corregidas"
       ],
-      "updated_at": "2026-10-21T18:13:49.510Z"
+      "updated_at": "2026-10-21T19:48:15.574Z"
     },
     {
       "id": "06.05",
@@ -528,9 +532,10 @@
       "status": "EN_PROGRESO",
       "evidence": [
         "AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: Eliminaciones RLS en dos tablas de boletas: 8/8 casos, sólo parroquia titular",
-        "AUDITORIA_PARAMETROS_Y_LIBROS_V94_2026-10-21.md: DELETE de libro por cuatro roles: sólo parroquia titular afecta una fila ficticia"
+        "AUDITORIA_PARAMETROS_Y_LIBROS_V94_2026-10-21.md: DELETE de libro por cuatro roles: sólo parroquia titular afecta una fila ficticia",
+        "AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: V95 delete: 20 escenarios en 5 catálogos; titulares parroquiales conservan permisos"
       ],
-      "updated_at": "2026-10-21T18:13:49.586Z"
+      "updated_at": "2026-10-21T19:48:15.939Z"
     },
     {
       "id": "06.06",
@@ -1674,9 +1679,11 @@
       "area": "Datos auxiliares",
       "priority": "P1",
       "criterion": "Ciudades y países",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: Ciudades: control RLS corregido y operatividad CRUD de parroquia verificada a nivel SQL"
+      ],
+      "updated_at": "2026-10-21T19:48:16.290Z"
     },
     {
       "id": "17.02",
@@ -1684,9 +1691,11 @@
       "area": "Datos auxiliares",
       "priority": "P1",
       "criterion": "Iglesias",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: Iglesias: control RLS corregido y CRUD parroquial verificado en transacción reversible"
+      ],
+      "updated_at": "2026-10-21T19:48:16.466Z"
     },
     {
       "id": "17.03",
@@ -1694,9 +1703,11 @@
       "area": "Datos auxiliares",
       "priority": "P1",
       "criterion": "Parroquias externas",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: Diócesis históricas y parroquias externas: catálogo diocesis protegido, sin E2E de formularios"
+      ],
+      "updated_at": "2026-10-21T19:48:16.634Z"
     },
     {
       "id": "17.04",
@@ -1704,9 +1715,11 @@
       "area": "Datos auxiliares",
       "priority": "P1",
       "criterion": "Párrocos activos",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: Párrocos: control de titularidad corregido y CRUD en SQL comprobado, falta vigencia temporal"
+      ],
+      "updated_at": "2026-10-21T19:48:16.791Z"
     },
     {
       "id": "17.05",
@@ -1724,9 +1737,11 @@
       "area": "Datos auxiliares",
       "priority": "P1",
       "criterion": "Obispos",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: Obispos: tabla auxiliar protegida y probada con rol parroquial"
+      ],
+      "updated_at": "2026-10-21T19:48:17.008Z"
     },
     {
       "id": "17.07",
@@ -2716,9 +2731,10 @@
       "evidence": [
         "AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md: Usuario Parroquia ya no puede consumir consecutivo de ámbito diocesano sin documento",
         "AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: Riesgo V93-SEC-002: Administrador General deja de poder escribir boletas de Bautismo y Confirmación",
-        "AUDITORIA_PARAMETROS_Y_LIBROS_V94_2026-10-21.md: V94-SEC-003 corregido: admin general ya no puede alterar configuraciones ni libros parroquiales"
+        "AUDITORIA_PARAMETROS_Y_LIBROS_V94_2026-10-21.md: V94-SEC-003 corregido: admin general ya no puede alterar configuraciones ni libros parroquiales",
+        "AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: V95 escalamiento vertical: 5 INSERT indebidos de admin reproducidos y eliminados por RLS"
       ],
-      "updated_at": "2026-10-21T18:13:49.720Z"
+      "updated_at": "2026-10-21T19:48:17.228Z"
     },
     {
       "id": "27.02",
@@ -2728,9 +2744,10 @@
       "criterion": "Escalamiento horizontal",
       "status": "EN_PROGRESO",
       "evidence": [
-        "AUDITORIA_EXP_DEPENDENCIAS_Y_RLS_V91.md: Segunda diócesis ficticia y Bautismo ajeno negados para cuatro roles en transacción ROLLBACK"
+        "AUDITORIA_EXP_DEPENDENCIAS_Y_RLS_V91.md: Segunda diócesis ficticia y Bautismo ajeno negados para cuatro roles en transacción ROLLBACK",
+        "AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: V95 escalamiento horizontal: 5 INSERT a parroquia ajena rechazados por RLS"
       ],
-      "updated_at": "2026-10-21T17:18:16.717Z"
+      "updated_at": "2026-10-21T19:48:17.428Z"
     },
     {
       "id": "27.03",
@@ -3267,9 +3284,11 @@
       "area": "Auditoría forense de cierre",
       "priority": "P0",
       "criterion": "Guardar entrada y expectativa",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: Matriz V95: 60 resultados por 4 roles y 5 tablas, con resultados esperados documentados"
+      ],
+      "updated_at": "2026-10-21T19:48:17.611Z"
     },
     {
       "id": "32.03",
@@ -3277,9 +3296,11 @@
       "area": "Auditoría forense de cierre",
       "priority": "P0",
       "criterion": "Guardar resultado exacto",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: Matriz SQL positiva y negativa validada en Supabase; 65 decisiones verificadas"
+      ],
+      "updated_at": "2026-10-21T19:48:17.798Z"
     },
     {
       "id": "32.04",
@@ -3311,9 +3332,11 @@
       "area": "Auditoría forense de cierre",
       "priority": "P0",
       "criterion": "Corregir y repetir",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: V95 reprodujo fallo antes y verificó reparación tras aplicar migración"
+      ],
+      "updated_at": "2026-10-21T19:48:17.975Z"
     },
     {
       "id": "32.07",
@@ -3335,9 +3358,11 @@
       "area": "Auditoría forense de cierre",
       "priority": "P0",
       "criterion": "Conteos antes/después",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: Tras V95: 15 políticas, 0 bypass is_app_admin y 0 residuos en 5 catálogos"
+      ],
+      "updated_at": "2026-10-21T19:48:18.136Z"
     },
     {
       "id": "32.09",

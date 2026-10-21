@@ -10,7 +10,7 @@ Regla: no introducir datos falsos permanentes; usar memoria, transacciones ROLLB
 
 Prioridad P0 bloquea la certificación. P1 debe constar resuelta o aceptada con evidencia y responsable.
 
-Avance: 325 controles totales; 9 aprobados; 32 en progreso; 283 pendientes; 1 fallidos; 0 bloqueados.
+Avance: 325 controles totales; 9 aprobados; 42 en progreso; 273 pendientes; 1 fallidos; 0 bloqueados.
 
 ## Fases y controles numerados
 
@@ -80,7 +80,8 @@ Avance: 325 controles totales; 9 aprobados; 32 en progreso; 283 pendientes; 1 fa
 - [ ] 05.05 · Parroquias antiguas no operativas — PENDIENTE
 - [ ] 05.06 · No traslado sin autorización — PENDIENTE
 - [ ] 05.07 · Referencias y códigos únicos — PENDIENTE
-- [ ] 05.08 · Catálogos eclesiales — PENDIENTE
+- [ ] 05.08 · Catálogos eclesiales — EN_PROGRESO
+  - Evidencia: AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: Catálogos parroquiales: cinco tablas revisadas con pruebas positivas y negativas; falta examinar usos y consistencia completa
 
 ### 06. RLS y privilegios del backend (P0) — 2/12
 
@@ -92,12 +93,15 @@ Avance: 325 controles totales; 9 aprobados; 32 en progreso; 283 pendientes; 1 fa
 - [ ] 06.03 · RLS INSERT por actor — EN_PROGRESO
   - Evidencia: AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: Inserciones RLS en dos tablas de boletas: 8/8 casos por cuatro roles, Parroquia únicamente permitida
   - Evidencia: AUDITORIA_PARAMETROS_Y_LIBROS_V94_2026-10-21.md: Parámetros/libros INSERT limitado a parroquia: dos rechazos explícitos para admin general
+  - Evidencia: AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: V95 insert: 20 llamadas 4 roles x 5 catálogos; solo Parroquia propia permitida; cinco cruces ajenos denegados
 - [ ] 06.04 · RLS UPDATE y WITH CHECK — EN_PROGRESO
   - Evidencia: AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: Actualizaciones RLS en dos tablas de boletas: 8/8 casos, sólo parroquia titular
   - Evidencia: AUDITORIA_PARAMETROS_Y_LIBROS_V94_2026-10-21.md: UPDATE de parámetros y libro: 8/8 pruebas por cuatro roles; parroquia propia conserva acceso
+  - Evidencia: AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: V95 update: 20 escenarios en 5 catálogos; 15 políticas de escritura corregidas
 - [ ] 06.05 · RLS DELETE por actor — EN_PROGRESO
   - Evidencia: AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: Eliminaciones RLS en dos tablas de boletas: 8/8 casos, sólo parroquia titular
   - Evidencia: AUDITORIA_PARAMETROS_Y_LIBROS_V94_2026-10-21.md: DELETE de libro por cuatro roles: sólo parroquia titular afecta una fila ficticia
+  - Evidencia: AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: V95 delete: 20 escenarios en 5 catálogos; titulares parroquiales conservan permisos
 - [ ] 06.06 · 129 RPC privilegiadas autorizadas — EN_PROGRESO
   - Evidencia: AUDITORIA_INVENTARIO_RPC_V91.json: 129 funciones privilegiadas clasificadas; faltan pruebas positivas y negativas función por función
 - [ ] 06.07 · 129 RPC privilegiadas denegadas a terceros — EN_PROGRESO
@@ -252,12 +256,17 @@ Avance: 325 controles totales; 9 aprobados; 32 en progreso; 283 pendientes; 1 fa
 
 ### 17. Datos auxiliares (P1) — 0/9
 
-- [ ] 17.01 · Ciudades y países — PENDIENTE
-- [ ] 17.02 · Iglesias — PENDIENTE
-- [ ] 17.03 · Parroquias externas — PENDIENTE
-- [ ] 17.04 · Párrocos activos — PENDIENTE
+- [ ] 17.01 · Ciudades y países — EN_PROGRESO
+  - Evidencia: AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: Ciudades: control RLS corregido y operatividad CRUD de parroquia verificada a nivel SQL
+- [ ] 17.02 · Iglesias — EN_PROGRESO
+  - Evidencia: AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: Iglesias: control RLS corregido y CRUD parroquial verificado en transacción reversible
+- [ ] 17.03 · Parroquias externas — EN_PROGRESO
+  - Evidencia: AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: Diócesis históricas y parroquias externas: catálogo diocesis protegido, sin E2E de formularios
+- [ ] 17.04 · Párrocos activos — EN_PROGRESO
+  - Evidencia: AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: Párrocos: control de titularidad corregido y CRUD en SQL comprobado, falta vigencia temporal
 - [ ] 17.05 · Fechas de vigencia — PENDIENTE
-- [ ] 17.06 · Obispos — PENDIENTE
+- [ ] 17.06 · Obispos — EN_PROGRESO
+  - Evidencia: AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: Obispos: tabla auxiliar protegida y probada con rol parroquial
 - [ ] 17.07 · Autocompletado — PENDIENTE
 - [ ] 17.08 · Da Fe histórico sin suposición — PENDIENTE
 - [ ] 17.09 · Duplicados y restricciones — PENDIENTE
@@ -393,8 +402,10 @@ Avance: 325 controles totales; 9 aprobados; 32 en progreso; 283 pendientes; 1 fa
   - Evidencia: AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md: Usuario Parroquia ya no puede consumir consecutivo de ámbito diocesano sin documento
   - Evidencia: AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: Riesgo V93-SEC-002: Administrador General deja de poder escribir boletas de Bautismo y Confirmación
   - Evidencia: AUDITORIA_PARAMETROS_Y_LIBROS_V94_2026-10-21.md: V94-SEC-003 corregido: admin general ya no puede alterar configuraciones ni libros parroquiales
+  - Evidencia: AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: V95 escalamiento vertical: 5 INSERT indebidos de admin reproducidos y eliminados por RLS
 - [ ] 27.02 · Escalamiento horizontal — EN_PROGRESO
   - Evidencia: AUDITORIA_EXP_DEPENDENCIAS_Y_RLS_V91.md: Segunda diócesis ficticia y Bautismo ajeno negados para cuatro roles en transacción ROLLBACK
+  - Evidencia: AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: V95 escalamiento horizontal: 5 INSERT a parroquia ajena rechazados por RLS
 - [ ] 27.03 · IDOR de parroquia — EN_PROGRESO
   - Evidencia: AUDITORIA_EXP_DEPENDENCIAS_Y_RLS_V91.md: Acceso horizontal a partida Bautismo fuera de jurisdicción denegado; faltan 3 sacramentos
 - [ ] 27.04 · RPC directa prohibida — EN_PROGRESO
@@ -477,19 +488,23 @@ Avance: 325 controles totales; 9 aprobados; 32 en progreso; 283 pendientes; 1 fa
 
 - [ ] 32.01 · Versionar toda prueba — EN_PROGRESO
   - Evidencia: AUDITORIA_PUERTA_CALIDAD_V90.json: Gate registra ejecución 25 de 26, dependencias fallidas; falta cobertura integral por cada control
-- [ ] 32.02 · Guardar entrada y expectativa — PENDIENTE
-- [ ] 32.03 · Guardar resultado exacto — PENDIENTE
+- [ ] 32.02 · Guardar entrada y expectativa — EN_PROGRESO
+  - Evidencia: AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: Matriz V95: 60 resultados por 4 roles y 5 tablas, con resultados esperados documentados
+- [ ] 32.03 · Guardar resultado exacto — EN_PROGRESO
+  - Evidencia: AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: Matriz SQL positiva y negativa validada en Supabase; 65 decisiones verificadas
 - [ ] 32.04 · Guardar capturas — PENDIENTE
 - [ ] 32.05 · Rastrear hallazgos P0/P1/P2 — EN_PROGRESO
   - Evidencia: AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md: Emisión temporal 1 documento y 1 log; cero residuos tras ROLLBACK en muestra controlada
   - Evidencia: AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: Boletas ficticias V93 comprobadas en cero tras ROLLBACK, conservación de históricos
   - Evidencia: AUDITORIA_PARAMETROS_Y_LIBROS_V94_2026-10-21.md: V94: 3 registros de parámetros y 0 libros tras rollback; sin persistencia de QA
-- [ ] 32.06 · Corregir y repetir — PENDIENTE
+- [ ] 32.06 · Corregir y repetir — EN_PROGRESO
+  - Evidencia: AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: V95 reprodujo fallo antes y verificó reparación tras aplicar migración
 - [ ] 32.07 · Regresión completa — EN_PROGRESO
   - Evidencia: AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md: Regresión 211 pruebas sintéticas, 23 verificadores, build OK; quedan fallas de dependencias
   - Evidencia: AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: 219 pruebas sintéticas, 23 verificadores y build aprobados; advertencias HIGH de paquetes aún abiertas
   - Evidencia: AUDITORIA_PARAMETROS_Y_LIBROS_V94_2026-10-21.md: V94: 227 pruebas sintéticas, 23 verificadores y build OK; siguen cinco HIGH npm audit
-- [ ] 32.08 · Conteos antes/después — PENDIENTE
+- [ ] 32.08 · Conteos antes/después — EN_PROGRESO
+  - Evidencia: AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: Tras V95: 15 políticas, 0 bypass is_app_admin y 0 residuos en 5 catálogos
 - [x] 32.09 · Confirmar producción Ready — APROBADO
   - Evidencia: AUDITORIA_CIERRE_TECNICO_V91_2026-10-21.md: Despliegue Vercel de código V91 Ready; nota: app no certificada integralmente
 - [ ] 32.10 · Dictamen con limitaciones verificadas — PENDIENTE

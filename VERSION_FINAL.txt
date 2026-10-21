@@ -1,24 +1,19 @@
-SACRAMENTUM FINAL V94 · Auditoría de seguridad
-Fecha: 2026-10-21 · Proyecto C:\SACRAMENTUM\SACRAMENTUM_FINAL
+SACRAMENTUM FINAL · V95 · 21/10/2026
 
-V92 — Numeración documental:
-  Bloqueado acceso directo a next_document_sequence para authenticated/anon.
-  Emisión formal por función autorizada genera un documento y una entrada de auditoría; ROLLBACK sin residuos.
+SEGURIDAD CORREGIDA V92-V95
+- V92: Asignador de consecutivos documentales reservado a procedimiento institucional autorizado. Prueba de emisión y auditoría con ROLLBACK.
+- V93: Boletas pendientes de Bautismo y Confirmación protegidas contra escrituras de roles ajenos a Parroquia. Matriz 24/24.
+- V94: Parámetros y libros parroquiales sin bypass de Administrador General. Pruebas positivas y negativas bajo RLS.
+- V95: Cinco catálogos auxiliares parroquiales (ciudades, diócesis históricas, iglesias, obispos, párrocos). Se eliminaron 15 excepciones de is_app_admin en INSERT, UPDATE y DELETE. 60/60 operaciones por cuatro roles y 5/5 inserciones entre parroquias bloqueadas. Cero residuos QA.
+- Regresión esperada: 244 pruebas sintéticas, 23 verificadores históricos y build.
+- Datos de producción preservados; no se alteraron consecutivos existentes ni archivos históricos.
 
-V93 — Boletas pendientes:
-  Administrador General, Diócesis y Cancillería no pueden insertar, modificar ni borrar boletas de Bautismo o Confirmación.
-  Parroquia conserva sus operaciones. 24/24 pruebas SQL de escritura; cero residuos.
+NO CONFUNDIR CON APROBACIÓN GENERAL
+- Cinco alertas HIGH npm audit aún abiertas y CI seguridad continúa fallido hasta remediarlas.
+- Revisión individual de las 128 RPC privilegiadas y permisos mis_datos / conceptos_anulacion pendiente.
+- Auditoría maestra 325 controles en progreso, pruebas visuales autenticadas, recuperación y concurrencia pendientes.
 
-V94 — Parámetros y libros físicos:
-  Administrador General no puede alterar configuraciones ni libros de parroquias mediante API directa.
-  Pruebas reales de UPDATE, DELETE e INSERT denegado por rol; 0 residuos; parámetros reales intactos.
-
-Regresión: 227 pruebas sintéticas previstas, 23 verificadores, build Vite y CSS original.
-Pendiente: cinco alertas HIGH de dependencias; 128 RPC SECURITY DEFINER, visual interno completo, pruebas de recuperación y concurrencia.
-La auditoría maestra de 325 controles continúa en progreso, NO es una certificación final.
-
-Informes:
-AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md
-AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md
-AUDITORIA_PARAMETROS_Y_LIBROS_V94_2026-10-21.md
+Evidencia:
+AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md
 AUDITORIA_MAESTRA_SACRAMENTUM_V90.md
+AUDITORIA_PARAMETROS_Y_LIBROS_V94_2026-10-21.md
