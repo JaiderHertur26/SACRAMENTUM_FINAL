@@ -79,7 +79,7 @@ check('SQL conciliación idempotente',
   && sql.includes("source_type='legacy_matrimonial_note'"));check('Servicio usa RPC especializado NTMAT',
   service.includes('apply_legacy_marginal_note_batch'));
 check('Servicio reconcilia también después de MATRIMON',
-  service.includes("['NTMAT001','NTMAT002','MATRIMON']"));
+  service.includes("effectiveProfile === 'MATRIMON'") && service.includes("supabase.rpc('reconcile_legacy_matrimonial_notes'"));
 check('Centro muestra NTMAT',
   page.includes('NTMAT001/NTMAT002'));
 check('Centro explica vínculo exacto',

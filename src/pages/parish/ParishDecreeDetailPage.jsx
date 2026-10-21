@@ -183,37 +183,23 @@ const ParishDecreeDetailPage = () => {
 
       let trace = null;
       if (data?.id) {
-        const { data: auditRows } = await supabase
-          .from('registry_audit_log')
-          .select('actor_user_id,action,created_at')
-          .eq('entity_type', 'decree')
-          .eq('entity_id', data.id)
-          .order('created_at', { ascending: true })
-          .limit(20);
-
-        const issueEvent = (auditRows || []).find((row) => ['issue','create','issued'].includes(String(row.action || '').toLowerCase()))
-          || (auditRows || [])[0]
-          || null;
-
-        if (issueEvent?.actor_user_id) {
-          const { data: actor } = await supabase
-            .from('user_profiles')
-            .select('full_name,username,role')
-            .eq('auth_user_id', issueEvent.actor_user_id)
-            .maybeSingle();
-
-          trace = {
-            action: issueEvent.action,
-            createdAt: issueEvent.created_at,
-            actorName: actor?.full_name || actor?.username || 'Usuario institucional',
-            actorRole: actor?.role || ''
-          };
-        } else if (issueEvent) {
-          trace = {
-            action: issueEvent.action,
-            createdAt: issueEvent.created_at,
-            actorName: 'Usuario institucional',
-            actorRole: ''
+        // registry_audit_log está correctamente cerrada por RLS. La Parroquia
+        // consulta solo la traza de SU decreto mediante una RPC jurisdiccional.
+        const { data: auditRows, error: auditError } = await supabase.rpc(
+          'get_decree_trace_v89', { p_decree_id: data.id }
+        );
+        if (auditError) {
+          console.warn('No fue posible consultar la trazabilidad del decreto:', auditError.message);
+        } else {
+          const event = (auditRows || []).find((row) =>
+            ['issue','create','issued','issue_documentary_decree',
+              'historical_documentary_recovery'].includes(String(row.action || '').toLowerCase())
+          ) || (auditRows || [])[0] || null;
+          if (event) trace = {
+            action: event.action,
+            createdAt: event.created_at,
+            actorName: event.actor_name || 'Usuario institucional',
+            actorRole: event.actor_role || ''
           };
         }
       }

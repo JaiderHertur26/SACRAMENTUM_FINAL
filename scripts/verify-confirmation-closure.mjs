@@ -7,7 +7,7 @@ const required = [
   'pages/parish/ConfirmationCelebratedPage.jsx',
   'pages/parish/ConfirmationSentarRegistrosPage.jsx',
   'pages/parish/ConfirmationPartidasPage.jsx',
-  'pages/parish/ConfirmationIndexPage.jsx',
+  'pages/parish/SacramentalBooksPage.jsx',
   'pages/parish/ConfirmationParametersPage.jsx',
   'components/ConfirmationPrintTemplate.jsx',
   'components/modals/ViewConfirmationPartidaModal.jsx',
@@ -24,10 +24,12 @@ const read = rel => fs.readFileSync(path.join(src, rel), 'utf8');const svc = rea
 if (!/export\s+function\s+purificarRegistroConfirmacion|export\s+const\s+purificarRegistroConfirmacion/.test(svc)) issues.push('Falta purificarRegistroConfirmacion canónico');
 if (!/fetchConfirmationsFromSource/.test(svc)) issues.push('Falta fetchConfirmationsFromSource canónico');
 if (!/legacy_dafe_resolved_name/.test(svc) || !/legacyDaFeCode/.test(svc)) issues.push('Confirmación legacy: Da Fe no conserva resolución + código original');
-for (const rel of ['pages/parish/ConfirmationPartidasPage.jsx','pages/parish/ConfirmationIndexPage.jsx']) {
+for (const rel of ['pages/parish/ConfirmationPartidasPage.jsx']) {
   const s = read(rel);
   if (!/fetchConfirmationsFromSource|purificarRegistroConfirmacion/.test(s)) issues.push(`${rel}: no consume lectura canónica`);
 }
+const books = read('pages/parish/SacramentalBooksPage.jsx');
+if (!books.includes('listSacramentalBookRecords') || !books.includes("confirmacion:'Confirmación'")) issues.push('Índice canónico: no consulta confirmaciones desde Libros Sacramentales');
 const hist = read('pages/parish/ConfirmationCelebratedPage.jsx');
 if (!/Digitalizar partida existente/i.test(hist)) issues.push('Digitalización histórica: semántica UI incorrecta');
 if (/ordinarioLibro|ordinarioFolio|ordinarioNumero/.test(hist)) issues.push('Digitalización histórica: usa consecutivo ordinario');

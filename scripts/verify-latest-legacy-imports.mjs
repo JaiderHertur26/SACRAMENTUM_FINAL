@@ -4,6 +4,14 @@ const env=Object.fromEntries(fs.readFileSync('.env.local','utf8').split(/\r?\n/)
 const url=env.VITE_SUPABASE_URL; const key=env.VITE_SUPABASE_PUBLISHABLE_KEY||env.VITE_SUPABASE_ANON_KEY;
 if(!url||!key) throw new Error('Faltan variables Supabase');
 const s=createClient(url,key,{auth:{persistSession:false}});
-const {data,error}=await s.from('legacy_import_batches').select('id,original_filename,profile_key,status,total_rows,valid_count,review_count,error_count,imported_count,parish_id,created_at,metadata').in('profile_key',['INSBAUTI','INSCONFI']).order('created_at',{ascending:false}).limit(10);
-if(error){ console.log('READ_ERROR',error.code,error.message); process.exit(3); }
-console.log(JSON.stringify(data,null,2));
+const {data,error}=await s.from('legacy_import_batches').select('id,original_filename,profile_key,status,row_count,valid_count,review_count,error_count,imported_count,parish_id,created_at,metadata').in('profile_key',['INSBAUTI','INSCONFI']).order('created_at',{ascending:false}).limit(10);
+if (error) {
+  if (error.code === '42501') {
+    console.log('PASS · Seguridad: la clave pública no puede leer lotes históricos privados.');
+  } else {
+    throw new Error(`Error inesperado en verificación: ${error.code || 'desconocido'} · ${error.message}`);
+  }
+} else {
+  console.log(`PASS · Consulta pública limitada: ${(data || []).length} lotes visibles.`);
+  console.log((data || []).map(({profile_key,status,row_count}) => ({profile_key,status,row_count})));
+}

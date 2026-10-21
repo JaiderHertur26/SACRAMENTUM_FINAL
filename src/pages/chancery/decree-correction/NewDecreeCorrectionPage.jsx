@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/Tabs';
 import { Save, ArrowLeft, FileText, UserPlus, AlertCircle, CheckCircle2, Search, Loader2, MapPin } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/lib/supabaseClient';
+import { assertSupplementaryCoordinateAvailable } from '@/services/supplementaryCoordinatePreflight.mjs';
 import { pickRecordValue, dateOnlyRecordValue, normalizeParentUnion, normalizeSexLabel, joinRecordValues } from '@/utils/chanceryRecordHydration';
 import { convertDateToSpanishText } from '@/utils/dateTimeFormatters';
 import DecreeCenterHeader from '@/components/chancery/DecreeCenterHeader';
@@ -347,6 +348,10 @@ const NewDecreeCorrectionPage = () => {
             const supletorioLibro = String(cloudParams.suplementarioLibro || '1').padStart(4, '0');
             const supletorioFolio = String(cloudParams.suplementarioFolio || '1').padStart(4, '0');
             const supletorioNumero = String(cloudParams.suplementarioNumero || '1').padStart(4, '0');
+            await assertSupplementaryCoordinateAvailable(supabase, {
+                table: 'baptisms', parishId: targetParish,
+                book: supletorioLibro, folio: supletorioFolio, number: supletorioNumero
+            });
 
             // Conserva únicamente el Da Fe documental indicado en la partida/corrección.
             // Si no existe, permanece vacío: nunca se reconstruye desde el párroco actual.

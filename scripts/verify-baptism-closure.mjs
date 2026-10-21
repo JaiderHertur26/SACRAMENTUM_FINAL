@@ -7,7 +7,7 @@ const required = [
   'pages/parish/BaptismCelebratedPage.jsx',
   'pages/parish/BaptismSentarRegistrosPage.jsx',
   'pages/parish/BaptismPartidasPage.jsx',
-  'pages/parish/BaptismIndexPage.jsx',
+  'pages/parish/SacramentalBooksPage.jsx',
   'pages/BaptismDetailPage.jsx',
   'components/BaptismPrintTemplate.jsx',
   'components/modals/ViewBaptismPartidaModal.jsx',

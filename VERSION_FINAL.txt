@@ -1,14 +1,12 @@
-SACRAMENTUM FINAL
-Versión de código: V88 · Cancillería y archivo de decretos
-Fecha: 2026-10-21 (Colombia)
-Base de partida: V87 (2026-09-27)
-Nuevas rutas: Cancillería /chancery/decretos/documental; Diócesis /diocese/decretos/archivo
-Actos: corrección, reposición, antecedente histórico, decreto documental sin efecto registral
-Cuatro sacramentos: Bautismo · Confirmación · Matrimonio · Exequias
-Permisos: Cancillería emite; Parroquia consulta; Diócesis supervisa; Admin General audita
-Backend: dos migraciones V88 instaladas en Supabase REGISTRO SACRAMENTOS
-Pruebas: 20/20 nuevas · 38/38 parroquial · 4 roles RLS SQL transaccional
-Registros ficticios persistentes: 0
-Build: Vite 8.3.1 · OK
-Estado del frontend: compilado localmente; verificar despliegue antes de declarar publicación.
-Detalles completos: ESTADO_CANCILLERIA_DECRETOS_V88_2026-10-21.md
+SACRAMENTUM FINAL · V89
+Corte: 21 de octubre de 2026 · Colombia
+Carpeta: C:\SACRAMENTUM\SACRAMENTUM_FINAL
+Versión base: V88 / ba590e8
+Novedades: permiso exclusivo Cancillería al fijar conceptos, bloqueo escrituras directas de decretos, trazabilidad por rol, preflight supletorio de Bautismo.
+Base de datos: tres migraciones V89 instaladas en Supabase REGISTRO SACRAMENTOS.
+Auditoría sintética: 206/206 aprobadas; 23/23 verificadores históricos; build OK.
+Pruebas SQL reversibles: cuatro roles, ocho borradores y corrección completa de Bautismo con reversión (esta última antes del último cambio de política).
+Datos ficticios persistentes: ninguno.
+Pendientes: E2E registral posparche, recorrido visual por roles, revisión de avisos Supabase, ANULACION en staging y consecutivo supletorio ocupado.
+Informe: AUDITORIA_INTEGRAL_V89_2026-10-21.md
+No presentar esta versión como certificación total de todas las pantallas y flujos.

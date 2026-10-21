@@ -1,0 +1,117 @@
+﻿[
+    {
+        "script":  "verify-auxiliary-intelligence-v12.mjs",
+        "pass":  true,
+        "excerpt":  "AUXILIARY INTELLIGENCE: OK ┬À importaciones centralizadas + cat├ílogos + autoridades + obispos titulares.\r "
+    },
+    {
+        "script":  "verify-auxiliary-intelligence-v13.mjs",
+        "pass":  true,
+        "excerpt":  "OK ┬À b├║squedas auxiliares y migraci├│n unificadas.\r "
+    },
+    {
+        "script":  "verify-auxiliary-visibility-v18.mjs",
+        "pass":  true,
+        "excerpt":  "SACRAMENTUM V18 ┬À OK ┬À 17/17 controles.\r "
+    },
+    {
+        "script":  "verify-aux-ui-global-v13.mjs",
+        "pass":  true,
+        "excerpt":  "IMPORT_UI_REFERENCES=0\r "
+    },
+    {
+        "script":  "verify-baptism-closure.mjs",
+        "pass":  true,
+        "excerpt":  "OK ┬À invariantes est├íticos de Bautismo verificados.\r "
+    },
+    {
+        "script":  "verify-birthplace-autocomplete-v12.mjs",
+        "pass":  true,
+        "excerpt":  "LUGAR DE NACIMIENTO: OK ┬À 10 campos usan el patr├│n can├│nico de Confirmaci├│n.\r "
+    },
+    {
+        "script":  "verify-boleta-parish-selector.mjs",
+        "pass":  true,
+        "excerpt":  "}\r "
+    },
+    {
+        "script":  "verify-confirmation-closure.mjs",
+        "pass":  true,
+        "excerpt":  "OK ┬À invariantes est├íticos de Confirmaci├│n verificados.\r "
+    },
+    {
+        "script":  "verify-confirmation-search-model-v13.mjs",
+        "pass":  true,
+        "excerpt":  "GLOBAL_RESIDUAL src/pages/parish/FuneralRegistryPage.jsx\r "
+    },
+    {
+        "script":  "verify-current-priest-v19.mjs",
+        "pass":  true,
+        "excerpt":  "SACRAMENTUM V19 ┬À OK ┬À 12/12 controles.\r "
+    },
+    {
+        "script":  "verify-ecclesial-documents-v28.mjs",
+        "pass":  true,
+        "excerpt":  "SACRAMENTUM V28 ┬À OK ┬À 29/29 controles.\r "
+    },
+    {
+        "script":  "verify-funeral-baptism-link-v7.mjs",
+        "pass":  true,
+        "excerpt":  "EXEQUIAS Ôåö BAUTISMO V7 ┬À 14 invariantes OK.\r "
+    },
+    {
+        "script":  "verify-import-parish-ownership-v5.mjs",
+        "pass":  true,
+        "excerpt":  "OK ┬À 24 perfiles exigen parroquia propietaria.\r "
+    },
+    {
+        "script":  "verify-latest-legacy-imports.mjs",
+        "pass":  true,
+        "excerpt":  "PASS ┬À Seguridad: la clave p├║blica no puede leer lotes hist├│ricos privados.\r "
+    },
+    {
+        "script":  "verify-legacy-import-relational.mjs",
+        "pass":  true,
+        "excerpt":  "OK ┬À importaci├│n relacional, preinscripciones y cat├ílogos verificados.\r "
+    },
+    {
+        "script":  "verify-legacy-matrimonial-notes-v17.mjs",
+        "pass":  true,
+        "excerpt":  "SACRAMENTUM V17 ┬À OK ┬À 25/25 controles.\r "
+    },
+    {
+        "script":  "verify-legacy-priest-name-split-v20.mjs",
+        "pass":  true,
+        "excerpt":  "SACRAMENTUM V20 ┬À OK ┬À 14/14 controles.\r "
+    },
+    {
+        "script":  "verify-legacy-reference-resolution-v29.mjs",
+        "pass":  true,
+        "excerpt":  "SACRAMENTUM V29 ┬À OK ┬À 38/38 controles.\r "
+    },
+    {
+        "script":  "verify-matrimonial-notifications-v16.mjs",
+        "pass":  true,
+        "excerpt":  "SACRAMENTUM V16 MATRIMONIAL ┬À OK ┬À 40/40 controles est├íticos.\r "
+    },
+    {
+        "script":  "verify-matrimonial-notifications-v16c.mjs",
+        "pass":  true,
+        "excerpt":  "SACRAMENTUM V16C ┬À OK ┬À 29/29 controles.\r "
+    },
+    {
+        "script":  "verify-notifications-v14.mjs",
+        "pass":  true,
+        "excerpt":  "SACRAMENTUM V14 ┬À OK ┬À Canciller├¡a, bandeja sacramental, lectura, aceptaci├│n y acuses verificados.\r "
+    },
+    {
+        "script":  "verify-notifications-v15.mjs",
+        "pass":  true,
+        "excerpt":  "SACRAMENTUM V15 ┬À OK ┬À nulidad interparroquial, aceptaci├│n, nota marginal, documento y acuse verificados.\r "
+    },
+    {
+        "script":  "verify-parish-decree-center-v30.mjs",
+        "pass":  true,
+        "excerpt":  "SACRAMENTUM V30 ┬À OK ┬À 38/38 controles.\r "
+    }
+]

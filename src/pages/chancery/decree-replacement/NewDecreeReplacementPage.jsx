@@ -10,6 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/components/ui/use-toast';
 import { convertDateToSpanishText } from '@/utils/dateTimeFormatters';
 import { supabase } from '@/lib/supabaseClient';
+import { assertSupplementaryCoordinateAvailable } from '@/services/supplementaryCoordinatePreflight.mjs';
 import CityAutocomplete from '@/components/CityAutocomplete';
 import DecreeCenterHeader from '@/components/chancery/DecreeCenterHeader';
 import DecreeConceptEffects from '@/components/chancery/DecreeConceptEffects';
@@ -265,6 +266,10 @@ const NewDecreeReplacementPage = () => {
             const supletorioLibro = String(currentParams.suplementarioLibro || '1').padStart(4, '0');
             const supletorioFolio = String(currentParams.suplementarioFolio || '1').padStart(4, '0');
             const supletorioNumero = String(currentParams.suplementarioNumero || '1').padStart(4, '0');
+            await assertSupplementaryCoordinateAvailable(supabase, {
+                table: 'baptisms', parishId: bautismoDecree.targetParishId,
+                book: supletorioLibro, folio: supletorioFolio, number: supletorioNumero
+            });
 
             let templateNueva = chanceryNotesConfig?.reposicion_nueva || "ESTA PARTIDA SE INSCRIBE POR REPOSICIÓN SEGÚN DECRETO NO. [NUMERO_DECRETO] DE FECHA [FECHA_DECRETO], MOTIVO: [CAUSA_REPOSICION]. LA INFORMACIÓN SUMINISTRADA ES FIEL A LA CONTENIDA EN EL LIBRO SUPLETORIO.";
             

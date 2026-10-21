@@ -19,7 +19,7 @@ eq(detectLegacyProfile('PARROCOS(2).json',[pr]),'PARROCOS','detección PARROCOS'
 eq(detectLegacyProfile('OBISPOS.json',[]),'OBISPOS','detección OBISPOS vacío');
 const svc=fs.readFileSync('src/services/legacyMigrationService.js','utf8');
 const page=fs.readFileSync('src/pages/admin/LegacyMigrationCenterPage.jsx','utf8');
-if(!svc.includes("apply_legacy_import_batch_v2")) failures.push('Servicio no usa apply_legacy_import_batch_v2');
+if(!svc.includes("apply_legacy_import_batch_v3")) failures.push('Servicio no usa apply_legacy_import_batch_v3 (incluye ANULACION.DBF)');
 if(!svc.includes('sourceScope')) failures.push('Servicio no aplica ámbito SHA a source_key');
 if(!page.includes('reconciliation_mode')) failures.push('UI no registra modo de conciliación');
 if(!page.includes('metadata?.reconciliation')) failures.push('UI no muestra resultado de conciliación');
