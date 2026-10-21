@@ -10,7 +10,7 @@ Regla: no introducir datos falsos permanentes; usar memoria, transacciones ROLLB
 
 Prioridad P0 bloquea la certificación. P1 debe constar resuelta o aceptada con evidencia y responsable.
 
-Avance: 325 controles totales; 4 aprobados; 11 en progreso; 309 pendientes; 1 fallidos; 0 bloqueados.
+Avance: 325 controles totales; 5 aprobados; 10 en progreso; 309 pendientes; 1 fallidos; 0 bloqueados.
 
 ## Fases y controles numerados
 
@@ -408,13 +408,14 @@ Avance: 325 controles totales; 4 aprobados; 11 en progreso; 309 pendientes; 1 fa
 - [ ] 29.09 · Rollback de esquema — PENDIENTE
 - [ ] 29.10 · Aislamiento entre parroquias — PENDIENTE
 
-### 30. Despliegue y dependencias (P1) — 1/10
+### 30. Despliegue y dependencias (P1) — 2/10
 
 - [ ] 30.01 · Node y lockfile — PENDIENTE
 - [ ] 30.02 · npm audit — FALLIDO
   - Evidencia: AUDITORIA_DEPENDENCIAS_V90.md: npm audit --omit=dev devuelve 8 avisos: 6 high, 2 moderate, 0 critical; pendiente remedación sin romper Tailwind
-- [ ] 30.03 · CI automática — EN_PROGRESO
+- [x] 30.03 · CI automática — APROBADO
   - Evidencia: .github/workflows/sacramentum-auditoria-v90.yml: CI de tests build y npm audit creada y validada como YAML; falta ejecutarla en GitHub Actions
+  - Evidencia: AUDITORIA_CI_GITHUB_V90.md: GitHub Actions funcionó y trabajo funcional completó SUCCESS en commit 84bbb16; seguridad FAIL esperado por dependencias
 - [ ] 30.04 · Migraciones reproducibles — PENDIENTE
 - [ ] 30.05 · Preview de Vercel — PENDIENTE
 - [ ] 30.06 · Variables secretas — PENDIENTE
