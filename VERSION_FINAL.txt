@@ -1,19 +1,25 @@
-SACRAMENTUM FINAL · V95 · 21/10/2026
+SACRAMENTUM FINAL · V96 · 21/10/2026
 
-SEGURIDAD CORREGIDA V92-V95
-- V92: Asignador de consecutivos documentales reservado a procedimiento institucional autorizado. Prueba de emisión y auditoría con ROLLBACK.
-- V93: Boletas pendientes de Bautismo y Confirmación protegidas contra escrituras de roles ajenos a Parroquia. Matriz 24/24.
-- V94: Parámetros y libros parroquiales sin bypass de Administrador General. Pruebas positivas y negativas bajo RLS.
-- V95: Cinco catálogos auxiliares parroquiales (ciudades, diócesis históricas, iglesias, obispos, párrocos). Se eliminaron 15 excepciones de is_app_admin en INSERT, UPDATE y DELETE. 60/60 operaciones por cuatro roles y 5/5 inserciones entre parroquias bloqueadas. Cero residuos QA.
-- Regresión esperada: 244 pruebas sintéticas, 23 verificadores históricos y build.
-- Datos de producción preservados; no se alteraron consecutivos existentes ni archivos históricos.
+FASE DE AUDITORÍA DE ACCESOS Y AUTORIDAD
 
-NO CONFUNDIR CON APROBACIÓN GENERAL
-- Cinco alertas HIGH npm audit aún abiertas y CI seguridad continúa fallido hasta remediarlas.
-- Revisión individual de las 128 RPC privilegiadas y permisos mis_datos / conceptos_anulacion pendiente.
-- Auditoría maestra 325 controles en progreso, pruebas visuales autenticadas, recuperación y concurrencia pendientes.
+V95
+- Protección de cinco catálogos parroquiales: ciudades, diócesis auxiliares, iglesias, obispos y párrocos.
+- Quince políticas RLS, 60/60 operaciones en matriz de cuatro roles y cinco INSERT ajenos denegados.
+- Cero registros ficticios persistidos.
 
-Evidencia:
+V96
+- Identidad institucional mis_datos: no permite escritura desde el Administrador General fuera de sus competencias.
+- Mantiene gestión legítima de Diócesis, Cancillería y Parroquia dentro de su ámbito.
+- 12 comprobaciones conductuales de INSERT, UPDATE y DELETE con ROLLBACK, cero residuos.
+- Protección de documentos institucionales que usan esta identidad, sin alterar sus plantillas ni su contenido.
+
+CALIDAD
+- 250 pruebas sintéticas previstas; 23 verificadores históricos; compilación y CSS.
+- La auditoría de dependencias permanece en rojo por cinco HIGH.
+- La auditoría integral de 325 controles NO está concluida.
+- Pendientes: 128 RPC SECURITY DEFINER, conceptos de anulación, dos diócesis ficticias completas, ensayos visuales autenticados, restauración y concurrencia.
+
+INFORMES
 AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md
+AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md
 AUDITORIA_MAESTRA_SACRAMENTUM_V90.md
-AUDITORIA_PARAMETROS_Y_LIBROS_V94_2026-10-21.md

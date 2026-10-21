@@ -10,7 +10,7 @@ Regla: no introducir datos falsos permanentes; usar memoria, transacciones ROLLB
 
 Prioridad P0 bloquea la certificación. P1 debe constar resuelta o aceptada con evidencia y responsable.
 
-Avance: 325 controles totales; 9 aprobados; 42 en progreso; 273 pendientes; 1 fallidos; 0 bloqueados.
+Avance: 325 controles totales; 9 aprobados; 45 en progreso; 270 pendientes; 1 fallidos; 0 bloqueados.
 
 ## Fases y controles numerados
 
@@ -63,7 +63,8 @@ Avance: 325 controles totales; 9 aprobados; 42 en progreso; 273 pendientes; 1 fa
 - [ ] 04.02 · Diócesis crea parroquia — PENDIENTE
 - [ ] 04.03 · Diócesis crea Canciller — PENDIENTE
 - [ ] 04.04 · Canciller único activo — PENDIENTE
-- [ ] 04.05 · Parroquia no crea superiores — PENDIENTE
+- [ ] 04.05 · Parroquia no crea superiores — EN_PROGRESO
+  - Evidencia: AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96 mantiene autoridad institucional por rol, deniega escritura de identidad parroquial por Administrador General
 - [ ] 04.06 · Rol inválido denegado — PENDIENTE
 - [ ] 04.07 · Traslado administrativo — PENDIENTE
 - [ ] 04.08 · Usuarios entre dos diócesis — PENDIENTE
@@ -267,7 +268,8 @@ Avance: 325 controles totales; 9 aprobados; 42 en progreso; 273 pendientes; 1 fa
 - [ ] 17.05 · Fechas de vigencia — PENDIENTE
 - [ ] 17.06 · Obispos — EN_PROGRESO
   - Evidencia: AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: Obispos: tabla auxiliar protegida y probada con rol parroquial
-- [ ] 17.07 · Autocompletado — PENDIENTE
+- [ ] 17.07 · Autocompletado — EN_PROGRESO
+  - Evidencia: AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: La identidad mis_datos usada por autocompletado queda protegida contra modificación general; UI pendiente
 - [ ] 17.08 · Da Fe histórico sin suposición — PENDIENTE
 - [ ] 17.09 · Duplicados y restricciones — PENDIENTE
 
@@ -324,7 +326,8 @@ Avance: 325 controles totales; 9 aprobados; 42 en progreso; 273 pendientes; 1 fa
 
 ### 22. Impresiones y plantillas (P0) — 0/11
 
-- [ ] 22.01 · Partidas completas — PENDIENTE
+- [ ] 22.01 · Partidas completas — EN_PROGRESO
+  - Evidencia: AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96 restringe la escritura de identidad que interviene en partidas; falta revisión documental impresa
 - [ ] 22.02 · Decretos oficiales — PENDIENTE
 - [ ] 22.03 · Documento histórico marcado — PENDIENTE
 - [ ] 22.04 · No inventar firma — PENDIENTE
@@ -403,9 +406,11 @@ Avance: 325 controles totales; 9 aprobados; 42 en progreso; 273 pendientes; 1 fa
   - Evidencia: AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: Riesgo V93-SEC-002: Administrador General deja de poder escribir boletas de Bautismo y Confirmación
   - Evidencia: AUDITORIA_PARAMETROS_Y_LIBROS_V94_2026-10-21.md: V94-SEC-003 corregido: admin general ya no puede alterar configuraciones ni libros parroquiales
   - Evidencia: AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: V95 escalamiento vertical: 5 INSERT indebidos de admin reproducidos y eliminados por RLS
+  - Evidencia: AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96 vulnerabilidad de escalamiento vertical en mis_datos reproducida y corregida
 - [ ] 27.02 · Escalamiento horizontal — EN_PROGRESO
   - Evidencia: AUDITORIA_EXP_DEPENDENCIAS_Y_RLS_V91.md: Segunda diócesis ficticia y Bautismo ajeno negados para cuatro roles en transacción ROLLBACK
   - Evidencia: AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: V95 escalamiento horizontal: 5 INSERT a parroquia ajena rechazados por RLS
+  - Evidencia: AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96 identidad parroquial no puede alterarse por rol general ajeno al ámbito
 - [ ] 27.03 · IDOR de parroquia — EN_PROGRESO
   - Evidencia: AUDITORIA_EXP_DEPENDENCIAS_Y_RLS_V91.md: Acceso horizontal a partida Bautismo fuera de jurisdicción denegado; faltan 3 sacramentos
 - [ ] 27.04 · RPC directa prohibida — EN_PROGRESO
@@ -490,8 +495,10 @@ Avance: 325 controles totales; 9 aprobados; 42 en progreso; 273 pendientes; 1 fa
   - Evidencia: AUDITORIA_PUERTA_CALIDAD_V90.json: Gate registra ejecución 25 de 26, dependencias fallidas; falta cobertura integral por cada control
 - [ ] 32.02 · Guardar entrada y expectativa — EN_PROGRESO
   - Evidencia: AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: Matriz V95: 60 resultados por 4 roles y 5 tablas, con resultados esperados documentados
+  - Evidencia: AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96 matriz 12 resultados por cuatro actores y tres tipos de escritura
 - [ ] 32.03 · Guardar resultado exacto — EN_PROGRESO
   - Evidencia: AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: Matriz SQL positiva y negativa validada en Supabase; 65 decisiones verificadas
+  - Evidencia: AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96 UPDATE 4 casos y INSERT/DELETE 8 casos reproducidos con resultado esperado
 - [ ] 32.04 · Guardar capturas — PENDIENTE
 - [ ] 32.05 · Rastrear hallazgos P0/P1/P2 — EN_PROGRESO
   - Evidencia: AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md: Emisión temporal 1 documento y 1 log; cero residuos tras ROLLBACK en muestra controlada
@@ -499,12 +506,15 @@ Avance: 325 controles totales; 9 aprobados; 42 en progreso; 273 pendientes; 1 fa
   - Evidencia: AUDITORIA_PARAMETROS_Y_LIBROS_V94_2026-10-21.md: V94: 3 registros de parámetros y 0 libros tras rollback; sin persistencia de QA
 - [ ] 32.06 · Corregir y repetir — EN_PROGRESO
   - Evidencia: AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: V95 reprodujo fallo antes y verificó reparación tras aplicar migración
+  - Evidencia: AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96 corrige hallazgo de identidad institucional y repite prueba antes/después
 - [ ] 32.07 · Regresión completa — EN_PROGRESO
   - Evidencia: AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md: Regresión 211 pruebas sintéticas, 23 verificadores, build OK; quedan fallas de dependencias
   - Evidencia: AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: 219 pruebas sintéticas, 23 verificadores y build aprobados; advertencias HIGH de paquetes aún abiertas
   - Evidencia: AUDITORIA_PARAMETROS_Y_LIBROS_V94_2026-10-21.md: V94: 227 pruebas sintéticas, 23 verificadores y build OK; siguen cinco HIGH npm audit
+  - Evidencia: AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96 250 pruebas sintéticas y 23 verificadores aprobados; cinco paquetes HIGH siguen bloqueando gate
 - [ ] 32.08 · Conteos antes/después — EN_PROGRESO
   - Evidencia: AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: Tras V95: 15 políticas, 0 bypass is_app_admin y 0 residuos en 5 catálogos
+  - Evidencia: AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96: mis_datos mantiene 1 fila real, 0 fixtures y 0 admin bypass en 3 políticas
 - [x] 32.09 · Confirmar producción Ready — APROBADO
   - Evidencia: AUDITORIA_CIERRE_TECNICO_V91_2026-10-21.md: Despliegue Vercel de código V91 Ready; nota: app no certificada integralmente
 - [ ] 32.10 · Dictamen con limitaciones verificadas — PENDIENTE

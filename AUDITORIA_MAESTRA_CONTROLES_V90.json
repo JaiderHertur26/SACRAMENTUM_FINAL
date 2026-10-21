@@ -332,9 +332,11 @@
       "area": "Roles y creación de usuarios",
       "priority": "P0",
       "criterion": "Parroquia no crea superiores",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96 mantiene autoridad institucional por rol, deniega escritura de identidad parroquial por Administrador General"
+      ],
+      "updated_at": "2026-10-21T19:55:57.438Z"
     },
     {
       "id": "04.06",
@@ -1749,9 +1751,11 @@
       "area": "Datos auxiliares",
       "priority": "P1",
       "criterion": "Autocompletado",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: La identidad mis_datos usada por autocompletado queda protegida contra modificación general; UI pendiente"
+      ],
+      "updated_at": "2026-10-21T19:55:57.860Z"
     },
     {
       "id": "17.08",
@@ -2169,9 +2173,11 @@
       "area": "Impresiones y plantillas",
       "priority": "P0",
       "criterion": "Partidas completas",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96 restringe la escritura de identidad que interviene en partidas; falta revisión documental impresa"
+      ],
+      "updated_at": "2026-10-21T19:55:57.981Z"
     },
     {
       "id": "22.02",
@@ -2732,9 +2738,10 @@
         "AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md: Usuario Parroquia ya no puede consumir consecutivo de ámbito diocesano sin documento",
         "AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: Riesgo V93-SEC-002: Administrador General deja de poder escribir boletas de Bautismo y Confirmación",
         "AUDITORIA_PARAMETROS_Y_LIBROS_V94_2026-10-21.md: V94-SEC-003 corregido: admin general ya no puede alterar configuraciones ni libros parroquiales",
-        "AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: V95 escalamiento vertical: 5 INSERT indebidos de admin reproducidos y eliminados por RLS"
+        "AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: V95 escalamiento vertical: 5 INSERT indebidos de admin reproducidos y eliminados por RLS",
+        "AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96 vulnerabilidad de escalamiento vertical en mis_datos reproducida y corregida"
       ],
-      "updated_at": "2026-10-21T19:48:17.228Z"
+      "updated_at": "2026-10-21T19:55:58.125Z"
     },
     {
       "id": "27.02",
@@ -2745,9 +2752,10 @@
       "status": "EN_PROGRESO",
       "evidence": [
         "AUDITORIA_EXP_DEPENDENCIAS_Y_RLS_V91.md: Segunda diócesis ficticia y Bautismo ajeno negados para cuatro roles en transacción ROLLBACK",
-        "AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: V95 escalamiento horizontal: 5 INSERT a parroquia ajena rechazados por RLS"
+        "AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: V95 escalamiento horizontal: 5 INSERT a parroquia ajena rechazados por RLS",
+        "AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96 identidad parroquial no puede alterarse por rol general ajeno al ámbito"
       ],
-      "updated_at": "2026-10-21T19:48:17.428Z"
+      "updated_at": "2026-10-21T19:55:58.300Z"
     },
     {
       "id": "27.03",
@@ -3286,9 +3294,10 @@
       "criterion": "Guardar entrada y expectativa",
       "status": "EN_PROGRESO",
       "evidence": [
-        "AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: Matriz V95: 60 resultados por 4 roles y 5 tablas, con resultados esperados documentados"
+        "AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: Matriz V95: 60 resultados por 4 roles y 5 tablas, con resultados esperados documentados",
+        "AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96 matriz 12 resultados por cuatro actores y tres tipos de escritura"
       ],
-      "updated_at": "2026-10-21T19:48:17.611Z"
+      "updated_at": "2026-10-21T19:55:58.471Z"
     },
     {
       "id": "32.03",
@@ -3298,9 +3307,10 @@
       "criterion": "Guardar resultado exacto",
       "status": "EN_PROGRESO",
       "evidence": [
-        "AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: Matriz SQL positiva y negativa validada en Supabase; 65 decisiones verificadas"
+        "AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: Matriz SQL positiva y negativa validada en Supabase; 65 decisiones verificadas",
+        "AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96 UPDATE 4 casos y INSERT/DELETE 8 casos reproducidos con resultado esperado"
       ],
-      "updated_at": "2026-10-21T19:48:17.798Z"
+      "updated_at": "2026-10-21T19:55:58.682Z"
     },
     {
       "id": "32.04",
@@ -3334,9 +3344,10 @@
       "criterion": "Corregir y repetir",
       "status": "EN_PROGRESO",
       "evidence": [
-        "AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: V95 reprodujo fallo antes y verificó reparación tras aplicar migración"
+        "AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: V95 reprodujo fallo antes y verificó reparación tras aplicar migración",
+        "AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96 corrige hallazgo de identidad institucional y repite prueba antes/después"
       ],
-      "updated_at": "2026-10-21T19:48:17.975Z"
+      "updated_at": "2026-10-21T19:55:58.853Z"
     },
     {
       "id": "32.07",
@@ -3348,9 +3359,10 @@
       "evidence": [
         "AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md: Regresión 211 pruebas sintéticas, 23 verificadores, build OK; quedan fallas de dependencias",
         "AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: 219 pruebas sintéticas, 23 verificadores y build aprobados; advertencias HIGH de paquetes aún abiertas",
-        "AUDITORIA_PARAMETROS_Y_LIBROS_V94_2026-10-21.md: V94: 227 pruebas sintéticas, 23 verificadores y build OK; siguen cinco HIGH npm audit"
+        "AUDITORIA_PARAMETROS_Y_LIBROS_V94_2026-10-21.md: V94: 227 pruebas sintéticas, 23 verificadores y build OK; siguen cinco HIGH npm audit",
+        "AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96 250 pruebas sintéticas y 23 verificadores aprobados; cinco paquetes HIGH siguen bloqueando gate"
       ],
-      "updated_at": "2026-10-21T18:13:49.914Z"
+      "updated_at": "2026-10-21T19:55:59.217Z"
     },
     {
       "id": "32.08",
@@ -3360,9 +3372,10 @@
       "criterion": "Conteos antes/después",
       "status": "EN_PROGRESO",
       "evidence": [
-        "AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: Tras V95: 15 políticas, 0 bypass is_app_admin y 0 residuos en 5 catálogos"
+        "AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: Tras V95: 15 políticas, 0 bypass is_app_admin y 0 residuos en 5 catálogos",
+        "AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96: mis_datos mantiene 1 fila real, 0 fixtures y 0 admin bypass en 3 políticas"
       ],
-      "updated_at": "2026-10-21T19:48:18.136Z"
+      "updated_at": "2026-10-21T19:55:59.024Z"
     },
     {
       "id": "32.09",
