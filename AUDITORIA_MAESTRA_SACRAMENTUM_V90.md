@@ -10,7 +10,7 @@ Regla: no introducir datos falsos permanentes; usar memoria, transacciones ROLLB
 
 Prioridad P0 bloquea la certificación. P1 debe constar resuelta o aceptada con evidencia y responsable.
 
-Avance: 325 controles totales; 9 aprobados; 21 en progreso; 294 pendientes; 1 fallidos; 0 bloqueados.
+Avance: 325 controles totales; 9 aprobados; 26 en progreso; 289 pendientes; 1 fallidos; 0 bloqueados.
 
 ## Fases y controles numerados
 
@@ -97,6 +97,7 @@ Avance: 325 controles totales; 9 aprobados; 21 en progreso; 294 pendientes; 1 fa
 - [ ] 06.07 · 129 RPC privilegiadas denegadas a terceros — EN_PROGRESO
   - Evidencia: AUDITORIA_BASE_SQL_V90.md: Cero vistas públicas; 129 RPC privilegiadas requieren pruebas de permisos y búsqueda de bypass
   - Evidencia: AUDITORIA_INVENTARIO_RPC_V91.json: 129 funciones catalogadas para revisión de terceros, sin afirmar autorización sin pruebas
+  - Evidencia: AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md: 129 RPC original; V92-SEC-001 corregida, 128 privilegios restantes pendientes de ensayos de autorización
 - [ ] 06.08 · Search path de funciones — EN_PROGRESO
   - Evidencia: AUDITORIA_INVENTARIO_RPC_V91.json: Cribado search_path de funciones privilegiadas; falta verificación de todas sus dependencias
 - [ ] 06.09 · Filtración por GraphQL — PENDIENTE
@@ -379,12 +380,14 @@ Avance: 325 controles totales; 9 aprobados; 21 en progreso; 294 pendientes; 1 fa
 
 ### 27. Ciberseguridad adversarial (P0) — 0/12
 
-- [ ] 27.01 · Escalamiento vertical — PENDIENTE
+- [ ] 27.01 · Escalamiento vertical — EN_PROGRESO
+  - Evidencia: AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md: Usuario Parroquia ya no puede consumir consecutivo de ámbito diocesano sin documento
 - [ ] 27.02 · Escalamiento horizontal — EN_PROGRESO
   - Evidencia: AUDITORIA_EXP_DEPENDENCIAS_Y_RLS_V91.md: Segunda diócesis ficticia y Bautismo ajeno negados para cuatro roles en transacción ROLLBACK
 - [ ] 27.03 · IDOR de parroquia — EN_PROGRESO
   - Evidencia: AUDITORIA_EXP_DEPENDENCIAS_Y_RLS_V91.md: Acceso horizontal a partida Bautismo fuera de jurisdicción denegado; faltan 3 sacramentos
-- [ ] 27.04 · RPC directa prohibida — PENDIENTE
+- [ ] 27.04 · RPC directa prohibida — EN_PROGRESO
+  - Evidencia: AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md: Asignador interno no ejecutable directamente (42501), con ruta institucional auditada operativa
 - [ ] 27.05 · SQL injection — PENDIENTE
 - [ ] 27.06 · XSS — PENDIENTE
 - [ ] 27.07 · Fuga JWT — PENDIENTE
@@ -394,6 +397,7 @@ Avance: 325 controles totales; 9 aprobados; 21 en progreso; 294 pendientes; 1 fa
 - [ ] 27.11 · Privilegios de storage — PENDIENTE
 - [ ] 27.12 · Funciones SECURITY DEFINER — EN_PROGRESO
   - Evidencia: AUDITORIA_INVENTARIO_RPC_V91.json: Cribado completo de 129 SECURITY DEFINER, una delegación interna revisada, pendientes pruebas ejecutables
+  - Evidencia: AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md: V92 revocó ejecución externa de una SECURITY DEFINER vulnerable; matriz restante pendiente
 
 ### 28. Privacidad y tratamiento de datos (P0) — 0/9
 
@@ -431,7 +435,8 @@ Avance: 325 controles totales; 9 aprobados; 21 en progreso; 294 pendientes; 1 fa
 - [x] 30.03 · CI automática — APROBADO
   - Evidencia: .github/workflows/sacramentum-auditoria-v90.yml: CI de tests build y npm audit creada y validada como YAML; falta ejecutarla en GitHub Actions
   - Evidencia: AUDITORIA_CI_GITHUB_V90.md: GitHub Actions funcionó y trabajo funcional completó SUCCESS en commit 84bbb16; seguridad FAIL esperado por dependencias
-- [ ] 30.04 · Migraciones reproducibles — PENDIENTE
+- [ ] 30.04 · Migraciones reproducibles — EN_PROGRESO
+  - Evidencia: AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md: Migración V92 creada por CLI y aplicada; falta reconstrucción de esquema desde cero
 - [ ] 30.05 · Preview de Vercel — PENDIENTE
 - [ ] 30.06 · Variables secretas — EN_PROGRESO
   - Evidencia: AUDITORIA_EXP_DEPENDENCIAS_Y_RLS_V91.md: En laboratorios solo variables VITE públicas, excluido VERCEL_OIDC_TOKEN; faltan otros secretos
@@ -464,9 +469,11 @@ Avance: 325 controles totales; 9 aprobados; 21 en progreso; 294 pendientes; 1 fa
 - [ ] 32.02 · Guardar entrada y expectativa — PENDIENTE
 - [ ] 32.03 · Guardar resultado exacto — PENDIENTE
 - [ ] 32.04 · Guardar capturas — PENDIENTE
-- [ ] 32.05 · Rastrear hallazgos P0/P1/P2 — PENDIENTE
+- [ ] 32.05 · Rastrear hallazgos P0/P1/P2 — EN_PROGRESO
+  - Evidencia: AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md: Emisión temporal 1 documento y 1 log; cero residuos tras ROLLBACK en muestra controlada
 - [ ] 32.06 · Corregir y repetir — PENDIENTE
-- [ ] 32.07 · Regresión completa — PENDIENTE
+- [ ] 32.07 · Regresión completa — EN_PROGRESO
+  - Evidencia: AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md: Regresión 211 pruebas sintéticas, 23 verificadores, build OK; quedan fallas de dependencias
 - [ ] 32.08 · Conteos antes/después — PENDIENTE
 - [x] 32.09 · Confirmar producción Ready — APROBADO
   - Evidencia: AUDITORIA_CIERRE_TECNICO_V91_2026-10-21.md: Despliegue Vercel de código V91 Ready; nota: app no certificada integralmente

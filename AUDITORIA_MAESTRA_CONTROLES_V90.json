@@ -544,9 +544,10 @@
       "status": "EN_PROGRESO",
       "evidence": [
         "AUDITORIA_BASE_SQL_V90.md: Cero vistas públicas; 129 RPC privilegiadas requieren pruebas de permisos y búsqueda de bypass",
-        "AUDITORIA_INVENTARIO_RPC_V91.json: 129 funciones catalogadas para revisión de terceros, sin afirmar autorización sin pruebas"
+        "AUDITORIA_INVENTARIO_RPC_V91.json: 129 funciones catalogadas para revisión de terceros, sin afirmar autorización sin pruebas",
+        "AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md: 129 RPC original; V92-SEC-001 corregida, 128 privilegios restantes pendientes de ensayos de autorización"
       ],
-      "updated_at": "2026-10-21T17:18:16.173Z"
+      "updated_at": "2026-10-21T17:56:39.468Z"
     },
     {
       "id": "06.08",
@@ -2696,9 +2697,11 @@
       "area": "Ciberseguridad adversarial",
       "priority": "P0",
       "criterion": "Escalamiento vertical",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md: Usuario Parroquia ya no puede consumir consecutivo de ámbito diocesano sin documento"
+      ],
+      "updated_at": "2026-10-21T17:56:40.121Z"
     },
     {
       "id": "27.02",
@@ -2730,9 +2733,11 @@
       "area": "Ciberseguridad adversarial",
       "priority": "P0",
       "criterion": "RPC directa prohibida",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md: Asignador interno no ejecutable directamente (42501), con ruta institucional auditada operativa"
+      ],
+      "updated_at": "2026-10-21T17:56:39.851Z"
     },
     {
       "id": "27.05",
@@ -2812,9 +2817,10 @@
       "criterion": "Funciones SECURITY DEFINER",
       "status": "EN_PROGRESO",
       "evidence": [
-        "AUDITORIA_INVENTARIO_RPC_V91.json: Cribado completo de 129 SECURITY DEFINER, una delegación interna revisada, pendientes pruebas ejecutables"
+        "AUDITORIA_INVENTARIO_RPC_V91.json: Cribado completo de 129 SECURITY DEFINER, una delegación interna revisada, pendientes pruebas ejecutables",
+        "AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md: V92 revocó ejecución externa de una SECURITY DEFINER vulnerable; matriz restante pendiente"
       ],
-      "updated_at": "2026-10-21T17:18:16.895Z"
+      "updated_at": "2026-10-21T17:56:39.984Z"
     },
     {
       "id": "28.01",
@@ -3051,9 +3057,11 @@
       "area": "Despliegue y dependencias",
       "priority": "P1",
       "criterion": "Migraciones reproducibles",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md: Migración V92 creada por CLI y aplicada; falta reconstrucción de esquema desde cero"
+      ],
+      "updated_at": "2026-10-21T17:56:40.234Z"
     },
     {
       "id": "30.05",
@@ -3272,9 +3280,11 @@
       "area": "Auditoría forense de cierre",
       "priority": "P0",
       "criterion": "Rastrear hallazgos P0/P1/P2",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md: Emisión temporal 1 documento y 1 log; cero residuos tras ROLLBACK en muestra controlada"
+      ],
+      "updated_at": "2026-10-21T17:56:40.362Z"
     },
     {
       "id": "32.06",
@@ -3292,9 +3302,11 @@
       "area": "Auditoría forense de cierre",
       "priority": "P0",
       "criterion": "Regresión completa",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md: Regresión 211 pruebas sintéticas, 23 verificadores, build OK; quedan fallas de dependencias"
+      ],
+      "updated_at": "2026-10-21T17:56:40.472Z"
     },
     {
       "id": "32.08",

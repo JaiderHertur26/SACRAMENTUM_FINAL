@@ -23,7 +23,7 @@ jobs:
       - name: Instalación reproducible
         run: npm ci
       - name: Ensayos sintéticos sin acceso a producción
-        run: node --test scripts/test-sistema-integral-v89.mjs scripts/test-chancery-decrees-v88.mjs scripts/test-supplementary-preflight-v89.mjs
+        run: node --test scripts/test-sistema-integral-v89.mjs scripts/test-chancery-decrees-v88.mjs scripts/test-supplementary-preflight-v89.mjs scripts/test-privileged-sequences-v92.mjs
       - name: Verificadores históricos sin credenciales
         shell: bash
         run: |
