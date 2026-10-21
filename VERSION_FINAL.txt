@@ -1,23 +1,23 @@
-SACRAMENTUM FINAL · V102 · 2026-10-21
+SACRAMENTUM FINAL · V103 · 2026-10-21
 
-DOCUMENTOS OFICIALES — SEGREGACIÓN INSTITUCIONAL
-- V102 corrigió tres vulnerabilidades reproducidas mediante RPC privilegiadas:
-  1. Administrador General ya no puede emitir documentos parroquiales/diocesanos.
-  2. Administrador General ya no puede anular documentos institucionales.
-  3. Administrador General no puede versionar plantillas de Parroquia o Diócesis; conserva solo plantillas generales del sistema.
-- Emisión y anulación legítimas de Parroquia, Diócesis y Cancillería comprobadas en transacciones reversibles.
-- Una Parroquia no pudo anular documento diocesano.
-- Interfaz Biblioteca Documental ajustada a autoridad real del editor.
-- Cero documentos, plantillas y auditorías QA persistidos.
-- 10 tests sintéticos permanentes agregados; total 294 previstos, más 23 verificadores históricos.
-- Datos históricos, consecutivos y emisiones reales existentes preservados.
+V102 — AUTORIDAD DOCUMENTAL
+- Corregidos tres abusos reproducidos: emisión, anulación y plantillas ajenas desde Administrador General.
+- Parroquia, Diócesis y Cancillería mantienen operaciones de su jurisdicción; Admin General conserva únicamente plantillas system.
+- Documentos, consecutivos, plantillas y auditorías QA = 0 tras ROLLBACK.
+- Biblioteca documental ajustada para no ofrecer edición de versiones fuera de la competencia del rol.
 
-AUDITORÍA GENERAL ABIERTA
-- Cinco vulnerabilidades HIGH de dependencias sin resolver; CI seguridad debe permanecer en FAIL.
-- 128 funciones SECURITY DEFINER aún disponibles, cada una requiere su propia matriz de autoridad.
-- Pendientes: documentos físicos, decretos, respaldos restaurados, concurrencia, visual authenticated de todas las pantallas.
-- Los 325 controles del plan maestro no están completamente certificados.
+V103 — MANTENIMIENTO HISTÓRICO
+- Dos funciones de reconciliación sensibles (V65 Bautismos y V68 procedencia documental) dejan de admitir EXECUTE authenticated/anon.
+- Postgres y service_role conservan permiso. No se ejecutó ninguna reconciliación ni modificación de datos reales.
+- Inventario de SECURITY DEFINER ejecutables por authenticated: 126 (antes 128).
+- Seis pruebas sintéticas nuevas, total 300 previstas, más 23 verificadores, build y CSS.
 
-EVIDENCIA
+ESTADO
+- Persisten cinco alertas HIGH de dependencias frontend; GitHub Actions seguridad continúa fallando.
+- Auditoría maestra: 325 controles, no certificada integralmente.
+- Siguen pendientes: 126 funciones privilegiadas, pantallas autenticadas, concurrencia, respaldos restaurados y revisión jurídica/impresión de documentos.
+
+INFORMES
 AUDITORIA_DOCUMENTOS_OFICIALES_V102_2026-10-21.md
+AUDITORIA_RECONCILIACIONES_PRIVILEGIADAS_V103_2026-10-21.md
 AUDITORIA_MAESTRA_SACRAMENTUM_V90.md

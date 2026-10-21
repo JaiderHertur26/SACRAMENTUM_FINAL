@@ -2810,9 +2810,10 @@
       "evidence": [
         "AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md: Asignador interno no ejecutable directamente (42501), con ruta institucional auditada operativa",
         "AUDITORIA_AUTORIDAD_MIGRACION_V101_2026-10-21.md: V101: bypass por RPC create_legacy_import_batch sin scope reproducido y cerrado",
-        "AUDITORIA_DOCUMENTOS_OFICIALES_V102_2026-10-21.md: V102: llamadas RPC directas de Administrador General rechazadas sin alterar documentos; rol parroquial diocesano excluido"
+        "AUDITORIA_DOCUMENTOS_OFICIALES_V102_2026-10-21.md: V102: llamadas RPC directas de Administrador General rechazadas sin alterar documentos; rol parroquial diocesano excluido",
+        "AUDITORIA_RECONCILIACIONES_PRIVILEGIADAS_V103_2026-10-21.md: V103: se revocaron dos RPC internas de reconciliación histórica; no constan clientes web dependientes"
       ],
-      "updated_at": "2026-10-21T21:50:46.648Z"
+      "updated_at": "2026-10-21T21:57:11.342Z"
     },
     {
       "id": "27.05",
@@ -2895,9 +2896,10 @@
         "AUDITORIA_INVENTARIO_RPC_V91.json: Cribado completo de 129 SECURITY DEFINER, una delegación interna revisada, pendientes pruebas ejecutables",
         "AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md: V92 revocó ejecución externa de una SECURITY DEFINER vulnerable; matriz restante pendiente",
         "AUDITORIA_AUTORIDAD_MIGRACION_V101_2026-10-21.md: V99-101: autorizar RPC de importación con ámbitos, quedan numerosas funciones SECURITY DEFINER por auditar",
-        "AUDITORIA_DOCUMENTOS_OFICIALES_V102_2026-10-21.md: V102: 3 funciones SECURITY DEFINER revalidadas por ámbito; permanece revisión individual de las demás RPC"
+        "AUDITORIA_DOCUMENTOS_OFICIALES_V102_2026-10-21.md: V102: 3 funciones SECURITY DEFINER revalidadas por ámbito; permanece revisión individual de las demás RPC",
+        "AUDITORIA_RECONCILIACIONES_PRIVILEGIADAS_V103_2026-10-21.md: V103: 2 funciones SECURITY DEFINER de mantenimiento histórico ya no ejecutables por authenticated; inventario descendió 128 a 126"
       ],
-      "updated_at": "2026-10-21T21:50:46.996Z"
+      "updated_at": "2026-10-21T21:57:10.913Z"
     },
     {
       "id": "28.01",
@@ -3332,9 +3334,10 @@
         "AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: Matriz V95: 60 resultados por 4 roles y 5 tablas, con resultados esperados documentados",
         "AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96 matriz 12 resultados por cuatro actores y tres tipos de escritura",
         "AUDITORIA_AUTORIDAD_MIGRACION_V101_2026-10-21.md: V101: matriz de creación 4 casos y flujo Parroquia create/stage/apply/denegación Admin con resultados esperados",
-        "AUDITORIA_DOCUMENTOS_OFICIALES_V102_2026-10-21.md: V102: 4 pruebas de denegación y matriz de 3 roles con documentos/plantillas ficticias y resultados documentados"
+        "AUDITORIA_DOCUMENTOS_OFICIALES_V102_2026-10-21.md: V102: 4 pruebas de denegación y matriz de 3 roles con documentos/plantillas ficticias y resultados documentados",
+        "AUDITORIA_RECONCILIACIONES_PRIVILEGIADAS_V103_2026-10-21.md: V103: dos EXECUTE revocados y servicio conservado, casos contrastados por pg_proc"
       ],
-      "updated_at": "2026-10-21T21:50:47.154Z"
+      "updated_at": "2026-10-21T21:57:11.676Z"
     },
     {
       "id": "32.03",
@@ -3347,9 +3350,10 @@
         "AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: Matriz SQL positiva y negativa validada en Supabase; 65 decisiones verificadas",
         "AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96 UPDATE 4 casos y INSERT/DELETE 8 casos reproducidos con resultado esperado",
         "AUDITORIA_AUTORIDAD_MIGRACION_V101_2026-10-21.md: V101: comprobaciones SQL contra actores reales autenticados y referenciadas en informe",
-        "AUDITORIA_DOCUMENTOS_OFICIALES_V102_2026-10-21.md: V102: emisión y anulación generan eventos correctos; intentos de admin no registran anulación irregular"
+        "AUDITORIA_DOCUMENTOS_OFICIALES_V102_2026-10-21.md: V102: emisión y anulación generan eventos correctos; intentos de admin no registran anulación irregular",
+        "AUDITORIA_RECONCILIACIONES_PRIVILEGIADAS_V103_2026-10-21.md: V103: comprobación SQL authenticated=false, anon=false, service_role=true para cada RPC"
       ],
-      "updated_at": "2026-10-21T21:50:47.345Z"
+      "updated_at": "2026-10-21T21:57:12.013Z"
     },
     {
       "id": "32.04",
@@ -3374,9 +3378,10 @@
         "AUDITORIA_PARAMETROS_Y_LIBROS_V94_2026-10-21.md: V94: 3 registros de parámetros y 0 libros tras rollback; sin persistencia de QA",
         "AUDITORIA_CONCEPTOS_DEC_REGLAS_V98_2026-10-21.md: Hallazgos V97/V98 reproducidos sin mutaciones permanentes y corregidos",
         "AUDITORIA_AUTORIDAD_MIGRACION_V101_2026-10-21.md: V99-101: tres hallazgos de importación reproducidos/corregidos sin mutar datos reales",
-        "AUDITORIA_DOCUMENTOS_OFICIALES_V102_2026-10-21.md: V102: fallos P1 de segregación de documentos/plantillas corregidos en tres RPC"
+        "AUDITORIA_DOCUMENTOS_OFICIALES_V102_2026-10-21.md: V102: fallos P1 de segregación de documentos/plantillas corregidos en tres RPC",
+        "AUDITORIA_RECONCILIACIONES_PRIVILEGIADAS_V103_2026-10-21.md: V103: dos superficies de modificación histórica global preventiva cerradas sin ejecutar conciliaciones reales"
       ],
-      "updated_at": "2026-10-21T21:50:47.526Z"
+      "updated_at": "2026-10-21T21:57:12.326Z"
     },
     {
       "id": "32.06",
@@ -3390,9 +3395,10 @@
         "AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96 corrige hallazgo de identidad institucional y repite prueba antes/después",
         "AUDITORIA_CONCEPTOS_DEC_REGLAS_V98_2026-10-21.md: Pruebas antes/después V97 8 roles, V98 6 casos, ROLLBACK; regresión estática añadida",
         "AUDITORIA_AUTORIDAD_MIGRACION_V101_2026-10-21.md: V101: regresión comparativa de rol Admin pre/post y ruta de importación propietaria positiva",
-        "AUDITORIA_DOCUMENTOS_OFICIALES_V102_2026-10-21.md: V102: pruebas SQL antes/después en transacción ROLLBACK; emisión legítima preservada"
+        "AUDITORIA_DOCUMENTOS_OFICIALES_V102_2026-10-21.md: V102: pruebas SQL antes/después en transacción ROLLBACK; emisión legítima preservada",
+        "AUDITORIA_RECONCILIACIONES_PRIVILEGIADAS_V103_2026-10-21.md: V103: control antes/después de grants y revisión de consumidores"
       ],
-      "updated_at": "2026-10-21T21:50:47.714Z"
+      "updated_at": "2026-10-21T21:57:12.642Z"
     },
     {
       "id": "32.07",
@@ -3408,9 +3414,10 @@
         "AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96 250 pruebas sintéticas y 23 verificadores aprobados; cinco paquetes HIGH siguen bloqueando gate",
         "AUDITORIA_CONCEPTOS_DEC_REGLAS_V98_2026-10-21.md: V98 puerta de calidad 25/26: 264 sintéticas, 23 legacy, build; cinco HIGH dependencias siguen en FAIL",
         "AUDITORIA_AUTORIDAD_MIGRACION_V101_2026-10-21.md: V101: 284 tests sintéticos, 23 verificadores y build; puerta 25/26, npm HIGH 5 pendientes",
-        "AUDITORIA_DOCUMENTOS_OFICIALES_V102_2026-10-21.md: V102: 294 sintéticas y 23 verificadores, build correcto; cinco HIGH impiden aprobar seguridad"
+        "AUDITORIA_DOCUMENTOS_OFICIALES_V102_2026-10-21.md: V102: 294 sintéticas y 23 verificadores, build correcto; cinco HIGH impiden aprobar seguridad",
+        "AUDITORIA_RECONCILIACIONES_PRIVILEGIADAS_V103_2026-10-21.md: V103: 300 pruebas sintéticas + 23 verificadores + build OK; 5 HIGH en dependencias mantienen fallo de gate"
       ],
-      "updated_at": "2026-10-21T21:50:47.909Z"
+      "updated_at": "2026-10-21T21:57:12.792Z"
     },
     {
       "id": "32.08",
@@ -3424,9 +3431,10 @@
         "AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96: mis_datos mantiene 1 fila real, 0 fixtures y 0 admin bypass en 3 políticas",
         "AUDITORIA_CONCEPTOS_DEC_REGLAS_V98_2026-10-21.md: Postprueba 4 conceptos históricos intactos, 0 QA, 1 trigger, 0 bypass admin",
         "AUDITORIA_AUTORIDAD_MIGRACION_V101_2026-10-21.md: V101: 0 residuos sintéticos y cuenta real de lotes/filas/vínculos preservada en ensayos",
-        "AUDITORIA_DOCUMENTOS_OFICIALES_V102_2026-10-21.md: V102: 0 documentos, plantillas y auditorías QA tras rollback, 3 definers conservados"
+        "AUDITORIA_DOCUMENTOS_OFICIALES_V102_2026-10-21.md: V102: 0 documentos, plantillas y auditorías QA tras rollback, 3 definers conservados",
+        "AUDITORIA_RECONCILIACIONES_PRIVILEGIADAS_V103_2026-10-21.md: V103: ninguna tabla histórica modificada por REVOKE; definición y propietario intactos"
       ],
-      "updated_at": "2026-10-21T21:50:48.103Z"
+      "updated_at": "2026-10-21T21:57:13.006Z"
     },
     {
       "id": "32.09",

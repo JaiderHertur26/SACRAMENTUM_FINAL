@@ -23,7 +23,7 @@ jobs:
       - name: Instalación reproducible
         run: npm ci
       - name: Ensayos sintéticos sin acceso a producción
-        run: node --test scripts/test-sistema-integral-v89.mjs scripts/test-chancery-decrees-v88.mjs scripts/test-supplementary-preflight-v89.mjs scripts/test-privileged-sequences-v92.mjs scripts/test-pending-ownership-v93.mjs scripts/test-parish-book-ownership-v94.mjs scripts/test-parish-auxiliary-ownership-v95.mjs scripts/test-institutional-identity-v96.mjs scripts/test-decree-concept-authority-v97.mjs scripts/test-legacy-concept-provenance-v98.mjs scripts/test-legacy-import-provenance-v99.mjs scripts/test-legacy-role-scope-v100.mjs scripts/test-legacy-admin-unscoped-v101.mjs scripts/test-document-authority-v102.mjs
+        run: node --test scripts/test-sistema-integral-v89.mjs scripts/test-chancery-decrees-v88.mjs scripts/test-supplementary-preflight-v89.mjs scripts/test-privileged-sequences-v92.mjs scripts/test-pending-ownership-v93.mjs scripts/test-parish-book-ownership-v94.mjs scripts/test-parish-auxiliary-ownership-v95.mjs scripts/test-institutional-identity-v96.mjs scripts/test-decree-concept-authority-v97.mjs scripts/test-legacy-concept-provenance-v98.mjs scripts/test-legacy-import-provenance-v99.mjs scripts/test-legacy-role-scope-v100.mjs scripts/test-legacy-admin-unscoped-v101.mjs scripts/test-document-authority-v102.mjs scripts/test-historical-maintenance-privileges-v103.mjs
       - name: Verificadores históricos sin credenciales
         shell: bash
         run: |

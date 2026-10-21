@@ -436,6 +436,7 @@ Avance: 325 controles totales; 9 aprobados; 57 en progreso; 258 pendientes; 1 fa
   - Evidencia: AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md: Asignador interno no ejecutable directamente (42501), con ruta institucional auditada operativa
   - Evidencia: AUDITORIA_AUTORIDAD_MIGRACION_V101_2026-10-21.md: V101: bypass por RPC create_legacy_import_batch sin scope reproducido y cerrado
   - Evidencia: AUDITORIA_DOCUMENTOS_OFICIALES_V102_2026-10-21.md: V102: llamadas RPC directas de Administrador General rechazadas sin alterar documentos; rol parroquial diocesano excluido
+  - Evidencia: AUDITORIA_RECONCILIACIONES_PRIVILEGIADAS_V103_2026-10-21.md: V103: se revocaron dos RPC internas de reconciliación histórica; no constan clientes web dependientes
 - [ ] 27.05 · SQL injection — PENDIENTE
 - [ ] 27.06 · XSS — PENDIENTE
 - [ ] 27.07 · Fuga JWT — PENDIENTE
@@ -448,6 +449,7 @@ Avance: 325 controles totales; 9 aprobados; 57 en progreso; 258 pendientes; 1 fa
   - Evidencia: AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md: V92 revocó ejecución externa de una SECURITY DEFINER vulnerable; matriz restante pendiente
   - Evidencia: AUDITORIA_AUTORIDAD_MIGRACION_V101_2026-10-21.md: V99-101: autorizar RPC de importación con ámbitos, quedan numerosas funciones SECURITY DEFINER por auditar
   - Evidencia: AUDITORIA_DOCUMENTOS_OFICIALES_V102_2026-10-21.md: V102: 3 funciones SECURITY DEFINER revalidadas por ámbito; permanece revisión individual de las demás RPC
+  - Evidencia: AUDITORIA_RECONCILIACIONES_PRIVILEGIADAS_V103_2026-10-21.md: V103: 2 funciones SECURITY DEFINER de mantenimiento histórico ya no ejecutables por authenticated; inventario descendió 128 a 126
 
 ### 28. Privacidad y tratamiento de datos (P0) — 0/9
 
@@ -521,11 +523,13 @@ Avance: 325 controles totales; 9 aprobados; 57 en progreso; 258 pendientes; 1 fa
   - Evidencia: AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96 matriz 12 resultados por cuatro actores y tres tipos de escritura
   - Evidencia: AUDITORIA_AUTORIDAD_MIGRACION_V101_2026-10-21.md: V101: matriz de creación 4 casos y flujo Parroquia create/stage/apply/denegación Admin con resultados esperados
   - Evidencia: AUDITORIA_DOCUMENTOS_OFICIALES_V102_2026-10-21.md: V102: 4 pruebas de denegación y matriz de 3 roles con documentos/plantillas ficticias y resultados documentados
+  - Evidencia: AUDITORIA_RECONCILIACIONES_PRIVILEGIADAS_V103_2026-10-21.md: V103: dos EXECUTE revocados y servicio conservado, casos contrastados por pg_proc
 - [ ] 32.03 · Guardar resultado exacto — EN_PROGRESO
   - Evidencia: AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: Matriz SQL positiva y negativa validada en Supabase; 65 decisiones verificadas
   - Evidencia: AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96 UPDATE 4 casos y INSERT/DELETE 8 casos reproducidos con resultado esperado
   - Evidencia: AUDITORIA_AUTORIDAD_MIGRACION_V101_2026-10-21.md: V101: comprobaciones SQL contra actores reales autenticados y referenciadas en informe
   - Evidencia: AUDITORIA_DOCUMENTOS_OFICIALES_V102_2026-10-21.md: V102: emisión y anulación generan eventos correctos; intentos de admin no registran anulación irregular
+  - Evidencia: AUDITORIA_RECONCILIACIONES_PRIVILEGIADAS_V103_2026-10-21.md: V103: comprobación SQL authenticated=false, anon=false, service_role=true para cada RPC
 - [ ] 32.04 · Guardar capturas — PENDIENTE
 - [ ] 32.05 · Rastrear hallazgos P0/P1/P2 — EN_PROGRESO
   - Evidencia: AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md: Emisión temporal 1 documento y 1 log; cero residuos tras ROLLBACK en muestra controlada
@@ -534,12 +538,14 @@ Avance: 325 controles totales; 9 aprobados; 57 en progreso; 258 pendientes; 1 fa
   - Evidencia: AUDITORIA_CONCEPTOS_DEC_REGLAS_V98_2026-10-21.md: Hallazgos V97/V98 reproducidos sin mutaciones permanentes y corregidos
   - Evidencia: AUDITORIA_AUTORIDAD_MIGRACION_V101_2026-10-21.md: V99-101: tres hallazgos de importación reproducidos/corregidos sin mutar datos reales
   - Evidencia: AUDITORIA_DOCUMENTOS_OFICIALES_V102_2026-10-21.md: V102: fallos P1 de segregación de documentos/plantillas corregidos en tres RPC
+  - Evidencia: AUDITORIA_RECONCILIACIONES_PRIVILEGIADAS_V103_2026-10-21.md: V103: dos superficies de modificación histórica global preventiva cerradas sin ejecutar conciliaciones reales
 - [ ] 32.06 · Corregir y repetir — EN_PROGRESO
   - Evidencia: AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: V95 reprodujo fallo antes y verificó reparación tras aplicar migración
   - Evidencia: AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96 corrige hallazgo de identidad institucional y repite prueba antes/después
   - Evidencia: AUDITORIA_CONCEPTOS_DEC_REGLAS_V98_2026-10-21.md: Pruebas antes/después V97 8 roles, V98 6 casos, ROLLBACK; regresión estática añadida
   - Evidencia: AUDITORIA_AUTORIDAD_MIGRACION_V101_2026-10-21.md: V101: regresión comparativa de rol Admin pre/post y ruta de importación propietaria positiva
   - Evidencia: AUDITORIA_DOCUMENTOS_OFICIALES_V102_2026-10-21.md: V102: pruebas SQL antes/después en transacción ROLLBACK; emisión legítima preservada
+  - Evidencia: AUDITORIA_RECONCILIACIONES_PRIVILEGIADAS_V103_2026-10-21.md: V103: control antes/después de grants y revisión de consumidores
 - [ ] 32.07 · Regresión completa — EN_PROGRESO
   - Evidencia: AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md: Regresión 211 pruebas sintéticas, 23 verificadores, build OK; quedan fallas de dependencias
   - Evidencia: AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: 219 pruebas sintéticas, 23 verificadores y build aprobados; advertencias HIGH de paquetes aún abiertas
@@ -548,12 +554,14 @@ Avance: 325 controles totales; 9 aprobados; 57 en progreso; 258 pendientes; 1 fa
   - Evidencia: AUDITORIA_CONCEPTOS_DEC_REGLAS_V98_2026-10-21.md: V98 puerta de calidad 25/26: 264 sintéticas, 23 legacy, build; cinco HIGH dependencias siguen en FAIL
   - Evidencia: AUDITORIA_AUTORIDAD_MIGRACION_V101_2026-10-21.md: V101: 284 tests sintéticos, 23 verificadores y build; puerta 25/26, npm HIGH 5 pendientes
   - Evidencia: AUDITORIA_DOCUMENTOS_OFICIALES_V102_2026-10-21.md: V102: 294 sintéticas y 23 verificadores, build correcto; cinco HIGH impiden aprobar seguridad
+  - Evidencia: AUDITORIA_RECONCILIACIONES_PRIVILEGIADAS_V103_2026-10-21.md: V103: 300 pruebas sintéticas + 23 verificadores + build OK; 5 HIGH en dependencias mantienen fallo de gate
 - [ ] 32.08 · Conteos antes/después — EN_PROGRESO
   - Evidencia: AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: Tras V95: 15 políticas, 0 bypass is_app_admin y 0 residuos en 5 catálogos
   - Evidencia: AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96: mis_datos mantiene 1 fila real, 0 fixtures y 0 admin bypass en 3 políticas
   - Evidencia: AUDITORIA_CONCEPTOS_DEC_REGLAS_V98_2026-10-21.md: Postprueba 4 conceptos históricos intactos, 0 QA, 1 trigger, 0 bypass admin
   - Evidencia: AUDITORIA_AUTORIDAD_MIGRACION_V101_2026-10-21.md: V101: 0 residuos sintéticos y cuenta real de lotes/filas/vínculos preservada en ensayos
   - Evidencia: AUDITORIA_DOCUMENTOS_OFICIALES_V102_2026-10-21.md: V102: 0 documentos, plantillas y auditorías QA tras rollback, 3 definers conservados
+  - Evidencia: AUDITORIA_RECONCILIACIONES_PRIVILEGIADAS_V103_2026-10-21.md: V103: ninguna tabla histórica modificada por REVOKE; definición y propietario intactos
 - [x] 32.09 · Confirmar producción Ready — APROBADO
   - Evidencia: AUDITORIA_CIERRE_TECNICO_V91_2026-10-21.md: Despliegue Vercel de código V91 Ready; nota: app no certificada integralmente
 - [ ] 32.10 · Dictamen con limitaciones verificadas — PENDIENTE
