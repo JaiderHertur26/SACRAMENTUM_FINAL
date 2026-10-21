@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 
-const root='C:/SACRAMENTUM/SACRAMENTUM_FINAL';
+const root=process.cwd();
 const read=(p)=>fs.readFileSync(root+'/'+p,'utf8');
 const issues=[];
 

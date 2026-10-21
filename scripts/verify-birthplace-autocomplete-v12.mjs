@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 
-const base = 'C:/SACRAMENTUM/SACRAMENTUM_FINAL/src/pages/parish';
+const base = process.cwd() + '/src/pages/parish';
 const checks = [
   ['BaptismNewPage.jsx', ['name="lugarNacimiento"']],
   ['BaptismCelebratedPage.jsx', ['name="lugarNacimiento"']],
