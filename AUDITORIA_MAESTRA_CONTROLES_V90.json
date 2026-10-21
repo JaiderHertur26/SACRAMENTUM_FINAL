@@ -1,0 +1,3296 @@
+{
+  "protocol": "V90",
+  "date": "2026-10-21",
+  "statuses": [
+    "PENDIENTE",
+    "EN_PROGRESO",
+    "APROBADO",
+    "FALLIDO",
+    "BLOQUEADO"
+  ],
+  "approval_rule": "Un control se aprueba sólo con evidencia reproducible de su resultado y alcance.",
+  "controls": [
+    {
+      "id": "01.01",
+      "phase": 1,
+      "area": "Inventario de código y procesos",
+      "priority": "P0",
+      "criterion": "Rutas React y roles",
+      "status": "APROBADO",
+      "evidence": [
+        "AUDITORIA_INVENTARIO_CODIGO_V90.json: Rutas App.jsx inventariadas: 109; sin fallos de parseo ni importaciones locales rotas"
+      ],
+      "updated_at": "2026-10-21T16:06:49.143Z"
+    },
+    {
+      "id": "01.02",
+      "phase": 1,
+      "area": "Inventario de código y procesos",
+      "priority": "P0",
+      "criterion": "Pantallas activas y huérfanas",
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "AUDITORIA_INVENTARIO_CODIGO_V90.json: 73 páginas JSX reconocidas; falta análisis de módulos inactivos y cobertura dinámica"
+      ],
+      "updated_at": "2026-10-21T16:06:49.232Z"
+    },
+    {
+      "id": "01.03",
+      "phase": 1,
+      "area": "Inventario de código y procesos",
+      "priority": "P0",
+      "criterion": "Servicios con operaciones CRUD",
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "AUDITORIA_INVENTARIO_CODIGO_V90.json: Scanner identifica 79 referencias RPC y 43 operaciones directas; falta probar todas"
+      ],
+      "updated_at": "2026-10-21T16:06:49.312Z"
+    },
+    {
+      "id": "01.04",
+      "phase": 1,
+      "area": "Inventario de código y procesos",
+      "priority": "P0",
+      "criterion": "Tablas/vistas y claves",
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "AUDITORIA_BASE_SQL_V90.md: 73 tablas, 138 FK y 95 restricciones claves inventariadas por conteo; falta detalle completo"
+      ],
+      "updated_at": "2026-10-21T16:06:49.411Z"
+    },
+    {
+      "id": "01.05",
+      "phase": 1,
+      "area": "Inventario de código y procesos",
+      "priority": "P0",
+      "criterion": "Funciones RPC",
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "AUDITORIA_BASE_SQL_V90.md: 211 funciones públicas y 129 privilegiadas accesibles a authenticated; falta mapa y pruebas individuales"
+      ],
+      "updated_at": "2026-10-21T16:06:49.508Z"
+    },
+    {
+      "id": "01.06",
+      "phase": 1,
+      "area": "Inventario de código y procesos",
+      "priority": "P0",
+      "criterion": "Triggers y políticas SQL",
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "AUDITORIA_BASE_SQL_V90.md: 49 triggers y 124 políticas RLS inventariados por conteo; falta análisis funcional"
+      ],
+      "updated_at": "2026-10-21T16:06:49.602Z"
+    },
+    {
+      "id": "01.07",
+      "phase": 1,
+      "area": "Inventario de código y procesos",
+      "priority": "P0",
+      "criterion": "Mapa desde botón hasta tabla",
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "AUDITORIA_INVENTARIO_CODIGO_V90.json: 79 usos RPC, 43 escrituras directas inventariados; falta mapear cada botón al efecto jurídico y SQL"
+      ],
+      "updated_at": "2026-10-21T16:14:21.024Z"
+    },
+    {
+      "id": "01.08",
+      "phase": 1,
+      "area": "Inventario de código y procesos",
+      "priority": "P0",
+      "criterion": "Dependencias entre módulos",
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "AUDITORIA_INVENTARIO_CODIGO_V90.json: Se analizaron 1550 referencias de imports, cero faltantes; falta grafo completo y operaciones dinámicas"
+      ],
+      "updated_at": "2026-10-21T16:14:21.139Z"
+    },
+    {
+      "id": "02.01",
+      "phase": 2,
+      "area": "Derecho canónico y alcance documental",
+      "priority": "P0",
+      "criterion": "Modelo de cada sacramento",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "02.02",
+      "phase": 2,
+      "area": "Derecho canónico y alcance documental",
+      "priority": "P0",
+      "criterion": "Corrección y reposición",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "02.03",
+      "phase": 2,
+      "area": "Derecho canónico y alcance documental",
+      "priority": "P0",
+      "criterion": "Nulidad matrimonial de tribunal",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "02.04",
+      "phase": 2,
+      "area": "Derecho canónico y alcance documental",
+      "priority": "P0",
+      "criterion": "Autoridad de Cancillería",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "02.05",
+      "phase": 2,
+      "area": "Derecho canónico y alcance documental",
+      "priority": "P0",
+      "criterion": "Documentación antigua vs emisión actual",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "02.06",
+      "phase": 2,
+      "area": "Derecho canónico y alcance documental",
+      "priority": "P0",
+      "criterion": "Libro físico y folio legítimos",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "02.07",
+      "phase": 2,
+      "area": "Derecho canónico y alcance documental",
+      "priority": "P0",
+      "criterion": "Original y supletoria",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "02.08",
+      "phase": 2,
+      "area": "Derecho canónico y alcance documental",
+      "priority": "P0",
+      "criterion": "Firma sello y validez",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "03.01",
+      "phase": 3,
+      "area": "Autenticación y sesión",
+      "priority": "P0",
+      "criterion": "Inicio correcto de sesión",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "03.02",
+      "phase": 3,
+      "area": "Autenticación y sesión",
+      "priority": "P0",
+      "criterion": "Contraseña incorrecta",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "03.03",
+      "phase": 3,
+      "area": "Autenticación y sesión",
+      "priority": "P0",
+      "criterion": "Caducidad de JWT",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "03.04",
+      "phase": 3,
+      "area": "Autenticación y sesión",
+      "priority": "P0",
+      "criterion": "Cierre de sesión",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "03.05",
+      "phase": 3,
+      "area": "Autenticación y sesión",
+      "priority": "P0",
+      "criterion": "Usuario bloqueado",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "03.06",
+      "phase": 3,
+      "area": "Autenticación y sesión",
+      "priority": "P0",
+      "criterion": "Reactivación de usuario",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "03.07",
+      "phase": 3,
+      "area": "Autenticación y sesión",
+      "priority": "P0",
+      "criterion": "Sesiones simultáneas",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "03.08",
+      "phase": 3,
+      "area": "Autenticación y sesión",
+      "priority": "P0",
+      "criterion": "Restauración tras refresh",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "03.09",
+      "phase": 3,
+      "area": "Autenticación y sesión",
+      "priority": "P0",
+      "criterion": "Recuperación de contraseña",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "03.10",
+      "phase": 3,
+      "area": "Autenticación y sesión",
+      "priority": "P0",
+      "criterion": "No claves privilegiadas en frontend",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "04.01",
+      "phase": 4,
+      "area": "Roles y creación de usuarios",
+      "priority": "P0",
+      "criterion": "Administrador General crea diócesis",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "04.02",
+      "phase": 4,
+      "area": "Roles y creación de usuarios",
+      "priority": "P0",
+      "criterion": "Diócesis crea parroquia",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "04.03",
+      "phase": 4,
+      "area": "Roles y creación de usuarios",
+      "priority": "P0",
+      "criterion": "Diócesis crea Canciller",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "04.04",
+      "phase": 4,
+      "area": "Roles y creación de usuarios",
+      "priority": "P0",
+      "criterion": "Canciller único activo",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "04.05",
+      "phase": 4,
+      "area": "Roles y creación de usuarios",
+      "priority": "P0",
+      "criterion": "Parroquia no crea superiores",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "04.06",
+      "phase": 4,
+      "area": "Roles y creación de usuarios",
+      "priority": "P0",
+      "criterion": "Rol inválido denegado",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "04.07",
+      "phase": 4,
+      "area": "Roles y creación de usuarios",
+      "priority": "P0",
+      "criterion": "Traslado administrativo",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "04.08",
+      "phase": 4,
+      "area": "Roles y creación de usuarios",
+      "priority": "P0",
+      "criterion": "Usuarios entre dos diócesis",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "04.09",
+      "phase": 4,
+      "area": "Roles y creación de usuarios",
+      "priority": "P0",
+      "criterion": "Ruta protegida por servidor",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "04.10",
+      "phase": 4,
+      "area": "Roles y creación de usuarios",
+      "priority": "P0",
+      "criterion": "Baja conserva auditoría",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "05.01",
+      "phase": 5,
+      "area": "Jerarquía territorial",
+      "priority": "P1",
+      "criterion": "Diócesis y Arquidiócesis",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "05.02",
+      "phase": 5,
+      "area": "Jerarquía territorial",
+      "priority": "P1",
+      "criterion": "Vicarías",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "05.03",
+      "phase": 5,
+      "area": "Jerarquía territorial",
+      "priority": "P1",
+      "criterion": "Decanatos",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "05.04",
+      "phase": 5,
+      "area": "Jerarquía territorial",
+      "priority": "P1",
+      "criterion": "Parroquias",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "05.05",
+      "phase": 5,
+      "area": "Jerarquía territorial",
+      "priority": "P1",
+      "criterion": "Parroquias antiguas no operativas",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "05.06",
+      "phase": 5,
+      "area": "Jerarquía territorial",
+      "priority": "P1",
+      "criterion": "No traslado sin autorización",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "05.07",
+      "phase": 5,
+      "area": "Jerarquía territorial",
+      "priority": "P1",
+      "criterion": "Referencias y códigos únicos",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "05.08",
+      "phase": 5,
+      "area": "Jerarquía territorial",
+      "priority": "P1",
+      "criterion": "Catálogos eclesiales",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "06.01",
+      "phase": 6,
+      "area": "RLS y privilegios del backend",
+      "priority": "P0",
+      "criterion": "RLS de tablas públicas",
+      "status": "APROBADO",
+      "evidence": [
+        "AUDITORIA_BASE_SQL_V90.md: Consulta SQL al catálogo: las 73 tablas públicas tienen RLS y cero carecen de RLS"
+      ],
+      "updated_at": "2026-10-21T16:06:49.676Z"
+    },
+    {
+      "id": "06.02",
+      "phase": 6,
+      "area": "RLS y privilegios del backend",
+      "priority": "P0",
+      "criterion": "RLS SELECT por actor",
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "AUDITORIA_RLS_PARROQUIAL_V90.md: Ensayo con rol Parroquia autenticado: cero filas de otras parroquias en 10 entidades; falta matriz completa y operaciones de escritura"
+      ],
+      "updated_at": "2026-10-21T16:14:20.872Z"
+    },
+    {
+      "id": "06.03",
+      "phase": 6,
+      "area": "RLS y privilegios del backend",
+      "priority": "P0",
+      "criterion": "RLS INSERT por actor",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "06.04",
+      "phase": 6,
+      "area": "RLS y privilegios del backend",
+      "priority": "P0",
+      "criterion": "RLS UPDATE y WITH CHECK",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "06.05",
+      "phase": 6,
+      "area": "RLS y privilegios del backend",
+      "priority": "P0",
+      "criterion": "RLS DELETE por actor",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "06.06",
+      "phase": 6,
+      "area": "RLS y privilegios del backend",
+      "priority": "P0",
+      "criterion": "129 RPC privilegiadas autorizadas",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "06.07",
+      "phase": 6,
+      "area": "RLS y privilegios del backend",
+      "priority": "P0",
+      "criterion": "129 RPC privilegiadas denegadas a terceros",
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "AUDITORIA_BASE_SQL_V90.md: Cero vistas públicas; 129 RPC privilegiadas requieren pruebas de permisos y búsqueda de bypass"
+      ],
+      "updated_at": "2026-10-21T16:06:49.755Z"
+    },
+    {
+      "id": "06.08",
+      "phase": 6,
+      "area": "RLS y privilegios del backend",
+      "priority": "P0",
+      "criterion": "Search path de funciones",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "06.09",
+      "phase": 6,
+      "area": "RLS y privilegios del backend",
+      "priority": "P0",
+      "criterion": "Filtración por GraphQL",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "06.10",
+      "phase": 6,
+      "area": "RLS y privilegios del backend",
+      "priority": "P0",
+      "criterion": "No privilegios anónimos",
+      "status": "APROBADO",
+      "evidence": [
+        "AUDITORIA_BASE_SQL_V90.md: Catálogo de grants: cero RPC SECURITY DEFINER ejecutables por rol anon"
+      ],
+      "updated_at": "2026-10-21T16:06:49.826Z"
+    },
+    {
+      "id": "06.11",
+      "phase": 6,
+      "area": "RLS y privilegios del backend",
+      "priority": "P0",
+      "criterion": "Identidad JWT validada en servidor",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "06.12",
+      "phase": 6,
+      "area": "RLS y privilegios del backend",
+      "priority": "P0",
+      "criterion": "No metadatos de usuario editables para autorizar",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "07.01",
+      "phase": 7,
+      "area": "Integridad y concurrencia",
+      "priority": "P0",
+      "criterion": "Unicidad Libro Folio Número",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "07.02",
+      "phase": 7,
+      "area": "Integridad y concurrencia",
+      "priority": "P0",
+      "criterion": "Colisión de número de decreto",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "07.03",
+      "phase": 7,
+      "area": "Integridad y concurrencia",
+      "priority": "P0",
+      "criterion": "Concurrencia de dos usuarios en una partida",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "07.04",
+      "phase": 7,
+      "area": "Integridad y concurrencia",
+      "priority": "P0",
+      "criterion": "Consecutivos de boletas",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "07.05",
+      "phase": 7,
+      "area": "Integridad y concurrencia",
+      "priority": "P0",
+      "criterion": "Reintento idempotente",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "07.06",
+      "phase": 7,
+      "area": "Integridad y concurrencia",
+      "priority": "P0",
+      "criterion": "Transacción atomicidad",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "07.07",
+      "phase": 7,
+      "area": "Integridad y concurrencia",
+      "priority": "P0",
+      "criterion": "Llaves foráneas sin huérfanos",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "07.08",
+      "phase": 7,
+      "area": "Integridad y concurrencia",
+      "priority": "P0",
+      "criterion": "Bloqueos y deadlocks",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "07.09",
+      "phase": 7,
+      "area": "Integridad y concurrencia",
+      "priority": "P0",
+      "criterion": "Restauración tras timeout",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "08.01",
+      "phase": 8,
+      "area": "Bautismo",
+      "priority": "P0",
+      "criterion": "Nueva boleta",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "08.02",
+      "phase": 8,
+      "area": "Bautismo",
+      "priority": "P0",
+      "criterion": "Celebración",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "08.03",
+      "phase": 8,
+      "area": "Bautismo",
+      "priority": "P0",
+      "criterion": "Asiento en libro",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "08.04",
+      "phase": 8,
+      "area": "Bautismo",
+      "priority": "P0",
+      "criterion": "Libro Folio Número",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "08.05",
+      "phase": 8,
+      "area": "Bautismo",
+      "priority": "P0",
+      "criterion": "Impresión",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "08.06",
+      "phase": 8,
+      "area": "Bautismo",
+      "priority": "P0",
+      "criterion": "Importación de partida",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "08.07",
+      "phase": 8,
+      "area": "Bautismo",
+      "priority": "P0",
+      "criterion": "Digitalización sin consumir consecutivo",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "08.08",
+      "phase": 8,
+      "area": "Bautismo",
+      "priority": "P0",
+      "criterion": "Corrección por decreto",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "08.09",
+      "phase": 8,
+      "area": "Bautismo",
+      "priority": "P0",
+      "criterion": "Reposición por decreto",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "08.10",
+      "phase": 8,
+      "area": "Bautismo",
+      "priority": "P0",
+      "criterion": "Reversión y trazas",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "08.11",
+      "phase": 8,
+      "area": "Bautismo",
+      "priority": "P0",
+      "criterion": "Notas múltiples",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "09.01",
+      "phase": 9,
+      "area": "Confirmación",
+      "priority": "P0",
+      "criterion": "Nueva boleta",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "09.02",
+      "phase": 9,
+      "area": "Confirmación",
+      "priority": "P0",
+      "criterion": "Fecha y hora",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "09.03",
+      "phase": 9,
+      "area": "Confirmación",
+      "priority": "P0",
+      "criterion": "Celebración",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "09.04",
+      "phase": 9,
+      "area": "Confirmación",
+      "priority": "P0",
+      "criterion": "Asiento en libro",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "09.05",
+      "phase": 9,
+      "area": "Confirmación",
+      "priority": "P0",
+      "criterion": "Impresión",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "09.06",
+      "phase": 9,
+      "area": "Confirmación",
+      "priority": "P0",
+      "criterion": "Referencia a Bautismo",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "09.07",
+      "phase": 9,
+      "area": "Confirmación",
+      "priority": "P0",
+      "criterion": "Importación reportada",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "09.08",
+      "phase": 9,
+      "area": "Confirmación",
+      "priority": "P0",
+      "criterion": "Importación no reportada",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "09.09",
+      "phase": 9,
+      "area": "Confirmación",
+      "priority": "P0",
+      "criterion": "Corrección y reposición",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "09.10",
+      "phase": 9,
+      "area": "Confirmación",
+      "priority": "P0",
+      "criterion": "Reversión",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "09.11",
+      "phase": 9,
+      "area": "Confirmación",
+      "priority": "P0",
+      "criterion": "Notas múltiples",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "10.01",
+      "phase": 10,
+      "area": "Matrimonio",
+      "priority": "P0",
+      "criterion": "Datos de ambos contrayentes",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "10.02",
+      "phase": 10,
+      "area": "Matrimonio",
+      "priority": "P0",
+      "criterion": "Expediente matrimonial",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "10.03",
+      "phase": 10,
+      "area": "Matrimonio",
+      "priority": "P0",
+      "criterion": "Notificaciones",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "10.04",
+      "phase": 10,
+      "area": "Matrimonio",
+      "priority": "P0",
+      "criterion": "Celebración",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "10.05",
+      "phase": 10,
+      "area": "Matrimonio",
+      "priority": "P0",
+      "criterion": "Asiento y libro",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "10.06",
+      "phase": 10,
+      "area": "Matrimonio",
+      "priority": "P0",
+      "criterion": "Impresión",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "10.07",
+      "phase": 10,
+      "area": "Matrimonio",
+      "priority": "P0",
+      "criterion": "Importación MATRIMON",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "10.08",
+      "phase": 10,
+      "area": "Matrimonio",
+      "priority": "P0",
+      "criterion": "Notas NTMAT",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "10.09",
+      "phase": 10,
+      "area": "Matrimonio",
+      "priority": "P0",
+      "criterion": "Corrección por decreto",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "10.10",
+      "phase": 10,
+      "area": "Matrimonio",
+      "priority": "P0",
+      "criterion": "Reposición",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "10.11",
+      "phase": 10,
+      "area": "Matrimonio",
+      "priority": "P0",
+      "criterion": "Nulidad como tribunal",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "11.01",
+      "phase": 11,
+      "area": "Exequias",
+      "priority": "P0",
+      "criterion": "Inscripción",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "11.02",
+      "phase": 11,
+      "area": "Exequias",
+      "priority": "P0",
+      "criterion": "Nacimiento antes de defunción",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "11.03",
+      "phase": 11,
+      "area": "Exequias",
+      "priority": "P0",
+      "criterion": "Exequias después de defunción",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "11.04",
+      "phase": 11,
+      "area": "Exequias",
+      "priority": "P0",
+      "criterion": "Libro ordinario",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "11.05",
+      "phase": 11,
+      "area": "Exequias",
+      "priority": "P0",
+      "criterion": "Libro supletorio",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "11.06",
+      "phase": 11,
+      "area": "Exequias",
+      "priority": "P0",
+      "criterion": "Busca Bautismo",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "11.07",
+      "phase": 11,
+      "area": "Exequias",
+      "priority": "P0",
+      "criterion": "Marca fallecido",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "11.08",
+      "phase": 11,
+      "area": "Exequias",
+      "priority": "P0",
+      "criterion": "Decretos",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "11.09",
+      "phase": 11,
+      "area": "Exequias",
+      "priority": "P0",
+      "criterion": "Notas",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "11.10",
+      "phase": 11,
+      "area": "Exequias",
+      "priority": "P0",
+      "criterion": "Impresión",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "12.01",
+      "phase": 12,
+      "area": "Decretos nuevos en Cancillería",
+      "priority": "P0",
+      "criterion": "Competencia exclusiva de Cancillería",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "12.02",
+      "phase": 12,
+      "area": "Decretos nuevos en Cancillería",
+      "priority": "P0",
+      "criterion": "Número y fecha únicos",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "12.03",
+      "phase": 12,
+      "area": "Decretos nuevos en Cancillería",
+      "priority": "P0",
+      "criterion": "Concepto jurídico compatible",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "12.04",
+      "phase": 12,
+      "area": "Decretos nuevos en Cancillería",
+      "priority": "P0",
+      "criterion": "Corrección afecta original",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "12.05",
+      "phase": 12,
+      "area": "Decretos nuevos en Cancillería",
+      "priority": "P0",
+      "criterion": "Reposición crea supletoria",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "12.06",
+      "phase": 12,
+      "area": "Decretos nuevos en Cancillería",
+      "priority": "P0",
+      "criterion": "Documental no afecta partida",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "12.07",
+      "phase": 12,
+      "area": "Decretos nuevos en Cancillería",
+      "priority": "P0",
+      "criterion": "Aviso a parroquia",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "12.08",
+      "phase": 12,
+      "area": "Decretos nuevos en Cancillería",
+      "priority": "P0",
+      "criterion": "Archivo único en dos roles",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "12.09",
+      "phase": 12,
+      "area": "Decretos nuevos en Cancillería",
+      "priority": "P0",
+      "criterion": "Firma e impresión",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "12.10",
+      "phase": 12,
+      "area": "Decretos nuevos en Cancillería",
+      "priority": "P0",
+      "criterion": "Reversión autorizada",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "12.11",
+      "phase": 12,
+      "area": "Decretos nuevos en Cancillería",
+      "priority": "P0",
+      "criterion": "Doble emisión impedida",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "13.01",
+      "phase": 13,
+      "area": "Decretos antiguos importados",
+      "priority": "P0",
+      "criterion": "Origen histórico verificable",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "13.02",
+      "phase": 13,
+      "area": "Decretos antiguos importados",
+      "priority": "P0",
+      "criterion": "No simular nueva emisión",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "13.03",
+      "phase": 13,
+      "area": "Decretos antiguos importados",
+      "priority": "P0",
+      "criterion": "Parroquia y diócesis exactas",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "13.04",
+      "phase": 13,
+      "area": "Decretos antiguos importados",
+      "priority": "P0",
+      "criterion": "Colisiones entre lotes",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "13.05",
+      "phase": 13,
+      "area": "Decretos antiguos importados",
+      "priority": "P0",
+      "criterion": "Par original/supletoria",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "13.06",
+      "phase": 13,
+      "area": "Decretos antiguos importados",
+      "priority": "P0",
+      "criterion": "No aplicar efectos dos veces",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "13.07",
+      "phase": 13,
+      "area": "Decretos antiguos importados",
+      "priority": "P0",
+      "criterion": "Decreto ANULACION conciliado",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "13.08",
+      "phase": 13,
+      "area": "Decretos antiguos importados",
+      "priority": "P0",
+      "criterion": "Cinco ANULACION pendientes",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "13.09",
+      "phase": 13,
+      "area": "Decretos antiguos importados",
+      "priority": "P0",
+      "criterion": "Revisión de caso ambiguo",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "13.10",
+      "phase": 13,
+      "area": "Decretos antiguos importados",
+      "priority": "P0",
+      "criterion": "Archivo en Cancillería y parroquia",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "13.11",
+      "phase": 13,
+      "area": "Decretos antiguos importados",
+      "priority": "P0",
+      "criterion": "Fuente original preservada",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "14.01",
+      "phase": 14,
+      "area": "Notas marginales",
+      "priority": "P0",
+      "criterion": "Varias notas por partida",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "14.02",
+      "phase": 14,
+      "area": "Notas marginales",
+      "priority": "P0",
+      "criterion": "Fechas originales",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "14.03",
+      "phase": 14,
+      "area": "Notas marginales",
+      "priority": "P0",
+      "criterion": "Tipo jurídico correcto",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "14.04",
+      "phase": 14,
+      "area": "Notas marginales",
+      "priority": "P0",
+      "criterion": "Vínculo a decreto",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "14.05",
+      "phase": 14,
+      "area": "Notas marginales",
+      "priority": "P0",
+      "criterion": "Vínculo a original/supletoria",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "14.06",
+      "phase": 14,
+      "area": "Notas marginales",
+      "priority": "P0",
+      "criterion": "Notas importadas sin fecha inventada",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "14.07",
+      "phase": 14,
+      "area": "Notas marginales",
+      "priority": "P0",
+      "criterion": "Pendientes sin partida",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "14.08",
+      "phase": 14,
+      "area": "Notas marginales",
+      "priority": "P0",
+      "criterion": "Histórico impreso",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "14.09",
+      "phase": 14,
+      "area": "Notas marginales",
+      "priority": "P0",
+      "criterion": "Auditoría de anotación",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "15.01",
+      "phase": 15,
+      "area": "Boletas y pendientes",
+      "priority": "P0",
+      "criterion": "Alta manual y número",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "15.02",
+      "phase": 15,
+      "area": "Boletas y pendientes",
+      "priority": "P0",
+      "criterion": "reported verdadero",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "15.03",
+      "phase": 15,
+      "area": "Boletas y pendientes",
+      "priority": "P0",
+      "criterion": "reported falso",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "15.04",
+      "phase": 15,
+      "area": "Boletas y pendientes",
+      "priority": "P0",
+      "criterion": "Numeración única",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "15.05",
+      "phase": 15,
+      "area": "Boletas y pendientes",
+      "priority": "P0",
+      "criterion": "Sin fechas inventadas",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "15.06",
+      "phase": 15,
+      "area": "Boletas y pendientes",
+      "priority": "P0",
+      "criterion": "Edición autorizada",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "15.07",
+      "phase": 15,
+      "area": "Boletas y pendientes",
+      "priority": "P0",
+      "criterion": "Cancelación controlada",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "15.08",
+      "phase": 15,
+      "area": "Boletas y pendientes",
+      "priority": "P0",
+      "criterion": "Doble clic sin duplicado",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "15.09",
+      "phase": 15,
+      "area": "Boletas y pendientes",
+      "priority": "P0",
+      "criterion": "Cierre en partida",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "15.10",
+      "phase": 15,
+      "area": "Boletas y pendientes",
+      "priority": "P0",
+      "criterion": "Cruce histórico",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "16.01",
+      "phase": 16,
+      "area": "Centro de Migración",
+      "priority": "P0",
+      "criterion": "DBF a CSV a JSON",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "16.02",
+      "phase": 16,
+      "area": "Centro de Migración",
+      "priority": "P0",
+      "criterion": "Codificaciones extrañas",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "16.03",
+      "phase": 16,
+      "area": "Centro de Migración",
+      "priority": "P0",
+      "criterion": "Parroquia obligatoria",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "16.04",
+      "phase": 16,
+      "area": "Centro de Migración",
+      "priority": "P0",
+      "criterion": "Hash e idempotencia",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "16.05",
+      "phase": 16,
+      "area": "Centro de Migración",
+      "priority": "P0",
+      "criterion": "Staging y revisión",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "16.06",
+      "phase": 16,
+      "area": "Centro de Migración",
+      "priority": "P0",
+      "criterion": "Errores parciales",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "16.07",
+      "phase": 16,
+      "area": "Centro de Migración",
+      "priority": "P0",
+      "criterion": "16 mil filas con paginación",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "16.08",
+      "phase": 16,
+      "area": "Centro de Migración",
+      "priority": "P0",
+      "criterion": "Catálogos auxiliares",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "16.09",
+      "phase": 16,
+      "area": "Centro de Migración",
+      "priority": "P0",
+      "criterion": "ANULACION y conceptos",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "16.10",
+      "phase": 16,
+      "area": "Centro de Migración",
+      "priority": "P0",
+      "criterion": "NTMAT",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "16.11",
+      "phase": 16,
+      "area": "Centro de Migración",
+      "priority": "P0",
+      "criterion": "Archivos corruptos",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "16.12",
+      "phase": 16,
+      "area": "Centro de Migración",
+      "priority": "P0",
+      "criterion": "Rollback sin contaminación",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "17.01",
+      "phase": 17,
+      "area": "Datos auxiliares",
+      "priority": "P1",
+      "criterion": "Ciudades y países",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "17.02",
+      "phase": 17,
+      "area": "Datos auxiliares",
+      "priority": "P1",
+      "criterion": "Iglesias",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "17.03",
+      "phase": 17,
+      "area": "Datos auxiliares",
+      "priority": "P1",
+      "criterion": "Parroquias externas",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "17.04",
+      "phase": 17,
+      "area": "Datos auxiliares",
+      "priority": "P1",
+      "criterion": "Párrocos activos",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "17.05",
+      "phase": 17,
+      "area": "Datos auxiliares",
+      "priority": "P1",
+      "criterion": "Fechas de vigencia",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "17.06",
+      "phase": 17,
+      "area": "Datos auxiliares",
+      "priority": "P1",
+      "criterion": "Obispos",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "17.07",
+      "phase": 17,
+      "area": "Datos auxiliares",
+      "priority": "P1",
+      "criterion": "Autocompletado",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "17.08",
+      "phase": 17,
+      "area": "Datos auxiliares",
+      "priority": "P1",
+      "criterion": "Da Fe histórico sin suposición",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "17.09",
+      "phase": 17,
+      "area": "Datos auxiliares",
+      "priority": "P1",
+      "criterion": "Duplicados y restricciones",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "18.01",
+      "phase": 18,
+      "area": "Notificaciones institucionales",
+      "priority": "P1",
+      "criterion": "Cancillería emite aviso",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "18.02",
+      "phase": 18,
+      "area": "Notificaciones institucionales",
+      "priority": "P1",
+      "criterion": "Parroquia recibe aviso",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "18.03",
+      "phase": 18,
+      "area": "Notificaciones institucionales",
+      "priority": "P1",
+      "criterion": "Marcar recibido",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "18.04",
+      "phase": 18,
+      "area": "Notificaciones institucionales",
+      "priority": "P1",
+      "criterion": "Lectura sólo destinatario",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "18.05",
+      "phase": 18,
+      "area": "Notificaciones institucionales",
+      "priority": "P1",
+      "criterion": "Estado de trámite",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "18.06",
+      "phase": 18,
+      "area": "Notificaciones institucionales",
+      "priority": "P1",
+      "criterion": "Notificación matrimonial",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "18.07",
+      "phase": 18,
+      "area": "Notificaciones institucionales",
+      "priority": "P1",
+      "criterion": "Errores de entrega",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "18.08",
+      "phase": 18,
+      "area": "Notificaciones institucionales",
+      "priority": "P1",
+      "criterion": "Sin duplicación por reintento",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "18.09",
+      "phase": 18,
+      "area": "Notificaciones institucionales",
+      "priority": "P1",
+      "criterion": "Historial de avisos",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "19.01",
+      "phase": 19,
+      "area": "Chat y comunicaciones",
+      "priority": "P1",
+      "criterion": "Miembros de sala",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "19.02",
+      "phase": 19,
+      "area": "Chat y comunicaciones",
+      "priority": "P1",
+      "criterion": "Prohibir sala ajena",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "19.03",
+      "phase": 19,
+      "area": "Chat y comunicaciones",
+      "priority": "P1",
+      "criterion": "Enviar mensaje",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "19.04",
+      "phase": 19,
+      "area": "Chat y comunicaciones",
+      "priority": "P1",
+      "criterion": "Responder",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "19.05",
+      "phase": 19,
+      "area": "Chat y comunicaciones",
+      "priority": "P1",
+      "criterion": "Marcar leído",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "19.06",
+      "phase": 19,
+      "area": "Chat y comunicaciones",
+      "priority": "P1",
+      "criterion": "Retirar mensaje",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "19.07",
+      "phase": 19,
+      "area": "Chat y comunicaciones",
+      "priority": "P1",
+      "criterion": "Limitar tamaño",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "19.08",
+      "phase": 19,
+      "area": "Chat y comunicaciones",
+      "priority": "P1",
+      "criterion": "Contenido malicioso",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "19.09",
+      "phase": 19,
+      "area": "Chat y comunicaciones",
+      "priority": "P1",
+      "criterion": "Paginación de sala",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "19.10",
+      "phase": 19,
+      "area": "Chat y comunicaciones",
+      "priority": "P1",
+      "criterion": "Sesión expirada",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "20.01",
+      "phase": 20,
+      "area": "Búsqueda y consulta",
+      "priority": "P0",
+      "criterion": "Búsqueda pública mínima",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "20.02",
+      "phase": 20,
+      "area": "Búsqueda y consulta",
+      "priority": "P0",
+      "criterion": "Búsqueda parroquial propia",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "20.03",
+      "phase": 20,
+      "area": "Búsqueda y consulta",
+      "priority": "P0",
+      "criterion": "Búsqueda diocesana",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "20.04",
+      "phase": 20,
+      "area": "Búsqueda y consulta",
+      "priority": "P0",
+      "criterion": "Apellido y nombre",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "20.05",
+      "phase": 20,
+      "area": "Búsqueda y consulta",
+      "priority": "P0",
+      "criterion": "Libro Folio Número",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "20.06",
+      "phase": 20,
+      "area": "Búsqueda y consulta",
+      "priority": "P0",
+      "criterion": "Anulada y supletoria",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "20.07",
+      "phase": 20,
+      "area": "Búsqueda y consulta",
+      "priority": "P0",
+      "criterion": "Datos importados",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "20.08",
+      "phase": 20,
+      "area": "Búsqueda y consulta",
+      "priority": "P0",
+      "criterion": "Caracteres adversariales",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "20.09",
+      "phase": 20,
+      "area": "Búsqueda y consulta",
+      "priority": "P0",
+      "criterion": "Paginación sin omisión",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "20.10",
+      "phase": 20,
+      "area": "Búsqueda y consulta",
+      "priority": "P0",
+      "criterion": "Privacidad de resultados",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "21.01",
+      "phase": 21,
+      "area": "Libros e índices",
+      "priority": "P0",
+      "criterion": "Cuatro sacramentos",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "21.02",
+      "phase": 21,
+      "area": "Libros e índices",
+      "priority": "P0",
+      "criterion": "Folios físicos",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "21.03",
+      "phase": 21,
+      "area": "Libros e índices",
+      "priority": "P0",
+      "criterion": "Libro ordinario",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "21.04",
+      "phase": 21,
+      "area": "Libros e índices",
+      "priority": "P0",
+      "criterion": "Supletorio",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "21.05",
+      "phase": 21,
+      "area": "Libros e índices",
+      "priority": "P0",
+      "criterion": "Anulado/revertido",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "21.06",
+      "phase": 21,
+      "area": "Libros e índices",
+      "priority": "P0",
+      "criterion": "Índice PDF",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "21.07",
+      "phase": 21,
+      "area": "Libros e índices",
+      "priority": "P0",
+      "criterion": "Ordenamiento",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "21.08",
+      "phase": 21,
+      "area": "Libros e índices",
+      "priority": "P0",
+      "criterion": "Paginación",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "21.09",
+      "phase": 21,
+      "area": "Libros e índices",
+      "priority": "P0",
+      "criterion": "Archivo histórico y corriente",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "21.10",
+      "phase": 21,
+      "area": "Libros e índices",
+      "priority": "P0",
+      "criterion": "Consistencia con reportes",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "22.01",
+      "phase": 22,
+      "area": "Impresiones y plantillas",
+      "priority": "P0",
+      "criterion": "Partidas completas",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "22.02",
+      "phase": 22,
+      "area": "Impresiones y plantillas",
+      "priority": "P0",
+      "criterion": "Decretos oficiales",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "22.03",
+      "phase": 22,
+      "area": "Impresiones y plantillas",
+      "priority": "P0",
+      "criterion": "Documento histórico marcado",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "22.04",
+      "phase": 22,
+      "area": "Impresiones y plantillas",
+      "priority": "P0",
+      "criterion": "No inventar firma",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "22.05",
+      "phase": 22,
+      "area": "Impresiones y plantillas",
+      "priority": "P0",
+      "criterion": "Títulos y tipografías",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "22.06",
+      "phase": 22,
+      "area": "Impresiones y plantillas",
+      "priority": "P0",
+      "criterion": "Formato carta y A4",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "22.07",
+      "phase": 22,
+      "area": "Impresiones y plantillas",
+      "priority": "P0",
+      "criterion": "Nombres largos",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "22.08",
+      "phase": 22,
+      "area": "Impresiones y plantillas",
+      "priority": "P0",
+      "criterion": "Saltos de página",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "22.09",
+      "phase": 22,
+      "area": "Impresiones y plantillas",
+      "priority": "P0",
+      "criterion": "Escapar HTML",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "22.10",
+      "phase": 22,
+      "area": "Impresiones y plantillas",
+      "priority": "P0",
+      "criterion": "Registro de impresión",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "22.11",
+      "phase": 22,
+      "area": "Impresiones y plantillas",
+      "priority": "P0",
+      "criterion": "Concordancia jurídica",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "23.01",
+      "phase": 23,
+      "area": "Reportes estadísticos",
+      "priority": "P1",
+      "criterion": "Parroquia",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "23.02",
+      "phase": 23,
+      "area": "Reportes estadísticos",
+      "priority": "P1",
+      "criterion": "Decanato",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "23.03",
+      "phase": 23,
+      "area": "Reportes estadísticos",
+      "priority": "P1",
+      "criterion": "Vicaría",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "23.04",
+      "phase": 23,
+      "area": "Reportes estadísticos",
+      "priority": "P1",
+      "criterion": "Diócesis",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "23.05",
+      "phase": 23,
+      "area": "Reportes estadísticos",
+      "priority": "P1",
+      "criterion": "Administrador General",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "23.06",
+      "phase": 23,
+      "area": "Reportes estadísticos",
+      "priority": "P1",
+      "criterion": "Rango de años",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "23.07",
+      "phase": 23,
+      "area": "Reportes estadísticos",
+      "priority": "P1",
+      "criterion": "Bandas etarias",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "23.08",
+      "phase": 23,
+      "area": "Reportes estadísticos",
+      "priority": "P1",
+      "criterion": "No doble conteo por corrección",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "23.09",
+      "phase": 23,
+      "area": "Reportes estadísticos",
+      "priority": "P1",
+      "criterion": "Descarga",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "23.10",
+      "phase": 23,
+      "area": "Reportes estadísticos",
+      "priority": "P1",
+      "criterion": "Concordancia con SQL",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "23.11",
+      "phase": 23,
+      "area": "Reportes estadísticos",
+      "priority": "P1",
+      "criterion": "Rendimiento",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "24.01",
+      "phase": 24,
+      "area": "Diseño y accesibilidad",
+      "priority": "P1",
+      "criterion": "Entrar a todas las pantallas",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "24.02",
+      "phase": 24,
+      "area": "Diseño y accesibilidad",
+      "priority": "P1",
+      "criterion": "Móvil",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "24.03",
+      "phase": 24,
+      "area": "Diseño y accesibilidad",
+      "priority": "P1",
+      "criterion": "Tableta",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "24.04",
+      "phase": 24,
+      "area": "Diseño y accesibilidad",
+      "priority": "P1",
+      "criterion": "Escritorio",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "24.05",
+      "phase": 24,
+      "area": "Diseño y accesibilidad",
+      "priority": "P1",
+      "criterion": "Zoom 200%",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "24.06",
+      "phase": 24,
+      "area": "Diseño y accesibilidad",
+      "priority": "P1",
+      "criterion": "Contraste",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "24.07",
+      "phase": 24,
+      "area": "Diseño y accesibilidad",
+      "priority": "P1",
+      "criterion": "Navegación por teclado",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "24.08",
+      "phase": 24,
+      "area": "Diseño y accesibilidad",
+      "priority": "P1",
+      "criterion": "Foco",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "24.09",
+      "phase": 24,
+      "area": "Diseño y accesibilidad",
+      "priority": "P1",
+      "criterion": "Etiquetas accesibles",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "24.10",
+      "phase": 24,
+      "area": "Diseño y accesibilidad",
+      "priority": "P1",
+      "criterion": "Botones activos",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "24.11",
+      "phase": 24,
+      "area": "Diseño y accesibilidad",
+      "priority": "P1",
+      "criterion": "Mensajes de error",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "24.12",
+      "phase": 24,
+      "area": "Diseño y accesibilidad",
+      "priority": "P1",
+      "criterion": "Capturas de evidencia",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "25.01",
+      "phase": 25,
+      "area": "Resiliencia",
+      "priority": "P0",
+      "criterion": "Sin conexión antes de guardar",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "25.02",
+      "phase": 25,
+      "area": "Resiliencia",
+      "priority": "P0",
+      "criterion": "Sin conexión durante RPC",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "25.03",
+      "phase": 25,
+      "area": "Resiliencia",
+      "priority": "P0",
+      "criterion": "Sin conexión después de respuesta",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "25.04",
+      "phase": 25,
+      "area": "Resiliencia",
+      "priority": "P0",
+      "criterion": "HTTP 401/403",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "25.05",
+      "phase": 25,
+      "area": "Resiliencia",
+      "priority": "P0",
+      "criterion": "HTTP 409",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "25.06",
+      "phase": 25,
+      "area": "Resiliencia",
+      "priority": "P0",
+      "criterion": "HTTP 500",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "25.07",
+      "phase": 25,
+      "area": "Resiliencia",
+      "priority": "P0",
+      "criterion": "Timeout",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "25.08",
+      "phase": 25,
+      "area": "Resiliencia",
+      "priority": "P0",
+      "criterion": "Retry seguro",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "25.09",
+      "phase": 25,
+      "area": "Resiliencia",
+      "priority": "P0",
+      "criterion": "Refresh en formulario",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "25.10",
+      "phase": 25,
+      "area": "Resiliencia",
+      "priority": "P0",
+      "criterion": "Interrupción de impresión",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "25.11",
+      "phase": 25,
+      "area": "Resiliencia",
+      "priority": "P0",
+      "criterion": "Error de lectura sin pérdida",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "26.01",
+      "phase": 26,
+      "area": "Rendimiento",
+      "priority": "P1",
+      "criterion": "5 mil bautismos",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "26.02",
+      "phase": 26,
+      "area": "Rendimiento",
+      "priority": "P1",
+      "criterion": "2 mil confirmaciones",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "26.03",
+      "phase": 26,
+      "area": "Rendimiento",
+      "priority": "P1",
+      "criterion": "16 mil filas históricas",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "26.04",
+      "phase": 26,
+      "area": "Rendimiento",
+      "priority": "P1",
+      "criterion": "Archivo de más mil decretos",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "26.05",
+      "phase": 26,
+      "area": "Rendimiento",
+      "priority": "P1",
+      "criterion": "Consultas por índices",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "26.06",
+      "phase": 26,
+      "area": "Rendimiento",
+      "priority": "P1",
+      "criterion": "Memoria de PDF",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "26.07",
+      "phase": 26,
+      "area": "Rendimiento",
+      "priority": "P1",
+      "criterion": "Usuarios concurrentes",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "26.08",
+      "phase": 26,
+      "area": "Rendimiento",
+      "priority": "P1",
+      "criterion": "Tiempo de carga",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "26.09",
+      "phase": 26,
+      "area": "Rendimiento",
+      "priority": "P1",
+      "criterion": "Rate limiting",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "26.10",
+      "phase": 26,
+      "area": "Rendimiento",
+      "priority": "P1",
+      "criterion": "Errores bajo carga",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "27.01",
+      "phase": 27,
+      "area": "Ciberseguridad adversarial",
+      "priority": "P0",
+      "criterion": "Escalamiento vertical",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "27.02",
+      "phase": 27,
+      "area": "Ciberseguridad adversarial",
+      "priority": "P0",
+      "criterion": "Escalamiento horizontal",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "27.03",
+      "phase": 27,
+      "area": "Ciberseguridad adversarial",
+      "priority": "P0",
+      "criterion": "IDOR de parroquia",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "27.04",
+      "phase": 27,
+      "area": "Ciberseguridad adversarial",
+      "priority": "P0",
+      "criterion": "RPC directa prohibida",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "27.05",
+      "phase": 27,
+      "area": "Ciberseguridad adversarial",
+      "priority": "P0",
+      "criterion": "SQL injection",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "27.06",
+      "phase": 27,
+      "area": "Ciberseguridad adversarial",
+      "priority": "P0",
+      "criterion": "XSS",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "27.07",
+      "phase": 27,
+      "area": "Ciberseguridad adversarial",
+      "priority": "P0",
+      "criterion": "Fuga JWT",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "27.08",
+      "phase": 27,
+      "area": "Ciberseguridad adversarial",
+      "priority": "P0",
+      "criterion": "Secretos en build",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "27.09",
+      "phase": 27,
+      "area": "Ciberseguridad adversarial",
+      "priority": "P0",
+      "criterion": "CORS",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "27.10",
+      "phase": 27,
+      "area": "Ciberseguridad adversarial",
+      "priority": "P0",
+      "criterion": "CSRF",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "27.11",
+      "phase": 27,
+      "area": "Ciberseguridad adversarial",
+      "priority": "P0",
+      "criterion": "Privilegios de storage",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "27.12",
+      "phase": 27,
+      "area": "Ciberseguridad adversarial",
+      "priority": "P0",
+      "criterion": "Funciones SECURITY DEFINER",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "28.01",
+      "phase": 28,
+      "area": "Privacidad y tratamiento de datos",
+      "priority": "P0",
+      "criterion": "Datos mínimos por rol",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "28.02",
+      "phase": 28,
+      "area": "Privacidad y tratamiento de datos",
+      "priority": "P0",
+      "criterion": "Auditoría de lectura",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "28.03",
+      "phase": 28,
+      "area": "Privacidad y tratamiento de datos",
+      "priority": "P0",
+      "criterion": "Logs sin secretos",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "28.04",
+      "phase": 28,
+      "area": "Privacidad y tratamiento de datos",
+      "priority": "P0",
+      "criterion": "Exportación autorizada",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "28.05",
+      "phase": 28,
+      "area": "Privacidad y tratamiento de datos",
+      "priority": "P0",
+      "criterion": "Retención jurídica",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "28.06",
+      "phase": 28,
+      "area": "Privacidad y tratamiento de datos",
+      "priority": "P0",
+      "criterion": "Usuarios fallecidos y correcciones",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "28.07",
+      "phase": 28,
+      "area": "Privacidad y tratamiento de datos",
+      "priority": "P0",
+      "criterion": "Respaldo cifrado",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "28.08",
+      "phase": 28,
+      "area": "Privacidad y tratamiento de datos",
+      "priority": "P0",
+      "criterion": "Acceso a copias",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "28.09",
+      "phase": 28,
+      "area": "Privacidad y tratamiento de datos",
+      "priority": "P0",
+      "criterion": "Procedimiento de incidente",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "29.01",
+      "phase": 29,
+      "area": "Backup restauración y desastre",
+      "priority": "P0",
+      "criterion": "Política de respaldos",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "29.02",
+      "phase": 29,
+      "area": "Backup restauración y desastre",
+      "priority": "P0",
+      "criterion": "Exportación completa",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "29.03",
+      "phase": 29,
+      "area": "Backup restauración y desastre",
+      "priority": "P0",
+      "criterion": "Restauración en proyecto desechable",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "29.04",
+      "phase": 29,
+      "area": "Backup restauración y desastre",
+      "priority": "P0",
+      "criterion": "Integridad por conteos",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "29.05",
+      "phase": 29,
+      "area": "Backup restauración y desastre",
+      "priority": "P0",
+      "criterion": "Integridad por hashes",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "29.06",
+      "phase": 29,
+      "area": "Backup restauración y desastre",
+      "priority": "P0",
+      "criterion": "RPO/RTO medidos",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "29.07",
+      "phase": 29,
+      "area": "Backup restauración y desastre",
+      "priority": "P0",
+      "criterion": "Restaurar decretos y notas",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "29.08",
+      "phase": 29,
+      "area": "Backup restauración y desastre",
+      "priority": "P0",
+      "criterion": "Rollback de frontend",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "29.09",
+      "phase": 29,
+      "area": "Backup restauración y desastre",
+      "priority": "P0",
+      "criterion": "Rollback de esquema",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "29.10",
+      "phase": 29,
+      "area": "Backup restauración y desastre",
+      "priority": "P0",
+      "criterion": "Aislamiento entre parroquias",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "30.01",
+      "phase": 30,
+      "area": "Despliegue y dependencias",
+      "priority": "P1",
+      "criterion": "Node y lockfile",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "30.02",
+      "phase": 30,
+      "area": "Despliegue y dependencias",
+      "priority": "P1",
+      "criterion": "npm audit",
+      "status": "FALLIDO",
+      "evidence": [
+        "AUDITORIA_DEPENDENCIAS_V90.md: npm audit --omit=dev devuelve 8 avisos: 6 high, 2 moderate, 0 critical; pendiente remedación sin romper Tailwind"
+      ],
+      "updated_at": "2026-10-21T16:06:49.912Z"
+    },
+    {
+      "id": "30.03",
+      "phase": 30,
+      "area": "Despliegue y dependencias",
+      "priority": "P1",
+      "criterion": "CI automática",
+      "status": "EN_PROGRESO",
+      "evidence": [
+        ".github/workflows/sacramentum-auditoria-v90.yml: CI de tests build y npm audit creada y validada como YAML; falta ejecutarla en GitHub Actions"
+      ],
+      "updated_at": "2026-10-21T16:14:21.239Z"
+    },
+    {
+      "id": "30.04",
+      "phase": 30,
+      "area": "Despliegue y dependencias",
+      "priority": "P1",
+      "criterion": "Migraciones reproducibles",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "30.05",
+      "phase": 30,
+      "area": "Despliegue y dependencias",
+      "priority": "P1",
+      "criterion": "Preview de Vercel",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "30.06",
+      "phase": 30,
+      "area": "Despliegue y dependencias",
+      "priority": "P1",
+      "criterion": "Variables secretas",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "30.07",
+      "phase": 30,
+      "area": "Despliegue y dependencias",
+      "priority": "P1",
+      "criterion": "Construcción de producción",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "30.08",
+      "phase": 30,
+      "area": "Despliegue y dependencias",
+      "priority": "P1",
+      "criterion": "Smoke posdespliegue",
+      "status": "APROBADO",
+      "evidence": [
+        "AUDITORIA_PUERTA_CALIDAD_V90.json: Puerta V90 ejecutó npm run build sin errores con Node del equipo; no certifica despliegue ni interfaz"
+      ],
+      "updated_at": "2026-10-21T16:14:21.305Z"
+    },
+    {
+      "id": "30.09",
+      "phase": 30,
+      "area": "Despliegue y dependencias",
+      "priority": "P1",
+      "criterion": "Git versionado",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "30.10",
+      "phase": 30,
+      "area": "Despliegue y dependencias",
+      "priority": "P1",
+      "criterion": "Plan rollback",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "31.01",
+      "phase": 31,
+      "area": "E2E de personajes ficticios",
+      "priority": "P0",
+      "criterion": "Diócesis de ensayo aislada",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "31.02",
+      "phase": 31,
+      "area": "E2E de personajes ficticios",
+      "priority": "P0",
+      "criterion": "Parroquias ficticias A y B",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "31.03",
+      "phase": 31,
+      "area": "E2E de personajes ficticios",
+      "priority": "P0",
+      "criterion": "Cuatro roles ficticios",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "31.04",
+      "phase": 31,
+      "area": "E2E de personajes ficticios",
+      "priority": "P0",
+      "criterion": "Bautismo a Confirmación",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "31.05",
+      "phase": 31,
+      "area": "E2E de personajes ficticios",
+      "priority": "P0",
+      "criterion": "Matrimonio y notificaciones",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "31.06",
+      "phase": 31,
+      "area": "E2E de personajes ficticios",
+      "priority": "P0",
+      "criterion": "Exequias y fallecido",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "31.07",
+      "phase": 31,
+      "area": "E2E de personajes ficticios",
+      "priority": "P0",
+      "criterion": "Decretos nuevos e históricos",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "31.08",
+      "phase": 31,
+      "area": "E2E de personajes ficticios",
+      "priority": "P0",
+      "criterion": "Doble click y red caída",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "31.09",
+      "phase": 31,
+      "area": "E2E de personajes ficticios",
+      "priority": "P0",
+      "criterion": "Impresión/estadística final",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "31.10",
+      "phase": 31,
+      "area": "E2E de personajes ficticios",
+      "priority": "P0",
+      "criterion": "Destruir sandbox y demostrar cero residuos",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "32.01",
+      "phase": 32,
+      "area": "Auditoría forense de cierre",
+      "priority": "P0",
+      "criterion": "Versionar toda prueba",
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "AUDITORIA_PUERTA_CALIDAD_V90.json: Gate registra ejecución 25 de 26, dependencias fallidas; falta cobertura integral por cada control"
+      ],
+      "updated_at": "2026-10-21T16:14:21.425Z"
+    },
+    {
+      "id": "32.02",
+      "phase": 32,
+      "area": "Auditoría forense de cierre",
+      "priority": "P0",
+      "criterion": "Guardar entrada y expectativa",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "32.03",
+      "phase": 32,
+      "area": "Auditoría forense de cierre",
+      "priority": "P0",
+      "criterion": "Guardar resultado exacto",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "32.04",
+      "phase": 32,
+      "area": "Auditoría forense de cierre",
+      "priority": "P0",
+      "criterion": "Guardar capturas",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "32.05",
+      "phase": 32,
+      "area": "Auditoría forense de cierre",
+      "priority": "P0",
+      "criterion": "Rastrear hallazgos P0/P1/P2",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "32.06",
+      "phase": 32,
+      "area": "Auditoría forense de cierre",
+      "priority": "P0",
+      "criterion": "Corregir y repetir",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "32.07",
+      "phase": 32,
+      "area": "Auditoría forense de cierre",
+      "priority": "P0",
+      "criterion": "Regresión completa",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "32.08",
+      "phase": 32,
+      "area": "Auditoría forense de cierre",
+      "priority": "P0",
+      "criterion": "Conteos antes/después",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "32.09",
+      "phase": 32,
+      "area": "Auditoría forense de cierre",
+      "priority": "P0",
+      "criterion": "Confirmar producción Ready",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    },
+    {
+      "id": "32.10",
+      "phase": 32,
+      "area": "Auditoría forense de cierre",
+      "priority": "P0",
+      "criterion": "Dictamen con limitaciones verificadas",
+      "status": "PENDIENTE",
+      "evidence": [],
+      "updated_at": null
+    }
+  ]
+}

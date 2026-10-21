@@ -1,0 +1,54 @@
+// Puerta de calidad V90. No crea usuarios, registros ni altera Supabase.
+import fs from 'node:fs';
+import { spawnSync } from 'node:child_process';
+import path from 'node:path';
+const now=()=>new Date().toISOString();
+const strict=!process.argv.includes('--sin-auditoria-dependencias');
+const root=process.cwd();
+const started=now(),tasks=[];
+const exec=(name,command,args)=>{
+  const begin=Date.now();
+  const result=spawnSync(command,args,{cwd:root,encoding:'utf8',maxBuffer:8*1024*1024,timeout:120000,windowsHide:true});
+  const combined=(result.stdout||'')+'\n'+(result.stderr||'');
+  const task={name,exitCode:result.status,ok:result.status===0,
+   durationMs:Date.now()-begin,
+   stderrSnippet:(result.stderr||'').slice(-650),
+   stdoutSnippet:(result.stdout||'').slice(-650)};
+  if(result.error){task.ok=false;task.error=result.error.message;}
+  tasks.push(task);
+  console.log((task.ok?'OK':'FALLO')+' · '+name+' · '+task.durationMs+'ms');
+  return {task,combined};
+};
+const node=process.execPath;
+exec('pruebas-sinteticas',node,['--test',
+ 'scripts/test-sistema-integral-v89.mjs',
+ 'scripts/test-chancery-decrees-v88.mjs',
+ 'scripts/test-supplementary-preflight-v89.mjs']);
+const scripts=fs.readdirSync(path.join(root,'scripts')).filter(x=>/^verify-.*\.mjs$/.test(x)).sort();
+for(const file of scripts)exec('legacy/'+file,node,['scripts/'+file]);
+const npmOnWindows=process.platform==='win32';
+const command=npmOnWindows?'cmd.exe':'npm';
+const npmArgs=cmd=>npmOnWindows?['/d','/s','/c',cmd]:cmd.split(' ').slice(1);
+exec('build-produccion',command,npmArgs('npm run build'));
+if(strict){
+  const r=exec('dependencias-externas',command,npmArgs('npm audit --omit=dev --json'));
+  try{
+    const text=r.combined.slice(r.combined.indexOf('{'));
+    const audit=JSON.parse(text);
+    const v=audit.metadata?.vulnerabilities||{};
+    const flagged=Object.keys(audit.vulnerabilities||{});
+    r.task.findingCounts={critical:v.critical||0,high:v.high||0,moderate:v.moderate||0,low:v.low||0,total:v.total||0};
+    r.task.packages=flagged;
+    r.task.ok=!audit.error&&r.task.findingCounts.critical===0&&r.task.findingCounts.high===0&&r.task.findingCounts.moderate===0;
+    if(!r.task.ok) console.log('BLOQUEO seguridad: '+JSON.stringify(r.task.findingCounts));
+  }catch(e){r.task.ok=false;r.task.error='No se pudo interpretar npm audit: '+e.message;}
+}
+const report={
+ protocol:'V90',startedAt:started,completedAt:now(),gitRef:'2ef4f3c',
+ readOnly:true,strictDependencies:strict,checks:tasks.length,
+ passed:tasks.filter(t=>t.ok).length,failed:tasks.filter(t=>!t.ok).length,
+ tasks
+};
+fs.writeFileSync('AUDITORIA_PUERTA_CALIDAD_V90.json',JSON.stringify(report,null,2)+'\n');
+console.log('RESUMEN '+report.passed+'/'+report.checks+' verificaciones aprobadas');
+if(report.failed)process.exitCode=1;

@@ -1,0 +1,16 @@
+import fs from 'node:fs';
+const [id,status,reference,...message] = process.argv.slice(2);
+const valid=['PENDIENTE','EN_PROGRESO','APROBADO','FALLIDO','BLOQUEADO'];
+if(!id||!valid.includes(status)||!reference||!message.length)throw new Error('Uso: node scripts/audit-record-v90.mjs <id> <estado> <archivo-evidencia> <descripción>');
+if(!fs.existsSync(reference))throw new Error('La evidencia no existe: '+reference);
+const filename='AUDITORIA_MAESTRA_CONTROLES_V90.json';
+const obj=JSON.parse(fs.readFileSync(filename,'utf8'));
+const c=obj.controls.find(x=>x.id===id);
+if(!c)throw new Error('Control no existe: '+id);
+const evidence=reference+': '+message.join(' ');
+if(status==='APROBADO'&&c.evidence.length===0&&!evidence)throw new Error('Evidencia obligatoria');
+c.status=status;
+c.updated_at=new Date().toISOString();
+if(!c.evidence.includes(evidence))c.evidence.push(evidence);
+fs.writeFileSync(filename,JSON.stringify(obj,null,2)+'\n');
+console.log('Control '+id+' -> '+status+'; evidencia '+reference);

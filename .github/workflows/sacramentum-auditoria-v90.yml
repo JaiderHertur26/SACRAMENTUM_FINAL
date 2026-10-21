@@ -1,0 +1,53 @@
+name: SACRAMENTUM - Auditoría V90
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  pruebas-funcionales:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - name: Instalación reproducible
+        run: npm ci
+      - name: Ensayos sintéticos sin acceso a producción
+        run: node --test scripts/test-sistema-integral-v89.mjs scripts/test-chancery-decrees-v88.mjs scripts/test-supplementary-preflight-v89.mjs
+      - name: Verificadores históricos sin credenciales
+        shell: bash
+        run: |
+          set -euo pipefail
+          for file in scripts/verify-*.mjs; do
+            if [[ "$file" == "scripts/verify-latest-legacy-imports.mjs" ]]; then
+              echo "OMITIDO en CI: necesita una sesión de lectura Supabase; se ejecuta por separado con permisos autorizados."
+              continue
+            fi
+            node "$file"
+          done
+      - name: Compilación de producción
+        run: npm run build
+
+  seguridad-dependencias:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - name: Instalación reproducible
+        run: npm ci
+      - name: No aprobar con vulnerabilidades moderadas o mayores
+        run: npm audit --omit=dev --audit-level=moderate

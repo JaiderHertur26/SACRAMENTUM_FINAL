@@ -1,0 +1,1599 @@
+{
+  "generatedAt": "2026-10-21",
+  "version": "V90",
+  "gitBaseline": "2ef4f3c",
+  "files": 266,
+  "jsxPages": 73,
+  "routes": 109,
+  "routeEntries": [
+    {
+      "path": "/",
+      "line": 142,
+      "roles": [],
+      "protected": false,
+      "public": true
+    },
+    {
+      "path": "/login",
+      "line": 143,
+      "roles": [],
+      "protected": false,
+      "public": true
+    },
+    {
+      "path": "/account-configuration-error",
+      "line": 144,
+      "roles": [],
+      "protected": false,
+      "public": false
+    },
+    {
+      "path": "/debug-auth",
+      "line": 147,
+      "roles": [
+        "ADMIN_GENERAL"
+      ],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/admin/dioceses",
+      "line": 158,
+      "roles": [
+        "ADMIN_GENERAL"
+      ],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/admin/archdioceses",
+      "line": 159,
+      "roles": [],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/admin/users",
+      "line": 160,
+      "roles": [
+        "ADMIN_GENERAL"
+      ],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/admin/settings",
+      "line": 161,
+      "roles": [],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/admin/migration-center",
+      "line": 162,
+      "roles": [
+        "ADMIN_GENERAL"
+      ],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/admin/users/diocese",
+      "line": 163,
+      "roles": [],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/diocese/dashboard",
+      "line": 166,
+      "roles": [
+        "DIOCESE"
+      ],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/diocese/decretos/archivo",
+      "line": 167,
+      "roles": [
+        "DIOCESE"
+      ],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/diocese/ecclesiastical",
+      "line": 168,
+      "roles": [
+        "DIOCESE"
+      ],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/diocese/settings",
+      "line": 169,
+      "roles": [],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/diocese/parishes",
+      "line": 170,
+      "roles": [],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/diocese/migration-center",
+      "line": 171,
+      "roles": [
+        "DIOCESE"
+      ],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/diocese/reports",
+      "line": 172,
+      "roles": [
+        "DIOCESE"
+      ],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/parish/dashboard",
+      "line": 175,
+      "roles": [
+        "PARISH"
+      ],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/parish/operational-control",
+      "line": 176,
+      "roles": [
+        "PARISH"
+      ],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/parish/notifications",
+      "line": 177,
+      "roles": [
+        "PARISH"
+      ],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/parish/sacramental-notifications",
+      "line": 178,
+      "roles": [
+        "PARISH"
+      ],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/parish/decrees/:decreeId",
+      "line": 179,
+      "roles": [
+        "PARISH"
+      ],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/parroquia/ajustes",
+      "line": 180,
+      "roles": [
+        "PARISH"
+      ],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/datos-auxiliares",
+      "line": 181,
+      "roles": [
+        "PARISH"
+      ],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/parroquia/libros",
+      "line": 182,
+      "roles": [
+        "PARISH"
+      ],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/parroquia/bautismo/nuevo",
+      "line": 185,
+      "roles": [
+        "PARISH"
+      ],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/parroquia/bautismo/editar",
+      "line": 186,
+      "roles": [],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/parroquia/bautismo/celebrado",
+      "line": 187,
+      "roles": [
+        "PARISH"
+      ],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/parroquia/bautismo/sentar-registros",
+      "line": 188,
+      "roles": [
+        "PARISH"
+      ],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/parroquia/bautismo/asentar",
+      "line": 189,
+      "roles": [],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/parroquia/bautismo/partidas",
+      "line": 190,
+      "roles": [
+        "PARISH"
+      ],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/parroquia/bautismo/base-datos",
+      "line": 191,
+      "roles": [],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/parroquia/bautismo/indice",
+      "line": 192,
+      "roles": [],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/parroquia/bautismo/parametros",
+      "line": 193,
+      "roles": [
+        "PARISH"
+      ],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/parroquia/parametros",
+      "line": 194,
+      "roles": [],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/parroquia/bautismo/:baptismPartidaId",
+      "line": 195,
+      "roles": [
+        "PARISH"
+      ],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/parroquia/decretos",
+      "line": 198,
+      "roles": [
+        "PARISH"
+      ],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/parroquia/decretos/archivo",
+      "line": 199,
+      "roles": [
+        "PARISH"
+      ],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/parroquia/decretos/nuevo-reposicion",
+      "line": 202,
+      "roles": [],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/parish/decree-replacement/new",
+      "line": 203,
+      "roles": [],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/parroquia/decretos/reposicion",
+      "line": 204,
+      "roles": [],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/parish/decree-replacement/view",
+      "line": 205,
+      "roles": [],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/parroquia/decretos/editar-reposicion",
+      "line": 206,
+      "roles": [],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/parish/decree-replacement/edit",
+      "line": 207,
+      "roles": [],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/parish/decree-correction/new",
+      "line": 209,
+      "roles": [],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/parroquia/decretos/nuevo-correccion",
+      "line": 210,
+      "roles": [],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/parish/decree-correction/view",
+      "line": 211,
+      "roles": [],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/parroquia/decretos/ver-correcciones",
+      "line": 212,
+      "roles": [],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/parish/decree-correction/edit",
+      "line": 213,
+      "roles": [],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/parroquia/decretos/editar-correccion",
+      "line": 214,
+      "roles": [],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/parroquia/decretos/nuevo-correccion-confirmacion",
+      "line": 215,
+      "roles": [],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/parroquia/decretos/ver-correcciones-confirmacion",
+      "line": 216,
+      "roles": [],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/parroquia/confirmacion/nuevo",
+      "line": 219,
+      "roles": [
+        "PARISH"
+      ],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/parroquia/confirmacion/editar",
+      "line": 220,
+      "roles": [],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/parroquia/confirmacion/celebrado",
+      "line": 221,
+      "roles": [
+        "PARISH"
+      ],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/parroquia/confirmacion/sentar-registros",
+      "line": 222,
+      "roles": [
+        "PARISH"
+      ],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/parroquia/confirmacion/asentar",
+      "line": 223,
+      "roles": [],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/parroquia/confirmacion/partidas",
+      "line": 224,
+      "roles": [
+        "PARISH"
+      ],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/parroquia/confirmacion/indice",
+      "line": 225,
+      "roles": [],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/parroquia/confirmacion/parametros",
+      "line": 226,
+      "roles": [
+        "PARISH"
+      ],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/parroquia/confirmacion/notificacion",
+      "line": 227,
+      "roles": [
+        "PARISH"
+      ],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/parroquia/matrimonio/nuevo",
+      "line": 230,
+      "roles": [
+        "PARISH"
+      ],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/parroquia/matrimonio/editar",
+      "line": 231,
+      "roles": [],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/parroquia/matrimonio/celebrado",
+      "line": 232,
+      "roles": [
+        "PARISH"
+      ],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/parroquia/matrimonio/sentar-registros",
+      "line": 233,
+      "roles": [
+        "PARISH"
+      ],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/parroquia/matrimonio/asentar",
+      "line": 234,
+      "roles": [],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/parroquia/matrimonio/partidas",
+      "line": 235,
+      "roles": [
+        "PARISH"
+      ],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/parroquia/matrimonio/indice",
+      "line": 236,
+      "roles": [],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/parroquia/matrimonio/parametros",
+      "line": 237,
+      "roles": [
+        "PARISH"
+      ],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/parroquia/matrimonio/expedientes",
+      "line": 238,
+      "roles": [
+        "PARISH"
+      ],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/parroquia/exequias",
+      "line": 241,
+      "roles": [
+        "PARISH"
+      ],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/parroquia/exequias/partidas",
+      "line": 246,
+      "roles": [],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/parroquia/exequias/parametros",
+      "line": 247,
+      "roles": [],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/parroquia/decretos/nulidad",
+      "line": 250,
+      "roles": [],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/parish/annulment-concepts",
+      "line": 251,
+      "roles": [],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/parroquia/matrimonio/notificacion",
+      "line": 254,
+      "roles": [
+        "PARISH"
+      ],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/parroquia/aviso-notificacion",
+      "line": 255,
+      "roles": [],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/parroquia/matrimonio/aviso-notificacion",
+      "line": 256,
+      "roles": [],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/sacraments/marriage/*",
+      "line": 259,
+      "roles": [],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/chancery/dashboard",
+      "line": 262,
+      "roles": [
+        "CHANCERY"
+      ],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/chancery/pending",
+      "line": 263,
+      "roles": [
+        "CHANCERY"
+      ],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/chancery/certifications",
+      "line": 264,
+      "roles": [],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/chancery/backups",
+      "line": 265,
+      "roles": [],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/chancery/decretos",
+      "line": 268,
+      "roles": [
+        "CHANCERY"
+      ],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/chancery/decretos/archivo",
+      "line": 269,
+      "roles": [
+        "CHANCERY"
+      ],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/chancery/decretos/documental",
+      "line": 270,
+      "roles": [
+        "CHANCERY"
+      ],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/chancery/matrimonio/decretos",
+      "line": 271,
+      "roles": [
+        "CHANCERY"
+      ],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/chancery/decretos/correcciones",
+      "line": 274,
+      "roles": [],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/chancery/decretos/reposiciones",
+      "line": 275,
+      "roles": [],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/chancery/decree-correction/new",
+      "line": 277,
+      "roles": [
+        "CHANCERY"
+      ],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/chancery/decree-correction/new-confirmation",
+      "line": 278,
+      "roles": [
+        "CHANCERY"
+      ],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/chancery/exequias/decretos",
+      "line": 279,
+      "roles": [
+        "CHANCERY"
+      ],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/chancery/decree-correction",
+      "line": 280,
+      "roles": [],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/chancery/decree-correction/view",
+      "line": 281,
+      "roles": [],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/chancery/decree-correction/edit",
+      "line": 282,
+      "roles": [],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/chancery/decree-replacement/new",
+      "line": 284,
+      "roles": [
+        "CHANCERY"
+      ],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/chancery/decree-replacement/new-confirmation",
+      "line": 285,
+      "roles": [
+        "CHANCERY"
+      ],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/chancery/decree-replacement",
+      "line": 286,
+      "roles": [],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/chancery/decree-replacement/view",
+      "line": 287,
+      "roles": [],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/chancery/decree-replacement/edit",
+      "line": 288,
+      "roles": [],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/chancery/decree-correction/list",
+      "line": 291,
+      "roles": [],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/chancery/decree-replacement/list",
+      "line": 292,
+      "roles": [],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/chancery/decree-annulment",
+      "line": 295,
+      "roles": [
+        "CHANCERY"
+      ],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/chancery/marriage-nullity",
+      "line": 296,
+      "roles": [],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/communications",
+      "line": 299,
+      "roles": [
+        "DIOCESE",
+        "CHANCERY",
+        "PARISH"
+      ],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/buscar",
+      "line": 300,
+      "roles": [],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/documentos/plantillas",
+      "line": 301,
+      "roles": [],
+      "protected": true,
+      "public": false
+    },
+    {
+      "path": "/404",
+      "line": 304,
+      "roles": [],
+      "protected": false,
+      "public": false
+    },
+    {
+      "path": "*",
+      "line": 305,
+      "roles": [],
+      "protected": true,
+      "public": false
+    }
+  ],
+  "explicitUnprotected": [
+    {
+      "path": "/",
+      "line": 142,
+      "roles": [],
+      "protected": false,
+      "public": true
+    },
+    {
+      "path": "/login",
+      "line": 143,
+      "roles": [],
+      "protected": false,
+      "public": true
+    },
+    {
+      "path": "/account-configuration-error",
+      "line": 144,
+      "roles": [],
+      "protected": false,
+      "public": false
+    },
+    {
+      "path": "/404",
+      "line": 304,
+      "roles": [],
+      "protected": false,
+      "public": false
+    }
+  ],
+  "unresolvedImports": [],
+  "parseErrors": [],
+  "imports": 1550,
+  "dbOperations": [
+    {
+      "from": "src/components/BusquedaPartidaBautismo.jsx",
+      "procedure": "search_baptisms_for_matrimonial_notification",
+      "operation": "RPC"
+    },
+    {
+      "from": "src/components/modals/CreateDioceseModal.jsx",
+      "table": "pending_tokens",
+      "operation": "insert"
+    },
+    {
+      "from": "src/components/modals/EditChanceryUserModal.jsx",
+      "procedure": "update_managed_user_profile",
+      "operation": "RPC"
+    },
+    {
+      "from": "src/components/modals/EditDioceseArchdioceseModal.jsx",
+      "table": "dioceses",
+      "operation": "update"
+    },
+    {
+      "from": "src/components/modals/EditParishUserModal.jsx",
+      "procedure": "update_managed_user_profile",
+      "operation": "RPC"
+    },
+    {
+      "from": "src/pages/admin/AdminGeneralDashboard.jsx",
+      "table": "pending_tokens",
+      "operation": "delete"
+    },
+    {
+      "from": "src/pages/chancery/decree-annulment/AnnulmentConceptsTab.jsx",
+      "table": "conceptos_anulacion",
+      "operation": "update"
+    },
+    {
+      "from": "src/pages/chancery/decree-annulment/AnnulmentConceptsTab.jsx",
+      "table": "conceptos_anulacion",
+      "operation": "insert"
+    },
+    {
+      "from": "src/pages/chancery/decree-annulment/AnnulmentConceptsTab.jsx",
+      "table": "conceptos_anulacion",
+      "operation": "update"
+    },
+    {
+      "from": "src/pages/chancery/decree-correction/NewConfirmationCorrectionPage.jsx",
+      "procedure": "apply_confirmation_correction",
+      "operation": "RPC"
+    },
+    {
+      "from": "src/pages/chancery/decree-correction/NewDecreeCorrectionPage.jsx",
+      "procedure": "apply_baptism_correction",
+      "operation": "RPC"
+    },
+    {
+      "from": "src/pages/chancery/decree-replacement/NewConfirmationReplacementPage.jsx",
+      "procedure": "apply_confirmation_replacement",
+      "operation": "RPC"
+    },
+    {
+      "from": "src/pages/chancery/decree-replacement/NewDecreeReplacementPage.jsx",
+      "procedure": "apply_baptism_replacement",
+      "operation": "RPC"
+    },
+    {
+      "from": "src/pages/chancery/DocumentaryDecreePage.jsx",
+      "procedure": "issue_documentary_decree_v88",
+      "operation": "RPC"
+    },
+    {
+      "from": "src/pages/chancery/SacramentalDecreeArchivePage.jsx",
+      "procedure": "reverse_marriage_decree",
+      "operation": "RPC"
+    },
+    {
+      "from": "src/pages/chancery/SacramentalDecreeArchivePage.jsx",
+      "procedure": "reverse_funeral_decree",
+      "operation": "RPC"
+    },
+    {
+      "from": "src/pages/chancery/SacramentalDecreeArchivePage.jsx",
+      "procedure": "reverse_correction_decree_with_reason",
+      "operation": "RPC"
+    },
+    {
+      "from": "src/pages/chancery/SacramentalDecreeArchivePage.jsx",
+      "procedure": "reverse_replacement_decree_with_reason",
+      "operation": "RPC"
+    },
+    {
+      "from": "src/pages/diocese/DioceseEcclesiasticalPage.jsx",
+      "table": "pending_tokens",
+      "operation": "insert"
+    },
+    {
+      "from": "src/pages/diocese/DioceseEcclesiasticalPage.jsx",
+      "table": "pending_tokens",
+      "operation": "delete"
+    },
+    {
+      "from": "src/pages/parish/auxiliary/BishopTenuresList.jsx",
+      "table": "bishop_tenures",
+      "operation": "update"
+    },
+    {
+      "from": "src/pages/parish/auxiliary/BishopTenuresList.jsx",
+      "table": "bishop_tenures",
+      "operation": "insert"
+    },
+    {
+      "from": "src/pages/parish/auxiliary/BishopTenuresList.jsx",
+      "table": "bishop_tenures",
+      "operation": "delete"
+    },
+    {
+      "from": "src/pages/parish/BaptismSentarRegistrosPage.jsx",
+      "procedure": "seat_baptism_records",
+      "operation": "RPC"
+    },
+    {
+      "from": "src/pages/parish/BaptismSentarRegistrosPage.jsx",
+      "procedure": "seat_baptism_records",
+      "operation": "RPC"
+    },
+    {
+      "from": "src/pages/parish/ConfirmationSentarRegistrosPage.jsx",
+      "procedure": "seat_confirmation_records",
+      "operation": "RPC"
+    },
+    {
+      "from": "src/pages/parish/ConfirmationSentarRegistrosPage.jsx",
+      "procedure": "seat_confirmation_records",
+      "operation": "RPC"
+    },
+    {
+      "from": "src/pages/parish/FuneralRegistryPage.jsx",
+      "procedure": "register_historical_funeral",
+      "operation": "RPC"
+    },
+    {
+      "from": "src/pages/parish/ParishDecreeDetailPage.jsx",
+      "procedure": "get_decree_trace_v89",
+      "operation": "RPC"
+    },
+    {
+      "from": "src/services/catalogsService.js",
+      "table": "parrocos",
+      "operation": "insert"
+    },
+    {
+      "from": "src/services/catalogsService.js",
+      "table": "parrocos",
+      "operation": "update"
+    },
+    {
+      "from": "src/services/catalogsService.js",
+      "table": "parrocos",
+      "operation": "delete"
+    },
+    {
+      "from": "src/services/catalogsService.js",
+      "table": "parrocos",
+      "operation": "insert"
+    },
+    {
+      "from": "src/services/catalogsService.js",
+      "table": "iglesias",
+      "operation": "insert"
+    },
+    {
+      "from": "src/services/catalogsService.js",
+      "table": "iglesias",
+      "operation": "update"
+    },
+    {
+      "from": "src/services/catalogsService.js",
+      "table": "iglesias",
+      "operation": "delete"
+    },
+    {
+      "from": "src/services/catalogsService.js",
+      "table": "iglesias",
+      "operation": "insert"
+    },
+    {
+      "from": "src/services/catalogsService.js",
+      "table": "obispos",
+      "operation": "insert"
+    },
+    {
+      "from": "src/services/catalogsService.js",
+      "table": "obispos",
+      "operation": "update"
+    },
+    {
+      "from": "src/services/catalogsService.js",
+      "table": "obispos",
+      "operation": "delete"
+    },
+    {
+      "from": "src/services/catalogsService.js",
+      "table": "obispos",
+      "operation": "insert"
+    },
+    {
+      "from": "src/services/catalogsService.js",
+      "table": "ciudades",
+      "operation": "insert"
+    },
+    {
+      "from": "src/services/catalogsService.js",
+      "table": "ciudades",
+      "operation": "update"
+    },
+    {
+      "from": "src/services/catalogsService.js",
+      "table": "ciudades",
+      "operation": "delete"
+    },
+    {
+      "from": "src/services/catalogsService.js",
+      "table": "ciudades",
+      "operation": "insert"
+    },
+    {
+      "from": "src/services/catalogsService.js",
+      "table": "diocesis",
+      "operation": "insert"
+    },
+    {
+      "from": "src/services/catalogsService.js",
+      "table": "diocesis",
+      "operation": "update"
+    },
+    {
+      "from": "src/services/catalogsService.js",
+      "table": "diocesis",
+      "operation": "delete"
+    },
+    {
+      "from": "src/services/catalogsService.js",
+      "table": "diocesis",
+      "operation": "insert"
+    },
+    {
+      "from": "src/services/catalogsService.js",
+      "table": "mis_datos",
+      "operation": "insert"
+    },
+    {
+      "from": "src/services/catalogsService.js",
+      "table": "mis_datos",
+      "operation": "update"
+    },
+    {
+      "from": "src/services/catalogsService.js",
+      "table": "mis_datos",
+      "operation": "delete"
+    },
+    {
+      "from": "src/services/catalogsService.js",
+      "table": "mis_datos",
+      "operation": "insert"
+    },
+    {
+      "from": "src/services/catalogsService.js",
+      "procedure": "sacramentum_recalculate_current_priest",
+      "operation": "RPC"
+    },
+    {
+      "from": "src/services/chatService.js",
+      "procedure": "ensure_diocesan_chat_defaults",
+      "operation": "RPC"
+    },
+    {
+      "from": "src/services/chatService.js",
+      "procedure": "list_chat_directory",
+      "operation": "RPC"
+    },
+    {
+      "from": "src/services/chatService.js",
+      "procedure": "list_my_chat_rooms",
+      "operation": "RPC"
+    },
+    {
+      "from": "src/services/chatService.js",
+      "procedure": "start_direct_chat",
+      "operation": "RPC"
+    },
+    {
+      "from": "src/services/chatService.js",
+      "procedure": "get_chat_room_messages",
+      "operation": "RPC"
+    },
+    {
+      "from": "src/services/chatService.js",
+      "procedure": "send_chat_message",
+      "operation": "RPC"
+    },
+    {
+      "from": "src/services/chatService.js",
+      "procedure": "mark_chat_room_read",
+      "operation": "RPC"
+    },
+    {
+      "from": "src/services/chatService.js",
+      "procedure": "count_unread_chat_messages",
+      "operation": "RPC"
+    },
+    {
+      "from": "src/services/chatService.js",
+      "procedure": "withdraw_chat_message",
+      "operation": "RPC"
+    },
+    {
+      "from": "src/services/confirmationNotificationService.js",
+      "procedure": "issue_confirmation_notification_v43",
+      "operation": "RPC"
+    },
+    {
+      "from": "src/services/decreeRegistryService.js",
+      "procedure": "attach_decree_concept_policy",
+      "operation": "RPC"
+    },
+    {
+      "from": "src/services/diocesanReportsService.js",
+      "procedure": "get_diocesan_custom_age_distribution",
+      "operation": "RPC"
+    },
+    {
+      "from": "src/services/diocesanReportsService.js",
+      "procedure": "get_curia_report_breakdown",
+      "operation": "RPC"
+    },
+    {
+      "from": "src/services/diocesanReportsService.js",
+      "procedure": "generate_diocesan_sacramental_report",
+      "operation": "RPC"
+    },
+    {
+      "from": "src/services/diocesanReportsService.js",
+      "procedure": "attach_parish_curia_report_snapshot",
+      "operation": "RPC"
+    },
+    {
+      "from": "src/services/documentSequenceService.js",
+      "procedure": "next_document_sequence",
+      "operation": "RPC"
+    },
+    {
+      "from": "src/services/ecclesiasticalStructureService.js",
+      "table": "vicarias",
+      "operation": "insert"
+    },
+    {
+      "from": "src/services/ecclesiasticalStructureService.js",
+      "table": "decanatos",
+      "operation": "insert"
+    },
+    {
+      "from": "src/services/ecclesiasticalStructureService.js",
+      "table": "vicarias",
+      "operation": "update"
+    },
+    {
+      "from": "src/services/ecclesiasticalStructureService.js",
+      "table": "decanatos",
+      "operation": "update"
+    },
+    {
+      "from": "src/services/ecclesiasticalStructureService.js",
+      "table": "parishes",
+      "operation": "update"
+    },
+    {
+      "from": "src/services/ecclesiasticalStructureService.js",
+      "table": "chancelleries",
+      "operation": "update"
+    },
+    {
+      "from": "src/services/funeralService.js",
+      "procedure": "create_pending_funeral",
+      "operation": "RPC"
+    },
+    {
+      "from": "src/services/funeralService.js",
+      "procedure": "seat_funeral_record",
+      "operation": "RPC"
+    },
+    {
+      "from": "src/services/funeralService.js",
+      "procedure": "save_funeral_parameters",
+      "operation": "RPC"
+    },
+    {
+      "from": "src/services/funeralsService.js",
+      "procedure": "seat_funeral_record",
+      "operation": "RPC"
+    },
+    {
+      "from": "src/services/funeralsService.js",
+      "procedure": "apply_funeral_correction",
+      "operation": "RPC"
+    },
+    {
+      "from": "src/services/funeralsService.js",
+      "procedure": "create_funeral_reposition_by_decree",
+      "operation": "RPC"
+    },
+    {
+      "from": "src/services/funeralsService.js",
+      "procedure": "reverse_funeral_decree",
+      "operation": "RPC"
+    },
+    {
+      "from": "src/services/historicalRegistryService.js",
+      "procedure": "register_historical_narrative",
+      "operation": "RPC"
+    },
+    {
+      "from": "src/services/historicalRegistryService.js",
+      "procedure": "register_historical_baptism",
+      "operation": "RPC"
+    },
+    {
+      "from": "src/services/historicalRegistryService.js",
+      "procedure": "register_historical_confirmation",
+      "operation": "RPC"
+    },
+    {
+      "from": "src/services/historicalRegistryService.js",
+      "procedure": "register_historical_marriage",
+      "operation": "RPC"
+    },
+    {
+      "from": "src/services/legacyMigrationService.js",
+      "procedure": "create_legacy_import_batch",
+      "operation": "RPC"
+    },
+    {
+      "from": "src/services/legacyMigrationService.js",
+      "procedure": "stage_legacy_import_rows",
+      "operation": "RPC"
+    },
+    {
+      "from": "src/services/legacyMigrationService.js",
+      "procedure": "review_legacy_import_row",
+      "operation": "RPC"
+    },
+    {
+      "from": "src/services/legacyMigrationService.js",
+      "procedure": "materialize_pending_legacy_sacramental_records",
+      "operation": "RPC"
+    },
+    {
+      "from": "src/services/legacyMigrationService.js",
+      "procedure": "materialize_pending_legacy_marriages",
+      "operation": "RPC"
+    },
+    {
+      "from": "src/services/legacyMigrationService.js",
+      "procedure": "reconcile_legacy_matrimonial_notes",
+      "operation": "RPC"
+    },
+    {
+      "from": "src/services/legacyMigrationService.js",
+      "procedure": "materialize_auxiliary_catalog_batch",
+      "operation": "RPC"
+    },
+    {
+      "from": "src/services/legacyMigrationService.js",
+      "procedure": "materialize_diocesis_catalog_batch",
+      "operation": "RPC"
+    },
+    {
+      "from": "src/services/marginalNotesV2Service.js",
+      "procedure": "create_manual_marginal_note",
+      "operation": "RPC"
+    },
+    {
+      "from": "src/services/marginalNotesV2Service.js",
+      "procedure": "save_marginal_note_template",
+      "operation": "RPC"
+    },
+    {
+      "from": "src/services/marginalNotesV2Service.js",
+      "procedure": "register_registry_print",
+      "operation": "RPC"
+    },
+    {
+      "from": "src/services/marginalNotesV2Service.js",
+      "procedure": "save_document_template",
+      "operation": "RPC"
+    },
+    {
+      "from": "src/services/marriageDecreesService.js",
+      "procedure": "apply_marriage_correction",
+      "operation": "RPC"
+    },
+    {
+      "from": "src/services/marriageDecreesService.js",
+      "procedure": "create_marriage_reposition_by_decree",
+      "operation": "RPC"
+    },
+    {
+      "from": "src/services/marriageDecreesService.js",
+      "procedure": "reverse_marriage_decree",
+      "operation": "RPC"
+    },
+    {
+      "from": "src/services/marriageDossierService.js",
+      "procedure": "upsert_marriage_dossier_v43",
+      "operation": "RPC"
+    },
+    {
+      "from": "src/services/marriagesCloudService.js",
+      "procedure": "create_pending_marriage",
+      "operation": "RPC"
+    },
+    {
+      "from": "src/services/marriagesCloudService.js",
+      "procedure": "seat_pending_marriage",
+      "operation": "RPC"
+    },
+    {
+      "from": "src/services/matrimonialNotificationsService.js",
+      "procedure": "issue_matrimonial_notification",
+      "operation": "RPC"
+    },
+    {
+      "from": "src/services/matrimonialNotificationsService.js",
+      "procedure": "cancel_matrimonial_notification",
+      "operation": "RPC"
+    },
+    {
+      "from": "src/services/matrimonialNotificationsService.js",
+      "procedure": "mark_sacramental_notification_read",
+      "operation": "RPC"
+    },
+    {
+      "from": "src/services/matrimonialNotificationsService.js",
+      "procedure": "mark_sacramental_receipt_read",
+      "operation": "RPC"
+    },
+    {
+      "from": "src/services/matrimonialNotificationsService.js",
+      "procedure": "resolve_manual_matrimonial_notification_recipient",
+      "operation": "RPC"
+    },
+    {
+      "from": "src/services/matrimonialNotificationsService.js",
+      "procedure": "process_manual_matrimonial_notification_physical",
+      "operation": "RPC"
+    },
+    {
+      "from": "src/services/matrimonialNotificationsService.js",
+      "procedure": "process_matrimonial_notification_recipient",
+      "operation": "RPC"
+    },
+    {
+      "from": "src/services/matrimonialNotificationsService.js",
+      "procedure": "archive_matrimonial_notification_recipient",
+      "operation": "RPC"
+    },
+    {
+      "from": "src/services/officialNotificationsService.js",
+      "procedure": "mark_official_notification_read",
+      "operation": "RPC"
+    },
+    {
+      "from": "src/services/officialNotificationsService.js",
+      "procedure": "archive_official_notification",
+      "operation": "RPC"
+    },
+    {
+      "from": "src/services/sacramentParametersService.js",
+      "procedure": "save_baptism_parameters",
+      "operation": "RPC"
+    },
+    {
+      "from": "src/services/sacramentParametersService.js",
+      "procedure": "save_confirmation_parameters",
+      "operation": "RPC"
+    },
+    {
+      "from": "src/services/sacramentParametersService.js",
+      "procedure": "save_marriage_parameters",
+      "operation": "RPC"
+    },
+    {
+      "from": "src/services/sacramentsService.js",
+      "procedure": "create_pending_baptism_with_confirmation_flow",
+      "operation": "RPC"
+    },
+    {
+      "from": "src/services/sacramentsService.js",
+      "procedure": "create_pending_confirmation",
+      "operation": "RPC"
+    },
+    {
+      "from": "src/utils/misDatosStorageHelper.js",
+      "table": "mis_datos",
+      "operation": "upsert"
+    },
+    {
+      "from": "src/utils/misDatosStorageHelper.js",
+      "table": "mis_datos",
+      "operation": "delete"
+    }
+  ],
+  "pageFiles": [
+    "src/pages/AccountConfigurationErrorPage.jsx",
+    "src/pages/admin/AdminGeneralDashboard.jsx",
+    "src/pages/admin/DioceseListPage.jsx",
+    "src/pages/admin/LegacyMigrationCenterPage.jsx",
+    "src/pages/admin/UserListPage.jsx",
+    "src/pages/BaptismDetailPage.jsx",
+    "src/pages/chancery/ChanceryDashboard.jsx",
+    "src/pages/chancery/ChanceryPendingPage.jsx",
+    "src/pages/chancery/decree-annulment/AnnulmentConceptsPage.jsx",
+    "src/pages/chancery/decree-annulment/AnnulmentConceptsTab.jsx",
+    "src/pages/chancery/decree-annulment/MarginalNotesTab.jsx",
+    "src/pages/chancery/decree-correction/NewConfirmationCorrectionPage.jsx",
+    "src/pages/chancery/decree-correction/NewDecreeCorrectionPage.jsx",
+    "src/pages/chancery/decree-correction/ViewCorrectionPage.jsx",
+    "src/pages/chancery/decree-replacement/NewConfirmationReplacementPage.jsx",
+    "src/pages/chancery/decree-replacement/NewDecreeReplacementPage.jsx",
+    "src/pages/chancery/decree-replacement/ViewReplacementPage.jsx",
+    "src/pages/chancery/DocumentaryDecreePage.jsx",
+    "src/pages/chancery/exequias/FuneralDecreesPage.jsx",
+    "src/pages/chancery/marriage/MarriageDecreesPage.jsx",
+    "src/pages/chancery/SacramentalDecreeArchivePage.jsx",
+    "src/pages/chancery/SacramentalDecreesCenterPage.jsx",
+    "src/pages/CommunicationsPage.jsx",
+    "src/pages/DebugAuthPage.jsx",
+    "src/pages/diocese/DiocesanDecreeOversightPage.jsx",
+    "src/pages/diocese/DiocesanSacramentalReportsPage.jsx",
+    "src/pages/diocese/DioceseEcclesiasticalPage.jsx",
+    "src/pages/diocese/DioceseUserDashboard.jsx",
+    "src/pages/DocumentTemplateLibraryPage.jsx",
+    "src/pages/NotFoundPage.jsx",
+    "src/pages/parish/AnnulmentConceptsTab.jsx",
+    "src/pages/parish/AnnulmentMatrimonialPage.jsx",
+    "src/pages/parish/auxiliary/BishopTenuresList.jsx",
+    "src/pages/parish/auxiliary/CiudadesList.jsx",
+    "src/pages/parish/auxiliary/DiocesisList.jsx",
+    "src/pages/parish/auxiliary/IglesiasList.jsx",
+    "src/pages/parish/auxiliary/MisDatosList.jsx",
+    "src/pages/parish/auxiliary/ObisposList.jsx",
+    "src/pages/parish/auxiliary/ParrocosList.jsx",
+    "src/pages/parish/AvisoNotificacionMatrimonialPage.jsx",
+    "src/pages/parish/BaptismCelebratedPage.jsx",
+    "src/pages/parish/BaptismNewPage.jsx",
+    "src/pages/parish/BaptismParametersPage.jsx",
+    "src/pages/parish/BaptismPartidasPage.jsx",
+    "src/pages/parish/BaptismSentarRegistrosPage.jsx",
+    "src/pages/parish/ConfirmationCelebratedPage.jsx",
+    "src/pages/parish/ConfirmationNewPage.jsx",
+    "src/pages/parish/ConfirmationNotificationPage.jsx",
+    "src/pages/parish/ConfirmationParametersPage.jsx",
+    "src/pages/parish/ConfirmationPartidasPage.jsx",
+    "src/pages/parish/ConfirmationSentarRegistrosPage.jsx",
+    "src/pages/parish/DatosAuxiliaresPage.jsx",
+    "src/pages/parish/FuneralPartidasPage.jsx",
+    "src/pages/parish/FuneralRegistryPage.jsx",
+    "src/pages/parish/MarginalNotesTab.jsx",
+    "src/pages/parish/MarriageDossierPage.jsx",
+    "src/pages/parish/MatrimonioCelebratedPage.jsx",
+    "src/pages/parish/MatrimonioNewPage.jsx",
+    "src/pages/parish/MatrimonioParametersPage.jsx",
+    "src/pages/parish/MatrimonioPartidasPage.jsx",
+    "src/pages/parish/MatrimonioSentarRegistrosPage.jsx",
+    "src/pages/parish/NotificacionMatrimonialPage.jsx",
+    "src/pages/parish/ParishDashboard.jsx",
+    "src/pages/parish/ParishDecreeDetailPage.jsx",
+    "src/pages/parish/ParishNotificationsPage.jsx",
+    "src/pages/parish/ParishOperationalControlPage.jsx",
+    "src/pages/parish/ParishSacramentalDecreeArchivePage.jsx",
+    "src/pages/parish/ParishSacramentalDecreesCenterPage.jsx",
+    "src/pages/parish/ParroquiaAjustesPage.jsx",
+    "src/pages/parish/SacramentalBooksPage.jsx",
+    "src/pages/parish/SacramentalNotificationsPage.jsx",
+    "src/pages/PublicSearchPage.jsx",
+    "src/pages/UnifiedSearchPage.jsx"
+  ]
+}
