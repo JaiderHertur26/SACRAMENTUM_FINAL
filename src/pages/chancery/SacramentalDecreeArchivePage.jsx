@@ -8,6 +8,7 @@ import { useSearchParams } from 'react-router-dom';
 import DecreeCenterHeader from '@/components/chancery/DecreeCenterHeader';
 import { supabase } from '@/lib/supabaseClient';
 import { listDecrees } from '@/services/decreeRegistryService';
+import { decreeCategory, decreeCanReverse, decreeEffect, decreeTypeLabel } from '@/utils/decreeArchiveModel.mjs';
 import { buildDecreeDocumentHtml } from '@/services/decreeDocumentHtml';
 import {
   Search,
@@ -30,14 +31,7 @@ const SACRAMENT_KEY = (value) => {
   return null;
 };
 
-const TYPE_KEY = (value) => {
-  const v = String(value || '').toLowerCase();
-  if (!v) return null;
-  if (v.includes('nulidad')) return null;
-  if (v.includes('repos') || v.includes('replacement')) return 'reposicion';
-  if (v.includes('correc')) return 'correccion';
-  return null;
-};
+const TYPE_KEY = (value, payload = {}) => value ? decreeCategory(value, payload) : null;
 
 const SACRAMENT_TABLE = Object.freeze({
   bautismo: 'baptisms',
@@ -73,6 +67,8 @@ const isLegacyHistoricalDecree = (row = {}) => {
   const payload = row.payload || {};
   return payload.legacyHistorical === true
     || String(row.tipo || '').toLowerCase().includes('legacy')
+    || payload.historical === true
+    || String(payload.recordOrigin || '').toLowerCase() === 'historical_archive'
     || String(payload.recordOrigin || '').toLowerCase() === 'legacy_import'
     || String(payload.source || '').toLowerCase().startsWith('legacy_');
 };
@@ -132,7 +128,7 @@ const SacramentalDecreeArchivePage = () => {
   }, [user, toast]);
 
   const load = async () => {
-    if (!dioceseId) return;
+    if (!dioceseId) { setLoading(false); return; }
 
     setLoading(true);
 
@@ -141,8 +137,7 @@ const SacramentalDecreeArchivePage = () => {
         supabase
           .from('parishes')
           .select('id,name,city,address,phone,nit')
-          .eq('diocese_id', dioceseId)
-          .eq('is_operational', true),
+          .eq('diocese_id', dioceseId),
         supabase
           .from('dioceses')
           .select('id,name,type,address,city,phone,email')
@@ -202,15 +197,16 @@ const SacramentalDecreeArchivePage = () => {
         version: identity.versionDecretos || identity.documentVersion || '001'
       });
 
-      const ids = parishes.map((p) => p.id);
       const parishMap = new Map(parishes.map((p) => [p.id, p]));
-      const all = await listDecrees({ parishIds: ids });
+      // Consultar por jurisdicción: el archivo incluye parroquias no operativas
+      // y expedientes antiguos cuyo contenedor no figure en el directorio actual.
+      const all = await listDecrees({ dioceseId });
 
       setRows(
         (all || [])
           .filter((d) => {
             const type = TYPE_KEY(
-              d.tipo || d.payload?.decreeType || d.payload?.decretoType
+              d.tipo || d.payload?.decreeType || d.payload?.decretoType, d.payload
             );
             return Boolean(type);
           })
@@ -496,8 +492,8 @@ const SacramentalDecreeArchivePage = () => {
                 Decretos sacramentales
               </h2>
               <p className="mt-1 text-xs text-slate-500">
-                Único archivo para Corrección y Reposición. La nulidad matrimonial
-                pertenece al Tribunal Eclesiástico y no forma parte de este Centro.
+                Archivo de decretos nuevos, documentales e históricos. La nulidad matrimonial
+                pertenece al Tribunal Eclesiástico y aquí se conserva únicamente como antecedente, sin expedirla.
               </p>
             </div>
 
@@ -531,6 +527,10 @@ const SacramentalDecreeArchivePage = () => {
                 }`}
               >
                 Reposiciones
+              </button>
+              <button onClick={() => updateType('documental')}
+                className={`rounded-xl border px-4 py-2 text-[9px] font-black uppercase tracking-widest ${typeFilter === 'documental' ? 'border-slate-900 bg-slate-900 text-white' : 'border-slate-200 bg-white text-slate-600'}`}>
+                Documentales
               </button>
             </div>
           </div>
@@ -574,8 +574,7 @@ const SacramentalDecreeArchivePage = () => {
                   String(row.status || '').toLowerCase() === 'reversed';
                 const legacyHistorical = isLegacyHistoricalDecree(row);
                 const legacyExecuted = isLegacyExecutedDecree(row);
-                const Icon =
-                  type === 'correccion' ? FileCheck2 : ArchiveRestore;
+                const Icon = type === 'correccion' ? FileCheck2 : type === 'reposicion' ? ArchiveRestore : History;
 
                 const payload = row.payload || {};
                 const original = getOriginalLocation(payload);
@@ -609,14 +608,15 @@ const SacramentalDecreeArchivePage = () => {
                                   : 'border-amber-200 bg-amber-50 text-amber-700'
                               }`}
                             >
-                              {type === 'correccion'
-                                ? 'Corrección'
-                                : 'Reposición'}
+                              {decreeTypeLabel(row)}
                             </span>
                             {legacyHistorical && (
                               <span className="rounded-full border border-amber-300 bg-amber-50 px-2 py-1 text-[8px] font-black uppercase tracking-wider text-amber-800">
                                 {legacyExecuted ? 'Ejecutado desde base antigua' : 'Histórico importado'}
                               </span>
+                            )}
+                            {decreeEffect(row) === 'sin_modificacion' && (
+                              <span className="rounded-full border border-slate-300 bg-slate-50 px-2 py-1 text-[8px] font-black text-slate-700">Sin efecto registral</span>
                             )}
                             {reversed && (
                               <span className="rounded-full border border-red-200 bg-red-50 px-2 py-1 text-[8px] font-black uppercase text-red-700">
@@ -648,7 +648,7 @@ const SacramentalDecreeArchivePage = () => {
                           </p>
 
                           <div className="mt-2 flex flex-wrap gap-x-5 gap-y-1 font-mono text-[10px]">
-                            {type === 'correccion' && (
+                            {type === 'correccion' && decreeEffect(row) !== 'sin_modificacion' && (
                               <span className="text-red-600">
                                 Original anulada: L-
                                 {original.book || original.libro || '—'} · F-
@@ -657,7 +657,7 @@ const SacramentalDecreeArchivePage = () => {
                               </span>
                             )}
 
-                            <span className="text-amber-700">
+                            {(type === 'correccion' || type === 'reposicion') && decreeEffect(row) !== 'sin_modificacion' && <span className="text-amber-700">
                               Supletoria: L-
                               {replacement.book || replacement.libro || '—'} ·
                               F-{replacement.folio || replacement.page || '—'} ·
@@ -671,7 +671,7 @@ const SacramentalDecreeArchivePage = () => {
                                     replacement.numero_registro
                                   }`
                                 : ''}
-                            </span>
+                            </span>}
                           </div>
                         </div>
                       </div>
@@ -681,7 +681,7 @@ const SacramentalDecreeArchivePage = () => {
                           <Printer className="mr-2 h-4 w-4" />
                           {legacyExecuted ? 'Ver decreto histórico' : legacyHistorical ? 'Ficha histórica' : 'Imprimir'}
                         </Button>
-                        {!reversed && !legacyHistorical && (
+                        {decreeCanReverse(row) && (
                           <Button
                             variant="outline"
                             className="border-red-200 text-red-600 hover:bg-red-50"

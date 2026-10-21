@@ -1,3 +1,5 @@
+import { buildDocumentaryDecreeHtml } from './decreeDocumentaryHtml.mjs';
+
 const clean = (value) => String(value ?? '').trim();
 
 const escapeHtml = (value) => clean(value)
@@ -243,6 +245,9 @@ const joinContact = (institution = {}) => [
 
 export function buildDecreeDocumentHtml({ row = {}, institution = {}, parish = {}, sacramentalRecord = {} } = {}) {
   const payload = row.payload || {};
+  if (String(row.tipo || payload.decreeType || '').toLowerCase().includes('documental')) {
+    return buildDocumentaryDecreeHtml({ row, institution, parish });
+  }
   const type = decreeTypeKey(row.tipo || payload.decreeType || payload.decretoType);
   const sacrament = sacramentKey(row.sacrament_type || payload.sacramentType || payload.sacramento || payload.sacrament);
   const original = locationData(payload.originalLocation || payload.originalPartidaSummary || payload.originalRecordSummary || {});

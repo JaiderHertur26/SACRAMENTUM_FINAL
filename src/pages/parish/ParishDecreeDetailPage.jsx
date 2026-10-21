@@ -15,6 +15,7 @@ import { useToast } from '@/components/ui/use-toast';
 import { useAuth } from '@/context/AuthContext';
 import { supabase } from '@/lib/supabaseClient';
 import { decreeConceptBookLabel, normalizeDecreeConceptPolicy } from '@/utils/decreeConceptPolicy';
+import { buildDecreeDocumentHtml } from '@/services/decreeDocumentHtml';
 
 const text = (value, fallback = '—') => {
   if (value === null || value === undefined || value === '') return fallback;
@@ -47,6 +48,7 @@ const decreeTypeLabel = (value) => {
   const key = String(value || '').toLowerCase();
   if (key.includes('correc')) return 'Corrección';
   if (key.includes('repos') || key.includes('replacement')) return 'Reposición';
+  if (key.includes('documental')) return 'Documental sin efecto registral';
   return value || 'Acto canónico';
 };
 
@@ -55,6 +57,7 @@ const decreeStatusLabel = (value) => {
   if (key === 'reversed' || key === 'revertida') return 'Revertido';
   if (key === 'cancelled' || key === 'cancelado') return 'Cancelado';
   if (key === 'active' || key === 'vigente') return 'Vigente';
+  if (key === 'archived') return 'Antecedente histórico';
   return value || 'Vigente';
 };
 
@@ -308,6 +311,23 @@ const ParishDecreeDetailPage = () => {
     : null;
 
   const typeKey = String(decreeType || '').toLowerCase();
+  const documentary = typeKey.includes('documental') || payload.documentaryOnly === true;
+  const printDecree = () => {
+    if (!documentary) { window.print(); return; }
+    const popup = window.open('', '_blank', 'width=980,height=1160');
+    if (!popup) {
+      toast({ title: 'Permita ventanas emergentes para imprimir', variant: 'destructive' });
+      return;
+    }
+    const html = buildDecreeDocumentHtml({
+      row: decree,
+      institution: { dioceseName: user?.dioceseName || 'Diócesis / Arquidiócesis', officeName: 'CANCILLERÍA' },
+      parish: { name: user?.parishName || payload.parishName || 'Parroquia' }
+    });
+    popup.document.open();
+    popup.document.write(html);
+    popup.document.close();
+  };
   const isCorrection = typeKey.includes('correc');
   const isReplacement = typeKey.includes('repos') || typeKey.includes('replacement');
 
@@ -364,7 +384,7 @@ const ParishDecreeDetailPage = () => {
           {decree && (
             <Button
               variant="outline"
-              onClick={() => window.print()}
+              onClick={printDecree}
               className="rounded-2xl border-slate-300"
             >
               <Printer className="mr-2 h-4 w-4" /> Imprimir decreto
@@ -420,6 +440,8 @@ const ParishDecreeDetailPage = () => {
                   <DataItem label="Fecha del decreto" value={formatDate(decreeDate)} />
                   <DataItem label="Sacramento" value={sacramentLabel(sacrament)} />
                   <DataItem label="Tipo de decreto" value={decreeTypeLabel(decreeType)} />
+                  {documentary && <DataItem label="Afectación a partida" value="Ninguna · acto exclusivamente documental" />}
+                  {payload.sourceReference && <DataItem label="Fuente histórica" value={payload.sourceReference} />}
                   <DataItem label="Estado" value={decreeStatusLabel(decree.status)} />
                   <DataItem label="Persona / Titular" value={targetName} />
                   {auditInfo && <DataItem label="Ejecutado por" value={auditInfo.actorName} />}

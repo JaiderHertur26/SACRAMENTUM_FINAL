@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { decreeCategory, decreeEffect, decreeTypeLabel, isHistoricalDecree } from '@/utils/decreeArchiveModel.mjs';
 import {
   ArchiveRestore,
   BookOpen,
@@ -49,6 +50,7 @@ const statusMeta = (status) => {
   if (key === 'reversed' || key === 'revertida') {
     return { label: 'Revertido', className: 'border-red-200 bg-red-50 text-red-700' };
   }
+  if (key === 'archived') return { label: 'Histórico', className: 'border-amber-200 bg-amber-50 text-amber-800' };
   if (key === 'cancelled' || key === 'cancelado') {
     return { label: 'Cancelado', className: 'border-slate-200 bg-slate-50 text-slate-600' };
   }
@@ -64,11 +66,7 @@ const ParishSacramentalDecreeArchivePage = () => {
   const rawType = String(searchParams.get('type') || '').toLowerCase();
   const rawSacrament = String(searchParams.get('sacrament') || 'bautismo').toLowerCase();
 
-  const typeFilter = rawType === 'reposicion'
-    ? 'reposicion'
-    : rawType === 'correccion'
-      ? 'correccion'
-      : 'all';
+  const typeFilter = ['reposicion','correccion','documental'].includes(rawType) ? rawType : 'all';
 
   const sacrament = normalizeSacramentType(rawSacrament);
   const mode = typeFilter === 'correccion'
@@ -172,7 +170,8 @@ const ParishSacramentalDecreeArchivePage = () => {
               {[
                 ['all', 'Todos'],
                 ['correccion', 'Correcciones'],
-                ['reposicion', 'Reposiciones']
+                ['reposicion', 'Reposiciones'],
+                ['documental', 'Documentales']
               ].map(([value, label]) => (
                 <button
                   key={value}
@@ -235,6 +234,8 @@ const ParishSacramentalDecreeArchivePage = () => {
                 const type = normalizeDecreeType(row.decreeType);
                 const state = statusMeta(row.status);
                 const correction = type === 'correccion';
+                const registral = decreeEffect(row) !== 'sin_modificacion';
+                const historical = isHistoricalDecree(row);
                 const Icon = correction ? FileCheck2 : ArchiveRestore;
 
                 return (
@@ -259,8 +260,9 @@ const ParishSacramentalDecreeArchivePage = () => {
                                 ? 'border-blue-200 bg-blue-50 text-blue-700'
                                 : 'border-amber-200 bg-amber-50 text-amber-700'
                             ].join(' ')}>
-                              {correction ? 'Corrección' : 'Reposición'}
+                              {decreeTypeLabel(row)}
                             </span>
+                            {historical && <span className="rounded-full border border-amber-200 bg-amber-50 px-2 py-1 text-[8px] font-bold text-amber-800">Antecedente histórico</span>}
                             <span className={`rounded-full border px-2 py-1 text-[8px] font-black uppercase tracking-wider ${state.className}`}>
                               {state.label}
                             </span>
@@ -276,14 +278,14 @@ const ParishSacramentalDecreeArchivePage = () => {
                           </div>
 
                           <div className="mt-2 flex flex-wrap gap-x-5 gap-y-1 font-mono text-[10px]">
-                            {correction ? (
+                            {correction && registral ? (
                               <span className="text-red-600">
                                 Original anulada: {locationText(row.originalLocation)}
                               </span>
                             ) : null}
-                            <span className="text-amber-700">
+                            {registral && (type === 'correccion' || type === 'reposicion') ? <span className="text-amber-700">
                               Partida supletoria: {locationText(row.replacementLocation)}
-                            </span>
+                            </span> : <span className="text-slate-600">Sin modificación de partidas</span>}
                           </div>
                         </div>
                       </div>

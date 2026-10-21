@@ -7,7 +7,7 @@ import DecreeCenterHeader, {
   DECREE_SACRAMENT_META,
   decreeRouteFor
 } from '@/components/chancery/DecreeCenterHeader';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, FileText, History } from 'lucide-react';
 
 const SacramentalDecreesCenterPage = () => {
   const { user } = useAuth();
@@ -17,6 +17,21 @@ const SacramentalDecreesCenterPage = () => {
     <DashboardLayout entityName={user?.dioceseName || 'Cancillería'}>
       <div className="mx-auto max-w-7xl space-y-7 pb-20">
         <DecreeCenterHeader />
+
+        <section className="grid gap-4 md:grid-cols-2">
+          <button type="button" onClick={() => navigate('/chancery/decretos/documental')}
+            className="flex items-start gap-4 rounded-3xl border border-blue-200 bg-blue-50 p-5 text-left transition hover:border-blue-400 hover:bg-blue-100">
+            <FileText className="mt-1 h-6 w-6 shrink-0 text-blue-700" />
+            <span><strong className="block font-serif text-lg text-slate-950">Decreto documental nuevo</strong>
+              <small className="mt-2 block leading-relaxed text-slate-700">Expedir un acto de Cancillería sin alterar partidas ni notas marginales.</small></span>
+          </button>
+          <button type="button" onClick={() => navigate('/chancery/decretos/documental?mode=historico')}
+            className="flex items-start gap-4 rounded-3xl border border-amber-200 bg-amber-50 p-5 text-left transition hover:border-amber-400 hover:bg-amber-100">
+            <History className="mt-1 h-6 w-6 shrink-0 text-amber-700" />
+            <span><strong className="block font-serif text-lg text-slate-950">Recuperar decreto antiguo</strong>
+              <small className="mt-2 block leading-relaxed text-slate-700">Archivar su antecedente con fuente verificable, sin repetir efectos ya ocurridos.</small></span>
+          </button>
+        </section>
 
         <section className="grid gap-5 lg:grid-cols-3">
           {Object.entries(DECREE_OPERATION_META).map(([key, operation]) => {

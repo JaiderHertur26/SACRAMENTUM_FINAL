@@ -1,12 +1,14 @@
 SACRAMENTUM FINAL
-Estado: V30 estable · Centro Parroquial Unificado de Decretos
-Fecha: 2026-09-25
-Decretos: lenguaje unificado Parroquia ↔ Cancillería
-Sacramentos: Bautismo · Confirmación · Matrimonio · Exequias
-Operaciones: Corrección · Reposición · Archivo
-Parroquia: consulta, impresión y trazabilidad
-Cancillería: emisión y reversión exclusiva
-Supabase: decretos SELECT por jurisdicción · INSERT mantiene autoridad de Cancillería
-Gate V30: 38/38
-Build: OK · Vite 8.3.1 · 3072 módulos · 2.11 s
-npm audit: 0 vulnerabilidades
+Versión de código: V88 · Cancillería y archivo de decretos
+Fecha: 2026-10-21 (Colombia)
+Base de partida: V87 (2026-09-27)
+Nuevas rutas: Cancillería /chancery/decretos/documental; Diócesis /diocese/decretos/archivo
+Actos: corrección, reposición, antecedente histórico, decreto documental sin efecto registral
+Cuatro sacramentos: Bautismo · Confirmación · Matrimonio · Exequias
+Permisos: Cancillería emite; Parroquia consulta; Diócesis supervisa; Admin General audita
+Backend: dos migraciones V88 instaladas en Supabase REGISTRO SACRAMENTOS
+Pruebas: 20/20 nuevas · 38/38 parroquial · 4 roles RLS SQL transaccional
+Registros ficticios persistentes: 0
+Build: Vite 8.3.1 · OK
+Estado del frontend: compilado localmente; verificar despliegue antes de declarar publicación.
+Detalles completos: ESTADO_CANCILLERIA_DECRETOS_V88_2026-10-21.md
