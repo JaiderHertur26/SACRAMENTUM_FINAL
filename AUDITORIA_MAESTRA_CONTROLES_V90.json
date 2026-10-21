@@ -501,9 +501,10 @@
       "criterion": "RLS INSERT por actor",
       "status": "EN_PROGRESO",
       "evidence": [
-        "AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: Inserciones RLS en dos tablas de boletas: 8/8 casos por cuatro roles, Parroquia únicamente permitida"
+        "AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: Inserciones RLS en dos tablas de boletas: 8/8 casos por cuatro roles, Parroquia únicamente permitida",
+        "AUDITORIA_PARAMETROS_Y_LIBROS_V94_2026-10-21.md: Parámetros/libros INSERT limitado a parroquia: dos rechazos explícitos para admin general"
       ],
-      "updated_at": "2026-10-21T18:05:51.927Z"
+      "updated_at": "2026-10-21T18:13:49.411Z"
     },
     {
       "id": "06.04",
@@ -513,9 +514,10 @@
       "criterion": "RLS UPDATE y WITH CHECK",
       "status": "EN_PROGRESO",
       "evidence": [
-        "AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: Actualizaciones RLS en dos tablas de boletas: 8/8 casos, sólo parroquia titular"
+        "AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: Actualizaciones RLS en dos tablas de boletas: 8/8 casos, sólo parroquia titular",
+        "AUDITORIA_PARAMETROS_Y_LIBROS_V94_2026-10-21.md: UPDATE de parámetros y libro: 8/8 pruebas por cuatro roles; parroquia propia conserva acceso"
       ],
-      "updated_at": "2026-10-21T18:05:52.291Z"
+      "updated_at": "2026-10-21T18:13:49.510Z"
     },
     {
       "id": "06.05",
@@ -525,9 +527,10 @@
       "criterion": "RLS DELETE por actor",
       "status": "EN_PROGRESO",
       "evidence": [
-        "AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: Eliminaciones RLS en dos tablas de boletas: 8/8 casos, sólo parroquia titular"
+        "AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: Eliminaciones RLS en dos tablas de boletas: 8/8 casos, sólo parroquia titular",
+        "AUDITORIA_PARAMETROS_Y_LIBROS_V94_2026-10-21.md: DELETE de libro por cuatro roles: sólo parroquia titular afecta una fila ficticia"
       ],
-      "updated_at": "2026-10-21T18:05:52.530Z"
+      "updated_at": "2026-10-21T18:13:49.586Z"
     },
     {
       "id": "06.06",
@@ -737,9 +740,11 @@
       "area": "Bautismo",
       "priority": "P0",
       "criterion": "Libro Folio Número",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "AUDITORIA_PARAMETROS_Y_LIBROS_V94_2026-10-21.md: Libros y parámetros de Bautismo no modificables por Administrador General vía RLS"
+      ],
+      "updated_at": "2026-10-21T18:13:49.650Z"
     },
     {
       "id": "08.05",
@@ -2710,9 +2715,10 @@
       "status": "EN_PROGRESO",
       "evidence": [
         "AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md: Usuario Parroquia ya no puede consumir consecutivo de ámbito diocesano sin documento",
-        "AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: Riesgo V93-SEC-002: Administrador General deja de poder escribir boletas de Bautismo y Confirmación"
+        "AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: Riesgo V93-SEC-002: Administrador General deja de poder escribir boletas de Bautismo y Confirmación",
+        "AUDITORIA_PARAMETROS_Y_LIBROS_V94_2026-10-21.md: V94-SEC-003 corregido: admin general ya no puede alterar configuraciones ni libros parroquiales"
       ],
-      "updated_at": "2026-10-21T18:05:53.341Z"
+      "updated_at": "2026-10-21T18:13:49.720Z"
     },
     {
       "id": "27.02",
@@ -3294,9 +3300,10 @@
       "status": "EN_PROGRESO",
       "evidence": [
         "AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md: Emisión temporal 1 documento y 1 log; cero residuos tras ROLLBACK en muestra controlada",
-        "AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: Boletas ficticias V93 comprobadas en cero tras ROLLBACK, conservación de históricos"
+        "AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: Boletas ficticias V93 comprobadas en cero tras ROLLBACK, conservación de históricos",
+        "AUDITORIA_PARAMETROS_Y_LIBROS_V94_2026-10-21.md: V94: 3 registros de parámetros y 0 libros tras rollback; sin persistencia de QA"
       ],
-      "updated_at": "2026-10-21T18:05:53.581Z"
+      "updated_at": "2026-10-21T18:13:49.801Z"
     },
     {
       "id": "32.06",
@@ -3317,9 +3324,10 @@
       "status": "EN_PROGRESO",
       "evidence": [
         "AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md: Regresión 211 pruebas sintéticas, 23 verificadores, build OK; quedan fallas de dependencias",
-        "AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: 219 pruebas sintéticas, 23 verificadores y build aprobados; advertencias HIGH de paquetes aún abiertas"
+        "AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: 219 pruebas sintéticas, 23 verificadores y build aprobados; advertencias HIGH de paquetes aún abiertas",
+        "AUDITORIA_PARAMETROS_Y_LIBROS_V94_2026-10-21.md: V94: 227 pruebas sintéticas, 23 verificadores y build OK; siguen cinco HIGH npm audit"
       ],
-      "updated_at": "2026-10-21T18:05:53.893Z"
+      "updated_at": "2026-10-21T18:13:49.914Z"
     },
     {
       "id": "32.08",

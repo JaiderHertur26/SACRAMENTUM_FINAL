@@ -10,7 +10,7 @@ Regla: no introducir datos falsos permanentes; usar memoria, transacciones ROLLB
 
 Prioridad P0 bloquea la certificación. P1 debe constar resuelta o aceptada con evidencia y responsable.
 
-Avance: 325 controles totales; 9 aprobados; 31 en progreso; 284 pendientes; 1 fallidos; 0 bloqueados.
+Avance: 325 controles totales; 9 aprobados; 32 en progreso; 283 pendientes; 1 fallidos; 0 bloqueados.
 
 ## Fases y controles numerados
 
@@ -91,10 +91,13 @@ Avance: 325 controles totales; 9 aprobados; 31 en progreso; 284 pendientes; 1 fa
   - Evidencia: AUDITORIA_EXP_DEPENDENCIAS_Y_RLS_V91.md: Cuatro roles no pudieron leer Bautismo de segunda diócesis ficticia; falta matriz completa
 - [ ] 06.03 · RLS INSERT por actor — EN_PROGRESO
   - Evidencia: AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: Inserciones RLS en dos tablas de boletas: 8/8 casos por cuatro roles, Parroquia únicamente permitida
+  - Evidencia: AUDITORIA_PARAMETROS_Y_LIBROS_V94_2026-10-21.md: Parámetros/libros INSERT limitado a parroquia: dos rechazos explícitos para admin general
 - [ ] 06.04 · RLS UPDATE y WITH CHECK — EN_PROGRESO
   - Evidencia: AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: Actualizaciones RLS en dos tablas de boletas: 8/8 casos, sólo parroquia titular
+  - Evidencia: AUDITORIA_PARAMETROS_Y_LIBROS_V94_2026-10-21.md: UPDATE de parámetros y libro: 8/8 pruebas por cuatro roles; parroquia propia conserva acceso
 - [ ] 06.05 · RLS DELETE por actor — EN_PROGRESO
   - Evidencia: AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: Eliminaciones RLS en dos tablas de boletas: 8/8 casos, sólo parroquia titular
+  - Evidencia: AUDITORIA_PARAMETROS_Y_LIBROS_V94_2026-10-21.md: DELETE de libro por cuatro roles: sólo parroquia titular afecta una fila ficticia
 - [ ] 06.06 · 129 RPC privilegiadas autorizadas — EN_PROGRESO
   - Evidencia: AUDITORIA_INVENTARIO_RPC_V91.json: 129 funciones privilegiadas clasificadas; faltan pruebas positivas y negativas función por función
 - [ ] 06.07 · 129 RPC privilegiadas denegadas a terceros — EN_PROGRESO
@@ -127,7 +130,8 @@ Avance: 325 controles totales; 9 aprobados; 31 en progreso; 284 pendientes; 1 fa
   - Evidencia: AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: Boleta Bautismo permite inserción como Parroquia y deniega otros tres roles en API; falta UI y ciclo completo
 - [ ] 08.02 · Celebración — PENDIENTE
 - [ ] 08.03 · Asiento en libro — PENDIENTE
-- [ ] 08.04 · Libro Folio Número — PENDIENTE
+- [ ] 08.04 · Libro Folio Número — EN_PROGRESO
+  - Evidencia: AUDITORIA_PARAMETROS_Y_LIBROS_V94_2026-10-21.md: Libros y parámetros de Bautismo no modificables por Administrador General vía RLS
 - [ ] 08.05 · Impresión — PENDIENTE
 - [ ] 08.06 · Importación de partida — PENDIENTE
 - [ ] 08.07 · Digitalización sin consumir consecutivo — PENDIENTE
@@ -388,6 +392,7 @@ Avance: 325 controles totales; 9 aprobados; 31 en progreso; 284 pendientes; 1 fa
 - [ ] 27.01 · Escalamiento vertical — EN_PROGRESO
   - Evidencia: AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md: Usuario Parroquia ya no puede consumir consecutivo de ámbito diocesano sin documento
   - Evidencia: AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: Riesgo V93-SEC-002: Administrador General deja de poder escribir boletas de Bautismo y Confirmación
+  - Evidencia: AUDITORIA_PARAMETROS_Y_LIBROS_V94_2026-10-21.md: V94-SEC-003 corregido: admin general ya no puede alterar configuraciones ni libros parroquiales
 - [ ] 27.02 · Escalamiento horizontal — EN_PROGRESO
   - Evidencia: AUDITORIA_EXP_DEPENDENCIAS_Y_RLS_V91.md: Segunda diócesis ficticia y Bautismo ajeno negados para cuatro roles en transacción ROLLBACK
 - [ ] 27.03 · IDOR de parroquia — EN_PROGRESO
@@ -478,10 +483,12 @@ Avance: 325 controles totales; 9 aprobados; 31 en progreso; 284 pendientes; 1 fa
 - [ ] 32.05 · Rastrear hallazgos P0/P1/P2 — EN_PROGRESO
   - Evidencia: AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md: Emisión temporal 1 documento y 1 log; cero residuos tras ROLLBACK en muestra controlada
   - Evidencia: AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: Boletas ficticias V93 comprobadas en cero tras ROLLBACK, conservación de históricos
+  - Evidencia: AUDITORIA_PARAMETROS_Y_LIBROS_V94_2026-10-21.md: V94: 3 registros de parámetros y 0 libros tras rollback; sin persistencia de QA
 - [ ] 32.06 · Corregir y repetir — PENDIENTE
 - [ ] 32.07 · Regresión completa — EN_PROGRESO
   - Evidencia: AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md: Regresión 211 pruebas sintéticas, 23 verificadores, build OK; quedan fallas de dependencias
   - Evidencia: AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: 219 pruebas sintéticas, 23 verificadores y build aprobados; advertencias HIGH de paquetes aún abiertas
+  - Evidencia: AUDITORIA_PARAMETROS_Y_LIBROS_V94_2026-10-21.md: V94: 227 pruebas sintéticas, 23 verificadores y build OK; siguen cinco HIGH npm audit
 - [ ] 32.08 · Conteos antes/después — PENDIENTE
 - [x] 32.09 · Confirmar producción Ready — APROBADO
   - Evidencia: AUDITORIA_CIERRE_TECNICO_V91_2026-10-21.md: Despliegue Vercel de código V91 Ready; nota: app no certificada integralmente
