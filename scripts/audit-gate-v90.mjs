@@ -5,6 +5,9 @@ import path from 'node:path';
 const now=()=>new Date().toISOString();
 const strict=!process.argv.includes('--sin-auditoria-dependencias');
 const root=process.cwd();
+const outputFile=process.argv.find(a=>a.startsWith('--output='))?.slice('--output='.length) || 'AUDITORIA_PUERTA_CALIDAD_V90.json';
+const version=process.argv.find(a=>a.startsWith('--protocol='))?.slice('--protocol='.length) || 'V90';
+const gitRef=spawnSync('git',['rev-parse','--short','HEAD'],{cwd:root,encoding:'utf8'}).stdout?.trim() || '(desconocido)';
 const started=now(),tasks=[];
 const exec=(name,command,args)=>{
   const begin=Date.now();
@@ -44,11 +47,11 @@ if(strict){
   }catch(e){r.task.ok=false;r.task.error='No se pudo interpretar npm audit: '+e.message;}
 }
 const report={
- protocol:'V90',startedAt:started,completedAt:now(),gitRef:'2ef4f3c',
+ protocol:version,startedAt:started,completedAt:now(),gitRef,
  readOnly:true,strictDependencies:strict,checks:tasks.length,
  passed:tasks.filter(t=>t.ok).length,failed:tasks.filter(t=>!t.ok).length,
  tasks
 };
-fs.writeFileSync('AUDITORIA_PUERTA_CALIDAD_V90.json',JSON.stringify(report,null,2)+'\n');
+fs.writeFileSync(outputFile,JSON.stringify(report,null,2)+'\n');
 console.log('RESUMEN '+report.passed+'/'+report.checks+' verificaciones aprobadas');
 if(report.failed)process.exitCode=1;

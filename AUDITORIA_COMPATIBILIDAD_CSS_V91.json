@@ -1,0 +1,54 @@
+{
+  "date": "2026-10-21",
+  "scope": "Comparación de selectores compilados; NO sustituye capturas ni evaluación visual.",
+  "old": {
+    "file": "C:\\SACRAMENTUM\\AUDITORIA_V91_WORKTREE\\dist\\assets\\index-S3QUKhxO.css",
+    "bytes": 111368,
+    "classes": 1533,
+    "rules": 1599
+  },
+  "next": {
+    "file": "C:\\SACRAMENTUM\\AUDITORIA_V91_TAILWIND4\\dist\\assets\\index-Dqwaff-d.css",
+    "bytes": 150362,
+    "classes": 1555,
+    "rules": 1783
+  },
+  "missingCount": 3,
+  "addedCount": 25,
+  "missingExamples": [
+    "bg-opacity-10",
+    "size-3",
+    "size-3.5"
+  ],
+  "addedExamples": [
+    "[.border-b]:pb-3",
+    "[.border-t]:pt-3",
+    "bg-[#D4AF37]/8",
+    "contents",
+    "ease-out",
+    "resize",
+    "ring",
+    "sacramentum-field",
+    "sacramentum-field-compact",
+    "sacramentum-field-label",
+    "sacramentum-form-shell",
+    "sacramentum-kicker",
+    "sacramentum-page-description",
+    "sacramentum-page-header",
+    "sacramentum-page-heading",
+    "sacramentum-page-icon",
+    "sacramentum-page-kicker",
+    "sacramentum-page-title",
+    "sacramentum-panel",
+    "sacramentum-search-field",
+    "sacramentum-section-title",
+    "sacramentum-shell",
+    "sacramentum-table-shell",
+    "sacramentum-toolbar",
+    "shadow-xs"
+  ],
+  "parseErrors": {
+    "old": [],
+    "next": []
+  }
+}

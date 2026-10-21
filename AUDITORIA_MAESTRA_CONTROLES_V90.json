@@ -422,9 +422,11 @@
       "area": "Jerarquía territorial",
       "priority": "P1",
       "criterion": "Parroquias",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "AUDITORIA_EXP_DEPENDENCIAS_Y_RLS_V91.md: El trigger obliga vicaría y decanato en parroquias operativas; el ensayo con jerarquía ficticia pasó y se revirtió"
+      ],
+      "updated_at": "2026-10-21T17:18:15.894Z"
     },
     {
       "id": "05.05",
@@ -486,9 +488,10 @@
       "criterion": "RLS SELECT por actor",
       "status": "EN_PROGRESO",
       "evidence": [
-        "AUDITORIA_RLS_PARROQUIAL_V90.md: Ensayo con rol Parroquia autenticado: cero filas de otras parroquias en 10 entidades; falta matriz completa y operaciones de escritura"
+        "AUDITORIA_RLS_PARROQUIAL_V90.md: Ensayo con rol Parroquia autenticado: cero filas de otras parroquias en 10 entidades; falta matriz completa y operaciones de escritura",
+        "AUDITORIA_EXP_DEPENDENCIAS_Y_RLS_V91.md: Cuatro roles no pudieron leer Bautismo de segunda diócesis ficticia; falta matriz completa"
       ],
-      "updated_at": "2026-10-21T16:14:20.872Z"
+      "updated_at": "2026-10-21T17:18:15.990Z"
     },
     {
       "id": "06.03",
@@ -526,9 +529,11 @@
       "area": "RLS y privilegios del backend",
       "priority": "P0",
       "criterion": "129 RPC privilegiadas autorizadas",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "AUDITORIA_INVENTARIO_RPC_V91.json: 129 funciones privilegiadas clasificadas; faltan pruebas positivas y negativas función por función"
+      ],
+      "updated_at": "2026-10-21T17:18:16.072Z"
     },
     {
       "id": "06.07",
@@ -538,9 +543,10 @@
       "criterion": "129 RPC privilegiadas denegadas a terceros",
       "status": "EN_PROGRESO",
       "evidence": [
-        "AUDITORIA_BASE_SQL_V90.md: Cero vistas públicas; 129 RPC privilegiadas requieren pruebas de permisos y búsqueda de bypass"
+        "AUDITORIA_BASE_SQL_V90.md: Cero vistas públicas; 129 RPC privilegiadas requieren pruebas de permisos y búsqueda de bypass",
+        "AUDITORIA_INVENTARIO_RPC_V91.json: 129 funciones catalogadas para revisión de terceros, sin afirmar autorización sin pruebas"
       ],
-      "updated_at": "2026-10-21T16:06:49.755Z"
+      "updated_at": "2026-10-21T17:18:16.173Z"
     },
     {
       "id": "06.08",
@@ -548,9 +554,11 @@
       "area": "RLS y privilegios del backend",
       "priority": "P0",
       "criterion": "Search path de funciones",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "AUDITORIA_INVENTARIO_RPC_V91.json: Cribado search_path de funciones privilegiadas; falta verificación de todas sus dependencias"
+      ],
+      "updated_at": "2026-10-21T17:18:16.278Z"
     },
     {
       "id": "06.09",
@@ -2360,9 +2368,11 @@
       "area": "Diseño y accesibilidad",
       "priority": "P1",
       "criterion": "Móvil",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "AUDITORIA_VISUAL_PUBLICA_V91.json: Emulación Chrome CDP 390 ancho real, sin desbordamiento en login público; resto de pantallas pendiente"
+      ],
+      "updated_at": "2026-10-21T17:18:16.345Z"
     },
     {
       "id": "24.03",
@@ -2370,9 +2380,11 @@
       "area": "Diseño y accesibilidad",
       "priority": "P1",
       "criterion": "Tableta",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "AUDITORIA_VISUAL_PUBLICA_V91.json: Emulación CDP tableta 768 sin overflow en login público; resto pendiente"
+      ],
+      "updated_at": "2026-10-21T17:18:16.429Z"
     },
     {
       "id": "24.04",
@@ -2380,9 +2392,11 @@
       "area": "Diseño y accesibilidad",
       "priority": "P1",
       "criterion": "Escritorio",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "AUDITORIA_VISUAL_PUBLICA_V91.json: Emulación CDP escritorio 1365 sin overflow en login público; resto pendiente"
+      ],
+      "updated_at": "2026-10-21T17:18:16.521Z"
     },
     {
       "id": "24.05",
@@ -2460,9 +2474,11 @@
       "area": "Diseño y accesibilidad",
       "priority": "P1",
       "criterion": "Capturas de evidencia",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "AUDITORIA_VISUAL_PUBLICA_V91.json: Seis capturas PNG públicas con huellas SHA256 guardadas en C:\\SACRAMENTUM\\AUDITORIA_EVIDENCIAS_V91"
+      ],
+      "updated_at": "2026-10-21T17:18:16.622Z"
     },
     {
       "id": "25.01",
@@ -2690,9 +2706,11 @@
       "area": "Ciberseguridad adversarial",
       "priority": "P0",
       "criterion": "Escalamiento horizontal",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "AUDITORIA_EXP_DEPENDENCIAS_Y_RLS_V91.md: Segunda diócesis ficticia y Bautismo ajeno negados para cuatro roles en transacción ROLLBACK"
+      ],
+      "updated_at": "2026-10-21T17:18:16.717Z"
     },
     {
       "id": "27.03",
@@ -2700,9 +2718,11 @@
       "area": "Ciberseguridad adversarial",
       "priority": "P0",
       "criterion": "IDOR de parroquia",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "AUDITORIA_EXP_DEPENDENCIAS_Y_RLS_V91.md: Acceso horizontal a partida Bautismo fuera de jurisdicción denegado; faltan 3 sacramentos"
+      ],
+      "updated_at": "2026-10-21T17:18:16.800Z"
     },
     {
       "id": "27.04",
@@ -2790,9 +2810,11 @@
       "area": "Ciberseguridad adversarial",
       "priority": "P0",
       "criterion": "Funciones SECURITY DEFINER",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "AUDITORIA_INVENTARIO_RPC_V91.json: Cribado completo de 129 SECURITY DEFINER, una delegación interna revisada, pendientes pruebas ejecutables"
+      ],
+      "updated_at": "2026-10-21T17:18:16.895Z"
     },
     {
       "id": "28.01",
@@ -2990,9 +3012,11 @@
       "area": "Despliegue y dependencias",
       "priority": "P1",
       "criterion": "Node y lockfile",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "APROBADO",
+      "evidence": [
+        "AUDITORIA_EXP_DEPENDENCIAS_Y_RLS_V91.md: npm ci limpio en copia independiente instaló 501 dependencias; build generado y CSS SHA idéntico"
+      ],
+      "updated_at": "2026-10-21T17:18:16.988Z"
     },
     {
       "id": "30.02",
@@ -3002,9 +3026,10 @@
       "criterion": "npm audit",
       "status": "FALLIDO",
       "evidence": [
-        "AUDITORIA_DEPENDENCIAS_V90.md: npm audit --omit=dev devuelve 8 avisos: 6 high, 2 moderate, 0 critical; pendiente remedación sin romper Tailwind"
+        "AUDITORIA_DEPENDENCIAS_V90.md: npm audit --omit=dev devuelve 8 avisos: 6 high, 2 moderate, 0 critical; pendiente remedación sin romper Tailwind",
+        "AUDITORIA_PUERTA_CALIDAD_V91.json: La puerta V91 baja de 8 alertas a 5 altas y 0 moderadas, mantiene bloqueo de seguridad"
       ],
-      "updated_at": "2026-10-21T16:06:49.912Z"
+      "updated_at": "2026-10-21T17:18:17.091Z"
     },
     {
       "id": "30.03",
@@ -3045,9 +3070,11 @@
       "area": "Despliegue y dependencias",
       "priority": "P1",
       "criterion": "Variables secretas",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "AUDITORIA_EXP_DEPENDENCIAS_Y_RLS_V91.md: En laboratorios solo variables VITE públicas, excluido VERCEL_OIDC_TOKEN; faltan otros secretos"
+      ],
+      "updated_at": "2026-10-21T17:18:17.192Z"
     },
     {
       "id": "30.07",

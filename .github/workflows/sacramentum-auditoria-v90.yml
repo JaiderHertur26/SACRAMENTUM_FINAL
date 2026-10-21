@@ -37,6 +37,8 @@ jobs:
           done
       - name: Compilación de producción
         run: npm run build
+      - name: Verificar utilidades visuales usadas por paneles
+        run: node scripts/verify-critical-css-v91.mjs
 
   seguridad-dependencias:
     runs-on: ubuntu-latest

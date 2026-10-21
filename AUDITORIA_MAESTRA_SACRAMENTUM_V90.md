@@ -10,7 +10,7 @@ Regla: no introducir datos falsos permanentes; usar memoria, transacciones ROLLB
 
 Prioridad P0 bloquea la certificación. P1 debe constar resuelta o aceptada con evidencia y responsable.
 
-Avance: 325 controles totales; 5 aprobados; 10 en progreso; 309 pendientes; 1 fallidos; 0 bloqueados.
+Avance: 325 controles totales; 6 aprobados; 21 en progreso; 297 pendientes; 1 fallidos; 0 bloqueados.
 
 ## Fases y controles numerados
 
@@ -75,7 +75,8 @@ Avance: 325 controles totales; 5 aprobados; 10 en progreso; 309 pendientes; 1 fa
 - [ ] 05.01 · Diócesis y Arquidiócesis — PENDIENTE
 - [ ] 05.02 · Vicarías — PENDIENTE
 - [ ] 05.03 · Decanatos — PENDIENTE
-- [ ] 05.04 · Parroquias — PENDIENTE
+- [ ] 05.04 · Parroquias — EN_PROGRESO
+  - Evidencia: AUDITORIA_EXP_DEPENDENCIAS_Y_RLS_V91.md: El trigger obliga vicaría y decanato en parroquias operativas; el ensayo con jerarquía ficticia pasó y se revirtió
 - [ ] 05.05 · Parroquias antiguas no operativas — PENDIENTE
 - [ ] 05.06 · No traslado sin autorización — PENDIENTE
 - [ ] 05.07 · Referencias y códigos únicos — PENDIENTE
@@ -87,13 +88,17 @@ Avance: 325 controles totales; 5 aprobados; 10 en progreso; 309 pendientes; 1 fa
   - Evidencia: AUDITORIA_BASE_SQL_V90.md: Consulta SQL al catálogo: las 73 tablas públicas tienen RLS y cero carecen de RLS
 - [ ] 06.02 · RLS SELECT por actor — EN_PROGRESO
   - Evidencia: AUDITORIA_RLS_PARROQUIAL_V90.md: Ensayo con rol Parroquia autenticado: cero filas de otras parroquias en 10 entidades; falta matriz completa y operaciones de escritura
+  - Evidencia: AUDITORIA_EXP_DEPENDENCIAS_Y_RLS_V91.md: Cuatro roles no pudieron leer Bautismo de segunda diócesis ficticia; falta matriz completa
 - [ ] 06.03 · RLS INSERT por actor — PENDIENTE
 - [ ] 06.04 · RLS UPDATE y WITH CHECK — PENDIENTE
 - [ ] 06.05 · RLS DELETE por actor — PENDIENTE
-- [ ] 06.06 · 129 RPC privilegiadas autorizadas — PENDIENTE
+- [ ] 06.06 · 129 RPC privilegiadas autorizadas — EN_PROGRESO
+  - Evidencia: AUDITORIA_INVENTARIO_RPC_V91.json: 129 funciones privilegiadas clasificadas; faltan pruebas positivas y negativas función por función
 - [ ] 06.07 · 129 RPC privilegiadas denegadas a terceros — EN_PROGRESO
   - Evidencia: AUDITORIA_BASE_SQL_V90.md: Cero vistas públicas; 129 RPC privilegiadas requieren pruebas de permisos y búsqueda de bypass
-- [ ] 06.08 · Search path de funciones — PENDIENTE
+  - Evidencia: AUDITORIA_INVENTARIO_RPC_V91.json: 129 funciones catalogadas para revisión de terceros, sin afirmar autorización sin pruebas
+- [ ] 06.08 · Search path de funciones — EN_PROGRESO
+  - Evidencia: AUDITORIA_INVENTARIO_RPC_V91.json: Cribado search_path de funciones privilegiadas; falta verificación de todas sus dependencias
 - [ ] 06.09 · Filtración por GraphQL — PENDIENTE
 - [x] 06.10 · No privilegios anónimos — APROBADO
   - Evidencia: AUDITORIA_BASE_SQL_V90.md: Catálogo de grants: cero RPC SECURITY DEFINER ejecutables por rol anon
@@ -329,9 +334,12 @@ Avance: 325 controles totales; 5 aprobados; 10 en progreso; 309 pendientes; 1 fa
 ### 24. Diseño y accesibilidad (P1) — 0/12
 
 - [ ] 24.01 · Entrar a todas las pantallas — PENDIENTE
-- [ ] 24.02 · Móvil — PENDIENTE
-- [ ] 24.03 · Tableta — PENDIENTE
-- [ ] 24.04 · Escritorio — PENDIENTE
+- [ ] 24.02 · Móvil — EN_PROGRESO
+  - Evidencia: AUDITORIA_VISUAL_PUBLICA_V91.json: Emulación Chrome CDP 390 ancho real, sin desbordamiento en login público; resto de pantallas pendiente
+- [ ] 24.03 · Tableta — EN_PROGRESO
+  - Evidencia: AUDITORIA_VISUAL_PUBLICA_V91.json: Emulación CDP tableta 768 sin overflow en login público; resto pendiente
+- [ ] 24.04 · Escritorio — EN_PROGRESO
+  - Evidencia: AUDITORIA_VISUAL_PUBLICA_V91.json: Emulación CDP escritorio 1365 sin overflow en login público; resto pendiente
 - [ ] 24.05 · Zoom 200% — PENDIENTE
 - [ ] 24.06 · Contraste — PENDIENTE
 - [ ] 24.07 · Navegación por teclado — PENDIENTE
@@ -339,7 +347,8 @@ Avance: 325 controles totales; 5 aprobados; 10 en progreso; 309 pendientes; 1 fa
 - [ ] 24.09 · Etiquetas accesibles — PENDIENTE
 - [ ] 24.10 · Botones activos — PENDIENTE
 - [ ] 24.11 · Mensajes de error — PENDIENTE
-- [ ] 24.12 · Capturas de evidencia — PENDIENTE
+- [ ] 24.12 · Capturas de evidencia — EN_PROGRESO
+  - Evidencia: AUDITORIA_VISUAL_PUBLICA_V91.json: Seis capturas PNG públicas con huellas SHA256 guardadas en C:\SACRAMENTUM\AUDITORIA_EVIDENCIAS_V91
 
 ### 25. Resiliencia (P0) — 0/11
 
@@ -371,8 +380,10 @@ Avance: 325 controles totales; 5 aprobados; 10 en progreso; 309 pendientes; 1 fa
 ### 27. Ciberseguridad adversarial (P0) — 0/12
 
 - [ ] 27.01 · Escalamiento vertical — PENDIENTE
-- [ ] 27.02 · Escalamiento horizontal — PENDIENTE
-- [ ] 27.03 · IDOR de parroquia — PENDIENTE
+- [ ] 27.02 · Escalamiento horizontal — EN_PROGRESO
+  - Evidencia: AUDITORIA_EXP_DEPENDENCIAS_Y_RLS_V91.md: Segunda diócesis ficticia y Bautismo ajeno negados para cuatro roles en transacción ROLLBACK
+- [ ] 27.03 · IDOR de parroquia — EN_PROGRESO
+  - Evidencia: AUDITORIA_EXP_DEPENDENCIAS_Y_RLS_V91.md: Acceso horizontal a partida Bautismo fuera de jurisdicción denegado; faltan 3 sacramentos
 - [ ] 27.04 · RPC directa prohibida — PENDIENTE
 - [ ] 27.05 · SQL injection — PENDIENTE
 - [ ] 27.06 · XSS — PENDIENTE
@@ -381,7 +392,8 @@ Avance: 325 controles totales; 5 aprobados; 10 en progreso; 309 pendientes; 1 fa
 - [ ] 27.09 · CORS — PENDIENTE
 - [ ] 27.10 · CSRF — PENDIENTE
 - [ ] 27.11 · Privilegios de storage — PENDIENTE
-- [ ] 27.12 · Funciones SECURITY DEFINER — PENDIENTE
+- [ ] 27.12 · Funciones SECURITY DEFINER — EN_PROGRESO
+  - Evidencia: AUDITORIA_INVENTARIO_RPC_V91.json: Cribado completo de 129 SECURITY DEFINER, una delegación interna revisada, pendientes pruebas ejecutables
 
 ### 28. Privacidad y tratamiento de datos (P0) — 0/9
 
@@ -408,17 +420,20 @@ Avance: 325 controles totales; 5 aprobados; 10 en progreso; 309 pendientes; 1 fa
 - [ ] 29.09 · Rollback de esquema — PENDIENTE
 - [ ] 29.10 · Aislamiento entre parroquias — PENDIENTE
 
-### 30. Despliegue y dependencias (P1) — 2/10
+### 30. Despliegue y dependencias (P1) — 3/10
 
-- [ ] 30.01 · Node y lockfile — PENDIENTE
+- [x] 30.01 · Node y lockfile — APROBADO
+  - Evidencia: AUDITORIA_EXP_DEPENDENCIAS_Y_RLS_V91.md: npm ci limpio en copia independiente instaló 501 dependencias; build generado y CSS SHA idéntico
 - [ ] 30.02 · npm audit — FALLIDO
   - Evidencia: AUDITORIA_DEPENDENCIAS_V90.md: npm audit --omit=dev devuelve 8 avisos: 6 high, 2 moderate, 0 critical; pendiente remedación sin romper Tailwind
+  - Evidencia: AUDITORIA_PUERTA_CALIDAD_V91.json: La puerta V91 baja de 8 alertas a 5 altas y 0 moderadas, mantiene bloqueo de seguridad
 - [x] 30.03 · CI automática — APROBADO
   - Evidencia: .github/workflows/sacramentum-auditoria-v90.yml: CI de tests build y npm audit creada y validada como YAML; falta ejecutarla en GitHub Actions
   - Evidencia: AUDITORIA_CI_GITHUB_V90.md: GitHub Actions funcionó y trabajo funcional completó SUCCESS en commit 84bbb16; seguridad FAIL esperado por dependencias
 - [ ] 30.04 · Migraciones reproducibles — PENDIENTE
 - [ ] 30.05 · Preview de Vercel — PENDIENTE
-- [ ] 30.06 · Variables secretas — PENDIENTE
+- [ ] 30.06 · Variables secretas — EN_PROGRESO
+  - Evidencia: AUDITORIA_EXP_DEPENDENCIAS_Y_RLS_V91.md: En laboratorios solo variables VITE públicas, excluido VERCEL_OIDC_TOKEN; faltan otros secretos
 - [ ] 30.07 · Construcción de producción — PENDIENTE
 - [x] 30.08 · Smoke posdespliegue — APROBADO
   - Evidencia: AUDITORIA_PUERTA_CALIDAD_V90.json: Puerta V90 ejecutó npm run build sin errores con Node del equipo; no certifica despliegue ni interfaz

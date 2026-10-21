@@ -1,12 +1,14 @@
-SACRAMENTUM FINAL · V89
-Corte: 21 de octubre de 2026 · Colombia
+SACRAMENTUM FINAL · V91
+Fecha de corte: 2026-10-21 · Colombia
 Carpeta: C:\SACRAMENTUM\SACRAMENTUM_FINAL
-Versión base: V88 / ba590e8
-Novedades: permiso exclusivo Cancillería al fijar conceptos, bloqueo escrituras directas de decretos, trazabilidad por rol, preflight supletorio de Bautismo.
-Base de datos: tres migraciones V89 instaladas en Supabase REGISTRO SACRAMENTOS.
-Auditoría sintética: 206/206 aprobadas; 23/23 verificadores históricos; build OK.
-Pruebas SQL reversibles: cuatro roles, ocho borradores y corrección completa de Bautismo con reversión (esta última antes del último cambio de política).
-Datos ficticios persistentes: ninguno.
-Pendientes: E2E registral posparche, recorrido visual por roles, revisión de avisos Supabase, ANULACION en staging y consecutivo supletorio ocupado.
-Informe: AUDITORIA_INTEGRAL_V89_2026-10-21.md
-No presentar esta versión como certificación total de todas las pantallas y flujos.
+Base Git anterior: 09947d5 · V89 funcional con auditoría V90
+Corrección V91: mitigación conservadora de dependencias: source-map-js 1.2.2, postcss-selector-parser 7.1.7 fijo mediante overrides; se mantiene Tailwind CSS 3.4.19.
+Ensayo de regresión: CSS de producción SHA256 F60940EBBA847BCE141ED90BDA0388CB8182D24228907B59BBC0088C9BA0A68A idéntico al original; 206/206 pruebas sintéticas, 23/23 verificadores históricos, build OK.
+Ensayo visual público: 6 de 6 medidas de pantalla (móvil, tableta, escritorio) sin overflow con CDP, NO incluye sesiones autenticadas.
+Seguridad SQL: comprobación negativa de lectura de Bautismo en segunda diócesis ficticia para los cuatro roles, con transacción ROLLBACK, sin registros persistidos.
+Auditoría RPC: 129 firmas SECURITY DEFINER clasificadas; su revisión individual sigue pendiente.
+Seguridad de dependencias aún no aprobada: 5 avisos HIGH, 0 MODERATE, 0 CRITICAL. El trabajo de CI de seguridad debe continuar fallando mientras se remedia.
+Migración Tailwind 4: únicamente en laboratorio; NO incorporar por diferencias y tres utilidades CSS ausentes usadas por la aplicación.
+Auditoría maestra: AUDITORIA_MAESTRA_SACRAMENTUM_V90.md (325 controles individualizados).
+Informe V91: AUDITORIA_EXP_DEPENDENCIAS_Y_RLS_V91.md
+No declarar aptitud total, revisión jurídica ni verificación visual de todas las pantallas.

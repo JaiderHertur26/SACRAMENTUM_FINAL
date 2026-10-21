@@ -1,0 +1,1566 @@
+{
+  "date": "2026-10-21",
+  "scope": "Cribado estático de RPC SECURITY DEFINER públicas ejecutables por authenticated. Requiere pruebas conductuales individualizadas; una delegación sin patrón detectable no demuestra vulnerabilidad.",
+  "summary": {
+    "count": 129,
+    "direct_identity": 112,
+    "delegated_guard": 65,
+    "mutation_candidates": 92,
+    "needs_manual_trace": 1,
+    "anon_execute": 0,
+    "sql_dynamic": 0
+  },
+  "needs_manual_trace_signatures": [
+    "register_historical_baptism(uuid,jsonb)"
+  ],
+  "rpcs": [
+    {
+      "signature": "annotate_legacy_physical_artifact_v71(uuid,uuid,text,text,text,text,bigint,integer)",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": true,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "apply_baptism_correction(uuid,uuid,text,date,uuid,jsonb,jsonb,text,text,integer,integer,integer)",
+      "settings": [
+        "search_path=public"
+      ],
+      "direct_auth_uid": false,
+      "delegated_role_or_scope": false,
+      "contains_mutation": false,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "apply_baptism_replacement(uuid,text,date,uuid,jsonb,jsonb,text,integer,integer,integer)",
+      "settings": [
+        "search_path=public"
+      ],
+      "direct_auth_uid": false,
+      "delegated_role_or_scope": false,
+      "contains_mutation": false,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "apply_confirmation_correction(uuid,uuid,text,date,uuid,jsonb,jsonb,text,text,integer,integer,integer)",
+      "settings": [
+        "search_path=public"
+      ],
+      "direct_auth_uid": false,
+      "delegated_role_or_scope": false,
+      "contains_mutation": false,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "apply_confirmation_replacement(uuid,text,date,uuid,jsonb,jsonb,text,integer,integer,integer)",
+      "settings": [
+        "search_path=public"
+      ],
+      "direct_auth_uid": false,
+      "delegated_role_or_scope": false,
+      "contains_mutation": false,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "apply_funeral_correction(uuid,date,text,jsonb,text)",
+      "settings": [
+        "search_path=public"
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": false,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "apply_legacy_import_batch_v2(uuid,integer)",
+      "settings": [
+        "search_path=public"
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": false,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "apply_legacy_import_batch_v3(uuid,integer)",
+      "settings": [
+        "search_path=public"
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": false,
+      "contains_mutation": false,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "apply_legacy_import_batch(uuid,integer)",
+      "settings": [
+        "search_path=public"
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": false,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "apply_legacy_marginal_note_batch(uuid,integer)",
+      "settings": [
+        "search_path=public"
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": false,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "apply_marriage_correction(uuid,date,text,jsonb,text)",
+      "settings": [
+        "search_path=public"
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": false,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "apply_marriage_nullity(uuid,text,date,text,jsonb,uuid[])",
+      "settings": [
+        "search_path=public"
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": false,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "archive_legacy_batch_snapshot_v43(uuid)",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": true,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "archive_legacy_source_rows_v44(uuid,text,text,text,jsonb)",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": true,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "archive_matrimonial_notification_recipient(uuid)",
+      "settings": [
+        "search_path=public"
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": false,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "archive_official_notification(uuid)",
+      "settings": [
+        "search_path=public"
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": true,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "assert_legacy_batch_provenance_v65(uuid)",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": true,
+      "contains_mutation": false,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "attach_legacy_source_blob_v63(uuid,text,text)",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": true,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "attach_parish_curia_report_snapshot(uuid,jsonb,jsonb,jsonb)",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": true,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "can_access_chat_room(uuid)",
+      "settings": [
+        "search_path=public"
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": true,
+      "contains_mutation": false,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "can_access_diocese(uuid)",
+      "settings": [
+        "search_path=public"
+      ],
+      "direct_auth_uid": false,
+      "delegated_role_or_scope": true,
+      "contains_mutation": false,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "can_access_legacy_storage_path_v63(text,boolean)",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": true,
+      "contains_mutation": false,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "can_access_parish(uuid)",
+      "settings": [
+        "search_path=public"
+      ],
+      "direct_auth_uid": false,
+      "delegated_role_or_scope": true,
+      "contains_mutation": false,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "can_manage_legacy_import(uuid,uuid)",
+      "settings": [
+        "search_path=public"
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": true,
+      "contains_mutation": false,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "can_read_matrimonial_notification(uuid)",
+      "settings": [
+        "search_path=public"
+      ],
+      "direct_auth_uid": false,
+      "delegated_role_or_scope": true,
+      "contains_mutation": false,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "can_read_matrimonial_recipient(uuid)",
+      "settings": [
+        "search_path=public"
+      ],
+      "direct_auth_uid": false,
+      "delegated_role_or_scope": true,
+      "contains_mutation": false,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "cancel_matrimonial_notification(uuid)",
+      "settings": [
+        "search_path=public"
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": false,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "compare_legacy_source_snapshots_v59(uuid)",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": true,
+      "contains_mutation": false,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "complete_archive_only_legacy_batches_v69(uuid)",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": true,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "count_unread_chat_messages()",
+      "settings": [
+        "search_path=public"
+      ],
+      "direct_auth_uid": false,
+      "delegated_role_or_scope": true,
+      "contains_mutation": false,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "create_funeral_reposition_by_decree(uuid,date,text,jsonb,jsonb,text)",
+      "settings": [
+        "search_path=public"
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": false,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "create_legacy_import_batch(text,text,text,text,uuid,uuid,jsonb)",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": true,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "create_manual_marginal_note(uuid,text,uuid,text,date,text,boolean,text,uuid,jsonb,jsonb)",
+      "settings": [
+        "search_path=public"
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": true,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "create_marriage_reposition_by_decree(uuid,date,text,jsonb,jsonb,text)",
+      "settings": [
+        "search_path=public"
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": false,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "create_pending_baptism_with_confirmation_flow(uuid,jsonb,jsonb)",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": false,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "create_pending_baptism(uuid,jsonb)",
+      "settings": [
+        "search_path=public"
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": false,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "create_pending_confirmation(uuid,jsonb)",
+      "settings": [
+        "search_path=public"
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": false,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "create_pending_funeral(uuid,jsonb)",
+      "settings": [
+        "search_path=public"
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": false,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "create_pending_marriage(uuid,jsonb)",
+      "settings": [
+        "search_path=public"
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": false,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "current_app_chancery_id()",
+      "settings": [
+        "search_path=public"
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": false,
+      "contains_mutation": false,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "current_app_diocese_id()",
+      "settings": [
+        "search_path=public"
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": false,
+      "contains_mutation": false,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "current_app_parish_id()",
+      "settings": [
+        "search_path=public"
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": false,
+      "contains_mutation": false,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "current_app_role()",
+      "settings": [
+        "search_path=public"
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": true,
+      "contains_mutation": false,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "current_chat_profile_id()",
+      "settings": [
+        "search_path=public"
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": true,
+      "contains_mutation": false,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "current_effective_diocese_id()",
+      "settings": [
+        "search_path=public"
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": true,
+      "contains_mutation": false,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "ensure_diocesan_chat_defaults()",
+      "settings": [
+        "search_path=public"
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": false,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "finalize_legacy_batch_preserved_v47(uuid,text)",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": true,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "generate_diocesan_sacramental_report(integer,integer,text,uuid,integer,integer)",
+      "settings": [
+        "search_path=public"
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": true,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "get_chat_room_messages(uuid,integer,timestamp with time zone)",
+      "settings": [
+        "search_path=public"
+      ],
+      "direct_auth_uid": false,
+      "delegated_role_or_scope": true,
+      "contains_mutation": false,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "get_curia_report_breakdown(integer,integer,text,uuid)",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": true,
+      "contains_mutation": false,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "get_decree_trace_v89(uuid)",
+      "settings": [
+        "search_path=public, pg_temp"
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": true,
+      "contains_mutation": false,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "get_diocesan_custom_age_distribution(integer,integer,text,uuid,jsonb)",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": true,
+      "contains_mutation": false,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "get_parish_curia_report_breakdown(integer,integer,uuid)",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": true,
+      "contains_mutation": false,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "ingest_legacy_canonical_chunk_v70(uuid,text,text,text,text,text,text,text,integer,integer,integer,jsonb,jsonb,integer,integer,jsonb)",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": true,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "ingest_legacy_physical_artifact_v70(uuid,uuid,jsonb,jsonb)",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": true,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "is_app_admin()",
+      "settings": [
+        "search_path=public"
+      ],
+      "direct_auth_uid": false,
+      "delegated_role_or_scope": true,
+      "contains_mutation": false,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "issue_confirmation_notification_v43(uuid,uuid,uuid,jsonb,text,jsonb)",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": true,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "issue_document_from_template(uuid,jsonb,uuid,text,uuid,jsonb)",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": false,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "issue_documentary_decree_v88(uuid,text,text,date,text,text,boolean,text)",
+      "settings": [
+        "search_path=public, pg_temp"
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": true,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "issue_matrimonial_notification(uuid,uuid,uuid,jsonb,date,text,text,text,uuid,uuid,text,text,text,text,text,jsonb)",
+      "settings": [
+        "search_path=public"
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": false,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "legacy_archive_summary_v43()",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": true,
+      "contains_mutation": false,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "legacy_canonical_coverage_v70(uuid)",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": true,
+      "contains_mutation": false,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "legacy_installation_integrity_v64(uuid)",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": true,
+      "contains_mutation": false,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "legacy_physical_archive_summary_v70(uuid)",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": true,
+      "contains_mutation": false,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "list_chat_directory()",
+      "settings": [
+        "search_path=public"
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": false,
+      "contains_mutation": false,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "list_my_chat_rooms()",
+      "settings": [
+        "search_path=public"
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": false,
+      "contains_mutation": false,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "map_legacy_source_installation_v44(uuid,uuid)",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": true,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "map_legacy_source_installation_v45(uuid,uuid)",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": true,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "map_legacy_source_origin_v66(uuid,uuid)",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": true,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "mark_chat_room_read(uuid)",
+      "settings": [
+        "search_path=public"
+      ],
+      "direct_auth_uid": false,
+      "delegated_role_or_scope": true,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "mark_legacy_source_file_materialized_v47(uuid,jsonb)",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": true,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "mark_official_notification_read(uuid)",
+      "settings": [
+        "search_path=public"
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": true,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "mark_sacramental_notification_read(uuid)",
+      "settings": [
+        "search_path=public"
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": false,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "mark_sacramental_receipt_read(uuid)",
+      "settings": [
+        "search_path=public"
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": false,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "materialize_auxiliary_catalog_batch(uuid)",
+      "settings": [
+        "search_path=public"
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": false,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "materialize_diocesis_catalog_batch(uuid)",
+      "settings": [
+        "search_path=public"
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": false,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "materialize_legacy_decrees_v68(uuid,integer)",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": true,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "materialize_legacy_marriage_dossiers_v43(uuid)",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": true,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "materialize_legacy_report_definitions_v43(uuid)",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": true,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "materialize_legacy_sacramental_notes_v43(uuid,integer)",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": false,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "materialize_legacy_supporting_data_v75(uuid)",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": true,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "next_document_sequence(uuid,text,text)",
+      "settings": [
+        "search_path=public"
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": false,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "prepare_canonical_legacy_batches_v60(uuid)",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": true,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "prepare_canonical_legacy_origin_batches_v72(uuid)",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": true,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "process_manual_matrimonial_notification_physical(uuid)",
+      "settings": [
+        "search_path=public"
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": false,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "process_matrimonial_notification_recipient(uuid)",
+      "settings": [
+        "search_path=public"
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": false,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "reconcile_legacy_anulacion_batch(uuid,integer)",
+      "settings": [
+        "search_path=public"
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": false,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "reconcile_legacy_baptism_shadows_v73(uuid,uuid,uuid)",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": true,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "reconcile_legacy_confirmation_shadows_v74(uuid,uuid,text)",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": true,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "reconcile_legacy_document_template_provenance_v68()",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": true,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "reconcile_legacy_matrimonial_notes(uuid)",
+      "settings": [
+        "search_path=public"
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": false,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "reconcile_legacy_provenance_v65(uuid)",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": true,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "reconcile_maria_auxilio_baptisms_v65()",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": true,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "register_historical_baptism(uuid,jsonb)",
+      "settings": [
+        "search_path=public"
+      ],
+      "direct_auth_uid": false,
+      "delegated_role_or_scope": false,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "register_historical_confirmation(uuid,jsonb,uuid,text)",
+      "settings": [
+        "search_path=public"
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": false,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "register_historical_funeral(uuid,jsonb)",
+      "settings": [
+        "search_path=public"
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": false,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "register_historical_marriage(uuid,jsonb)",
+      "settings": [
+        "search_path=public"
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": false,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "register_historical_narrative(uuid,text,jsonb)",
+      "settings": [
+        "search_path=public, pg_temp"
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": false,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "register_legacy_source_file_v47(uuid,uuid,text,text,text,text,integer,bigint,bigint,text,jsonb)",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": true,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "register_registry_print(uuid,text,uuid,text,text[],jsonb,jsonb)",
+      "settings": [
+        "search_path=public"
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": true,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "repair_canonical_legacy_batches_v62(uuid)",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": true,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "resolve_manual_matrimonial_notification_recipient(uuid,uuid)",
+      "settings": [
+        "search_path=public"
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": false,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "reverse_correction_decree_with_reason(uuid,text)",
+      "settings": [
+        "search_path=public"
+      ],
+      "direct_auth_uid": false,
+      "delegated_role_or_scope": false,
+      "contains_mutation": false,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "reverse_funeral_decree(uuid,text)",
+      "settings": [
+        "search_path=public"
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": false,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "reverse_marriage_decree(uuid,text)",
+      "settings": [
+        "search_path=public"
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": false,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "reverse_replacement_decree_with_reason(uuid,text)",
+      "settings": [
+        "search_path=public"
+      ],
+      "direct_auth_uid": false,
+      "delegated_role_or_scope": false,
+      "contains_mutation": false,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "review_legacy_import_row(uuid,jsonb,text,text[],jsonb)",
+      "settings": [
+        "search_path=public"
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": false,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "sacramentum_recalculate_current_priest(uuid)",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": true,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "save_baptism_parameters(uuid,jsonb,integer,integer,integer)",
+      "settings": [
+        "search_path=public"
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": false,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "save_confirmation_parameters(uuid,jsonb,integer,integer,integer)",
+      "settings": [
+        "search_path=public"
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": false,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "save_document_template(text,text,text,text,text,uuid,uuid,jsonb)",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": true,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "save_funeral_parameters(uuid,jsonb)",
+      "settings": [
+        "search_path=public"
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": false,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "save_marginal_note_template(text,text,text,text,text,text,boolean,boolean,boolean,text,uuid,uuid,jsonb,jsonb)",
+      "settings": [
+        "search_path=public"
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": true,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "save_marriage_parameters(uuid,jsonb,integer,integer,integer)",
+      "settings": [
+        "search_path=public"
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": false,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "search_baptisms_for_matrimonial_notification(uuid,text,text,text,text,text,integer)",
+      "settings": [
+        "search_path=public"
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": false,
+      "contains_mutation": false,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "search_document_context(text,integer)",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": false,
+      "contains_mutation": false,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "seat_baptism_records(uuid,jsonb,integer,integer,integer)",
+      "settings": [
+        "search_path=public"
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": false,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "seat_confirmation_records(uuid,jsonb,integer,integer,integer)",
+      "settings": [
+        "search_path=public"
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": false,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "seat_funeral_record(jsonb,uuid)",
+      "settings": [
+        "search_path=public"
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": false,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "seat_pending_marriage(uuid)",
+      "settings": [
+        "search_path=public"
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": false,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "send_chat_message(uuid,text,uuid)",
+      "settings": [
+        "search_path=public"
+      ],
+      "direct_auth_uid": false,
+      "delegated_role_or_scope": true,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "set_managed_user_active(uuid,boolean)",
+      "settings": [
+        "search_path=public"
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": false,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "stage_legacy_import_rows(uuid,jsonb)",
+      "settings": [
+        "search_path=public"
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": false,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "start_direct_chat(uuid)",
+      "settings": [
+        "search_path=public"
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": false,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "update_managed_user_profile(uuid,text,uuid,uuid)",
+      "settings": [
+        "search_path=public"
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": false,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "upsert_legacy_source_installation_v44(text,text,jsonb,uuid)",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": true,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "upsert_marriage_dossier_v43(uuid,uuid,uuid,uuid,text,date,date,text,text,jsonb)",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": true,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "void_document_issuance(uuid,text)",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "direct_auth_uid": true,
+      "delegated_role_or_scope": false,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    },
+    {
+      "signature": "withdraw_chat_message(uuid)",
+      "settings": [
+        "search_path=public"
+      ],
+      "direct_auth_uid": false,
+      "delegated_role_or_scope": true,
+      "contains_mutation": true,
+      "contains_dynamic_execute": false,
+      "anon_execute": false,
+      "status": "REQUIERE_PRUEBA"
+    }
+  ]
+}
