@@ -3027,9 +3027,10 @@
       "status": "FALLIDO",
       "evidence": [
         "AUDITORIA_DEPENDENCIAS_V90.md: npm audit --omit=dev devuelve 8 avisos: 6 high, 2 moderate, 0 critical; pendiente remedación sin romper Tailwind",
-        "AUDITORIA_PUERTA_CALIDAD_V91.json: La puerta V91 baja de 8 alertas a 5 altas y 0 moderadas, mantiene bloqueo de seguridad"
+        "AUDITORIA_PUERTA_CALIDAD_V91.json: La puerta V91 baja de 8 alertas a 5 altas y 0 moderadas, mantiene bloqueo de seguridad",
+        "AUDITORIA_CIERRE_TECNICO_V91_2026-10-21.md: GH Actions seguridad falla por cinco avisos HIGH, mientras job funcional SUCCESS; bloqueo explícito mantenido"
       ],
-      "updated_at": "2026-10-21T17:18:17.091Z"
+      "updated_at": "2026-10-21T17:24:16.258Z"
     },
     {
       "id": "30.03",
@@ -3082,9 +3083,11 @@
       "area": "Despliegue y dependencias",
       "priority": "P1",
       "criterion": "Construcción de producción",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "APROBADO",
+      "evidence": [
+        "AUDITORIA_CIERRE_TECNICO_V91_2026-10-21.md: Vercel V91 build Ready, CSS de producción idéntico por SHA256"
+      ],
+      "updated_at": "2026-10-21T17:24:15.845Z"
     },
     {
       "id": "30.08",
@@ -3094,9 +3097,10 @@
       "criterion": "Smoke posdespliegue",
       "status": "APROBADO",
       "evidence": [
-        "AUDITORIA_PUERTA_CALIDAD_V90.json: Puerta V90 ejecutó npm run build sin errores con Node del equipo; no certifica despliegue ni interfaz"
+        "AUDITORIA_PUERTA_CALIDAD_V90.json: Puerta V90 ejecutó npm run build sin errores con Node del equipo; no certifica despliegue ni interfaz",
+        "AUDITORIA_CIERRE_TECNICO_V91_2026-10-21.md: Cuatro rutas públicas SPA HTTP 200 y CSS descargado SHA256 idéntico"
       ],
-      "updated_at": "2026-10-21T16:14:21.305Z"
+      "updated_at": "2026-10-21T17:24:15.944Z"
     },
     {
       "id": "30.09",
@@ -3104,9 +3108,11 @@
       "area": "Despliegue y dependencias",
       "priority": "P1",
       "criterion": "Git versionado",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "APROBADO",
+      "evidence": [
+        "AUDITORIA_CIERRE_TECNICO_V91_2026-10-21.md: Commits 6264333 y 2fabed0 enviados a main con árbol Git sincronizado"
+      ],
+      "updated_at": "2026-10-21T17:24:16.072Z"
     },
     {
       "id": "30.10",
@@ -3306,9 +3312,11 @@
       "area": "Auditoría forense de cierre",
       "priority": "P0",
       "criterion": "Confirmar producción Ready",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "APROBADO",
+      "evidence": [
+        "AUDITORIA_CIERRE_TECNICO_V91_2026-10-21.md: Despliegue Vercel de código V91 Ready; nota: app no certificada integralmente"
+      ],
+      "updated_at": "2026-10-21T17:24:16.166Z"
     },
     {
       "id": "32.10",

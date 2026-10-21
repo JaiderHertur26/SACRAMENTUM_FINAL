@@ -10,7 +10,7 @@ Regla: no introducir datos falsos permanentes; usar memoria, transacciones ROLLB
 
 Prioridad P0 bloquea la certificación. P1 debe constar resuelta o aceptada con evidencia y responsable.
 
-Avance: 325 controles totales; 6 aprobados; 21 en progreso; 297 pendientes; 1 fallidos; 0 bloqueados.
+Avance: 325 controles totales; 9 aprobados; 21 en progreso; 294 pendientes; 1 fallidos; 0 bloqueados.
 
 ## Fases y controles numerados
 
@@ -420,13 +420,14 @@ Avance: 325 controles totales; 6 aprobados; 21 en progreso; 297 pendientes; 1 fa
 - [ ] 29.09 · Rollback de esquema — PENDIENTE
 - [ ] 29.10 · Aislamiento entre parroquias — PENDIENTE
 
-### 30. Despliegue y dependencias (P1) — 3/10
+### 30. Despliegue y dependencias (P1) — 5/10
 
 - [x] 30.01 · Node y lockfile — APROBADO
   - Evidencia: AUDITORIA_EXP_DEPENDENCIAS_Y_RLS_V91.md: npm ci limpio en copia independiente instaló 501 dependencias; build generado y CSS SHA idéntico
 - [ ] 30.02 · npm audit — FALLIDO
   - Evidencia: AUDITORIA_DEPENDENCIAS_V90.md: npm audit --omit=dev devuelve 8 avisos: 6 high, 2 moderate, 0 critical; pendiente remedación sin romper Tailwind
   - Evidencia: AUDITORIA_PUERTA_CALIDAD_V91.json: La puerta V91 baja de 8 alertas a 5 altas y 0 moderadas, mantiene bloqueo de seguridad
+  - Evidencia: AUDITORIA_CIERRE_TECNICO_V91_2026-10-21.md: GH Actions seguridad falla por cinco avisos HIGH, mientras job funcional SUCCESS; bloqueo explícito mantenido
 - [x] 30.03 · CI automática — APROBADO
   - Evidencia: .github/workflows/sacramentum-auditoria-v90.yml: CI de tests build y npm audit creada y validada como YAML; falta ejecutarla en GitHub Actions
   - Evidencia: AUDITORIA_CI_GITHUB_V90.md: GitHub Actions funcionó y trabajo funcional completó SUCCESS en commit 84bbb16; seguridad FAIL esperado por dependencias
@@ -434,10 +435,13 @@ Avance: 325 controles totales; 6 aprobados; 21 en progreso; 297 pendientes; 1 fa
 - [ ] 30.05 · Preview de Vercel — PENDIENTE
 - [ ] 30.06 · Variables secretas — EN_PROGRESO
   - Evidencia: AUDITORIA_EXP_DEPENDENCIAS_Y_RLS_V91.md: En laboratorios solo variables VITE públicas, excluido VERCEL_OIDC_TOKEN; faltan otros secretos
-- [ ] 30.07 · Construcción de producción — PENDIENTE
+- [x] 30.07 · Construcción de producción — APROBADO
+  - Evidencia: AUDITORIA_CIERRE_TECNICO_V91_2026-10-21.md: Vercel V91 build Ready, CSS de producción idéntico por SHA256
 - [x] 30.08 · Smoke posdespliegue — APROBADO
   - Evidencia: AUDITORIA_PUERTA_CALIDAD_V90.json: Puerta V90 ejecutó npm run build sin errores con Node del equipo; no certifica despliegue ni interfaz
-- [ ] 30.09 · Git versionado — PENDIENTE
+  - Evidencia: AUDITORIA_CIERRE_TECNICO_V91_2026-10-21.md: Cuatro rutas públicas SPA HTTP 200 y CSS descargado SHA256 idéntico
+- [x] 30.09 · Git versionado — APROBADO
+  - Evidencia: AUDITORIA_CIERRE_TECNICO_V91_2026-10-21.md: Commits 6264333 y 2fabed0 enviados a main con árbol Git sincronizado
 - [ ] 30.10 · Plan rollback — PENDIENTE
 
 ### 31. E2E de personajes ficticios (P0) — 0/10
@@ -453,7 +457,7 @@ Avance: 325 controles totales; 6 aprobados; 21 en progreso; 297 pendientes; 1 fa
 - [ ] 31.09 · Impresión/estadística final — PENDIENTE
 - [ ] 31.10 · Destruir sandbox y demostrar cero residuos — PENDIENTE
 
-### 32. Auditoría forense de cierre (P0) — 0/10
+### 32. Auditoría forense de cierre (P0) — 1/10
 
 - [ ] 32.01 · Versionar toda prueba — EN_PROGRESO
   - Evidencia: AUDITORIA_PUERTA_CALIDAD_V90.json: Gate registra ejecución 25 de 26, dependencias fallidas; falta cobertura integral por cada control
@@ -464,7 +468,8 @@ Avance: 325 controles totales; 6 aprobados; 21 en progreso; 297 pendientes; 1 fa
 - [ ] 32.06 · Corregir y repetir — PENDIENTE
 - [ ] 32.07 · Regresión completa — PENDIENTE
 - [ ] 32.08 · Conteos antes/después — PENDIENTE
-- [ ] 32.09 · Confirmar producción Ready — PENDIENTE
+- [x] 32.09 · Confirmar producción Ready — APROBADO
+  - Evidencia: AUDITORIA_CIERRE_TECNICO_V91_2026-10-21.md: Despliegue Vercel de código V91 Ready; nota: app no certificada integralmente
 - [ ] 32.10 · Dictamen con limitaciones verificadas — PENDIENTE
 
 ## Hechos verificados previos al nuevo protocolo
