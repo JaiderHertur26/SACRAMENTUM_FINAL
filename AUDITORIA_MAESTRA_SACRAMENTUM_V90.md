@@ -10,7 +10,7 @@ Regla: no introducir datos falsos permanentes; usar memoria, transacciones ROLLB
 
 Prioridad P0 bloquea la certificación. P1 debe constar resuelta o aceptada con evidencia y responsable.
 
-Avance: 325 controles totales; 9 aprobados; 26 en progreso; 289 pendientes; 1 fallidos; 0 bloqueados.
+Avance: 325 controles totales; 9 aprobados; 31 en progreso; 284 pendientes; 1 fallidos; 0 bloqueados.
 
 ## Fases y controles numerados
 
@@ -89,9 +89,12 @@ Avance: 325 controles totales; 9 aprobados; 26 en progreso; 289 pendientes; 1 fa
 - [ ] 06.02 · RLS SELECT por actor — EN_PROGRESO
   - Evidencia: AUDITORIA_RLS_PARROQUIAL_V90.md: Ensayo con rol Parroquia autenticado: cero filas de otras parroquias en 10 entidades; falta matriz completa y operaciones de escritura
   - Evidencia: AUDITORIA_EXP_DEPENDENCIAS_Y_RLS_V91.md: Cuatro roles no pudieron leer Bautismo de segunda diócesis ficticia; falta matriz completa
-- [ ] 06.03 · RLS INSERT por actor — PENDIENTE
-- [ ] 06.04 · RLS UPDATE y WITH CHECK — PENDIENTE
-- [ ] 06.05 · RLS DELETE por actor — PENDIENTE
+- [ ] 06.03 · RLS INSERT por actor — EN_PROGRESO
+  - Evidencia: AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: Inserciones RLS en dos tablas de boletas: 8/8 casos por cuatro roles, Parroquia únicamente permitida
+- [ ] 06.04 · RLS UPDATE y WITH CHECK — EN_PROGRESO
+  - Evidencia: AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: Actualizaciones RLS en dos tablas de boletas: 8/8 casos, sólo parroquia titular
+- [ ] 06.05 · RLS DELETE por actor — EN_PROGRESO
+  - Evidencia: AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: Eliminaciones RLS en dos tablas de boletas: 8/8 casos, sólo parroquia titular
 - [ ] 06.06 · 129 RPC privilegiadas autorizadas — EN_PROGRESO
   - Evidencia: AUDITORIA_INVENTARIO_RPC_V91.json: 129 funciones privilegiadas clasificadas; faltan pruebas positivas y negativas función por función
 - [ ] 06.07 · 129 RPC privilegiadas denegadas a terceros — EN_PROGRESO
@@ -120,7 +123,8 @@ Avance: 325 controles totales; 9 aprobados; 26 en progreso; 289 pendientes; 1 fa
 
 ### 08. Bautismo (P0) — 0/11
 
-- [ ] 08.01 · Nueva boleta — PENDIENTE
+- [ ] 08.01 · Nueva boleta — EN_PROGRESO
+  - Evidencia: AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: Boleta Bautismo permite inserción como Parroquia y deniega otros tres roles en API; falta UI y ciclo completo
 - [ ] 08.02 · Celebración — PENDIENTE
 - [ ] 08.03 · Asiento en libro — PENDIENTE
 - [ ] 08.04 · Libro Folio Número — PENDIENTE
@@ -134,7 +138,8 @@ Avance: 325 controles totales; 9 aprobados; 26 en progreso; 289 pendientes; 1 fa
 
 ### 09. Confirmación (P0) — 0/11
 
-- [ ] 09.01 · Nueva boleta — PENDIENTE
+- [ ] 09.01 · Nueva boleta — EN_PROGRESO
+  - Evidencia: AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: Boleta Confirmación permite inserción como Parroquia y deniega otros tres roles en API; falta UI y ciclo completo
 - [ ] 09.02 · Fecha y hora — PENDIENTE
 - [ ] 09.03 · Celebración — PENDIENTE
 - [ ] 09.04 · Asiento en libro — PENDIENTE
@@ -382,6 +387,7 @@ Avance: 325 controles totales; 9 aprobados; 26 en progreso; 289 pendientes; 1 fa
 
 - [ ] 27.01 · Escalamiento vertical — EN_PROGRESO
   - Evidencia: AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md: Usuario Parroquia ya no puede consumir consecutivo de ámbito diocesano sin documento
+  - Evidencia: AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: Riesgo V93-SEC-002: Administrador General deja de poder escribir boletas de Bautismo y Confirmación
 - [ ] 27.02 · Escalamiento horizontal — EN_PROGRESO
   - Evidencia: AUDITORIA_EXP_DEPENDENCIAS_Y_RLS_V91.md: Segunda diócesis ficticia y Bautismo ajeno negados para cuatro roles en transacción ROLLBACK
 - [ ] 27.03 · IDOR de parroquia — EN_PROGRESO
@@ -471,9 +477,11 @@ Avance: 325 controles totales; 9 aprobados; 26 en progreso; 289 pendientes; 1 fa
 - [ ] 32.04 · Guardar capturas — PENDIENTE
 - [ ] 32.05 · Rastrear hallazgos P0/P1/P2 — EN_PROGRESO
   - Evidencia: AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md: Emisión temporal 1 documento y 1 log; cero residuos tras ROLLBACK en muestra controlada
+  - Evidencia: AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: Boletas ficticias V93 comprobadas en cero tras ROLLBACK, conservación de históricos
 - [ ] 32.06 · Corregir y repetir — PENDIENTE
 - [ ] 32.07 · Regresión completa — EN_PROGRESO
   - Evidencia: AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md: Regresión 211 pruebas sintéticas, 23 verificadores, build OK; quedan fallas de dependencias
+  - Evidencia: AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: 219 pruebas sintéticas, 23 verificadores y build aprobados; advertencias HIGH de paquetes aún abiertas
 - [ ] 32.08 · Conteos antes/después — PENDIENTE
 - [x] 32.09 · Confirmar producción Ready — APROBADO
   - Evidencia: AUDITORIA_CIERRE_TECNICO_V91_2026-10-21.md: Despliegue Vercel de código V91 Ready; nota: app no certificada integralmente

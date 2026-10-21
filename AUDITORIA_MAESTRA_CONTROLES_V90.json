@@ -499,9 +499,11 @@
       "area": "RLS y privilegios del backend",
       "priority": "P0",
       "criterion": "RLS INSERT por actor",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: Inserciones RLS en dos tablas de boletas: 8/8 casos por cuatro roles, Parroquia únicamente permitida"
+      ],
+      "updated_at": "2026-10-21T18:05:51.927Z"
     },
     {
       "id": "06.04",
@@ -509,9 +511,11 @@
       "area": "RLS y privilegios del backend",
       "priority": "P0",
       "criterion": "RLS UPDATE y WITH CHECK",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: Actualizaciones RLS en dos tablas de boletas: 8/8 casos, sólo parroquia titular"
+      ],
+      "updated_at": "2026-10-21T18:05:52.291Z"
     },
     {
       "id": "06.05",
@@ -519,9 +523,11 @@
       "area": "RLS y privilegios del backend",
       "priority": "P0",
       "criterion": "RLS DELETE por actor",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: Eliminaciones RLS en dos tablas de boletas: 8/8 casos, sólo parroquia titular"
+      ],
+      "updated_at": "2026-10-21T18:05:52.530Z"
     },
     {
       "id": "06.06",
@@ -699,9 +705,11 @@
       "area": "Bautismo",
       "priority": "P0",
       "criterion": "Nueva boleta",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: Boleta Bautismo permite inserción como Parroquia y deniega otros tres roles en API; falta UI y ciclo completo"
+      ],
+      "updated_at": "2026-10-21T18:05:52.842Z"
     },
     {
       "id": "08.02",
@@ -809,9 +817,11 @@
       "area": "Confirmación",
       "priority": "P0",
       "criterion": "Nueva boleta",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: Boleta Confirmación permite inserción como Parroquia y deniega otros tres roles en API; falta UI y ciclo completo"
+      ],
+      "updated_at": "2026-10-21T18:05:53.105Z"
     },
     {
       "id": "09.02",
@@ -2699,9 +2709,10 @@
       "criterion": "Escalamiento vertical",
       "status": "EN_PROGRESO",
       "evidence": [
-        "AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md: Usuario Parroquia ya no puede consumir consecutivo de ámbito diocesano sin documento"
+        "AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md: Usuario Parroquia ya no puede consumir consecutivo de ámbito diocesano sin documento",
+        "AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: Riesgo V93-SEC-002: Administrador General deja de poder escribir boletas de Bautismo y Confirmación"
       ],
-      "updated_at": "2026-10-21T17:56:40.121Z"
+      "updated_at": "2026-10-21T18:05:53.341Z"
     },
     {
       "id": "27.02",
@@ -3282,9 +3293,10 @@
       "criterion": "Rastrear hallazgos P0/P1/P2",
       "status": "EN_PROGRESO",
       "evidence": [
-        "AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md: Emisión temporal 1 documento y 1 log; cero residuos tras ROLLBACK en muestra controlada"
+        "AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md: Emisión temporal 1 documento y 1 log; cero residuos tras ROLLBACK en muestra controlada",
+        "AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: Boletas ficticias V93 comprobadas en cero tras ROLLBACK, conservación de históricos"
       ],
-      "updated_at": "2026-10-21T17:56:40.362Z"
+      "updated_at": "2026-10-21T18:05:53.581Z"
     },
     {
       "id": "32.06",
@@ -3304,9 +3316,10 @@
       "criterion": "Regresión completa",
       "status": "EN_PROGRESO",
       "evidence": [
-        "AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md: Regresión 211 pruebas sintéticas, 23 verificadores, build OK; quedan fallas de dependencias"
+        "AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md: Regresión 211 pruebas sintéticas, 23 verificadores, build OK; quedan fallas de dependencias",
+        "AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: 219 pruebas sintéticas, 23 verificadores y build aprobados; advertencias HIGH de paquetes aún abiertas"
       ],
-      "updated_at": "2026-10-21T17:56:40.472Z"
+      "updated_at": "2026-10-21T18:05:53.893Z"
     },
     {
       "id": "32.08",

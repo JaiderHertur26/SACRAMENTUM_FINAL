@@ -1,17 +1,23 @@
-SACRAMENTUM FINAL · V92 · 2026-10-21
+SACRAMENTUM FINAL · V93 · 2026-10-21
 
-PARCHE FUNCIONAL Y DE SEGURIDAD
-- Asignador de consecutivos documentales reservado a RPC institucionales internas mediante REVOKE EXECUTE.
-- Vulnerabilidad V92-SEC-001 reproducida previamente: Parroquia podía emitir un consecutivo arbitrario del ámbito diocesano sin documento.
-- Prueba adversarial posterior: 42501 permission denied con rol Parroquia; ruta oficial issue_document_from_template crea documento y audit log, 1 + 1, con ROLLBACK y 0 residuos.
-- Servicio web huérfano que llamaba directamente al RPC retirado. Los procedimientos internos PostgreSQL mantienen sus permisos de ejecución.
-- Cinco pruebas nuevas incorporadas en GitHub Actions y puerta de calidad: 211 pruebas sintéticas totales previstas + 23 verificadores históricos.
-- Auditoría de Supabase: 128 funciones SECURITY DEFINER aún ejecutables por authenticated, frente a 129 antes.
-- Persisten 60 avisos GraphQL y 1 de leaked-password protection; no considerados pruebas automáticas de fuga.
-- Persisten 5 alertas HIGH de npm audit. El CI de seguridad debe continuar en rojo hasta remedación segura.
-- La auditoría maestra tiene 325 controles y sigue en progreso; NO se declara certificación total.
+Seguridad de decretos y documentos (V92):
+- La función de numeración documental next_document_sequence no es ejecutable directamente por authenticated/anon; conserva uso desde RPC institucionales auditadas.
+- Pruebas de emisión documental interna: un documento y una entrada de auditoría creados en transacción, sin persistencia después de ROLLBACK.
 
-INFORMES
+Seguridad de boletas pendientes (V93):
+- Corregido acceso de admin_general mediante API a boletas pending_baptisms y pending_confirmations.
+- Seis políticas RLS restrictivas para INSERT, UPDATE y DELETE: sólo la Parroquia propietaria.
+- Matriz real por Administrador General, Diócesis, Cancillería y Parroquia: 24/24 comprobaciones de escritura con resultados correctos.
+- Boletas ficticias almacenadas después de ROLLBACK: 0.
+- Ocho pruebas estáticas nuevas en CI; ahora 219 pruebas sintéticas previstas y 23 verificadores históricos.
+
+Advertencias activas:
+- Cinco avisos HIGH de dependencias frontend; CI seguridad debe permanecer fallido.
+- 128 RPC SECURITY DEFINER ejecutables por authenticated: revisión integral todavía en curso.
+- 60 advertencias GraphQL y protección de contraseñas filtradas pendiente de configuración.
+- No se declara auditoría total ni se modifica documentación eclesiástica original.
+
+Evidencia:
 AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md
-AUDITORIA_PUERTA_CALIDAD_V92.json
-AUDITORIA_MAESTRA_CONTROLES_V90.json
+AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md
+AUDITORIA_MAESTRA_SACRAMENTUM_V90.md
