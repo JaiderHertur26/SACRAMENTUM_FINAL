@@ -10,7 +10,7 @@ Regla: no introducir datos falsos permanentes; usar memoria, transacciones ROLLB
 
 Prioridad P0 bloquea la certificación. P1 debe constar resuelta o aceptada con evidencia y responsable.
 
-Avance: 325 controles totales; 9 aprobados; 45 en progreso; 270 pendientes; 1 fallidos; 0 bloqueados.
+Avance: 325 controles totales; 9 aprobados; 52 en progreso; 263 pendientes; 1 fallidos; 0 bloqueados.
 
 ## Fases y controles numerados
 
@@ -189,9 +189,11 @@ Avance: 325 controles totales; 9 aprobados; 45 en progreso; 270 pendientes; 1 fa
 
 ### 12. Decretos nuevos en Cancillería (P0) — 0/11
 
-- [ ] 12.01 · Competencia exclusiva de Cancillería — PENDIENTE
+- [ ] 12.01 · Competencia exclusiva de Cancillería — EN_PROGRESO
+  - Evidencia: AUDITORIA_CONCEPTOS_DEC_REGLAS_V98_2026-10-21.md: Cancillería única con INSERT/UPDATE de conceptos; otros roles bloqueados, todavía pendientes todos los RPC de emisión
 - [ ] 12.02 · Número y fecha únicos — PENDIENTE
-- [ ] 12.03 · Concepto jurídico compatible — PENDIENTE
+- [ ] 12.03 · Concepto jurídico compatible — EN_PROGRESO
+  - Evidencia: AUDITORIA_CONCEPTOS_DEC_REGLAS_V98_2026-10-21.md: Conceptos de corrección/archivo protegidos por ámbito y fuente; compatibilidad jurídica total pendiente
 - [ ] 12.04 · Corrección afecta original — PENDIENTE
 - [ ] 12.05 · Reposición crea supletoria — PENDIENTE
 - [ ] 12.06 · Documental no afecta partida — PENDIENTE
@@ -203,9 +205,12 @@ Avance: 325 controles totales; 9 aprobados; 45 en progreso; 270 pendientes; 1 fa
 
 ### 13. Decretos antiguos importados (P0) — 0/11
 
-- [ ] 13.01 · Origen histórico verificable — PENDIENTE
-- [ ] 13.02 · No simular nueva emisión — PENDIENTE
-- [ ] 13.03 · Parroquia y diócesis exactas — PENDIENTE
+- [ ] 13.01 · Origen histórico verificable — EN_PROGRESO
+  - Evidencia: AUDITORIA_CONCEPTOS_DEC_REGLAS_V98_2026-10-21.md: V98 4/4 conceptos históricos conservan source_kind legacy_catalog; trigger preserva procedencia contra edición
+- [ ] 13.02 · No simular nueva emisión — EN_PROGRESO
+  - Evidencia: AUDITORIA_CONCEPTOS_DEC_REGLAS_V98_2026-10-21.md: V98 prohíbe fingir nueva importación con INSERT directo fuente legacy_catalog; reimportación E2E pendiente
+- [ ] 13.03 · Parroquia y diócesis exactas — EN_PROGRESO
+  - Evidencia: AUDITORIA_CONCEPTOS_DEC_REGLAS_V98_2026-10-21.md: V97 rechaza concepto nuevo y traslado de existente a diócesis ajena
 - [ ] 13.04 · Colisiones entre lotes — PENDIENTE
 - [ ] 13.05 · Par original/supletoria — PENDIENTE
 - [ ] 13.06 · No aplicar efectos dos veces — PENDIENTE
@@ -213,7 +218,8 @@ Avance: 325 controles totales; 9 aprobados; 45 en progreso; 270 pendientes; 1 fa
 - [ ] 13.08 · Cinco ANULACION pendientes — PENDIENTE
 - [ ] 13.09 · Revisión de caso ambiguo — PENDIENTE
 - [ ] 13.10 · Archivo en Cancillería y parroquia — PENDIENTE
-- [ ] 13.11 · Fuente original preservada — PENDIENTE
+- [ ] 13.11 · Fuente original preservada — EN_PROGRESO
+  - Evidencia: AUDITORIA_CONCEPTOS_DEC_REGLAS_V98_2026-10-21.md: Fuente histórica de conceptos protegida; quedan otras tablas y documentos de origen por auditar
 
 ### 14. Notas marginales (P0) — 0/9
 
@@ -250,7 +256,8 @@ Avance: 325 controles totales; 9 aprobados; 45 en progreso; 270 pendientes; 1 fa
 - [ ] 16.06 · Errores parciales — PENDIENTE
 - [ ] 16.07 · 16 mil filas con paginación — PENDIENTE
 - [ ] 16.08 · Catálogos auxiliares — PENDIENTE
-- [ ] 16.09 · ANULACION y conceptos — PENDIENTE
+- [ ] 16.09 · ANULACION y conceptos — EN_PROGRESO
+  - Evidencia: AUDITORIA_CONCEPTOS_DEC_REGLAS_V98_2026-10-21.md: Catálogo histórico de conceptos V98 protegido; conciliación de ANULACION y lotes pendiente
 - [ ] 16.10 · NTMAT — PENDIENTE
 - [ ] 16.11 · Archivos corruptos — PENDIENTE
 - [ ] 16.12 · Rollback sin contaminación — PENDIENTE
@@ -407,10 +414,12 @@ Avance: 325 controles totales; 9 aprobados; 45 en progreso; 270 pendientes; 1 fa
   - Evidencia: AUDITORIA_PARAMETROS_Y_LIBROS_V94_2026-10-21.md: V94-SEC-003 corregido: admin general ya no puede alterar configuraciones ni libros parroquiales
   - Evidencia: AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: V95 escalamiento vertical: 5 INSERT indebidos de admin reproducidos y eliminados por RLS
   - Evidencia: AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96 vulnerabilidad de escalamiento vertical en mis_datos reproducida y corregida
+  - Evidencia: AUDITORIA_CONCEPTOS_DEC_REGLAS_V98_2026-10-21.md: V97 admin_general/diocese denegados para catálogo de decretos, Cancillería permitida
 - [ ] 27.02 · Escalamiento horizontal — EN_PROGRESO
   - Evidencia: AUDITORIA_EXP_DEPENDENCIAS_Y_RLS_V91.md: Segunda diócesis ficticia y Bautismo ajeno negados para cuatro roles en transacción ROLLBACK
   - Evidencia: AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: V95 escalamiento horizontal: 5 INSERT a parroquia ajena rechazados por RLS
   - Evidencia: AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96 identidad parroquial no puede alterarse por rol general ajeno al ámbito
+  - Evidencia: AUDITORIA_CONCEPTOS_DEC_REGLAS_V98_2026-10-21.md: V97 concepto no puede trasladarse ni crearse para segunda diócesis ajena
 - [ ] 27.03 · IDOR de parroquia — EN_PROGRESO
   - Evidencia: AUDITORIA_EXP_DEPENDENCIAS_Y_RLS_V91.md: Acceso horizontal a partida Bautismo fuera de jurisdicción denegado; faltan 3 sacramentos
 - [ ] 27.04 · RPC directa prohibida — EN_PROGRESO
@@ -504,17 +513,21 @@ Avance: 325 controles totales; 9 aprobados; 45 en progreso; 270 pendientes; 1 fa
   - Evidencia: AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md: Emisión temporal 1 documento y 1 log; cero residuos tras ROLLBACK en muestra controlada
   - Evidencia: AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: Boletas ficticias V93 comprobadas en cero tras ROLLBACK, conservación de históricos
   - Evidencia: AUDITORIA_PARAMETROS_Y_LIBROS_V94_2026-10-21.md: V94: 3 registros de parámetros y 0 libros tras rollback; sin persistencia de QA
+  - Evidencia: AUDITORIA_CONCEPTOS_DEC_REGLAS_V98_2026-10-21.md: Hallazgos V97/V98 reproducidos sin mutaciones permanentes y corregidos
 - [ ] 32.06 · Corregir y repetir — EN_PROGRESO
   - Evidencia: AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: V95 reprodujo fallo antes y verificó reparación tras aplicar migración
   - Evidencia: AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96 corrige hallazgo de identidad institucional y repite prueba antes/después
+  - Evidencia: AUDITORIA_CONCEPTOS_DEC_REGLAS_V98_2026-10-21.md: Pruebas antes/después V97 8 roles, V98 6 casos, ROLLBACK; regresión estática añadida
 - [ ] 32.07 · Regresión completa — EN_PROGRESO
   - Evidencia: AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md: Regresión 211 pruebas sintéticas, 23 verificadores, build OK; quedan fallas de dependencias
   - Evidencia: AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: 219 pruebas sintéticas, 23 verificadores y build aprobados; advertencias HIGH de paquetes aún abiertas
   - Evidencia: AUDITORIA_PARAMETROS_Y_LIBROS_V94_2026-10-21.md: V94: 227 pruebas sintéticas, 23 verificadores y build OK; siguen cinco HIGH npm audit
   - Evidencia: AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96 250 pruebas sintéticas y 23 verificadores aprobados; cinco paquetes HIGH siguen bloqueando gate
+  - Evidencia: AUDITORIA_CONCEPTOS_DEC_REGLAS_V98_2026-10-21.md: V98 puerta de calidad 25/26: 264 sintéticas, 23 legacy, build; cinco HIGH dependencias siguen en FAIL
 - [ ] 32.08 · Conteos antes/después — EN_PROGRESO
   - Evidencia: AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: Tras V95: 15 políticas, 0 bypass is_app_admin y 0 residuos en 5 catálogos
   - Evidencia: AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96: mis_datos mantiene 1 fila real, 0 fixtures y 0 admin bypass en 3 políticas
+  - Evidencia: AUDITORIA_CONCEPTOS_DEC_REGLAS_V98_2026-10-21.md: Postprueba 4 conceptos históricos intactos, 0 QA, 1 trigger, 0 bypass admin
 - [x] 32.09 · Confirmar producción Ready — APROBADO
   - Evidencia: AUDITORIA_CIERRE_TECNICO_V91_2026-10-21.md: Despliegue Vercel de código V91 Ready; nota: app no certificada integralmente
 - [ ] 32.10 · Dictamen con limitaciones verificadas — PENDIENTE

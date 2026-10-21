@@ -132,6 +132,14 @@ const AnnulmentConceptsTab = () => {
 
   const openEdit = (row, event) => {
     event?.stopPropagation();
+    if (row?.source_kind !== 'manual') {
+      toast({
+        title: 'Concepto histórico protegido',
+        description: 'Para conservar el origen importado, desactive el concepto anterior y registre uno nuevo.',
+        variant: 'destructive'
+      });
+      return;
+    }
     setForm({
       id: row.id,
       codigo: row.codigo || '',
@@ -341,15 +349,24 @@ const AnnulmentConceptsTab = () => {
       className: 'text-right',
       render: (row) => (
         <div className="flex justify-end gap-2">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-9 w-9 rounded-xl text-blue-700 hover:bg-blue-50"
-            onClick={(event) => openEdit(row, event)}
-            title="Editar"
-          >
-            <Edit className="h-4 w-4" />
-          </Button>
+          {row.source_kind === 'manual' ? (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-9 w-9 rounded-xl text-blue-700 hover:bg-blue-50"
+              onClick={(event) => openEdit(row, event)}
+              title="Editar concepto manual"
+            >
+              <Edit className="h-4 w-4" />
+            </Button>
+          ) : (
+            <span
+              className="max-w-24 self-center text-right text-[9px] font-semibold leading-tight text-slate-500"
+              title="Documento histórico: para corregirlo, registre un nuevo concepto sin modificar el original"
+            >
+              Histórico protegido
+            </span>
+          )}
 
           <Button
             variant="ghost"

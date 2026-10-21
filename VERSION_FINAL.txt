@@ -1,25 +1,21 @@
-SACRAMENTUM FINAL · V96 · 21/10/2026
+SACRAMENTUM FINAL · V98 · 2026-10-21
 
-FASE DE AUDITORÍA DE ACCESOS Y AUTORIDAD
+V97 — Autoridad de Cancillería para conceptos de decreto
+- Retiradas autorizaciones de escritura de admin_general y diocese en conceptos_anulacion.
+- Solo Cancillería y su diócesis pueden crear y modificar conceptos; 8 pruebas reales por cuatro roles.
+- Otra diócesis: 3 pruebas adversariales de INSERT, traslado y DELETE, con ROLLBACK.
 
-V95
-- Protección de cinco catálogos parroquiales: ciudades, diócesis auxiliares, iglesias, obispos y párrocos.
-- Quince políticas RLS, 60/60 operaciones en matriz de cuatro roles y cinco INSERT ajenos denegados.
-- Cero registros ficticios persistidos.
+V98 — Autenticidad de conceptos del archivo histórico
+- Trigger de integridad: un concepto importado no puede cambiar origen, código, descripción, efectos o diócesis; solo desactivarse sin borrar el historial.
+- Ningún concepto manual puede fingir una procedencia histórica arbitraria.
+- La pantalla Cancillería muestra Histórico protegido y oculta Editar para conceptos importados.
+- Pruebas conductuales de procedencia: 6/6 con éxito; 4 conceptos originales preservados; 0 datos QA persistidos.
+- 14 pruebas sintéticas adicionales de regresión; total esperado 264 más 23 verificadores históricos y build.
 
-V96
-- Identidad institucional mis_datos: no permite escritura desde el Administrador General fuera de sus competencias.
-- Mantiene gestión legítima de Diócesis, Cancillería y Parroquia dentro de su ámbito.
-- 12 comprobaciones conductuales de INSERT, UPDATE y DELETE con ROLLBACK, cero residuos.
-- Protección de documentos institucionales que usan esta identidad, sin alterar sus plantillas ni su contenido.
+PENDIENTE — Auditoría general abierta:
+- 5 avisos HIGH en dependencias frontend, CI seguridad seguirá rojo.
+- 128 RPC privilegiadas por auditar individualmente.
+- Interfaz autenticada completa, concurrencia, importación E2E y restauración de respaldos.
+- 325 controles del plan maestro siguen siendo el objetivo; no declarar completitud.
 
-CALIDAD
-- 250 pruebas sintéticas previstas; 23 verificadores históricos; compilación y CSS.
-- La auditoría de dependencias permanece en rojo por cinco HIGH.
-- La auditoría integral de 325 controles NO está concluida.
-- Pendientes: 128 RPC SECURITY DEFINER, conceptos de anulación, dos diócesis ficticias completas, ensayos visuales autenticados, restauración y concurrencia.
-
-INFORMES
-AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md
-AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md
-AUDITORIA_MAESTRA_SACRAMENTUM_V90.md
+Ver AUDITORIA_CONCEPTOS_DEC_REGLAS_V98_2026-10-21.md.

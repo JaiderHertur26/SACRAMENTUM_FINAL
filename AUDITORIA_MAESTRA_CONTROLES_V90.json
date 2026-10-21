@@ -1151,9 +1151,11 @@
       "area": "Decretos nuevos en Cancillería",
       "priority": "P0",
       "criterion": "Competencia exclusiva de Cancillería",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "AUDITORIA_CONCEPTOS_DEC_REGLAS_V98_2026-10-21.md: Cancillería única con INSERT/UPDATE de conceptos; otros roles bloqueados, todavía pendientes todos los RPC de emisión"
+      ],
+      "updated_at": "2026-10-21T20:15:09.423Z"
     },
     {
       "id": "12.02",
@@ -1171,9 +1173,11 @@
       "area": "Decretos nuevos en Cancillería",
       "priority": "P0",
       "criterion": "Concepto jurídico compatible",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "AUDITORIA_CONCEPTOS_DEC_REGLAS_V98_2026-10-21.md: Conceptos de corrección/archivo protegidos por ámbito y fuente; compatibilidad jurídica total pendiente"
+      ],
+      "updated_at": "2026-10-21T20:15:09.877Z"
     },
     {
       "id": "12.04",
@@ -1261,9 +1265,11 @@
       "area": "Decretos antiguos importados",
       "priority": "P0",
       "criterion": "Origen histórico verificable",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "AUDITORIA_CONCEPTOS_DEC_REGLAS_V98_2026-10-21.md: V98 4/4 conceptos históricos conservan source_kind legacy_catalog; trigger preserva procedencia contra edición"
+      ],
+      "updated_at": "2026-10-21T20:15:10.211Z"
     },
     {
       "id": "13.02",
@@ -1271,9 +1277,11 @@
       "area": "Decretos antiguos importados",
       "priority": "P0",
       "criterion": "No simular nueva emisión",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "AUDITORIA_CONCEPTOS_DEC_REGLAS_V98_2026-10-21.md: V98 prohíbe fingir nueva importación con INSERT directo fuente legacy_catalog; reimportación E2E pendiente"
+      ],
+      "updated_at": "2026-10-21T20:15:10.486Z"
     },
     {
       "id": "13.03",
@@ -1281,9 +1289,11 @@
       "area": "Decretos antiguos importados",
       "priority": "P0",
       "criterion": "Parroquia y diócesis exactas",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "AUDITORIA_CONCEPTOS_DEC_REGLAS_V98_2026-10-21.md: V97 rechaza concepto nuevo y traslado de existente a diócesis ajena"
+      ],
+      "updated_at": "2026-10-21T20:15:11.341Z"
     },
     {
       "id": "13.04",
@@ -1361,9 +1371,11 @@
       "area": "Decretos antiguos importados",
       "priority": "P0",
       "criterion": "Fuente original preservada",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "AUDITORIA_CONCEPTOS_DEC_REGLAS_V98_2026-10-21.md: Fuente histórica de conceptos protegida; quedan otras tablas y documentos de origen por auditar"
+      ],
+      "updated_at": "2026-10-21T20:15:11.728Z"
     },
     {
       "id": "14.01",
@@ -1641,9 +1653,11 @@
       "area": "Centro de Migración",
       "priority": "P0",
       "criterion": "ANULACION y conceptos",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "AUDITORIA_CONCEPTOS_DEC_REGLAS_V98_2026-10-21.md: Catálogo histórico de conceptos V98 protegido; conciliación de ANULACION y lotes pendiente"
+      ],
+      "updated_at": "2026-10-21T20:15:12.072Z"
     },
     {
       "id": "16.10",
@@ -2739,9 +2753,10 @@
         "AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: Riesgo V93-SEC-002: Administrador General deja de poder escribir boletas de Bautismo y Confirmación",
         "AUDITORIA_PARAMETROS_Y_LIBROS_V94_2026-10-21.md: V94-SEC-003 corregido: admin general ya no puede alterar configuraciones ni libros parroquiales",
         "AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: V95 escalamiento vertical: 5 INSERT indebidos de admin reproducidos y eliminados por RLS",
-        "AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96 vulnerabilidad de escalamiento vertical en mis_datos reproducida y corregida"
+        "AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96 vulnerabilidad de escalamiento vertical en mis_datos reproducida y corregida",
+        "AUDITORIA_CONCEPTOS_DEC_REGLAS_V98_2026-10-21.md: V97 admin_general/diocese denegados para catálogo de decretos, Cancillería permitida"
       ],
-      "updated_at": "2026-10-21T19:55:58.125Z"
+      "updated_at": "2026-10-21T20:15:12.441Z"
     },
     {
       "id": "27.02",
@@ -2753,9 +2768,10 @@
       "evidence": [
         "AUDITORIA_EXP_DEPENDENCIAS_Y_RLS_V91.md: Segunda diócesis ficticia y Bautismo ajeno negados para cuatro roles en transacción ROLLBACK",
         "AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: V95 escalamiento horizontal: 5 INSERT a parroquia ajena rechazados por RLS",
-        "AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96 identidad parroquial no puede alterarse por rol general ajeno al ámbito"
+        "AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96 identidad parroquial no puede alterarse por rol general ajeno al ámbito",
+        "AUDITORIA_CONCEPTOS_DEC_REGLAS_V98_2026-10-21.md: V97 concepto no puede trasladarse ni crearse para segunda diócesis ajena"
       ],
-      "updated_at": "2026-10-21T19:55:58.300Z"
+      "updated_at": "2026-10-21T20:15:12.727Z"
     },
     {
       "id": "27.03",
@@ -3332,9 +3348,10 @@
       "evidence": [
         "AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md: Emisión temporal 1 documento y 1 log; cero residuos tras ROLLBACK en muestra controlada",
         "AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: Boletas ficticias V93 comprobadas en cero tras ROLLBACK, conservación de históricos",
-        "AUDITORIA_PARAMETROS_Y_LIBROS_V94_2026-10-21.md: V94: 3 registros de parámetros y 0 libros tras rollback; sin persistencia de QA"
+        "AUDITORIA_PARAMETROS_Y_LIBROS_V94_2026-10-21.md: V94: 3 registros de parámetros y 0 libros tras rollback; sin persistencia de QA",
+        "AUDITORIA_CONCEPTOS_DEC_REGLAS_V98_2026-10-21.md: Hallazgos V97/V98 reproducidos sin mutaciones permanentes y corregidos"
       ],
-      "updated_at": "2026-10-21T18:13:49.801Z"
+      "updated_at": "2026-10-21T20:15:13.038Z"
     },
     {
       "id": "32.06",
@@ -3345,9 +3362,10 @@
       "status": "EN_PROGRESO",
       "evidence": [
         "AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: V95 reprodujo fallo antes y verificó reparación tras aplicar migración",
-        "AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96 corrige hallazgo de identidad institucional y repite prueba antes/después"
+        "AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96 corrige hallazgo de identidad institucional y repite prueba antes/después",
+        "AUDITORIA_CONCEPTOS_DEC_REGLAS_V98_2026-10-21.md: Pruebas antes/después V97 8 roles, V98 6 casos, ROLLBACK; regresión estática añadida"
       ],
-      "updated_at": "2026-10-21T19:55:58.853Z"
+      "updated_at": "2026-10-21T20:15:13.299Z"
     },
     {
       "id": "32.07",
@@ -3360,9 +3378,10 @@
         "AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md: Regresión 211 pruebas sintéticas, 23 verificadores, build OK; quedan fallas de dependencias",
         "AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: 219 pruebas sintéticas, 23 verificadores y build aprobados; advertencias HIGH de paquetes aún abiertas",
         "AUDITORIA_PARAMETROS_Y_LIBROS_V94_2026-10-21.md: V94: 227 pruebas sintéticas, 23 verificadores y build OK; siguen cinco HIGH npm audit",
-        "AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96 250 pruebas sintéticas y 23 verificadores aprobados; cinco paquetes HIGH siguen bloqueando gate"
+        "AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96 250 pruebas sintéticas y 23 verificadores aprobados; cinco paquetes HIGH siguen bloqueando gate",
+        "AUDITORIA_CONCEPTOS_DEC_REGLAS_V98_2026-10-21.md: V98 puerta de calidad 25/26: 264 sintéticas, 23 legacy, build; cinco HIGH dependencias siguen en FAIL"
       ],
-      "updated_at": "2026-10-21T19:55:59.217Z"
+      "updated_at": "2026-10-21T20:15:13.542Z"
     },
     {
       "id": "32.08",
@@ -3373,9 +3392,10 @@
       "status": "EN_PROGRESO",
       "evidence": [
         "AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: Tras V95: 15 políticas, 0 bypass is_app_admin y 0 residuos en 5 catálogos",
-        "AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96: mis_datos mantiene 1 fila real, 0 fixtures y 0 admin bypass en 3 políticas"
+        "AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96: mis_datos mantiene 1 fila real, 0 fixtures y 0 admin bypass en 3 políticas",
+        "AUDITORIA_CONCEPTOS_DEC_REGLAS_V98_2026-10-21.md: Postprueba 4 conceptos históricos intactos, 0 QA, 1 trigger, 0 bypass admin"
       ],
-      "updated_at": "2026-10-21T19:55:59.024Z"
+      "updated_at": "2026-10-21T20:15:13.789Z"
     },
     {
       "id": "32.09",
