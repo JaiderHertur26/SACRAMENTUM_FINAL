@@ -33,7 +33,10 @@ exec('pruebas-sinteticas',node,['--test',
  'scripts/test-parish-auxiliary-ownership-v95.mjs',
  'scripts/test-institutional-identity-v96.mjs',
  'scripts/test-decree-concept-authority-v97.mjs',
- 'scripts/test-legacy-concept-provenance-v98.mjs']);
+ 'scripts/test-legacy-concept-provenance-v98.mjs',
+ 'scripts/test-legacy-import-provenance-v99.mjs',
+ 'scripts/test-legacy-role-scope-v100.mjs',
+ 'scripts/test-legacy-admin-unscoped-v101.mjs']);
 const scripts=fs.readdirSync(path.join(root,'scripts')).filter(x=>/^verify-.*\.mjs$/.test(x)).sort();
 for(const file of scripts)exec('legacy/'+file,node,['scripts/'+file]);
 const npmOnWindows=process.platform==='win32';

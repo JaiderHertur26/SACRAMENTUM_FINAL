@@ -1,21 +1,20 @@
-SACRAMENTUM FINAL · V98 · 2026-10-21
+SACRAMENTUM FINAL · V101 · 2026-10-21
 
-V97 — Autoridad de Cancillería para conceptos de decreto
-- Retiradas autorizaciones de escritura de admin_general y diocese en conceptos_anulacion.
-- Solo Cancillería y su diócesis pueden crear y modificar conceptos; 8 pruebas reales por cuatro roles.
-- Otra diócesis: 3 pruebas adversariales de INSERT, traslado y DELETE, con ROLLBACK.
+CAMBIOS AUDITADOS
+- V99: Importación de conceptos del archivo CPTOANULA conserva source_kind=legacy_catalog y referencia al lote/fila de origen; validado también sobre la RPC real apply_legacy_import_batch_v3.
+- V100: Administrador General no gestiona ni consulta archivos parroquiales. Diócesis conserva operaciones territoriales, Cancillería lee archivos de su jurisdicción, Parroquia gestiona y consulta archivos propios.
+- V101: Cerrada la excepción que permitía al Administrador General crear lotes históricos sin parroquia ni diócesis.
+- E2E transaccional con rol Parroquia: crear lote CPTOANULA, cargar fila, importar, comprobar procedencia; Admin General denegado al intentar procesar ese lote; ROLLBACK y cero residuos.
+- Aislamiento horizontal confirmado: Parroquia ve sus propios lotes, pero no puede leer lotes, filas o vínculos de otra parroquia.
+- Regresión ampliada con 20 pruebas estáticas nuevas desde V98; 284 pruebas sintéticas previstas, 23 verificadores históricos, build Vite y control de CSS.
 
-V98 — Autenticidad de conceptos del archivo histórico
-- Trigger de integridad: un concepto importado no puede cambiar origen, código, descripción, efectos o diócesis; solo desactivarse sin borrar el historial.
-- Ningún concepto manual puede fingir una procedencia histórica arbitraria.
-- La pantalla Cancillería muestra Histórico protegido y oculta Editar para conceptos importados.
-- Pruebas conductuales de procedencia: 6/6 con éxito; 4 conceptos originales preservados; 0 datos QA persistidos.
-- 14 pruebas sintéticas adicionales de regresión; total esperado 264 más 23 verificadores históricos y build.
+PENDIENTE
+- Cinco alertas HIGH de dependencias continúan bloqueando CI de seguridad.
+- Revisar todas las RPC SECURITY DEFINER restantes y la integridad y seguridad de otras fuentes históricas.
+- Pruebas E2E completas en sandbox independiente, 325 controles de auditoría, visual interno autenticado, concurrencia y respaldo restaurado.
+- No se declara certificación total.
 
-PENDIENTE — Auditoría general abierta:
-- 5 avisos HIGH en dependencias frontend, CI seguridad seguirá rojo.
-- 128 RPC privilegiadas por auditar individualmente.
-- Interfaz autenticada completa, concurrencia, importación E2E y restauración de respaldos.
-- 325 controles del plan maestro siguen siendo el objetivo; no declarar completitud.
-
-Ver AUDITORIA_CONCEPTOS_DEC_REGLAS_V98_2026-10-21.md.
+VER INFORMES
+AUDITORIA_IMPORTACION_CONCEPTOS_V99_2026-10-21.md
+AUDITORIA_AUTORIDAD_MIGRACION_V101_2026-10-21.md
+AUDITORIA_MAESTRA_SACRAMENTUM_V90.md
