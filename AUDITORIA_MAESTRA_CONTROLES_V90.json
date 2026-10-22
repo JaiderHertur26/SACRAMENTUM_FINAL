@@ -570,9 +570,10 @@
         "V130: inventario SECDEF pasó de 133 a 136 por tres RPC nuevas protegidas. Diez cuentan con ensayos parciales, 126 requieren revisión integral individual.",
         "V132: catálogo real SECDEF autenticadas actualizado a 136; 10 con pruebas parciales y 126 pendientes de auditoría individual.",
         "V133: tres RPC SECDEF (notas marginales manuales, lectura y archivo de avisos oficiales) pasaron de pendientes a parcialmente probadas; 13/136 con evidencia acotada, 123 aún sin revisión individual.",
-        "V134: dos RPC notificadoras ahora con verificación parcial. 15/136 RPC con evidencia acotada, 121 aún sin revisión individual."
+        "V134: dos RPC notificadoras ahora con verificación parcial. 15/136 RPC con evidencia acotada, 121 aún sin revisión individual.",
+        "V135: reverse_marriage_decree y reverse_funeral_decree ahora parcialmente revisadas contra reversión tardía; 17/136 con evidencias acotadas y 119 RPC sin revisión individual."
       ],
-      "updated_at": "2026-10-22T16:12:43.826Z"
+      "updated_at": "2026-10-22T16:24:08.858Z"
     },
     {
       "id": "06.07",
@@ -590,9 +591,10 @@
         "V130: matriz judicial de 4 roles y 11 rechazos autorizados, incluida protección de tabla institucional sin grants al cliente.",
         "V132: vía antigua de cuatro parámetros bloqueada, revisión nueva exige hash; 13 denegaciones y ejecución única QA.",
         "V133: funciones de modificaciones marginales y acuses ahora comprueban rol custodial; 8 intentos indebidos entre cuatro roles rechazados y 3 cruces de parroquia bloqueados.",
-        "V134: matriz SQL confirma rol legítimo y control físico de estados del documento, del destinatario y jurisdicción."
+        "V134: matriz SQL confirma rol legítimo y control físico de estados del documento, del destinatario y jurisdicción.",
+        "V135: además del rol Cancillería y diócesis propietaria, reversión valida estado actual de partidas originales y supletorias, parroquia y decreto."
       ],
-      "updated_at": "2026-10-22T16:12:43.826Z"
+      "updated_at": "2026-10-22T16:24:08.858Z"
     },
     {
       "id": "06.08",
@@ -1287,9 +1289,10 @@
         "V114: 8 documentos ficticios, cero cambios en partidas y notas durante transacción; fuente scripts/qa-rollback-documentary-v114.sql, ROLLBACK.",
         "V118: antecedente archived, registersEffect=false, sin modificar sacramentos.",
         "V126: importación antigua ANULACION ya no puede ejecutar anulaciones ni reemplazos; la ruta documental de Cancillería V118 continúa.",
-        "V128: decreto nuevo de nulidad afecta partida sólo tras doble control; sigue única fila canónica en decretos, notas y auditoría en misma transacción."
+        "V128: decreto nuevo de nulidad afecta partida sólo tras doble control; sigue única fila canónica en decretos, notas y auditoría en misma transacción.",
+        "V135: se impide que corrección de Matrimonio o Exequias revierta cambios registrales de una supletoria afectada posteriormente."
       ],
-      "updated_at": "2026-10-22T15:20:33.770Z"
+      "updated_at": "2026-10-22T16:24:08.858Z"
     },
     {
       "id": "12.07",
@@ -1303,9 +1306,10 @@
         "V118: constancia a parroquia histórica, sin simular nueva emisión.",
         "V128: triggers existentes centralizan aviso oficial del decreto sin duplicar, QA integrada validó decreto y nota.",
         "V133: ninguna lectura/archivo de comunicación oficial dirigida a Parroquia puede ser realizada por Cancillería, Diócesis o Administrador General; sólo la destinataria crea constancia.",
-        "V134: no puede asentarse certificación física de avisos matrimoniales cancelados/revertidos."
+        "V134: no puede asentarse certificación física de avisos matrimoniales cancelados/revertidos.",
+        "V135: rechazo de reversión tardía conserva decreto, notas y auditoría íntegros."
       ],
-      "updated_at": "2026-10-22T16:12:43.826Z"
+      "updated_at": "2026-10-22T16:24:08.858Z"
     },
     {
       "id": "12.08",
@@ -1553,9 +1557,10 @@
         "V117: nuevas notas de reversión quedan vinculadas a decree_id, source_id, sacramento y partida; sin duplicación.",
         "V118: notas marginales históricas vinculadas a expediente y partida.",
         "V128: sentencia emitida genera nota marginal matrimonial y, con partidas bautismales verificadas, vincula las relacionadas; una nota simulada en QA.",
-        "V134: control de efectos sobre Bautismo: certificación física respeta validez del documento originador."
+        "V134: control de efectos sobre Bautismo: certificación física respeta validez del documento originador.",
+        "V135: protección contra reactivación indebida de partida original que ya no está anulada y contra sobrescritura de supletoria."
       ],
-      "updated_at": "2026-10-22T16:12:43.826Z"
+      "updated_at": "2026-10-22T16:24:08.858Z"
     },
     {
       "id": "14.05",
@@ -1582,9 +1587,10 @@
         "V128: procedencia judicial con referencia, Tribunal, fechas y SHA-256 documentados antes de ejecutar, sin afirmar autenticidad automática.",
         "V132: cotejo SHA-256 local con copia judicial y validación SQL antes de permitir autorización.",
         "V133: notas manuales creadas sólo por parroquia titular y Cancillería de su diócesis, con políticas de impresión obligatoria aún reservadas a Cancillería.",
-        "V134: un aviso matrimonial físico vigente se procesa una sola vez sin duplicar bitácora."
+        "V134: un aviso matrimonial físico vigente se procesa una sola vez sin duplicar bitácora.",
+        "V135: sentencia posterior simulada sobre supletoria matrimonial (status nullified) se conservó intacta y reversión antigua fue rechazada."
       ],
-      "updated_at": "2026-10-22T16:12:43.826Z"
+      "updated_at": "2026-10-22T16:24:08.858Z"
     },
     {
       "id": "14.07",
@@ -1784,9 +1790,10 @@
         "V121: datos binarios/físicos de instalación y origen tratados con pertenencia doble, sin fugar datos de otra diócesis.",
         "V123: prueba de datos importados anulado vs activo y manual, remoción sólo elegible e idempotencia sin borrar otro registro.",
         "V133: QA de libro matrimonial falso vinculada a una parroquia concreta, dos asientos legítimos y denegación horizontal sobre libro ajeno.",
-        "V134: ensayos con avisos y destinatarios inventados, todos en ROLLBACK."
+        "V134: ensayos con avisos y destinatarios inventados, todos en ROLLBACK.",
+        "V135: prueba de cambios posteriores en Exequias y matrimonio con dos estados diferentes y rechazo documentado."
       ],
-      "updated_at": "2026-10-22T16:12:43.826Z"
+      "updated_at": "2026-10-22T16:24:08.858Z"
     },
     {
       "id": "16.07",
@@ -2967,9 +2974,10 @@
         "V125: explotó en SQL ROLLBACK acceso horizontal a otra parroquia mediante parámetro NULL en notas matrimoniales; ya bloqueado y verificado.",
         "V130: fuente institucional SELECT de otra diócesis no visible, aun con filas ficticias cruzadas, y acceso directo a tabla rechazado.",
         "V133: QA de 3 pruebas de aislamiento horizontal: una parroquia no inserta notas ni marca/archiva aviso de otra parroquia misma diócesis.",
-        "V134: documento de diócesis ajena y destinatario archived bloqueados; no se modifica estado."
+        "V134: documento de diócesis ajena y destinatario archived bloqueados; no se modifica estado.",
+        "V135: reposición y corrección se comprueban contra jurisdicción de la parroquia propia, identificadores de partes y estado vigente."
       ],
-      "updated_at": "2026-10-22T16:12:43.827Z"
+      "updated_at": "2026-10-22T16:24:08.858Z"
     },
     {
       "id": "27.03",
@@ -3008,9 +3016,10 @@
         "V128: autorización previa unida a id de Matrimonio, Diócesis, parroquia, número y fecha; token consumido una sola vez.",
         "V132: revisión previa de Cancillería/Diócesis no admite firma RPC vieja; SHA obligatorio al autorizar.",
         "V133: autoridad diocesana/cancillería no puede fabricar lectura del destinatario; roles legítimos pueden consultar pero acuse pertenece a receptor parroquial.",
-        "V134: procesador físico rechaza seis estados inválidos de origen y sólo permite destinatario pending/read."
+        "V134: procesador físico rechaza seis estados inválidos de origen y sólo permite destinatario pending/read.",
+        "V135: 2 RPC de reversión incluidas en pruebas de autorización parcial; vinculaciones originales/supletorias y estados deben ser congruentes."
       ],
-      "updated_at": "2026-10-22T16:12:43.827Z"
+      "updated_at": "2026-10-22T16:24:08.858Z"
     },
     {
       "id": "27.05",
@@ -3023,9 +3032,10 @@
         "V123: prohibido patrón LIKE libre en limpieza de sombras de Confirmación; parámetro fuente literal sin comodines, >=6 caracteres. Auditoría SQL injection integral aún pendiente.",
         "V132: mitigado bypass del cotejo visual mediante RPC directa, no implica certificación judicial de origen.",
         "V133: no hay alternativa directa INSERT en marginal_notes ni UPDATE en official_notifications desde rol authenticated; permisos tabla comprobados.",
-        "V134: documento de origen bloqueado FOR SHARE antes de certificar, concurrencia multiusuario aún pendiente de prueba."
+        "V134: documento de origen bloqueado FOR SHARE antes de certificar, concurrencia multiusuario aún pendiente de prueba.",
+        "V135: select FOR UPDATE en partidas originales/supletorias antes de restaurar para bloquear conflictos de cambios concurrentes de estado (no certifica tests de múltiples conexiones)."
       ],
-      "updated_at": "2026-10-22T16:12:43.827Z"
+      "updated_at": "2026-10-22T16:24:08.858Z"
     },
     {
       "id": "27.06",
@@ -3107,9 +3117,10 @@
         "V130: prueba directa de seguridad en RPC con cuatro roles; tres nuevas funciones parcialmente revisadas, 126 previas aún abiertas.",
         "V132: 136 funciones privilegiadas; 10 parcialmente probadas, 126 sin revisión completa.",
         "V133: snapshot de 136 SECURITY DEFINER, 13 parcialmente probadas en SQL, 123 pendientes. Este resultado NO certifica toda la superficie RPC.",
-        "V134: inventario de 136 RPC SECDEF, 15 parcialmente verificadas, 121 pendientes. Trigger digital existente confirmado."
+        "V134: inventario de 136 RPC SECDEF, 15 parcialmente verificadas, 121 pendientes. Trigger digital existente confirmado.",
+        "V135: inventario 136 SECDEF accesibles por authenticated; 17 con pruebas parciales y 119 pendientes de revisión individual profunda."
       ],
-      "updated_at": "2026-10-22T16:12:43.827Z"
+      "updated_at": "2026-10-22T16:24:08.858Z"
     },
     {
       "id": "28.01",
@@ -3516,9 +3527,10 @@
         "V128/V130: laboratorios SQL ficticios de 11 denegaciones, éxito único e idempotencia, roles y RLS, con ROLLBACK y cero residuos.",
         "V132: laboratorio SQL de 13 rechazos y una nulidad autorizada, 8 tests CDP visual/interacción, sin credenciales ni datos reales.",
         "V133: matriz transaccional 4 roles, 8 denegaciones y 4 operaciones legítimas (2 notas, lectura y archivo) además de 3 denegaciones horizontales.",
-        "V134: Matrimonio (5 negativas, 1 positiva, denegación diocese), Confirmación (una positiva, una negativa), jurisdicción y estado anómalo (2 negativas)."
+        "V134: Matrimonio (5 negativas, 1 positiva, denegación diocese), Confirmación (una positiva, una negativa), jurisdicción y estado anómalo (2 negativas).",
+        "V135: laboratorios SQL de matrimonio/exequias con original alterado, supletoria anulada, reposición alterada, corrección/reposición legítimas; sin persistencia."
       ],
-      "updated_at": "2026-10-22T16:12:43.827Z"
+      "updated_at": "2026-10-22T16:24:08.858Z"
     },
     {
       "id": "31.08",
@@ -3557,9 +3569,10 @@
         "V130: no existen autorizaciones persistidas, Matrimonios QA, decretos QA ni diócesis ficticias. Cinco ANULACION pendientes y dos vinculados intactos.",
         "V132: todos ensayos reversibles, 0 autorizaciones QA, 0 matrimonios/decretos QA persistidos.",
         "V133: 0 QA marriages, notas, avisos y parroquias tras ROLLBACK; archivo ANULACION sigue con 5 pendientes y 2 vinculados.",
-        "V134: 0 avisos QA, 0 destinatarios QA, 0 diócesis falsas tras ROLLBACK; históricos 5 pendientes, 2 vinculados."
+        "V134: 0 avisos QA, 0 destinatarios QA, 0 diócesis falsas tras ROLLBACK; históricos 5 pendientes, 2 vinculados.",
+        "V135: conteo posterior 0 matrimonios QA, 0 exequias QA, 0 decretos QA, 0 notas QA. ANULACION sin variaciones: 5 pendientes y 2 vinculados."
       ],
-      "updated_at": "2026-10-22T16:12:43.827Z"
+      "updated_at": "2026-10-22T16:24:08.858Z"
     },
     {
       "id": "32.01",
@@ -3628,9 +3641,10 @@
         "V130: 3 migraciones, 4 laboratorios reversibles, 17 verificaciones estáticas nuevas, gate 598/598 sintéticas y 28/28 tareas estrictas.",
         "V132: 608 pruebas sintéticas, 28 verificaciones estrictas, 8 capturas/acciones Chrome, pruebas RLS y SHA.",
         "V133: 4 laboratorios SQL históricos/actuales, 13 pruebas de contrato añadidas, 621/621 sintéticas y 28/28 verificaciones estrictas.",
-        "V134: 18 nuevas pruebas de contrato, 639/639 sintéticas y 28/28 verificaciones estrictas."
+        "V134: 18 nuevas pruebas de contrato, 639/639 sintéticas y 28/28 verificaciones estrictas.",
+        "V135: se agregaron 18 pruebas de contrato y ROLLBACK, total 657/657 tests sintéticos; puerta estricta 28/28."
       ],
-      "updated_at": "2026-10-22T16:12:43.827Z"
+      "updated_at": "2026-10-22T16:24:08.858Z"
     },
     {
       "id": "32.04",
@@ -3674,9 +3688,10 @@
         "V128: emisión unilateral de nulidad probada en DB con transacción abortada y corregida con preautorización documental de Diócesis.",
         "V132: doble bloqueo frontend/backend de autorización sin copia judicial concordante.",
         "V133: dos fallos reproducidos antes de modificar Supabase: Admin General insertaba nota marginal y Diócesis marcaba leído un mensaje parroquial.",
-        "V134: defecto confirmado antes del parche: se certificaba físicamente un aviso fuente cancelado como processed/note_applied. Corregido."
+        "V134: defecto confirmado antes del parche: se certificaba físicamente un aviso fuente cancelado como processed/note_applied. Corregido.",
+        "V135: reproduce pre-fix que reversión matrimonial y Exequias rehabilitaba el original aunque nueva supletoria ya no estuviera vigente; corregido."
       ],
-      "updated_at": "2026-10-22T16:12:43.827Z"
+      "updated_at": "2026-10-22T16:24:08.858Z"
     },
     {
       "id": "32.06",
@@ -3708,9 +3723,10 @@
         "V128: antes se pudo ejecutar sin autorización; después 11 intentos no autorizados rechazados y una ejecución documentada única comprobada.",
         "V132: reproducido que RPC vieja permite omitir hash; sustituida por rechazo + RPC con p_verified_sha256.",
         "V133: se reprodujo el defecto antes y se comprobó después: matriz post-fix positiva/negativa, ausencia de acuse falso y ROLLBACK.",
-        "V134: laboratorio negativo inicial y pruebas positivas/negativas posteriores; protección digital preexistente validada, sin cambios innecesarios."
+        "V134: laboratorio negativo inicial y pruebas positivas/negativas posteriores; protección digital preexistente validada, sin cambios innecesarios.",
+        "V135: prueba inicial confirma daño en transacción abortada; pruebas post-fix mantienen estados y decretos, y rutas válidas V115 pasan."
       ],
-      "updated_at": "2026-10-22T16:12:43.827Z"
+      "updated_at": "2026-10-22T16:24:08.858Z"
     },
     {
       "id": "32.07",
@@ -3744,9 +3760,10 @@
         "V130: gate npm completo 0 vulnerabilidades y producción 0; 28/28 controles y 598 pruebas sintéticas; UI interna todavía no recorrida.",
         "V132: npm audit completo y runtime 0 vulnerabilidades; 28/28 gate y 608 sintéticas.",
         "V133: gate 28/28 y 621/621 tests sintéticos; npm audit completo y producción sin vulnerabilidades.",
-        "V134: build/CSS y npm audit completo+runtime 0 vulnerabilidades, gate 28/28."
+        "V134: build/CSS y npm audit completo+runtime 0 vulnerabilidades, gate 28/28.",
+        "V135: 28/28 controles de puerta, build y CSS, npm audit completo y producción cero alertas."
       ],
-      "updated_at": "2026-10-22T16:12:43.827Z"
+      "updated_at": "2026-10-22T16:24:08.858Z"
     },
     {
       "id": "32.08",
@@ -3778,9 +3795,10 @@
         "V130: SQL transacciones ROLLBACK; resguardo de matrimonios y expedientes originales confirmado.",
         "V132: prueba de ausencia de residuos, hashes visuales y evidencia SQL ROLLBACK conservada.",
         "V133: no se persistió información de pruebas; migración aplicada en Supabase con versión real 20261022155208; frontend sin cambios funcionales.",
-        "V134: no persiste ninguna fila QA, migración real 20261022160304; frontend no desplegado."
+        "V134: no persiste ninguna fila QA, migración real 20261022160304; frontend no desplegado.",
+        "V135: documentación, migración real y QA con ROLLBACK; sin modificar registros auténticos ni desplegar frontend."
       ],
-      "updated_at": "2026-10-22T16:12:43.827Z"
+      "updated_at": "2026-10-22T16:24:08.858Z"
     },
     {
       "id": "32.09",
