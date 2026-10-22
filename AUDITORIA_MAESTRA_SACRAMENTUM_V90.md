@@ -140,6 +140,7 @@ Avance: 325 controles totales; 10 aprobados; 102 en progreso; 213 pendientes; 0 
   - Evidencia: V149: comparación de versiones registrales a microsegundos al validar constancias de impresión; fuente SQL V148 sin cambios.
   - Evidencia: V150: can_access_parish antes retornaba NULL para usuario sin perfil y su uso IF NOT podía saltar la prohibición; función modificada en Supabase.
   - Evidencia: V151: inventario de 200 SECURITY DEFINER en public/private conciliado por firma; 139 ejecutables por authenticated (136 public+3 private), 61 sin ejecución directa.
+  - Evidencia: V152: 3 funciones (decreto documental, traza, política de concepto privada) obtienen revisión parcial sobre inventario 139 ejecutables; 27 parciales, 112 aún pendientes.
 - [ ] 06.07 · Todas las RPC privilegiadas denegadas a terceros (inventario dinámico) — EN_PROGRESO
   - Evidencia: AUDITORIA_BASE_SQL_V90.md: Cero vistas públicas; 129 RPC privilegiadas requieren pruebas de permisos y búsqueda de bypass
   - Evidencia: AUDITORIA_INVENTARIO_RPC_V91.json: 129 funciones catalogadas para revisión de terceros, sin afirmar autorización sin pruebas
@@ -162,10 +163,12 @@ Avance: 325 controles totales; 10 aprobados; 102 en progreso; 213 pendientes; 0 
   - Evidencia: V148: updated_at de cada partida cambia monotónicamente en UPDATE antes de validar una nueva impresión; FOR SHARE V144 permanece.
   - Evidencia: V150: control de autorización ahora es FALSE explícito para uid o parroquia ausente; conserva ruta de permisos por rol.
   - Evidencia: V151: materializadores privados históricos DENEGARON acceso a Cancillería y Administración General en dos tipos; permisos legítimos de Parroquia/Diócesis conservados.
+  - Evidencia: V152: Diócesis no pudo emitir decreto documental ni imponer concepto; Parroquia ajena no pudo consultar traza y actor sin perfil tampoco.
 - [ ] 06.08 · Search path de funciones — EN_PROGRESO
   - Evidencia: AUDITORIA_INVENTARIO_RPC_V91.json: Cribado search_path de funciones privilegiadas; falta verificación de todas sus dependencias
   - Evidencia: V124: ambas RPC destructivas preservaron search_path fijado; revisión de todas las demás sigue pendiente.
   - Evidencia: V151: tres private EXECUTE grants autenticados no se revocaron a ciegas: son dependencias de wrappers public SECURITY INVOKER; dos materializadores endurecidos.
+  - Evidencia: V152: private.attach_decree_concept_policy_internal conserva control exclusivo de Cancillería y bloquea conceptos en decretos documentales e históricos.
 - [ ] 06.09 · Filtración por GraphQL — EN_PROGRESO
   - Evidencia: V120: Supabase Advisor informa 64 objetos visibles en GraphQL a authenticated. Acceso a esquema NO equivale a fuga de filas; revisión exhaustiva pendiente.
   - Evidencia: V121: 64 advertencias GraphQL para objetos authenticated según Security Advisor; RLS V121 elimina filtración concreta por artefactos y archivos, no todas las advertencias.
@@ -311,6 +314,7 @@ Avance: 325 controles totales; 10 aprobados; 102 en progreso; 213 pendientes; 0 
   - Evidencia: V149: antes de solicitar impresión, cliente exige updated_at canónico de partida; ausencia detiene operación.
   - Evidencia: V150: register_registry_print deniega correctamente solicitud de impresión por identidad ficticia sin perfil antes de consultar partida.
   - Evidencia: V151: la impresión no sufrió cambios. La corrección de versiones V149 y permisos V150 continúa bajo pruebas contractuales.
+  - Evidencia: V152: verificación de emisión documental y consulta de traza por función autorizada sin conceder SELECT sobre registry_audit_log.
 - [ ] 12.08 · Archivo único en dos roles — EN_PROGRESO
   - Evidencia: V114: archivo consultado por diocese_id y parish_id sobre misma fila canónica, 52 casos sintéticos; falta prueba UI y RLS real de ambos actores.
   - Evidencia: V118: archivo compartido; panel de conciliación conectado a Centro de Decretos.
@@ -393,6 +397,7 @@ Avance: 325 controles totales; 10 aprobados; 102 en progreso; 213 pendientes; 0 
   - Evidencia: V148: prueba en Baptism reveló modificación nombres sin avance updated_at, se instaló trigger e incrementos de microsegundo.
   - Evidencia: V149: el cotejo Date.parse perdía microsegundos; ahora se comprueban seis dígitos y zona horaria.
   - Evidencia: V150: hallazgo de autorización SQL NULL reproducido en producción sin escrituras; se validó reparación con dry-run reversible.
+  - Evidencia: V152: las operaciones de decreto histórico se consideran documentales y no generan efectos registrales, comprobado comparando conteo de cuatro sacramentos antes/después.
 - [ ] 14.05 · Vínculo a original/supletoria — EN_PROGRESO
   - Evidencia: V117: corrección de Bautismo/Confirmación anota original recuperado y supletoria sin efecto; reposición anota supletoria únicamente.
 - [ ] 14.06 · Notas importadas sin fecha inventada — EN_PROGRESO
@@ -479,6 +484,7 @@ Avance: 325 controles totales; 10 aprobados; 102 en progreso; 213 pendientes; 0 
 - [ ] 17.04 · Párrocos activos — EN_PROGRESO
   - Evidencia: AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: Párrocos: control de titularidad corregido y CRUD en SQL comprobado, falta vigencia temporal
 - [ ] 17.05 · Fechas de vigencia — PENDIENTE
+  - Evidencia: V152: declaración de fuente histórica requerida, antecedente archivable y contenedor parroquial histórico sin autorización para emitir acto nuevo.
 - [ ] 17.06 · Obispos — EN_PROGRESO
   - Evidencia: AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: Obispos: tabla auxiliar protegida y probada con rol parroquial
 - [ ] 17.07 · Autocompletado — EN_PROGRESO
@@ -519,6 +525,7 @@ Avance: 325 controles totales; 10 aprobados; 102 en progreso; 213 pendientes; 0 
 - [ ] 20.01 · Búsqueda pública mínima — PENDIENTE
 - [ ] 20.02 · Búsqueda parroquial propia — PENDIENTE
   - Evidencia: V151: materializadores de boletas históricas utilizan el mismo guard can_manage_legacy_import que Centro de Migración; QA reversible rol a rol.
+  - Evidencia: V152: Cancillería emite decreto documental nuevo e histórico, con diferenciación de status active vs archived e issued_by apropiado; ROLLBACK.
 - [ ] 20.03 · Búsqueda diocesana — PENDIENTE
 - [ ] 20.04 · Apellido y nombre — PENDIENTE
 - [ ] 20.05 · Libro Folio Número — PENDIENTE
@@ -606,6 +613,7 @@ Avance: 325 controles totales; 10 aprobados; 102 en progreso; 213 pendientes; 0 
   - Evidencia: V148: trazabilidad documental bloquea versión antigua de impresión tras 3 actualizaciones del registro, verificada en Supabase con JWT simulado.
   - Evidencia: V150: ninguna impresión ni decreto ficticio generado; RPC de impresión negó al sujeto sin perfil por jurisdicción.
   - Evidencia: V151: ensayo de dos funciones en 4 negativos y 2 positivos, con ROLLBACK; cero importaciones reales en lote de prueba.
+  - Evidencia: V152: 3 decretos ficticios creados sólo dentro de transacción reversible con número QA152 y sin persistir.
 
 ### 25. Resiliencia (P0) — 0/11
 
@@ -659,6 +667,7 @@ Avance: 325 controles totales; 10 aprobados; 102 en progreso; 213 pendientes; 0 
   - Evidencia: V148: función de disparador private con SECURITY INVOKER, sin EXECUTE directo public/anon/authenticated.
   - Evidencia: V150: can_access_parish mantiene SECURITY DEFINER y no recibe nuevos GRANT; retorno total booleano evita el salto de guardas con NULL.
   - Evidencia: V151: las tres SECURITY DEFINER privadas accesibles a authenticated mantienen comprobaciones de rol/JWT; dos funciones materializadoras tienen política ajustada.
+  - Evidencia: V152: 3 RPC privilegiadas probadas parcialmente; setter de política privado no admite decreto documental y se mantiene inaccesible para rol diocesano.
 - [ ] 27.02 · Escalamiento horizontal — EN_PROGRESO
   - Evidencia: AUDITORIA_EXP_DEPENDENCIAS_Y_RLS_V91.md: Segunda diócesis ficticia y Bautismo ajeno negados para cuatro roles en transacción ROLLBACK
   - Evidencia: AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: V95 escalamiento horizontal: 5 INSERT a parroquia ajena rechazados por RLS
@@ -716,6 +725,7 @@ Avance: 325 controles totales; 10 aprobados; 102 en progreso; 213 pendientes; 0 
   - Evidencia: V149: constancia de auditoría confronta versión del servidor y del cliente a precisión PostgreSQL, no milisegundos.
   - Evidencia: V150: live QA confirmó que register_registry_print deniega actor sin perfil por jurisdicción, no solo por falta de registro.
   - Evidencia: V151: reproducida invocación anterior desde Cancillería que devolvía resultado pese a can_manage_legacy_import=false; tras fix denegada.
+  - Evidencia: V152: nueva matriz de autorización de decreto documental, traza parroquial y política conceptual con resultados reales en Supabase.
 - [ ] 27.05 · SQL injection — EN_PROGRESO
   - Evidencia: V123: prohibido patrón LIKE libre en limpieza de sombras de Confirmación; parámetro fuente literal sin comodines, >=6 caracteres. Auditoría SQL injection integral aún pendiente.
   - Evidencia: V132: mitigado bypass del cotejo visual mediante RPC directa, no implica certificación judicial de origen.
@@ -764,6 +774,7 @@ Avance: 325 controles totales; 10 aprobados; 102 en progreso; 213 pendientes; 0 
   - Evidencia: V148: lista SECURITY DEFINER constante 136 funciones, 21 evidencias parciales, 115 por revisar; trigger nuevo SEC INVOKER.
   - Evidencia: V150: can_access_parish pasa a prueba parcial de RLS/alcance; catálogo privilegiado reporta 22 parciales y 114 pendientes en inventario V148.
   - Evidencia: V151: de 200 funciones privilegiadas totales, 139 invocables por authenticated, con 24 evidencias parciales, 115 pendientes y 61 sin permiso directo.
+  - Evidencia: V152: inventario dinámico de 139 RPC ejecutables: 27 parcialmente verificadas y 112 pendientes; 61 otras no directas siguen necesitadas de análisis de llamadas internas.
 
 ### 28. Privacidad y tratamiento de datos (P0) — 0/9
 
@@ -777,6 +788,7 @@ Avance: 325 controles totales; 10 aprobados; 102 en progreso; 213 pendientes; 0 
   - Evidencia: AUDITORIA_RECEPCION_DECISION_TRIBUNAL_V109_2026-10-21.md: V109: conservación intacta de sentencia, matrimonio y registro; acta de recepción solo apéndice
   - Evidencia: AUDITORIA_DOBLE_COTEJO_DECISIONES_V110_2026-10-21.md: V110: historial de dos testimonios inmutables sin borrar ni modificar sentencia/partidas/avisos
 - [ ] 28.06 · Usuarios fallecidos y correcciones — PENDIENTE
+  - Evidencia: V152: get_decree_trace_v89 mostró 1 evento de emisión autorizado, negó traza de otra parroquia y no abrió SELECT directo en log.
 - [ ] 28.07 · Respaldo cifrado — PENDIENTE
 - [ ] 28.08 · Acceso a copias — PENDIENTE
 - [ ] 28.09 · Procedimiento de incidente — PENDIENTE
@@ -864,6 +876,7 @@ Avance: 325 controles totales; 10 aprobados; 102 en progreso; 213 pendientes; 0 
   - Evidencia: V149: 22 pruebas sintéticas reversibles nuevas, sin escritura en Supabase; variantes de husos horarios, microsegundos y versiones ausentes.
   - Evidencia: V150: QA autenticada fake y roles válidos con ROLLBACK, sin datos permanentes; concurrencia entre dos sesiones NO certificada.
   - Evidencia: V151: 4 llamadas negativas y 2 positivas por rol; QA en Supabase con ROLLBACK, no hay prueba simultánea de dos conexiones físicas.
+  - Evidencia: V152: dos scripts QA con BEGIN/ROLLBACK ejecutados exitosamente; no hay evidencia de concurrencia independiente.
 - [ ] 31.08 · Doble click y red caída — PENDIENTE
 - [ ] 31.09 · Impresión/estadística final — PENDIENTE
 - [ ] 31.10 · Destruir sandbox y demostrar cero residuos — EN_PROGRESO
@@ -889,6 +902,7 @@ Avance: 325 controles totales; 10 aprobados; 102 en progreso; 213 pendientes; 0 
   - Evidencia: V148: 0 partidas/impresiones QA persistidas, 8 impresiones históricas y ANULACION 5+2 sin tocar.
   - Evidencia: V150: la prueba negativa de impresión y decreto no creó registros; no se escribieron datos sacramentales.
   - Evidencia: V151: no quedaron boletas ni partidas ficticias persistidas; prueba usó lotes históricos con cero filas validas y rollback.
+  - Evidencia: V152: ensayo de decreto documental no cambió conteo de Bautismos, Confirmaciones, Matrimonios o Exequias y transacción revertida.
 
 ### 32. Auditoría forense de cierre (P0) — 1/10
 
@@ -947,6 +961,7 @@ Avance: 325 controles totales; 10 aprobados; 102 en progreso; 213 pendientes; 0 
   - Evidencia: V149: 858/858 pruebas sintéticas integradas; 28/28 comprobaciones en puerta estricta local.
   - Evidencia: V150: +15 pruebas sintéticas permanentes, 873/873 integrales; gate estricta 28/28 aprobada.
   - Evidencia: V151: 17 pruebas sintéticas nuevas, 890/890 global; Quality Gate 28/28, 0 hallazgos npm audit.
+  - Evidencia: V152: 22 pruebas sintéticas adicionales; total 912/912, 28/28 puerta estricta local.
 - [ ] 32.04 · Guardar capturas — EN_PROGRESO
   - Evidencia: V114: scripts SQL reversibles y prueba de origen de migraciones versionados; todavía faltan capturas de UI.
   - Evidencia: V119: capturas y hashes SHA-256 por viewport/ruta, guardadas en AUDITORIA_EVIDENCIA_VISUAL_V119 (local, no Git).
@@ -985,6 +1000,7 @@ Avance: 325 controles totales; 10 aprobados; 102 en progreso; 213 pendientes; 0 
   - Evidencia: V148: fallo real en Bautismo: se editaba nombre sin cambio updated_at; ahora se detecta modificación de versión en cuatro sacramentos.
   - Evidencia: V150: causa real de permisos NULL documentada y corregida; sin perfil el control es FALSE.
   - Evidencia: V151: defecto de alcance en materializadores reproducido, corregido en backend y QA real 4 denegadas/2 autorizadas con rollback.
+  - Evidencia: V152: no se detectó un nuevo defecto que exigiera migración; rechazos por rol, tipo de decreto, historial y número duplicado operaron correctamente.
 - [ ] 32.06 · Corregir y repetir — EN_PROGRESO
   - Evidencia: AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: V95 reprodujo fallo antes y verificó reparación tras aplicar migración
   - Evidencia: AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96 corrige hallazgo de identidad institucional y repite prueba antes/después
@@ -1021,6 +1037,7 @@ Avance: 325 controles totales; 10 aprobados; 102 en progreso; 213 pendientes; 0 
   - Evidencia: V148: migración 20261022185717 aplicada, cuatro triggers reales verificados, QA SQL con ROLLBACK.
   - Evidencia: V150: migración 20261022194003 aplicada y concordante con historial Supabase. Roles institucionales preservados en ensayos.
   - Evidencia: V151: migración 20261022200026 registrada en Supabase, funciones privadas guardan propietarios, grants y search_path.
+  - Evidencia: V152: fixtures SQL verificaron 3 decretos documentales de ensayo y 2 matrices de rechazo; sin importación o emisiones permanentes.
 - [ ] 32.07 · Regresión completa — EN_PROGRESO
   - Evidencia: AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md: Regresión 211 pruebas sintéticas, 23 verificadores, build OK; quedan fallas de dependencias
   - Evidencia: AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: 219 pruebas sintéticas, 23 verificadores y build aprobados; advertencias HIGH de paquetes aún abiertas
@@ -1060,6 +1077,7 @@ Avance: 325 controles totales; 10 aprobados; 102 en progreso; 213 pendientes; 0 
   - Evidencia: V149: build, verificadores, CSS y npm audit completo y producción aprobados; cero vulnerabilidades según reportes.
   - Evidencia: V150: 28/28 gates, build, CSS y npm audit producción/completo = 0.
   - Evidencia: V151: build, CSS, verificadores legacy y auditorías npm production/completo aprobaron 28/28.
+  - Evidencia: V152: verificadores históricos, build producción, CSS y auditoría npm completa y producción aprobaron.
 - [ ] 32.08 · Conteos antes/después — EN_PROGRESO
   - Evidencia: AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: Tras V95: 15 políticas, 0 bypass is_app_admin y 0 residuos en 5 catálogos
   - Evidencia: AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96: mis_datos mantiene 1 fila real, 0 fixtures y 0 admin bypass en 3 políticas
@@ -1097,6 +1115,7 @@ Avance: 325 controles totales; 10 aprobados; 102 en progreso; 213 pendientes; 0 
   - Evidencia: V149: endurecimiento exclusivamente local, sin despliegue frontend, sin ensayo de papel ni concurrencia independiente.
   - Evidencia: V150: backend desplegado; frontend V149 aún no desplegado. Concurrencia física y 114 RPC pendientes no certificados.
   - Evidencia: V151: backend actualizado sin despliegue frontend. Integridad funcional total, concurrencia independiente e impresión física no certificados.
+  - Evidencia: V152: auditada emisión documental sin modificación de partidas; impresión física, decreto correctivo con efecto positivo y concurrencia simultánea aún no certificados.
 - [x] 32.09 · Confirmar producción Ready — APROBADO
   - Evidencia: AUDITORIA_CIERRE_TECNICO_V91_2026-10-21.md: Despliegue Vercel de código V91 Ready; nota: app no certificada integralmente
 - [ ] 32.10 · Dictamen con limitaciones verificadas — EN_PROGRESO
