@@ -1,0 +1,4 @@
+import React from 'react';import{createRoot}from'react-dom/client';import '../../src/index.css';import NullityInstitutionalPreflightPanel from '../../src/components/chancery/NullityInstitutionalPreflightPanel.jsx';
+const role=new URLSearchParams(location.search).get('role')||'chancery';
+const names={chancery:'Cancillería',diocese:'Diócesis',parish:'Parroquia',admin_general:'Administrador General'};
+createRoot(document.getElementById('root')).render(<div className="min-h-screen bg-slate-50 px-4 py-8 lg:px-12"><header className="mx-auto mb-6 max-w-6xl border-b border-slate-300 pb-5"><p className="text-xs font-semibold uppercase tracking-widest text-blue-700">QA aislada · Sin credenciales ni datos reales</p><h1 className="mt-2 font-serif text-3xl font-black text-slate-900">Nulidad matrimonial · Vista de {names[role]||role}</h1></header><main className="mx-auto max-w-6xl"><NullityInstitutionalPreflightPanel/></main></div>);

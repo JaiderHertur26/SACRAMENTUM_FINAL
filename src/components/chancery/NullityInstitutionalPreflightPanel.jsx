@@ -28,6 +28,7 @@ export default function NullityInstitutionalPreflightPanel() {
   const [hash,setHash] = useState('');
   const [fileName,setFileName] = useState('');
   const [baptismInputs,setBaptismInputs] = useState({});
+  const [reviewedDocuments,setReviewedDocuments] = useState({});
   const [busy,setBusy] = useState(false);
   const [error,setError] = useState('');
 
@@ -61,6 +62,20 @@ export default function NullityInstitutionalPreflightPanel() {
     }catch(e){toast({title:'Error al identificar documento',description:e.message,variant:'destructive'});}
   };
 
+  const verifyReviewCopy=async(row,file)=>{
+    // El contraste de bytes se realiza de nuevo en Diócesis, sin transmitir el archivo.
+    setReviewedDocuments(state=>({...state,[row.id]:null}));
+    if(!file)return;
+    try {
+      if(!globalThis.crypto?.subtle)throw Error('Este navegador no admite SHA-256 seguro');
+      if(!file.size||file.size>25*1024*1024)throw Error('Archivo vacío o mayor de 25 MB');
+      const bytes=await globalThis.crypto.subtle.digest('SHA-256',await file.arrayBuffer());
+      const digest=Array.from(new Uint8Array(bytes),b=>b.toString(16).padStart(2,'0')).join('');
+      const matches=digest===String(row.court_document_sha256||'').toLowerCase();
+      setReviewedDocuments(state=>({...state,[row.id]:{name:file.name,digest,matches}}));
+    }catch(cause){toast({title:'No se pudo verificar el documento',description:cause.message,variant:'destructive'});}
+  };
+
   const submit=async(e)=>{
     e.preventDefault();if(busy||role!=='chancery')return;
     const word=await institutionalPrompt({title:'Solicitar revisión de nulidad',
@@ -80,6 +95,10 @@ export default function NullityInstitutionalPreflightPanel() {
 
   const review=async(row,decision)=>{
     if(busy||role!=='diocese')return;
+    if(decision==='authorize'&&!reviewedDocuments[row.id]?.matches){
+      toast({title:'Documento sin cotejar',description:'Diócesis debe seleccionar una copia judicial cuyo SHA-256 coincida antes de autorizar.',variant:'destructive'});
+      return;
+    }
     const note=await institutionalPrompt({title:'Contraste diocesano independiente',
       message:'Explique la comprobación documental efectuada y sus límites. No equivale a autenticar un fallo del Tribunal.',
       placeholder:'Motivación (mínimo 24 caracteres)',minLength:24,required:true,confirmText:'Continuar',tone:'warning'});
@@ -91,7 +110,8 @@ export default function NullityInstitutionalPreflightPanel() {
     setBusy(true);
     try{
       await reviewNullityPreflight({authorizationId:row.id,decision,
-        note:String(note),externalReference:String(reference)});
+        note:String(note),externalReference:String(reference),
+        verifiedDocumentHash:decision==='authorize'?reviewedDocuments[row.id]?.digest:null});
       toast({title:'Revisión registrada',description:'No se modificó ningún libro sacramental.'});
       await reload();
     }catch(e){toast({title:'No se registró la revisión',description:e.message,variant:'destructive'});}
@@ -190,15 +210,34 @@ export default function NullityInstitutionalPreflightPanel() {
             <strong className="text-sm text-slate-900">{row.decree_number}</strong>
             <p className="mt-1 text-slate-600">Matrimonio {row.marriage_id}</p>
             <p className="mt-1 text-slate-600">{row.court_issuer} · Ref. {row.court_document_reference}</p>
+            <p className="mt-1 text-slate-600">Fecha judicial: {row.court_document_date} · Fecha decreto: {row.decree_date}</p>
           </div>
           <strong className="text-indigo-700">{titles[row.status]||row.status}</strong>
         </div>
+        <p className="whitespace-pre-wrap text-slate-700">Fundamentación aportada: {row.request_justification}</p>
+        <p className="break-all rounded-lg bg-slate-50 p-2 font-mono text-[11px] text-indigo-800">
+          SHA-256 comunicado: {row.court_document_sha256}
+        </p>
         {row.diocesan_review_note&&<p className="text-slate-600">Diócesis: {row.diocesan_review_note}</p>}
-        {role==='diocese'&&row.status==='pending_diocesan_review'&&<div className="flex gap-2">
-          <button type="button" disabled={busy} onClick={()=>void review(row,'authorize')}
+        {role==='diocese'&&row.status==='pending_diocesan_review'&&<div className="space-y-3">
+          <label className="block space-y-1 font-semibold text-slate-700">
+            Cotejar copia del documento judicial antes de autorizar
+            <input data-qa-doc-review={row.id} type="file" accept=".pdf,image/png,image/jpeg"
+              className={field} onChange={e=>void verifyReviewCopy(row,e.target.files?.[0])}/>
+          </label>
+          {reviewedDocuments[row.id]&&<p role="status" className={
+            reviewedDocuments[row.id].matches?'text-xs font-bold text-emerald-800':'text-xs font-bold text-red-800'
+          }>
+            {reviewedDocuments[row.id].matches
+              ?'Huella SHA-256 idéntica en ambas copias; aún debe verificar autenticidad por canal externo.'
+              :'DOCUMENTO DIFERENTE: su huella no coincide. No se permite autorizar.'}
+          </p>}
+          <div className="flex flex-wrap gap-2">
+          <button type="button" disabled={busy||!reviewedDocuments[row.id]?.matches} onClick={()=>void review(row,'authorize')}
             className="rounded-lg bg-indigo-800 px-3 py-2 font-bold text-white">Autorizar</button>
           <button type="button" disabled={busy} onClick={()=>void review(row,'reject')}
             className="rounded-lg border border-red-300 px-3 py-2 font-bold text-red-800">Rechazar</button>
+          </div>
         </div>}
         {role==='chancery'&&row.status==='authorized'&&<div className="space-y-2">
           <label>Partidas bautismales opcionales (hasta dos UUID)

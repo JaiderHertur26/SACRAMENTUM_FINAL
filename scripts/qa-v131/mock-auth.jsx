@@ -1,0 +1,1 @@
+export function useAuth(){return {user:{role:new URLSearchParams(location.search).get('role')||'chancery',dioceseId:'11111111-1111-4111-8111-111111111111',dioceseName:'Diócesis ficticia QA'}}}

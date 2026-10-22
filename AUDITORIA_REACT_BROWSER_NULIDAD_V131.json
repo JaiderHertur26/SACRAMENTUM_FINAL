@@ -1,0 +1,102 @@
+{
+  "protocol": "V131",
+  "mode": "React real + navegador Chrome CDP; Supabase y roles ficticios sin ninguna credencial",
+  "timestamp": "2026-10-22T15:37:29.827Z",
+  "passed": 8,
+  "failed": 0,
+  "total": 8,
+  "tests": [
+    {
+      "test": "chancery-desktop",
+      "pass": true,
+      "rendered": true,
+      "noOverflow": true,
+      "noErrors": true,
+      "browserWidth": 1440,
+      "scrollWidth": 1425,
+      "externalRequests": 0,
+      "file": "chancery-desktop.png",
+      "sha256": "fecd1ceec356ce99a76bcf4013661ef4a7847a7e194021bb0695d87835cdb8f4"
+    },
+    {
+      "test": "chancery-mobile",
+      "pass": true,
+      "rendered": true,
+      "noOverflow": true,
+      "noErrors": true,
+      "browserWidth": 390,
+      "scrollWidth": 390,
+      "externalRequests": 0,
+      "file": "chancery-mobile.png",
+      "sha256": "ccdbd21821f02d4b77fc76b35a95d57810b3bf1b658c13badf0716d38e621d3d"
+    },
+    {
+      "test": "diocese-desktop",
+      "pass": true,
+      "rendered": true,
+      "noOverflow": true,
+      "noErrors": true,
+      "browserWidth": 1440,
+      "scrollWidth": 1425,
+      "externalRequests": 0,
+      "file": "diocese-desktop.png",
+      "sha256": "cab976e0cd35f34eeece28232575a1564b8e3d2e9d1111acdbdcd9e5fc56f70d"
+    },
+    {
+      "test": "diocese-mobile",
+      "pass": true,
+      "rendered": true,
+      "noOverflow": true,
+      "noErrors": true,
+      "browserWidth": 390,
+      "scrollWidth": 390,
+      "externalRequests": 0,
+      "file": "diocese-mobile.png",
+      "sha256": "4a9fd7c7e789a4ad5c5c4139c4eecc83783c6766392502da9b297df4d5aa010b"
+    },
+    {
+      "test": "parish-desktop",
+      "pass": true,
+      "rendered": false,
+      "noOverflow": true,
+      "noErrors": true,
+      "browserWidth": 1440,
+      "scrollWidth": 1440,
+      "externalRequests": 0,
+      "file": "parish-desktop.png",
+      "sha256": "7eddc83f09d6d67b41b6b1e5a7d081da41e3b8dca3ec154c254ae2f9202dc4b6"
+    },
+    {
+      "test": "admin_general-desktop",
+      "pass": true,
+      "rendered": false,
+      "noOverflow": true,
+      "noErrors": true,
+      "browserWidth": 1440,
+      "scrollWidth": 1440,
+      "externalRequests": 0,
+      "file": "admin_general-desktop.png",
+      "sha256": "c2f1eebb2e8a782c14089265ff4bf94a4ee3e065e9a31c177cea28efeb89e6d2"
+    },
+    {
+      "test": "diocesan-review-click",
+      "pass": true,
+      "detail": {
+        "reviewed": true,
+        "calls": 1,
+        "disabledBefore": true,
+        "rejectedWrong": true,
+        "matches": true
+      }
+    },
+    {
+      "test": "chancery-execute-authorized-click",
+      "pass": true,
+      "detail": {
+        "executed": true,
+        "count": 1
+      }
+    }
+  ],
+  "notCovered": "Navegación autenticada con usuarios de producción, permisos REST reales, custodia de documentos e impresión"
+}

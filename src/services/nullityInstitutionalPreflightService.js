@@ -35,11 +35,15 @@ export async function requestNullityPreflight({
   return data;
 }
 
-export async function reviewNullityPreflight({authorizationId, decision, note, externalReference}) {
+export async function reviewNullityPreflight({authorizationId, decision, note, externalReference, verifiedDocumentHash = null}) {
   if (!['authorize','reject'].includes(decision)) throw new Error('Decisión no admitida');
+  if (decision === 'authorize' && !/^[a-f0-9]{64}$/i.test(verifiedDocumentHash || '')) {
+    throw new Error('Debe cotejar la huella SHA-256 de una copia judicial antes de autorizar');
+  }
   const { data, error } = await supabase.rpc('review_marriage_nullity_execution_v128', {
     p_authorization_id: authorizationId, p_decision: decision,
-    p_review_note: note.trim(), p_external_reference: externalReference.trim()
+    p_review_note: note.trim(), p_external_reference: externalReference.trim(),
+    p_verified_sha256: decision === 'authorize' ? verifiedDocumentHash.toLowerCase() : null
   });
   if (error) throw error;
   if (!['authorized','rejected'].includes(data?.status)) throw new Error('La revisión no quedó registrada');

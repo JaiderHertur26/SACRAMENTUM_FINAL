@@ -65,7 +65,7 @@ test('V130 consulta permite sólo Cancillería y Diócesis',()=>{
 });
 test('Matriz real ficticia prueba cuatro roles y once denegaciones',()=>{
  for(const role of ["'admin_general'","'diocese'","'parish'","'chancery'"])assert.ok(lab.includes(role));
- assert.match(lab,/v_denied<>11/);
+ assert.match(lab,/v_denied<>13/);
  assert.match(lab,/preExecutionAuthorizationId/);
  assert.match(lab,/status='executed' AND decree_id=v_decree/);
 });
@@ -100,4 +100,29 @@ test('V130 consulta multijurisdiccional real tiene datos falsos de dos diócesis
  assert.match(sql,/NOT v_scope @> jsonb_build_array\(jsonb_build_object\('id',v_auth_local\)\)/);
  assert.match(sql,/ROLLBACK;\s*$/);
  assert.doesNotMatch(sql,/^\s*COMMIT;/im);
+});
+
+test('V132 deshabilita el procedimiento diocesano antiguo y exige huella concordante en backend',()=>{
+ const sql=get('supabase/migrations/20261022153516_require_verified_document_hash_for_nullity_v132.sql');
+ assert.match(sql,/El procedimiento anterior se deshabilitó/);
+ assert.match(sql,/REVOKE ALL ON FUNCTION public.review_marriage_nullity_execution_v128\(uuid,text,text,text\)/);
+ assert.match(sql,/p_verified_sha256 text/);
+ assert.match(sql,/lower\(btrim\(coalesce\(p_verified_sha256,''\)\)\) IS DISTINCT FROM v_auth.court_document_sha256/);
+ assert.match(sql,/document_sha256_correspondence/);
+ assert.match(sql,/court_authenticity_certified',false/);
+});
+test('V132 la interfaz exige copia real del documento antes de habilitar autorización',()=>{
+ assert.match(ui,/verifyReviewCopy/);
+ assert.match(ui,/crypto.subtle.digest\('SHA-256'/);
+ assert.match(ui,/disabled=\{busy\|\|!reviewedDocuments\[row.id\]\?\.matches\}/);
+ assert.match(ui,/DOCUMENTO DIFERENTE/);
+ assert.match(ui,/verifiedDocumentHash:decision==='authorize'\?reviewedDocuments\[row.id\]\?\.digest:null/);
+ assert.match(service,/p_verified_sha256:/);
+});
+test('La matriz V132 rechaza la ruta antigua, la huella distinta y conserva rechazo',()=>{
+ assert.match(lab,/V132-FAIL: revisión legacy con cuatro parámetros aceptada/);
+ assert.match(lab,/V132-FAIL: huella SHA-256 incorrecta aceptada/);
+ assert.match(lab,/repeat\('0',64\)/);
+ assert.match(lab,/repeat\('a',64\)/);
+ assert.match(lab,/v_denied<>13/);
 });

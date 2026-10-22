@@ -64,22 +64,36 @@ BEGIN
  BEGIN
   PERFORM public.review_marriage_nullity_execution_v128(v_req,'authorize',
     'No corresponde a Cancillería autorizar su propia solicitud.',
-    'QA-V128-EXT-001');
+    'QA-V128-EXT-001',repeat('a',64));
   RAISE EXCEPTION 'V128-FAIL: chancery reviews its own preflight';
  EXCEPTION WHEN insufficient_privilege THEN v_denied:=v_denied+1; END;
  EXECUTE 'RESET ROLE';
 
  PERFORM set_config('request.jwt.claim.sub',v_actor_diocese::text,true);
  EXECUTE 'SET LOCAL ROLE authenticated';
+ -- La RPC antigua de 4 parámetros debe estar inhabilitada, incluso para Diócesis.
+ BEGIN
+  PERFORM public.review_marriage_nullity_execution_v128(v_req,'authorize',
+   'Solicitud QA por la ruta obsoleta sin cotejo digital.',
+   'QA-V128-EXT-001');
+  RAISE EXCEPTION 'V132-FAIL: revisión legacy con cuatro parámetros aceptada';
+ EXCEPTION WHEN insufficient_privilege THEN v_denied:=v_denied+1; END;
+ -- Una huella distinta no permite autorizar aunque el revisor tenga rol de Diócesis.
+ BEGIN
+  PERFORM public.review_marriage_nullity_execution_v128(v_req,'authorize',
+   'Se revisó el documento ficticio sin una copia idéntica.',
+   'QA-V128-EXT-001',repeat('0',64));
+  RAISE EXCEPTION 'V132-FAIL: huella SHA-256 incorrecta aceptada';
+ EXCEPTION WHEN check_violation THEN v_denied:=v_denied+1; END;
  SELECT public.review_marriage_nullity_execution_v128(v_req,'authorize',
  'Se revisó la referencia externa de la documentación aportada. Expediente ficticio de validación técnica reversible.',
- 'QA-V128-EXT-001') INTO v_result;
+ 'QA-V128-EXT-001',repeat('a',64)) INTO v_result;
  IF v_result->>'status'<>'authorized' OR v_result->>'court_authenticity_certified'<>'false' THEN
   RAISE EXCEPTION 'V128 unexpected review output';
  END IF;
  BEGIN
   PERFORM public.review_marriage_nullity_execution_v128(v_req,'authorize',
-   'Una segunda revisión sobre el mismo documento no se permite.', 'QA-V128-EXT-002');
+   'Una segunda revisión sobre el mismo documento no se permite.', 'QA-V128-EXT-002',repeat('a',64));
   RAISE EXCEPTION 'V128-FAIL: duplicate review accepted';
  EXCEPTION WHEN check_violation THEN v_denied:=v_denied+1; END;
  BEGIN
@@ -131,6 +145,6 @@ BEGIN
   RAISE EXCEPTION 'V128-FAIL: token reused';
  EXCEPTION WHEN insufficient_privilege THEN v_denied:=v_denied+1; END;
  EXECUTE 'RESET ROLE';
- IF v_denied<>11 THEN RAISE EXCEPTION 'V128 expected 11 denials, got %',v_denied; END IF;
+ IF v_denied<>13 THEN RAISE EXCEPTION 'V132 expected 13 denials, got %',v_denied; END IF;
 END $qa$;
 ROLLBACK;
