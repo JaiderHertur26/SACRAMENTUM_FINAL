@@ -26,6 +26,8 @@ coverage/
 *.log
 # Catálogo masivo regenerable desde scripts/audit-fictional-case-catalog-v114.mjs
 AUDITORIA_CASOS_FICTICIOS_INTEGRALES_V114.json
+# Capturas de navegador local; hashes y métricas sí se versionan.
+AUDITORIA_EVIDENCIA_VISUAL_V119/
 
 # Sistemas
 .DS_Store

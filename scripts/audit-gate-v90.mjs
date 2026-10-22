@@ -49,7 +49,8 @@ exec('pruebas-sinteticas',node,['--test',
  'scripts/test-migration-provenance-v112.mjs',
  'scripts/test-complete-fictional-decree-matrix-v114.mjs',
  'scripts/test-register-effects-migrations-v116.mjs',
- 'scripts/test-legacy-decrees-v118.mjs']);
+ 'scripts/test-legacy-decrees-v118.mjs',
+ 'scripts/test-browser-and-historical-rls-v120.mjs']);
 const scripts=fs.readdirSync(path.join(root,'scripts')).filter(x=>/^verify-.*\.mjs$/.test(x)).sort();
 for(const file of scripts)exec('legacy/'+file,node,['scripts/'+file]);
 const npmOnWindows=process.platform==='win32';

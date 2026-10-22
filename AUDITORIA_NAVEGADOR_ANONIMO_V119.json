@@ -1,0 +1,160 @@
+{
+  "date": "2026-10-22T13:00:55.567Z",
+  "scope": "Chrome headless LOCAL, navegación sin autenticación real",
+  "tests": [
+    {
+      "id": "public-desktop",
+      "url": "/",
+      "w": 1440,
+      "h": 900,
+      "public": true,
+      "metrics": {
+        "href": "http://127.0.0.1:4813/",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "rootLen": 345,
+        "heading": "Plataforma Eclesial\nUnificada",
+        "body": "Sacramentum\n\nSISTEMA ECLESIAL DE REGISTRO SACRAMENTAL\n\nEMAIL REGISTRADO\nCONTRASEÑA\n¿OLVIDÓ SU CLAVE?\nINICIAR SESIÓN\n¿PRIMER ACCESO? ACTIVA TU CUENTA\nSESIÓN PROTEGIDA · SUPABASE AUTH\nPlataforma Eclesial\nUnificada\n\nSistema integral y seguro para la gestión de archivos parroquiales, emisión de actas sacramentales y control diocesano.\n\nNube al día",
+        "passwordInputs": 1
+      },
+      "redirected": false,
+      "noRuntimeErrors": true,
+      "passed": true,
+      "filename": "public-desktop.png",
+      "sha256": "bd627ed9bf7f0fe899d8ff2915da693bc60689689a8d5e9565c32b36389f60b0"
+    },
+    {
+      "id": "public-mobile",
+      "url": "/",
+      "w": 390,
+      "h": 844,
+      "public": true,
+      "metrics": {
+        "href": "http://127.0.0.1:4813/",
+        "width": 390,
+        "scrollWidth": 390,
+        "rootLen": 345,
+        "heading": "Plataforma Eclesial\nUnificada",
+        "body": "Sacramentum\n\nSISTEMA ECLESIAL DE REGISTRO SACRAMENTAL\n\nEMAIL REGISTRADO\nCONTRASEÑA\n¿OLVIDÓ SU CLAVE?\nINICIAR SESIÓN\n¿PRIMER ACCESO? ACTIVA TU CUENTA\nSESIÓN PROTEGIDA · SUPABASE AUTH\nPlataforma Eclesial\nUnificada\n\nSistema integral y seguro para la gestión de archivos parroquiales, emisión de actas sacramentales y control diocesano.\n\nNube al día",
+        "passwordInputs": 1
+      },
+      "redirected": false,
+      "noRuntimeErrors": true,
+      "passed": true,
+      "filename": "public-mobile.png",
+      "sha256": "aa82dff074cbb012e6fec944bdd9989a5b834376e0b18522b4397ab74f174273"
+    },
+    {
+      "id": "login-mobile",
+      "url": "/login",
+      "w": 390,
+      "h": 844,
+      "public": true,
+      "metrics": {
+        "href": "http://127.0.0.1:4813/login",
+        "width": 390,
+        "scrollWidth": 390,
+        "rootLen": 345,
+        "heading": "Plataforma Eclesial\nUnificada",
+        "body": "Sacramentum\n\nSISTEMA ECLESIAL DE REGISTRO SACRAMENTAL\n\nEMAIL REGISTRADO\nCONTRASEÑA\n¿OLVIDÓ SU CLAVE?\nINICIAR SESIÓN\n¿PRIMER ACCESO? ACTIVA TU CUENTA\nSESIÓN PROTEGIDA · SUPABASE AUTH\nPlataforma Eclesial\nUnificada\n\nSistema integral y seguro para la gestión de archivos parroquiales, emisión de actas sacramentales y control diocesano.\n\nNube al día",
+        "passwordInputs": 1
+      },
+      "redirected": false,
+      "noRuntimeErrors": true,
+      "passed": true,
+      "filename": "login-mobile.png",
+      "sha256": "1e238b3856cfb70e4461167c43df8a140c9963a2b43c582ce63c5a70253f96dc"
+    },
+    {
+      "id": "chancery-guard",
+      "url": "/chancery/decretos",
+      "w": 1440,
+      "h": 900,
+      "guard": true,
+      "metrics": {
+        "href": "http://127.0.0.1:4813/",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "rootLen": 345,
+        "heading": "Plataforma Eclesial\nUnificada",
+        "body": "Sacramentum\n\nSISTEMA ECLESIAL DE REGISTRO SACRAMENTAL\n\nEMAIL REGISTRADO\nCONTRASEÑA\n¿OLVIDÓ SU CLAVE?\nINICIAR SESIÓN\n¿PRIMER ACCESO? ACTIVA TU CUENTA\nSESIÓN PROTEGIDA · SUPABASE AUTH\nPlataforma Eclesial\nUnificada\n\nSistema integral y seguro para la gestión de archivos parroquiales, emisión de actas sacramentales y control diocesano.\n\nNube al día",
+        "passwordInputs": 1
+      },
+      "redirected": true,
+      "noRuntimeErrors": true,
+      "exposed": false,
+      "passed": true,
+      "filename": "chancery-guard.png",
+      "sha256": "5d9a93a68d652ec39531f205cf38fafb539d2f09d9f49021e7a951cd20e8c01d"
+    },
+    {
+      "id": "chancery-archive-guard",
+      "url": "/chancery/decretos/archivo",
+      "w": 390,
+      "h": 844,
+      "guard": true,
+      "metrics": {
+        "href": "http://127.0.0.1:4813/",
+        "width": 390,
+        "scrollWidth": 390,
+        "rootLen": 345,
+        "heading": "Plataforma Eclesial\nUnificada",
+        "body": "Sacramentum\n\nSISTEMA ECLESIAL DE REGISTRO SACRAMENTAL\n\nEMAIL REGISTRADO\nCONTRASEÑA\n¿OLVIDÓ SU CLAVE?\nINICIAR SESIÓN\n¿PRIMER ACCESO? ACTIVA TU CUENTA\nSESIÓN PROTEGIDA · SUPABASE AUTH\nPlataforma Eclesial\nUnificada\n\nSistema integral y seguro para la gestión de archivos parroquiales, emisión de actas sacramentales y control diocesano.\n\nNube al día",
+        "passwordInputs": 1
+      },
+      "redirected": true,
+      "noRuntimeErrors": true,
+      "exposed": false,
+      "passed": true,
+      "filename": "chancery-archive-guard.png",
+      "sha256": "a9b89d0533a3bb8651602bd0d2768861c54eb9eb01a532831396ce9ba2f07669"
+    },
+    {
+      "id": "diocese-guard",
+      "url": "/diocese/decretos/archivo",
+      "w": 1440,
+      "h": 900,
+      "guard": true,
+      "metrics": {
+        "href": "http://127.0.0.1:4813/",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "rootLen": 345,
+        "heading": "Plataforma Eclesial\nUnificada",
+        "body": "Sacramentum\n\nSISTEMA ECLESIAL DE REGISTRO SACRAMENTAL\n\nEMAIL REGISTRADO\nCONTRASEÑA\n¿OLVIDÓ SU CLAVE?\nINICIAR SESIÓN\n¿PRIMER ACCESO? ACTIVA TU CUENTA\nSESIÓN PROTEGIDA · SUPABASE AUTH\nPlataforma Eclesial\nUnificada\n\nSistema integral y seguro para la gestión de archivos parroquiales, emisión de actas sacramentales y control diocesano.\n\nNube al día",
+        "passwordInputs": 1
+      },
+      "redirected": true,
+      "noRuntimeErrors": true,
+      "exposed": false,
+      "passed": true,
+      "filename": "diocese-guard.png",
+      "sha256": "827b1cd9561831b68d072a92f24e9f31962c15c6666958efc61f4c09fa1b6c3d"
+    },
+    {
+      "id": "parish-guard",
+      "url": "/parroquia/decretos/archivo",
+      "w": 390,
+      "h": 844,
+      "guard": true,
+      "metrics": {
+        "href": "http://127.0.0.1:4813/",
+        "width": 390,
+        "scrollWidth": 390,
+        "rootLen": 345,
+        "heading": "Plataforma Eclesial\nUnificada",
+        "body": "Sacramentum\n\nSISTEMA ECLESIAL DE REGISTRO SACRAMENTAL\n\nEMAIL REGISTRADO\nCONTRASEÑA\n¿OLVIDÓ SU CLAVE?\nINICIAR SESIÓN\n¿PRIMER ACCESO? ACTIVA TU CUENTA\nSESIÓN PROTEGIDA · SUPABASE AUTH\nPlataforma Eclesial\nUnificada\n\nSistema integral y seguro para la gestión de archivos parroquiales, emisión de actas sacramentales y control diocesano.\n\nNube al día",
+        "passwordInputs": 1
+      },
+      "redirected": true,
+      "noRuntimeErrors": true,
+      "exposed": false,
+      "passed": true,
+      "filename": "parish-guard.png",
+      "sha256": "f914d428083a37c0d2fc0f156eb20717da9dff4bc4b860f467f848ba7bff1922"
+    }
+  ],
+  "passed": 7,
+  "failed": 0,
+  "note": "No prueba las pantallas autenticadas. Capturas y métricas de sesión anónima solamente."
+}

@@ -10,7 +10,7 @@ Regla: no introducir datos falsos permanentes; usar memoria, transacciones ROLLB
 
 Prioridad P0 bloquea la certificación. P1 debe constar resuelta o aceptada con evidencia y responsable.
 
-Avance: 325 controles totales; 9 aprobados; 98 en progreso; 217 pendientes; 1 fallidos; 0 bloqueados.
+Avance: 325 controles totales; 9 aprobados; 99 en progreso; 216 pendientes; 1 fallidos; 0 bloqueados.
 
 ## Fases y controles numerados
 
@@ -97,6 +97,7 @@ Avance: 325 controles totales; 9 aprobados; 98 en progreso; 217 pendientes; 1 fa
 - [ ] 06.02 · RLS SELECT por actor — EN_PROGRESO
   - Evidencia: AUDITORIA_RLS_PARROQUIAL_V90.md: Ensayo con rol Parroquia autenticado: cero filas de otras parroquias en 10 entidades; falta matriz completa y operaciones de escritura
   - Evidencia: AUDITORIA_EXP_DEPENDENCIAS_Y_RLS_V91.md: Cuatro roles no pudieron leer Bautismo de segunda diócesis ficticia; falta matriz completa
+  - Evidencia: V120: dos fugas SELECT entre diócesis reproducidas y cerradas con RLS; prueba SQL con roles Chancery, Diócesis y Parroquia y referencias cruzadas. ROLLBACK.
 - [ ] 06.03 · RLS INSERT por actor — EN_PROGRESO
   - Evidencia: AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: Inserciones RLS en dos tablas de boletas: 8/8 casos por cuatro roles, Parroquia únicamente permitida
   - Evidencia: AUDITORIA_PARAMETROS_Y_LIBROS_V94_2026-10-21.md: Parámetros/libros INSERT limitado a parroquia: dos rechazos explícitos para admin general
@@ -113,13 +114,15 @@ Avance: 325 controles totales; 9 aprobados; 98 en progreso; 217 pendientes; 1 fa
   - Evidencia: AUDITORIA_INVENTARIO_RPC_V91.json: 129 funciones privilegiadas clasificadas; faltan pruebas positivas y negativas función por función
   - Evidencia: V111/V112: se verificaron privilegios de ejecución anon=false y authenticated=true de nuevas RPC; las demás funciones privilegiadas requieren matriz completa por rol.
   - Evidencia: V113/V114: lectura de aclaraciones sólo Cancillería/Diócesis; Parroquia rechazada en SQL. Las otras RPC pendientes de matriz completa.
+  - Evidencia: V120: permisos de objetos no ampliados; RPC V118 intacta, RLS de lectura del archivo corregida.
 - [ ] 06.07 · 129 RPC privilegiadas denegadas a terceros — EN_PROGRESO
   - Evidencia: AUDITORIA_BASE_SQL_V90.md: Cero vistas públicas; 129 RPC privilegiadas requieren pruebas de permisos y búsqueda de bypass
   - Evidencia: AUDITORIA_INVENTARIO_RPC_V91.json: 129 funciones catalogadas para revisión de terceros, sin afirmar autorización sin pruebas
   - Evidencia: AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md: 129 RPC original; V92-SEC-001 corregida, 128 privilegios restantes pendientes de ensayos de autorización
 - [ ] 06.08 · Search path de funciones — EN_PROGRESO
   - Evidencia: AUDITORIA_INVENTARIO_RPC_V91.json: Cribado search_path de funciones privilegiadas; falta verificación de todas sus dependencias
-- [ ] 06.09 · Filtración por GraphQL — PENDIENTE
+- [ ] 06.09 · Filtración por GraphQL — EN_PROGRESO
+  - Evidencia: V120: Supabase Advisor informa 64 objetos visibles en GraphQL a authenticated. Acceso a esquema NO equivale a fuga de filas; revisión exhaustiva pendiente.
 - [x] 06.10 · No privilegios anónimos — APROBADO
   - Evidencia: AUDITORIA_BASE_SQL_V90.md: Catálogo de grants: cero RPC SECURITY DEFINER ejecutables por rol anon
 - [ ] 06.11 · Identidad JWT validada en servidor — PENDIENTE
@@ -263,6 +266,7 @@ Avance: 325 controles totales; 9 aprobados; 98 en progreso; 217 pendientes; 1 fa
   - Evidencia: AUDITORIA_CONCEPTOS_DEC_REGLAS_V98_2026-10-21.md: V97 rechaza concepto nuevo y traslado de existente a diócesis ajena
   - Evidencia: AUDITORIA_NULIDAD_VINCULOS_BAUTISMO_V105_2026-10-21.md: V105: nota o notificación sólo tras cotejar Bautismo con contrayente, libro, folio y número
   - Evidencia: V118: rechaza otra diócesis, origen no verificado o parroquia incongruente.
+  - Evidencia: V120: origen y fila ANULACION rechazados para otra diócesis y para parroquia/diocese contradictorias en prueba real RLS.
 - [ ] 13.04 · Colisiones entre lotes — EN_PROGRESO
   - Evidencia: V118: colisión de número marcada review_required sin segundo decreto.
 - [ ] 13.05 · Par original/supletoria — EN_PROGRESO
@@ -278,6 +282,7 @@ Avance: 325 controles totales; 9 aprobados; 98 en progreso; 217 pendientes; 1 fa
 - [ ] 13.10 · Archivo en Cancillería y parroquia — EN_PROGRESO
   - Evidencia: V114: evidencia contractual de archivo canónico en doble rol, sin duplicar registros físicos; falta cotejo visual RLS.
   - Evidencia: V118: centro Cancillería muestra historial y avisos a parroquia; prueba visual pendiente.
+  - Evidencia: V119: rutas protegidas redirigen sesión anónima; V120 conserva consulta de 7 ANULACION y 2 orígenes para Cancillería. UI interna autenticada no comprobada.
 - [ ] 13.11 · Fuente original preservada — EN_PROGRESO
   - Evidencia: AUDITORIA_CONCEPTOS_DEC_REGLAS_V98_2026-10-21.md: Fuente histórica de conceptos protegida; quedan otras tablas y documentos de origen por auditar
   - Evidencia: V118: conserva origen, instalación, clave, SHA-256 y datos originales.
@@ -447,10 +452,12 @@ Avance: 325 controles totales; 9 aprobados; 98 en progreso; 217 pendientes; 1 fa
 - [ ] 24.01 · Entrar a todas las pantallas — PENDIENTE
 - [ ] 24.02 · Móvil — EN_PROGRESO
   - Evidencia: AUDITORIA_VISUAL_PUBLICA_V91.json: Emulación Chrome CDP 390 ancho real, sin desbordamiento en login público; resto de pantallas pendiente
+  - Evidencia: V119: Chrome móvil 390x844, portada y login sin desbordamiento horizontal, captura PNG, sin sesión.
 - [ ] 24.03 · Tableta — EN_PROGRESO
   - Evidencia: AUDITORIA_VISUAL_PUBLICA_V91.json: Emulación CDP tableta 768 sin overflow en login público; resto pendiente
 - [ ] 24.04 · Escritorio — EN_PROGRESO
   - Evidencia: AUDITORIA_VISUAL_PUBLICA_V91.json: Emulación CDP escritorio 1365 sin overflow en login público; resto pendiente
+  - Evidencia: V119: Chrome escritorio 1440x900, portada pública renderizada sin error JS ni desbordamiento.
 - [ ] 24.05 · Zoom 200% — PENDIENTE
 - [ ] 24.06 · Contraste — PENDIENTE
 - [ ] 24.07 · Navegación por teclado — PENDIENTE
@@ -460,6 +467,7 @@ Avance: 325 controles totales; 9 aprobados; 98 en progreso; 217 pendientes; 1 fa
 - [ ] 24.11 · Mensajes de error — PENDIENTE
 - [ ] 24.12 · Capturas de evidencia — EN_PROGRESO
   - Evidencia: AUDITORIA_VISUAL_PUBLICA_V91.json: Seis capturas PNG públicas con huellas SHA256 guardadas en C:\SACRAMENTUM\AUDITORIA_EVIDENCIAS_V91
+  - Evidencia: V119: 7 capturas PNG con SHA-256, evidencia del navegador anónimo local; faltan pantallas autenticadas.
 
 ### 25. Resiliencia (P0) — 0/11
 
@@ -501,15 +509,18 @@ Avance: 325 controles totales; 9 aprobados; 98 en progreso; 217 pendientes; 1 fa
   - Evidencia: AUDITORIA_DOCUMENTOS_OFICIALES_V102_2026-10-21.md: V102: emisión, anulación y plantillas ajenas de Admin General reproducidas y bloqueadas; tres actores operativos mantienen funciones
   - Evidencia: AUDITORIA_DECRETOS_MATRIMONIO_EXEQUIAS_V104_2026-10-21.md: V104: paso indebido de Admin General/Diócesis en 7 RPC eliminado con guarda Cancillería
   - Evidencia: AUDITORIA_NULIDAD_VINCULOS_BAUTISMO_V105_2026-10-21.md: V105: falla de contaminación de Bautismo por enlace ajeno reproducida y corregida en RPC de Cancillería
+  - Evidencia: V120: autorizado de bajo privilegio no puede leer origen ni fila de otra diócesis, aunque compartan instalación histórica.
 - [ ] 27.02 · Escalamiento horizontal — EN_PROGRESO
   - Evidencia: AUDITORIA_EXP_DEPENDENCIAS_Y_RLS_V91.md: Segunda diócesis ficticia y Bautismo ajeno negados para cuatro roles en transacción ROLLBACK
   - Evidencia: AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: V95 escalamiento horizontal: 5 INSERT a parroquia ajena rechazados por RLS
   - Evidencia: AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96 identidad parroquial no puede alterarse por rol general ajeno al ámbito
   - Evidencia: AUDITORIA_CONCEPTOS_DEC_REGLAS_V98_2026-10-21.md: V97 concepto no puede trasladarse ni crearse para segunda diócesis ajena
   - Evidencia: AUDITORIA_AUTORIDAD_MIGRACION_V101_2026-10-21.md: V100/101: sesión parroquial ajena ve 0 lotes, 0 filas, 0 vínculos de otra parroquia
+  - Evidencia: V120: detección de lectura cruzada al mezclar IDs de diócesis y parroquia, corregida en políticas RLS.
 - [ ] 27.03 · IDOR de parroquia — EN_PROGRESO
   - Evidencia: AUDITORIA_EXP_DEPENDENCIAS_Y_RLS_V91.md: Acceso horizontal a partida Bautismo fuera de jurisdicción denegado; faltan 3 sacramentos
   - Evidencia: AUDITORIA_AUTORIDAD_MIGRACION_V101_2026-10-21.md: V100: aislamiento IDOR de lotes y vínculos confirmado en PostgREST/RLS con sesión Parroquia
+  - Evidencia: V120: acceso IDOR por origen y referencia parroquial ajena reproducido con fixture y corregido con doble pertenencia.
 - [ ] 27.04 · RPC directa prohibida — EN_PROGRESO
   - Evidencia: AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md: Asignador interno no ejecutable directamente (42501), con ruta institucional auditada operativa
   - Evidencia: AUDITORIA_AUTORIDAD_MIGRACION_V101_2026-10-21.md: V101: bypass por RPC create_legacy_import_batch sin scope reproducido y cerrado
@@ -614,6 +625,7 @@ Avance: 325 controles totales; 9 aprobados; 98 en progreso; 217 pendientes; 1 fa
   - Evidencia: V114: tras dos ensayos SQL reversibles, cero registros QA persistidos en seis entidades verificadas.
   - Evidencia: V115-V117: consulta posterior a las cuatro baterías SQL confirma cero datos QA en nueve colecciones de control.
   - Evidencia: V118: cero residuos de ensayos y siete antecedentes reales intactos.
+  - Evidencia: V120: QA transaccional con diócesis/parroquias ficticias, ROLLBACK y cero residuos QA verificados.
 
 ### 32. Auditoría forense de cierre (P0) — 1/10
 
@@ -649,8 +661,10 @@ Avance: 325 controles totales; 9 aprobados; 98 en progreso; 217 pendientes; 1 fa
   - Evidencia: AUDITORIA_DOBLE_COTEJO_DECISIONES_V110_2026-10-21.md: V110: cada cotejo auditado, 2 usuarios distintos, recepción sigue unverified, sentencia active y matrimonio nullified
   - Evidencia: V115-V117: cuatro scripts SQL reproducibles, pruebas de contrato, migraciones y salida V117 guardados; falta evidencia visual de sesiones.
   - Evidencia: V118: archivos SQL, validación estática y gate 526/526 reproducibles.
+  - Evidencia: V119-V120: pruebas Chrome reales anon 7/7 y regresión 535 sintéticas 25/25 tareas; SQL multirrol ejecutado.
 - [ ] 32.04 · Guardar capturas — EN_PROGRESO
   - Evidencia: V114: scripts SQL reversibles y prueba de origen de migraciones versionados; todavía faltan capturas de UI.
+  - Evidencia: V119: capturas y hashes SHA-256 por viewport/ruta, guardadas en AUDITORIA_EVIDENCIA_VISUAL_V119 (local, no Git).
 - [ ] 32.05 · Rastrear hallazgos P0/P1/P2 — EN_PROGRESO
   - Evidencia: AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md: Emisión temporal 1 documento y 1 log; cero residuos tras ROLLBACK en muestra controlada
   - Evidencia: AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: Boletas ficticias V93 comprobadas en cero tras ROLLBACK, conservación de históricos
@@ -666,6 +680,7 @@ Avance: 325 controles totales; 9 aprobados; 98 en progreso; 217 pendientes; 1 fa
   - Evidencia: AUDITORIA_ACTUACIONES_NULIDAD_V108_2026-10-21.md: V108: falta de seguimiento posterior a V107 atendida con bitácora documental segregada
   - Evidencia: AUDITORIA_RECEPCION_DECISION_TRIBUNAL_V109_2026-10-21.md: V109: riesgo de aplicar comunicación sin verificar mitigado con tabla/rpc no operativa y sin ejecución
   - Evidencia: AUDITORIA_DOBLE_COTEJO_DECISIONES_V110_2026-10-21.md: V110: riesgo de autocertificación mitigado por cotejo diocesano independiente sin atribuir veracidad jurídica
+  - Evidencia: V120: hallazgo de aislamiento de origen y fila histórica (gravedad alta) documentado y cerrado por RLS; 64 WARN GraphQL pendientes de revisión.
 - [ ] 32.06 · Corregir y repetir — EN_PROGRESO
   - Evidencia: AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: V95 reprodujo fallo antes y verificó reparación tras aplicar migración
   - Evidencia: AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96 corrige hallazgo de identidad institucional y repite prueba antes/después
@@ -682,6 +697,7 @@ Avance: 325 controles totales; 9 aprobados; 98 en progreso; 217 pendientes; 1 fa
   - Evidencia: AUDITORIA_DOBLE_COTEJO_DECISIONES_V110_2026-10-21.md: V110: comprobación de segregación y permisos reales, ausencia de residuos tras ROLLBACK
   - Evidencia: V115-V117: dos errores de ambigüedad SQL y nota marginal faltante detectados, corregidos y reproducidos en pruebas.
   - Evidencia: V118: cierre de fallos de autorización, alcance de origen y duplicado.
+  - Evidencia: V120: evidencia antes/después de fuga entre diócesis, ALTER POLICY y prueba RLS multirrol reejecutada sin error.
 - [ ] 32.07 · Regresión completa — EN_PROGRESO
   - Evidencia: AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md: Regresión 211 pruebas sintéticas, 23 verificadores, build OK; quedan fallas de dependencias
   - Evidencia: AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: 219 pruebas sintéticas, 23 verificadores y build aprobados; advertencias HIGH de paquetes aún abiertas
@@ -700,6 +716,7 @@ Avance: 325 controles totales; 9 aprobados; 98 en progreso; 217 pendientes; 1 fa
   - Evidencia: AUDITORIA_DOBLE_COTEJO_DECISIONES_V110_2026-10-21.md: V110: 435 pruebas sintéticas y 23 históricas aprobadas, build; gate dependencia npm en verificación
   - Evidencia: V117: 515 pruebas sintéticas, 23 verificadores históricos y build Vite completados sin auditoría npm.
   - Evidencia: V118: 25/25 verificaciones, 526 tests sintéticos, build Vite; npm audit excluida.
+  - Evidencia: V120: gate 25/25, 535 sintéticas, 23 verificadores heredados y build aprobados; npm audit omitida.
 - [ ] 32.08 · Conteos antes/después — EN_PROGRESO
   - Evidencia: AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: Tras V95: 15 políticas, 0 bypass is_app_admin y 0 residuos en 5 catálogos
   - Evidencia: AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96: mis_datos mantiene 1 fila real, 0 fixtures y 0 admin bypass en 3 políticas
@@ -716,6 +733,7 @@ Avance: 325 controles totales; 9 aprobados; 98 en progreso; 217 pendientes; 1 fa
   - Evidencia: AUDITORIA_DOBLE_COTEJO_DECISIONES_V110_2026-10-21.md: V110: cero registros ficticios persistidos de recepciones, cotejos, matrimonios, sentencias y audit log
   - Evidencia: V115-V117: todos los ensayos SQL concluyen ROLLBACK, residuos QA consultados y obtenidos como cero.
   - Evidencia: V118: dos ROLLBACK y verificación de residuos QA cero.
+  - Evidencia: V120: siete antecedentes ANULACION intactos, 5 pendientes y 2 vinculados; cero residuos RLS ficticios.
 - [x] 32.09 · Confirmar producción Ready — APROBADO
   - Evidencia: AUDITORIA_CIERRE_TECNICO_V91_2026-10-21.md: Despliegue Vercel de código V91 Ready; nota: app no certificada integralmente
 - [ ] 32.10 · Dictamen con limitaciones verificadas — PENDIENTE

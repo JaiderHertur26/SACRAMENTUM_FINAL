@@ -500,9 +500,10 @@
       "status": "EN_PROGRESO",
       "evidence": [
         "AUDITORIA_RLS_PARROQUIAL_V90.md: Ensayo con rol Parroquia autenticado: cero filas de otras parroquias en 10 entidades; falta matriz completa y operaciones de escritura",
-        "AUDITORIA_EXP_DEPENDENCIAS_Y_RLS_V91.md: Cuatro roles no pudieron leer Bautismo de segunda diócesis ficticia; falta matriz completa"
+        "AUDITORIA_EXP_DEPENDENCIAS_Y_RLS_V91.md: Cuatro roles no pudieron leer Bautismo de segunda diócesis ficticia; falta matriz completa",
+        "V120: dos fugas SELECT entre diócesis reproducidas y cerradas con RLS; prueba SQL con roles Chancery, Diócesis y Parroquia y referencias cruzadas. ROLLBACK."
       ],
-      "updated_at": "2026-10-21T17:18:15.990Z"
+      "updated_at": "2026-10-22T13:12:19.673Z"
     },
     {
       "id": "06.03",
@@ -556,9 +557,10 @@
       "evidence": [
         "AUDITORIA_INVENTARIO_RPC_V91.json: 129 funciones privilegiadas clasificadas; faltan pruebas positivas y negativas función por función",
         "V111/V112: se verificaron privilegios de ejecución anon=false y authenticated=true de nuevas RPC; las demás funciones privilegiadas requieren matriz completa por rol.",
-        "V113/V114: lectura de aclaraciones sólo Cancillería/Diócesis; Parroquia rechazada en SQL. Las otras RPC pendientes de matriz completa."
+        "V113/V114: lectura de aclaraciones sólo Cancillería/Diócesis; Parroquia rechazada en SQL. Las otras RPC pendientes de matriz completa.",
+        "V120: permisos de objetos no ampliados; RPC V118 intacta, RLS de lectura del archivo corregida."
       ],
-      "updated_at": "2026-10-22T03:21:45.467Z"
+      "updated_at": "2026-10-22T13:12:19.675Z"
     },
     {
       "id": "06.07",
@@ -592,9 +594,11 @@
       "area": "RLS y privilegios del backend",
       "priority": "P0",
       "criterion": "Filtración por GraphQL",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "V120: Supabase Advisor informa 64 objetos visibles en GraphQL a authenticated. Acceso a esquema NO equivale a fuga de filas; revisión exhaustiva pendiente."
+      ],
+      "updated_at": "2026-10-22T13:12:19.675Z"
     },
     {
       "id": "06.10",
@@ -1364,9 +1368,10 @@
       "evidence": [
         "AUDITORIA_CONCEPTOS_DEC_REGLAS_V98_2026-10-21.md: V97 rechaza concepto nuevo y traslado de existente a diócesis ajena",
         "AUDITORIA_NULIDAD_VINCULOS_BAUTISMO_V105_2026-10-21.md: V105: nota o notificación sólo tras cotejar Bautismo con contrayente, libro, folio y número",
-        "V118: rechaza otra diócesis, origen no verificado o parroquia incongruente."
+        "V118: rechaza otra diócesis, origen no verificado o parroquia incongruente.",
+        "V120: origen y fila ANULACION rechazados para otra diócesis y para parroquia/diocese contradictorias en prueba real RLS."
       ],
-      "updated_at": "2026-10-22T04:21:13.091Z"
+      "updated_at": "2026-10-22T13:12:19.675Z"
     },
     {
       "id": "13.04",
@@ -1449,9 +1454,10 @@
       "status": "EN_PROGRESO",
       "evidence": [
         "V114: evidencia contractual de archivo canónico en doble rol, sin duplicar registros físicos; falta cotejo visual RLS.",
-        "V118: centro Cancillería muestra historial y avisos a parroquia; prueba visual pendiente."
+        "V118: centro Cancillería muestra historial y avisos a parroquia; prueba visual pendiente.",
+        "V119: rutas protegidas redirigen sesión anónima; V120 conserva consulta de 7 ANULACION y 2 orígenes para Cancillería. UI interna autenticada no comprobada."
       ],
-      "updated_at": "2026-10-22T04:21:13.091Z"
+      "updated_at": "2026-10-22T13:12:19.675Z"
     },
     {
       "id": "13.11",
@@ -2544,9 +2550,10 @@
       "criterion": "Móvil",
       "status": "EN_PROGRESO",
       "evidence": [
-        "AUDITORIA_VISUAL_PUBLICA_V91.json: Emulación Chrome CDP 390 ancho real, sin desbordamiento en login público; resto de pantallas pendiente"
+        "AUDITORIA_VISUAL_PUBLICA_V91.json: Emulación Chrome CDP 390 ancho real, sin desbordamiento en login público; resto de pantallas pendiente",
+        "V119: Chrome móvil 390x844, portada y login sin desbordamiento horizontal, captura PNG, sin sesión."
       ],
-      "updated_at": "2026-10-21T17:18:16.345Z"
+      "updated_at": "2026-10-22T13:12:19.675Z"
     },
     {
       "id": "24.03",
@@ -2568,9 +2575,10 @@
       "criterion": "Escritorio",
       "status": "EN_PROGRESO",
       "evidence": [
-        "AUDITORIA_VISUAL_PUBLICA_V91.json: Emulación CDP escritorio 1365 sin overflow en login público; resto pendiente"
+        "AUDITORIA_VISUAL_PUBLICA_V91.json: Emulación CDP escritorio 1365 sin overflow en login público; resto pendiente",
+        "V119: Chrome escritorio 1440x900, portada pública renderizada sin error JS ni desbordamiento."
       ],
-      "updated_at": "2026-10-21T17:18:16.521Z"
+      "updated_at": "2026-10-22T13:12:19.675Z"
     },
     {
       "id": "24.05",
@@ -2650,9 +2658,10 @@
       "criterion": "Capturas de evidencia",
       "status": "EN_PROGRESO",
       "evidence": [
-        "AUDITORIA_VISUAL_PUBLICA_V91.json: Seis capturas PNG públicas con huellas SHA256 guardadas en C:\\SACRAMENTUM\\AUDITORIA_EVIDENCIAS_V91"
+        "AUDITORIA_VISUAL_PUBLICA_V91.json: Seis capturas PNG públicas con huellas SHA256 guardadas en C:\\SACRAMENTUM\\AUDITORIA_EVIDENCIAS_V91",
+        "V119: 7 capturas PNG con SHA-256, evidencia del navegador anónimo local; faltan pantallas autenticadas."
       ],
-      "updated_at": "2026-10-21T17:18:16.622Z"
+      "updated_at": "2026-10-22T13:12:19.675Z"
     },
     {
       "id": "25.01",
@@ -2881,9 +2890,10 @@
         "AUDITORIA_AUTORIDAD_MIGRACION_V101_2026-10-21.md: V100/101: Admin General ya no gestiona ni consulta lotes; creación no vinculada denegada tras parche",
         "AUDITORIA_DOCUMENTOS_OFICIALES_V102_2026-10-21.md: V102: emisión, anulación y plantillas ajenas de Admin General reproducidas y bloqueadas; tres actores operativos mantienen funciones",
         "AUDITORIA_DECRETOS_MATRIMONIO_EXEQUIAS_V104_2026-10-21.md: V104: paso indebido de Admin General/Diócesis en 7 RPC eliminado con guarda Cancillería",
-        "AUDITORIA_NULIDAD_VINCULOS_BAUTISMO_V105_2026-10-21.md: V105: falla de contaminación de Bautismo por enlace ajeno reproducida y corregida en RPC de Cancillería"
+        "AUDITORIA_NULIDAD_VINCULOS_BAUTISMO_V105_2026-10-21.md: V105: falla de contaminación de Bautismo por enlace ajeno reproducida y corregida en RPC de Cancillería",
+        "V120: autorizado de bajo privilegio no puede leer origen ni fila de otra diócesis, aunque compartan instalación histórica."
       ],
-      "updated_at": "2026-10-22T00:34:33.943Z"
+      "updated_at": "2026-10-22T13:12:19.675Z"
     },
     {
       "id": "27.02",
@@ -2897,9 +2907,10 @@
         "AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: V95 escalamiento horizontal: 5 INSERT a parroquia ajena rechazados por RLS",
         "AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96 identidad parroquial no puede alterarse por rol general ajeno al ámbito",
         "AUDITORIA_CONCEPTOS_DEC_REGLAS_V98_2026-10-21.md: V97 concepto no puede trasladarse ni crearse para segunda diócesis ajena",
-        "AUDITORIA_AUTORIDAD_MIGRACION_V101_2026-10-21.md: V100/101: sesión parroquial ajena ve 0 lotes, 0 filas, 0 vínculos de otra parroquia"
+        "AUDITORIA_AUTORIDAD_MIGRACION_V101_2026-10-21.md: V100/101: sesión parroquial ajena ve 0 lotes, 0 filas, 0 vínculos de otra parroquia",
+        "V120: detección de lectura cruzada al mezclar IDs de diócesis y parroquia, corregida en políticas RLS."
       ],
-      "updated_at": "2026-10-21T21:33:28.759Z"
+      "updated_at": "2026-10-22T13:12:19.675Z"
     },
     {
       "id": "27.03",
@@ -2910,9 +2921,10 @@
       "status": "EN_PROGRESO",
       "evidence": [
         "AUDITORIA_EXP_DEPENDENCIAS_Y_RLS_V91.md: Acceso horizontal a partida Bautismo fuera de jurisdicción denegado; faltan 3 sacramentos",
-        "AUDITORIA_AUTORIDAD_MIGRACION_V101_2026-10-21.md: V100: aislamiento IDOR de lotes y vínculos confirmado en PostgREST/RLS con sesión Parroquia"
+        "AUDITORIA_AUTORIDAD_MIGRACION_V101_2026-10-21.md: V100: aislamiento IDOR de lotes y vínculos confirmado en PostgREST/RLS con sesión Parroquia",
+        "V120: acceso IDOR por origen y referencia parroquial ajena reproducido con fixture y corregido con doble pertenencia."
       ],
-      "updated_at": "2026-10-21T21:33:28.949Z"
+      "updated_at": "2026-10-22T13:12:19.675Z"
     },
     {
       "id": "27.04",
@@ -3448,9 +3460,10 @@
       "evidence": [
         "V114: tras dos ensayos SQL reversibles, cero registros QA persistidos en seis entidades verificadas.",
         "V115-V117: consulta posterior a las cuatro baterías SQL confirma cero datos QA en nueve colecciones de control.",
-        "V118: cero residuos de ensayos y siete antecedentes reales intactos."
+        "V118: cero residuos de ensayos y siete antecedentes reales intactos.",
+        "V120: QA transaccional con diócesis/parroquias ficticias, ROLLBACK y cero residuos QA verificados."
       ],
-      "updated_at": "2026-10-22T04:21:13.091Z"
+      "updated_at": "2026-10-22T13:12:19.675Z"
     },
     {
       "id": "32.01",
@@ -3510,9 +3523,10 @@
         "AUDITORIA_RECEPCION_DECISION_TRIBUNAL_V109_2026-10-21.md: V109: recepción no verificada, sentencia active, matrimonio nullified, auditoría 1 en transacción",
         "AUDITORIA_DOBLE_COTEJO_DECISIONES_V110_2026-10-21.md: V110: cada cotejo auditado, 2 usuarios distintos, recepción sigue unverified, sentencia active y matrimonio nullified",
         "V115-V117: cuatro scripts SQL reproducibles, pruebas de contrato, migraciones y salida V117 guardados; falta evidencia visual de sesiones.",
-        "V118: archivos SQL, validación estática y gate 526/526 reproducibles."
+        "V118: archivos SQL, validación estática y gate 526/526 reproducibles.",
+        "V119-V120: pruebas Chrome reales anon 7/7 y regresión 535 sintéticas 25/25 tareas; SQL multirrol ejecutado."
       ],
-      "updated_at": "2026-10-22T04:21:13.091Z"
+      "updated_at": "2026-10-22T13:12:19.675Z"
     },
     {
       "id": "32.04",
@@ -3522,9 +3536,10 @@
       "criterion": "Guardar capturas",
       "status": "EN_PROGRESO",
       "evidence": [
-        "V114: scripts SQL reversibles y prueba de origen de migraciones versionados; todavía faltan capturas de UI."
+        "V114: scripts SQL reversibles y prueba de origen de migraciones versionados; todavía faltan capturas de UI.",
+        "V119: capturas y hashes SHA-256 por viewport/ruta, guardadas en AUDITORIA_EVIDENCIA_VISUAL_V119 (local, no Git)."
       ],
-      "updated_at": "2026-10-22T03:21:45.467Z"
+      "updated_at": "2026-10-22T13:12:19.675Z"
     },
     {
       "id": "32.05",
@@ -3547,9 +3562,10 @@
         "AUDITORIA_REVISION_JURIDICA_NULIDAD_V107_2026-10-21.md: V107: ausencia de mecanismo específico de revocación documentada; implementada solicitud no destructiva",
         "AUDITORIA_ACTUACIONES_NULIDAD_V108_2026-10-21.md: V108: falta de seguimiento posterior a V107 atendida con bitácora documental segregada",
         "AUDITORIA_RECEPCION_DECISION_TRIBUNAL_V109_2026-10-21.md: V109: riesgo de aplicar comunicación sin verificar mitigado con tabla/rpc no operativa y sin ejecución",
-        "AUDITORIA_DOBLE_COTEJO_DECISIONES_V110_2026-10-21.md: V110: riesgo de autocertificación mitigado por cotejo diocesano independiente sin atribuir veracidad jurídica"
+        "AUDITORIA_DOBLE_COTEJO_DECISIONES_V110_2026-10-21.md: V110: riesgo de autocertificación mitigado por cotejo diocesano independiente sin atribuir veracidad jurídica",
+        "V120: hallazgo de aislamiento de origen y fila histórica (gravedad alta) documentado y cerrado por RLS; 64 WARN GraphQL pendientes de revisión."
       ],
-      "updated_at": "2026-10-22T02:20:17.668Z"
+      "updated_at": "2026-10-22T13:12:19.675Z"
     },
     {
       "id": "32.06",
@@ -3573,9 +3589,10 @@
         "AUDITORIA_RECEPCION_DECISION_TRIBUNAL_V109_2026-10-21.md: V109: prueba conductual de permisos, aislamiento, conservación y ROLLBACK sin residuos",
         "AUDITORIA_DOBLE_COTEJO_DECISIONES_V110_2026-10-21.md: V110: comprobación de segregación y permisos reales, ausencia de residuos tras ROLLBACK",
         "V115-V117: dos errores de ambigüedad SQL y nota marginal faltante detectados, corregidos y reproducidos en pruebas.",
-        "V118: cierre de fallos de autorización, alcance de origen y duplicado."
+        "V118: cierre de fallos de autorización, alcance de origen y duplicado.",
+        "V120: evidencia antes/después de fuga entre diócesis, ALTER POLICY y prueba RLS multirrol reejecutada sin error."
       ],
-      "updated_at": "2026-10-22T04:21:13.091Z"
+      "updated_at": "2026-10-22T13:12:19.675Z"
     },
     {
       "id": "32.07",
@@ -3601,9 +3618,10 @@
         "AUDITORIA_RECEPCION_DECISION_TRIBUNAL_V109_2026-10-21.md: V109: 407 pruebas sintéticas + 23 verificadores históricos + build, 5 HIGH impiden aprobar gate",
         "AUDITORIA_DOBLE_COTEJO_DECISIONES_V110_2026-10-21.md: V110: 435 pruebas sintéticas y 23 históricas aprobadas, build; gate dependencia npm en verificación",
         "V117: 515 pruebas sintéticas, 23 verificadores históricos y build Vite completados sin auditoría npm.",
-        "V118: 25/25 verificaciones, 526 tests sintéticos, build Vite; npm audit excluida."
+        "V118: 25/25 verificaciones, 526 tests sintéticos, build Vite; npm audit excluida.",
+        "V120: gate 25/25, 535 sintéticas, 23 verificadores heredados y build aprobados; npm audit omitida."
       ],
-      "updated_at": "2026-10-22T04:21:13.091Z"
+      "updated_at": "2026-10-22T13:12:19.675Z"
     },
     {
       "id": "32.08",
@@ -3627,9 +3645,10 @@
         "AUDITORIA_RECEPCION_DECISION_TRIBUNAL_V109_2026-10-21.md: V109: comprobados 0 recepciones/casos/decretos/matrimonios/auditorías ficticios persistidos",
         "AUDITORIA_DOBLE_COTEJO_DECISIONES_V110_2026-10-21.md: V110: cero registros ficticios persistidos de recepciones, cotejos, matrimonios, sentencias y audit log",
         "V115-V117: todos los ensayos SQL concluyen ROLLBACK, residuos QA consultados y obtenidos como cero.",
-        "V118: dos ROLLBACK y verificación de residuos QA cero."
+        "V118: dos ROLLBACK y verificación de residuos QA cero.",
+        "V120: siete antecedentes ANULACION intactos, 5 pendientes y 2 vinculados; cero residuos RLS ficticios."
       ],
-      "updated_at": "2026-10-22T04:21:13.091Z"
+      "updated_at": "2026-10-22T13:12:19.675Z"
     },
     {
       "id": "32.09",
