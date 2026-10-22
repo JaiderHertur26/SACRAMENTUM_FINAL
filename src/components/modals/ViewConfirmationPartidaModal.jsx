@@ -4,6 +4,7 @@ import {
     ShieldCheck, CheckCircle2, AlertCircle
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useToast } from '@/components/ui/use-toast';
 import ConfirmationPrintTemplate from '@/components/ConfirmationPrintTemplate';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
@@ -38,6 +39,7 @@ const InfoCard = ({ label, val, icon: Icon }) => (
 // --- COMPONENTE PRINCIPAL (MODAL DE INSPECCIÓN) ---
 const ViewConfirmationPartidaModal = ({ isOpen, onClose, partida, auxiliaryData }) => {
     const componenteImpresionRef = useRef();
+    const { toast } = useToast();
     const [marginalNotes, setMarginalNotes] = useState([]);
     const [selectedNotes, setSelectedNotes] = useState([]);
     const [notesRevision, setNotesRevision] = useState(0);
@@ -69,10 +71,19 @@ const ViewConfirmationPartidaModal = ({ isOpen, onClose, partida, auxiliaryData 
     const estaInactiva = estaAnulada || estaRevertida || estaReemplazada;
     const esReposicion = String(partida.tipoIdentidad || '').includes('reposicion') || partida.isSupplementary;
 
-    const ejecutarImpresion = () => {
+    const ejecutarImpresion = async () => {
         const contenido = componenteImpresionRef.current;
         if (!contenido) return;
-        registerRegistryPrint({ parishId, sacramentType: 'confirmacion', sacramentId: partida.id, selectedNoteKeys: selectedNotes, includedNotes: marginalNotes.filter(n => n.print_policy !== 'internal' && (n.print_policy === 'required' || selectedNotes.includes(n.id))).map(n => ({ id: String(n.id), label: n.print_label || n.note_type, content: n.content, policy: n.print_policy })) }).catch(error => console.warn('No fue posible auditar la impresión:', error));
+        try {
+            await registerRegistryPrint({ parishId, sacramentType: 'confirmacion', sacramentId: partida.id, selectedNoteKeys: selectedNotes, includedNotes: marginalNotes.filter(n => n.print_policy !== 'internal' && (n.print_policy === 'required' || selectedNotes.includes(n.id))).map(n => ({ id: String(n.id), label: n.print_label || n.note_type, content: n.content, policy: n.print_policy })) });
+        } catch (error) {
+            toast({
+                title: 'Impresión detenida: falta constancia de auditoría',
+                description: String(error?.message || 'No se pudo auditar la impresión de Confirmación.'),
+                variant: 'destructive'
+            });
+            return;
+        }
 
         const iframe = document.createElement('iframe');
         iframe.style.display = 'none';

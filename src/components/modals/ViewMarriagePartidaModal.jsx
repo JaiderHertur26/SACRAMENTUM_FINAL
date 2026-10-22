@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { X, Printer, BookOpen, AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useToast } from '@/components/ui/use-toast';
 import MatrimonioPrintTemplate from '@/components/MatrimonioPrintTemplate';
 import { motion, AnimatePresence } from 'framer-motion';
 import MarginalNotesPrintSelector from '@/components/MarginalNotesPrintSelector';
@@ -9,6 +10,7 @@ import { listMarginalNotesForRecord, getInitialPrintSelection, composePrintableN
 
 const ViewMarriagePartidaModal = ({ isOpen, onClose, partida, auxiliaryData }) => {
     const printComponentRef = useRef();
+    const { toast } = useToast();
     const [marginalNotes,setMarginalNotes] = useState([]);
     const [selectedNotes,setSelectedNotes] = useState([]);
     const [notesRevision,setNotesRevision] = useState(0);
@@ -46,10 +48,19 @@ const ViewMarriagePartidaModal = ({ isOpen, onClose, partida, auxiliaryData }) =
     
     const displayNote = rawMarginText.trim() !== "" ? rawMarginText : "NINGUNA REGISTRADA";
 
-    const handlePrint = () => {
+    const handlePrint = async () => {
         const printContent = printComponentRef.current;
         if (!printContent) return;
-        registerRegistryPrint({ parishId, sacramentType: 'matrimonio', sacramentId: partida.id, selectedNoteKeys: selectedNotes, includedNotes: marginalNotes.filter(n => n.print_policy !== 'internal' && (n.print_policy === 'required' || selectedNotes.includes(n.id))).map(n => ({ id: String(n.id), label: n.print_label || n.note_type, content: n.content, policy: n.print_policy })) }).catch(error => console.warn('No fue posible auditar la impresión:', error));
+        try {
+            await registerRegistryPrint({ parishId, sacramentType: 'matrimonio', sacramentId: partida.id, selectedNoteKeys: selectedNotes, includedNotes: marginalNotes.filter(n => n.print_policy !== 'internal' && (n.print_policy === 'required' || selectedNotes.includes(n.id))).map(n => ({ id: String(n.id), label: n.print_label || n.note_type, content: n.content, policy: n.print_policy })) });
+        } catch (error) {
+            toast({
+                title: 'Impresión detenida: falta constancia de auditoría',
+                description: String(error?.message || 'No se pudo auditar la impresión de Matrimonio.'),
+                variant: 'destructive'
+            });
+            return;
+        }
 
         const iframe = document.createElement('iframe');
         iframe.style.position = 'fixed';

@@ -128,7 +128,7 @@ export async function saveMarginalTemplateVersion({
 }
 
 export async function registerRegistryPrint({ parishId, sacramentType, sacramentId, documentKind='partida', selectedNoteKeys=[], includedNotes=[], metadata={} }) {
-  if (!parishId || !sacramentId) return null;
+  if (!parishId || !sacramentId) throw new Error('No se puede imprimir sin identificar parroquia y partida para la auditoría');
   const { data, error } = await supabase.rpc('register_registry_print', {
     p_parish_id: parishId,
     p_sacrament_type: sacramentType,

@@ -133,7 +133,7 @@ const FuneralPartidasPage = () => {
     }
   };
 
-  const printCertificate = () => {
+  const printCertificate = async () => {
     if (!selected) return;
 
     const popup = window.open('', '_blank', 'width=900,height=1100');
@@ -146,7 +146,8 @@ const FuneralPartidasPage = () => {
       return;
     }
 
-    registerRegistryPrint({
+    try {
+      await registerRegistryPrint({
       parishId,
       sacramentType: 'exequias',
       sacramentId: selected.id,
@@ -160,7 +161,16 @@ const FuneralPartidasPage = () => {
         folio: selected.folio || selected.page_number || '',
         number: selected.number || selected.numero || selected.entry_number || ''
       }
-    }).catch((error) => console.warn('No fue posible auditar la impresión de Exequias:', error));
+      });
+    } catch (error) {
+      popup.close();
+      toast({
+        title: 'Impresión detenida: falta constancia de auditoría',
+        description: String(error?.message || 'No se pudo auditar la impresión de Exequias.'),
+        variant: 'destructive'
+      });
+      return;
+    }
 
     popup.document.write(buildFuneralPartidaHtml({
       record: selected,
@@ -172,7 +182,7 @@ const FuneralPartidasPage = () => {
   };
 
 
-  const printFuneralSlip = (record = selected) => {
+  const printFuneralSlip = async (record = selected) => {
     if (!record) return;
 
     const popup = window.open('', '_blank', 'width=850,height=900');
@@ -185,7 +195,8 @@ const FuneralPartidasPage = () => {
       return;
     }
 
-    registerRegistryPrint({
+    try {
+      await registerRegistryPrint({
       parishId,
       sacramentType: 'exequias',
       sacramentId: record.id,
@@ -195,7 +206,16 @@ const FuneralPartidasPage = () => {
         folio: record.folio || record.page_number || '',
         number: record.number || record.numero || record.entry_number || ''
       }
-    }).catch((error) => console.warn('No fue posible auditar la constancia de Exequias:', error));
+      });
+    } catch (error) {
+      popup.close();
+      toast({
+        title: 'Impresión detenida: falta constancia de auditoría',
+        description: String(error?.message || 'No se pudo auditar la impresión de Exequias.'),
+        variant: 'destructive'
+      });
+      return;
+    }
 
     popup.document.write(buildFuneralConstanciaHtml({
       record,

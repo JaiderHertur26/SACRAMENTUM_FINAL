@@ -6,6 +6,7 @@ import {
     User, Users, MapPin, PenTool, AlertOctagon, FileText, Link
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useToast } from '@/components/ui/use-toast';
 import BaptismPrintTemplate from '@/components/BaptismPrintTemplate';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
@@ -39,6 +40,7 @@ const Badge = ({ color, icon: Icon, label }) => {
 
 const ViewBaptismPartidaModal = ({ isOpen, onClose, partida, auxiliaryData }) => {
     const componenteImpresionRef = useRef();
+    const { toast } = useToast();
 
     const [marginalNotes, setMarginalNotes] = useState([]);
     const [selectedNotes, setSelectedNotes] = useState([]);
@@ -163,10 +165,19 @@ const ViewBaptismPartidaModal = ({ isOpen, onClose, partida, auxiliaryData }) =>
     const noVigente = estaAnulada || estaRevertida || estaReemplazada;
     const esReposicion = partida.tipoIdentidad === 'id_creada_reposicion';
 
-    const ejecutarImpresion = () => {
+    const ejecutarImpresion = async () => {
         const contenido = componenteImpresionRef.current;
         if (!contenido) return;
-        registerRegistryPrint({ parishId, sacramentType: 'bautismo', sacramentId: partida.id, selectedNoteKeys: selectedNotes, includedNotes: marginalNotes.filter(n => n.print_policy !== 'internal' && (n.print_policy === 'required' || selectedNotes.includes(n.id))).map(n => ({ id: String(n.id), label: n.print_label || n.note_type, content: n.content, policy: n.print_policy })) }).catch(error => console.warn('No fue posible auditar la impresión:', error));
+        try {
+            await registerRegistryPrint({ parishId, sacramentType: 'bautismo', sacramentId: partida.id, selectedNoteKeys: selectedNotes, includedNotes: marginalNotes.filter(n => n.print_policy !== 'internal' && (n.print_policy === 'required' || selectedNotes.includes(n.id))).map(n => ({ id: String(n.id), label: n.print_label || n.note_type, content: n.content, policy: n.print_policy })) });
+        } catch (error) {
+            toast({
+                title: 'Impresión detenida: falta constancia de auditoría',
+                description: String(error?.message || 'No se pudo auditar la impresión de Bautismo.'),
+                variant: 'destructive'
+            });
+            return;
+        }
 
         const iframe = document.createElement('iframe');
         iframe.style.display = 'none';
