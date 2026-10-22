@@ -138,6 +138,7 @@ Avance: 325 controles totales; 10 aprobados; 102 en progreso; 213 pendientes; 0 
   - Evidencia: V147: register_registry_print parcialmente revisada: FOR SHARE y advisory transaction lock de reimpresiones. Concurrencia multisesión real aún no certificada.
   - Evidencia: V148: monotonic version triggers en los cuatro sacramentos y prueba parcial extendida de register_registry_print; auditoría 136 SECDEF, 21 parciales, 115 pendientes.
   - Evidencia: V149: comparación de versiones registrales a microsegundos al validar constancias de impresión; fuente SQL V148 sin cambios.
+  - Evidencia: V150: can_access_parish antes retornaba NULL para usuario sin perfil y su uso IF NOT podía saltar la prohibición; función modificada en Supabase.
 - [ ] 06.07 · Todas las RPC privilegiadas denegadas a terceros (inventario dinámico) — EN_PROGRESO
   - Evidencia: AUDITORIA_BASE_SQL_V90.md: Cero vistas públicas; 129 RPC privilegiadas requieren pruebas de permisos y búsqueda de bypass
   - Evidencia: AUDITORIA_INVENTARIO_RPC_V91.json: 129 funciones catalogadas para revisión de terceros, sin afirmar autorización sin pruebas
@@ -158,6 +159,7 @@ Avance: 325 controles totales; 10 aprobados; 102 en progreso; 213 pendientes; 0 
   - Evidencia: V143: impresión exige igualdad de libro/folio/número comparando metadata declarada por cliente con fila original, en misma transacción.
   - Evidencia: V144: lectura de partida bloqueada por FOR SHARE hasta finalizar el asiento del print_event.
   - Evidencia: V148: updated_at de cada partida cambia monotónicamente en UPDATE antes de validar una nueva impresión; FOR SHARE V144 permanece.
+  - Evidencia: V150: control de autorización ahora es FALSE explícito para uid o parroquia ausente; conserva ruta de permisos por rol.
 - [ ] 06.08 · Search path de funciones — EN_PROGRESO
   - Evidencia: AUDITORIA_INVENTARIO_RPC_V91.json: Cribado search_path de funciones privilegiadas; falta verificación de todas sus dependencias
   - Evidencia: V124: ambas RPC destructivas preservaron search_path fijado; revisión de todas las demás sigue pendiente.
@@ -303,6 +305,7 @@ Avance: 325 controles totales; 10 aprobados; 102 en progreso; 213 pendientes; 0 
   - Evidencia: V144: reimpresiones documentadas como solicitudes con consecutivo y UUID del antecedente, no como papel impreso.
   - Evidencia: V148: el cliente que presenta versión anterior es rechazado tras editar contenido aunque status y libro/folio/número no hayan cambiado.
   - Evidencia: V149: antes de solicitar impresión, cliente exige updated_at canónico de partida; ausencia detiene operación.
+  - Evidencia: V150: register_registry_print deniega correctamente solicitud de impresión por identidad ficticia sin perfil antes de consultar partida.
 - [ ] 12.08 · Archivo único en dos roles — EN_PROGRESO
   - Evidencia: V114: archivo consultado por diocese_id y parish_id sobre misma fila canónica, 52 casos sintéticos; falta prueba UI y RLS real de ambos actores.
   - Evidencia: V118: archivo compartido; panel de conciliación conectado a Centro de Decretos.
@@ -383,6 +386,7 @@ Avance: 325 controles totales; 10 aprobados; 102 en progreso; 213 pendientes; 0 
   - Evidencia: V145: antecedente histórico sin consecutivo conservado, con nueva solicitud trazada por secuencia futura.
   - Evidencia: V148: prueba en Baptism reveló modificación nombres sin avance updated_at, se instaló trigger e incrementos de microsegundo.
   - Evidencia: V149: el cotejo Date.parse perdía microsegundos; ahora se comprueban seis dígitos y zona horaria.
+  - Evidencia: V150: hallazgo de autorización SQL NULL reproducido en producción sin escrituras; se validó reparación con dry-run reversible.
 - [ ] 14.05 · Vínculo a original/supletoria — EN_PROGRESO
   - Evidencia: V117: corrección de Bautismo/Confirmación anota original recuperado y supletoria sin efecto; reposición anota supletoria únicamente.
 - [ ] 14.06 · Notas importadas sin fecha inventada — EN_PROGRESO
@@ -402,6 +406,7 @@ Avance: 325 controles totales; 10 aprobados; 102 en progreso; 213 pendientes; 0 
   - Evidencia: V144: asiento Bautismo y Confirmación protegido ante modificaciones concurrentes de fila mientras la RPC ejecuta.
   - Evidencia: V148: Bautismo y Confirmación reciben nueva marca updated_at en cada actualización, incluso dentro de la misma transacción.
   - Evidencia: V149: Bautismo y Confirmación verifican transporte de updated_at canónico y requieren versión válida en impresión.
+  - Evidencia: V150: el aislamiento por usuario parroquial se probó con su parroquia propia y otra parroquia del mismo entorno, en SELECT reversible.
 - [ ] 14.07 · Pendientes sin partida — PENDIENTE
 - [ ] 14.08 · Histórico impreso — PENDIENTE
 - [ ] 14.09 · Auditoría de anotación — PENDIENTE
@@ -591,6 +596,7 @@ Avance: 325 controles totales; 10 aprobados; 102 en progreso; 213 pendientes; 0 
   - Evidencia: V143: cinco flujos de impresión cotejan recibo con coordenadas/version/huella; prueba visual autenticada e impresión física todavía pendientes.
   - Evidencia: V147: constancia de reimpresión en metadata DB; sello de copia en HTML e impresión física pendientes.
   - Evidencia: V148: trazabilidad documental bloquea versión antigua de impresión tras 3 actualizaciones del registro, verificada en Supabase con JWT simulado.
+  - Evidencia: V150: ninguna impresión ni decreto ficticio generado; RPC de impresión negó al sujeto sin perfil por jurisdicción.
 
 ### 25. Resiliencia (P0) — 0/11
 
@@ -642,6 +648,7 @@ Avance: 325 controles totales; 10 aprobados; 102 en progreso; 213 pendientes; 0 
   - Evidencia: V143: huella SHA-256 calculada con Web Crypto en origen; metadatos dejan claro que digest de cliente no prueba certificación del libro.
   - Evidencia: V144: contador acotado por parroquia+sacramento+partida+tipo, bloqueo advisory específico de ese documento.
   - Evidencia: V148: función de disparador private con SECURITY INVOKER, sin EXECUTE directo public/anon/authenticated.
+  - Evidencia: V150: can_access_parish mantiene SECURITY DEFINER y no recibe nuevos GRANT; retorno total booleano evita el salto de guardas con NULL.
 - [ ] 27.02 · Escalamiento horizontal — EN_PROGRESO
   - Evidencia: AUDITORIA_EXP_DEPENDENCIAS_Y_RLS_V91.md: Segunda diócesis ficticia y Bautismo ajeno negados para cuatro roles en transacción ROLLBACK
   - Evidencia: AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: V95 escalamiento horizontal: 5 INSERT a parroquia ajena rechazados por RLS
@@ -663,6 +670,7 @@ Avance: 325 controles totales; 10 aprobados; 102 en progreso; 213 pendientes; 0 
   - Evidencia: V143: SQL sobre cada sacramento rechazo de libro/folio/número falsos y versión de fecha antigua; compatibilidad con clientes legacy marcada como unchecked.
   - Evidencia: V146: metadatos históricos NO_NUMERIC o demasiado grandes dejan de interrumpir posteriores impresiones.
   - Evidencia: V148: defensa ante escritura manual de updated_at antigua; trigger impone valor mayor al anterior en cada sacramento.
+  - Evidencia: V150: falta de auth.uid y parroquia objetivo inexistente devuelven FALSE explícito.
 - [ ] 27.03 · IDOR de parroquia — EN_PROGRESO
   - Evidencia: AUDITORIA_EXP_DEPENDENCIAS_Y_RLS_V91.md: Acceso horizontal a partida Bautismo fuera de jurisdicción denegado; faltan 3 sacramentos
   - Evidencia: AUDITORIA_AUTORIDAD_MIGRACION_V101_2026-10-21.md: V100: aislamiento IDOR de lotes y vínculos confirmado en PostgREST/RLS con sesión Parroquia
@@ -695,6 +703,7 @@ Avance: 325 controles totales; 10 aprobados; 102 en progreso; 213 pendientes; 0 
   - Evidencia: V144-146: secuencia, previa UUID y clasificación son generadas por RPC con orden independiente de timestamps iguales.
   - Evidencia: V148: V143 compara updated_at canónico y rechaza una copia antes de registrar print event; la prueba funcional verifica tanto rechazo como aceptación.
   - Evidencia: V149: constancia de auditoría confronta versión del servidor y del cliente a precisión PostgreSQL, no milisegundos.
+  - Evidencia: V150: live QA confirmó que register_registry_print deniega actor sin perfil por jurisdicción, no solo por falta de registro.
 - [ ] 27.05 · SQL injection — EN_PROGRESO
   - Evidencia: V123: prohibido patrón LIKE libre en limpieza de sombras de Confirmación; parámetro fuente literal sin comodines, >=6 caracteres. Auditoría SQL injection integral aún pendiente.
   - Evidencia: V132: mitigado bypass del cotejo visual mediante RPC directa, no implica certificación judicial de origen.
@@ -741,6 +750,7 @@ Avance: 325 controles totales; 10 aprobados; 102 en progreso; 213 pendientes; 0 
   - Evidencia: V143: inventario SECURITY DEFINER mantiene 136, 21 con pruebas parciales y 115 por revisar; evidencia complementaria de RPC impresión.
   - Evidencia: V147: 136 SECURITY DEFINER authenticated, 21 con pruebas parciales, 115 funciones pendientes.
   - Evidencia: V148: lista SECURITY DEFINER constante 136 funciones, 21 evidencias parciales, 115 por revisar; trigger nuevo SEC INVOKER.
+  - Evidencia: V150: can_access_parish pasa a prueba parcial de RLS/alcance; catálogo privilegiado reporta 22 parciales y 114 pendientes en inventario V148.
 
 ### 28. Privacidad y tratamiento de datos (P0) — 0/9
 
@@ -839,6 +849,7 @@ Avance: 325 controles totales; 10 aprobados; 102 en progreso; 213 pendientes; 0 
   - Evidencia: V144-V146: cuatro sacramentos y tres reimpresiones, tipos independientes, antecedentes antiguos no numéricos y largos, todos BEGIN/ROLLBACK.
   - Evidencia: V148: QA baseline reprodujo desactualización de timestamps; QA posterior con 4 sacramentos, 3 modificaciones, 4 rechazos y 4 aceptaciones con rollback.
   - Evidencia: V149: 22 pruebas sintéticas reversibles nuevas, sin escritura en Supabase; variantes de husos horarios, microsegundos y versiones ausentes.
+  - Evidencia: V150: QA autenticada fake y roles válidos con ROLLBACK, sin datos permanentes; concurrencia entre dos sesiones NO certificada.
 - [ ] 31.08 · Doble click y red caída — PENDIENTE
 - [ ] 31.09 · Impresión/estadística final — PENDIENTE
 - [ ] 31.10 · Destruir sandbox y demostrar cero residuos — EN_PROGRESO
@@ -862,6 +873,7 @@ Avance: 325 controles totales; 10 aprobados; 102 en progreso; 213 pendientes; 0 
   - Evidencia: V143: conteo posterior cero partidas QA, print_events QA o audit_events QA; ANULACION 5 archived y 2 materialized_decree intactos.
   - Evidencia: V147: 0 registros ficticios residuales; 8 solicitudes históricas auténticas sin SHA sin tocar; ANULACION 5 archivados y 2 vinculados intactos.
   - Evidencia: V148: 0 partidas/impresiones QA persistidas, 8 impresiones históricas y ANULACION 5+2 sin tocar.
+  - Evidencia: V150: la prueba negativa de impresión y decreto no creó registros; no se escribieron datos sacramentales.
 
 ### 32. Auditoría forense de cierre (P0) — 1/10
 
@@ -917,6 +929,7 @@ Avance: 325 controles totales; 10 aprobados; 102 en progreso; 213 pendientes; 0 
   - Evidencia: V147: 21 nuevos tests, 817/817 sintéticas, 28/28 verificaciones finales, npm ci aislado 446 paquetes.
   - Evidencia: V148: +19 tests nuevos, 836/836 pruebas sintéticas, 28/28 quality gate; 4 regresiones SQL históricas PASS.
   - Evidencia: V149: 858/858 pruebas sintéticas integradas; 28/28 comprobaciones en puerta estricta local.
+  - Evidencia: V150: +15 pruebas sintéticas permanentes, 873/873 integrales; gate estricta 28/28 aprobada.
 - [ ] 32.04 · Guardar capturas — EN_PROGRESO
   - Evidencia: V114: scripts SQL reversibles y prueba de origen de migraciones versionados; todavía faltan capturas de UI.
   - Evidencia: V119: capturas y hashes SHA-256 por viewport/ruta, guardadas en AUDITORIA_EVIDENCIA_VISUAL_V119 (local, no Git).
@@ -953,6 +966,7 @@ Avance: 325 controles totales; 10 aprobados; 102 en progreso; 213 pendientes; 0 
   - Evidencia: V143: reproducido pre-migración que frontend podía declarar folio 222 y registrar impresión sobre libro con folio 333.
   - Evidencia: V145: anterior UUID mal encadenado por timestamp idéntico; V146: conversión legacy ERROR 22P02; ambos reproducidos y corregidos.
   - Evidencia: V148: fallo real en Bautismo: se editaba nombre sin cambio updated_at; ahora se detecta modificación de versión en cuatro sacramentos.
+  - Evidencia: V150: causa real de permisos NULL documentada y corregida; sin perfil el control es FALSE.
 - [ ] 32.06 · Corregir y repetir — EN_PROGRESO
   - Evidencia: AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: V95 reprodujo fallo antes y verificó reparación tras aplicar migración
   - Evidencia: AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96 corrige hallazgo de identidad institucional y repite prueba antes/después
@@ -987,6 +1001,7 @@ Avance: 325 controles totales; 10 aprobados; 102 en progreso; 213 pendientes; 0 
   - Evidencia: V143: migración aplicada 20261022180645 y matriz SQL post-fix 4x6 rechazos, ROLLBACK; tests funcionales de hash.
   - Evidencia: V147: migraciones aplicadas 20261022182523, 20261022182724, 20261022183433, reimpresiones probadas sin residuo.
   - Evidencia: V148: migración 20261022185717 aplicada, cuatro triggers reales verificados, QA SQL con ROLLBACK.
+  - Evidencia: V150: migración 20261022194003 aplicada y concordante con historial Supabase. Roles institucionales preservados en ensayos.
 - [ ] 32.07 · Regresión completa — EN_PROGRESO
   - Evidencia: AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md: Regresión 211 pruebas sintéticas, 23 verificadores, build OK; quedan fallas de dependencias
   - Evidencia: AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: 219 pruebas sintéticas, 23 verificadores y build aprobados; advertencias HIGH de paquetes aún abiertas
@@ -1024,6 +1039,7 @@ Avance: 325 controles totales; 10 aprobados; 102 en progreso; 213 pendientes; 0 
   - Evidencia: V147: puerta inicial V146 26/28 por crítico DOMPurify; corregido en 3.4.17, gate final 28/28, npm audit full/prod cero.
   - Evidencia: V148: Vite build, CSS crítico y npm audit completo y producción =0, puerta estricta 28/28.
   - Evidencia: V149: build, verificadores, CSS y npm audit completo y producción aprobados; cero vulnerabilidades según reportes.
+  - Evidencia: V150: 28/28 gates, build, CSS y npm audit producción/completo = 0.
 - [ ] 32.08 · Conteos antes/después — EN_PROGRESO
   - Evidencia: AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: Tras V95: 15 políticas, 0 bypass is_app_admin y 0 residuos en 5 catálogos
   - Evidencia: AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96: mis_datos mantiene 1 fila real, 0 fixtures y 0 admin bypass en 3 políticas
@@ -1059,6 +1075,7 @@ Avance: 325 controles totales; 10 aprobados; 102 en progreso; 213 pendientes; 0 
   - Evidencia: V147: sin frontend desplegado ni impresión física. Prueba transaccional de dos sesiones real sigue pendiente.
   - Evidencia: V148: backend corregido, frontend sin desplegar; concurrente de dos backends independiente pendiente, no certificado.
   - Evidencia: V149: endurecimiento exclusivamente local, sin despliegue frontend, sin ensayo de papel ni concurrencia independiente.
+  - Evidencia: V150: backend desplegado; frontend V149 aún no desplegado. Concurrencia física y 114 RPC pendientes no certificados.
 - [x] 32.09 · Confirmar producción Ready — APROBADO
   - Evidencia: AUDITORIA_CIERRE_TECNICO_V91_2026-10-21.md: Despliegue Vercel de código V91 Ready; nota: app no certificada integralmente
 - [ ] 32.10 · Dictamen con limitaciones verificadas — EN_PROGRESO
