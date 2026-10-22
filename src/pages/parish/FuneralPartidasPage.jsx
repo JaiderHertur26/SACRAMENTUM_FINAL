@@ -139,6 +139,14 @@ const FuneralPartidasPage = () => {
       note.print_policy !== 'internal' && (printNotes || note.print_policy === 'required')
     );
 
+    const printHtmlSnapshot = buildFuneralPartidaHtml({
+      record: selected,
+      notes: printableNotes,
+      printNotes: printableNotes.length > 0,
+      institution
+    });
+    const expectedStatus = selected.status || '';
+
     const popup = window.open('', '_blank', 'width=900,height=1100');
     if (!popup) {
       toast({
@@ -155,6 +163,7 @@ const FuneralPartidasPage = () => {
       sacramentType: 'exequias',
       sacramentId: selected.id,
       documentKind: 'partida',
+      expectedStatus,
       selectedNoteKeys: printableNotes.map(note => String(note.id)),
       includedNotes: printableNotes.map(note => ({ id: String(note.id), label: note.print_label || note.note_type || 'Nota marginal', content: note.content || '', policy: note.print_policy || 'optional' })),
       metadata: {
@@ -173,12 +182,7 @@ const FuneralPartidasPage = () => {
       return;
     }
 
-    popup.document.write(buildFuneralPartidaHtml({
-      record: selected,
-      notes: printableNotes,
-      printNotes: printableNotes.length > 0,
-      institution
-    }));
+    popup.document.write(printHtmlSnapshot);
     popup.document.close();
   };
 
@@ -198,6 +202,13 @@ const FuneralPartidasPage = () => {
       return;
     }
 
+    const printHtmlSnapshot = buildFuneralConstanciaHtml({
+      record,
+      institution,
+      notes: requiredSlipNotes
+    });
+    const expectedStatus = record.status || '';
+
     const popup = window.open('', '_blank', 'width=850,height=900');
     if (!popup) {
       toast({
@@ -214,6 +225,7 @@ const FuneralPartidasPage = () => {
       sacramentType: 'exequias',
       sacramentId: record.id,
       documentKind: 'constancia',
+      expectedStatus,
       selectedNoteKeys: requiredSlipNotes.map(note => String(note.id)),
       includedNotes: requiredSlipNotes.map(note => ({ id: String(note.id), label: note.print_label || note.note_type || 'Nota marginal', content: note.content || '', policy: note.print_policy || 'optional' })),
       metadata: {
@@ -232,11 +244,7 @@ const FuneralPartidasPage = () => {
       return;
     }
 
-    popup.document.write(buildFuneralConstanciaHtml({
-      record,
-      institution,
-      notes: requiredSlipNotes
-    }));
+    popup.document.write(printHtmlSnapshot);
     popup.document.close();
   };
 

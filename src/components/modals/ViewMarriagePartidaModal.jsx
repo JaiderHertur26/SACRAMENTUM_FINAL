@@ -51,8 +51,15 @@ const ViewMarriagePartidaModal = ({ isOpen, onClose, partida, auxiliaryData }) =
     const handlePrint = async () => {
         const printContent = printComponentRef.current;
         if (!printContent) return;
+        // Inmovilizar HTML y selección antes de esperar a la base de datos.
+        const htmlSnapshot = printContent.innerHTML;
+        const selectedNoteSnapshot = [...selectedNotes].map(String);
+        const includedNoteSnapshot = marginalNotes
+            .filter(n => n.print_policy !== 'internal' && (n.print_policy === 'required' || selectedNotes.includes(n.id)))
+            .map(n => ({ id: String(n.id), label: n.print_label || n.note_type, content: n.content, policy: n.print_policy }));
+        if (!htmlSnapshot.trim()) return;
         try {
-            await registerRegistryPrint({ parishId, sacramentType: 'matrimonio', sacramentId: partida.id, selectedNoteKeys: selectedNotes, includedNotes: marginalNotes.filter(n => n.print_policy !== 'internal' && (n.print_policy === 'required' || selectedNotes.includes(n.id))).map(n => ({ id: String(n.id), label: n.print_label || n.note_type, content: n.content, policy: n.print_policy })) });
+            await registerRegistryPrint({ parishId, sacramentType: 'matrimonio', sacramentId: partida.id, selectedNoteKeys: selectedNoteSnapshot, includedNotes: includedNoteSnapshot, expectedStatus: partida.status || partida.estado || '' });
         } catch (error) {
             toast({
                 title: 'Impresión detenida: falta constancia de auditoría',
@@ -79,7 +86,7 @@ const ViewMarriagePartidaModal = ({ isOpen, onClose, partida, auxiliaryData }) =
         styles.forEach((style) => { doc.write(style.outerHTML); });
 
         doc.write('</head><body class="bg-white" style="margin: 0; padding: 0;">');
-        doc.write(printContent.innerHTML);
+        doc.write(htmlSnapshot);
         doc.write('</body></html>');
         doc.close();
 

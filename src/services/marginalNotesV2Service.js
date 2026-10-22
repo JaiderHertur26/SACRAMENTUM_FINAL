@@ -1,5 +1,6 @@
 import { supabase } from '@/lib/supabaseClient';
 import { getLocalDateISO } from '@/utils/localDate';
+import { verifyRegistryPrintReceipt } from '@/utils/registryPrintReceipt';
 
 const replaceAll = (text, variables={}) => Object.entries(variables).reduce((acc,[key,value]) => {
   const safe = value == null || value === '' ? '---' : String(value);
@@ -134,7 +135,7 @@ export async function saveMarginalTemplateVersion({
   return data;
 }
 
-export async function registerRegistryPrint({ parishId, sacramentType, sacramentId, documentKind='partida', selectedNoteKeys=[], includedNotes=[], metadata={} }) {
+export async function registerRegistryPrint({ parishId, sacramentType, sacramentId, documentKind='partida', selectedNoteKeys=[], includedNotes=[], metadata={}, expectedStatus='' }) {
   if (!parishId || !sacramentId) throw new Error('No se puede imprimir sin identificar parroquia y partida para la auditoría');
   const { data, error } = await supabase.rpc('register_registry_print', {
     p_parish_id: parishId,
@@ -146,7 +147,14 @@ export async function registerRegistryPrint({ parishId, sacramentType, sacrament
     p_metadata: metadata,
   });
   if (error) throw error;
-  return data;
+  if (!data) throw new Error('El servidor no devolvió el identificador de solicitud de impresión');
+  const { data: receipt, error: receiptError } = await supabase
+    .from('registry_print_events')
+    .select('id, parish_id, sacrament_type, sacrament_id, document_kind, included_notes, metadata')
+    .eq('id', data)
+    .single();
+  if (receiptError) throw receiptError;
+  return verifyRegistryPrintReceipt({ receipt, parishId, sacramentType, sacramentId, documentKind, includedNotes, expectedStatus });
 }
 
 export async function saveDocumentTemplateVersion({ code, name, category='document', templateText, scopeType='diocese', dioceseId=null, parishId=null, metadata={} }) {
