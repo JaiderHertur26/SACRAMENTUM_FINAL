@@ -195,9 +195,11 @@ Avance: 325 controles totales; 9 aprobados; 59 en progreso; 256 pendientes; 1 fa
 - [ ] 12.02 · Número y fecha únicos — PENDIENTE
 - [ ] 12.03 · Concepto jurídico compatible — EN_PROGRESO
   - Evidencia: AUDITORIA_CONCEPTOS_DEC_REGLAS_V98_2026-10-21.md: Conceptos de corrección/archivo protegidos por ámbito y fuente; compatibilidad jurídica total pendiente
+  - Evidencia: AUDITORIA_NULIDAD_VINCULOS_BAUTISMO_V105_2026-10-21.md: V105: nulidad matrimonial con cotejo de identidad y coordenadas de Bautismos, sólo evidencias ficticias; tribunal real pendiente
 - [ ] 12.04 · Corrección afecta original — PENDIENTE
 - [ ] 12.05 · Reposición crea supletoria — EN_PROGRESO
   - Evidencia: AUDITORIA_DECRETOS_MATRIMONIO_EXEQUIAS_V104_2026-10-21.md: V104: reposiciones supletorias ficticias Exequias/Matrimonio creadas y revertidas con Cancillería
+  - Evidencia: AUDITORIA_NULIDAD_VINCULOS_BAUTISMO_V105_2026-10-21.md: V105: la nulidad con dos Bautismos verificados genera nota local y aviso remoto pendiente, sin tocar Bautismo ajeno
 - [ ] 12.06 · Documental no afecta partida — PENDIENTE
 - [ ] 12.07 · Aviso a parroquia — PENDIENTE
 - [ ] 12.08 · Archivo único en dos roles — PENDIENTE
@@ -214,6 +216,7 @@ Avance: 325 controles totales; 9 aprobados; 59 en progreso; 256 pendientes; 1 fa
   - Evidencia: AUDITORIA_CONCEPTOS_DEC_REGLAS_V98_2026-10-21.md: V98 prohíbe fingir nueva importación con INSERT directo fuente legacy_catalog; reimportación E2E pendiente
 - [ ] 13.03 · Parroquia y diócesis exactas — EN_PROGRESO
   - Evidencia: AUDITORIA_CONCEPTOS_DEC_REGLAS_V98_2026-10-21.md: V97 rechaza concepto nuevo y traslado de existente a diócesis ajena
+  - Evidencia: AUDITORIA_NULIDAD_VINCULOS_BAUTISMO_V105_2026-10-21.md: V105: nota o notificación sólo tras cotejar Bautismo con contrayente, libro, folio y número
 - [ ] 13.04 · Colisiones entre lotes — PENDIENTE
 - [ ] 13.05 · Par original/supletoria — PENDIENTE
 - [ ] 13.06 · No aplicar efectos dos veces — PENDIENTE
@@ -427,6 +430,7 @@ Avance: 325 controles totales; 9 aprobados; 59 en progreso; 256 pendientes; 1 fa
   - Evidencia: AUDITORIA_AUTORIDAD_MIGRACION_V101_2026-10-21.md: V100/101: Admin General ya no gestiona ni consulta lotes; creación no vinculada denegada tras parche
   - Evidencia: AUDITORIA_DOCUMENTOS_OFICIALES_V102_2026-10-21.md: V102: emisión, anulación y plantillas ajenas de Admin General reproducidas y bloqueadas; tres actores operativos mantienen funciones
   - Evidencia: AUDITORIA_DECRETOS_MATRIMONIO_EXEQUIAS_V104_2026-10-21.md: V104: paso indebido de Admin General/Diócesis en 7 RPC eliminado con guarda Cancillería
+  - Evidencia: AUDITORIA_NULIDAD_VINCULOS_BAUTISMO_V105_2026-10-21.md: V105: falla de contaminación de Bautismo por enlace ajeno reproducida y corregida en RPC de Cancillería
 - [ ] 27.02 · Escalamiento horizontal — EN_PROGRESO
   - Evidencia: AUDITORIA_EXP_DEPENDENCIAS_Y_RLS_V91.md: Segunda diócesis ficticia y Bautismo ajeno negados para cuatro roles en transacción ROLLBACK
   - Evidencia: AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: V95 escalamiento horizontal: 5 INSERT a parroquia ajena rechazados por RLS
@@ -442,6 +446,7 @@ Avance: 325 controles totales; 9 aprobados; 59 en progreso; 256 pendientes; 1 fa
   - Evidencia: AUDITORIA_DOCUMENTOS_OFICIALES_V102_2026-10-21.md: V102: llamadas RPC directas de Administrador General rechazadas sin alterar documentos; rol parroquial diocesano excluido
   - Evidencia: AUDITORIA_RECONCILIACIONES_PRIVILEGIADAS_V103_2026-10-21.md: V103: se revocaron dos RPC internas de reconciliación histórica; no constan clientes web dependientes
   - Evidencia: AUDITORIA_DECRETOS_MATRIMONIO_EXEQUIAS_V104_2026-10-21.md: V104: 28 ensayos prepatch; 3 ensayos postpatch acotados; matriz masiva bloqueada y no contada
+  - Evidencia: AUDITORIA_NULIDAD_VINCULOS_BAUTISMO_V105_2026-10-21.md: V105: el cotejo de identidad se ejecuta en SQL antes de escribir notas o notificaciones
 - [ ] 27.05 · SQL injection — PENDIENTE
 - [ ] 27.06 · XSS — PENDIENTE
 - [ ] 27.07 · Fuga JWT — PENDIENTE
@@ -531,6 +536,7 @@ Avance: 325 controles totales; 9 aprobados; 59 en progreso; 256 pendientes; 1 fa
   - Evidencia: AUDITORIA_DOCUMENTOS_OFICIALES_V102_2026-10-21.md: V102: 4 pruebas de denegación y matriz de 3 roles con documentos/plantillas ficticias y resultados documentados
   - Evidencia: AUDITORIA_RECONCILIACIONES_PRIVILEGIADAS_V103_2026-10-21.md: V103: dos EXECUTE revocados y servicio conservado, casos contrastados por pg_proc
   - Evidencia: AUDITORIA_DECRETOS_MATRIMONIO_EXEQUIAS_V104_2026-10-21.md: V104: matrices 28 prepatch y 3 postpatch de llamada real; dos ciclos completos ficticios create/reverse
+  - Evidencia: AUDITORIA_NULIDAD_VINCULOS_BAUTISMO_V105_2026-10-21.md: V105: matrices reversibles con vínculo ajeno, positivo local/remoto, duplicados y expediente incompleto
 - [ ] 32.03 · Guardar resultado exacto — EN_PROGRESO
   - Evidencia: AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: Matriz SQL positiva y negativa validada en Supabase; 65 decisiones verificadas
   - Evidencia: AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96 UPDATE 4 casos y INSERT/DELETE 8 casos reproducidos con resultado esperado
@@ -538,6 +544,7 @@ Avance: 325 controles totales; 9 aprobados; 59 en progreso; 256 pendientes; 1 fa
   - Evidencia: AUDITORIA_DOCUMENTOS_OFICIALES_V102_2026-10-21.md: V102: emisión y anulación generan eventos correctos; intentos de admin no registran anulación irregular
   - Evidencia: AUDITORIA_RECONCILIACIONES_PRIVILEGIADAS_V103_2026-10-21.md: V103: comprobación SQL authenticated=false, anon=false, service_role=true para cada RPC
   - Evidencia: AUDITORIA_DECRETOS_MATRIMONIO_EXEQUIAS_V104_2026-10-21.md: V104: resultados exactos documentados y postcondiciones de cero residuos
+  - Evidencia: AUDITORIA_NULIDAD_VINCULOS_BAUTISMO_V105_2026-10-21.md: V105: bajo ROLLBACK la nulidad inválida no altera Matrimonio y no crea notas; la válida crea nota local y aviso remoto
 - [ ] 32.04 · Guardar capturas — PENDIENTE
 - [ ] 32.05 · Rastrear hallazgos P0/P1/P2 — EN_PROGRESO
   - Evidencia: AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md: Emisión temporal 1 documento y 1 log; cero residuos tras ROLLBACK en muestra controlada
@@ -548,6 +555,7 @@ Avance: 325 controles totales; 9 aprobados; 59 en progreso; 256 pendientes; 1 fa
   - Evidencia: AUDITORIA_DOCUMENTOS_OFICIALES_V102_2026-10-21.md: V102: fallos P1 de segregación de documentos/plantillas corregidos en tres RPC
   - Evidencia: AUDITORIA_RECONCILIACIONES_PRIVILEGIADAS_V103_2026-10-21.md: V103: dos superficies de modificación histórica global preventiva cerradas sin ejecutar conciliaciones reales
   - Evidencia: AUDITORIA_DECRETOS_MATRIMONIO_EXEQUIAS_V104_2026-10-21.md: V104: hallazgo permisos excesivos de decretos Matrimonios/Exequias corregido sin alteraciones reales
+  - Evidencia: AUDITORIA_NULIDAD_VINCULOS_BAUTISMO_V105_2026-10-21.md: V105: integridad de vínculo Bautismo-Matrimonio reforzada, cotejo jurídico total permanece pendiente
 - [ ] 32.06 · Corregir y repetir — EN_PROGRESO
   - Evidencia: AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: V95 reprodujo fallo antes y verificó reparación tras aplicar migración
   - Evidencia: AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96 corrige hallazgo de identidad institucional y repite prueba antes/después
@@ -556,6 +564,7 @@ Avance: 325 controles totales; 9 aprobados; 59 en progreso; 256 pendientes; 1 fa
   - Evidencia: AUDITORIA_DOCUMENTOS_OFICIALES_V102_2026-10-21.md: V102: pruebas SQL antes/después en transacción ROLLBACK; emisión legítima preservada
   - Evidencia: AUDITORIA_RECONCILIACIONES_PRIVILEGIADAS_V103_2026-10-21.md: V103: control antes/después de grants y revisión de consumidores
   - Evidencia: AUDITORIA_DECRETOS_MATRIMONIO_EXEQUIAS_V104_2026-10-21.md: V104: comportamiento antes/después y dos ciclos E2E reversibles de Cancillería
+  - Evidencia: AUDITORIA_NULIDAD_VINCULOS_BAUTISMO_V105_2026-10-21.md: V105: escenario de tercero ajeno antes/después, prueba de coordenadas faltantes y repetición
 - [ ] 32.07 · Regresión completa — EN_PROGRESO
   - Evidencia: AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md: Regresión 211 pruebas sintéticas, 23 verificadores, build OK; quedan fallas de dependencias
   - Evidencia: AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: 219 pruebas sintéticas, 23 verificadores y build aprobados; advertencias HIGH de paquetes aún abiertas
@@ -566,6 +575,7 @@ Avance: 325 controles totales; 9 aprobados; 59 en progreso; 256 pendientes; 1 fa
   - Evidencia: AUDITORIA_DOCUMENTOS_OFICIALES_V102_2026-10-21.md: V102: 294 sintéticas y 23 verificadores, build correcto; cinco HIGH impiden aprobar seguridad
   - Evidencia: AUDITORIA_RECONCILIACIONES_PRIVILEGIADAS_V103_2026-10-21.md: V103: 300 pruebas sintéticas + 23 verificadores + build OK; 5 HIGH en dependencias mantienen fallo de gate
   - Evidencia: AUDITORIA_DECRETOS_MATRIMONIO_EXEQUIAS_V104_2026-10-21.md: V104: 313/313 sintéticas, 23 verificadores, build; npm audit cinco HIGH sigue fallido
+  - Evidencia: AUDITORIA_NULIDAD_VINCULOS_BAUTISMO_V105_2026-10-21.md: V105: 325 pruebas sintéticas y 23 verificadores, build correcto; cinco HIGH de npm audit abiertos
 - [ ] 32.08 · Conteos antes/después — EN_PROGRESO
   - Evidencia: AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: Tras V95: 15 políticas, 0 bypass is_app_admin y 0 residuos en 5 catálogos
   - Evidencia: AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96: mis_datos mantiene 1 fila real, 0 fixtures y 0 admin bypass en 3 políticas
@@ -574,6 +584,7 @@ Avance: 325 controles totales; 9 aprobados; 59 en progreso; 256 pendientes; 1 fa
   - Evidencia: AUDITORIA_DOCUMENTOS_OFICIALES_V102_2026-10-21.md: V102: 0 documentos, plantillas y auditorías QA tras rollback, 3 definers conservados
   - Evidencia: AUDITORIA_RECONCILIACIONES_PRIVILEGIADAS_V103_2026-10-21.md: V103: ninguna tabla histórica modificada por REVOKE; definición y propietario intactos
   - Evidencia: AUDITORIA_DECRETOS_MATRIMONIO_EXEQUIAS_V104_2026-10-21.md: V104: 0 decretos, matrimonios, funerales, notas y auditorías ficticias tras ROLLBACK
+  - Evidencia: AUDITORIA_NULIDAD_VINCULOS_BAUTISMO_V105_2026-10-21.md: V105: cero residuos de QA-V105 en Bautismos, Matrimonios, decretos, notificaciones, notas y auditoría
 - [x] 32.09 · Confirmar producción Ready — APROBADO
   - Evidencia: AUDITORIA_CIERRE_TECNICO_V91_2026-10-21.md: Despliegue Vercel de código V91 Ready; nota: app no certificada integralmente
 - [ ] 32.10 · Dictamen con limitaciones verificadas — PENDIENTE

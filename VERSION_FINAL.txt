@@ -1,20 +1,26 @@
-SACRAMENTUM FINAL · V104 · 2026-10-21
+SACRAMENTUM FINAL · V105 · 21/10/2026 (Colombia)
 
-AUDITORÍA DE DECRETOS MATRIMONIALES Y EXEQUIAS
-- Las siete RPC de corrección, reposición, nulidad y reversión de Matrimonios/Exequias quedan reservadas a Cancillería de la misma diócesis.
-- Antes de corregir: 28 casos de autorización con datos inválidos mostraron paso indebido de Administrador General y Diócesis a verificaciones de datos.
-- Después: 7/7 definiciones de funciones con guardia Cancillería y sin excepción admin_general, conservando comprobación jurisdiccional.
-- Tres pruebas reales aisladas postparche: Administrador General y Diócesis denegados; Cancillería superó autorización.
-- Una matriz masiva postparche fue bloqueada por controles del entorno y queda explícitamente sin contabilizar.
-- Dos ciclos E2E reversibles exitosos con Cancillería: reposición y reversión de Exequias y Matrimonios.
-- Cero partidas, decretos, notas y auditoría QA persistidos tras ROLLBACK.
-- 13 verificaciones sintéticas adicionales de regresión; total esperado 313 más 23 verificadores históricos.
+AUDITORÍA DE NULIDAD MATRIMONIAL Y PARTIDAS BAUTISMALES
 
-SEGURIDAD PENDIENTE
-- 5 alertas HIGH de dependencias (Tailwind 3 y transitivas); actualización mayor Tailwind 4 requiere ensayo visual aislado.
-- Demás funciones privilegiadas, flujos Tribunal, correcciones, concurrencia, respaldos, pantallas autenticadas.
-- Auditoría maestra 325 controles aún abierta; no se declara certificación final.
+Hallazgo crítico V105
+- Antes: Cancillería podía asociar un Bautismo de una persona ajena a una sentencia ficticia de nulidad matrimonial: se agregaba una nota marginal irregular.
+- Se reprodujo con matrimonio y Bautismo ficticios dentro de BEGIN/ROLLBACK, sin tocar partidas reales.
+- Desde V105, la vinculación automática verifica nombres, apellidos y libro/folio/número del Bautismo contra los datos del contrayente en la partida matrimonial.
+- Se impiden arrays con más de dos partidas, duplicados y coordenadas incompletas.
+- Si no existe vínculo verificable, no se puede afectar automáticamente el Bautismo; la nulidad del matrimonio sin enlaces sigue permitida para evitar propagación irregular.
+- Prueba positiva con dos Bautismos ficticios: uno local recibió nota marginal y uno de otra parroquia generó notificación pendiente con destinatario.
+- Cero registros ficticios en Bautismos, Matrimonios, decretos, notas, notificaciones y auditoría después de ROLLBACK.
 
-EVIDENCIA
-AUDITORIA_DECRETOS_MATRIMONIO_EXEQUIAS_V104_2026-10-21.md
+CALIDAD
+- 12 nuevas pruebas de regresión sintética; 325 pruebas sintéticas acumuladas previstas, diferentes de los 325 controles de la auditoría maestra.
+- Se mantienen 23 verificadores históricos y build de producción.
+- Cinco alertas HIGH de dependencias sin resolver.
+
+PENDIENTES
+- Sentencias verdaderas del Tribunal, conciliación de expedientes con campos históricos incompletos, notificaciones aceptadas y notas de recepción.
+- Matrices de doble diócesis, pruebas visuales autenticadas, concurrencia y restauración de respaldo.
+- La auditoría integral de 325 controles todavía NO está completa.
+
+INFORME
+AUDITORIA_NULIDAD_VINCULOS_BAUTISMO_V105_2026-10-21.md
 AUDITORIA_MAESTRA_SACRAMENTUM_V90.md
