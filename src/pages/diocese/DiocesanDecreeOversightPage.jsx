@@ -4,6 +4,7 @@ import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/components/ui/use-toast';
 import { submitCourtReceiptCheck } from '@/services/nullityReceiptDualControl';
 import CourtReceiptInstitutionalPanel from '@/components/chancery/CourtReceiptInstitutionalPanel';
+import NullityInstitutionalPreflightPanel from '@/components/chancery/NullityInstitutionalPreflightPanel';
 import { supabase } from '@/lib/supabaseClient';
 import { listDecrees } from '@/services/decreeRegistryService';
 import { decreeCategory, decreeTypeLabel, decreeEffect, isHistoricalDecree } from '@/utils/decreeArchiveModel.mjs';
@@ -147,6 +148,7 @@ export default function DiocesanDecreeOversightPage() {
             </div>
           </div>
         </header>
+        <NullityInstitutionalPreflightPanel />
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {[
             ['Decretos archivados',counters.total],
