@@ -38,7 +38,8 @@ exec('pruebas-sinteticas',node,['--test',
  'scripts/test-legacy-role-scope-v100.mjs',
  'scripts/test-legacy-admin-unscoped-v101.mjs',
  'scripts/test-document-authority-v102.mjs',
- 'scripts/test-historical-maintenance-privileges-v103.mjs']);
+ 'scripts/test-historical-maintenance-privileges-v103.mjs',
+ 'scripts/test-decree-authority-v104.mjs']);
 const scripts=fs.readdirSync(path.join(root,'scripts')).filter(x=>/^verify-.*\.mjs$/.test(x)).sort();
 for(const file of scripts)exec('legacy/'+file,node,['scripts/'+file]);
 const npmOnWindows=process.platform==='win32';

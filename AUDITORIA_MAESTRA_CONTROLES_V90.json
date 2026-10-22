@@ -1153,9 +1153,10 @@
       "criterion": "Competencia exclusiva de Cancillería",
       "status": "EN_PROGRESO",
       "evidence": [
-        "AUDITORIA_CONCEPTOS_DEC_REGLAS_V98_2026-10-21.md: Cancillería única con INSERT/UPDATE de conceptos; otros roles bloqueados, todavía pendientes todos los RPC de emisión"
+        "AUDITORIA_CONCEPTOS_DEC_REGLAS_V98_2026-10-21.md: Cancillería única con INSERT/UPDATE de conceptos; otros roles bloqueados, todavía pendientes todos los RPC de emisión",
+        "AUDITORIA_DECRETOS_MATRIMONIO_EXEQUIAS_V104_2026-10-21.md: V104: corrección/reposición/nulidad y reversión de Matrimonios/Exequias solo Cancillería; siete RPC revisadas, resto pendiente"
       ],
-      "updated_at": "2026-10-21T20:15:09.423Z"
+      "updated_at": "2026-10-22T00:14:44.971Z"
     },
     {
       "id": "12.02",
@@ -1195,9 +1196,11 @@
       "area": "Decretos nuevos en Cancillería",
       "priority": "P0",
       "criterion": "Reposición crea supletoria",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "AUDITORIA_DECRETOS_MATRIMONIO_EXEQUIAS_V104_2026-10-21.md: V104: reposiciones supletorias ficticias Exequias/Matrimonio creadas y revertidas con Cancillería"
+      ],
+      "updated_at": "2026-10-22T00:14:45.313Z"
     },
     {
       "id": "12.06",
@@ -1245,9 +1248,11 @@
       "area": "Decretos nuevos en Cancillería",
       "priority": "P0",
       "criterion": "Reversión autorizada",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "AUDITORIA_DECRETOS_MATRIMONIO_EXEQUIAS_V104_2026-10-21.md: V104: reversión válida de ambas reposiciones y estados reversed verificados, otros sacramentos pendientes"
+      ],
+      "updated_at": "2026-10-22T00:14:45.537Z"
     },
     {
       "id": "12.11",
@@ -2767,9 +2772,10 @@
         "AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96 vulnerabilidad de escalamiento vertical en mis_datos reproducida y corregida",
         "AUDITORIA_CONCEPTOS_DEC_REGLAS_V98_2026-10-21.md: V97 admin_general/diocese denegados para catálogo de decretos, Cancillería permitida",
         "AUDITORIA_AUTORIDAD_MIGRACION_V101_2026-10-21.md: V100/101: Admin General ya no gestiona ni consulta lotes; creación no vinculada denegada tras parche",
-        "AUDITORIA_DOCUMENTOS_OFICIALES_V102_2026-10-21.md: V102: emisión, anulación y plantillas ajenas de Admin General reproducidas y bloqueadas; tres actores operativos mantienen funciones"
+        "AUDITORIA_DOCUMENTOS_OFICIALES_V102_2026-10-21.md: V102: emisión, anulación y plantillas ajenas de Admin General reproducidas y bloqueadas; tres actores operativos mantienen funciones",
+        "AUDITORIA_DECRETOS_MATRIMONIO_EXEQUIAS_V104_2026-10-21.md: V104: paso indebido de Admin General/Diócesis en 7 RPC eliminado con guarda Cancillería"
       ],
-      "updated_at": "2026-10-21T21:50:46.308Z"
+      "updated_at": "2026-10-22T00:14:45.653Z"
     },
     {
       "id": "27.02",
@@ -2811,9 +2817,10 @@
         "AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md: Asignador interno no ejecutable directamente (42501), con ruta institucional auditada operativa",
         "AUDITORIA_AUTORIDAD_MIGRACION_V101_2026-10-21.md: V101: bypass por RPC create_legacy_import_batch sin scope reproducido y cerrado",
         "AUDITORIA_DOCUMENTOS_OFICIALES_V102_2026-10-21.md: V102: llamadas RPC directas de Administrador General rechazadas sin alterar documentos; rol parroquial diocesano excluido",
-        "AUDITORIA_RECONCILIACIONES_PRIVILEGIADAS_V103_2026-10-21.md: V103: se revocaron dos RPC internas de reconciliación histórica; no constan clientes web dependientes"
+        "AUDITORIA_RECONCILIACIONES_PRIVILEGIADAS_V103_2026-10-21.md: V103: se revocaron dos RPC internas de reconciliación histórica; no constan clientes web dependientes",
+        "AUDITORIA_DECRETOS_MATRIMONIO_EXEQUIAS_V104_2026-10-21.md: V104: 28 ensayos prepatch; 3 ensayos postpatch acotados; matriz masiva bloqueada y no contada"
       ],
-      "updated_at": "2026-10-21T21:57:11.342Z"
+      "updated_at": "2026-10-22T00:14:45.786Z"
     },
     {
       "id": "27.05",
@@ -2897,9 +2904,10 @@
         "AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md: V92 revocó ejecución externa de una SECURITY DEFINER vulnerable; matriz restante pendiente",
         "AUDITORIA_AUTORIDAD_MIGRACION_V101_2026-10-21.md: V99-101: autorizar RPC de importación con ámbitos, quedan numerosas funciones SECURITY DEFINER por auditar",
         "AUDITORIA_DOCUMENTOS_OFICIALES_V102_2026-10-21.md: V102: 3 funciones SECURITY DEFINER revalidadas por ámbito; permanece revisión individual de las demás RPC",
-        "AUDITORIA_RECONCILIACIONES_PRIVILEGIADAS_V103_2026-10-21.md: V103: 2 funciones SECURITY DEFINER de mantenimiento histórico ya no ejecutables por authenticated; inventario descendió 128 a 126"
+        "AUDITORIA_RECONCILIACIONES_PRIVILEGIADAS_V103_2026-10-21.md: V103: 2 funciones SECURITY DEFINER de mantenimiento histórico ya no ejecutables por authenticated; inventario descendió 128 a 126",
+        "AUDITORIA_DECRETOS_MATRIMONIO_EXEQUIAS_V104_2026-10-21.md: V104: 7 SECURITY DEFINER de decretos de matrimonios/exequias con rol Cancillería y alcance diocesano"
       ],
-      "updated_at": "2026-10-21T21:57:10.913Z"
+      "updated_at": "2026-10-22T00:14:45.886Z"
     },
     {
       "id": "28.01",
@@ -3335,9 +3343,10 @@
         "AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96 matriz 12 resultados por cuatro actores y tres tipos de escritura",
         "AUDITORIA_AUTORIDAD_MIGRACION_V101_2026-10-21.md: V101: matriz de creación 4 casos y flujo Parroquia create/stage/apply/denegación Admin con resultados esperados",
         "AUDITORIA_DOCUMENTOS_OFICIALES_V102_2026-10-21.md: V102: 4 pruebas de denegación y matriz de 3 roles con documentos/plantillas ficticias y resultados documentados",
-        "AUDITORIA_RECONCILIACIONES_PRIVILEGIADAS_V103_2026-10-21.md: V103: dos EXECUTE revocados y servicio conservado, casos contrastados por pg_proc"
+        "AUDITORIA_RECONCILIACIONES_PRIVILEGIADAS_V103_2026-10-21.md: V103: dos EXECUTE revocados y servicio conservado, casos contrastados por pg_proc",
+        "AUDITORIA_DECRETOS_MATRIMONIO_EXEQUIAS_V104_2026-10-21.md: V104: matrices 28 prepatch y 3 postpatch de llamada real; dos ciclos completos ficticios create/reverse"
       ],
-      "updated_at": "2026-10-21T21:57:11.676Z"
+      "updated_at": "2026-10-22T00:14:46.053Z"
     },
     {
       "id": "32.03",
@@ -3351,9 +3360,10 @@
         "AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96 UPDATE 4 casos y INSERT/DELETE 8 casos reproducidos con resultado esperado",
         "AUDITORIA_AUTORIDAD_MIGRACION_V101_2026-10-21.md: V101: comprobaciones SQL contra actores reales autenticados y referenciadas en informe",
         "AUDITORIA_DOCUMENTOS_OFICIALES_V102_2026-10-21.md: V102: emisión y anulación generan eventos correctos; intentos de admin no registran anulación irregular",
-        "AUDITORIA_RECONCILIACIONES_PRIVILEGIADAS_V103_2026-10-21.md: V103: comprobación SQL authenticated=false, anon=false, service_role=true para cada RPC"
+        "AUDITORIA_RECONCILIACIONES_PRIVILEGIADAS_V103_2026-10-21.md: V103: comprobación SQL authenticated=false, anon=false, service_role=true para cada RPC",
+        "AUDITORIA_DECRETOS_MATRIMONIO_EXEQUIAS_V104_2026-10-21.md: V104: resultados exactos documentados y postcondiciones de cero residuos"
       ],
-      "updated_at": "2026-10-21T21:57:12.013Z"
+      "updated_at": "2026-10-22T00:14:46.168Z"
     },
     {
       "id": "32.04",
@@ -3379,9 +3389,10 @@
         "AUDITORIA_CONCEPTOS_DEC_REGLAS_V98_2026-10-21.md: Hallazgos V97/V98 reproducidos sin mutaciones permanentes y corregidos",
         "AUDITORIA_AUTORIDAD_MIGRACION_V101_2026-10-21.md: V99-101: tres hallazgos de importación reproducidos/corregidos sin mutar datos reales",
         "AUDITORIA_DOCUMENTOS_OFICIALES_V102_2026-10-21.md: V102: fallos P1 de segregación de documentos/plantillas corregidos en tres RPC",
-        "AUDITORIA_RECONCILIACIONES_PRIVILEGIADAS_V103_2026-10-21.md: V103: dos superficies de modificación histórica global preventiva cerradas sin ejecutar conciliaciones reales"
+        "AUDITORIA_RECONCILIACIONES_PRIVILEGIADAS_V103_2026-10-21.md: V103: dos superficies de modificación histórica global preventiva cerradas sin ejecutar conciliaciones reales",
+        "AUDITORIA_DECRETOS_MATRIMONIO_EXEQUIAS_V104_2026-10-21.md: V104: hallazgo permisos excesivos de decretos Matrimonios/Exequias corregido sin alteraciones reales"
       ],
-      "updated_at": "2026-10-21T21:57:12.326Z"
+      "updated_at": "2026-10-22T00:14:46.302Z"
     },
     {
       "id": "32.06",
@@ -3396,9 +3407,10 @@
         "AUDITORIA_CONCEPTOS_DEC_REGLAS_V98_2026-10-21.md: Pruebas antes/después V97 8 roles, V98 6 casos, ROLLBACK; regresión estática añadida",
         "AUDITORIA_AUTORIDAD_MIGRACION_V101_2026-10-21.md: V101: regresión comparativa de rol Admin pre/post y ruta de importación propietaria positiva",
         "AUDITORIA_DOCUMENTOS_OFICIALES_V102_2026-10-21.md: V102: pruebas SQL antes/después en transacción ROLLBACK; emisión legítima preservada",
-        "AUDITORIA_RECONCILIACIONES_PRIVILEGIADAS_V103_2026-10-21.md: V103: control antes/después de grants y revisión de consumidores"
+        "AUDITORIA_RECONCILIACIONES_PRIVILEGIADAS_V103_2026-10-21.md: V103: control antes/después de grants y revisión de consumidores",
+        "AUDITORIA_DECRETOS_MATRIMONIO_EXEQUIAS_V104_2026-10-21.md: V104: comportamiento antes/después y dos ciclos E2E reversibles de Cancillería"
       ],
-      "updated_at": "2026-10-21T21:57:12.642Z"
+      "updated_at": "2026-10-22T00:14:46.423Z"
     },
     {
       "id": "32.07",
@@ -3415,9 +3427,10 @@
         "AUDITORIA_CONCEPTOS_DEC_REGLAS_V98_2026-10-21.md: V98 puerta de calidad 25/26: 264 sintéticas, 23 legacy, build; cinco HIGH dependencias siguen en FAIL",
         "AUDITORIA_AUTORIDAD_MIGRACION_V101_2026-10-21.md: V101: 284 tests sintéticos, 23 verificadores y build; puerta 25/26, npm HIGH 5 pendientes",
         "AUDITORIA_DOCUMENTOS_OFICIALES_V102_2026-10-21.md: V102: 294 sintéticas y 23 verificadores, build correcto; cinco HIGH impiden aprobar seguridad",
-        "AUDITORIA_RECONCILIACIONES_PRIVILEGIADAS_V103_2026-10-21.md: V103: 300 pruebas sintéticas + 23 verificadores + build OK; 5 HIGH en dependencias mantienen fallo de gate"
+        "AUDITORIA_RECONCILIACIONES_PRIVILEGIADAS_V103_2026-10-21.md: V103: 300 pruebas sintéticas + 23 verificadores + build OK; 5 HIGH en dependencias mantienen fallo de gate",
+        "AUDITORIA_DECRETOS_MATRIMONIO_EXEQUIAS_V104_2026-10-21.md: V104: 313/313 sintéticas, 23 verificadores, build; npm audit cinco HIGH sigue fallido"
       ],
-      "updated_at": "2026-10-21T21:57:12.792Z"
+      "updated_at": "2026-10-22T00:14:46.573Z"
     },
     {
       "id": "32.08",
@@ -3432,9 +3445,10 @@
         "AUDITORIA_CONCEPTOS_DEC_REGLAS_V98_2026-10-21.md: Postprueba 4 conceptos históricos intactos, 0 QA, 1 trigger, 0 bypass admin",
         "AUDITORIA_AUTORIDAD_MIGRACION_V101_2026-10-21.md: V101: 0 residuos sintéticos y cuenta real de lotes/filas/vínculos preservada en ensayos",
         "AUDITORIA_DOCUMENTOS_OFICIALES_V102_2026-10-21.md: V102: 0 documentos, plantillas y auditorías QA tras rollback, 3 definers conservados",
-        "AUDITORIA_RECONCILIACIONES_PRIVILEGIADAS_V103_2026-10-21.md: V103: ninguna tabla histórica modificada por REVOKE; definición y propietario intactos"
+        "AUDITORIA_RECONCILIACIONES_PRIVILEGIADAS_V103_2026-10-21.md: V103: ninguna tabla histórica modificada por REVOKE; definición y propietario intactos",
+        "AUDITORIA_DECRETOS_MATRIMONIO_EXEQUIAS_V104_2026-10-21.md: V104: 0 decretos, matrimonios, funerales, notas y auditorías ficticias tras ROLLBACK"
       ],
-      "updated_at": "2026-10-21T21:57:13.006Z"
+      "updated_at": "2026-10-22T00:14:46.702Z"
     },
     {
       "id": "32.09",

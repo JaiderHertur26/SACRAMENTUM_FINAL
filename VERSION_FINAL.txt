@@ -1,23 +1,20 @@
-SACRAMENTUM FINAL · V103 · 2026-10-21
+SACRAMENTUM FINAL · V104 · 2026-10-21
 
-V102 — AUTORIDAD DOCUMENTAL
-- Corregidos tres abusos reproducidos: emisión, anulación y plantillas ajenas desde Administrador General.
-- Parroquia, Diócesis y Cancillería mantienen operaciones de su jurisdicción; Admin General conserva únicamente plantillas system.
-- Documentos, consecutivos, plantillas y auditorías QA = 0 tras ROLLBACK.
-- Biblioteca documental ajustada para no ofrecer edición de versiones fuera de la competencia del rol.
+AUDITORÍA DE DECRETOS MATRIMONIALES Y EXEQUIAS
+- Las siete RPC de corrección, reposición, nulidad y reversión de Matrimonios/Exequias quedan reservadas a Cancillería de la misma diócesis.
+- Antes de corregir: 28 casos de autorización con datos inválidos mostraron paso indebido de Administrador General y Diócesis a verificaciones de datos.
+- Después: 7/7 definiciones de funciones con guardia Cancillería y sin excepción admin_general, conservando comprobación jurisdiccional.
+- Tres pruebas reales aisladas postparche: Administrador General y Diócesis denegados; Cancillería superó autorización.
+- Una matriz masiva postparche fue bloqueada por controles del entorno y queda explícitamente sin contabilizar.
+- Dos ciclos E2E reversibles exitosos con Cancillería: reposición y reversión de Exequias y Matrimonios.
+- Cero partidas, decretos, notas y auditoría QA persistidos tras ROLLBACK.
+- 13 verificaciones sintéticas adicionales de regresión; total esperado 313 más 23 verificadores históricos.
 
-V103 — MANTENIMIENTO HISTÓRICO
-- Dos funciones de reconciliación sensibles (V65 Bautismos y V68 procedencia documental) dejan de admitir EXECUTE authenticated/anon.
-- Postgres y service_role conservan permiso. No se ejecutó ninguna reconciliación ni modificación de datos reales.
-- Inventario de SECURITY DEFINER ejecutables por authenticated: 126 (antes 128).
-- Seis pruebas sintéticas nuevas, total 300 previstas, más 23 verificadores, build y CSS.
+SEGURIDAD PENDIENTE
+- 5 alertas HIGH de dependencias (Tailwind 3 y transitivas); actualización mayor Tailwind 4 requiere ensayo visual aislado.
+- Demás funciones privilegiadas, flujos Tribunal, correcciones, concurrencia, respaldos, pantallas autenticadas.
+- Auditoría maestra 325 controles aún abierta; no se declara certificación final.
 
-ESTADO
-- Persisten cinco alertas HIGH de dependencias frontend; GitHub Actions seguridad continúa fallando.
-- Auditoría maestra: 325 controles, no certificada integralmente.
-- Siguen pendientes: 126 funciones privilegiadas, pantallas autenticadas, concurrencia, respaldos restaurados y revisión jurídica/impresión de documentos.
-
-INFORMES
-AUDITORIA_DOCUMENTOS_OFICIALES_V102_2026-10-21.md
-AUDITORIA_RECONCILIACIONES_PRIVILEGIADAS_V103_2026-10-21.md
+EVIDENCIA
+AUDITORIA_DECRETOS_MATRIMONIO_EXEQUIAS_V104_2026-10-21.md
 AUDITORIA_MAESTRA_SACRAMENTUM_V90.md
