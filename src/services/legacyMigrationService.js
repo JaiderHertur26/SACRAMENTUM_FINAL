@@ -98,6 +98,11 @@ export async function reviewLegacyRow({ rowId, normalizedData, status, issueCode
 export async function applyLegacyBatch(batchId, { chunkSize = 250, onProgress = null, profileKey = null } = {}) {
   const batch = await getLegacyMigrationSummary(batchId);
   const effectiveProfile = String(profileKey || batch?.profile_key || '').toUpperCase();
+  // ANULACION.DBF conserva el expediente histórico: nunca ejecuta efectos sobre partidas desde Importación.
+  // La vía autorizada de archivo es Cancillería > Centro de Decretos > Conciliación de decretos antiguos (V118).
+  if (effectiveProfile === 'ANULACION' || String(batch?.profile_key || '').toUpperCase() === 'ANULACION') {
+    throw new Error('Los decretos históricos ANULACION deben conciliarse desde Cancillería, en el Centro de Decretos y con origen verificado. Este lote permanece conservado para revisión; no se alteró ninguna partida.');
+  }
   const isPendingSacramentalProfile = ['INSBAUTI','INSCONFI'].includes(effectiveProfile);
   const isPendingMarriageProfile = effectiveProfile === 'INSMATRI';
   const sacramentalNoteProfiles = ['NTBAU001','NTBAU002','NTCON001','NTMAT001','NTMAT002','NTDEF001'];

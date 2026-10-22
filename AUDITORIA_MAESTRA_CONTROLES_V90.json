@@ -563,9 +563,10 @@
         "V113/V114: lectura de aclaraciones sólo Cancillería/Diócesis; Parroquia rechazada en SQL. Las otras RPC pendientes de matriz completa.",
         "V120: permisos de objetos no ampliados; RPC V118 intacta, RLS de lectura del archivo corregida.",
         "V121: inventario inicial de 133 funciones SECURITY DEFINER ejecutables por authenticated; ninguna ejecutable por anon. Inspección de privilegios pendiente por función.",
-        "V123: inventario estático preciso de 133 SECURITY DEFINER ejecutables por authenticated; 2 operaciones P0 parcialmente verificadas y 131 pendientes de auditoría individual."
+        "V123: inventario estático preciso de 133 SECURITY DEFINER ejecutables por authenticated; 2 operaciones P0 parcialmente verificadas y 131 pendientes de auditoría individual.",
+        "V125-V126: siete RPC con pruebas parciales de seguridad; 126 RPC privilegiadas todavía pendientes de pruebas individuales completas. Ninguna certificada integralmente."
       ],
-      "updated_at": "2026-10-22T13:46:56.491Z"
+      "updated_at": "2026-10-22T14:17:41.595Z"
     },
     {
       "id": "06.07",
@@ -578,9 +579,10 @@
         "AUDITORIA_BASE_SQL_V90.md: Cero vistas públicas; 129 RPC privilegiadas requieren pruebas de permisos y búsqueda de bypass",
         "AUDITORIA_INVENTARIO_RPC_V91.json: 129 funciones catalogadas para revisión de terceros, sin afirmar autorización sin pruebas",
         "AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md: 129 RPC original; V92-SEC-001 corregida, 128 privilegios restantes pendientes de ensayos de autorización",
-        "V124: seis invocaciones a dos RPC de limpieza desde Admin General, Canciller y Parroquia fueron rechazadas; sólo dos operaciones de Diócesis autorizadas. ROLLBACK."
+        "V124: seis invocaciones a dos RPC de limpieza desde Admin General, Canciller y Parroquia fueron rechazadas; sólo dos operaciones de Diócesis autorizadas. ROLLBACK.",
+        "V125: nota matrimonial global antes accesible desde Parroquia con p_parish_id NULL, demostrada y bloqueada. V126: 4 RPC antiguas ANULACION rechazadas con rol autenticado."
       ],
-      "updated_at": "2026-10-22T13:46:56.491Z"
+      "updated_at": "2026-10-22T14:17:41.595Z"
     },
     {
       "id": "06.08",
@@ -1273,9 +1275,10 @@
       "status": "EN_PROGRESO",
       "evidence": [
         "V114: 8 documentos ficticios, cero cambios en partidas y notas durante transacción; fuente scripts/qa-rollback-documentary-v114.sql, ROLLBACK.",
-        "V118: antecedente archived, registersEffect=false, sin modificar sacramentos."
+        "V118: antecedente archived, registersEffect=false, sin modificar sacramentos.",
+        "V126: importación antigua ANULACION ya no puede ejecutar anulaciones ni reemplazos; la ruta documental de Cancillería V118 continúa."
       ],
-      "updated_at": "2026-10-22T04:21:13.091Z"
+      "updated_at": "2026-10-22T14:17:41.595Z"
     },
     {
       "id": "12.07",
@@ -1363,9 +1366,10 @@
       "evidence": [
         "AUDITORIA_CONCEPTOS_DEC_REGLAS_V98_2026-10-21.md: V98 prohíbe fingir nueva importación con INSERT directo fuente legacy_catalog; reimportación E2E pendiente",
         "V114: expediente histórico queda archived, recordOrigin historical_archive; ensayo reversión no ejecutada. Pendiente auditoría importación real completa.",
-        "V118: documento archived y issued_by nulo, sin falsear nueva emisión."
+        "V118: documento archived y issued_by nulo, sin falsear nueva emisión.",
+        "V126: se prohíbe que el importador parroquial antiguo simule nueva emisión o vuelva a escribir una corrección histórica."
       ],
-      "updated_at": "2026-10-22T04:21:13.091Z"
+      "updated_at": "2026-10-22T14:17:41.595Z"
     },
     {
       "id": "13.03",
@@ -1415,9 +1419,10 @@
       "criterion": "No aplicar efectos dos veces",
       "status": "EN_PROGRESO",
       "evidence": [
-        "V118: reejecución idempotente, 1 decreto, 2 notas y 1 aviso, cero efectos adicionales."
+        "V118: reejecución idempotente, 1 decreto, 2 notas y 1 aviso, cero efectos adicionales.",
+        "V126: cuatro puntos de entrada de importación ANULACION bloqueados, preservando dos lotes ready y cinco filas valid pendientes para revisión de Cancillería."
       ],
-      "updated_at": "2026-10-22T04:21:13.091Z"
+      "updated_at": "2026-10-22T14:17:41.595Z"
     },
     {
       "id": "13.07",
@@ -1427,9 +1432,10 @@
       "criterion": "Decreto ANULACION conciliado",
       "status": "EN_PROGRESO",
       "evidence": [
-        "V118: ANULACION y CPTOANULA cotejados en el mismo origen."
+        "V118: ANULACION y CPTOANULA cotejados en el mismo origen.",
+        "V126: el archivo histórico V118 es ruta institucional vigente, mientras la ruta legacy ejecutora queda deshabilitada por autorización SQL 42501."
       ],
-      "updated_at": "2026-10-22T04:21:13.091Z"
+      "updated_at": "2026-10-22T14:17:41.595Z"
     },
     {
       "id": "13.08",
@@ -1552,9 +1558,10 @@
       "criterion": "Notas importadas sin fecha inventada",
       "status": "EN_PROGRESO",
       "evidence": [
-        "V118: fechas no documentadas conservadas nulas, sin fechas inventadas."
+        "V118: fechas no documentadas conservadas nulas, sin fechas inventadas.",
+        "V125: conciliación de notas históricas de matrimonio exige selección de parroquia, evita cambiar notas externas y mantiene fuente."
       ],
-      "updated_at": "2026-10-22T04:21:13.091Z"
+      "updated_at": "2026-10-22T14:17:41.595Z"
     },
     {
       "id": "14.07",
@@ -1738,9 +1745,10 @@
       "criterion": "Staging y revisión",
       "status": "EN_PROGRESO",
       "evidence": [
-        "AUDITORIA_AUTORIDAD_MIGRACION_V101_2026-10-21.md: V101: create_legacy_import_batch + stage_legacy_import_rows + apply_legacy_import_batch_v3 probados desde rol Parroquia"
+        "AUDITORIA_AUTORIDAD_MIGRACION_V101_2026-10-21.md: V101: create_legacy_import_batch + stage_legacy_import_rows + apply_legacy_import_batch_v3 probados desde rol Parroquia",
+        "V126: ANULACION preparada sigue en staging, ningún registro válido se convirtió ni pasó a error durante QA."
       ],
-      "updated_at": "2026-10-21T21:33:27.542Z"
+      "updated_at": "2026-10-22T14:17:41.595Z"
     },
     {
       "id": "16.06",
@@ -1784,9 +1792,10 @@
       "status": "EN_PROGRESO",
       "evidence": [
         "AUDITORIA_CONCEPTOS_DEC_REGLAS_V98_2026-10-21.md: Catálogo histórico de conceptos V98 protegido; conciliación de ANULACION y lotes pendiente",
-        "AUDITORIA_AUTORIDAD_MIGRACION_V101_2026-10-21.md: V99: perfil CPTOANULA conserva legacy_catalog y referencia íntegra; conciliación de ANULACION aún pendiente"
+        "AUDITORIA_AUTORIDAD_MIGRACION_V101_2026-10-21.md: V99: perfil CPTOANULA conserva legacy_catalog y referencia íntegra; conciliación de ANULACION aún pendiente",
+        "V126: el importador desde Centro de Migración informa que ANULACION requiere Cancillería y origen verificado; no aplica efectos automáticos."
       ],
-      "updated_at": "2026-10-21T21:33:27.827Z"
+      "updated_at": "2026-10-22T14:17:41.595Z"
     },
     {
       "id": "16.10",
@@ -2925,9 +2934,10 @@
         "AUDITORIA_CONCEPTOS_DEC_REGLAS_V98_2026-10-21.md: V97 concepto no puede trasladarse ni crearse para segunda diócesis ajena",
         "AUDITORIA_AUTORIDAD_MIGRACION_V101_2026-10-21.md: V100/101: sesión parroquial ajena ve 0 lotes, 0 filas, 0 vínculos de otra parroquia",
         "V120: detección de lectura cruzada al mezclar IDs de diócesis y parroquia, corregida en políticas RLS.",
-        "V121: cierre demostrado de ruta de lectura horizontal entre diócesis en tres tablas; hashes ya se negaban."
+        "V121: cierre demostrado de ruta de lectura horizontal entre diócesis en tres tablas; hashes ya se negaban.",
+        "V125: explotó en SQL ROLLBACK acceso horizontal a otra parroquia mediante parámetro NULL en notas matrimoniales; ya bloqueado y verificado."
       ],
-      "updated_at": "2026-10-22T13:23:24.315Z"
+      "updated_at": "2026-10-22T14:17:41.595Z"
     },
     {
       "id": "27.03",
@@ -2961,9 +2971,10 @@
         "AUDITORIA_RECEPCION_NULIDAD_MATRIMONIAL_V106_2026-10-21.md: V106: por RPC directa no puede aplicar nulidad inexistente ni archivar una recepción con nota",
         "AUDITORIA_REVISION_JURIDICA_NULIDAD_V107_2026-10-21.md: V107: solo Cancillería solicita revisión, Admin/Diócesis/Parroquia denegados y RLS limita consulta",
         "AUDITORIA_DOBLE_COTEJO_DECISIONES_V110_2026-10-21.md: V110: autorización de dos roles específicos en etapas separadas, RLS territorial, Admin/Parroquia sin escritura",
-        "V124: matriz directa de RPC con cuatro roles y jurisdicción real, 2 autorizaciones y 6 rechazos."
+        "V124: matriz directa de RPC con cuatro roles y jurisdicción real, 2 autorizaciones y 6 rechazos.",
+        "V126: 4 RPC de ejecución ANULACION niegan llamadas directas antes de tomar decisiones registrales; lote real no cambia."
       ],
-      "updated_at": "2026-10-22T13:46:56.492Z"
+      "updated_at": "2026-10-22T14:17:41.595Z"
     },
     {
       "id": "27.05",
@@ -3052,9 +3063,10 @@
         "AUDITORIA_RECONCILIACIONES_PRIVILEGIADAS_V103_2026-10-21.md: V103: 2 funciones SECURITY DEFINER de mantenimiento histórico ya no ejecutables por authenticated; inventario descendió 128 a 126",
         "AUDITORIA_DECRETOS_MATRIMONIO_EXEQUIAS_V104_2026-10-21.md: V104: 7 SECURITY DEFINER de decretos de matrimonios/exequias con rol Cancillería y alcance diocesano",
         "V121: inventario de SECURITY DEFINER detecta 133 ejecutables por authenticated y 0 por anon; 17 no nombran auth.uid (no prueba por sí mismo inseguridad).",
-        "V122-V124: 133 funciones SECURITY DEFINER inventariadas, 2 con DELETE parcialmente ensayadas; 57 permisos TRUNCATE bloqueados. No certifica 133 RPC."
+        "V122-V124: 133 funciones SECURITY DEFINER inventariadas, 2 con DELETE parcialmente ensayadas; 57 permisos TRUNCATE bloqueados. No certifica 133 RPC.",
+        "V125-V126: inventario actualizado a 7 RPC parcialmente verificadas, 126 no revisadas individualmente; riesgo de apply_marriage_nullity pendiente de investigación."
       ],
-      "updated_at": "2026-10-22T13:46:56.492Z"
+      "updated_at": "2026-10-22T14:17:41.595Z"
     },
     {
       "id": "28.01",
@@ -3450,9 +3462,10 @@
       "evidence": [
         "V114: matrices ficticias 52 variantes del modelo de decretos y dos ejecuciones SQL ROLLBACK; prueba integral por los cuatro sacramentos pendiente.",
         "V115-V117: ocho flujos de emisión y reversión, cuatro transacciones con ROLLBACK, 24 rechazos de roles y cuatro dobles reversiones rechazadas.",
-        "V118: dos laboratorios SQL reversibles con origen ficticio y controles institucionales."
+        "V118: dos laboratorios SQL reversibles con origen ficticio y controles institucionales.",
+        "V125: matriz con una nota propia y otra ajena, tres actores improcedentes rechazados y una acción legítima. V126: 4 RPC denegadas. Todos ROLLBACK."
       ],
-      "updated_at": "2026-10-22T04:21:13.091Z"
+      "updated_at": "2026-10-22T14:17:41.595Z"
     },
     {
       "id": "31.08",
@@ -3486,9 +3499,10 @@
         "V115-V117: consulta posterior a las cuatro baterías SQL confirma cero datos QA en nueve colecciones de control.",
         "V118: cero residuos de ensayos y siete antecedentes reales intactos.",
         "V120: QA transaccional con diócesis/parroquias ficticias, ROLLBACK y cero residuos QA verificados.",
-        "V121: dos pruebas ROLLBACK, cero residuos de artefactos, archivos, orígenes y diócesis QA; historial ANULACION 5+2 intacto."
+        "V121: dos pruebas ROLLBACK, cero residuos de artefactos, archivos, orígenes y diócesis QA; historial ANULACION 5+2 intacto.",
+        "V126: dos lotes ANULACION ready y 5 filas válidas permanecen, 5 antecedentes históricos archived, 2 vinculados, 76 notas matrimoniales matched, 0 residuos QA."
       ],
-      "updated_at": "2026-10-22T13:23:24.315Z"
+      "updated_at": "2026-10-22T14:17:41.595Z"
     },
     {
       "id": "32.01",
@@ -3552,9 +3566,10 @@
         "V118: archivos SQL, validación estática y gate 526/526 reproducibles.",
         "V119-V120: pruebas Chrome reales anon 7/7 y regresión 535 sintéticas 25/25 tareas; SQL multirrol ejecutado.",
         "V121: dos scripts SQL reproducibles, ocho pruebas contractuales estáticas, gate V121 de 543 sintéticas.",
-        "V124: tres baterías transaccionales de seguridad, 19 tests contractuales nuevos y gate 562/562; documenta evidencia."
+        "V124: tres baterías transaccionales de seguridad, 19 tests contractuales nuevos y gate 562/562; documenta evidencia.",
+        "V126: tres pruebas SQL reversibles, migraciones V125/V126, 12 nuevas pruebas de contrato, 574/574 sintéticas y 25/25 gate."
       ],
-      "updated_at": "2026-10-22T13:46:56.492Z"
+      "updated_at": "2026-10-22T14:17:41.595Z"
     },
     {
       "id": "32.04",
@@ -3593,9 +3608,10 @@
         "AUDITORIA_DOBLE_COTEJO_DECISIONES_V110_2026-10-21.md: V110: riesgo de autocertificación mitigado por cotejo diocesano independiente sin atribuir veracidad jurídica",
         "V120: hallazgo de aislamiento de origen y fila histórica (gravedad alta) documentado y cerrado por RLS; 64 WARN GraphQL pendientes de revisión.",
         "V121: hallazgo alto de lectura física ajena corregido; quedan sin cerrar seguridad de dependencias, 64 advertencias GraphQL y 133 funciones privilegiadas.",
-        "V122: gravedad crítica grants TRUNCATE en 57 tablas, V123 borrado de Confirmación manual activa; ambos corregidos. Sigue default ACL supabase_admin y seguridad general."
+        "V122: gravedad crítica grants TRUNCATE en 57 tablas, V123 borrado de Confirmación manual activa; ambos corregidos. Sigue default ACL supabase_admin y seguridad general.",
+        "V125: defecto P0 de acceso global a notas matrimoniales corregido. V126: ruta P0 de importación ANULACION con efectos registrales bloqueada."
       ],
-      "updated_at": "2026-10-22T13:46:56.492Z"
+      "updated_at": "2026-10-22T14:17:41.595Z"
     },
     {
       "id": "32.06",
@@ -3622,9 +3638,10 @@
         "V118: cierre de fallos de autorización, alcance de origen y duplicado.",
         "V120: evidencia antes/después de fuga entre diócesis, ALTER POLICY y prueba RLS multirrol reejecutada sin error.",
         "V121: pruebas RLS fallidas antes del arreglo (3 lecturas), positivas tras cuatro ALTER POLICY y prueba de no regresión local.",
-        "V123: el defecto de borrado activo fue primero reproducido y luego refutado con mismo fixture; V124 roles endurecidos y ensayados."
+        "V123: el defecto de borrado activo fue primero reproducido y luego refutado con mismo fixture; V124 roles endurecidos y ensayados.",
+        "V125: primero prueba negativa reprodujo mutación ajena, después pasó con bloqueo; V126 bloqueó 4 funciones y validó lote sin cambios."
       ],
-      "updated_at": "2026-10-22T13:46:56.492Z"
+      "updated_at": "2026-10-22T14:17:41.595Z"
     },
     {
       "id": "32.07",
@@ -3653,9 +3670,10 @@
         "V118: 25/25 verificaciones, 526 tests sintéticos, build Vite; npm audit excluida.",
         "V120: gate 25/25, 535 sintéticas, 23 verificadores heredados y build aprobados; npm audit omitida.",
         "V121: 543/543 sintéticas, 25/25 verificaciones incluyendo build, con npm audit expresamente fuera.",
-        "V124: 562 pruebas sintéticas aprobadas y 25/25 verificaciones de gate, build correcto; npm audit sigue omitido."
+        "V124: 562 pruebas sintéticas aprobadas y 25/25 verificaciones de gate, build correcto; npm audit sigue omitido.",
+        "V126: 574 pruebas sintéticas, 25 tareas gate, 23 verificadores históricos y build aprobados; npm audit no ejecutada."
       ],
-      "updated_at": "2026-10-22T13:46:56.492Z"
+      "updated_at": "2026-10-22T14:17:41.595Z"
     },
     {
       "id": "32.08",
@@ -3682,9 +3700,10 @@
         "V118: dos ROLLBACK y verificación de residuos QA cero.",
         "V120: siete antecedentes ANULACION intactos, 5 pendientes y 2 vinculados; cero residuos RLS ficticios.",
         "V121: regresión de cero residuos QA y mismos 5 históricos pendientes y 2 vinculados.",
-        "V124: residuos QA cero después de ROLLBACK; 5 ANULACION archivados y 2 enlazados intactos."
+        "V124: residuos QA cero después de ROLLBACK; 5 ANULACION archivados y 2 enlazados intactos.",
+        "V126: todas las comprobaciones SQL en transacciones ROLLBACK, sin residuos ni degradar datos auténticos."
       ],
-      "updated_at": "2026-10-22T13:46:56.492Z"
+      "updated_at": "2026-10-22T14:17:41.595Z"
     },
     {
       "id": "32.09",

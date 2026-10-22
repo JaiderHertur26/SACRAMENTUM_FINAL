@@ -53,7 +53,8 @@ exec('pruebas-sinteticas',node,['--test',
  'scripts/test-browser-and-historical-rls-v120.mjs',
  'scripts/test-physical-provenance-rls-v121.mjs',
  'scripts/test-rpc-hardening-v123.mjs',
- 'scripts/test-shadow-role-authority-v124.mjs']);
+ 'scripts/test-shadow-role-authority-v124.mjs',
+ 'scripts/test-matrimonial-scope-and-historical-import-v126.mjs']);
 const scripts=fs.readdirSync(path.join(root,'scripts')).filter(x=>/^verify-.*\.mjs$/.test(x)).sort();
 for(const file of scripts)exec('legacy/'+file,node,['scripts/'+file]);
 const npmOnWindows=process.platform==='win32';

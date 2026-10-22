@@ -99,8 +99,13 @@
       "has_common_auth_signal": true,
       "anon_exec": false,
       "priority": "P1_REVIEW_MUTATION",
-      "review_status": "PENDING_MANUAL_AUTHORIZATION_REVIEW",
-      "tested_in_this_turn": false
+      "review_status": "PARTIAL_TESTED_SCOPE_OR_EXECUTION_BLOCK",
+      "tested_in_this_turn": true,
+      "test_evidence": [
+        "scripts/qa-rollback-matrimonial-notes-global-scope-v125.sql",
+        "scripts/qa-rollback-matrimonial-notes-parish-authority-v125.sql",
+        "scripts/qa-rollback-block-legacy-anulacion-v126.sql"
+      ]
     },
     {
       "signature": "apply_legacy_import_batch_v2(uuid,integer)",
@@ -112,8 +117,13 @@
       "has_common_auth_signal": true,
       "anon_exec": false,
       "priority": "P1_REVIEW_MUTATION",
-      "review_status": "PENDING_MANUAL_AUTHORIZATION_REVIEW",
-      "tested_in_this_turn": false
+      "review_status": "PARTIAL_TESTED_SCOPE_OR_EXECUTION_BLOCK",
+      "tested_in_this_turn": true,
+      "test_evidence": [
+        "scripts/qa-rollback-matrimonial-notes-global-scope-v125.sql",
+        "scripts/qa-rollback-matrimonial-notes-parish-authority-v125.sql",
+        "scripts/qa-rollback-block-legacy-anulacion-v126.sql"
+      ]
     },
     {
       "signature": "apply_legacy_import_batch_v3(uuid,integer)",
@@ -125,8 +135,13 @@
       "has_common_auth_signal": true,
       "anon_exec": false,
       "priority": "P1_REVIEW_WRAPPER",
-      "review_status": "PENDING_MANUAL_AUTHORIZATION_REVIEW",
-      "tested_in_this_turn": false
+      "review_status": "PARTIAL_TESTED_SCOPE_OR_EXECUTION_BLOCK",
+      "tested_in_this_turn": true,
+      "test_evidence": [
+        "scripts/qa-rollback-matrimonial-notes-global-scope-v125.sql",
+        "scripts/qa-rollback-matrimonial-notes-parish-authority-v125.sql",
+        "scripts/qa-rollback-block-legacy-anulacion-v126.sql"
+      ]
     },
     {
       "signature": "apply_legacy_marginal_note_batch(uuid,integer)",
@@ -1152,8 +1167,13 @@
       "has_common_auth_signal": true,
       "anon_exec": false,
       "priority": "P1_REVIEW_MUTATION",
-      "review_status": "PENDING_MANUAL_AUTHORIZATION_REVIEW",
-      "tested_in_this_turn": false
+      "review_status": "PARTIAL_TESTED_SCOPE_OR_EXECUTION_BLOCK",
+      "tested_in_this_turn": true,
+      "test_evidence": [
+        "scripts/qa-rollback-matrimonial-notes-global-scope-v125.sql",
+        "scripts/qa-rollback-matrimonial-notes-parish-authority-v125.sql",
+        "scripts/qa-rollback-block-legacy-anulacion-v126.sql"
+      ]
     },
     {
       "signature": "reconcile_legacy_baptism_shadows_v73(uuid,uuid,uuid)",
@@ -1203,8 +1223,13 @@
       "has_common_auth_signal": true,
       "anon_exec": false,
       "priority": "P1_REVIEW_MUTATION",
-      "review_status": "PENDING_MANUAL_AUTHORIZATION_REVIEW",
-      "tested_in_this_turn": false
+      "review_status": "PARTIAL_TESTED_SCOPE_OR_EXECUTION_BLOCK",
+      "tested_in_this_turn": true,
+      "test_evidence": [
+        "scripts/qa-rollback-matrimonial-notes-global-scope-v125.sql",
+        "scripts/qa-rollback-matrimonial-notes-parish-authority-v125.sql",
+        "scripts/qa-rollback-block-legacy-anulacion-v126.sql"
+      ]
     },
     {
       "signature": "reconcile_legacy_provenance_v65(uuid)",
@@ -1753,7 +1778,8 @@
       "tested_in_this_turn": false
     }
   ],
-  "updated_at": "2026-10-22T13:46:56.489Z",
-  "partial_reviewed": 2,
-  "not_fully_reviewed": 131
+  "updated_at": "2026-10-22T14:17:41.591Z",
+  "partial_reviewed": 7,
+  "not_fully_reviewed": 126,
+  "review_semantics": "Partial = one or more narrow end-to-end authorization or safety cases. No RPC declared fully secure."
 }
