@@ -527,6 +527,7 @@ Avance: 325 controles totales; 9 aprobados; 70 en progreso; 245 pendientes; 1 fa
   - Evidencia: AUDITORIA_DEPENDENCIAS_V90.md: npm audit --omit=dev devuelve 8 avisos: 6 high, 2 moderate, 0 critical; pendiente remedación sin romper Tailwind
   - Evidencia: AUDITORIA_PUERTA_CALIDAD_V91.json: La puerta V91 baja de 8 alertas a 5 altas y 0 moderadas, mantiene bloqueo de seguridad
   - Evidencia: AUDITORIA_CIERRE_TECNICO_V91_2026-10-21.md: GH Actions seguridad falla por cinco avisos HIGH, mientras job funcional SUCCESS; bloqueo explícito mantenido
+  - Evidencia: V113: tailwindcss-animate movido a devDependencies; npm ls --omit=dev devuelve árbol Tailwind vacío, CSS hash igual a V110 y 445 pruebas sintéticas OK. npm audit remoto falló por timeout: seguridad global NO aprobada.
 - [x] 30.03 · CI automática — APROBADO
   - Evidencia: .github/workflows/sacramentum-auditoria-v90.yml: CI de tests build y npm audit creada y validada como YAML; falta ejecutarla en GitHub Actions
   - Evidencia: AUDITORIA_CI_GITHUB_V90.md: GitHub Actions funcionó y trabajo funcional completó SUCCESS en commit 84bbb16; seguridad FAIL esperado por dependencias

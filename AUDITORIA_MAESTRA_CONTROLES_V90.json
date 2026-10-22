@@ -3168,9 +3168,10 @@
       "evidence": [
         "AUDITORIA_DEPENDENCIAS_V90.md: npm audit --omit=dev devuelve 8 avisos: 6 high, 2 moderate, 0 critical; pendiente remedación sin romper Tailwind",
         "AUDITORIA_PUERTA_CALIDAD_V91.json: La puerta V91 baja de 8 alertas a 5 altas y 0 moderadas, mantiene bloqueo de seguridad",
-        "AUDITORIA_CIERRE_TECNICO_V91_2026-10-21.md: GH Actions seguridad falla por cinco avisos HIGH, mientras job funcional SUCCESS; bloqueo explícito mantenido"
+        "AUDITORIA_CIERRE_TECNICO_V91_2026-10-21.md: GH Actions seguridad falla por cinco avisos HIGH, mientras job funcional SUCCESS; bloqueo explícito mantenido",
+        "V113: tailwindcss-animate movido a devDependencies; npm ls --omit=dev devuelve árbol Tailwind vacío, CSS hash igual a V110 y 445 pruebas sintéticas OK. npm audit remoto falló por timeout: seguridad global NO aprobada."
       ],
-      "updated_at": "2026-10-21T17:24:16.258Z"
+      "updated_at": "2026-10-22T02:53:09.761Z"
     },
     {
       "id": "30.03",

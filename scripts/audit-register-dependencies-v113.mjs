@@ -1,0 +1,14 @@
+import fs from 'node:fs';
+import {execFileSync} from 'node:child_process';
+const f='AUDITORIA_MAESTRA_CONTROLES_V90.json';
+const obj=JSON.parse(fs.readFileSync(f,'utf8'));
+const c=obj.controls.find(x=>x.id==='30.02');
+if(!c)throw new Error('Control 30.02 no encontrado');
+const ev='V113: tailwindcss-animate movido a devDependencies; npm ls --omit=dev devuelve árbol Tailwind vacío, CSS hash igual a V110 y 445 pruebas sintéticas OK. npm audit remoto falló por timeout: seguridad global NO aprobada.';
+c.evidence??=[];
+if(!c.evidence.includes(ev))c.evidence.push(ev);
+c.status='FALLIDO';
+c.updated_at=new Date().toISOString();
+fs.writeFileSync(f,JSON.stringify(obj,null,2)+'\n');
+execFileSync(process.execPath,['scripts/audit-master-plan-v90.mjs'],{stdio:'inherit'});
+console.log('30.02 permanece FALLIDO con evidencia V113.');
