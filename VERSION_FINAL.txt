@@ -1,23 +1,25 @@
-SACRAMENTUM FINAL · V107 · 21/10/2026 (Colombia)
+SACRAMENTUM FINAL · V108 · 21/10/2026 (Colombia)
 
-REVISIÓN JURÍDICA DE SENTENCIAS DE NULIDAD MATRIMONIAL
+SEGUIMIENTO DOCUMENTAL DE REVISIÓN JURÍDICA
+- Nueva bitácora interna de actuaciones ligada a solicitud V107, sentencia y jurisdicción.
+- Cancillería inicia estudio (pending_review → under_legal_review) y agrega comunicaciones del Tribunal por referencia, fecha y motivo.
+- Solo Cancillería puede escribir mediante RPC; Diócesis, Cancillería y Parroquia propietaria consultan datos acotados con RLS.
+- Admin General no puede consultar ni escribir, anon tampoco.
+- Estados y secuencias controlados, duplicados rechazados, fecha futura inválida.
+- No se alteran sentencia original, estado del Matrimonio, notas, Bautismos, notificaciones ni acuses.
+- La bitácora no certifica autenticidad documental ni ejecuta una revocación.
+- En archivos: Cancillería puede iniciar, agregar y consultar actuaciones; Diócesis/Parroquia visualizan estado actualizado.
 
-- Nuevo expediente de solicitud de revisión judicial, sin revocar sentencia.
-- Solo Cancillería puede solicitar; verifica sesión activa, diócesis, sentencia vigente y matrimonio original.
-- Diócesis y Parroquia titular consultan estado y radicado; Administrador General sin acceso.
-- Se conservan solicitud, referencia del documento, motivo, instantánea de efectos y auditoría.
-- Se prohíbe insertar o actualizar directamente, duplicar expediente activo y omitir motivo/documento.
-- No cambia decreto, Matrimonio, Bautismos, notas marginales ni acuses.
-- Archivo de Cancillería incorpora filtro de Tribunal y botón Solicitar revisión jurídica; Diócesis y Parroquia ven solicitud en modo lectura.
-- Pruebas con casos sintéticos: 3 roles denegados, Cancillería autorizada, duplicado e incompletos denegados, RLS probado.
-- Cero registros ficticios persistidos al finalizar las transacciones.
-- 22 nuevas pruebas sintéticas, 361 previstas acumuladas; 23 verificadores históricos.
+PRUEBAS
+- Proceso real SQL de dos eventos, tres denegaciones de rol, referencias duplicadas, fecha futura, secuencia indebida y RLS.
+- Todo transaccional ficticio (ROLLBACK), cero eventos y revisiones persistidos.
+- 20 nuevas pruebas sintéticas, total esperado 381; 23 verificadores históricos y build.
+- Único usuario parroquial activo: prueba de sesiones paralelas entre dos parroquias todavía pendiente.
 
-SIGUE ABIERTO
-- El procedimiento de decisión judicial y eventual revocación jurídicamente válida NO está implementado: exige resolución del Tribunal auténtica.
-- Seguridad de dependencias: cinco HIGH abiertas.
-- Validación visual autenticada, pruebas concurrentes, respaldos restaurados, auditoría de RPC y revisión legal siguen pendientes.
+SEGURIDAD
+- Cinco HIGH de npm audit y seguridad visual/concurrencia siguen pendientes.
+- La auditoría maestra de 325 controles NO está terminada.
 
-EVIDENCIA
-AUDITORIA_REVISION_JURIDICA_NULIDAD_V107_2026-10-21.md
+INFORME
+AUDITORIA_ACTUACIONES_NULIDAD_V108_2026-10-21.md
 AUDITORIA_MAESTRA_SACRAMENTUM_V90.md

@@ -164,7 +164,7 @@ export default function DiocesanDecreeOversightPage() {
                   <strong className="block text-sm text-slate-900">{row.decreeNumber || 'Sin número'} · {decreeTypeLabel(row)}</strong>
                   <small className="mt-1 block text-slate-500">{label(row)} · {dateText(row.decreeDate)} · {SACRAMENTS[row.sacramentType] || 'Sacramento por verificar'}</small>
                   <small className="mt-1 block text-slate-600">{row.targetName || 'Expediente sacramental'}</small>
-                  {nullityReviews[row.id] && <small className="mt-1 block font-semibold text-indigo-700">Revisión jurídica pendiente · {nullityReviews[row.id].request_reference}</small>}
+                  {nullityReviews[row.id] && <small className="mt-1 block font-semibold text-indigo-700">{nullityReviews[row.id].status === 'under_legal_review' ? 'En estudio jurídico' : 'Revisión jurídica pendiente'} · {nullityReviews[row.id].request_reference}</small>}
                 </span>
                 <span className="text-xs font-semibold text-blue-800">{impactText(row)}</span>
               </button>)}

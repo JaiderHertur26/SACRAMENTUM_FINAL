@@ -39,6 +39,7 @@ Avance: 325 controles totales; 9 aprobados; 70 en progreso; 245 pendientes; 1 fa
 - [ ] 02.02 · Corrección y reposición — PENDIENTE
 - [ ] 02.03 · Nulidad matrimonial de tribunal — EN_PROGRESO
   - Evidencia: AUDITORIA_REVISION_JURIDICA_NULIDAD_V107_2026-10-21.md: V107: inicio de revisión jurídica documental de nulidad; aún no hay decisión ni ejecución posterior del Tribunal
+  - Evidencia: AUDITORIA_ACTUACIONES_NULIDAD_V108_2026-10-21.md: V108: Cancillería registra inicio de revisión y correspondencia del Tribunal; decisión formal y ejecución jurídica siguen pendientes
 - [ ] 02.04 · Autoridad de Cancillería — PENDIENTE
 - [ ] 02.05 · Documentación antigua vs emisión actual — PENDIENTE
 - [ ] 02.06 · Libro físico y folio legítimos — PENDIENTE
@@ -178,6 +179,7 @@ Avance: 325 controles totales; 9 aprobados; 70 en progreso; 245 pendientes; 1 fa
 - [ ] 10.11 · Nulidad como tribunal — EN_PROGRESO
   - Evidencia: AUDITORIA_RECEPCION_NULIDAD_MATRIMONIAL_V106_2026-10-21.md: V106: notificación de nulidad sólo con decreto activo, Matrimonio y Bautismo concordantes; revisión jurídica pendiente
   - Evidencia: AUDITORIA_REVISION_JURIDICA_NULIDAD_V107_2026-10-21.md: V107: filtro Tribunal y solicitud de revisión judicial con expediente trazable sin alterar partidas
+  - Evidencia: AUDITORIA_ACTUACIONES_NULIDAD_V108_2026-10-21.md: V108: vínculo de revisión con nulidad vigente, estado del caso y actuaciones no dispositivas
 
 ### 11. Exequias (P0) — 0/10
 
@@ -238,6 +240,7 @@ Avance: 325 controles totales; 9 aprobados; 70 en progreso; 245 pendientes; 1 fa
 - [ ] 14.02 · Fechas originales — PENDIENTE
 - [ ] 14.03 · Tipo jurídico correcto — EN_PROGRESO
   - Evidencia: AUDITORIA_REVISION_JURIDICA_NULIDAD_V107_2026-10-21.md: V107: nulidad identificada como actuación de Tribunal y no como decreto documental sin efectos; falta cotejo jurídico final
+  - Evidencia: AUDITORIA_ACTUACIONES_NULIDAD_V108_2026-10-21.md: V108: separación explícita entre comunicación recibida y efectos de sentencia, sin cambiar registro
 - [ ] 14.04 · Vínculo a decreto — PENDIENTE
 - [ ] 14.05 · Vínculo a original/supletoria — PENDIENTE
 - [ ] 14.06 · Notas importadas sin fecha inventada — PENDIENTE
@@ -367,6 +370,7 @@ Avance: 325 controles totales; 9 aprobados; 70 en progreso; 245 pendientes; 1 fa
 - [ ] 22.10 · Registro de impresión — PENDIENTE
 - [ ] 22.11 · Concordancia jurídica — EN_PROGRESO
   - Evidencia: AUDITORIA_REVISION_JURIDICA_NULIDAD_V107_2026-10-21.md: V107: cotejo estructural de sentencia y matrimonio; identidad jurídica del documento se valida fuera de sistema
+  - Evidencia: AUDITORIA_ACTUACIONES_NULIDAD_V108_2026-10-21.md: V108: referencia documental, fecha y explicación exigidas, sin afirmar autenticidad jurídica
 
 ### 23. Reportes estadísticos (P1) — 0/11
 
@@ -482,6 +486,7 @@ Avance: 325 controles totales; 9 aprobados; 70 en progreso; 245 pendientes; 1 fa
 - [ ] 28.04 · Exportación autorizada — PENDIENTE
 - [ ] 28.05 · Retención jurídica — EN_PROGRESO
   - Evidencia: AUDITORIA_REVISION_JURIDICA_NULIDAD_V107_2026-10-21.md: V107: retención de sentencia original, estados, avisos, notas y acuses mientras se solicita revisión; acto final pendiente
+  - Evidencia: AUDITORIA_ACTUACIONES_NULIDAD_V108_2026-10-21.md: V108: bitácora apéndice protege original, notas, acuses y senderos de auditoría
 - [ ] 28.06 · Usuarios fallecidos y correcciones — PENDIENTE
 - [ ] 28.07 · Respaldo cifrado — PENDIENTE
 - [ ] 28.08 · Acceso a copias — PENDIENTE
@@ -553,6 +558,7 @@ Avance: 325 controles totales; 9 aprobados; 70 en progreso; 245 pendientes; 1 fa
   - Evidencia: AUDITORIA_NULIDAD_VINCULOS_BAUTISMO_V105_2026-10-21.md: V105: matrices reversibles con vínculo ajeno, positivo local/remoto, duplicados y expediente incompleto
   - Evidencia: AUDITORIA_RECEPCION_NULIDAD_MATRIMONIAL_V106_2026-10-21.md: V106: sentencia inexistente antes/después, ciclo positivo, doble aceptación y cancelación de origen rechazada
   - Evidencia: AUDITORIA_REVISION_JURIDICA_NULIDAD_V107_2026-10-21.md: V107: roles 4/4, expediente ficticio, control duplicados, documentación mínima y lectura scoped
+  - Evidencia: AUDITORIA_ACTUACIONES_NULIDAD_V108_2026-10-21.md: V108: escenario SQL de estudio y oficio, 3 denegaciones, transición, duplicados, fecha futura, RLS
 - [ ] 32.03 · Guardar resultado exacto — EN_PROGRESO
   - Evidencia: AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: Matriz SQL positiva y negativa validada en Supabase; 65 decisiones verificadas
   - Evidencia: AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96 UPDATE 4 casos y INSERT/DELETE 8 casos reproducidos con resultado esperado
@@ -563,6 +569,7 @@ Avance: 325 controles totales; 9 aprobados; 70 en progreso; 245 pendientes; 1 fa
   - Evidencia: AUDITORIA_NULIDAD_VINCULOS_BAUTISMO_V105_2026-10-21.md: V105: bajo ROLLBACK la nulidad inválida no altera Matrimonio y no crea notas; la válida crea nota local y aviso remoto
   - Evidencia: AUDITORIA_RECEPCION_NULIDAD_MATRIMONIAL_V106_2026-10-21.md: V106: en datos ficticios se verificaron estados pending/processed, nota local única, acuse, eventos
   - Evidencia: AUDITORIA_REVISION_JURIDICA_NULIDAD_V107_2026-10-21.md: V107: constancia en audit log y snapshot de sentencias, avisos, notas, sin cambio de registros
+  - Evidencia: AUDITORIA_ACTUACIONES_NULIDAD_V108_2026-10-21.md: V108: estados verificados, event count 2, decreto active, matrimonio nullified, notas 0
 - [ ] 32.04 · Guardar capturas — PENDIENTE
 - [ ] 32.05 · Rastrear hallazgos P0/P1/P2 — EN_PROGRESO
   - Evidencia: AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md: Emisión temporal 1 documento y 1 log; cero residuos tras ROLLBACK en muestra controlada
@@ -576,6 +583,7 @@ Avance: 325 controles totales; 9 aprobados; 70 en progreso; 245 pendientes; 1 fa
   - Evidencia: AUDITORIA_NULIDAD_VINCULOS_BAUTISMO_V105_2026-10-21.md: V105: integridad de vínculo Bautismo-Matrimonio reforzada, cotejo jurídico total permanece pendiente
   - Evidencia: AUDITORIA_RECEPCION_NULIDAD_MATRIMONIAL_V106_2026-10-21.md: V106: dos defectos de integridad y estado de notificaciones corregidos; sin mutaciones reales
   - Evidencia: AUDITORIA_REVISION_JURIDICA_NULIDAD_V107_2026-10-21.md: V107: ausencia de mecanismo específico de revocación documentada; implementada solicitud no destructiva
+  - Evidencia: AUDITORIA_ACTUACIONES_NULIDAD_V108_2026-10-21.md: V108: falta de seguimiento posterior a V107 atendida con bitácora documental segregada
 - [ ] 32.06 · Corregir y repetir — EN_PROGRESO
   - Evidencia: AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: V95 reprodujo fallo antes y verificó reparación tras aplicar migración
   - Evidencia: AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96 corrige hallazgo de identidad institucional y repite prueba antes/después
@@ -587,6 +595,7 @@ Avance: 325 controles totales; 9 aprobados; 70 en progreso; 245 pendientes; 1 fa
   - Evidencia: AUDITORIA_NULIDAD_VINCULOS_BAUTISMO_V105_2026-10-21.md: V105: escenario de tercero ajeno antes/después, prueba de coordenadas faltantes y repetición
   - Evidencia: AUDITORIA_RECEPCION_NULIDAD_MATRIMONIAL_V106_2026-10-21.md: V106: reproducción prepatch de nota sin decreto y archivo de procesado, verificación postpatch
   - Evidencia: AUDITORIA_REVISION_JURIDICA_NULIDAD_V107_2026-10-21.md: V107: pruebas RLS + creación de expediente y original intacto con ROLLBACK
+  - Evidencia: AUDITORIA_ACTUACIONES_NULIDAD_V108_2026-10-21.md: V108: verificación real de permisos antes/después, secuencia, fechas, duplicados, RLS
 - [ ] 32.07 · Regresión completa — EN_PROGRESO
   - Evidencia: AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md: Regresión 211 pruebas sintéticas, 23 verificadores, build OK; quedan fallas de dependencias
   - Evidencia: AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: 219 pruebas sintéticas, 23 verificadores y build aprobados; advertencias HIGH de paquetes aún abiertas
@@ -600,6 +609,7 @@ Avance: 325 controles totales; 9 aprobados; 70 en progreso; 245 pendientes; 1 fa
   - Evidencia: AUDITORIA_NULIDAD_VINCULOS_BAUTISMO_V105_2026-10-21.md: V105: 325 pruebas sintéticas y 23 verificadores, build correcto; cinco HIGH de npm audit abiertos
   - Evidencia: AUDITORIA_RECEPCION_NULIDAD_MATRIMONIAL_V106_2026-10-21.md: V106: 339 pruebas sintéticas + 23 verificadores + build; npm HIGH 5 bloquean gate
   - Evidencia: AUDITORIA_REVISION_JURIDICA_NULIDAD_V107_2026-10-21.md: V107: 361 sintéticas + 23 verificadores + build, HIGH 5 bloquean gate
+  - Evidencia: AUDITORIA_ACTUACIONES_NULIDAD_V108_2026-10-21.md: V108: 381 pruebas sintéticas + 23 históricas + build; gate de dependencias continúa fallido
 - [ ] 32.08 · Conteos antes/después — EN_PROGRESO
   - Evidencia: AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: Tras V95: 15 políticas, 0 bypass is_app_admin y 0 residuos en 5 catálogos
   - Evidencia: AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96: mis_datos mantiene 1 fila real, 0 fixtures y 0 admin bypass en 3 políticas
@@ -611,6 +621,7 @@ Avance: 325 controles totales; 9 aprobados; 70 en progreso; 245 pendientes; 1 fa
   - Evidencia: AUDITORIA_NULIDAD_VINCULOS_BAUTISMO_V105_2026-10-21.md: V105: cero residuos de QA-V105 en Bautismos, Matrimonios, decretos, notificaciones, notas y auditoría
   - Evidencia: AUDITORIA_RECEPCION_NULIDAD_MATRIMONIAL_V106_2026-10-21.md: V106: cero fixtures persistidos en partidas, avisos, decretos, notas y audit log
   - Evidencia: AUDITORIA_REVISION_JURIDICA_NULIDAD_V107_2026-10-21.md: V107: 0 expedientes, sentencias, matrimonios y auditorías QA remanentes
+  - Evidencia: AUDITORIA_ACTUACIONES_NULIDAD_V108_2026-10-21.md: V108: ROLLBACK sin residuos de expedientes ni actuaciones temporales
 - [x] 32.09 · Confirmar producción Ready — APROBADO
   - Evidencia: AUDITORIA_CIERRE_TECNICO_V91_2026-10-21.md: Despliegue Vercel de código V91 Ready; nota: app no certificada integralmente
 - [ ] 32.10 · Dictamen con limitaciones verificadas — PENDIENTE

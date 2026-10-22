@@ -134,9 +134,10 @@
       "criterion": "Nulidad matrimonial de tribunal",
       "status": "EN_PROGRESO",
       "evidence": [
-        "AUDITORIA_REVISION_JURIDICA_NULIDAD_V107_2026-10-21.md: V107: inicio de revisión jurídica documental de nulidad; aún no hay decisión ni ejecución posterior del Tribunal"
+        "AUDITORIA_REVISION_JURIDICA_NULIDAD_V107_2026-10-21.md: V107: inicio de revisión jurídica documental de nulidad; aún no hay decisión ni ejecución posterior del Tribunal",
+        "AUDITORIA_ACTUACIONES_NULIDAD_V108_2026-10-21.md: V108: Cancillería registra inicio de revisión y correspondencia del Tribunal; decisión formal y ejecución jurídica siguen pendientes"
       ],
-      "updated_at": "2026-10-22T01:22:51.487Z"
+      "updated_at": "2026-10-22T01:38:58.232Z"
     },
     {
       "id": "02.04",
@@ -1050,9 +1051,10 @@
       "status": "EN_PROGRESO",
       "evidence": [
         "AUDITORIA_RECEPCION_NULIDAD_MATRIMONIAL_V106_2026-10-21.md: V106: notificación de nulidad sólo con decreto activo, Matrimonio y Bautismo concordantes; revisión jurídica pendiente",
-        "AUDITORIA_REVISION_JURIDICA_NULIDAD_V107_2026-10-21.md: V107: filtro Tribunal y solicitud de revisión judicial con expediente trazable sin alterar partidas"
+        "AUDITORIA_REVISION_JURIDICA_NULIDAD_V107_2026-10-21.md: V107: filtro Tribunal y solicitud de revisión judicial con expediente trazable sin alterar partidas",
+        "AUDITORIA_ACTUACIONES_NULIDAD_V108_2026-10-21.md: V108: vínculo de revisión con nulidad vigente, estado del caso y actuaciones no dispositivas"
       ],
-      "updated_at": "2026-10-22T01:22:51.863Z"
+      "updated_at": "2026-10-22T01:38:58.615Z"
     },
     {
       "id": "11.01",
@@ -1422,9 +1424,10 @@
       "criterion": "Tipo jurídico correcto",
       "status": "EN_PROGRESO",
       "evidence": [
-        "AUDITORIA_REVISION_JURIDICA_NULIDAD_V107_2026-10-21.md: V107: nulidad identificada como actuación de Tribunal y no como decreto documental sin efectos; falta cotejo jurídico final"
+        "AUDITORIA_REVISION_JURIDICA_NULIDAD_V107_2026-10-21.md: V107: nulidad identificada como actuación de Tribunal y no como decreto documental sin efectos; falta cotejo jurídico final",
+        "AUDITORIA_ACTUACIONES_NULIDAD_V108_2026-10-21.md: V108: separación explícita entre comunicación recibida y efectos de sentencia, sin cambiar registro"
       ],
-      "updated_at": "2026-10-22T01:22:52.133Z"
+      "updated_at": "2026-10-22T01:38:58.889Z"
     },
     {
       "id": "14.04",
@@ -2327,9 +2330,10 @@
       "criterion": "Concordancia jurídica",
       "status": "EN_PROGRESO",
       "evidence": [
-        "AUDITORIA_REVISION_JURIDICA_NULIDAD_V107_2026-10-21.md: V107: cotejo estructural de sentencia y matrimonio; identidad jurídica del documento se valida fuera de sistema"
+        "AUDITORIA_REVISION_JURIDICA_NULIDAD_V107_2026-10-21.md: V107: cotejo estructural de sentencia y matrimonio; identidad jurídica del documento se valida fuera de sistema",
+        "AUDITORIA_ACTUACIONES_NULIDAD_V108_2026-10-21.md: V108: referencia documental, fecha y explicación exigidas, sin afirmar autenticidad jurídica"
       ],
-      "updated_at": "2026-10-22T01:22:53.239Z"
+      "updated_at": "2026-10-22T01:38:59.164Z"
     },
     {
       "id": "23.01",
@@ -2983,9 +2987,10 @@
       "criterion": "Retención jurídica",
       "status": "EN_PROGRESO",
       "evidence": [
-        "AUDITORIA_REVISION_JURIDICA_NULIDAD_V107_2026-10-21.md: V107: retención de sentencia original, estados, avisos, notas y acuses mientras se solicita revisión; acto final pendiente"
+        "AUDITORIA_REVISION_JURIDICA_NULIDAD_V107_2026-10-21.md: V107: retención de sentencia original, estados, avisos, notas y acuses mientras se solicita revisión; acto final pendiente",
+        "AUDITORIA_ACTUACIONES_NULIDAD_V108_2026-10-21.md: V108: bitácora apéndice protege original, notas, acuses y senderos de auditoría"
       ],
-      "updated_at": "2026-10-22T01:22:52.463Z"
+      "updated_at": "2026-10-22T01:38:59.441Z"
     },
     {
       "id": "28.06",
@@ -3377,9 +3382,10 @@
         "AUDITORIA_DECRETOS_MATRIMONIO_EXEQUIAS_V104_2026-10-21.md: V104: matrices 28 prepatch y 3 postpatch de llamada real; dos ciclos completos ficticios create/reverse",
         "AUDITORIA_NULIDAD_VINCULOS_BAUTISMO_V105_2026-10-21.md: V105: matrices reversibles con vínculo ajeno, positivo local/remoto, duplicados y expediente incompleto",
         "AUDITORIA_RECEPCION_NULIDAD_MATRIMONIAL_V106_2026-10-21.md: V106: sentencia inexistente antes/después, ciclo positivo, doble aceptación y cancelación de origen rechazada",
-        "AUDITORIA_REVISION_JURIDICA_NULIDAD_V107_2026-10-21.md: V107: roles 4/4, expediente ficticio, control duplicados, documentación mínima y lectura scoped"
+        "AUDITORIA_REVISION_JURIDICA_NULIDAD_V107_2026-10-21.md: V107: roles 4/4, expediente ficticio, control duplicados, documentación mínima y lectura scoped",
+        "AUDITORIA_ACTUACIONES_NULIDAD_V108_2026-10-21.md: V108: escenario SQL de estudio y oficio, 3 denegaciones, transición, duplicados, fecha futura, RLS"
       ],
-      "updated_at": "2026-10-22T01:22:53.795Z"
+      "updated_at": "2026-10-22T01:39:00.246Z"
     },
     {
       "id": "32.03",
@@ -3397,9 +3403,10 @@
         "AUDITORIA_DECRETOS_MATRIMONIO_EXEQUIAS_V104_2026-10-21.md: V104: resultados exactos documentados y postcondiciones de cero residuos",
         "AUDITORIA_NULIDAD_VINCULOS_BAUTISMO_V105_2026-10-21.md: V105: bajo ROLLBACK la nulidad inválida no altera Matrimonio y no crea notas; la válida crea nota local y aviso remoto",
         "AUDITORIA_RECEPCION_NULIDAD_MATRIMONIAL_V106_2026-10-21.md: V106: en datos ficticios se verificaron estados pending/processed, nota local única, acuse, eventos",
-        "AUDITORIA_REVISION_JURIDICA_NULIDAD_V107_2026-10-21.md: V107: constancia en audit log y snapshot de sentencias, avisos, notas, sin cambio de registros"
+        "AUDITORIA_REVISION_JURIDICA_NULIDAD_V107_2026-10-21.md: V107: constancia en audit log y snapshot de sentencias, avisos, notas, sin cambio de registros",
+        "AUDITORIA_ACTUACIONES_NULIDAD_V108_2026-10-21.md: V108: estados verificados, event count 2, decreto active, matrimonio nullified, notas 0"
       ],
-      "updated_at": "2026-10-22T01:22:54.051Z"
+      "updated_at": "2026-10-22T01:39:00.536Z"
     },
     {
       "id": "32.04",
@@ -3429,9 +3436,10 @@
         "AUDITORIA_DECRETOS_MATRIMONIO_EXEQUIAS_V104_2026-10-21.md: V104: hallazgo permisos excesivos de decretos Matrimonios/Exequias corregido sin alteraciones reales",
         "AUDITORIA_NULIDAD_VINCULOS_BAUTISMO_V105_2026-10-21.md: V105: integridad de vínculo Bautismo-Matrimonio reforzada, cotejo jurídico total permanece pendiente",
         "AUDITORIA_RECEPCION_NULIDAD_MATRIMONIAL_V106_2026-10-21.md: V106: dos defectos de integridad y estado de notificaciones corregidos; sin mutaciones reales",
-        "AUDITORIA_REVISION_JURIDICA_NULIDAD_V107_2026-10-21.md: V107: ausencia de mecanismo específico de revocación documentada; implementada solicitud no destructiva"
+        "AUDITORIA_REVISION_JURIDICA_NULIDAD_V107_2026-10-21.md: V107: ausencia de mecanismo específico de revocación documentada; implementada solicitud no destructiva",
+        "AUDITORIA_ACTUACIONES_NULIDAD_V108_2026-10-21.md: V108: falta de seguimiento posterior a V107 atendida con bitácora documental segregada"
       ],
-      "updated_at": "2026-10-22T01:22:54.195Z"
+      "updated_at": "2026-10-22T01:39:00.830Z"
     },
     {
       "id": "32.06",
@@ -3450,9 +3458,10 @@
         "AUDITORIA_DECRETOS_MATRIMONIO_EXEQUIAS_V104_2026-10-21.md: V104: comportamiento antes/después y dos ciclos E2E reversibles de Cancillería",
         "AUDITORIA_NULIDAD_VINCULOS_BAUTISMO_V105_2026-10-21.md: V105: escenario de tercero ajeno antes/después, prueba de coordenadas faltantes y repetición",
         "AUDITORIA_RECEPCION_NULIDAD_MATRIMONIAL_V106_2026-10-21.md: V106: reproducción prepatch de nota sin decreto y archivo de procesado, verificación postpatch",
-        "AUDITORIA_REVISION_JURIDICA_NULIDAD_V107_2026-10-21.md: V107: pruebas RLS + creación de expediente y original intacto con ROLLBACK"
+        "AUDITORIA_REVISION_JURIDICA_NULIDAD_V107_2026-10-21.md: V107: pruebas RLS + creación de expediente y original intacto con ROLLBACK",
+        "AUDITORIA_ACTUACIONES_NULIDAD_V108_2026-10-21.md: V108: verificación real de permisos antes/después, secuencia, fechas, duplicados, RLS"
       ],
-      "updated_at": "2026-10-22T01:22:54.334Z"
+      "updated_at": "2026-10-22T01:39:01.108Z"
     },
     {
       "id": "32.07",
@@ -3473,9 +3482,10 @@
         "AUDITORIA_DECRETOS_MATRIMONIO_EXEQUIAS_V104_2026-10-21.md: V104: 313/313 sintéticas, 23 verificadores, build; npm audit cinco HIGH sigue fallido",
         "AUDITORIA_NULIDAD_VINCULOS_BAUTISMO_V105_2026-10-21.md: V105: 325 pruebas sintéticas y 23 verificadores, build correcto; cinco HIGH de npm audit abiertos",
         "AUDITORIA_RECEPCION_NULIDAD_MATRIMONIAL_V106_2026-10-21.md: V106: 339 pruebas sintéticas + 23 verificadores + build; npm HIGH 5 bloquean gate",
-        "AUDITORIA_REVISION_JURIDICA_NULIDAD_V107_2026-10-21.md: V107: 361 sintéticas + 23 verificadores + build, HIGH 5 bloquean gate"
+        "AUDITORIA_REVISION_JURIDICA_NULIDAD_V107_2026-10-21.md: V107: 361 sintéticas + 23 verificadores + build, HIGH 5 bloquean gate",
+        "AUDITORIA_ACTUACIONES_NULIDAD_V108_2026-10-21.md: V108: 381 pruebas sintéticas + 23 históricas + build; gate de dependencias continúa fallido"
       ],
-      "updated_at": "2026-10-22T01:22:54.463Z"
+      "updated_at": "2026-10-22T01:39:01.261Z"
     },
     {
       "id": "32.08",
@@ -3494,9 +3504,10 @@
         "AUDITORIA_DECRETOS_MATRIMONIO_EXEQUIAS_V104_2026-10-21.md: V104: 0 decretos, matrimonios, funerales, notas y auditorías ficticias tras ROLLBACK",
         "AUDITORIA_NULIDAD_VINCULOS_BAUTISMO_V105_2026-10-21.md: V105: cero residuos de QA-V105 en Bautismos, Matrimonios, decretos, notificaciones, notas y auditoría",
         "AUDITORIA_RECEPCION_NULIDAD_MATRIMONIAL_V106_2026-10-21.md: V106: cero fixtures persistidos en partidas, avisos, decretos, notas y audit log",
-        "AUDITORIA_REVISION_JURIDICA_NULIDAD_V107_2026-10-21.md: V107: 0 expedientes, sentencias, matrimonios y auditorías QA remanentes"
+        "AUDITORIA_REVISION_JURIDICA_NULIDAD_V107_2026-10-21.md: V107: 0 expedientes, sentencias, matrimonios y auditorías QA remanentes",
+        "AUDITORIA_ACTUACIONES_NULIDAD_V108_2026-10-21.md: V108: ROLLBACK sin residuos de expedientes ni actuaciones temporales"
       ],
-      "updated_at": "2026-10-22T01:22:54.612Z"
+      "updated_at": "2026-10-22T01:39:01.411Z"
     },
     {
       "id": "32.09",

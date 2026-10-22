@@ -272,7 +272,7 @@ const ParishSacramentalDecreeArchivePage = () => {
                             ].join(' ')}>
                               {decreeTypeLabel(row)}
                             </span>
-                            {nullityReviews[row.id] && <span className="rounded-full border border-indigo-200 bg-indigo-50 px-2 py-1 text-[8px] font-bold text-indigo-700">Revisión jurídica pendiente · {nullityReviews[row.id].request_reference}</span>}
+                            {nullityReviews[row.id] && <span className="rounded-full border border-indigo-200 bg-indigo-50 px-2 py-1 text-[8px] font-bold text-indigo-700">{nullityReviews[row.id].status === 'under_legal_review' ? 'En estudio jurídico' : 'Revisión jurídica pendiente'} · {nullityReviews[row.id].request_reference}</span>}
                             {historical && <span className="rounded-full border border-amber-200 bg-amber-50 px-2 py-1 text-[8px] font-bold text-amber-800">Antecedente histórico</span>}
                             <span className={`rounded-full border px-2 py-1 text-[8px] font-black uppercase tracking-wider ${state.className}`}>
                               {state.label}

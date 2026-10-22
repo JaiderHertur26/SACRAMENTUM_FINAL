@@ -94,6 +94,8 @@ const SacramentalDecreeArchivePage = () => {
   const [typeFilter, setTypeFilter] = useState(forcedType || 'all');
   const [printIdentity, setPrintIdentity] = useState({});
   const [nullityReviews, setNullityReviews] = useState({});
+  const [reviewEvents, setReviewEvents] = useState({});
+  const [expandedReviewId, setExpandedReviewId] = useState(null);
 
   useEffect(() => {
     setTypeFilter(forcedType || 'all');
@@ -208,6 +210,17 @@ const SacramentalDecreeArchivePage = () => {
         .eq('diocese_id', dioceseId);
       if (reviewError) throw reviewError;
       setNullityReviews(Object.fromEntries((reviewRecords || []).map((r) => [r.nullity_decree_id, r])));
+      const { data: courtEvents, error: eventError } = await supabase
+        .from('nullity_judicial_review_events')
+        .select('id,review_case_id,action,document_reference,document_date,record_description,created_at')
+        .eq('diocese_id',dioceseId)
+        .order('created_at',{ ascending: true });
+      if (eventError) throw eventError;
+      const eventsByReview = {};
+      for (const event of courtEvents || []) {
+        (eventsByReview[event.review_case_id] ||= []).push(event);
+      }
+      setReviewEvents(eventsByReview);
 
       setRows(
         (all || [])
@@ -459,6 +472,57 @@ const SacramentalDecreeArchivePage = () => {
     }
   };
 
+  const recordNullityReviewStep = async (row) => {
+    const review = nullityReviews[row.id];
+    if (!review || !['pending_review','under_legal_review'].includes(review.status)) return;
+    const action = review.status === 'pending_review' ? 'start_review' : 'record_court_correspondence';
+    const start = action === 'start_review';
+    const docReference = await institutionalPrompt({
+      title: start ? 'Iniciar estudio jurídico' : 'Registrar comunicación del Tribunal',
+      message: 'Escriba la referencia del documento recibido. No constituye verificación automática de autenticidad.',
+      placeholder: 'Referencia documental (mínimo 8 caracteres)',
+      required: true, minLength: 8, confirmText: 'Continuar'
+    });
+    if (docReference === null) return;
+    const dateText = await institutionalPrompt({
+      title: 'Fecha del documento',
+      message: 'Escriba la fecha que aparece en el documento en formato AAAA-MM-DD.',
+      placeholder: 'AAAA-MM-DD',
+      required: true, minLength: 10, confirmText: 'Continuar'
+    });
+    if (dateText === null) return;
+    const isoDate = dateText.trim();
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(isoDate) || Number.isNaN(Date.parse(isoDate)) || new Date(isoDate).toISOString().slice(0,10) !== isoDate) {
+      toast({ title: 'Fecha inválida', description: 'Utilice una fecha real en formato AAAA-MM-DD.', variant: 'destructive' });
+      return;
+    }
+    const description = await institutionalPrompt({
+      title: 'Constancia de la actuación',
+      message: 'Describa lo recibido y las verificaciones pendientes. El contenido se conservará en el expediente.',
+      placeholder: 'Detalle de la actuación (mínimo 30 caracteres)',
+      required: true, minLength: 30, confirmText: 'Continuar'
+    });
+    if (description === null) return;
+    if (!(await institutionalConfirm({
+      title: 'Guardar actuación documental',
+      message: 'Esta constancia no acredita por sí sola autenticidad judicial y no altera la sentencia, el Matrimonio, los Bautismos, las notas marginales ni los acuses.',
+      confirmText: 'Guardar actuación', tone: 'warning'
+    }))) return;
+    try {
+      const { error } = await supabase.rpc('record_nullity_judicial_review_step_v108', {
+        p_review_case_id: review.id, p_action: action,
+        p_document_reference: docReference.trim(),
+        p_document_date: isoDate,
+        p_record_description: description.trim()
+      });
+      if (error) throw error;
+      toast({ title: 'Actuación documentada', description: 'Quedó registrada sin modificar efectos sacramentales.' });
+      await load();
+    } catch (error) {
+      toast({ title: 'No se pudo registrar la actuación', description: error.message, variant: 'destructive' });
+    }
+  };
+
   const print = async (row) => {
     const popup = window.open('', '_blank', 'width=980,height=1180');
 
@@ -680,7 +744,7 @@ const SacramentalDecreeArchivePage = () => {
                             )}
                             {nullityReviews[row.id] && (
                               <span className="rounded-full border border-indigo-200 bg-indigo-50 px-2 py-1 text-[8px] font-black uppercase text-indigo-700">
-                                Revisión jurídica pendiente · {nullityReviews[row.id].request_reference}
+                                {nullityReviews[row.id].status === 'under_legal_review' ? 'En estudio jurídico' : 'Revisión jurídica pendiente'} · {nullityReviews[row.id].request_reference}
                               </span>
                             )}
                             {reversed && (
@@ -752,6 +816,18 @@ const SacramentalDecreeArchivePage = () => {
                             Solicitar revisión jurídica
                           </Button>
                         )}
+                        {type === 'tribunal' && nullityReviews[row.id] && ['pending_review','under_legal_review'].includes(nullityReviews[row.id].status) && (
+                          <Button variant="outline" className="border-indigo-200 text-indigo-700 hover:bg-indigo-50" onClick={() => recordNullityReviewStep(row)}>
+                            <FileCheck2 className="mr-2 h-4 w-4" />
+                            {nullityReviews[row.id].status === 'pending_review' ? 'Iniciar estudio' : 'Registrar comunicación'}
+                          </Button>
+                        )}
+                        {type === 'tribunal' && nullityReviews[row.id] && (
+                          <Button variant="outline" onClick={() => setExpandedReviewId(prev => prev === row.id ? null : row.id)}>
+                            <History className="mr-2 h-4 w-4" />
+                            {expandedReviewId === row.id ? 'Ocultar actuaciones' : 'Ver actuaciones'}
+                          </Button>
+                        )}
                         {decreeCanReverse(row) && (
                           <Button
                             variant="outline"
@@ -764,6 +840,23 @@ const SacramentalDecreeArchivePage = () => {
                         )}
                       </div>
                     </div>
+                    {type === 'tribunal' && nullityReviews[row.id] && expandedReviewId === row.id && (
+                      <section className="mt-4 rounded-2xl border border-indigo-100 bg-indigo-50/50 p-4" aria-label="Actuaciones documentales de revisión">
+                        <p className="text-xs font-bold text-indigo-950">Radicado {nullityReviews[row.id].request_reference} · {nullityReviews[row.id].status === 'under_legal_review' ? 'En estudio jurídico' : 'Pendiente de estudio'}</p>
+                        <p className="mt-1 text-xs text-slate-600">Las comunicaciones registradas no modifican por sí solas la sentencia ni las partidas.</p>
+                        {(reviewEvents[nullityReviews[row.id].id] || []).length === 0 ? (
+                          <p className="mt-3 text-xs text-slate-500">Sin actuaciones posteriores registradas.</p>
+                        ) : <div className="mt-3 space-y-3">
+                          {(reviewEvents[nullityReviews[row.id].id] || []).map(event => (
+                            <div key={event.id} className="rounded-xl border border-indigo-100 bg-white p-3 text-xs">
+                              <p className="font-bold text-slate-900">{event.action === 'start_review' ? 'Inicio de estudio' : 'Comunicación del Tribunal'} · {event.document_reference}</p>
+                              <p className="mt-1 text-slate-500">Documento fechado {event.document_date} · Registrado {new Date(event.created_at).toLocaleDateString('es-CO')}</p>
+                              <p className="mt-1 whitespace-pre-wrap text-slate-700">{event.record_description}</p>
+                            </div>
+                          ))}
+                        </div>}
+                      </section>
+                    )}
                   </article>
                 );
               })}
