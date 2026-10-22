@@ -61,9 +61,9 @@ const DioceseUserDashboard = () => {
   }, [user]);
 
   const statCards = [
-    { label: 'Total Parroquias', value: stats.parishes, icon: Church, color: 'bg-[#4B7BA7]', text: 'text-[#4B7BA7]' },
-    { label: 'Total Vicarías', value: stats.vicaries, icon: Network, color: 'bg-slate-800', text: 'text-slate-800' },
-    { label: 'Total Decanatos', value: stats.deaneries, icon: LayoutGrid, color: 'bg-[#D4AF37]', text: 'text-amber-700' },
+    { label: 'Total Parroquias', value: stats.parishes, icon: Church, color: 'bg-[#4B7BA7]/10', text: 'text-[#4B7BA7]' },
+    { label: 'Total Vicarías', value: stats.vicaries, icon: Network, color: 'bg-slate-800/10', text: 'text-slate-800' },
+    { label: 'Total Decanatos', value: stats.deaneries, icon: LayoutGrid, color: 'bg-[#D4AF37]/10', text: 'text-amber-700' },
   ];
 
   return (
@@ -82,7 +82,7 @@ const DioceseUserDashboard = () => {
          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             {statCards.map((stat, idx) => (
               <div key={idx} className="bg-white rounded-3xl p-8 shadow-sm border border-slate-100 hover:shadow-lg transition-all flex items-center gap-5">
-                <div className={`p-4 rounded-2xl ${stat.color} bg-opacity-10 shadow-inner`}>
+                <div className={`p-4 rounded-2xl ${stat.color} shadow-inner`}>
                   <stat.icon className={`w-8 h-8 ${stat.text}`} />
                 </div>
                 <div>

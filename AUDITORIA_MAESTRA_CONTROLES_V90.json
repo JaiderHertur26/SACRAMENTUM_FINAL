@@ -2683,9 +2683,10 @@
       "status": "EN_PROGRESO",
       "evidence": [
         "AUDITORIA_VISUAL_PUBLICA_V91.json: Seis capturas PNG públicas con huellas SHA256 guardadas en C:\\SACRAMENTUM\\AUDITORIA_EVIDENCIAS_V91",
-        "V119: 7 capturas PNG con SHA-256, evidencia del navegador anónimo local; faltan pantallas autenticadas."
+        "V119: 7 capturas PNG con SHA-256, evidencia del navegador anónimo local; faltan pantallas autenticadas.",
+        "V127: comparación visual pública Chrome antes/después y repetición, sin declarar revisión de roles autenticados."
       ],
-      "updated_at": "2026-10-22T13:12:19.675Z"
+      "updated_at": "2026-10-22T14:50:32.145Z"
     },
     {
       "id": "25.01",
@@ -3281,14 +3282,18 @@
       "area": "Despliegue y dependencias",
       "priority": "P1",
       "criterion": "npm audit",
-      "status": "FALLIDO",
+      "status": "APROBADO",
       "evidence": [
         "AUDITORIA_DEPENDENCIAS_V90.md: npm audit --omit=dev devuelve 8 avisos: 6 high, 2 moderate, 0 critical; pendiente remedación sin romper Tailwind",
         "AUDITORIA_PUERTA_CALIDAD_V91.json: La puerta V91 baja de 8 alertas a 5 altas y 0 moderadas, mantiene bloqueo de seguridad",
         "AUDITORIA_CIERRE_TECNICO_V91_2026-10-21.md: GH Actions seguridad falla por cinco avisos HIGH, mientras job funcional SUCCESS; bloqueo explícito mantenido",
-        "V113: tailwindcss-animate movido a devDependencies; npm ls --omit=dev devuelve árbol Tailwind vacío, CSS hash igual a V110 y 445 pruebas sintéticas OK. npm audit remoto falló por timeout: seguridad global NO aprobada."
+        "V113: tailwindcss-animate movido a devDependencies; npm ls --omit=dev devuelve árbol Tailwind vacío, CSS hash igual a V110 y 445 pruebas sintéticas OK. npm audit remoto falló por timeout: seguridad global NO aprobada.",
+        "V127: Tailwind 3.4.19 migrado a 4.3.3 y @tailwindcss/postcss; paneles corregidos para opacidad /10, CSS crítico validado.",
+        "V127: npm audit completo=0 y producción=0; npm ci de instalación limpia (446 paquetes)=OK y npm audit posterior=0.",
+        "V127: puerta estricta 28/28, pruebas sintéticas 581/581, build Vite y CSS crítico aprobados.",
+        "V127: siete capturas de Chrome público antes/después con comparación pixel a pixel y control de variabilidad; UX autenticada sigue pendiente."
       ],
-      "updated_at": "2026-10-22T02:53:09.761Z"
+      "updated_at": "2026-10-22T14:50:32.144Z"
     },
     {
       "id": "30.03",
@@ -3299,9 +3304,10 @@
       "status": "APROBADO",
       "evidence": [
         ".github/workflows/sacramentum-auditoria-v90.yml: CI de tests build y npm audit creada y validada como YAML; falta ejecutarla en GitHub Actions",
-        "AUDITORIA_CI_GITHUB_V90.md: GitHub Actions funcionó y trabajo funcional completó SUCCESS en commit 84bbb16; seguridad FAIL esperado por dependencias"
+        "AUDITORIA_CI_GITHUB_V90.md: GitHub Actions funcionó y trabajo funcional completó SUCCESS en commit 84bbb16; seguridad FAIL esperado por dependencias",
+        "V127: CI exige npm audit runtime y total, y amplía suite; su ejecución remota desde esta rama sigue pendiente."
       ],
-      "updated_at": "2026-10-21T16:19:19.183Z"
+      "updated_at": "2026-10-22T14:50:32.145Z"
     },
     {
       "id": "30.04",
@@ -3351,9 +3357,10 @@
       "evidence": [
         "AUDITORIA_CIERRE_TECNICO_V91_2026-10-21.md: Vercel V91 build Ready, CSS de producción idéntico por SHA256",
         "Puerta de compilación V112 correctamente ejecutada en equipo de trabajo; no acredita pruebas visuales autenticadas ni despliegue de V111/V112.",
-        "V114: compilación local Vite aprobada junto con 501 pruebas sintéticas; no equivale a despliegue."
+        "V114: compilación local Vite aprobada junto con 501 pruebas sintéticas; no equivale a despliegue.",
+        "V127: Tailwind 4 y Vite compilan con 1573 clases de CSS y parser CSS crítico aprobado."
       ],
-      "updated_at": "2026-10-22T03:21:45.467Z"
+      "updated_at": "2026-10-22T14:50:32.145Z"
     },
     {
       "id": "30.08",

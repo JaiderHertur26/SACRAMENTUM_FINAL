@@ -1,0 +1,84 @@
+{
+  "date": "2026-10-22T14:29:32.114Z",
+  "baseline": "Tailwind v3, V119 screenshots",
+  "candidate": "Tailwind v4, V127 screenshots",
+  "results": [
+    {
+      "filename": "chancery-archive-guard.png",
+      "dimensions": [
+        390,
+        844
+      ],
+      "mismatched": 26663,
+      "mismatchPct": 8.1,
+      "meanRgbChannelDiff": 5.98,
+      "highDeltaPct": 8.17
+    },
+    {
+      "filename": "chancery-guard.png",
+      "dimensions": [
+        1440,
+        900
+      ],
+      "mismatched": 49867,
+      "mismatchPct": 3.85,
+      "meanRgbChannelDiff": 2.8,
+      "highDeltaPct": 3.3
+    },
+    {
+      "filename": "diocese-guard.png",
+      "dimensions": [
+        1440,
+        900
+      ],
+      "mismatched": 29481,
+      "mismatchPct": 2.27,
+      "meanRgbChannelDiff": 2.32,
+      "highDeltaPct": 1.42
+    },
+    {
+      "filename": "login-mobile.png",
+      "dimensions": [
+        390,
+        844
+      ],
+      "mismatched": 7857,
+      "mismatchPct": 2.39,
+      "meanRgbChannelDiff": 4.14,
+      "highDeltaPct": 2.68
+    },
+    {
+      "filename": "parish-guard.png",
+      "dimensions": [
+        390,
+        844
+      ],
+      "mismatched": 28304,
+      "mismatchPct": 8.6,
+      "meanRgbChannelDiff": 7.63,
+      "highDeltaPct": 9.17
+    },
+    {
+      "filename": "public-desktop.png",
+      "dimensions": [
+        1440,
+        900
+      ],
+      "mismatched": 27160,
+      "mismatchPct": 2.1,
+      "meanRgbChannelDiff": 2.28,
+      "highDeltaPct": 2.32
+    },
+    {
+      "filename": "public-mobile.png",
+      "dimensions": [
+        390,
+        844
+      ],
+      "mismatched": 10401,
+      "mismatchPct": 3.16,
+      "meanRgbChannelDiff": 4.16,
+      "highDeltaPct": 3.64
+    }
+  ]
+}

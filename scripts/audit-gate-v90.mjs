@@ -54,25 +54,37 @@ exec('pruebas-sinteticas',node,['--test',
  'scripts/test-physical-provenance-rls-v121.mjs',
  'scripts/test-rpc-hardening-v123.mjs',
  'scripts/test-shadow-role-authority-v124.mjs',
- 'scripts/test-matrimonial-scope-and-historical-import-v126.mjs']);
+ 'scripts/test-matrimonial-scope-and-historical-import-v126.mjs',
+ 'scripts/test-tailwind4-dependency-remediation-v127.mjs']);
 const scripts=fs.readdirSync(path.join(root,'scripts')).filter(x=>/^verify-.*\.mjs$/.test(x)).sort();
 for(const file of scripts)exec('legacy/'+file,node,['scripts/'+file]);
 const npmOnWindows=process.platform==='win32';
 const command=npmOnWindows?'cmd.exe':'npm';
 const npmArgs=cmd=>npmOnWindows?['/d','/s','/c',cmd]:cmd.split(' ').slice(1);
 exec('build-produccion',command,npmArgs('npm run build'));
+exec('css-critico',node,['scripts/check-critical-css-v91.mjs']);
 if(strict){
-  const r=exec('dependencias-externas',command,npmArgs('npm audit --omit=dev --json'));
-  try{
-    const text=r.combined.slice(r.combined.indexOf('{'));
-    const audit=JSON.parse(text);
-    const v=audit.metadata?.vulnerabilities||{};
-    const flagged=Object.keys(audit.vulnerabilities||{});
-    r.task.findingCounts={critical:v.critical||0,high:v.high||0,moderate:v.moderate||0,low:v.low||0,total:v.total||0};
-    r.task.packages=flagged;
-    r.task.ok=!audit.error&&r.task.findingCounts.critical===0&&r.task.findingCounts.high===0&&r.task.findingCounts.moderate===0;
-    if(!r.task.ok) console.log('BLOQUEO seguridad: '+JSON.stringify(r.task.findingCounts));
-  }catch(e){r.task.ok=false;r.task.error='No se pudo interpretar npm audit: '+e.message;}
+  // Exige cero vulnerabilidades en runtime Y herramientas de desarrollo.
+  // Los reportes contienen evidencia de conteos y paquetes, nunca credenciales.
+  for(const [name,cmd] of [
+    ['dependencias-produccion','npm audit --omit=dev --json'],
+    ['dependencias-completas','npm audit --json']
+  ]){
+    const r=exec(name,command,npmArgs(cmd));
+    try{
+      const text=r.combined.slice(r.combined.indexOf('{'));
+      const audit=JSON.parse(text);
+      const v=audit.metadata?.vulnerabilities||{};
+      const flagged=Object.keys(audit.vulnerabilities||{});
+      r.task.findingCounts={
+        critical:v.critical||0,high:v.high||0,moderate:v.moderate||0,
+        low:v.low||0,info:v.info||0,total:v.total||0
+      };
+      r.task.packages=flagged;
+      r.task.ok=!audit.error&&r.task.exitCode===0&&r.task.findingCounts.total===0;
+      if(!r.task.ok)console.log('BLOQUEO seguridad '+name+': '+JSON.stringify(r.task.findingCounts));
+    }catch(e){r.task.ok=false;r.task.error='No se pudo interpretar npm audit: '+e.message;}
+  }
 }
 const report={
  protocol:version,startedAt:started,completedAt:now(),gitRef,

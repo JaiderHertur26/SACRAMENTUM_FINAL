@@ -99,10 +99,10 @@ const AdminGeneralDashboard = () => {
   ];
 
   const stats = [
-    { label: 'Diócesis Activas', value: systemStats.dioceses, icon: Church, color: 'bg-blue-600', text: 'text-blue-700' },
-    { label: 'Total Parroquias', value: systemStats.parishes, icon: Church, color: 'bg-blue-500', text: 'text-blue-700' },
-    { label: 'Total Sacramentos', value: systemStats.sacraments, icon: FileText, color: 'bg-[#D4AF37]', text: 'text-amber-700' },
-    { label: 'Total Usuarios', value: systemStats.users, icon: Users, color: 'bg-slate-700', text: 'text-slate-700' },
+    { label: 'Diócesis Activas', value: systemStats.dioceses, icon: Church, color: 'bg-blue-600/10', text: 'text-blue-700' },
+    { label: 'Total Parroquias', value: systemStats.parishes, icon: Church, color: 'bg-blue-500/10', text: 'text-blue-700' },
+    { label: 'Total Sacramentos', value: systemStats.sacraments, icon: FileText, color: 'bg-[#D4AF37]/10', text: 'text-amber-700' },
+    { label: 'Total Usuarios', value: systemStats.users, icon: Users, color: 'bg-slate-700/10', text: 'text-slate-700' },
   ];
 
   const dioceseTableData = useMemo(() => {
@@ -189,7 +189,7 @@ const AdminGeneralDashboard = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
           {stats.map((stat) => (
             <div key={stat.label} className="bg-white rounded-3xl p-8 shadow-sm border border-slate-100 flex items-center gap-5">
-              <div className={`p-4 rounded-2xl ${stat.color} bg-opacity-10 shadow-inner`}>
+              <div className={`p-4 rounded-2xl ${stat.color} shadow-inner`}>
                 <stat.icon className={`w-7 h-7 ${stat.text}`} />
               </div>
               <div>

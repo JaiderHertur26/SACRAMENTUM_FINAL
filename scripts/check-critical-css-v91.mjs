@@ -11,7 +11,8 @@ const classes=new Set();
 postcss.parse(bytes,{from:files[0]}).walkRules(rule=>{
  parser(selector=>selector.walkClasses(c=>classes.add(c.value))).processSync(rule.selector);
 });
-const critical=['bg-opacity-10','size-3','size-3.5'];
+// Tailwind 4 elimina bg-opacity-10: los paneles usan color/10 explícito.
+const critical=['bg-blue-600/10','bg-[#4B7BA7]/10','bg-[#D4AF37]/10','size-3','size-3.5'];
 const missing=critical.filter(s=>!classes.has(s));
 console.log('CSS '+files[0]+' bytes='+Buffer.byteLength(bytes)+' classes='+classes.size);
 console.log('UTILIDADES CRÍTICAS '+critical.map(s=>s+':'+(classes.has(s)?'OK':'AUSENTE')).join(' | '));

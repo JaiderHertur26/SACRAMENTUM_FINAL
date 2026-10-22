@@ -10,7 +10,7 @@ Regla: no introducir datos falsos permanentes; usar memoria, transacciones ROLLB
 
 Prioridad P0 bloquea la certificación. P1 debe constar resuelta o aceptada con evidencia y responsable.
 
-Avance: 325 controles totales; 9 aprobados; 102 en progreso; 213 pendientes; 1 fallidos; 0 bloqueados.
+Avance: 325 controles totales; 10 aprobados; 102 en progreso; 213 pendientes; 0 fallidos; 0 bloqueados.
 
 ## Fases y controles numerados
 
@@ -491,6 +491,7 @@ Avance: 325 controles totales; 9 aprobados; 102 en progreso; 213 pendientes; 1 f
 - [ ] 24.12 · Capturas de evidencia — EN_PROGRESO
   - Evidencia: AUDITORIA_VISUAL_PUBLICA_V91.json: Seis capturas PNG públicas con huellas SHA256 guardadas en C:\SACRAMENTUM\AUDITORIA_EVIDENCIAS_V91
   - Evidencia: V119: 7 capturas PNG con SHA-256, evidencia del navegador anónimo local; faltan pantallas autenticadas.
+  - Evidencia: V127: comparación visual pública Chrome antes/después y repetición, sin declarar revisión de roles autenticados.
 
 ### 25. Resiliencia (P0) — 0/11
 
@@ -608,18 +609,23 @@ Avance: 325 controles totales; 9 aprobados; 102 en progreso; 213 pendientes; 1 f
 - [ ] 29.09 · Rollback de esquema — PENDIENTE
 - [ ] 29.10 · Aislamiento entre parroquias — PENDIENTE
 
-### 30. Despliegue y dependencias (P1) — 5/10
+### 30. Despliegue y dependencias (P1) — 6/10
 
 - [x] 30.01 · Node y lockfile — APROBADO
   - Evidencia: AUDITORIA_EXP_DEPENDENCIAS_Y_RLS_V91.md: npm ci limpio en copia independiente instaló 501 dependencias; build generado y CSS SHA idéntico
-- [ ] 30.02 · npm audit — FALLIDO
+- [x] 30.02 · npm audit — APROBADO
   - Evidencia: AUDITORIA_DEPENDENCIAS_V90.md: npm audit --omit=dev devuelve 8 avisos: 6 high, 2 moderate, 0 critical; pendiente remedación sin romper Tailwind
   - Evidencia: AUDITORIA_PUERTA_CALIDAD_V91.json: La puerta V91 baja de 8 alertas a 5 altas y 0 moderadas, mantiene bloqueo de seguridad
   - Evidencia: AUDITORIA_CIERRE_TECNICO_V91_2026-10-21.md: GH Actions seguridad falla por cinco avisos HIGH, mientras job funcional SUCCESS; bloqueo explícito mantenido
   - Evidencia: V113: tailwindcss-animate movido a devDependencies; npm ls --omit=dev devuelve árbol Tailwind vacío, CSS hash igual a V110 y 445 pruebas sintéticas OK. npm audit remoto falló por timeout: seguridad global NO aprobada.
+  - Evidencia: V127: Tailwind 3.4.19 migrado a 4.3.3 y @tailwindcss/postcss; paneles corregidos para opacidad /10, CSS crítico validado.
+  - Evidencia: V127: npm audit completo=0 y producción=0; npm ci de instalación limpia (446 paquetes)=OK y npm audit posterior=0.
+  - Evidencia: V127: puerta estricta 28/28, pruebas sintéticas 581/581, build Vite y CSS crítico aprobados.
+  - Evidencia: V127: siete capturas de Chrome público antes/después con comparación pixel a pixel y control de variabilidad; UX autenticada sigue pendiente.
 - [x] 30.03 · CI automática — APROBADO
   - Evidencia: .github/workflows/sacramentum-auditoria-v90.yml: CI de tests build y npm audit creada y validada como YAML; falta ejecutarla en GitHub Actions
   - Evidencia: AUDITORIA_CI_GITHUB_V90.md: GitHub Actions funcionó y trabajo funcional completó SUCCESS en commit 84bbb16; seguridad FAIL esperado por dependencias
+  - Evidencia: V127: CI exige npm audit runtime y total, y amplía suite; su ejecución remota desde esta rama sigue pendiente.
 - [ ] 30.04 · Migraciones reproducibles — EN_PROGRESO
   - Evidencia: AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md: Migración V92 creada por CLI y aplicada; falta reconstrucción de esquema desde cero
   - Evidencia: Se copiaron al repositorio las migraciones exactas V111/V112 recuperando su definición de Supabase y se añadieron 10 verificaciones estáticas; restauración limpia pendiente.
@@ -633,6 +639,7 @@ Avance: 325 controles totales; 9 aprobados; 102 en progreso; 213 pendientes; 1 f
   - Evidencia: AUDITORIA_CIERRE_TECNICO_V91_2026-10-21.md: Vercel V91 build Ready, CSS de producción idéntico por SHA256
   - Evidencia: Puerta de compilación V112 correctamente ejecutada en equipo de trabajo; no acredita pruebas visuales autenticadas ni despliegue de V111/V112.
   - Evidencia: V114: compilación local Vite aprobada junto con 501 pruebas sintéticas; no equivale a despliegue.
+  - Evidencia: V127: Tailwind 4 y Vite compilan con 1573 clases de CSS y parser CSS crítico aprobado.
 - [x] 30.08 · Smoke posdespliegue — APROBADO
   - Evidencia: AUDITORIA_PUERTA_CALIDAD_V90.json: Puerta V90 ejecutó npm run build sin errores con Node del equipo; no certifica despliegue ni interfaz
   - Evidencia: AUDITORIA_CIERRE_TECNICO_V91_2026-10-21.md: Cuatro rutas públicas SPA HTTP 200 y CSS descargado SHA256 idéntico
