@@ -74,7 +74,8 @@ exec('pruebas-sinteticas',node,['--test',
  'scripts/test-parish-authorization-fail-closed-v150.mjs',
  'scripts/test-legacy-materializer-role-scope-v151.mjs',
  'scripts/test-rpc-inventory-reconciliation-v151.mjs',
- 'scripts/test-documentary-decree-lifecycle-v152.mjs']);
+ 'scripts/test-documentary-decree-lifecycle-v152.mjs',
+ 'scripts/test-baptism-confirmation-decree-integrity-v153.mjs']);
 const scripts=fs.readdirSync(path.join(root,'scripts')).filter(x=>/^verify-.*\.mjs$/.test(x)).sort();
 for(const file of scripts)exec('legacy/'+file,node,['scripts/'+file]);
 const npmOnWindows=process.platform==='win32';
