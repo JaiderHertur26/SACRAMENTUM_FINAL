@@ -10,7 +10,7 @@ Regla: no introducir datos falsos permanentes; usar memoria, transacciones ROLLB
 
 Prioridad P0 bloquea la certificación. P1 debe constar resuelta o aceptada con evidencia y responsable.
 
-Avance: 325 controles totales; 9 aprobados; 100 en progreso; 215 pendientes; 1 fallidos; 0 bloqueados.
+Avance: 325 controles totales; 9 aprobados; 102 en progreso; 213 pendientes; 1 fallidos; 0 bloqueados.
 
 ## Fases y controles numerados
 
@@ -99,6 +99,7 @@ Avance: 325 controles totales; 9 aprobados; 100 en progreso; 215 pendientes; 1 f
   - Evidencia: AUDITORIA_EXP_DEPENDENCIAS_Y_RLS_V91.md: Cuatro roles no pudieron leer Bautismo de segunda diócesis ficticia; falta matriz completa
   - Evidencia: V120: dos fugas SELECT entre diócesis reproducidas y cerradas con RLS; prueba SQL con roles Chancery, Diócesis y Parroquia y referencias cruzadas. ROLLBACK.
   - Evidencia: V121: cierre de lectura cruzada en artefactos/filas/archivos físicos; RLS probada con actor diocesano y ROLLBACK, acceso legítimo conservado.
+  - Evidencia: V122: privilegios TRUNCATE/REFERENCES/TRIGGER/MAINTAIN revocados de authenticated en todas las 78 tablas públicas; 57 concedían cada permiso antes. Consulta SELECT esencial preservada.
 - [ ] 06.03 · RLS INSERT por actor — EN_PROGRESO
   - Evidencia: AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: Inserciones RLS en dos tablas de boletas: 8/8 casos por cuatro roles, Parroquia únicamente permitida
   - Evidencia: AUDITORIA_PARAMETROS_Y_LIBROS_V94_2026-10-21.md: Parámetros/libros INSERT limitado a parroquia: dos rechazos explícitos para admin general
@@ -111,21 +112,26 @@ Avance: 325 controles totales; 9 aprobados; 100 en progreso; 215 pendientes; 1 f
   - Evidencia: AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: Eliminaciones RLS en dos tablas de boletas: 8/8 casos, sólo parroquia titular
   - Evidencia: AUDITORIA_PARAMETROS_Y_LIBROS_V94_2026-10-21.md: DELETE de libro por cuatro roles: sólo parroquia titular afecta una fila ficticia
   - Evidencia: AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: V95 delete: 20 escenarios en 5 catálogos; titulares parroquiales conservan permisos
-- [ ] 06.06 · 129 RPC privilegiadas autorizadas — EN_PROGRESO
+  - Evidencia: V123: limpieza directa de Confirmaciones podía borrar manual seated; reproducido con QA y corregido. La reversión real en DBF se restringe a sombras importadas y no vigentes.
+- [ ] 06.06 · Todas las RPC privilegiadas autorizadas (inventario dinámico) — EN_PROGRESO
   - Evidencia: AUDITORIA_INVENTARIO_RPC_V91.json: 129 funciones privilegiadas clasificadas; faltan pruebas positivas y negativas función por función
   - Evidencia: V111/V112: se verificaron privilegios de ejecución anon=false y authenticated=true de nuevas RPC; las demás funciones privilegiadas requieren matriz completa por rol.
   - Evidencia: V113/V114: lectura de aclaraciones sólo Cancillería/Diócesis; Parroquia rechazada en SQL. Las otras RPC pendientes de matriz completa.
   - Evidencia: V120: permisos de objetos no ampliados; RPC V118 intacta, RLS de lectura del archivo corregida.
   - Evidencia: V121: inventario inicial de 133 funciones SECURITY DEFINER ejecutables por authenticated; ninguna ejecutable por anon. Inspección de privilegios pendiente por función.
-- [ ] 06.07 · 129 RPC privilegiadas denegadas a terceros — EN_PROGRESO
+  - Evidencia: V123: inventario estático preciso de 133 SECURITY DEFINER ejecutables por authenticated; 2 operaciones P0 parcialmente verificadas y 131 pendientes de auditoría individual.
+- [ ] 06.07 · Todas las RPC privilegiadas denegadas a terceros (inventario dinámico) — EN_PROGRESO
   - Evidencia: AUDITORIA_BASE_SQL_V90.md: Cero vistas públicas; 129 RPC privilegiadas requieren pruebas de permisos y búsqueda de bypass
   - Evidencia: AUDITORIA_INVENTARIO_RPC_V91.json: 129 funciones catalogadas para revisión de terceros, sin afirmar autorización sin pruebas
   - Evidencia: AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md: 129 RPC original; V92-SEC-001 corregida, 128 privilegios restantes pendientes de ensayos de autorización
+  - Evidencia: V124: seis invocaciones a dos RPC de limpieza desde Admin General, Canciller y Parroquia fueron rechazadas; sólo dos operaciones de Diócesis autorizadas. ROLLBACK.
 - [ ] 06.08 · Search path de funciones — EN_PROGRESO
   - Evidencia: AUDITORIA_INVENTARIO_RPC_V91.json: Cribado search_path de funciones privilegiadas; falta verificación de todas sus dependencias
+  - Evidencia: V124: ambas RPC destructivas preservaron search_path fijado; revisión de todas las demás sigue pendiente.
 - [ ] 06.09 · Filtración por GraphQL — EN_PROGRESO
   - Evidencia: V120: Supabase Advisor informa 64 objetos visibles en GraphQL a authenticated. Acceso a esquema NO equivale a fuga de filas; revisión exhaustiva pendiente.
   - Evidencia: V121: 64 advertencias GraphQL para objetos authenticated según Security Advisor; RLS V121 elimina filtración concreta por artefactos y archivos, no todas las advertencias.
+  - Evidencia: V124: quedan 64 WARN GraphQL autenticado; se exige revisar permisos y RLS reales en cada objeto, no confundir exposición del esquema con lectura de datos.
 - [x] 06.10 · No privilegios anónimos — APROBADO
   - Evidencia: AUDITORIA_BASE_SQL_V90.md: Catálogo de grants: cero RPC SECURITY DEFINER ejecutables por rol anon
 - [ ] 06.11 · Identidad JWT validada en servidor — PENDIENTE
@@ -283,6 +289,7 @@ Avance: 325 controles totales; 9 aprobados; 100 en progreso; 215 pendientes; 1 f
   - Evidencia: V118: solo lectura de 5 pendientes: 3 pares técnicamente identificados, 1 referencia faltante, 1 original ambiguo y 1 reemplazo ausente (categorías solapables).
 - [ ] 13.09 · Revisión de caso ambiguo — EN_PROGRESO
   - Evidencia: V118: original ambiguo, supletoria ausente y original=supletoria rechazados en ensayo ficticio.
+  - Evidencia: V123: sólo sombras de Confirmación con source legacy_import y estado anulado/revertido pueden retirarse; manuales y vigentes protegidas.
 - [ ] 13.10 · Archivo en Cancillería y parroquia — EN_PROGRESO
   - Evidencia: V114: evidencia contractual de archivo canónico en doble rol, sin duplicar registros físicos; falta cotejo visual RLS.
   - Evidencia: V118: centro Cancillería muestra historial y avisos a parroquia; prueba visual pendiente.
@@ -337,6 +344,7 @@ Avance: 325 controles totales; 9 aprobados; 100 en progreso; 215 pendientes; 1 f
   - Evidencia: AUDITORIA_AUTORIDAD_MIGRACION_V101_2026-10-21.md: V101: create_legacy_import_batch + stage_legacy_import_rows + apply_legacy_import_batch_v3 probados desde rol Parroquia
 - [ ] 16.06 · Errores parciales — EN_PROGRESO
   - Evidencia: V121: datos binarios/físicos de instalación y origen tratados con pertenencia doble, sin fugar datos de otra diócesis.
+  - Evidencia: V123: prueba de datos importados anulado vs activo y manual, remoción sólo elegible e idempotencia sin borrar otro registro.
 - [ ] 16.07 · 16 mil filas con paginación — PENDIENTE
 - [ ] 16.08 · Catálogos auxiliares — PENDIENTE
 - [ ] 16.09 · ANULACION y conceptos — EN_PROGRESO
@@ -516,6 +524,7 @@ Avance: 325 controles totales; 9 aprobados; 100 en progreso; 215 pendientes; 1 f
   - Evidencia: AUDITORIA_DECRETOS_MATRIMONIO_EXEQUIAS_V104_2026-10-21.md: V104: paso indebido de Admin General/Diócesis en 7 RPC eliminado con guarda Cancillería
   - Evidencia: AUDITORIA_NULIDAD_VINCULOS_BAUTISMO_V105_2026-10-21.md: V105: falla de contaminación de Bautismo por enlace ajeno reproducida y corregida en RPC de Cancillería
   - Evidencia: V120: autorizado de bajo privilegio no puede leer origen ni fila de otra diócesis, aunque compartan instalación histórica.
+  - Evidencia: V124: Administrador General ya no puede ejecutar la eliminación de sombras sacramentales, tampoco Canciller ni Parroquia.
 - [ ] 27.02 · Escalamiento horizontal — EN_PROGRESO
   - Evidencia: AUDITORIA_EXP_DEPENDENCIAS_Y_RLS_V91.md: Segunda diócesis ficticia y Bautismo ajeno negados para cuatro roles en transacción ROLLBACK
   - Evidencia: AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: V95 escalamiento horizontal: 5 INSERT a parroquia ajena rechazados por RLS
@@ -539,7 +548,9 @@ Avance: 325 controles totales; 9 aprobados; 100 en progreso; 215 pendientes; 1 f
   - Evidencia: AUDITORIA_RECEPCION_NULIDAD_MATRIMONIAL_V106_2026-10-21.md: V106: por RPC directa no puede aplicar nulidad inexistente ni archivar una recepción con nota
   - Evidencia: AUDITORIA_REVISION_JURIDICA_NULIDAD_V107_2026-10-21.md: V107: solo Cancillería solicita revisión, Admin/Diócesis/Parroquia denegados y RLS limita consulta
   - Evidencia: AUDITORIA_DOBLE_COTEJO_DECISIONES_V110_2026-10-21.md: V110: autorización de dos roles específicos en etapas separadas, RLS territorial, Admin/Parroquia sin escritura
-- [ ] 27.05 · SQL injection — PENDIENTE
+  - Evidencia: V124: matriz directa de RPC con cuatro roles y jurisdicción real, 2 autorizaciones y 6 rechazos.
+- [ ] 27.05 · SQL injection — EN_PROGRESO
+  - Evidencia: V123: prohibido patrón LIKE libre en limpieza de sombras de Confirmación; parámetro fuente literal sin comodines, >=6 caracteres. Auditoría SQL injection integral aún pendiente.
 - [ ] 27.06 · XSS — PENDIENTE
 - [ ] 27.07 · Fuga JWT — PENDIENTE
 - [ ] 27.08 · Secretos en build — PENDIENTE
@@ -554,6 +565,7 @@ Avance: 325 controles totales; 9 aprobados; 100 en progreso; 215 pendientes; 1 f
   - Evidencia: AUDITORIA_RECONCILIACIONES_PRIVILEGIADAS_V103_2026-10-21.md: V103: 2 funciones SECURITY DEFINER de mantenimiento histórico ya no ejecutables por authenticated; inventario descendió 128 a 126
   - Evidencia: AUDITORIA_DECRETOS_MATRIMONIO_EXEQUIAS_V104_2026-10-21.md: V104: 7 SECURITY DEFINER de decretos de matrimonios/exequias con rol Cancillería y alcance diocesano
   - Evidencia: V121: inventario de SECURITY DEFINER detecta 133 ejecutables por authenticated y 0 por anon; 17 no nombran auth.uid (no prueba por sí mismo inseguridad).
+  - Evidencia: V122-V124: 133 funciones SECURITY DEFINER inventariadas, 2 con DELETE parcialmente ensayadas; 57 permisos TRUNCATE bloqueados. No certifica 133 RPC.
 
 ### 28. Privacidad y tratamiento de datos (P0) — 0/9
 
@@ -601,6 +613,7 @@ Avance: 325 controles totales; 9 aprobados; 100 en progreso; 215 pendientes; 1 f
   - Evidencia: Se copiaron al repositorio las migraciones exactas V111/V112 recuperando su definición de Supabase y se añadieron 10 verificaciones estáticas; restauración limpia pendiente.
   - Evidencia: V115/V116/V117: migraciones instaladas y SQL local con versiones sincronizadas; reconstrucción limpia de cero sigue pendiente.
   - Evidencia: V118: migración local sincronizada con versión 20261022040505 en Supabase.
+  - Evidencia: V122/V123/V124: migraciones de seguridad registradas en Supabase, versiones sincronizadas localmente y pruebas reversibles posteriores.
 - [ ] 30.05 · Preview de Vercel — PENDIENTE
 - [ ] 30.06 · Variables secretas — EN_PROGRESO
   - Evidencia: AUDITORIA_EXP_DEPENDENCIAS_Y_RLS_V91.md: En laboratorios solo variables VITE públicas, excluido VERCEL_OIDC_TOKEN; faltan otros secretos
@@ -643,6 +656,7 @@ Avance: 325 controles totales; 9 aprobados; 100 en progreso; 215 pendientes; 1 f
   - Evidencia: AUDITORIA_PUERTA_CALIDAD_V90.json: Gate registra ejecución 25 de 26, dependencias fallidas; falta cobertura integral por cada control
   - Evidencia: V111/V112: fuentes SQL, pruebas y resumen de seguridad guardados en el árbol canónico. Falta catalogación forense de cada transacción E2E.
   - Evidencia: V114: banco de 7.800 escenarios planificados, separados de pruebas reales y sintéticas con etiqueta NO_EJECUTADO.
+  - Evidencia: V124: SQL QA y contract tests versionables en scripts, migraciones reproducibles y banco 133 RPC.
 - [ ] 32.02 · Guardar entrada y expectativa — EN_PROGRESO
   - Evidencia: AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: Matriz V95: 60 resultados por 4 roles y 5 tablas, con resultados esperados documentados
   - Evidencia: AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96 matriz 12 resultados por cuatro actores y tres tipos de escritura
@@ -673,6 +687,7 @@ Avance: 325 controles totales; 9 aprobados; 100 en progreso; 215 pendientes; 1 f
   - Evidencia: V118: archivos SQL, validación estática y gate 526/526 reproducibles.
   - Evidencia: V119-V120: pruebas Chrome reales anon 7/7 y regresión 535 sintéticas 25/25 tareas; SQL multirrol ejecutado.
   - Evidencia: V121: dos scripts SQL reproducibles, ocho pruebas contractuales estáticas, gate V121 de 543 sintéticas.
+  - Evidencia: V124: tres baterías transaccionales de seguridad, 19 tests contractuales nuevos y gate 562/562; documenta evidencia.
 - [ ] 32.04 · Guardar capturas — EN_PROGRESO
   - Evidencia: V114: scripts SQL reversibles y prueba de origen de migraciones versionados; todavía faltan capturas de UI.
   - Evidencia: V119: capturas y hashes SHA-256 por viewport/ruta, guardadas en AUDITORIA_EVIDENCIA_VISUAL_V119 (local, no Git).
@@ -693,6 +708,7 @@ Avance: 325 controles totales; 9 aprobados; 100 en progreso; 215 pendientes; 1 f
   - Evidencia: AUDITORIA_DOBLE_COTEJO_DECISIONES_V110_2026-10-21.md: V110: riesgo de autocertificación mitigado por cotejo diocesano independiente sin atribuir veracidad jurídica
   - Evidencia: V120: hallazgo de aislamiento de origen y fila histórica (gravedad alta) documentado y cerrado por RLS; 64 WARN GraphQL pendientes de revisión.
   - Evidencia: V121: hallazgo alto de lectura física ajena corregido; quedan sin cerrar seguridad de dependencias, 64 advertencias GraphQL y 133 funciones privilegiadas.
+  - Evidencia: V122: gravedad crítica grants TRUNCATE en 57 tablas, V123 borrado de Confirmación manual activa; ambos corregidos. Sigue default ACL supabase_admin y seguridad general.
 - [ ] 32.06 · Corregir y repetir — EN_PROGRESO
   - Evidencia: AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: V95 reprodujo fallo antes y verificó reparación tras aplicar migración
   - Evidencia: AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96 corrige hallazgo de identidad institucional y repite prueba antes/después
@@ -711,6 +727,7 @@ Avance: 325 controles totales; 9 aprobados; 100 en progreso; 215 pendientes; 1 f
   - Evidencia: V118: cierre de fallos de autorización, alcance de origen y duplicado.
   - Evidencia: V120: evidencia antes/después de fuga entre diócesis, ALTER POLICY y prueba RLS multirrol reejecutada sin error.
   - Evidencia: V121: pruebas RLS fallidas antes del arreglo (3 lecturas), positivas tras cuatro ALTER POLICY y prueba de no regresión local.
+  - Evidencia: V123: el defecto de borrado activo fue primero reproducido y luego refutado con mismo fixture; V124 roles endurecidos y ensayados.
 - [ ] 32.07 · Regresión completa — EN_PROGRESO
   - Evidencia: AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md: Regresión 211 pruebas sintéticas, 23 verificadores, build OK; quedan fallas de dependencias
   - Evidencia: AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: 219 pruebas sintéticas, 23 verificadores y build aprobados; advertencias HIGH de paquetes aún abiertas
@@ -731,6 +748,7 @@ Avance: 325 controles totales; 9 aprobados; 100 en progreso; 215 pendientes; 1 f
   - Evidencia: V118: 25/25 verificaciones, 526 tests sintéticos, build Vite; npm audit excluida.
   - Evidencia: V120: gate 25/25, 535 sintéticas, 23 verificadores heredados y build aprobados; npm audit omitida.
   - Evidencia: V121: 543/543 sintéticas, 25/25 verificaciones incluyendo build, con npm audit expresamente fuera.
+  - Evidencia: V124: 562 pruebas sintéticas aprobadas y 25/25 verificaciones de gate, build correcto; npm audit sigue omitido.
 - [ ] 32.08 · Conteos antes/después — EN_PROGRESO
   - Evidencia: AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: Tras V95: 15 políticas, 0 bypass is_app_admin y 0 residuos en 5 catálogos
   - Evidencia: AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96: mis_datos mantiene 1 fila real, 0 fixtures y 0 admin bypass en 3 políticas
@@ -749,9 +767,11 @@ Avance: 325 controles totales; 9 aprobados; 100 en progreso; 215 pendientes; 1 f
   - Evidencia: V118: dos ROLLBACK y verificación de residuos QA cero.
   - Evidencia: V120: siete antecedentes ANULACION intactos, 5 pendientes y 2 vinculados; cero residuos RLS ficticios.
   - Evidencia: V121: regresión de cero residuos QA y mismos 5 históricos pendientes y 2 vinculados.
+  - Evidencia: V124: residuos QA cero después de ROLLBACK; 5 ANULACION archivados y 2 enlazados intactos.
 - [x] 32.09 · Confirmar producción Ready — APROBADO
   - Evidencia: AUDITORIA_CIERRE_TECNICO_V91_2026-10-21.md: Despliegue Vercel de código V91 Ready; nota: app no certificada integralmente
-- [ ] 32.10 · Dictamen con limitaciones verificadas — PENDIENTE
+- [ ] 32.10 · Dictamen con limitaciones verificadas — EN_PROGRESO
+  - Evidencia: V124: dictamen parcial identifica dos P0 corregidos, 131 RPC sin validación exhaustiva, default ACL supabase_admin y 64 WARN GraphQL pendientes.
 
 ## Hechos verificados previos al nuevo protocolo
 
