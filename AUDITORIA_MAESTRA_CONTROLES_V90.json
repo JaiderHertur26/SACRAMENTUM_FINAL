@@ -579,9 +579,10 @@
         "V140-V141: RPC register_registry_print auditada parcialmente por contenido, política required, scope, reversión e integridad; 136 SECDEF, 21 con pruebas parciales, 115 pendientes de revisión individual.",
         "V142: register_registry_print y acceso SELECT RLS a constancia verificados parcialmente; catálogo sigue 136 SECDEF, 21 revisadas parcialmente y 115 pendientes.",
         "V143: register_registry_print comprobada parcialmente contra coordenadas desfasadas, updated_at y huella de HTML aportada por navegador; inventario 136/21 parciales/115 pendientes.",
-        "V147: register_registry_print parcialmente revisada: FOR SHARE y advisory transaction lock de reimpresiones. Concurrencia multisesión real aún no certificada."
+        "V147: register_registry_print parcialmente revisada: FOR SHARE y advisory transaction lock de reimpresiones. Concurrencia multisesión real aún no certificada.",
+        "V148: monotonic version triggers en los cuatro sacramentos y prueba parcial extendida de register_registry_print; auditoría 136 SECDEF, 21 parciales, 115 pendientes."
       ],
-      "updated_at": "2026-10-22T18:47:42.514Z"
+      "updated_at": "2026-10-22T19:04:00.474Z"
     },
     {
       "id": "06.07",
@@ -608,9 +609,10 @@
         "V140: backend evita impresión sin notas required y bloquea notas internas, ajenas, duplicadas, inactivas y contenido falsificado.",
         "V142: impresión cliente exige comprobar constancia canónica por parroquia, partida, sacramento, clase documental y notas; no basta un UUID del RPC.",
         "V143: impresión exige igualdad de libro/folio/número comparando metadata declarada por cliente con fila original, en misma transacción.",
-        "V144: lectura de partida bloqueada por FOR SHARE hasta finalizar el asiento del print_event."
+        "V144: lectura de partida bloqueada por FOR SHARE hasta finalizar el asiento del print_event.",
+        "V148: updated_at de cada partida cambia monotónicamente en UPDATE antes de validar una nueva impresión; FOR SHARE V144 permanece."
       ],
-      "updated_at": "2026-10-22T18:47:42.514Z"
+      "updated_at": "2026-10-22T19:04:00.474Z"
     },
     {
       "id": "06.08",
@@ -1334,9 +1336,10 @@
         "V140: una nota de decreto revertido deja de imprimirse como vigente; la nota específica reversion_* continúa como constancia requerida.",
         "V142: la impresión de la nota histórica no cambia después del RPC porque HTML y lista se capturan antes del await; discrepancia en constancia bloquea.",
         "V143: no basta una nota íntegra; un folio diferente provoca rechazo de solicitud de impresión antes de obtener constancia.",
-        "V144: reimpresiones documentadas como solicitudes con consecutivo y UUID del antecedente, no como papel impreso."
+        "V144: reimpresiones documentadas como solicitudes con consecutivo y UUID del antecedente, no como papel impreso.",
+        "V148: el cliente que presenta versión anterior es rechazado tras editar contenido aunque status y libro/folio/número no hayan cambiado."
       ],
-      "updated_at": "2026-10-22T18:47:42.514Z"
+      "updated_at": "2026-10-22T19:04:00.474Z"
     },
     {
       "id": "12.08",
@@ -1593,9 +1596,10 @@
         "V140: impresión no restaura notas anteriores de decretos revertidos; metadatos de estatus y referencias históricas conservados.",
         "V142: se comparan status canónico, texto y política de cada nota del evento auditado con los enviados antes de mostrar impresión.",
         "V143: versión original updated_at cotejada como timestamptz; rehúsa copia caducada aunque estado siga seated.",
-        "V145: antecedente histórico sin consecutivo conservado, con nueva solicitud trazada por secuencia futura."
+        "V145: antecedente histórico sin consecutivo conservado, con nueva solicitud trazada por secuencia futura.",
+        "V148: prueba en Baptism reveló modificación nombres sin avance updated_at, se instaló trigger e incrementos de microsegundo."
       ],
-      "updated_at": "2026-10-22T18:47:42.514Z"
+      "updated_at": "2026-10-22T19:04:00.474Z"
     },
     {
       "id": "14.05",
@@ -1630,9 +1634,10 @@
         "V141: Exequias partida y constancia incluyen notas obligatorias aunque el usuario desmarque opcionales; renderizado HTML escapado.",
         "V142: Bautismo, Confirmación y Matrimonio congelan DOM/selección antes de RPC; ambas salidas de Exequias congelan HTML generado previamente.",
         "V143: campos originales y hash cliente enlazados a la solicitud de partida en Bautismo/Confirmación/Matrimonio.",
-        "V144: asiento Bautismo y Confirmación protegido ante modificaciones concurrentes de fila mientras la RPC ejecuta."
+        "V144: asiento Bautismo y Confirmación protegido ante modificaciones concurrentes de fila mientras la RPC ejecuta.",
+        "V148: Bautismo y Confirmación reciben nueva marca updated_at en cada actualización, incluso dentro de la misma transacción."
       ],
-      "updated_at": "2026-10-22T18:47:42.514Z"
+      "updated_at": "2026-10-22T19:04:00.474Z"
     },
     {
       "id": "14.07",
@@ -1840,9 +1845,10 @@
         "V141: Matrimonio elimina fallback a nota marginal inline no verificada tras filtro de decreto; BAUTISMO/CONFIRMACIÓN y Exequias usan lista vinculada a estado.",
         "V142: protección contra discordancia de estado y notas entre solicitud y recibo; aún sin SHA de la totalidad del documento ni ensayo concurrente auténtico.",
         "V143: Exequias partida y constancia remiten libro/folio/número/updated_at/huella del HTML preparado, no texto recomputado posteriormente.",
-        "V144: fila Matrimonio y Exequias protegida mediante bloqueo transaccional FOR SHARE."
+        "V144: fila Matrimonio y Exequias protegida mediante bloqueo transaccional FOR SHARE.",
+        "V148: Matrimonio y Exequias también usan clock_timestamp monotónico en vez de confiar en now() constante por transacción."
       ],
-      "updated_at": "2026-10-22T18:47:42.514Z"
+      "updated_at": "2026-10-22T19:04:00.474Z"
     },
     {
       "id": "16.07",
@@ -2771,9 +2777,10 @@
         "V141: filtro de notas en componentes de Matrimonio/Exequias y servicio general respeta reversión y nota de reversión; build OK, navegador institucional real pendiente.",
         "V142: cinco salidas de impresión validan el recibo leído desde registry_print_events por el mismo actor parroquial, y detienen la impresión ante discrepancias.",
         "V143: cinco flujos de impresión cotejan recibo con coordenadas/version/huella; prueba visual autenticada e impresión física todavía pendientes.",
-        "V147: constancia de reimpresión en metadata DB; sello de copia en HTML e impresión física pendientes."
+        "V147: constancia de reimpresión en metadata DB; sello de copia en HTML e impresión física pendientes.",
+        "V148: trazabilidad documental bloquea versión antigua de impresión tras 3 actualizaciones del registro, verificada en Supabase con JWT simulado."
       ],
-      "updated_at": "2026-10-22T18:47:42.514Z"
+      "updated_at": "2026-10-22T19:04:00.474Z"
     },
     {
       "id": "25.01",
@@ -3011,9 +3018,10 @@
         "V140: register_registry_print persiste un conjunto canónico de notas del servidor; no confía en label y texto enviado por cliente.",
         "V142: lectura de registry_print_events bajo rol authenticated y request.jwt.claim.sub parroquial simulado pasó para cuatro sacramentos.",
         "V143: huella SHA-256 calculada con Web Crypto en origen; metadatos dejan claro que digest de cliente no prueba certificación del libro.",
-        "V144: contador acotado por parroquia+sacramento+partida+tipo, bloqueo advisory específico de ese documento."
+        "V144: contador acotado por parroquia+sacramento+partida+tipo, bloqueo advisory específico de ese documento.",
+        "V148: función de disparador private con SECURITY INVOKER, sin EXECUTE directo public/anon/authenticated."
       ],
-      "updated_at": "2026-10-22T18:47:42.514Z"
+      "updated_at": "2026-10-22T19:04:00.474Z"
     },
     {
       "id": "27.02",
@@ -3041,9 +3049,10 @@
         "V140: impresión de nota UUID exige coincidencia de parroquia, sacramento, partida y estado; todas verificaciones en backend.",
         "V142: receipt debe contener parish_id, sacrament_id, sacrament_type y document_kind exactos; matriz unitaria rechaza suplantación de cada atributo.",
         "V143: SQL sobre cada sacramento rechazo de libro/folio/número falsos y versión de fecha antigua; compatibilidad con clientes legacy marcada como unchecked.",
-        "V146: metadatos históricos NO_NUMERIC o demasiado grandes dejan de interrumpir posteriores impresiones."
+        "V146: metadatos históricos NO_NUMERIC o demasiado grandes dejan de interrumpir posteriores impresiones.",
+        "V148: defensa ante escritura manual de updated_at antigua; trigger impone valor mayor al anterior en cada sacramento."
       ],
-      "updated_at": "2026-10-22T18:47:42.514Z"
+      "updated_at": "2026-10-22T19:04:00.474Z"
     },
     {
       "id": "27.03",
@@ -3091,9 +3100,10 @@
         "V140: obligatoriedad de notas required respaldada por SQL en cuatro sacramentos, validación de texto y política real.",
         "V142: el recibo del backend se recupera por ID devuelto por register_registry_print y valida identidad/notas/estado antes de permitir impresión.",
         "V143: contrato de register_registry_print valida p_metadata.expected_coordinates, expected_record_updated_at y formato SHA-256 antes de registrar evento.",
-        "V144-146: secuencia, previa UUID y clasificación son generadas por RPC con orden independiente de timestamps iguales."
+        "V144-146: secuencia, previa UUID y clasificación son generadas por RPC con orden independiente de timestamps iguales.",
+        "V148: V143 compara updated_at canónico y rechaza una copia antes de registrar print event; la prueba funcional verifica tanto rechazo como aceptación."
       ],
-      "updated_at": "2026-10-22T18:47:42.514Z"
+      "updated_at": "2026-10-22T19:04:00.474Z"
     },
     {
       "id": "27.05",
@@ -3115,9 +3125,10 @@
         "V141: identificadores legacy-inline y auto-rc permitidos únicamente con metadatos unverified, RC cotejado contra NUIP/Serial real. No se certifica su texto HTML generado por cliente.",
         "V142: se separa recibo de solicitud de impresión de constancia de impresión física. No se certifican bytes/píxeles del documento completo.",
         "V143: digest de contenido íntegro congelado enviado, persistido, leído y comparado en cliente. No se considera documento firmado por la Curia.",
-        "V147: pruebas SQL de secuencia exitosas, pero ensayo físico con dos conexiones no concluyente; no se marca concurrencia como certificada."
+        "V147: pruebas SQL de secuencia exitosas, pero ensayo físico con dos conexiones no concluyente; no se marca concurrencia como certificada.",
+        "V148: cuatro triggers BEFORE UPDATE aplicados y confirmados, no corrige aún carreras después de COMMIT ni certifica papel."
       ],
-      "updated_at": "2026-10-22T18:47:42.514Z"
+      "updated_at": "2026-10-22T19:04:00.474Z"
     },
     {
       "id": "27.06",
@@ -3208,9 +3219,10 @@
         "V141: inventario de 136 SECDEF, 21 con pruebas parciales, 115 pendientes. Se agregó prueba individual parcial de register_registry_print.",
         "V142: inventario sin cambios en cantidad, 136 SECDEF; 21 parciales (register_registry_print con evidencia extendida), 115 pendientes.",
         "V143: inventario SECURITY DEFINER mantiene 136, 21 con pruebas parciales y 115 por revisar; evidencia complementaria de RPC impresión.",
-        "V147: 136 SECURITY DEFINER authenticated, 21 con pruebas parciales, 115 funciones pendientes."
+        "V147: 136 SECURITY DEFINER authenticated, 21 con pruebas parciales, 115 funciones pendientes.",
+        "V148: lista SECURITY DEFINER constante 136 funciones, 21 evidencias parciales, 115 por revisar; trigger nuevo SEC INVOKER."
       ],
-      "updated_at": "2026-10-22T18:47:42.514Z"
+      "updated_at": "2026-10-22T19:04:00.474Z"
     },
     {
       "id": "28.01",
@@ -3627,9 +3639,10 @@
         "V140-V141: SQL 7 negativas +3 positivas, 2 negativas +1 positiva con decreto revertido, 3 negativas +1 positiva RC y 4 denegaciones+4 aceptaciones en 4 sacramentos, todas ROLLBACK.",
         "V142: SQL rollback cuatro sacramentos demostró que el mismo usuario parroquial lee su evento canónico bajo RLS; 26 nuevos tests de identidad, estado y notas.",
         "V143: SQL ROLLBACK multissacramento 24 denegaciones, 4 solicitudes válidas y 4 solicitudes antiguas aceptadas pero marcadas sin cotejo.",
-        "V144-V146: cuatro sacramentos y tres reimpresiones, tipos independientes, antecedentes antiguos no numéricos y largos, todos BEGIN/ROLLBACK."
+        "V144-V146: cuatro sacramentos y tres reimpresiones, tipos independientes, antecedentes antiguos no numéricos y largos, todos BEGIN/ROLLBACK.",
+        "V148: QA baseline reprodujo desactualización de timestamps; QA posterior con 4 sacramentos, 3 modificaciones, 4 rechazos y 4 aceptaciones con rollback."
       ],
-      "updated_at": "2026-10-22T18:47:42.514Z"
+      "updated_at": "2026-10-22T19:04:00.474Z"
     },
     {
       "id": "31.08",
@@ -3677,9 +3690,10 @@
         "V141: tras todos los laboratorios, cero Baptisms/Confirmations/Marriages/Funerals/Notes/PrintEvents/Decrees QA; ANULACION intacto 5 archivados y 2 materializados.",
         "V142: 0 datos QA en cuatro sacramentos y registry_print_events; ANULACION sin variación 5 archived y 2 materialized_decree.",
         "V143: conteo posterior cero partidas QA, print_events QA o audit_events QA; ANULACION 5 archived y 2 materialized_decree intactos.",
-        "V147: 0 registros ficticios residuales; 8 solicitudes históricas auténticas sin SHA sin tocar; ANULACION 5 archivados y 2 vinculados intactos."
+        "V147: 0 registros ficticios residuales; 8 solicitudes históricas auténticas sin SHA sin tocar; ANULACION 5 archivados y 2 vinculados intactos.",
+        "V148: 0 partidas/impresiones QA persistidas, 8 impresiones históricas y ANULACION 5+2 sin tocar."
       ],
-      "updated_at": "2026-10-22T18:47:42.514Z"
+      "updated_at": "2026-10-22T19:04:00.474Z"
     },
     {
       "id": "32.01",
@@ -3757,9 +3771,10 @@
         "V141: 28 nuevos contratos y pruebas de ROLLBACK, 741/741 sintéticas y 28/28 tareas estrictas, compilación y dos npm audit OK.",
         "V142: 26 pruebas nuevas de sincronía/constancia incluidas en CI, 767/767 sintéticas y 28/28 verificaciones estrictas.",
         "V143: +29 contratos y pruebas hash/cotejo, 796/796 sintéticas y 28/28 checks estrictos.",
-        "V147: 21 nuevos tests, 817/817 sintéticas, 28/28 verificaciones finales, npm ci aislado 446 paquetes."
+        "V147: 21 nuevos tests, 817/817 sintéticas, 28/28 verificaciones finales, npm ci aislado 446 paquetes.",
+        "V148: +19 tests nuevos, 836/836 pruebas sintéticas, 28/28 quality gate; 4 regresiones SQL históricas PASS."
       ],
-      "updated_at": "2026-10-22T18:47:42.514Z"
+      "updated_at": "2026-10-22T19:04:00.474Z"
     },
     {
       "id": "32.04",
@@ -3812,9 +3827,10 @@
         "V140: reproducido pre-migración que register_registry_print aceptaba omisión de nota required al solicitar impresión; corregido.",
         "V142: defecto de secuencia en cliente: innerHTML se obtenía después de await registrar, pudiendo cambiar desde la selección auditada.",
         "V143: reproducido pre-migración que frontend podía declarar folio 222 y registrar impresión sobre libro con folio 333.",
-        "V145: anterior UUID mal encadenado por timestamp idéntico; V146: conversión legacy ERROR 22P02; ambos reproducidos y corregidos."
+        "V145: anterior UUID mal encadenado por timestamp idéntico; V146: conversión legacy ERROR 22P02; ambos reproducidos y corregidos.",
+        "V148: fallo real en Bautismo: se editaba nombre sin cambio updated_at; ahora se detecta modificación de versión en cuatro sacramentos."
       ],
-      "updated_at": "2026-10-22T18:47:42.514Z"
+      "updated_at": "2026-10-22T19:04:00.474Z"
     },
     {
       "id": "32.06",
@@ -3855,9 +3871,10 @@
         "V141: pruebas SQL de cuatro sacramentos y decreto revertido PASS; usuario autenticado simulado; frontend filtros y constancia incluidos.",
         "V142: snapshots de HTML y notas se crean antes de RPC; receipt leído y validado; SQL RLS + build + tests PASS. E2E browser autenticado pendiente.",
         "V143: migración aplicada 20261022180645 y matriz SQL post-fix 4x6 rechazos, ROLLBACK; tests funcionales de hash.",
-        "V147: migraciones aplicadas 20261022182523, 20261022182724, 20261022183433, reimpresiones probadas sin residuo."
+        "V147: migraciones aplicadas 20261022182523, 20261022182724, 20261022183433, reimpresiones probadas sin residuo.",
+        "V148: migración 20261022185717 aplicada, cuatro triggers reales verificados, QA SQL con ROLLBACK."
       ],
-      "updated_at": "2026-10-22T18:47:42.514Z"
+      "updated_at": "2026-10-22T19:04:00.474Z"
     },
     {
       "id": "32.07",
@@ -3900,9 +3917,10 @@
         "V141: gate 28/28, tests 741/741, npm audit completo/runtime sin vulnerabilidades, CSS/build OK.",
         "V142: build Vite y CSS crítico OK; npm audit producción y completo sin hallazgos, gate 28/28.",
         "V143: build Vite/CSS, npm audit runtime y completo cero alertas, 28/28 checks estrictos.",
-        "V147: puerta inicial V146 26/28 por crítico DOMPurify; corregido en 3.4.17, gate final 28/28, npm audit full/prod cero."
+        "V147: puerta inicial V146 26/28 por crítico DOMPurify; corregido en 3.4.17, gate final 28/28, npm audit full/prod cero.",
+        "V148: Vite build, CSS crítico y npm audit completo y producción =0, puerta estricta 28/28."
       ],
-      "updated_at": "2026-10-22T18:47:42.514Z"
+      "updated_at": "2026-10-22T19:04:00.474Z"
     },
     {
       "id": "32.08",
@@ -3943,9 +3961,10 @@
         "V141: migraciones registradas 20261022172147 y 20261022173154; notas inventadas en BEGIN/ROLLBACK; sin nuevo despliegue frontend.",
         "V142: ajuste frontend únicamente, sin DDL ni nuevas migraciones, no despliegue y sin persistencia de fixtures QA.",
         "V143: frontend en rama sin despliegue. Backend opcional para clientes previos; eventos de clientes legacy quedan marcados sin verificación de coordenadas/version.",
-        "V147: sin frontend desplegado ni impresión física. Prueba transaccional de dos sesiones real sigue pendiente."
+        "V147: sin frontend desplegado ni impresión física. Prueba transaccional de dos sesiones real sigue pendiente.",
+        "V148: backend corregido, frontend sin desplegar; concurrente de dos backends independiente pendiente, no certificado."
       ],
-      "updated_at": "2026-10-22T18:47:42.514Z"
+      "updated_at": "2026-10-22T19:04:00.474Z"
     },
     {
       "id": "32.09",
