@@ -138,9 +138,10 @@
         "AUDITORIA_ACTUACIONES_NULIDAD_V108_2026-10-21.md: V108: Cancillería registra inicio de revisión y correspondencia del Tribunal; decisión formal y ejecución jurídica siguen pendientes",
         "AUDITORIA_RECEPCION_DECISION_TRIBUNAL_V109_2026-10-21.md: V109: recepción de supuesta decisión del Tribunal segregada de verificación y ejecución, ambas últimas no certificadas",
         "AUDITORIA_DOBLE_COTEJO_DECISIONES_V110_2026-10-21.md: V110: doble cotejo sobre recepción judicial no verificada; certificación de Tribunal y ejecución siguen pendientes",
-        "V111/V112: cotejo doble evaluado y aclaraciones documentadas en Supabase; autenticidad judicial real y aplicación sobre partidas continúan sin aprobar."
+        "V111/V112: cotejo doble evaluado y aclaraciones documentadas en Supabase; autenticidad judicial real y aplicación sobre partidas continúan sin aprobar.",
+        "V114: expediente ficticio de nulidad, doble cotejo, aclaración y respuesta; sentencia Matrimonio y recepción conservan estado; ejecución SQL ROLLBACK (scripts/qa-rollback-tribunal-v114.sql)."
       ],
-      "updated_at": "2026-10-22T02:48:01.223Z"
+      "updated_at": "2026-10-22T03:21:45.465Z"
     },
     {
       "id": "02.04",
@@ -554,9 +555,10 @@
       "status": "EN_PROGRESO",
       "evidence": [
         "AUDITORIA_INVENTARIO_RPC_V91.json: 129 funciones privilegiadas clasificadas; faltan pruebas positivas y negativas función por función",
-        "V111/V112: se verificaron privilegios de ejecución anon=false y authenticated=true de nuevas RPC; las demás funciones privilegiadas requieren matriz completa por rol."
+        "V111/V112: se verificaron privilegios de ejecución anon=false y authenticated=true de nuevas RPC; las demás funciones privilegiadas requieren matriz completa por rol.",
+        "V113/V114: lectura de aclaraciones sólo Cancillería/Diócesis; Parroquia rechazada en SQL. Las otras RPC pendientes de matriz completa."
       ],
-      "updated_at": "2026-10-22T02:48:01.225Z"
+      "updated_at": "2026-10-22T03:21:45.467Z"
     },
     {
       "id": "06.07",
@@ -1059,9 +1061,10 @@
         "AUDITORIA_ACTUACIONES_NULIDAD_V108_2026-10-21.md: V108: vínculo de revisión con nulidad vigente, estado del caso y actuaciones no dispositivas",
         "AUDITORIA_RECEPCION_DECISION_TRIBUNAL_V109_2026-10-21.md: V109: recepción con resultado alegado, referencia, autoridad y estado no verificado, sin alterar nulidad",
         "AUDITORIA_DOBLE_COTEJO_DECISIONES_V110_2026-10-21.md: V110: dos identidades institucionales obligatorias para cotejo, discrepancias conservadas, sin modificar nulidad",
-        "V111/V112: se separó revisión documental y aclaraciones de una decisión jurídica con efectos registrales. Evidencia de migraciones locales y test de contratos, sin recorrido E2E completo."
+        "V111/V112: se separó revisión documental y aclaraciones de una decisión jurídica con efectos registrales. Evidencia de migraciones locales y test de contratos, sin recorrido E2E completo.",
+        "V114: ensayo transaccional nulidad ficticia con dos funcionarios y respuesta sin efectos; UI visual autenticada y aval canónico externo pendientes."
       ],
-      "updated_at": "2026-10-22T02:48:01.225Z"
+      "updated_at": "2026-10-22T03:21:45.467Z"
     },
     {
       "id": "11.01",
@@ -1172,9 +1175,10 @@
       "status": "EN_PROGRESO",
       "evidence": [
         "AUDITORIA_CONCEPTOS_DEC_REGLAS_V98_2026-10-21.md: Cancillería única con INSERT/UPDATE de conceptos; otros roles bloqueados, todavía pendientes todos los RPC de emisión",
-        "AUDITORIA_DECRETOS_MATRIMONIO_EXEQUIAS_V104_2026-10-21.md: V104: corrección/reposición/nulidad y reversión de Matrimonios/Exequias solo Cancillería; siete RPC revisadas, resto pendiente"
+        "AUDITORIA_DECRETOS_MATRIMONIO_EXEQUIAS_V104_2026-10-21.md: V104: corrección/reposición/nulidad y reversión de Matrimonios/Exequias solo Cancillería; siete RPC revisadas, resto pendiente",
+        "V114: documentos nuevos e históricos de cuatro sacramentos, emisión Cancillería positiva, Diócesis, Parroquia y Admin General rechazados; no cubre todos los demás decretos."
       ],
-      "updated_at": "2026-10-22T00:14:44.971Z"
+      "updated_at": "2026-10-22T03:21:45.467Z"
     },
     {
       "id": "12.02",
@@ -1228,9 +1232,11 @@
       "area": "Decretos nuevos en Cancillería",
       "priority": "P0",
       "criterion": "Documental no afecta partida",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "V114: 8 documentos ficticios, cero cambios en partidas y notas durante transacción; fuente scripts/qa-rollback-documentary-v114.sql, ROLLBACK."
+      ],
+      "updated_at": "2026-10-22T03:21:45.467Z"
     },
     {
       "id": "12.07",
@@ -1248,9 +1254,11 @@
       "area": "Decretos nuevos en Cancillería",
       "priority": "P0",
       "criterion": "Archivo único en dos roles",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "V114: archivo consultado por diocese_id y parish_id sobre misma fila canónica, 52 casos sintéticos; falta prueba UI y RLS real de ambos actores."
+      ],
+      "updated_at": "2026-10-22T03:21:45.467Z"
     },
     {
       "id": "12.09",
@@ -1280,9 +1288,11 @@
       "area": "Decretos nuevos en Cancillería",
       "priority": "P0",
       "criterion": "Doble emisión impedida",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "V114: un segundo decreto con igual número es rechazado en ensayo documental reversible."
+      ],
+      "updated_at": "2026-10-22T03:21:45.467Z"
     },
     {
       "id": "13.01",
@@ -1292,9 +1302,10 @@
       "criterion": "Origen histórico verificable",
       "status": "EN_PROGRESO",
       "evidence": [
-        "AUDITORIA_CONCEPTOS_DEC_REGLAS_V98_2026-10-21.md: V98 4/4 conceptos históricos conservan source_kind legacy_catalog; trigger preserva procedencia contra edición"
+        "AUDITORIA_CONCEPTOS_DEC_REGLAS_V98_2026-10-21.md: V98 4/4 conceptos históricos conservan source_kind legacy_catalog; trigger preserva procedencia contra edición",
+        "V114: cuatro documentos históricos ficticios en parroquia no operativa; fuente histórica obligatoria, sin fingir nueva emisión; ROLLBACK."
       ],
-      "updated_at": "2026-10-21T20:15:10.211Z"
+      "updated_at": "2026-10-22T03:21:45.467Z"
     },
     {
       "id": "13.02",
@@ -1304,9 +1315,10 @@
       "criterion": "No simular nueva emisión",
       "status": "EN_PROGRESO",
       "evidence": [
-        "AUDITORIA_CONCEPTOS_DEC_REGLAS_V98_2026-10-21.md: V98 prohíbe fingir nueva importación con INSERT directo fuente legacy_catalog; reimportación E2E pendiente"
+        "AUDITORIA_CONCEPTOS_DEC_REGLAS_V98_2026-10-21.md: V98 prohíbe fingir nueva importación con INSERT directo fuente legacy_catalog; reimportación E2E pendiente",
+        "V114: expediente histórico queda archived, recordOrigin historical_archive; ensayo reversión no ejecutada. Pendiente auditoría importación real completa."
       ],
-      "updated_at": "2026-10-21T20:15:10.486Z"
+      "updated_at": "2026-10-22T03:21:45.467Z"
     },
     {
       "id": "13.03",
@@ -1387,9 +1399,11 @@
       "area": "Decretos antiguos importados",
       "priority": "P0",
       "criterion": "Archivo en Cancillería y parroquia",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "V114: evidencia contractual de archivo canónico en doble rol, sin duplicar registros físicos; falta cotejo visual RLS."
+      ],
+      "updated_at": "2026-10-22T03:21:45.467Z"
     },
     {
       "id": "13.11",
@@ -3230,9 +3244,10 @@
       "status": "APROBADO",
       "evidence": [
         "AUDITORIA_CIERRE_TECNICO_V91_2026-10-21.md: Vercel V91 build Ready, CSS de producción idéntico por SHA256",
-        "Puerta de compilación V112 correctamente ejecutada en equipo de trabajo; no acredita pruebas visuales autenticadas ni despliegue de V111/V112."
+        "Puerta de compilación V112 correctamente ejecutada en equipo de trabajo; no acredita pruebas visuales autenticadas ni despliegue de V111/V112.",
+        "V114: compilación local Vite aprobada junto con 501 pruebas sintéticas; no equivale a despliegue."
       ],
-      "updated_at": "2026-10-22T02:48:01.225Z"
+      "updated_at": "2026-10-22T03:21:45.467Z"
     },
     {
       "id": "30.08",
@@ -3337,9 +3352,11 @@
       "area": "E2E de personajes ficticios",
       "priority": "P0",
       "criterion": "Decretos nuevos e históricos",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "V114: matrices ficticias 52 variantes del modelo de decretos y dos ejecuciones SQL ROLLBACK; prueba integral por los cuatro sacramentos pendiente."
+      ],
+      "updated_at": "2026-10-22T03:21:45.467Z"
     },
     {
       "id": "31.08",
@@ -3367,9 +3384,11 @@
       "area": "E2E de personajes ficticios",
       "priority": "P0",
       "criterion": "Destruir sandbox y demostrar cero residuos",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "V114: tras dos ensayos SQL reversibles, cero registros QA persistidos en seis entidades verificadas."
+      ],
+      "updated_at": "2026-10-22T03:21:45.467Z"
     },
     {
       "id": "32.01",
@@ -3380,9 +3399,10 @@
       "status": "EN_PROGRESO",
       "evidence": [
         "AUDITORIA_PUERTA_CALIDAD_V90.json: Gate registra ejecución 25 de 26, dependencias fallidas; falta cobertura integral por cada control",
-        "V111/V112: fuentes SQL, pruebas y resumen de seguridad guardados en el árbol canónico. Falta catalogación forense de cada transacción E2E."
+        "V111/V112: fuentes SQL, pruebas y resumen de seguridad guardados en el árbol canónico. Falta catalogación forense de cada transacción E2E.",
+        "V114: banco de 7.800 escenarios planificados, separados de pruebas reales y sintéticas con etiqueta NO_EJECUTADO."
       ],
-      "updated_at": "2026-10-22T02:48:01.225Z"
+      "updated_at": "2026-10-22T03:21:45.467Z"
     },
     {
       "id": "32.02",
@@ -3436,9 +3456,11 @@
       "area": "Auditoría forense de cierre",
       "priority": "P0",
       "criterion": "Guardar capturas",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "V114: scripts SQL reversibles y prueba de origen de migraciones versionados; todavía faltan capturas de UI."
+      ],
+      "updated_at": "2026-10-22T03:21:45.467Z"
     },
     {
       "id": "32.05",

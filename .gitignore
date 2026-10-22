@@ -24,6 +24,8 @@ supabase/.branches/
 _backup_exequias_bautismo_v7/
 coverage/
 *.log
+# Catálogo masivo regenerable desde scripts/audit-fictional-case-catalog-v114.mjs
+AUDITORIA_CASOS_FICTICIOS_INTEGRALES_V114.json
 
 # Sistemas
 .DS_Store

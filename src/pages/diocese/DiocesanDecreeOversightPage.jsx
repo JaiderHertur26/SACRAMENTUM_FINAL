@@ -3,6 +3,7 @@ import DashboardLayout from '@/components/DashboardLayout';
 import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/components/ui/use-toast';
 import { submitCourtReceiptCheck } from '@/services/nullityReceiptDualControl';
+import CourtReceiptInstitutionalPanel from '@/components/chancery/CourtReceiptInstitutionalPanel';
 import { supabase } from '@/lib/supabaseClient';
 import { listDecrees } from '@/services/decreeRegistryService';
 import { decreeCategory, decreeTypeLabel, decreeEffect, isHistoricalDecree } from '@/utils/decreeArchiveModel.mjs';
@@ -242,6 +243,7 @@ export default function DiocesanDecreeOversightPage() {
                         Registrar contraste independiente de Diócesis
                       </button>
                     )}
+                    <CourtReceiptInstitutionalPanel receiptId={receipt.id} role="diocese" onSaved={()=>setReload(x=>x+1)} />
                   </div>
                 ))}
               </div>

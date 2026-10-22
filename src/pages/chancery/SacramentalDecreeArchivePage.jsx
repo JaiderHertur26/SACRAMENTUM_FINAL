@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 import { institutionalConfirm, institutionalPrompt } from '@/lib/institutionalDialog';
 import { submitCourtReceiptCheck } from '@/services/nullityReceiptDualControl';
+import CourtReceiptInstitutionalPanel from '@/components/chancery/CourtReceiptInstitutionalPanel';
 
 const SACRAMENT_KEY = (value) => {
   const v = String(value || '').toLowerCase();
@@ -991,6 +992,7 @@ const SacramentalDecreeArchivePage = () => {
                                     <span className="text-xs text-amber-700">Contraste diocesano independiente pendiente</span>
                                   )}
                                 </div>
+                                <CourtReceiptInstitutionalPanel receiptId={receipt.id} role="chancery" onSaved={load} />
                               </div>
                             ))}
                           </div>

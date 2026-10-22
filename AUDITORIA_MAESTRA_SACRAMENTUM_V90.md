@@ -10,7 +10,7 @@ Regla: no introducir datos falsos permanentes; usar memoria, transacciones ROLLB
 
 Prioridad P0 bloquea la certificación. P1 debe constar resuelta o aceptada con evidencia y responsable.
 
-Avance: 325 controles totales; 9 aprobados; 70 en progreso; 245 pendientes; 1 fallidos; 0 bloqueados.
+Avance: 325 controles totales; 9 aprobados; 77 en progreso; 238 pendientes; 1 fallidos; 0 bloqueados.
 
 ## Fases y controles numerados
 
@@ -43,6 +43,7 @@ Avance: 325 controles totales; 9 aprobados; 70 en progreso; 245 pendientes; 1 fa
   - Evidencia: AUDITORIA_RECEPCION_DECISION_TRIBUNAL_V109_2026-10-21.md: V109: recepción de supuesta decisión del Tribunal segregada de verificación y ejecución, ambas últimas no certificadas
   - Evidencia: AUDITORIA_DOBLE_COTEJO_DECISIONES_V110_2026-10-21.md: V110: doble cotejo sobre recepción judicial no verificada; certificación de Tribunal y ejecución siguen pendientes
   - Evidencia: V111/V112: cotejo doble evaluado y aclaraciones documentadas en Supabase; autenticidad judicial real y aplicación sobre partidas continúan sin aprobar.
+  - Evidencia: V114: expediente ficticio de nulidad, doble cotejo, aclaración y respuesta; sentencia Matrimonio y recepción conservan estado; ejecución SQL ROLLBACK (scripts/qa-rollback-tribunal-v114.sql).
 - [ ] 02.04 · Autoridad de Cancillería — PENDIENTE
 - [ ] 02.05 · Documentación antigua vs emisión actual — PENDIENTE
 - [ ] 02.06 · Libro físico y folio legítimos — PENDIENTE
@@ -111,6 +112,7 @@ Avance: 325 controles totales; 9 aprobados; 70 en progreso; 245 pendientes; 1 fa
 - [ ] 06.06 · 129 RPC privilegiadas autorizadas — EN_PROGRESO
   - Evidencia: AUDITORIA_INVENTARIO_RPC_V91.json: 129 funciones privilegiadas clasificadas; faltan pruebas positivas y negativas función por función
   - Evidencia: V111/V112: se verificaron privilegios de ejecución anon=false y authenticated=true de nuevas RPC; las demás funciones privilegiadas requieren matriz completa por rol.
+  - Evidencia: V113/V114: lectura de aclaraciones sólo Cancillería/Diócesis; Parroquia rechazada en SQL. Las otras RPC pendientes de matriz completa.
 - [ ] 06.07 · 129 RPC privilegiadas denegadas a terceros — EN_PROGRESO
   - Evidencia: AUDITORIA_BASE_SQL_V90.md: Cero vistas públicas; 129 RPC privilegiadas requieren pruebas de permisos y búsqueda de bypass
   - Evidencia: AUDITORIA_INVENTARIO_RPC_V91.json: 129 funciones catalogadas para revisión de terceros, sin afirmar autorización sin pruebas
@@ -187,6 +189,7 @@ Avance: 325 controles totales; 9 aprobados; 70 en progreso; 245 pendientes; 1 fa
   - Evidencia: AUDITORIA_RECEPCION_DECISION_TRIBUNAL_V109_2026-10-21.md: V109: recepción con resultado alegado, referencia, autoridad y estado no verificado, sin alterar nulidad
   - Evidencia: AUDITORIA_DOBLE_COTEJO_DECISIONES_V110_2026-10-21.md: V110: dos identidades institucionales obligatorias para cotejo, discrepancias conservadas, sin modificar nulidad
   - Evidencia: V111/V112: se separó revisión documental y aclaraciones de una decisión jurídica con efectos registrales. Evidencia de migraciones locales y test de contratos, sin recorrido E2E completo.
+  - Evidencia: V114: ensayo transaccional nulidad ficticia con dos funcionarios y respuesta sin efectos; UI visual autenticada y aval canónico externo pendientes.
 
 ### 11. Exequias (P0) — 0/10
 
@@ -206,6 +209,7 @@ Avance: 325 controles totales; 9 aprobados; 70 en progreso; 245 pendientes; 1 fa
 - [ ] 12.01 · Competencia exclusiva de Cancillería — EN_PROGRESO
   - Evidencia: AUDITORIA_CONCEPTOS_DEC_REGLAS_V98_2026-10-21.md: Cancillería única con INSERT/UPDATE de conceptos; otros roles bloqueados, todavía pendientes todos los RPC de emisión
   - Evidencia: AUDITORIA_DECRETOS_MATRIMONIO_EXEQUIAS_V104_2026-10-21.md: V104: corrección/reposición/nulidad y reversión de Matrimonios/Exequias solo Cancillería; siete RPC revisadas, resto pendiente
+  - Evidencia: V114: documentos nuevos e históricos de cuatro sacramentos, emisión Cancillería positiva, Diócesis, Parroquia y Admin General rechazados; no cubre todos los demás decretos.
 - [ ] 12.02 · Número y fecha únicos — PENDIENTE
 - [ ] 12.03 · Concepto jurídico compatible — EN_PROGRESO
   - Evidencia: AUDITORIA_CONCEPTOS_DEC_REGLAS_V98_2026-10-21.md: Conceptos de corrección/archivo protegidos por ámbito y fuente; compatibilidad jurídica total pendiente
@@ -214,20 +218,25 @@ Avance: 325 controles totales; 9 aprobados; 70 en progreso; 245 pendientes; 1 fa
 - [ ] 12.05 · Reposición crea supletoria — EN_PROGRESO
   - Evidencia: AUDITORIA_DECRETOS_MATRIMONIO_EXEQUIAS_V104_2026-10-21.md: V104: reposiciones supletorias ficticias Exequias/Matrimonio creadas y revertidas con Cancillería
   - Evidencia: AUDITORIA_NULIDAD_VINCULOS_BAUTISMO_V105_2026-10-21.md: V105: la nulidad con dos Bautismos verificados genera nota local y aviso remoto pendiente, sin tocar Bautismo ajeno
-- [ ] 12.06 · Documental no afecta partida — PENDIENTE
+- [ ] 12.06 · Documental no afecta partida — EN_PROGRESO
+  - Evidencia: V114: 8 documentos ficticios, cero cambios en partidas y notas durante transacción; fuente scripts/qa-rollback-documentary-v114.sql, ROLLBACK.
 - [ ] 12.07 · Aviso a parroquia — PENDIENTE
-- [ ] 12.08 · Archivo único en dos roles — PENDIENTE
+- [ ] 12.08 · Archivo único en dos roles — EN_PROGRESO
+  - Evidencia: V114: archivo consultado por diocese_id y parish_id sobre misma fila canónica, 52 casos sintéticos; falta prueba UI y RLS real de ambos actores.
 - [ ] 12.09 · Firma e impresión — PENDIENTE
 - [ ] 12.10 · Reversión autorizada — EN_PROGRESO
   - Evidencia: AUDITORIA_DECRETOS_MATRIMONIO_EXEQUIAS_V104_2026-10-21.md: V104: reversión válida de ambas reposiciones y estados reversed verificados, otros sacramentos pendientes
-- [ ] 12.11 · Doble emisión impedida — PENDIENTE
+- [ ] 12.11 · Doble emisión impedida — EN_PROGRESO
+  - Evidencia: V114: un segundo decreto con igual número es rechazado en ensayo documental reversible.
 
 ### 13. Decretos antiguos importados (P0) — 0/11
 
 - [ ] 13.01 · Origen histórico verificable — EN_PROGRESO
   - Evidencia: AUDITORIA_CONCEPTOS_DEC_REGLAS_V98_2026-10-21.md: V98 4/4 conceptos históricos conservan source_kind legacy_catalog; trigger preserva procedencia contra edición
+  - Evidencia: V114: cuatro documentos históricos ficticios en parroquia no operativa; fuente histórica obligatoria, sin fingir nueva emisión; ROLLBACK.
 - [ ] 13.02 · No simular nueva emisión — EN_PROGRESO
   - Evidencia: AUDITORIA_CONCEPTOS_DEC_REGLAS_V98_2026-10-21.md: V98 prohíbe fingir nueva importación con INSERT directo fuente legacy_catalog; reimportación E2E pendiente
+  - Evidencia: V114: expediente histórico queda archived, recordOrigin historical_archive; ensayo reversión no ejecutada. Pendiente auditoría importación real completa.
 - [ ] 13.03 · Parroquia y diócesis exactas — EN_PROGRESO
   - Evidencia: AUDITORIA_CONCEPTOS_DEC_REGLAS_V98_2026-10-21.md: V97 rechaza concepto nuevo y traslado de existente a diócesis ajena
   - Evidencia: AUDITORIA_NULIDAD_VINCULOS_BAUTISMO_V105_2026-10-21.md: V105: nota o notificación sólo tras cotejar Bautismo con contrayente, libro, folio y número
@@ -237,7 +246,8 @@ Avance: 325 controles totales; 9 aprobados; 70 en progreso; 245 pendientes; 1 fa
 - [ ] 13.07 · Decreto ANULACION conciliado — PENDIENTE
 - [ ] 13.08 · Cinco ANULACION pendientes — PENDIENTE
 - [ ] 13.09 · Revisión de caso ambiguo — PENDIENTE
-- [ ] 13.10 · Archivo en Cancillería y parroquia — PENDIENTE
+- [ ] 13.10 · Archivo en Cancillería y parroquia — EN_PROGRESO
+  - Evidencia: V114: evidencia contractual de archivo canónico en doble rol, sin duplicar registros físicos; falta cotejo visual RLS.
 - [ ] 13.11 · Fuente original preservada — EN_PROGRESO
   - Evidencia: AUDITORIA_CONCEPTOS_DEC_REGLAS_V98_2026-10-21.md: Fuente histórica de conceptos protegida; quedan otras tablas y documentos de origen por auditar
 
@@ -540,6 +550,7 @@ Avance: 325 controles totales; 9 aprobados; 70 en progreso; 245 pendientes; 1 fa
 - [x] 30.07 · Construcción de producción — APROBADO
   - Evidencia: AUDITORIA_CIERRE_TECNICO_V91_2026-10-21.md: Vercel V91 build Ready, CSS de producción idéntico por SHA256
   - Evidencia: Puerta de compilación V112 correctamente ejecutada en equipo de trabajo; no acredita pruebas visuales autenticadas ni despliegue de V111/V112.
+  - Evidencia: V114: compilación local Vite aprobada junto con 501 pruebas sintéticas; no equivale a despliegue.
 - [x] 30.08 · Smoke posdespliegue — APROBADO
   - Evidencia: AUDITORIA_PUERTA_CALIDAD_V90.json: Puerta V90 ejecutó npm run build sin errores con Node del equipo; no certifica despliegue ni interfaz
   - Evidencia: AUDITORIA_CIERRE_TECNICO_V91_2026-10-21.md: Cuatro rutas públicas SPA HTTP 200 y CSS descargado SHA256 idéntico
@@ -556,16 +567,19 @@ Avance: 325 controles totales; 9 aprobados; 70 en progreso; 245 pendientes; 1 fa
 - [ ] 31.05 · Matrimonio y notificaciones — EN_PROGRESO
   - Evidencia: AUDITORIA_RECEPCION_NULIDAD_MATRIMONIAL_V106_2026-10-21.md: V106: ciclo real de Matrimonio/nulidad/notificación remota/nota bautismal/acuse en datos ficticios
 - [ ] 31.06 · Exequias y fallecido — PENDIENTE
-- [ ] 31.07 · Decretos nuevos e históricos — PENDIENTE
+- [ ] 31.07 · Decretos nuevos e históricos — EN_PROGRESO
+  - Evidencia: V114: matrices ficticias 52 variantes del modelo de decretos y dos ejecuciones SQL ROLLBACK; prueba integral por los cuatro sacramentos pendiente.
 - [ ] 31.08 · Doble click y red caída — PENDIENTE
 - [ ] 31.09 · Impresión/estadística final — PENDIENTE
-- [ ] 31.10 · Destruir sandbox y demostrar cero residuos — PENDIENTE
+- [ ] 31.10 · Destruir sandbox y demostrar cero residuos — EN_PROGRESO
+  - Evidencia: V114: tras dos ensayos SQL reversibles, cero registros QA persistidos en seis entidades verificadas.
 
 ### 32. Auditoría forense de cierre (P0) — 1/10
 
 - [ ] 32.01 · Versionar toda prueba — EN_PROGRESO
   - Evidencia: AUDITORIA_PUERTA_CALIDAD_V90.json: Gate registra ejecución 25 de 26, dependencias fallidas; falta cobertura integral por cada control
   - Evidencia: V111/V112: fuentes SQL, pruebas y resumen de seguridad guardados en el árbol canónico. Falta catalogación forense de cada transacción E2E.
+  - Evidencia: V114: banco de 7.800 escenarios planificados, separados de pruebas reales y sintéticas con etiqueta NO_EJECUTADO.
 - [ ] 32.02 · Guardar entrada y expectativa — EN_PROGRESO
   - Evidencia: AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: Matriz V95: 60 resultados por 4 roles y 5 tablas, con resultados esperados documentados
   - Evidencia: AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96 matriz 12 resultados por cuatro actores y tres tipos de escritura
@@ -592,7 +606,8 @@ Avance: 325 controles totales; 9 aprobados; 70 en progreso; 245 pendientes; 1 fa
   - Evidencia: AUDITORIA_ACTUACIONES_NULIDAD_V108_2026-10-21.md: V108: estados verificados, event count 2, decreto active, matrimonio nullified, notas 0
   - Evidencia: AUDITORIA_RECEPCION_DECISION_TRIBUNAL_V109_2026-10-21.md: V109: recepción no verificada, sentencia active, matrimonio nullified, auditoría 1 en transacción
   - Evidencia: AUDITORIA_DOBLE_COTEJO_DECISIONES_V110_2026-10-21.md: V110: cada cotejo auditado, 2 usuarios distintos, recepción sigue unverified, sentencia active y matrimonio nullified
-- [ ] 32.04 · Guardar capturas — PENDIENTE
+- [ ] 32.04 · Guardar capturas — EN_PROGRESO
+  - Evidencia: V114: scripts SQL reversibles y prueba de origen de migraciones versionados; todavía faltan capturas de UI.
 - [ ] 32.05 · Rastrear hallazgos P0/P1/P2 — EN_PROGRESO
   - Evidencia: AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md: Emisión temporal 1 documento y 1 log; cero residuos tras ROLLBACK en muestra controlada
   - Evidencia: AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: Boletas ficticias V93 comprobadas en cero tras ROLLBACK, conservación de históricos
