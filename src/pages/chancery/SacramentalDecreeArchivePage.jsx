@@ -95,6 +95,7 @@ const SacramentalDecreeArchivePage = () => {
   const [printIdentity, setPrintIdentity] = useState({});
   const [nullityReviews, setNullityReviews] = useState({});
   const [reviewEvents, setReviewEvents] = useState({});
+  const [courtDecisionReceipts, setCourtDecisionReceipts] = useState({});
   const [expandedReviewId, setExpandedReviewId] = useState(null);
 
   useEffect(() => {
@@ -221,6 +222,17 @@ const SacramentalDecreeArchivePage = () => {
         (eventsByReview[event.review_case_id] ||= []).push(event);
       }
       setReviewEvents(eventsByReview);
+      const { data: courtReceipts, error: receiptError } = await supabase
+        .from('nullity_court_decision_receipts')
+        .select('id,review_case_id,reported_outcome,issuing_authority_reported,court_document_reference,court_document_date,received_summary,verification_state,received_at')
+        .eq('diocese_id',dioceseId)
+        .order('received_at',{ ascending: true });
+      if (receiptError) throw receiptError;
+      const receiptsByReview = {};
+      for (const receipt of courtReceipts || []) {
+        (receiptsByReview[receipt.review_case_id] ||= []).push(receipt);
+      }
+      setCourtDecisionReceipts(receiptsByReview);
 
       setRows(
         (all || [])
@@ -523,6 +535,77 @@ const SacramentalDecreeArchivePage = () => {
     }
   };
 
+  const registerCourtDecisionReceipt = async (row) => {
+    const review = nullityReviews[row.id];
+    if (review?.status !== 'under_legal_review') return;
+    const kind = await institutionalPrompt({
+      title: 'Contenido declarado en la comunicación',
+      message: 'Seleccione 1 = mantiene nulidad, 2 = ordena estudio adicional, 3 = afirma que debe rectificarse. Es solo clasificación de lo recibido, NO una decisión verificada.',
+      placeholder: '1, 2 o 3', required: true, minLength: 1, confirmText: 'Continuar'
+    });
+    if (kind === null) return;
+    const outcomes = {
+      '1':'maintains_nullity','2':'orders_further_review','3':'claims_rectification'
+    };
+    const reportedOutcome = outcomes[kind.trim()];
+    if (!reportedOutcome) {
+      toast({title:'Clasificación inválida',description:'Seleccione 1, 2 o 3.',variant:'destructive'});
+      return;
+    }
+    const authority = await institutionalPrompt({
+      title: 'Autoridad que aparece en el documento',
+      message: 'Escriba cómo figura el Tribunal o autoridad emisora. Esta información todavía NO verifica la autenticidad.',
+      placeholder: 'Nombre de autoridad declarada', required: true, minLength: 8, confirmText:'Continuar'
+    });
+    if (authority === null) return;
+    const reference = await institutionalPrompt({
+      title:'Referencia de la comunicación',
+      message:'Escriba el radicado o número identificador del documento recibido.',
+      placeholder:'Referencia documental', required:true,minLength:8,confirmText:'Continuar'
+    });
+    if (reference === null) return;
+    const dateText = await institutionalPrompt({
+      title:'Fecha declarada del documento',
+      message:'Use AAAA-MM-DD. No se admiten fechas futuras.',
+      placeholder:'AAAA-MM-DD',required:true,minLength:10,confirmText:'Continuar'
+    });
+    if (dateText === null) return;
+    const isoDate = dateText.trim();
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(isoDate)
+      || Number.isNaN(Date.parse(isoDate))
+      || new Date(isoDate).toISOString().slice(0,10) !== isoDate) {
+      toast({title:'Fecha inválida',description:'Use una fecha real AAAA-MM-DD.',variant:'destructive'});
+      return;
+    }
+    const summary = await institutionalPrompt({
+      title:'Descripción íntegra de lo recibido',
+      message:'Describa el contenido y los puntos pendientes de cotejar. Mínimo 50 caracteres.',
+      placeholder:'Resumen y verificaciones pendientes',required:true,minLength:50,confirmText:'Continuar'
+    });
+    if (summary === null) return;
+    if (!(await institutionalConfirm({
+      title:'Registrar recepción SIN verificar',
+      message:'Se guardará una constancia de documento recibido marcada como NO VERIFICADA. No confirma autenticidad ni autoriza revocación, corrección, anulación o cambios de Matrimonio y Bautismo.',
+      confirmText:'Registrar sin ejecutar',tone:'warning'
+    }))) return;
+    try {
+      const { error } = await supabase.rpc('register_nullity_court_decision_receipt_v109',{
+        p_review_case_id:review.id,p_reported_outcome:reportedOutcome,
+        p_issuing_authority_reported:authority.trim(),
+        p_court_document_reference:reference.trim(),p_court_document_date:isoDate,
+        p_received_summary:summary.trim()
+      });
+      if(error) throw error;
+      toast({title:'Documento recibido — sin verificar',
+        description:'Queda en el expediente; no se ha cambiado el estado de ninguna partida.'});
+      await load();
+      setExpandedReviewId(row.id);
+    } catch(error){
+      toast({title:'No se pudo registrar el documento',
+        description:error.message,variant:'destructive'});
+    }
+  };
+
   const print = async (row) => {
     const popup = window.open('', '_blank', 'width=980,height=1180');
 
@@ -822,6 +905,12 @@ const SacramentalDecreeArchivePage = () => {
                             {nullityReviews[row.id].status === 'pending_review' ? 'Iniciar estudio' : 'Registrar comunicación'}
                           </Button>
                         )}
+                        {type === 'tribunal' && nullityReviews[row.id]?.status === 'under_legal_review' && (
+                          <Button variant="outline" className="border-amber-200 text-amber-800 hover:bg-amber-50" onClick={() => registerCourtDecisionReceipt(row)}>
+                            <FileCheck2 className="mr-2 h-4 w-4" />
+                            Registrar decisión recibida (sin verificar)
+                          </Button>
+                        )}
                         {type === 'tribunal' && nullityReviews[row.id] && (
                           <Button variant="outline" onClick={() => setExpandedReviewId(prev => prev === row.id ? null : row.id)}>
                             <History className="mr-2 h-4 w-4" />
@@ -855,6 +944,20 @@ const SacramentalDecreeArchivePage = () => {
                             </div>
                           ))}
                         </div>}
+                        {(courtDecisionReceipts[nullityReviews[row.id].id] || []).length > 0 && (
+                          <div className="mt-4 border-t border-indigo-200 pt-4">
+                            <p className="text-xs font-bold text-slate-800">Documentos de decisión recibidos · autenticidad pendiente</p>
+                            {(courtDecisionReceipts[nullityReviews[row.id].id] || []).map(receipt => (
+                              <div key={receipt.id} className="mt-2 rounded-xl border border-amber-200 bg-amber-50 p-3 text-xs">
+                                <p className="font-bold text-amber-900">SIN VERIFICAR · {receipt.court_document_reference}</p>
+                                <p className="mt-1 text-slate-700">Autoridad declarada: {receipt.issuing_authority_reported} · Documento {receipt.court_document_date}</p>
+                                <p className="mt-1 text-slate-600">{({maintains_nullity:'Se declara que mantiene la nulidad',orders_further_review:'Se declara que requiere otro estudio',claims_rectification:'Se declara una posible rectificación'})[receipt.reported_outcome] || 'Efecto pendiente de valoración'}</p>
+                                <p className="mt-2 whitespace-pre-wrap text-slate-700">{receipt.received_summary}</p>
+                                <p className="mt-1 font-semibold text-amber-800">No produce efectos registrales ni modifica la sentencia original.</p>
+                              </div>
+                            ))}
+                          </div>
+                        )}
                       </section>
                     )}
                   </article>

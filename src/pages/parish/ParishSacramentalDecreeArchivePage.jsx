@@ -78,6 +78,7 @@ const ParishSacramentalDecreeArchivePage = () => {
 
   const [rows, setRows] = useState([]);
   const [nullityReviews, setNullityReviews] = useState({});
+  const [unverifiedDecisions, setUnverifiedDecisions] = useState({});
   const [query, setQuery] = useState('');
   const [loading, setLoading] = useState(true);
 
@@ -85,7 +86,7 @@ const ParishSacramentalDecreeArchivePage = () => {
     if (!user?.parishId) return;
     setLoading(true);
     try {
-      const [data, reviews] = await Promise.all([
+      const [data, reviews, decisions] = await Promise.all([
         listDecrees({
           parishIds: [user.parishId],
           type: typeFilter === 'all' ? null : typeFilter,
@@ -93,11 +94,17 @@ const ParishSacramentalDecreeArchivePage = () => {
         }),
         supabase.from('nullity_judicial_review_cases')
           .select('nullity_decree_id,status,request_reference')
-          .eq('parish_id',user.parishId)
+          .eq('parish_id',user.parishId),
+        supabase.from('nullity_court_decision_receipts')
+          .select('nullity_decree_id').eq('parish_id',user.parishId)
       ]);
       if (reviews.error) throw reviews.error;
+      if (decisions.error) throw decisions.error;
       setRows(data);
       setNullityReviews(Object.fromEntries((reviews.data || []).map(r => [r.nullity_decree_id,r])));
+      const counts = {};
+      for (const receipt of decisions.data || []) counts[receipt.nullity_decree_id] = (counts[receipt.nullity_decree_id] || 0) + 1;
+      setUnverifiedDecisions(counts);
     } catch (error) {
       toast({
         title: 'No se pudo consultar el archivo de decretos',
@@ -272,6 +279,7 @@ const ParishSacramentalDecreeArchivePage = () => {
                             ].join(' ')}>
                               {decreeTypeLabel(row)}
                             </span>
+                            {unverifiedDecisions[row.id] > 0 && <span className="rounded-full border border-amber-200 bg-amber-50 px-2 py-1 text-[8px] font-bold text-amber-800">{unverifiedDecisions[row.id]} documento(s) recibidos · SIN VERIFICAR</span>}
                             {nullityReviews[row.id] && <span className="rounded-full border border-indigo-200 bg-indigo-50 px-2 py-1 text-[8px] font-bold text-indigo-700">{nullityReviews[row.id].status === 'under_legal_review' ? 'En estudio jurídico' : 'Revisión jurídica pendiente'} · {nullityReviews[row.id].request_reference}</span>}
                             {historical && <span className="rounded-full border border-amber-200 bg-amber-50 px-2 py-1 text-[8px] font-bold text-amber-800">Antecedente histórico</span>}
                             <span className={`rounded-full border px-2 py-1 text-[8px] font-black uppercase tracking-wider ${state.className}`}>

@@ -1,25 +1,22 @@
-SACRAMENTUM FINAL · V108 · 21/10/2026 (Colombia)
+SACRAMENTUM FINAL · V109 · 21/10/2026 (Colombia)
 
-SEGUIMIENTO DOCUMENTAL DE REVISIÓN JURÍDICA
-- Nueva bitácora interna de actuaciones ligada a solicitud V107, sentencia y jurisdicción.
-- Cancillería inicia estudio (pending_review → under_legal_review) y agrega comunicaciones del Tribunal por referencia, fecha y motivo.
-- Solo Cancillería puede escribir mediante RPC; Diócesis, Cancillería y Parroquia propietaria consultan datos acotados con RLS.
-- Admin General no puede consultar ni escribir, anon tampoco.
-- Estados y secuencias controlados, duplicados rechazados, fecha futura inválida.
-- No se alteran sentencia original, estado del Matrimonio, notas, Bautismos, notificaciones ni acuses.
-- La bitácora no certifica autenticidad documental ni ejecuta una revocación.
-- En archivos: Cancillería puede iniciar, agregar y consultar actuaciones; Diócesis/Parroquia visualizan estado actualizado.
+RECEPCIÓN DE DECISIÓN ATRIBUIDA AL TRIBUNAL, SIN EJECUCIÓN
+- Documento judicial alegado se guarda como SIN VERIFICAR en bitácora separada.
+- Cancillería registra resultado declarado, autoridad, radicado, fecha y descripción; solo cuando el expediente está en estudio jurídico formal.
+- Se comprueban rol activo, diócesis, parroquia, sentencia vigente y Matrimonio nullified; estados incompatibles, referencias duplicadas y fechas futuras rechazadas.
+- Diócesis y Parroquia ven conteo de documentos SIN VERIFICAR dentro de su territorio, sin poder aprobar o ejecutarlos.
+- RLS y grants impiden lectura anónima o INSERT/UPDATE directos de usuarios.
+- No se altera sentencia original, Matrimonio, Bautismos, notas, comunicaciones ni acuses.
+- Dos matrices PostgreSQL reales con casos ficticios y ROLLBACK: roles 3/3 denegados, registro legítimo Cancillería, pre-estudio y duplicados denegados, RLS por 4 roles.
+- Cero expedientes, documentos o auditorías QA persistidos.
+- 26 pruebas sintéticas nuevas (407 esperadas acumuladas), más 23 verificadores históricos y build.
 
-PRUEBAS
-- Proceso real SQL de dos eventos, tres denegaciones de rol, referencias duplicadas, fecha futura, secuencia indebida y RLS.
-- Todo transaccional ficticio (ROLLBACK), cero eventos y revisiones persistidos.
-- 20 nuevas pruebas sintéticas, total esperado 381; 23 verificadores históricos y build.
-- Único usuario parroquial activo: prueba de sesiones paralelas entre dos parroquias todavía pendiente.
-
-SEGURIDAD
-- Cinco HIGH de npm audit y seguridad visual/concurrencia siguen pendientes.
-- La auditoría maestra de 325 controles NO está terminada.
+RIESGOS PENDIENTES
+- Autenticidad judicial de documentos NO certificada; ninguna sentencia se ejecuta por V109.
+- Validación visual autenticada, concurrencia entre parroquias y backups restaurados pendientes.
+- 5 HIGH en npm audit mantienen bloqueo de seguridad.
+- Plan maestro de 325 controles aún abierto.
 
 INFORME
-AUDITORIA_ACTUACIONES_NULIDAD_V108_2026-10-21.md
+AUDITORIA_RECEPCION_DECISION_TRIBUNAL_V109_2026-10-21.md
 AUDITORIA_MAESTRA_SACRAMENTUM_V90.md

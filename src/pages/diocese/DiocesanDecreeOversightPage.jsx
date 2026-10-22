@@ -43,6 +43,7 @@ export default function DiocesanDecreeOversightPage() {
   const [rows, setRows] = useState([]);
   const [parishNames, setParishNames] = useState({});
   const [nullityReviews, setNullityReviews] = useState({});
+  const [unverifiedDecisions, setUnverifiedDecisions] = useState({});
   const [query, setQuery] = useState('');
   const [kind, setKind] = useState('todos');
   const [sacrament, setSacrament] = useState('todos');
@@ -62,16 +63,21 @@ export default function DiocesanDecreeOversightPage() {
           dioceseId = data?.diocese_id;
         }
         if (!dioceseId) throw new Error('El usuario no tiene una jurisdicción diocesana válida.');
-        const [records, parishes, reviews] = await Promise.all([
+        const [records, parishes, reviews, decisions] = await Promise.all([
           listDecrees({dioceseId}),
           supabase.from('parishes').select('id,name').eq('diocese_id',dioceseId),
-          supabase.from('nullity_judicial_review_cases').select('nullity_decree_id,request_reference,status').eq('diocese_id',dioceseId)
+          supabase.from('nullity_judicial_review_cases').select('nullity_decree_id,request_reference,status').eq('diocese_id',dioceseId),
+          supabase.from('nullity_court_decision_receipts').select('nullity_decree_id').eq('diocese_id',dioceseId)
         ]);
         if (parishes.error) throw parishes.error;
         if (reviews.error) throw reviews.error;
+        if (decisions.error) throw decisions.error;
         if (!mounted) return;
         setRows(records);
         setNullityReviews(Object.fromEntries((reviews.data || []).map(r => [r.nullity_decree_id,r])));
+        const counts = {};
+        for (const receipt of decisions.data || []) counts[receipt.nullity_decree_id] = (counts[receipt.nullity_decree_id] || 0) + 1;
+        setUnverifiedDecisions(counts);
         setParishNames(Object.fromEntries((parishes.data || []).map(row => [row.id,row.name])));
       } catch (err) {
         if (mounted) { setError(err.message || 'No se pudo consultar el archivo.'); setRows([]); }
@@ -164,6 +170,7 @@ export default function DiocesanDecreeOversightPage() {
                   <strong className="block text-sm text-slate-900">{row.decreeNumber || 'Sin número'} · {decreeTypeLabel(row)}</strong>
                   <small className="mt-1 block text-slate-500">{label(row)} · {dateText(row.decreeDate)} · {SACRAMENTS[row.sacramentType] || 'Sacramento por verificar'}</small>
                   <small className="mt-1 block text-slate-600">{row.targetName || 'Expediente sacramental'}</small>
+                  {unverifiedDecisions[row.id] > 0 && <small className="mt-1 block font-semibold text-amber-800">{unverifiedDecisions[row.id]} documento(s) de decisión recibidos · SIN VERIFICAR</small>}
                   {nullityReviews[row.id] && <small className="mt-1 block font-semibold text-indigo-700">{nullityReviews[row.id].status === 'under_legal_review' ? 'En estudio jurídico' : 'Revisión jurídica pendiente'} · {nullityReviews[row.id].request_reference}</small>}
                 </span>
                 <span className="text-xs font-semibold text-blue-800">{impactText(row)}</span>
