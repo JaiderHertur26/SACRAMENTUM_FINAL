@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { decreeCategory, decreeEffect, decreeTypeLabel, isHistoricalDecree } from '@/utils/decreeArchiveModel.mjs';
+import { supabase } from '@/lib/supabaseClient';
 import {
   ArchiveRestore,
   BookOpen,
@@ -66,7 +67,7 @@ const ParishSacramentalDecreeArchivePage = () => {
   const rawType = String(searchParams.get('type') || '').toLowerCase();
   const rawSacrament = String(searchParams.get('sacrament') || 'bautismo').toLowerCase();
 
-  const typeFilter = ['reposicion','correccion','documental'].includes(rawType) ? rawType : 'all';
+  const typeFilter = ['reposicion','correccion','documental','tribunal'].includes(rawType) ? rawType : 'all';
 
   const sacrament = normalizeSacramentType(rawSacrament);
   const mode = typeFilter === 'correccion'
@@ -76,6 +77,7 @@ const ParishSacramentalDecreeArchivePage = () => {
       : 'archive';
 
   const [rows, setRows] = useState([]);
+  const [nullityReviews, setNullityReviews] = useState({});
   const [query, setQuery] = useState('');
   const [loading, setLoading] = useState(true);
 
@@ -83,12 +85,19 @@ const ParishSacramentalDecreeArchivePage = () => {
     if (!user?.parishId) return;
     setLoading(true);
     try {
-      const data = await listDecrees({
-        parishIds: [user.parishId],
-        type: typeFilter === 'all' ? null : typeFilter,
-        sacramentType: sacrament
-      });
+      const [data, reviews] = await Promise.all([
+        listDecrees({
+          parishIds: [user.parishId],
+          type: typeFilter === 'all' ? null : typeFilter,
+          sacramentType: sacrament
+        }),
+        supabase.from('nullity_judicial_review_cases')
+          .select('nullity_decree_id,status,request_reference')
+          .eq('parish_id',user.parishId)
+      ]);
+      if (reviews.error) throw reviews.error;
       setRows(data);
+      setNullityReviews(Object.fromEntries((reviews.data || []).map(r => [r.nullity_decree_id,r])));
     } catch (error) {
       toast({
         title: 'No se pudo consultar el archivo de decretos',
@@ -171,7 +180,8 @@ const ParishSacramentalDecreeArchivePage = () => {
                 ['all', 'Todos'],
                 ['correccion', 'Correcciones'],
                 ['reposicion', 'Reposiciones'],
-                ['documental', 'Documentales']
+                ['documental', 'Documentales'],
+                ['tribunal', 'Tribunal / nulidades']
               ].map(([value, label]) => (
                 <button
                   key={value}
@@ -262,6 +272,7 @@ const ParishSacramentalDecreeArchivePage = () => {
                             ].join(' ')}>
                               {decreeTypeLabel(row)}
                             </span>
+                            {nullityReviews[row.id] && <span className="rounded-full border border-indigo-200 bg-indigo-50 px-2 py-1 text-[8px] font-bold text-indigo-700">Revisión jurídica pendiente · {nullityReviews[row.id].request_reference}</span>}
                             {historical && <span className="rounded-full border border-amber-200 bg-amber-50 px-2 py-1 text-[8px] font-bold text-amber-800">Antecedente histórico</span>}
                             <span className={`rounded-full border px-2 py-1 text-[8px] font-black uppercase tracking-wider ${state.className}`}>
                               {state.label}
@@ -283,7 +294,7 @@ const ParishSacramentalDecreeArchivePage = () => {
                                 Original anulada: {locationText(row.originalLocation)}
                               </span>
                             ) : null}
-                            {registral && (type === 'correccion' || type === 'reposicion') ? <span className="text-amber-700">
+                            {type === 'nulidad_matrimonial' || decreeCategory(row.tipo,row.payload)==='tribunal' ? <span className="text-indigo-700">Sentencia de nulidad: verificar anotaciones y estado registral</span> : registral && (type === 'correccion' || type === 'reposicion') ? <span className="text-amber-700">
                               Partida supletoria: {locationText(row.replacementLocation)}
                             </span> : <span className="text-slate-600">Sin modificación de partidas</span>}
                           </div>

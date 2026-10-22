@@ -12,7 +12,7 @@ export const decreeSacrament = (value) => {
 export const decreeCategory = (value, payload = {}) => {
   const raw = String(value || '').toLowerCase();
   const v = raw.includes('legacy') ? String(payload.decreeType || payload.decretoType || payload.tipo || raw).toLowerCase() : String(value || payload.decreeType || payload.decretoType || payload.tipo || '').toLowerCase();
-  if (v.includes('nulidad')) return 'tribunal';
+  if (v.includes('nulidad') || v === 'tribunal') return 'tribunal';
   if (v.includes('repos') || v.includes('replacement')) return 'reposicion';
   if (v.includes('correc') || v.includes('rectific')) return 'correccion';
   if (v.includes('document') || v.includes('constancia') || v.includes('repeticion') || v.includes('repetición') || v.includes('sin_efecto')) return 'documental';

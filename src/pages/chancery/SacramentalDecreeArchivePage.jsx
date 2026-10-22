@@ -31,7 +31,7 @@ const SACRAMENT_KEY = (value) => {
   return null;
 };
 
-const TYPE_KEY = (value, payload = {}) => value ? decreeCategory(value, payload) : null;
+const TYPE_KEY = (value, payload = {}) => value ? (String(value).toLowerCase() === 'tribunal' ? 'tribunal' : decreeCategory(value, payload)) : null;
 
 const SACRAMENT_TABLE = Object.freeze({
   bautismo: 'baptisms',
@@ -93,6 +93,7 @@ const SacramentalDecreeArchivePage = () => {
   const [query, setQuery] = useState('');
   const [typeFilter, setTypeFilter] = useState(forcedType || 'all');
   const [printIdentity, setPrintIdentity] = useState({});
+  const [nullityReviews, setNullityReviews] = useState({});
 
   useEffect(() => {
     setTypeFilter(forcedType || 'all');
@@ -201,6 +202,12 @@ const SacramentalDecreeArchivePage = () => {
       // Consultar por jurisdicción: el archivo incluye parroquias no operativas
       // y expedientes antiguos cuyo contenedor no figure en el directorio actual.
       const all = await listDecrees({ dioceseId });
+      const { data: reviewRecords, error: reviewError } = await supabase
+        .from('nullity_judicial_review_cases')
+        .select('id,nullity_decree_id,status,request_reference,created_at')
+        .eq('diocese_id', dioceseId);
+      if (reviewError) throw reviewError;
+      setNullityReviews(Object.fromEntries((reviewRecords || []).map((r) => [r.nullity_decree_id, r])));
 
       setRows(
         (all || [])
@@ -401,6 +408,57 @@ const SacramentalDecreeArchivePage = () => {
     }
   };
 
+  const requestNullityReview = async (row) => {
+    if (nullityReviews[row.id]) return;
+    const requestReference = await institutionalPrompt({
+      title: 'Radicado de revisión jurídica',
+      message: 'Indique el radicado de la petición. La solicitud no revoca la sentencia.',
+      placeholder: 'Radicado o identificación de expediente',
+      required: true, minLength: 5, confirmText: 'Continuar'
+    });
+    if (requestReference === null) return;
+
+    const supportingReference = await institutionalPrompt({
+      title: 'Documento de sustento',
+      message: 'Identifique la solicitud o documento jurídico recibido. Esta referencia no certifica por sí sola su autenticidad.',
+      placeholder: 'Referencia verificable del documento',
+      required: true, minLength: 8, confirmText: 'Continuar'
+    });
+    if (supportingReference === null) return;
+
+    const reason = await institutionalPrompt({
+      title: 'Motivo de la revisión',
+      message: 'Explique con precisión los hechos y lo que requiere revisión del Tribunal o autoridad competente.',
+      placeholder: 'Describa el motivo detalladamente',
+      required: true, minLength: 30, confirmText: 'Continuar'
+    });
+    if (reason === null) return;
+
+    if (!(await institutionalConfirm({
+      title: 'Registrar solicitud, sin alterar partidas',
+      message: 'Se abrirá un expediente de revisión jurídica. La sentencia, el estado del Matrimonio, las notas marginales y los acuses permanecerán intactos hasta una decisión formal válida.',
+      confirmText: 'Registrar solicitud', tone: 'warning'
+    }))) return;
+
+    try {
+      const { error } = await supabase.rpc('request_nullity_judicial_review_v107', {
+        p_nullity_decree_id: row.id,
+        p_request_reference: requestReference.trim(),
+        p_authority_document_reference: supportingReference.trim(),
+        p_review_reason: reason.trim()
+      });
+      if (error) throw error;
+      toast({
+        title: 'Revisión jurídica registrada',
+        description: 'Expediente pendiente. No se ha revocado la sentencia ni alterado ninguna partida.',
+        className: 'bg-green-50 text-green-900 border-green-200'
+      });
+      await load();
+    } catch (error) {
+      toast({ title: 'No se pudo registrar la revisión', description: error.message, variant: 'destructive' });
+    }
+  };
+
   const print = async (row) => {
     const popup = window.open('', '_blank', 'width=980,height=1180');
 
@@ -528,6 +586,8 @@ const SacramentalDecreeArchivePage = () => {
               >
                 Reposiciones
               </button>
+              <button onClick={() => updateType('tribunal')}
+                className={`rounded-xl border px-4 py-2 text-[9px] font-black uppercase tracking-widest ${typeFilter === 'tribunal' ? 'border-indigo-700 bg-indigo-700 text-white' : 'border-slate-200 bg-white text-slate-600'}`}>Tribunal / nulidades</button>
               <button onClick={() => updateType('documental')}
                 className={`rounded-xl border px-4 py-2 text-[9px] font-black uppercase tracking-widest ${typeFilter === 'documental' ? 'border-slate-900 bg-slate-900 text-white' : 'border-slate-200 bg-white text-slate-600'}`}>
                 Documentales
@@ -615,8 +675,13 @@ const SacramentalDecreeArchivePage = () => {
                                 {legacyExecuted ? 'Ejecutado desde base antigua' : 'Histórico importado'}
                               </span>
                             )}
-                            {decreeEffect(row) === 'sin_modificacion' && (
+                            {type !== 'tribunal' && decreeEffect(row) === 'sin_modificacion' && (
                               <span className="rounded-full border border-slate-300 bg-slate-50 px-2 py-1 text-[8px] font-black text-slate-700">Sin efecto registral</span>
+                            )}
+                            {nullityReviews[row.id] && (
+                              <span className="rounded-full border border-indigo-200 bg-indigo-50 px-2 py-1 text-[8px] font-black uppercase text-indigo-700">
+                                Revisión jurídica pendiente · {nullityReviews[row.id].request_reference}
+                              </span>
                             )}
                             {reversed && (
                               <span className="rounded-full border border-red-200 bg-red-50 px-2 py-1 text-[8px] font-black uppercase text-red-700">
@@ -681,6 +746,12 @@ const SacramentalDecreeArchivePage = () => {
                           <Printer className="mr-2 h-4 w-4" />
                           {legacyExecuted ? 'Ver decreto histórico' : legacyHistorical ? 'Ficha histórica' : 'Imprimir'}
                         </Button>
+                        {type === 'tribunal' && ['active','vigente'].includes(String(row.status || '').toLowerCase()) && !nullityReviews[row.id] && (
+                          <Button variant="outline" className="border-indigo-200 text-indigo-700 hover:bg-indigo-50" onClick={() => requestNullityReview(row)}>
+                            <FileCheck2 className="mr-2 h-4 w-4" />
+                            Solicitar revisión jurídica
+                          </Button>
+                        )}
                         {decreeCanReverse(row) && (
                           <Button
                             variant="outline"

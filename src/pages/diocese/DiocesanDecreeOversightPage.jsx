@@ -24,6 +24,7 @@ const recordLocation = (value = {}) => [
   .map(([name,value]) => name+' '+value).join(' · ') || 'Sin referencia de libro';
 
 const impactText = (row) => {
+  if (decreeCategory(row.tipo,row.payload) === 'tribunal') return 'Sentencia de Tribunal · cotejar efectos registrales';
   const effect = decreeEffect(row);
   return ({
     registral: 'Actuación sobre partida',
@@ -41,6 +42,7 @@ export default function DiocesanDecreeOversightPage() {
   const [reload, setReload] = useState(0);
   const [rows, setRows] = useState([]);
   const [parishNames, setParishNames] = useState({});
+  const [nullityReviews, setNullityReviews] = useState({});
   const [query, setQuery] = useState('');
   const [kind, setKind] = useState('todos');
   const [sacrament, setSacrament] = useState('todos');
@@ -60,13 +62,16 @@ export default function DiocesanDecreeOversightPage() {
           dioceseId = data?.diocese_id;
         }
         if (!dioceseId) throw new Error('El usuario no tiene una jurisdicción diocesana válida.');
-        const [records, parishes] = await Promise.all([
+        const [records, parishes, reviews] = await Promise.all([
           listDecrees({dioceseId}),
-          supabase.from('parishes').select('id,name').eq('diocese_id',dioceseId)
+          supabase.from('parishes').select('id,name').eq('diocese_id',dioceseId),
+          supabase.from('nullity_judicial_review_cases').select('nullity_decree_id,request_reference,status').eq('diocese_id',dioceseId)
         ]);
         if (parishes.error) throw parishes.error;
+        if (reviews.error) throw reviews.error;
         if (!mounted) return;
         setRows(records);
+        setNullityReviews(Object.fromEntries((reviews.data || []).map(r => [r.nullity_decree_id,r])));
         setParishNames(Object.fromEntries((parishes.data || []).map(row => [row.id,row.name])));
       } catch (err) {
         if (mounted) { setError(err.message || 'No se pudo consultar el archivo.'); setRows([]); }
@@ -80,7 +85,7 @@ export default function DiocesanDecreeOversightPage() {
   const counters = useMemo(() => ({
     total: rows.length,
     historical: rows.filter(isHistoricalDecree).length,
-    documentary: rows.filter(r => decreeEffect(r)==='sin_modificacion').length,
+    documentary: rows.filter(r => decreeCategory(r.tipo,r.payload)!=='tribunal' && decreeEffect(r)==='sin_modificacion').length,
     registry: rows.filter(r => ['registral','historico_ejecutado'].includes(decreeEffect(r))).length
   }),[rows]);
 
@@ -138,7 +143,7 @@ export default function DiocesanDecreeOversightPage() {
             </div>
             <select aria-label="Tipo" className="rounded-xl border border-slate-300 p-3 text-sm" value={kind} onChange={e=>setKind(e.target.value)}>
               <option value="todos">Todos los tipos</option><option value="correccion">Corrección</option>
-              <option value="reposicion">Reposición</option><option value="documental">Documental</option>
+              <option value="reposicion">Reposición</option><option value="documental">Documental</option><option value="tribunal">Tribunal / nulidades</option>
               <option value="otro">Otros antecedentes</option>
             </select>
             <select aria-label="Sacramento" className="rounded-xl border border-slate-300 p-3 text-sm" value={sacrament} onChange={e=>setSacrament(e.target.value)}>
@@ -159,6 +164,7 @@ export default function DiocesanDecreeOversightPage() {
                   <strong className="block text-sm text-slate-900">{row.decreeNumber || 'Sin número'} · {decreeTypeLabel(row)}</strong>
                   <small className="mt-1 block text-slate-500">{label(row)} · {dateText(row.decreeDate)} · {SACRAMENTS[row.sacramentType] || 'Sacramento por verificar'}</small>
                   <small className="mt-1 block text-slate-600">{row.targetName || 'Expediente sacramental'}</small>
+                  {nullityReviews[row.id] && <small className="mt-1 block font-semibold text-indigo-700">Revisión jurídica pendiente · {nullityReviews[row.id].request_reference}</small>}
                 </span>
                 <span className="text-xs font-semibold text-blue-800">{impactText(row)}</span>
               </button>)}
