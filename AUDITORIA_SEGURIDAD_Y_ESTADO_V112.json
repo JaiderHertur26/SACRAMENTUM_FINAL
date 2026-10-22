@@ -1,0 +1,297 @@
+{
+  "protocol": "V112",
+  "timestamp": "2026-10-22T02:48:01.479Z",
+  "readOnly": true,
+  "controlCount": 325,
+  "phaseCount": 32,
+  "counts": {
+    "APROBADO": 9,
+    "EN_PROGRESO": 70,
+    "PENDIENTE": 245,
+    "FALLIDO": 1
+  },
+  "phases": {
+    "1": {
+      "name": "Inventario de código y procesos",
+      "priority": "P0",
+      "counts": {
+        "APROBADO": 1,
+        "EN_PROGRESO": 7
+      }
+    },
+    "2": {
+      "name": "Derecho canónico y alcance documental",
+      "priority": "P0",
+      "counts": {
+        "PENDIENTE": 7,
+        "EN_PROGRESO": 1
+      }
+    },
+    "3": {
+      "name": "Autenticación y sesión",
+      "priority": "P0",
+      "counts": {
+        "PENDIENTE": 10
+      }
+    },
+    "4": {
+      "name": "Roles y creación de usuarios",
+      "priority": "P0",
+      "counts": {
+        "PENDIENTE": 9,
+        "EN_PROGRESO": 1
+      }
+    },
+    "5": {
+      "name": "Jerarquía territorial",
+      "priority": "P1",
+      "counts": {
+        "PENDIENTE": 6,
+        "EN_PROGRESO": 2
+      }
+    },
+    "6": {
+      "name": "RLS y privilegios del backend",
+      "priority": "P0",
+      "counts": {
+        "APROBADO": 2,
+        "EN_PROGRESO": 7,
+        "PENDIENTE": 3
+      }
+    },
+    "7": {
+      "name": "Integridad y concurrencia",
+      "priority": "P0",
+      "counts": {
+        "PENDIENTE": 8,
+        "EN_PROGRESO": 1
+      }
+    },
+    "8": {
+      "name": "Bautismo",
+      "priority": "P0",
+      "counts": {
+        "EN_PROGRESO": 2,
+        "PENDIENTE": 9
+      }
+    },
+    "9": {
+      "name": "Confirmación",
+      "priority": "P0",
+      "counts": {
+        "EN_PROGRESO": 1,
+        "PENDIENTE": 10
+      }
+    },
+    "10": {
+      "name": "Matrimonio",
+      "priority": "P0",
+      "counts": {
+        "PENDIENTE": 9,
+        "EN_PROGRESO": 2
+      }
+    },
+    "11": {
+      "name": "Exequias",
+      "priority": "P0",
+      "counts": {
+        "PENDIENTE": 10
+      }
+    },
+    "12": {
+      "name": "Decretos nuevos en Cancillería",
+      "priority": "P0",
+      "counts": {
+        "EN_PROGRESO": 4,
+        "PENDIENTE": 7
+      }
+    },
+    "13": {
+      "name": "Decretos antiguos importados",
+      "priority": "P0",
+      "counts": {
+        "EN_PROGRESO": 4,
+        "PENDIENTE": 7
+      }
+    },
+    "14": {
+      "name": "Notas marginales",
+      "priority": "P0",
+      "counts": {
+        "PENDIENTE": 8,
+        "EN_PROGRESO": 1
+      }
+    },
+    "15": {
+      "name": "Boletas y pendientes",
+      "priority": "P0",
+      "counts": {
+        "PENDIENTE": 10
+      }
+    },
+    "16": {
+      "name": "Centro de Migración",
+      "priority": "P0",
+      "counts": {
+        "PENDIENTE": 7,
+        "EN_PROGRESO": 5
+      }
+    },
+    "17": {
+      "name": "Datos auxiliares",
+      "priority": "P1",
+      "counts": {
+        "EN_PROGRESO": 6,
+        "PENDIENTE": 3
+      }
+    },
+    "18": {
+      "name": "Notificaciones institucionales",
+      "priority": "P1",
+      "counts": {
+        "PENDIENTE": 6,
+        "EN_PROGRESO": 3
+      }
+    },
+    "19": {
+      "name": "Chat y comunicaciones",
+      "priority": "P1",
+      "counts": {
+        "PENDIENTE": 10
+      }
+    },
+    "20": {
+      "name": "Búsqueda y consulta",
+      "priority": "P0",
+      "counts": {
+        "PENDIENTE": 10
+      }
+    },
+    "21": {
+      "name": "Libros e índices",
+      "priority": "P0",
+      "counts": {
+        "PENDIENTE": 10
+      }
+    },
+    "22": {
+      "name": "Impresiones y plantillas",
+      "priority": "P0",
+      "counts": {
+        "EN_PROGRESO": 3,
+        "PENDIENTE": 8
+      }
+    },
+    "23": {
+      "name": "Reportes estadísticos",
+      "priority": "P1",
+      "counts": {
+        "PENDIENTE": 11
+      }
+    },
+    "24": {
+      "name": "Diseño y accesibilidad",
+      "priority": "P1",
+      "counts": {
+        "PENDIENTE": 8,
+        "EN_PROGRESO": 4
+      }
+    },
+    "25": {
+      "name": "Resiliencia",
+      "priority": "P0",
+      "counts": {
+        "PENDIENTE": 11
+      }
+    },
+    "26": {
+      "name": "Rendimiento",
+      "priority": "P1",
+      "counts": {
+        "PENDIENTE": 10
+      }
+    },
+    "27": {
+      "name": "Ciberseguridad adversarial",
+      "priority": "P0",
+      "counts": {
+        "EN_PROGRESO": 5,
+        "PENDIENTE": 7
+      }
+    },
+    "28": {
+      "name": "Privacidad y tratamiento de datos",
+      "priority": "P0",
+      "counts": {
+        "PENDIENTE": 8,
+        "EN_PROGRESO": 1
+      }
+    },
+    "29": {
+      "name": "Backup restauración y desastre",
+      "priority": "P0",
+      "counts": {
+        "PENDIENTE": 10
+      }
+    },
+    "30": {
+      "name": "Despliegue y dependencias",
+      "priority": "P1",
+      "counts": {
+        "APROBADO": 5,
+        "FALLIDO": 1,
+        "EN_PROGRESO": 2,
+        "PENDIENTE": 2
+      }
+    },
+    "31": {
+      "name": "E2E de personajes ficticios",
+      "priority": "P0",
+      "counts": {
+        "PENDIENTE": 9,
+        "EN_PROGRESO": 1
+      }
+    },
+    "32": {
+      "name": "Auditoría forense de cierre",
+      "priority": "P0",
+      "counts": {
+        "EN_PROGRESO": 7,
+        "PENDIENTE": 2,
+        "APROBADO": 1
+      }
+    }
+  },
+  "syntheticAndBuild": {
+    "passed": 25,
+    "total": 25,
+    "failed": 0,
+    "dependencySecurityIncluded": false
+  },
+  "migrationSources": [
+    {
+      "name": "20261022023010_court_receipt_dual_control_assessment_v111.sql",
+      "present": true
+    },
+    {
+      "name": "20261022023434_court_clarification_workflow_v112.sql",
+      "present": true
+    }
+  ],
+  "bundle": {
+    "jsAssetCount": 167,
+    "serviceRoleLiteralFound": false,
+    "knownSecretValuesFound": []
+  },
+  "secretKeyNamesOnly": [],
+  "knownDependencyRisk": {
+    "source": "scripts/V104_NPM_AUDIT.json",
+    "fiveHighNotYetRemediated": true
+  },
+  "limitations": [
+    "No autenticacion real de todas las pantallas",
+    "No restauracion comprobada de backup",
+    "No certificacion canonica automatica",
+    "Prueba de dependencias de este gate omitida"
+  ]
+}

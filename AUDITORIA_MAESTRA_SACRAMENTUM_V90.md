@@ -42,6 +42,7 @@ Avance: 325 controles totales; 9 aprobados; 70 en progreso; 245 pendientes; 1 fa
   - Evidencia: AUDITORIA_ACTUACIONES_NULIDAD_V108_2026-10-21.md: V108: Cancillería registra inicio de revisión y correspondencia del Tribunal; decisión formal y ejecución jurídica siguen pendientes
   - Evidencia: AUDITORIA_RECEPCION_DECISION_TRIBUNAL_V109_2026-10-21.md: V109: recepción de supuesta decisión del Tribunal segregada de verificación y ejecución, ambas últimas no certificadas
   - Evidencia: AUDITORIA_DOBLE_COTEJO_DECISIONES_V110_2026-10-21.md: V110: doble cotejo sobre recepción judicial no verificada; certificación de Tribunal y ejecución siguen pendientes
+  - Evidencia: V111/V112: cotejo doble evaluado y aclaraciones documentadas en Supabase; autenticidad judicial real y aplicación sobre partidas continúan sin aprobar.
 - [ ] 02.04 · Autoridad de Cancillería — PENDIENTE
 - [ ] 02.05 · Documentación antigua vs emisión actual — PENDIENTE
 - [ ] 02.06 · Libro físico y folio legítimos — PENDIENTE
@@ -109,6 +110,7 @@ Avance: 325 controles totales; 9 aprobados; 70 en progreso; 245 pendientes; 1 fa
   - Evidencia: AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: V95 delete: 20 escenarios en 5 catálogos; titulares parroquiales conservan permisos
 - [ ] 06.06 · 129 RPC privilegiadas autorizadas — EN_PROGRESO
   - Evidencia: AUDITORIA_INVENTARIO_RPC_V91.json: 129 funciones privilegiadas clasificadas; faltan pruebas positivas y negativas función por función
+  - Evidencia: V111/V112: se verificaron privilegios de ejecución anon=false y authenticated=true de nuevas RPC; las demás funciones privilegiadas requieren matriz completa por rol.
 - [ ] 06.07 · 129 RPC privilegiadas denegadas a terceros — EN_PROGRESO
   - Evidencia: AUDITORIA_BASE_SQL_V90.md: Cero vistas públicas; 129 RPC privilegiadas requieren pruebas de permisos y búsqueda de bypass
   - Evidencia: AUDITORIA_INVENTARIO_RPC_V91.json: 129 funciones catalogadas para revisión de terceros, sin afirmar autorización sin pruebas
@@ -184,6 +186,7 @@ Avance: 325 controles totales; 9 aprobados; 70 en progreso; 245 pendientes; 1 fa
   - Evidencia: AUDITORIA_ACTUACIONES_NULIDAD_V108_2026-10-21.md: V108: vínculo de revisión con nulidad vigente, estado del caso y actuaciones no dispositivas
   - Evidencia: AUDITORIA_RECEPCION_DECISION_TRIBUNAL_V109_2026-10-21.md: V109: recepción con resultado alegado, referencia, autoridad y estado no verificado, sin alterar nulidad
   - Evidencia: AUDITORIA_DOBLE_COTEJO_DECISIONES_V110_2026-10-21.md: V110: dos identidades institucionales obligatorias para cotejo, discrepancias conservadas, sin modificar nulidad
+  - Evidencia: V111/V112: se separó revisión documental y aclaraciones de una decisión jurídica con efectos registrales. Evidencia de migraciones locales y test de contratos, sin recorrido E2E completo.
 
 ### 11. Exequias (P0) — 0/10
 
@@ -529,11 +532,13 @@ Avance: 325 controles totales; 9 aprobados; 70 en progreso; 245 pendientes; 1 fa
   - Evidencia: AUDITORIA_CI_GITHUB_V90.md: GitHub Actions funcionó y trabajo funcional completó SUCCESS en commit 84bbb16; seguridad FAIL esperado por dependencias
 - [ ] 30.04 · Migraciones reproducibles — EN_PROGRESO
   - Evidencia: AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md: Migración V92 creada por CLI y aplicada; falta reconstrucción de esquema desde cero
+  - Evidencia: Se copiaron al repositorio las migraciones exactas V111/V112 recuperando su definición de Supabase y se añadieron 10 verificaciones estáticas; restauración limpia pendiente.
 - [ ] 30.05 · Preview de Vercel — PENDIENTE
 - [ ] 30.06 · Variables secretas — EN_PROGRESO
   - Evidencia: AUDITORIA_EXP_DEPENDENCIAS_Y_RLS_V91.md: En laboratorios solo variables VITE públicas, excluido VERCEL_OIDC_TOKEN; faltan otros secretos
 - [x] 30.07 · Construcción de producción — APROBADO
   - Evidencia: AUDITORIA_CIERRE_TECNICO_V91_2026-10-21.md: Vercel V91 build Ready, CSS de producción idéntico por SHA256
+  - Evidencia: Puerta de compilación V112 correctamente ejecutada en equipo de trabajo; no acredita pruebas visuales autenticadas ni despliegue de V111/V112.
 - [x] 30.08 · Smoke posdespliegue — APROBADO
   - Evidencia: AUDITORIA_PUERTA_CALIDAD_V90.json: Puerta V90 ejecutó npm run build sin errores con Node del equipo; no certifica despliegue ni interfaz
   - Evidencia: AUDITORIA_CIERRE_TECNICO_V91_2026-10-21.md: Cuatro rutas públicas SPA HTTP 200 y CSS descargado SHA256 idéntico
@@ -559,6 +564,7 @@ Avance: 325 controles totales; 9 aprobados; 70 en progreso; 245 pendientes; 1 fa
 
 - [ ] 32.01 · Versionar toda prueba — EN_PROGRESO
   - Evidencia: AUDITORIA_PUERTA_CALIDAD_V90.json: Gate registra ejecución 25 de 26, dependencias fallidas; falta cobertura integral por cada control
+  - Evidencia: V111/V112: fuentes SQL, pruebas y resumen de seguridad guardados en el árbol canónico. Falta catalogación forense de cada transacción E2E.
 - [ ] 32.02 · Guardar entrada y expectativa — EN_PROGRESO
   - Evidencia: AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: Matriz V95: 60 resultados por 4 roles y 5 tablas, con resultados esperados documentados
   - Evidencia: AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96 matriz 12 resultados por cuatro actores y tres tipos de escritura

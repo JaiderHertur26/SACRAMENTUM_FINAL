@@ -137,9 +137,10 @@
         "AUDITORIA_REVISION_JURIDICA_NULIDAD_V107_2026-10-21.md: V107: inicio de revisión jurídica documental de nulidad; aún no hay decisión ni ejecución posterior del Tribunal",
         "AUDITORIA_ACTUACIONES_NULIDAD_V108_2026-10-21.md: V108: Cancillería registra inicio de revisión y correspondencia del Tribunal; decisión formal y ejecución jurídica siguen pendientes",
         "AUDITORIA_RECEPCION_DECISION_TRIBUNAL_V109_2026-10-21.md: V109: recepción de supuesta decisión del Tribunal segregada de verificación y ejecución, ambas últimas no certificadas",
-        "AUDITORIA_DOBLE_COTEJO_DECISIONES_V110_2026-10-21.md: V110: doble cotejo sobre recepción judicial no verificada; certificación de Tribunal y ejecución siguen pendientes"
+        "AUDITORIA_DOBLE_COTEJO_DECISIONES_V110_2026-10-21.md: V110: doble cotejo sobre recepción judicial no verificada; certificación de Tribunal y ejecución siguen pendientes",
+        "V111/V112: cotejo doble evaluado y aclaraciones documentadas en Supabase; autenticidad judicial real y aplicación sobre partidas continúan sin aprobar."
       ],
-      "updated_at": "2026-10-22T02:20:14.901Z"
+      "updated_at": "2026-10-22T02:48:01.223Z"
     },
     {
       "id": "02.04",
@@ -552,9 +553,10 @@
       "criterion": "129 RPC privilegiadas autorizadas",
       "status": "EN_PROGRESO",
       "evidence": [
-        "AUDITORIA_INVENTARIO_RPC_V91.json: 129 funciones privilegiadas clasificadas; faltan pruebas positivas y negativas función por función"
+        "AUDITORIA_INVENTARIO_RPC_V91.json: 129 funciones privilegiadas clasificadas; faltan pruebas positivas y negativas función por función",
+        "V111/V112: se verificaron privilegios de ejecución anon=false y authenticated=true de nuevas RPC; las demás funciones privilegiadas requieren matriz completa por rol."
       ],
-      "updated_at": "2026-10-21T17:18:16.072Z"
+      "updated_at": "2026-10-22T02:48:01.225Z"
     },
     {
       "id": "06.07",
@@ -1056,9 +1058,10 @@
         "AUDITORIA_REVISION_JURIDICA_NULIDAD_V107_2026-10-21.md: V107: filtro Tribunal y solicitud de revisión judicial con expediente trazable sin alterar partidas",
         "AUDITORIA_ACTUACIONES_NULIDAD_V108_2026-10-21.md: V108: vínculo de revisión con nulidad vigente, estado del caso y actuaciones no dispositivas",
         "AUDITORIA_RECEPCION_DECISION_TRIBUNAL_V109_2026-10-21.md: V109: recepción con resultado alegado, referencia, autoridad y estado no verificado, sin alterar nulidad",
-        "AUDITORIA_DOBLE_COTEJO_DECISIONES_V110_2026-10-21.md: V110: dos identidades institucionales obligatorias para cotejo, discrepancias conservadas, sin modificar nulidad"
+        "AUDITORIA_DOBLE_COTEJO_DECISIONES_V110_2026-10-21.md: V110: dos identidades institucionales obligatorias para cotejo, discrepancias conservadas, sin modificar nulidad",
+        "V111/V112: se separó revisión documental y aclaraciones de una decisión jurídica con efectos registrales. Evidencia de migraciones locales y test de contratos, sin recorrido E2E completo."
       ],
-      "updated_at": "2026-10-22T02:20:15.352Z"
+      "updated_at": "2026-10-22T02:48:01.225Z"
     },
     {
       "id": "11.01",
@@ -3190,9 +3193,10 @@
       "criterion": "Migraciones reproducibles",
       "status": "EN_PROGRESO",
       "evidence": [
-        "AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md: Migración V92 creada por CLI y aplicada; falta reconstrucción de esquema desde cero"
+        "AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md: Migración V92 creada por CLI y aplicada; falta reconstrucción de esquema desde cero",
+        "Se copiaron al repositorio las migraciones exactas V111/V112 recuperando su definición de Supabase y se añadieron 10 verificaciones estáticas; restauración limpia pendiente."
       ],
-      "updated_at": "2026-10-21T17:56:40.234Z"
+      "updated_at": "2026-10-22T02:48:01.225Z"
     },
     {
       "id": "30.05",
@@ -3224,9 +3228,10 @@
       "criterion": "Construcción de producción",
       "status": "APROBADO",
       "evidence": [
-        "AUDITORIA_CIERRE_TECNICO_V91_2026-10-21.md: Vercel V91 build Ready, CSS de producción idéntico por SHA256"
+        "AUDITORIA_CIERRE_TECNICO_V91_2026-10-21.md: Vercel V91 build Ready, CSS de producción idéntico por SHA256",
+        "Puerta de compilación V112 correctamente ejecutada en equipo de trabajo; no acredita pruebas visuales autenticadas ni despliegue de V111/V112."
       ],
-      "updated_at": "2026-10-21T17:24:15.845Z"
+      "updated_at": "2026-10-22T02:48:01.225Z"
     },
     {
       "id": "30.08",
@@ -3373,9 +3378,10 @@
       "criterion": "Versionar toda prueba",
       "status": "EN_PROGRESO",
       "evidence": [
-        "AUDITORIA_PUERTA_CALIDAD_V90.json: Gate registra ejecución 25 de 26, dependencias fallidas; falta cobertura integral por cada control"
+        "AUDITORIA_PUERTA_CALIDAD_V90.json: Gate registra ejecución 25 de 26, dependencias fallidas; falta cobertura integral por cada control",
+        "V111/V112: fuentes SQL, pruebas y resumen de seguridad guardados en el árbol canónico. Falta catalogación forense de cada transacción E2E."
       ],
-      "updated_at": "2026-10-21T16:14:21.425Z"
+      "updated_at": "2026-10-22T02:48:01.225Z"
     },
     {
       "id": "32.02",
