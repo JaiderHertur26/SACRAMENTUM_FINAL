@@ -582,9 +582,10 @@
         "V147: register_registry_print parcialmente revisada: FOR SHARE y advisory transaction lock de reimpresiones. Concurrencia multisesión real aún no certificada.",
         "V148: monotonic version triggers en los cuatro sacramentos y prueba parcial extendida de register_registry_print; auditoría 136 SECDEF, 21 parciales, 115 pendientes.",
         "V149: comparación de versiones registrales a microsegundos al validar constancias de impresión; fuente SQL V148 sin cambios.",
-        "V150: can_access_parish antes retornaba NULL para usuario sin perfil y su uso IF NOT podía saltar la prohibición; función modificada en Supabase."
+        "V150: can_access_parish antes retornaba NULL para usuario sin perfil y su uso IF NOT podía saltar la prohibición; función modificada en Supabase.",
+        "V151: inventario de 200 SECURITY DEFINER en public/private conciliado por firma; 139 ejecutables por authenticated (136 public+3 private), 61 sin ejecución directa."
       ],
-      "updated_at": "2026-10-22T19:47:15.403Z"
+      "updated_at": "2026-10-22T20:09:45.187Z"
     },
     {
       "id": "06.07",
@@ -613,9 +614,10 @@
         "V143: impresión exige igualdad de libro/folio/número comparando metadata declarada por cliente con fila original, en misma transacción.",
         "V144: lectura de partida bloqueada por FOR SHARE hasta finalizar el asiento del print_event.",
         "V148: updated_at de cada partida cambia monotónicamente en UPDATE antes de validar una nueva impresión; FOR SHARE V144 permanece.",
-        "V150: control de autorización ahora es FALSE explícito para uid o parroquia ausente; conserva ruta de permisos por rol."
+        "V150: control de autorización ahora es FALSE explícito para uid o parroquia ausente; conserva ruta de permisos por rol.",
+        "V151: materializadores privados históricos DENEGARON acceso a Cancillería y Administración General en dos tipos; permisos legítimos de Parroquia/Diócesis conservados."
       ],
-      "updated_at": "2026-10-22T19:47:15.403Z"
+      "updated_at": "2026-10-22T20:09:45.189Z"
     },
     {
       "id": "06.08",
@@ -626,9 +628,10 @@
       "status": "EN_PROGRESO",
       "evidence": [
         "AUDITORIA_INVENTARIO_RPC_V91.json: Cribado search_path de funciones privilegiadas; falta verificación de todas sus dependencias",
-        "V124: ambas RPC destructivas preservaron search_path fijado; revisión de todas las demás sigue pendiente."
+        "V124: ambas RPC destructivas preservaron search_path fijado; revisión de todas las demás sigue pendiente.",
+        "V151: tres private EXECUTE grants autenticados no se revocaron a ciegas: son dependencias de wrappers public SECURITY INVOKER; dos materializadores endurecidos."
       ],
-      "updated_at": "2026-10-22T13:46:56.491Z"
+      "updated_at": "2026-10-22T20:09:45.189Z"
     },
     {
       "id": "06.09",
@@ -640,9 +643,10 @@
       "evidence": [
         "V120: Supabase Advisor informa 64 objetos visibles en GraphQL a authenticated. Acceso a esquema NO equivale a fuga de filas; revisión exhaustiva pendiente.",
         "V121: 64 advertencias GraphQL para objetos authenticated según Security Advisor; RLS V121 elimina filtración concreta por artefactos y archivos, no todas las advertencias.",
-        "V124: quedan 64 WARN GraphQL autenticado; se exige revisar permisos y RLS reales en cada objeto, no confundir exposición del esquema con lectura de datos."
+        "V124: quedan 64 WARN GraphQL autenticado; se exige revisar permisos y RLS reales en cada objeto, no confundir exposición del esquema con lectura de datos.",
+        "V151: 136 RPC públicas autenticadas siguen presentes; 55 public y 6 private no ejecutables directamente por authenticated requieren revisión de llamada interna."
       ],
-      "updated_at": "2026-10-22T13:46:56.492Z"
+      "updated_at": "2026-10-22T20:09:45.189Z"
     },
     {
       "id": "06.10",
@@ -1342,9 +1346,10 @@
         "V144: reimpresiones documentadas como solicitudes con consecutivo y UUID del antecedente, no como papel impreso.",
         "V148: el cliente que presenta versión anterior es rechazado tras editar contenido aunque status y libro/folio/número no hayan cambiado.",
         "V149: antes de solicitar impresión, cliente exige updated_at canónico de partida; ausencia detiene operación.",
-        "V150: register_registry_print deniega correctamente solicitud de impresión por identidad ficticia sin perfil antes de consultar partida."
+        "V150: register_registry_print deniega correctamente solicitud de impresión por identidad ficticia sin perfil antes de consultar partida.",
+        "V151: la impresión no sufrió cambios. La corrección de versiones V149 y permisos V150 continúa bajo pruebas contractuales."
       ],
-      "updated_at": "2026-10-22T19:47:15.403Z"
+      "updated_at": "2026-10-22T20:09:45.189Z"
     },
     {
       "id": "12.08",
@@ -1513,9 +1518,10 @@
       "status": "EN_PROGRESO",
       "evidence": [
         "V118: original ambiguo, supletoria ausente y original=supletoria rechazados en ensayo ficticio.",
-        "V123: sólo sombras de Confirmación con source legacy_import y estado anulado/revertido pueden retirarse; manuales y vigentes protegidas."
+        "V123: sólo sombras de Confirmación con source legacy_import y estado anulado/revertido pueden retirarse; manuales y vigentes protegidas.",
+        "V151: INSBAUTI/INSCONFI sólo materializable por parroquia propietaria o diócesis mediante can_manage_legacy_import."
       ],
-      "updated_at": "2026-10-22T13:46:56.492Z"
+      "updated_at": "2026-10-22T20:09:45.189Z"
     },
     {
       "id": "13.10",
@@ -1856,9 +1862,10 @@
         "V143: Exequias partida y constancia remiten libro/folio/número/updated_at/huella del HTML preparado, no texto recomputado posteriormente.",
         "V144: fila Matrimonio y Exequias protegida mediante bloqueo transaccional FOR SHARE.",
         "V148: Matrimonio y Exequias también usan clock_timestamp monotónico en vez de confiar en now() constante por transacción.",
-        "V149: Matrimonio y Exequias verifican updated_at desde SELECT * canónico y detienen impresión sin versión."
+        "V149: Matrimonio y Exequias verifican updated_at desde SELECT * canónico y detienen impresión sin versión.",
+        "V151: el backend de las importaciones pendientes de Bautismo, Confirmación y Matrimonio deja de aceptar Cancillería por acceso general diocesano."
       ],
-      "updated_at": "2026-10-22T19:16:26.005Z"
+      "updated_at": "2026-10-22T20:09:45.189Z"
     },
     {
       "id": "16.07",
@@ -2241,8 +2248,10 @@
       "priority": "P0",
       "criterion": "Búsqueda parroquial propia",
       "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "evidence": [
+        "V151: materializadores de boletas históricas utilizan el mismo guard can_manage_legacy_import que Centro de Migración; QA reversible rol a rol."
+      ],
+      "updated_at": "2026-10-22T20:09:45.189Z"
     },
     {
       "id": "20.03",
@@ -2789,9 +2798,10 @@
         "V143: cinco flujos de impresión cotejan recibo con coordenadas/version/huella; prueba visual autenticada e impresión física todavía pendientes.",
         "V147: constancia de reimpresión en metadata DB; sello de copia en HTML e impresión física pendientes.",
         "V148: trazabilidad documental bloquea versión antigua de impresión tras 3 actualizaciones del registro, verificada en Supabase con JWT simulado.",
-        "V150: ninguna impresión ni decreto ficticio generado; RPC de impresión negó al sujeto sin perfil por jurisdicción."
+        "V150: ninguna impresión ni decreto ficticio generado; RPC de impresión negó al sujeto sin perfil por jurisdicción.",
+        "V151: ensayo de dos funciones en 4 negativos y 2 positivos, con ROLLBACK; cero importaciones reales en lote de prueba."
       ],
-      "updated_at": "2026-10-22T19:47:15.403Z"
+      "updated_at": "2026-10-22T20:09:45.189Z"
     },
     {
       "id": "25.01",
@@ -3031,9 +3041,10 @@
         "V143: huella SHA-256 calculada con Web Crypto en origen; metadatos dejan claro que digest de cliente no prueba certificación del libro.",
         "V144: contador acotado por parroquia+sacramento+partida+tipo, bloqueo advisory específico de ese documento.",
         "V148: función de disparador private con SECURITY INVOKER, sin EXECUTE directo public/anon/authenticated.",
-        "V150: can_access_parish mantiene SECURITY DEFINER y no recibe nuevos GRANT; retorno total booleano evita el salto de guardas con NULL."
+        "V150: can_access_parish mantiene SECURITY DEFINER y no recibe nuevos GRANT; retorno total booleano evita el salto de guardas con NULL.",
+        "V151: las tres SECURITY DEFINER privadas accesibles a authenticated mantienen comprobaciones de rol/JWT; dos funciones materializadoras tienen política ajustada."
       ],
-      "updated_at": "2026-10-22T19:47:15.403Z"
+      "updated_at": "2026-10-22T20:09:45.189Z"
     },
     {
       "id": "27.02",
@@ -3063,9 +3074,10 @@
         "V143: SQL sobre cada sacramento rechazo de libro/folio/número falsos y versión de fecha antigua; compatibilidad con clientes legacy marcada como unchecked.",
         "V146: metadatos históricos NO_NUMERIC o demasiado grandes dejan de interrumpir posteriores impresiones.",
         "V148: defensa ante escritura manual de updated_at antigua; trigger impone valor mayor al anterior en cada sacramento.",
-        "V150: falta de auth.uid y parroquia objetivo inexistente devuelven FALSE explícito."
+        "V150: falta de auth.uid y parroquia objetivo inexistente devuelven FALSE explícito.",
+        "V151: se detectó que can_access_parish era más permisiva que can_manage_legacy_import para materializar lotes; no equiparar lectura jurisdiccional con permiso de escritura."
       ],
-      "updated_at": "2026-10-22T19:47:15.403Z"
+      "updated_at": "2026-10-22T20:09:45.189Z"
     },
     {
       "id": "27.03",
@@ -3116,9 +3128,10 @@
         "V144-146: secuencia, previa UUID y clasificación son generadas por RPC con orden independiente de timestamps iguales.",
         "V148: V143 compara updated_at canónico y rechaza una copia antes de registrar print event; la prueba funcional verifica tanto rechazo como aceptación.",
         "V149: constancia de auditoría confronta versión del servidor y del cliente a precisión PostgreSQL, no milisegundos.",
-        "V150: live QA confirmó que register_registry_print deniega actor sin perfil por jurisdicción, no solo por falta de registro."
+        "V150: live QA confirmó que register_registry_print deniega actor sin perfil por jurisdicción, no solo por falta de registro.",
+        "V151: reproducida invocación anterior desde Cancillería que devolvía resultado pese a can_manage_legacy_import=false; tras fix denegada."
       ],
-      "updated_at": "2026-10-22T19:47:15.403Z"
+      "updated_at": "2026-10-22T20:09:45.189Z"
     },
     {
       "id": "27.05",
@@ -3237,9 +3250,10 @@
         "V143: inventario SECURITY DEFINER mantiene 136, 21 con pruebas parciales y 115 por revisar; evidencia complementaria de RPC impresión.",
         "V147: 136 SECURITY DEFINER authenticated, 21 con pruebas parciales, 115 funciones pendientes.",
         "V148: lista SECURITY DEFINER constante 136 funciones, 21 evidencias parciales, 115 por revisar; trigger nuevo SEC INVOKER.",
-        "V150: can_access_parish pasa a prueba parcial de RLS/alcance; catálogo privilegiado reporta 22 parciales y 114 pendientes en inventario V148."
+        "V150: can_access_parish pasa a prueba parcial de RLS/alcance; catálogo privilegiado reporta 22 parciales y 114 pendientes en inventario V148.",
+        "V151: de 200 funciones privilegiadas totales, 139 invocables por authenticated, con 24 evidencias parciales, 115 pendientes y 61 sin permiso directo."
       ],
-      "updated_at": "2026-10-22T19:47:15.403Z"
+      "updated_at": "2026-10-22T20:09:45.189Z"
     },
     {
       "id": "28.01",
@@ -3659,9 +3673,10 @@
         "V144-V146: cuatro sacramentos y tres reimpresiones, tipos independientes, antecedentes antiguos no numéricos y largos, todos BEGIN/ROLLBACK.",
         "V148: QA baseline reprodujo desactualización de timestamps; QA posterior con 4 sacramentos, 3 modificaciones, 4 rechazos y 4 aceptaciones con rollback.",
         "V149: 22 pruebas sintéticas reversibles nuevas, sin escritura en Supabase; variantes de husos horarios, microsegundos y versiones ausentes.",
-        "V150: QA autenticada fake y roles válidos con ROLLBACK, sin datos permanentes; concurrencia entre dos sesiones NO certificada."
+        "V150: QA autenticada fake y roles válidos con ROLLBACK, sin datos permanentes; concurrencia entre dos sesiones NO certificada.",
+        "V151: 4 llamadas negativas y 2 positivas por rol; QA en Supabase con ROLLBACK, no hay prueba simultánea de dos conexiones físicas."
       ],
-      "updated_at": "2026-10-22T19:47:15.403Z"
+      "updated_at": "2026-10-22T20:09:45.189Z"
     },
     {
       "id": "31.08",
@@ -3711,9 +3726,10 @@
         "V143: conteo posterior cero partidas QA, print_events QA o audit_events QA; ANULACION 5 archived y 2 materialized_decree intactos.",
         "V147: 0 registros ficticios residuales; 8 solicitudes históricas auténticas sin SHA sin tocar; ANULACION 5 archivados y 2 vinculados intactos.",
         "V148: 0 partidas/impresiones QA persistidas, 8 impresiones históricas y ANULACION 5+2 sin tocar.",
-        "V150: la prueba negativa de impresión y decreto no creó registros; no se escribieron datos sacramentales."
+        "V150: la prueba negativa de impresión y decreto no creó registros; no se escribieron datos sacramentales.",
+        "V151: no quedaron boletas ni partidas ficticias persistidas; prueba usó lotes históricos con cero filas validas y rollback."
       ],
-      "updated_at": "2026-10-22T19:47:15.403Z"
+      "updated_at": "2026-10-22T20:09:45.189Z"
     },
     {
       "id": "32.01",
@@ -3726,9 +3742,10 @@
         "AUDITORIA_PUERTA_CALIDAD_V90.json: Gate registra ejecución 25 de 26, dependencias fallidas; falta cobertura integral por cada control",
         "V111/V112: fuentes SQL, pruebas y resumen de seguridad guardados en el árbol canónico. Falta catalogación forense de cada transacción E2E.",
         "V114: banco de 7.800 escenarios planificados, separados de pruebas reales y sintéticas con etiqueta NO_EJECUTADO.",
-        "V124: SQL QA y contract tests versionables en scripts, migraciones reproducibles y banco 133 RPC."
+        "V124: SQL QA y contract tests versionables en scripts, migraciones reproducibles y banco 133 RPC.",
+        "V151: snapshot de pg_proc con permisos por firma y diferenciación explícita de overload revocada vs overload ejecutable en nulidad matrimonial."
       ],
-      "updated_at": "2026-10-22T13:46:56.492Z"
+      "updated_at": "2026-10-22T20:09:45.189Z"
     },
     {
       "id": "32.02",
@@ -3794,9 +3811,10 @@
         "V147: 21 nuevos tests, 817/817 sintéticas, 28/28 verificaciones finales, npm ci aislado 446 paquetes.",
         "V148: +19 tests nuevos, 836/836 pruebas sintéticas, 28/28 quality gate; 4 regresiones SQL históricas PASS.",
         "V149: 858/858 pruebas sintéticas integradas; 28/28 comprobaciones en puerta estricta local.",
-        "V150: +15 pruebas sintéticas permanentes, 873/873 integrales; gate estricta 28/28 aprobada."
+        "V150: +15 pruebas sintéticas permanentes, 873/873 integrales; gate estricta 28/28 aprobada.",
+        "V151: 17 pruebas sintéticas nuevas, 890/890 global; Quality Gate 28/28, 0 hallazgos npm audit."
       ],
-      "updated_at": "2026-10-22T19:47:15.403Z"
+      "updated_at": "2026-10-22T20:09:45.189Z"
     },
     {
       "id": "32.04",
@@ -3851,9 +3869,10 @@
         "V143: reproducido pre-migración que frontend podía declarar folio 222 y registrar impresión sobre libro con folio 333.",
         "V145: anterior UUID mal encadenado por timestamp idéntico; V146: conversión legacy ERROR 22P02; ambos reproducidos y corregidos.",
         "V148: fallo real en Bautismo: se editaba nombre sin cambio updated_at; ahora se detecta modificación de versión en cuatro sacramentos.",
-        "V150: causa real de permisos NULL documentada y corregida; sin perfil el control es FALSE."
+        "V150: causa real de permisos NULL documentada y corregida; sin perfil el control es FALSE.",
+        "V151: defecto de alcance en materializadores reproducido, corregido en backend y QA real 4 denegadas/2 autorizadas con rollback."
       ],
-      "updated_at": "2026-10-22T19:47:15.403Z"
+      "updated_at": "2026-10-22T20:09:45.189Z"
     },
     {
       "id": "32.06",
@@ -3896,9 +3915,10 @@
         "V143: migración aplicada 20261022180645 y matriz SQL post-fix 4x6 rechazos, ROLLBACK; tests funcionales de hash.",
         "V147: migraciones aplicadas 20261022182523, 20261022182724, 20261022183433, reimpresiones probadas sin residuo.",
         "V148: migración 20261022185717 aplicada, cuatro triggers reales verificados, QA SQL con ROLLBACK.",
-        "V150: migración 20261022194003 aplicada y concordante con historial Supabase. Roles institucionales preservados en ensayos."
+        "V150: migración 20261022194003 aplicada y concordante con historial Supabase. Roles institucionales preservados en ensayos.",
+        "V151: migración 20261022200026 registrada en Supabase, funciones privadas guardan propietarios, grants y search_path."
       ],
-      "updated_at": "2026-10-22T19:47:15.403Z"
+      "updated_at": "2026-10-22T20:09:45.189Z"
     },
     {
       "id": "32.07",
@@ -3944,9 +3964,10 @@
         "V147: puerta inicial V146 26/28 por crítico DOMPurify; corregido en 3.4.17, gate final 28/28, npm audit full/prod cero.",
         "V148: Vite build, CSS crítico y npm audit completo y producción =0, puerta estricta 28/28.",
         "V149: build, verificadores, CSS y npm audit completo y producción aprobados; cero vulnerabilidades según reportes.",
-        "V150: 28/28 gates, build, CSS y npm audit producción/completo = 0."
+        "V150: 28/28 gates, build, CSS y npm audit producción/completo = 0.",
+        "V151: build, CSS, verificadores legacy y auditorías npm production/completo aprobaron 28/28."
       ],
-      "updated_at": "2026-10-22T19:47:15.403Z"
+      "updated_at": "2026-10-22T20:09:45.189Z"
     },
     {
       "id": "32.08",
@@ -3990,9 +4011,10 @@
         "V147: sin frontend desplegado ni impresión física. Prueba transaccional de dos sesiones real sigue pendiente.",
         "V148: backend corregido, frontend sin desplegar; concurrente de dos backends independiente pendiente, no certificado.",
         "V149: endurecimiento exclusivamente local, sin despliegue frontend, sin ensayo de papel ni concurrencia independiente.",
-        "V150: backend desplegado; frontend V149 aún no desplegado. Concurrencia física y 114 RPC pendientes no certificados."
+        "V150: backend desplegado; frontend V149 aún no desplegado. Concurrencia física y 114 RPC pendientes no certificados.",
+        "V151: backend actualizado sin despliegue frontend. Integridad funcional total, concurrencia independiente e impresión física no certificados."
       ],
-      "updated_at": "2026-10-22T19:47:15.403Z"
+      "updated_at": "2026-10-22T20:09:45.189Z"
     },
     {
       "id": "32.09",
