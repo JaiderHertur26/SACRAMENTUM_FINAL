@@ -15,6 +15,19 @@ export const normalizePrintCoordinates = (coordinates) => {
   return Object.fromEntries(['book','folio','number'].map(key => [key,String(coordinates[key] ?? '')]));
 };
 
+// PostgreSQL timestamptz conserva microsegundos. Date.parse() solo compara
+// milisegundos y podría confundir dos ediciones dentro del mismo milisegundo.
+export const parseRegistryVersionMicros = (value) => {
+  if (typeof value !== 'string') return null;
+  const normalized = value.trim();
+  const match = normalized.match(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.(\d{1,6}))?(?:Z|[+-]\d{2}:\d{2})$/i);
+  if (!match) return null;
+  const milliseconds = Date.parse(normalized);
+  if (!Number.isFinite(milliseconds)) return null;
+  const microseconds = (match[1] || '').padEnd(6, '0').slice(3, 6);
+  return BigInt(milliseconds) * 1000n + BigInt(microseconds || '0');
+};
+
 export const sha256PrintedHtml = async (html) => {
   if (typeof html !== 'string' || !html.trim()) {
     throw new Error('No existe contenido congelado de la partida para imprimir');
@@ -65,11 +78,11 @@ export const verifyRegistryPrintReceipt = ({
   }
 
   if (expectedRecordUpdatedAt) {
-    const clientTime = Date.parse(expectedRecordUpdatedAt);
-    const serverTime = Date.parse(receipt.metadata?.record_updated_at ?? '');
+    const clientVersion = parseRegistryVersionMicros(expectedRecordUpdatedAt);
+    const serverVersion = parseRegistryVersionMicros(receipt.metadata?.record_updated_at);
     if (receipt.metadata?.record_version_checked !== true ||
-      !Number.isFinite(clientTime) || !Number.isFinite(serverTime) ||
-      clientTime !== serverTime) {
+      clientVersion === null || serverVersion === null ||
+      clientVersion !== serverVersion) {
       throw new Error('La versión de la partida ya no coincide con la constancia');
     }
   }

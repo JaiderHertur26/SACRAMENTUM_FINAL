@@ -1,6 +1,6 @@
 import { supabase } from '@/lib/supabaseClient';
 import { getLocalDateISO } from '@/utils/localDate';
-import { verifyRegistryPrintReceipt, normalizePrintCoordinates, sha256PrintedHtml } from '@/utils/registryPrintReceipt';
+import { verifyRegistryPrintReceipt, normalizePrintCoordinates, parseRegistryVersionMicros, sha256PrintedHtml } from '@/utils/registryPrintReceipt';
 
 const replaceAll = (text, variables={}) => Object.entries(variables).reduce((acc,[key,value]) => {
   const safe = value == null || value === '' ? '---' : String(value);
@@ -137,12 +137,15 @@ export async function saveMarginalTemplateVersion({
 
 export async function registerRegistryPrint({ parishId, sacramentType, sacramentId, documentKind='partida', selectedNoteKeys=[], includedNotes=[], metadata={}, expectedStatus='', expectedCoordinates, expectedRecordUpdatedAt='', htmlSnapshot }) {
   if (!parishId || !sacramentId) throw new Error('No se puede imprimir sin identificar parroquia y partida para la auditoría');
+  if (parseRegistryVersionMicros(expectedRecordUpdatedAt) === null) {
+    throw new Error('Falta la versión canónica de la partida: recargue el registro desde Supabase antes de imprimir');
+  }
   const coordinates = normalizePrintCoordinates(expectedCoordinates);
   const documentHash = await sha256PrintedHtml(htmlSnapshot);
   const printMetadata = {
     ...metadata,
     expected_coordinates: coordinates,
-    ...(expectedRecordUpdatedAt ? { expected_record_updated_at: expectedRecordUpdatedAt } : {}),
+    expected_record_updated_at: expectedRecordUpdatedAt,
     document_sha256: documentHash
   };
   const { data, error } = await supabase.rpc('register_registry_print', {
