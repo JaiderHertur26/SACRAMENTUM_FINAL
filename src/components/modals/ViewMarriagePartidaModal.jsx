@@ -30,7 +30,7 @@ const ViewMarriagePartidaModal = ({ isOpen, onClose, partida, auxiliaryData }) =
 
     // --- LÓGICA LIMPIA ---
     const printableNotes=composePrintableNotes(marginalNotes,selectedNotes);
-    let rawMarginText = printableNotes.join(' // ') || partida.notaMarginal || partida.marginNote || partida.notaAlMargen || "";
+    let rawMarginText = printableNotes.join(' // ') || "";
     if (typeof rawMarginText === 'object') {
         rawMarginText = rawMarginText.text || JSON.stringify(rawMarginText);
     }

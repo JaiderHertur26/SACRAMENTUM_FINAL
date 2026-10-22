@@ -139,14 +139,22 @@ export const getFuneralsCloud = async (parishId) => {
 export const getFuneralMarginalNotesCloud = async (funeralId) => {
   const { data, error } = await supabase
     .from('marginal_notes')
-    .select('id, note_type, decree_number, content, note_date, created_at')
+    .select('id, note_type, decree_number, content, note_date, created_at, status, print_policy, print_default, print_label, decree_id, linked_decree:decretos!marginal_notes_decree_id_fkey(status)')
     .eq('sacrament_type', 'exequias')
     .eq('sacrament_id', funeralId)
     .order('note_date', { ascending: true, nullsFirst: false })
     .order('created_at', { ascending: true });
 
   if (error) throw error;
-  return data || [];
+  const inactive=new Set(['reversed','revertida','deleted','cancelled','anulada']);
+  return (data || []).filter(note =>
+    !inactive.has(String(note.status||'active').toLowerCase()) &&
+    !(
+      note.decree_id &&
+      inactive.has(String(note.linked_decree?.status||'').toLowerCase()) &&
+      !String(note.note_type||'').toLowerCase().startsWith('reversion')
+    )
+  );
 };
 
 export const getFuneralInstitutionCloud = async ({ parishId, fallbackParish, fallbackDiocese, fallbackCity }) => {

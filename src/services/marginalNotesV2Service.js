@@ -48,7 +48,7 @@ export async function listMarginalNotesForRecord({ parishId, sacramentType, sacr
   if (!sacramentId) return legacyInlineNote ? [{id:'legacy-inline',content:String(legacyInlineNote),note_type:'legacy_inline',print_policy:'optional',print_default:true,is_locked:false,print_label:'Nota histórica del registro',status:'active',isLegacyInline:true}] : [];
   const { data, error } = await supabase
     .from('marginal_notes')
-    .select('*')
+    .select('*, linked_decree:decretos!marginal_notes_decree_id_fkey(status)')
     .eq('parish_id',parishId)
     .eq('sacrament_type',sacramentType)
     .eq('sacrament_id',sacramentId)
@@ -59,10 +59,17 @@ export async function listMarginalNotesForRecord({ parishId, sacramentType, sacr
 
   const allNotes=[...(data||[])];
   const inactiveStatuses=new Set(['reversed','revertida','deleted']);
-  const notes=allNotes.filter(n=>!inactiveStatuses.has(String(n.status||'').trim().toLowerCase()));
+  const isIneffectiveDecreeNote=(note)=>
+    ['reversed','revertida','cancelled','anulada','annulled'].includes(
+      String(note.linked_decree?.status||'').trim().toLowerCase()
+    ) && !String(note.note_type||'').trim().toLowerCase().startsWith('reversion');
+  const notes=allNotes.filter(n=>
+    !inactiveStatuses.has(String(n.status||'').trim().toLowerCase())
+    && !isIneffectiveDecreeNote(n)
+  );
   const cleanInline=String(legacyInlineNote || '').trim();
   const inlineWasReversed=Boolean(cleanInline) && allNotes.some(n=>
-    inactiveStatuses.has(String(n.status||'').trim().toLowerCase()) &&
+    (inactiveStatuses.has(String(n.status||'').trim().toLowerCase()) || isIneffectiveDecreeNote(n)) &&
     String(n.content||'').trim()===cleanInline
   );
   if(cleanInline && !inlineWasReversed && !notes.some(n=>String(n.content||'').trim()===cleanInline)) {

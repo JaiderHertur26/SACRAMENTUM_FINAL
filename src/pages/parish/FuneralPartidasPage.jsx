@@ -135,6 +135,9 @@ const FuneralPartidasPage = () => {
 
   const printCertificate = async () => {
     if (!selected) return;
+    const printableNotes = notes.filter(note =>
+      note.print_policy !== 'internal' && (printNotes || note.print_policy === 'required')
+    );
 
     const popup = window.open('', '_blank', 'width=900,height=1100');
     if (!popup) {
@@ -152,10 +155,8 @@ const FuneralPartidasPage = () => {
       sacramentType: 'exequias',
       sacramentId: selected.id,
       documentKind: 'partida',
-      selectedNoteKeys: printNotes ? notes.map((note) => String(note.id)) : [],
-      includedNotes: printNotes
-        ? notes.map((note) => ({ id: String(note.id), label: note.print_label || note.note_type || 'Nota marginal', content: note.content || '', policy: note.print_policy || 'optional' }))
-        : [],
+      selectedNoteKeys: printableNotes.map(note => String(note.id)),
+      includedNotes: printableNotes.map(note => ({ id: String(note.id), label: note.print_label || note.note_type || 'Nota marginal', content: note.content || '', policy: note.print_policy || 'optional' })),
       metadata: {
         book: selected.book_number || selected.Libro || '',
         folio: selected.folio || selected.page_number || '',
@@ -174,8 +175,8 @@ const FuneralPartidasPage = () => {
 
     popup.document.write(buildFuneralPartidaHtml({
       record: selected,
-      notes,
-      printNotes,
+      notes: printableNotes,
+      printNotes: printableNotes.length > 0,
       institution
     }));
     popup.document.close();
@@ -184,6 +185,18 @@ const FuneralPartidasPage = () => {
 
   const printFuneralSlip = async (record = selected) => {
     if (!record) return;
+    let requiredSlipNotes = [];
+    try {
+      const currentNotes = await getFuneralMarginalNotesCloud(record.id);
+      requiredSlipNotes = currentNotes.filter(note => note.print_policy === 'required');
+    } catch (error) {
+      toast({
+        title: 'No se pudieron verificar las notas marginales',
+        description: String(error?.message || 'No se imprimirá sin comprobar las notas.'),
+        variant: 'destructive'
+      });
+      return;
+    }
 
     const popup = window.open('', '_blank', 'width=850,height=900');
     if (!popup) {
@@ -201,6 +214,8 @@ const FuneralPartidasPage = () => {
       sacramentType: 'exequias',
       sacramentId: record.id,
       documentKind: 'constancia',
+      selectedNoteKeys: requiredSlipNotes.map(note => String(note.id)),
+      includedNotes: requiredSlipNotes.map(note => ({ id: String(note.id), label: note.print_label || note.note_type || 'Nota marginal', content: note.content || '', policy: note.print_policy || 'optional' })),
       metadata: {
         book: record.book_number || record.Libro || '',
         folio: record.folio || record.page_number || '',
@@ -219,7 +234,8 @@ const FuneralPartidasPage = () => {
 
     popup.document.write(buildFuneralConstanciaHtml({
       record,
-      institution
+      institution,
+      notes: requiredSlipNotes
     }));
     popup.document.close();
   };

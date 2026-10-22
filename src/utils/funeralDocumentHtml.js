@@ -310,7 +310,7 @@ export const buildFuneralPartidaHtml = ({ record, notes = [], printNotes = true,
   return wrap('Partida de Exequias', body);
 };
 
-export const buildFuneralConstanciaHtml = ({ record, institution = {} }) => {
+export const buildFuneralConstanciaHtml = ({ record, institution = {}, notes = [] }) => {
   const fullName = `${record?.nombres || ''} ${record?.apellidos || ''}`.trim();
   const funeralTime = record?.hora_exequias ? String(record.hora_exequias).slice(0, 5) : '';
 
@@ -344,6 +344,8 @@ export const buildFuneralConstanciaHtml = ({ record, institution = {} }) => {
         </div>
       </div>
     </div>
+
+    ${notes.length ? `<div class='section'><div class='notes'><div class='notes-head'>NOTAS MARGINALES OBLIGATORIAS</div>${notes.map(note => `<div class='note'>${escapeHtml(note.content || '')}</div>`).join('')}</div></div>` : ''}
 
     <div class="disclaimer">
       <strong>IMPORTANTE.</strong> Esta constancia es un documento complementario derivado del registro parroquial. El N.º de Registro es control administrativo y no sustituye la identificación canónica por Libro, Folio y Número ni una Partida de Exequias.
