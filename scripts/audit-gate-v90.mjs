@@ -60,7 +60,8 @@ exec('pruebas-sinteticas',node,['--test',
  'scripts/test-nullity-browser-v131.mjs',
  'scripts/test-marginal-receipt-authority-v133.mjs',
  'scripts/test-physical-notification-guard-v134.mjs',
- 'scripts/test-stale-registral-reversals-v135.mjs']);
+ 'scripts/test-stale-registral-reversals-v135.mjs',
+ 'scripts/test-stale-baptism-confirmation-v136.mjs']);
 const scripts=fs.readdirSync(path.join(root,'scripts')).filter(x=>/^verify-.*\.mjs$/.test(x)).sort();
 for(const file of scripts)exec('legacy/'+file,node,['scripts/'+file]);
 const npmOnWindows=process.platform==='win32';
