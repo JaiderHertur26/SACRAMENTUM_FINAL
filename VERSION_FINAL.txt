@@ -1,26 +1,29 @@
-SACRAMENTUM FINAL · V105 · 21/10/2026 (Colombia)
+SACRAMENTUM FINAL · V106 · 21/10/2026 (Colombia)
 
-AUDITORÍA DE NULIDAD MATRIMONIAL Y PARTIDAS BAUTISMALES
+RECEPCIÓN DE NOTIFICACIONES DE NULIDAD MATRIMONIAL
 
-Hallazgo crítico V105
-- Antes: Cancillería podía asociar un Bautismo de una persona ajena a una sentencia ficticia de nulidad matrimonial: se agregaba una nota marginal irregular.
-- Se reprodujo con matrimonio y Bautismo ficticios dentro de BEGIN/ROLLBACK, sin tocar partidas reales.
-- Desde V105, la vinculación automática verifica nombres, apellidos y libro/folio/número del Bautismo contra los datos del contrayente en la partida matrimonial.
-- Se impiden arrays con más de dos partidas, duplicados y coordenadas incompletas.
-- Si no existe vínculo verificable, no se puede afectar automáticamente el Bautismo; la nulidad del matrimonio sin enlaces sigue permitida para evitar propagación irregular.
-- Prueba positiva con dos Bautismos ficticios: uno local recibió nota marginal y uno de otra parroquia generó notificación pendiente con destinatario.
-- Cero registros ficticios en Bautismos, Matrimonios, decretos, notas, notificaciones y auditoría después de ROLLBACK.
+DEFECTOS COMPROBADOS Y CORREGIDOS
+- Un aviso de nulidad con decreto inexistente podía generar una nota marginal bautismal. Reproducido con fixtures 100% ficticios, ROLLBACK.
+- Un aviso ya aceptado, con nota aplicada, podía archivarse como cancelado, dejando un estado incompatible con el libro. Reproducido con ROLLBACK.
+- La RPC receptora exige sentencia/decreto activo y concordancia entre decreto, Matrimonio, parroquia emisora, Bautismo y números oficiales; además revalida la identidad bautismal V105.
+- La RPC de archivo rechaza procesados, acuses emitidos o notas asentadas; repetir archivo de un cancelado es idempotente.
+- Se preservan los permisos legítimos de Parroquia y el sistema de notas, acuses y auditoría.
+
+PRUEBAS DE CONDUCTA REALES
+- Aviso ficticio sin decreto: rechazado, cero notas y estado pendiente.
+- Documento cancelado: rechazado, cero notas.
+- Ciclo íntegro: Cancillería emite una nulidad ficticia; Parroquia receptora lee, acepta, asienta 1 nota bautismal, genera 1 acuse; aceptación repetida no duplica, archivo posterior rechazado.
+- Cero registros QA persistidos después de ROLLBACK.
 
 CALIDAD
-- 12 nuevas pruebas de regresión sintética; 325 pruebas sintéticas acumuladas previstas, diferentes de los 325 controles de la auditoría maestra.
-- Se mantienen 23 verificadores históricos y build de producción.
-- Cinco alertas HIGH de dependencias sin resolver.
+- 14 pruebas sintéticas de regresión nuevas; 339 acumuladas previstas más 23 verificadores históricos y build.
+- Cinco HIGH de dependencias siguen abiertos; puerta de calidad no aprobada completamente.
+- 325 controles de auditoría maestra siguen en ejecución; no confundir con pruebas sintéticas.
 
 PENDIENTES
-- Sentencias verdaderas del Tribunal, conciliación de expedientes con campos históricos incompletos, notificaciones aceptadas y notas de recepción.
-- Matrices de doble diócesis, pruebas visuales autenticadas, concurrencia y restauración de respaldo.
-- La auditoría integral de 325 controles todavía NO está completa.
+- Expedientes verdaderos y examen jurídico de sentencia, doble sesión/cross-jurisdiction, notificaciones rechazadas y reversión judicial, concurrencia y respaldo restaurado.
+- Seguridad individual de RPC restantes y pantallas autenticadas.
 
-INFORME
-AUDITORIA_NULIDAD_VINCULOS_BAUTISMO_V105_2026-10-21.md
+EVIDENCIA
+AUDITORIA_RECEPCION_NULIDAD_MATRIMONIAL_V106_2026-10-21.md
 AUDITORIA_MAESTRA_SACRAMENTUM_V90.md
