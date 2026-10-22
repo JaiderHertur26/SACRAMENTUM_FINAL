@@ -800,9 +800,11 @@
       "area": "Bautismo",
       "priority": "P0",
       "criterion": "Corrección por decreto",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "V115-V117: corrección ficticia de Bautismo con partida original anulada, supletoria, notas, aviso y reversión con doble constancia. SQL transaccional ROLLBACK."
+      ],
+      "updated_at": "2026-10-22T03:51:56.084Z"
     },
     {
       "id": "08.09",
@@ -810,9 +812,11 @@
       "area": "Bautismo",
       "priority": "P0",
       "criterion": "Reposición por decreto",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "V115-V117: reposición ficticia de Bautismo emite decreto y partida supletoria; reversión deja partida reversed con nueva nota. SQL ROLLBACK."
+      ],
+      "updated_at": "2026-10-22T03:51:56.085Z"
     },
     {
       "id": "08.10",
@@ -820,9 +824,11 @@
       "area": "Bautismo",
       "priority": "P0",
       "criterion": "Reversión y trazas",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "V117: reversión restituye original seated o invalida supletoria y rechaza una segunda reversión; doble nota marginal en corrección."
+      ],
+      "updated_at": "2026-10-22T03:51:56.085Z"
     },
     {
       "id": "08.11",
@@ -922,9 +928,11 @@
       "area": "Confirmación",
       "priority": "P0",
       "criterion": "Corrección y reposición",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "V115-V117: corrección y reposición ficticias de Confirmación, con concepto, coordenadas, notificaciones y registros relacionados. SQL ROLLBACK."
+      ],
+      "updated_at": "2026-10-22T03:51:56.085Z"
     },
     {
       "id": "09.10",
@@ -932,9 +940,11 @@
       "area": "Confirmación",
       "priority": "P0",
       "criterion": "Reversión",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "V117: reversión de Confirmación probada para corrección y reposición, duplicación rechazada y nuevas notas marginales."
+      ],
+      "updated_at": "2026-10-22T03:51:56.085Z"
     },
     {
       "id": "09.11",
@@ -1034,9 +1044,11 @@
       "area": "Matrimonio",
       "priority": "P0",
       "criterion": "Corrección por decreto",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "V115: Matrimonio corrección/reversión con partida original anulada/restablecida y supletoria creada/revertida, con notas y aviso. SQL ROLLBACK."
+      ],
+      "updated_at": "2026-10-22T03:51:56.085Z"
     },
     {
       "id": "10.10",
@@ -1044,9 +1056,11 @@
       "area": "Matrimonio",
       "priority": "P0",
       "criterion": "Reposición",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "V115: Matrimonio reposición/reversión, original nulo, partida supletoria, nota, notificación, auditoría. SQL ROLLBACK."
+      ],
+      "updated_at": "2026-10-22T03:51:56.085Z"
     },
     {
       "id": "10.11",
@@ -1112,9 +1126,11 @@
       "area": "Exequias",
       "priority": "P0",
       "criterion": "Libro supletorio",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "V115: reposición de Exequias al libro supletorio, partida creada y reversión en SQL reversible. Falta impresión real."
+      ],
+      "updated_at": "2026-10-22T03:51:56.085Z"
     },
     {
       "id": "11.06",
@@ -1142,9 +1158,11 @@
       "area": "Exequias",
       "priority": "P0",
       "criterion": "Decretos",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "V115: corrección y reposición de Exequias con competencia Cancillería y rechazo a Parroquia; reversión posterior verificada."
+      ],
+      "updated_at": "2026-10-22T03:51:56.085Z"
     },
     {
       "id": "11.09",
@@ -1152,9 +1170,11 @@
       "area": "Exequias",
       "priority": "P0",
       "criterion": "Notas",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "V115: corrección y reposición generan notas marginales y reversión agrega nota posterior en Exequias."
+      ],
+      "updated_at": "2026-10-22T03:51:56.085Z"
     },
     {
       "id": "11.10",
@@ -1176,9 +1196,10 @@
       "evidence": [
         "AUDITORIA_CONCEPTOS_DEC_REGLAS_V98_2026-10-21.md: Cancillería única con INSERT/UPDATE de conceptos; otros roles bloqueados, todavía pendientes todos los RPC de emisión",
         "AUDITORIA_DECRETOS_MATRIMONIO_EXEQUIAS_V104_2026-10-21.md: V104: corrección/reposición/nulidad y reversión de Matrimonios/Exequias solo Cancillería; siete RPC revisadas, resto pendiente",
-        "V114: documentos nuevos e históricos de cuatro sacramentos, emisión Cancillería positiva, Diócesis, Parroquia y Admin General rechazados; no cubre todos los demás decretos."
+        "V114: documentos nuevos e históricos de cuatro sacramentos, emisión Cancillería positiva, Diócesis, Parroquia y Admin General rechazados; no cubre todos los demás decretos.",
+        "V115: 24 invocaciones de ocho RPC como Parroquia, Diócesis y Admin General fueron denegadas; competencia de Cancillería comprobada en transacciones."
       ],
-      "updated_at": "2026-10-22T03:21:45.467Z"
+      "updated_at": "2026-10-22T03:51:56.085Z"
     },
     {
       "id": "12.02",
@@ -1209,9 +1230,11 @@
       "area": "Decretos nuevos en Cancillería",
       "priority": "P0",
       "criterion": "Corrección afecta original",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "V115: ocho flujos nuevos de corrección/reposición por cuatro sacramentos, par original/supletoria y estado registral comprobado en SQL."
+      ],
+      "updated_at": "2026-10-22T03:51:56.085Z"
     },
     {
       "id": "12.05",
@@ -1222,9 +1245,10 @@
       "status": "EN_PROGRESO",
       "evidence": [
         "AUDITORIA_DECRETOS_MATRIMONIO_EXEQUIAS_V104_2026-10-21.md: V104: reposiciones supletorias ficticias Exequias/Matrimonio creadas y revertidas con Cancillería",
-        "AUDITORIA_NULIDAD_VINCULOS_BAUTISMO_V105_2026-10-21.md: V105: la nulidad con dos Bautismos verificados genera nota local y aviso remoto pendiente, sin tocar Bautismo ajeno"
+        "AUDITORIA_NULIDAD_VINCULOS_BAUTISMO_V105_2026-10-21.md: V105: la nulidad con dos Bautismos verificados genera nota local y aviso remoto pendiente, sin tocar Bautismo ajeno",
+        "V115: reposiciones de cuatro sacramentos crean partidas en libro supletorio y conservan vínculo a decreto."
       ],
-      "updated_at": "2026-10-22T00:34:33.533Z"
+      "updated_at": "2026-10-22T03:51:56.085Z"
     },
     {
       "id": "12.06",
@@ -1244,9 +1268,11 @@
       "area": "Decretos nuevos en Cancillería",
       "priority": "P0",
       "criterion": "Aviso a parroquia",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "V115-V116: avisos oficiales comprobados después de crear decreto; dos ambigüedades SQL detectadas y corregidas en Supabase."
+      ],
+      "updated_at": "2026-10-22T03:51:56.085Z"
     },
     {
       "id": "12.08",
@@ -1278,9 +1304,10 @@
       "criterion": "Reversión autorizada",
       "status": "EN_PROGRESO",
       "evidence": [
-        "AUDITORIA_DECRETOS_MATRIMONIO_EXEQUIAS_V104_2026-10-21.md: V104: reversión válida de ambas reposiciones y estados reversed verificados, otros sacramentos pendientes"
+        "AUDITORIA_DECRETOS_MATRIMONIO_EXEQUIAS_V104_2026-10-21.md: V104: reversión válida de ambas reposiciones y estados reversed verificados, otros sacramentos pendientes",
+        "V115-V117: reversión autorizada desde Cancillería, denegada en otros roles y bloqueo de doble reversión probado en Bautismo/Confirmación."
       ],
-      "updated_at": "2026-10-22T00:14:45.537Z"
+      "updated_at": "2026-10-22T03:51:56.085Z"
     },
     {
       "id": "12.11",
@@ -1458,9 +1485,11 @@
       "area": "Notas marginales",
       "priority": "P0",
       "criterion": "Vínculo a decreto",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "V117: nuevas notas de reversión quedan vinculadas a decree_id, source_id, sacramento y partida; sin duplicación."
+      ],
+      "updated_at": "2026-10-22T03:51:56.085Z"
     },
     {
       "id": "14.05",
@@ -1468,9 +1497,11 @@
       "area": "Notas marginales",
       "priority": "P0",
       "criterion": "Vínculo a original/supletoria",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "V117: corrección de Bautismo/Confirmación anota original recuperado y supletoria sin efecto; reposición anota supletoria únicamente."
+      ],
+      "updated_at": "2026-10-22T03:51:56.085Z"
     },
     {
       "id": "14.06",
@@ -3209,9 +3240,10 @@
       "status": "EN_PROGRESO",
       "evidence": [
         "AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md: Migración V92 creada por CLI y aplicada; falta reconstrucción de esquema desde cero",
-        "Se copiaron al repositorio las migraciones exactas V111/V112 recuperando su definición de Supabase y se añadieron 10 verificaciones estáticas; restauración limpia pendiente."
+        "Se copiaron al repositorio las migraciones exactas V111/V112 recuperando su definición de Supabase y se añadieron 10 verificaciones estáticas; restauración limpia pendiente.",
+        "V115/V116/V117: migraciones instaladas y SQL local con versiones sincronizadas; reconstrucción limpia de cero sigue pendiente."
       ],
-      "updated_at": "2026-10-22T02:48:01.225Z"
+      "updated_at": "2026-10-22T03:51:56.085Z"
     },
     {
       "id": "30.05",
@@ -3354,9 +3386,10 @@
       "criterion": "Decretos nuevos e históricos",
       "status": "EN_PROGRESO",
       "evidence": [
-        "V114: matrices ficticias 52 variantes del modelo de decretos y dos ejecuciones SQL ROLLBACK; prueba integral por los cuatro sacramentos pendiente."
+        "V114: matrices ficticias 52 variantes del modelo de decretos y dos ejecuciones SQL ROLLBACK; prueba integral por los cuatro sacramentos pendiente.",
+        "V115-V117: ocho flujos de emisión y reversión, cuatro transacciones con ROLLBACK, 24 rechazos de roles y cuatro dobles reversiones rechazadas."
       ],
-      "updated_at": "2026-10-22T03:21:45.467Z"
+      "updated_at": "2026-10-22T03:51:56.085Z"
     },
     {
       "id": "31.08",
@@ -3386,9 +3419,10 @@
       "criterion": "Destruir sandbox y demostrar cero residuos",
       "status": "EN_PROGRESO",
       "evidence": [
-        "V114: tras dos ensayos SQL reversibles, cero registros QA persistidos en seis entidades verificadas."
+        "V114: tras dos ensayos SQL reversibles, cero registros QA persistidos en seis entidades verificadas.",
+        "V115-V117: consulta posterior a las cuatro baterías SQL confirma cero datos QA en nueve colecciones de control."
       ],
-      "updated_at": "2026-10-22T03:21:45.467Z"
+      "updated_at": "2026-10-22T03:51:56.085Z"
     },
     {
       "id": "32.01",
@@ -3446,9 +3480,10 @@
         "AUDITORIA_REVISION_JURIDICA_NULIDAD_V107_2026-10-21.md: V107: constancia en audit log y snapshot de sentencias, avisos, notas, sin cambio de registros",
         "AUDITORIA_ACTUACIONES_NULIDAD_V108_2026-10-21.md: V108: estados verificados, event count 2, decreto active, matrimonio nullified, notas 0",
         "AUDITORIA_RECEPCION_DECISION_TRIBUNAL_V109_2026-10-21.md: V109: recepción no verificada, sentencia active, matrimonio nullified, auditoría 1 en transacción",
-        "AUDITORIA_DOBLE_COTEJO_DECISIONES_V110_2026-10-21.md: V110: cada cotejo auditado, 2 usuarios distintos, recepción sigue unverified, sentencia active y matrimonio nullified"
+        "AUDITORIA_DOBLE_COTEJO_DECISIONES_V110_2026-10-21.md: V110: cada cotejo auditado, 2 usuarios distintos, recepción sigue unverified, sentencia active y matrimonio nullified",
+        "V115-V117: cuatro scripts SQL reproducibles, pruebas de contrato, migraciones y salida V117 guardados; falta evidencia visual de sesiones."
       ],
-      "updated_at": "2026-10-22T02:20:17.504Z"
+      "updated_at": "2026-10-22T03:51:56.085Z"
     },
     {
       "id": "32.04",
@@ -3507,9 +3542,10 @@
         "AUDITORIA_REVISION_JURIDICA_NULIDAD_V107_2026-10-21.md: V107: pruebas RLS + creación de expediente y original intacto con ROLLBACK",
         "AUDITORIA_ACTUACIONES_NULIDAD_V108_2026-10-21.md: V108: verificación real de permisos antes/después, secuencia, fechas, duplicados, RLS",
         "AUDITORIA_RECEPCION_DECISION_TRIBUNAL_V109_2026-10-21.md: V109: prueba conductual de permisos, aislamiento, conservación y ROLLBACK sin residuos",
-        "AUDITORIA_DOBLE_COTEJO_DECISIONES_V110_2026-10-21.md: V110: comprobación de segregación y permisos reales, ausencia de residuos tras ROLLBACK"
+        "AUDITORIA_DOBLE_COTEJO_DECISIONES_V110_2026-10-21.md: V110: comprobación de segregación y permisos reales, ausencia de residuos tras ROLLBACK",
+        "V115-V117: dos errores de ambigüedad SQL y nota marginal faltante detectados, corregidos y reproducidos en pruebas."
       ],
-      "updated_at": "2026-10-22T02:20:17.826Z"
+      "updated_at": "2026-10-22T03:51:56.085Z"
     },
     {
       "id": "32.07",
@@ -3533,9 +3569,10 @@
         "AUDITORIA_REVISION_JURIDICA_NULIDAD_V107_2026-10-21.md: V107: 361 sintéticas + 23 verificadores + build, HIGH 5 bloquean gate",
         "AUDITORIA_ACTUACIONES_NULIDAD_V108_2026-10-21.md: V108: 381 pruebas sintéticas + 23 históricas + build; gate de dependencias continúa fallido",
         "AUDITORIA_RECEPCION_DECISION_TRIBUNAL_V109_2026-10-21.md: V109: 407 pruebas sintéticas + 23 verificadores históricos + build, 5 HIGH impiden aprobar gate",
-        "AUDITORIA_DOBLE_COTEJO_DECISIONES_V110_2026-10-21.md: V110: 435 pruebas sintéticas y 23 históricas aprobadas, build; gate dependencia npm en verificación"
+        "AUDITORIA_DOBLE_COTEJO_DECISIONES_V110_2026-10-21.md: V110: 435 pruebas sintéticas y 23 históricas aprobadas, build; gate dependencia npm en verificación",
+        "V117: 515 pruebas sintéticas, 23 verificadores históricos y build Vite completados sin auditoría npm."
       ],
-      "updated_at": "2026-10-22T02:20:18.009Z"
+      "updated_at": "2026-10-22T03:51:56.085Z"
     },
     {
       "id": "32.08",
@@ -3557,9 +3594,10 @@
         "AUDITORIA_REVISION_JURIDICA_NULIDAD_V107_2026-10-21.md: V107: 0 expedientes, sentencias, matrimonios y auditorías QA remanentes",
         "AUDITORIA_ACTUACIONES_NULIDAD_V108_2026-10-21.md: V108: ROLLBACK sin residuos de expedientes ni actuaciones temporales",
         "AUDITORIA_RECEPCION_DECISION_TRIBUNAL_V109_2026-10-21.md: V109: comprobados 0 recepciones/casos/decretos/matrimonios/auditorías ficticios persistidos",
-        "AUDITORIA_DOBLE_COTEJO_DECISIONES_V110_2026-10-21.md: V110: cero registros ficticios persistidos de recepciones, cotejos, matrimonios, sentencias y audit log"
+        "AUDITORIA_DOBLE_COTEJO_DECISIONES_V110_2026-10-21.md: V110: cero registros ficticios persistidos de recepciones, cotejos, matrimonios, sentencias y audit log",
+        "V115-V117: todos los ensayos SQL concluyen ROLLBACK, residuos QA consultados y obtenidos como cero."
       ],
-      "updated_at": "2026-10-22T02:20:18.176Z"
+      "updated_at": "2026-10-22T03:51:56.085Z"
     },
     {
       "id": "32.09",
