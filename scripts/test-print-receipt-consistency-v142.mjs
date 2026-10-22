@@ -18,14 +18,16 @@ const base={
   sacrament_id:'record-qa',
   document_kind:'partida',
   included_notes:[{...note,label:'Etiqueta canónica',provenance:'persisted_verified'}],
-  metadata:{note_provenance_validation:'server_persisted_with_explicit_legacy_exception',record_status:'seated'}
+  metadata:{note_provenance_validation:'server_persisted_with_explicit_legacy_exception',record_status:'seated',book:'QA143',folio:'443',number:'531',coordinates_checked:true,record_version_checked:false,document_sha256:'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',document_sha256_provenance:'client_digest_not_server_certification'}
  },
  parishId:'parish-qa',
  sacramentType:'bautismo',
  sacramentId:'record-qa',
  documentKind:'partida',
  includedNotes:[{...note,label:'Etiqueta de pantalla'}],
- expectedStatus:'seated'
+ expectedStatus:'seated',
+ expectedCoordinates:{book:'QA143',folio:'443',number:'531'},
+ expectedDocumentHash:'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
 };
 const run=(change={})=>verifyRegistryPrintReceipt({...base,...change,receipt:change.receipt===null?null:{...base.receipt,...(change.receipt||{})}});
 test('V142 permite evento correcto: nota textual exacta, identidad, documento y estado',()=>{

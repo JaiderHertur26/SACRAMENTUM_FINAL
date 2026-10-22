@@ -164,6 +164,9 @@ const FuneralPartidasPage = () => {
       sacramentId: selected.id,
       documentKind: 'partida',
       expectedStatus,
+      expectedCoordinates: { book: selected.book_number ?? selected.Libro ?? '', folio: selected.folio ?? selected.page_number ?? '', number: selected.number ?? selected.numero ?? selected.entry_number ?? '' },
+      expectedRecordUpdatedAt: selected.updated_at || selected.updatedAt || '',
+      htmlSnapshot: printHtmlSnapshot,
       selectedNoteKeys: printableNotes.map(note => String(note.id)),
       includedNotes: printableNotes.map(note => ({ id: String(note.id), label: note.print_label || note.note_type || 'Nota marginal', content: note.content || '', policy: note.print_policy || 'optional' })),
       metadata: {
@@ -226,6 +229,9 @@ const FuneralPartidasPage = () => {
       sacramentId: record.id,
       documentKind: 'constancia',
       expectedStatus,
+      expectedCoordinates: { book: record.book_number ?? record.Libro ?? '', folio: record.folio ?? record.page_number ?? '', number: record.number ?? record.numero ?? record.entry_number ?? '' },
+      expectedRecordUpdatedAt: record.updated_at || record.updatedAt || '',
+      htmlSnapshot: printHtmlSnapshot,
       selectedNoteKeys: requiredSlipNotes.map(note => String(note.id)),
       includedNotes: requiredSlipNotes.map(note => ({ id: String(note.id), label: note.print_label || note.note_type || 'Nota marginal', content: note.content || '', policy: note.print_policy || 'optional' })),
       metadata: {

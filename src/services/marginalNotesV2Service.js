@@ -1,6 +1,6 @@
 import { supabase } from '@/lib/supabaseClient';
 import { getLocalDateISO } from '@/utils/localDate';
-import { verifyRegistryPrintReceipt } from '@/utils/registryPrintReceipt';
+import { verifyRegistryPrintReceipt, normalizePrintCoordinates, sha256PrintedHtml } from '@/utils/registryPrintReceipt';
 
 const replaceAll = (text, variables={}) => Object.entries(variables).reduce((acc,[key,value]) => {
   const safe = value == null || value === '' ? '---' : String(value);
@@ -135,8 +135,16 @@ export async function saveMarginalTemplateVersion({
   return data;
 }
 
-export async function registerRegistryPrint({ parishId, sacramentType, sacramentId, documentKind='partida', selectedNoteKeys=[], includedNotes=[], metadata={}, expectedStatus='' }) {
+export async function registerRegistryPrint({ parishId, sacramentType, sacramentId, documentKind='partida', selectedNoteKeys=[], includedNotes=[], metadata={}, expectedStatus='', expectedCoordinates, expectedRecordUpdatedAt='', htmlSnapshot }) {
   if (!parishId || !sacramentId) throw new Error('No se puede imprimir sin identificar parroquia y partida para la auditoría');
+  const coordinates = normalizePrintCoordinates(expectedCoordinates);
+  const documentHash = await sha256PrintedHtml(htmlSnapshot);
+  const printMetadata = {
+    ...metadata,
+    expected_coordinates: coordinates,
+    ...(expectedRecordUpdatedAt ? { expected_record_updated_at: expectedRecordUpdatedAt } : {}),
+    document_sha256: documentHash
+  };
   const { data, error } = await supabase.rpc('register_registry_print', {
     p_parish_id: parishId,
     p_sacrament_type: sacramentType,
@@ -144,7 +152,7 @@ export async function registerRegistryPrint({ parishId, sacramentType, sacrament
     p_document_kind: documentKind,
     p_selected_note_keys: (selectedNoteKeys || []).map(String),
     p_included_notes: includedNotes,
-    p_metadata: metadata,
+    p_metadata: printMetadata,
   });
   if (error) throw error;
   if (!data) throw new Error('El servidor no devolvió el identificador de solicitud de impresión');
@@ -154,7 +162,7 @@ export async function registerRegistryPrint({ parishId, sacramentType, sacrament
     .eq('id', data)
     .single();
   if (receiptError) throw receiptError;
-  return verifyRegistryPrintReceipt({ receipt, parishId, sacramentType, sacramentId, documentKind, includedNotes, expectedStatus });
+  return verifyRegistryPrintReceipt({ receipt, parishId, sacramentType, sacramentId, documentKind, includedNotes, expectedStatus, expectedCoordinates: coordinates, expectedRecordUpdatedAt, expectedDocumentHash: documentHash });
 }
 
 export async function saveDocumentTemplateVersion({ code, name, category='document', templateText, scopeType='diocese', dioceseId=null, parishId=null, metadata={} }) {

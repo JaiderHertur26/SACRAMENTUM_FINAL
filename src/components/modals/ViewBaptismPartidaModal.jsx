@@ -176,7 +176,7 @@ const ViewBaptismPartidaModal = ({ isOpen, onClose, partida, auxiliaryData }) =>
             .map(n => ({ id: String(n.id), label: n.print_label || n.note_type, content: n.content, policy: n.print_policy }));
         if (!htmlSnapshot.trim()) return;
         try {
-            await registerRegistryPrint({ parishId, sacramentType: 'bautismo', sacramentId: partida.id, selectedNoteKeys: selectedNoteSnapshot, includedNotes: includedNoteSnapshot, expectedStatus: partida.status || partida.estado || '' });
+            await registerRegistryPrint({ parishId, sacramentType: 'bautismo', sacramentId: partida.id, selectedNoteKeys: selectedNoteSnapshot, includedNotes: includedNoteSnapshot, expectedStatus: partida.status || partida.estado || '', expectedCoordinates: { book: partida.book_number ?? partida.Libro ?? partida.libro ?? '', folio: partida.folio ?? partida.page_number ?? '', number: partida.number ?? partida.numero ?? partida.entry_number ?? '' }, expectedRecordUpdatedAt: partida.updated_at || partida.updatedAt || '', htmlSnapshot });
         } catch (error) {
             toast({
                 title: 'Impresión detenida: falta constancia de auditoría',

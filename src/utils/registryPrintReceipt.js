@@ -7,7 +7,30 @@ export const normalizePrintedNotes = (notes = []) => {
   }));
 };
 
-export const verifyRegistryPrintReceipt = ({ receipt, parishId, sacramentType, sacramentId, documentKind='partida', includedNotes=[], expectedStatus='' }) => {
+export const normalizePrintCoordinates = (coordinates) => {
+  if (!coordinates || typeof coordinates !== 'object' ||
+      !['book','folio','number'].every(key => Object.hasOwn(coordinates, key))) {
+    throw new Error('Libro, folio y número son necesarios para cotejar la impresión con el libro');
+  }
+  return Object.fromEntries(['book','folio','number'].map(key => [key,String(coordinates[key] ?? '')]));
+};
+
+export const sha256PrintedHtml = async (html) => {
+  if (typeof html !== 'string' || !html.trim()) {
+    throw new Error('No existe contenido congelado de la partida para imprimir');
+  }
+  if (!globalThis.crypto?.subtle) {
+    throw new Error('Este navegador no permite calcular una huella SHA-256 segura');
+  }
+  const buffer = await globalThis.crypto.subtle.digest('SHA-256', new TextEncoder().encode(html));
+  return Array.from(new Uint8Array(buffer), byte => byte.toString(16).padStart(2,'0')).join('');
+};
+
+export const verifyRegistryPrintReceipt = ({
+  receipt, parishId, sacramentType, sacramentId, documentKind='partida',
+  includedNotes=[], expectedStatus='', expectedCoordinates, expectedRecordUpdatedAt='',
+  expectedDocumentHash=''
+}) => {
   if (!receipt || receipt.parish_id !== parishId ||
     receipt.sacrament_type !== sacramentType ||
     receipt.sacrament_id !== sacramentId ||
@@ -32,5 +55,30 @@ export const verifyRegistryPrintReceipt = ({ receipt, parishId, sacramentType, s
   if (!actualStatus || (displayedStatus && actualStatus !== displayedStatus)) {
     throw new Error('El estado registral cambió durante la solicitud: actualice la partida antes de imprimir');
   }
+
+  const coordinates = normalizePrintCoordinates(expectedCoordinates);
+  if (receipt.metadata?.coordinates_checked !== true ||
+    ['book','folio','number'].some(key =>
+      String(receipt.metadata?.[key] ?? '') !== coordinates[key]
+    )) {
+    throw new Error('Libro, folio o número no coinciden con el registro vigente: actualice la partida');
+  }
+
+  if (expectedRecordUpdatedAt) {
+    const clientTime = Date.parse(expectedRecordUpdatedAt);
+    const serverTime = Date.parse(receipt.metadata?.record_updated_at ?? '');
+    if (receipt.metadata?.record_version_checked !== true ||
+      !Number.isFinite(clientTime) || !Number.isFinite(serverTime) ||
+      clientTime !== serverTime) {
+      throw new Error('La versión de la partida ya no coincide con la constancia');
+    }
+  }
+
+  if (!/^[0-9a-f]{64}$/.test(expectedDocumentHash) ||
+    receipt.metadata?.document_sha256 !== expectedDocumentHash ||
+    receipt.metadata?.document_sha256_provenance !== 'client_digest_not_server_certification') {
+    throw new Error('La huella del documento congelado difiere de la solicitud registrada');
+  }
+
   return receipt;
 };
