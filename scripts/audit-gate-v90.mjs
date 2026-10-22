@@ -67,7 +67,8 @@ exec('pruebas-sinteticas',node,['--test',
  'scripts/test-official-notification-and-print-v139.mjs',
  'scripts/test-registry-print-marginal-integrity-v140.mjs',
  'scripts/test-print-receipt-consistency-v142.mjs',
- 'scripts/test-stale-print-coordinates-v143.mjs']);
+ 'scripts/test-stale-print-coordinates-v143.mjs',
+ 'scripts/test-print-request-lineage-v146.mjs']);
 const scripts=fs.readdirSync(path.join(root,'scripts')).filter(x=>/^verify-.*\.mjs$/.test(x)).sort();
 for(const file of scripts)exec('legacy/'+file,node,['scripts/'+file]);
 const npmOnWindows=process.platform==='win32';
