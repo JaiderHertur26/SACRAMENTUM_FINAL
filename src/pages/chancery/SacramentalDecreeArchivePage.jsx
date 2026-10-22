@@ -21,6 +21,7 @@ import {
   ArchiveRestore
 } from 'lucide-react';
 import { institutionalConfirm, institutionalPrompt } from '@/lib/institutionalDialog';
+import { submitCourtReceiptCheck } from '@/services/nullityReceiptDualControl';
 
 const SACRAMENT_KEY = (value) => {
   const v = String(value || '').toLowerCase();
@@ -96,6 +97,7 @@ const SacramentalDecreeArchivePage = () => {
   const [nullityReviews, setNullityReviews] = useState({});
   const [reviewEvents, setReviewEvents] = useState({});
   const [courtDecisionReceipts, setCourtDecisionReceipts] = useState({});
+  const [receiptChecks, setReceiptChecks] = useState({});
   const [expandedReviewId, setExpandedReviewId] = useState(null);
 
   useEffect(() => {
@@ -233,6 +235,16 @@ const SacramentalDecreeArchivePage = () => {
         (receiptsByReview[receipt.review_case_id] ||= []).push(receipt);
       }
       setCourtDecisionReceipts(receiptsByReview);
+      const { data: checks, error: checkError } = await supabase
+        .from('nullity_court_receipt_checks')
+        .select('receipt_id,stage,reported_finding,verification_channel,external_contact_reference,checked_on')
+        .eq('diocese_id',dioceseId);
+      if (checkError) throw checkError;
+      const checksByReceipt = {};
+      for (const check of checks || []) {
+        (checksByReceipt[check.receipt_id] ||= {})[check.stage] = check;
+      }
+      setReceiptChecks(checksByReceipt);
 
       setRows(
         (all || [])
@@ -606,6 +618,17 @@ const SacramentalDecreeArchivePage = () => {
     }
   };
 
+  const recordChanceryReceiptCheck = async (receipt, decreeId) => {
+    if (receiptChecks[receipt.id]?.chancery_reference_check) return;
+    const saved = await submitCourtReceiptCheck({
+      receiptId: receipt.id, stage: 'chancery_reference_check', notify: toast
+    });
+    if (saved) {
+      await load();
+      setExpandedReviewId(decreeId);
+    }
+  };
+
   const print = async (row) => {
     const popup = window.open('', '_blank', 'width=980,height=1180');
 
@@ -954,6 +977,20 @@ const SacramentalDecreeArchivePage = () => {
                                 <p className="mt-1 text-slate-600">{({maintains_nullity:'Se declara que mantiene la nulidad',orders_further_review:'Se declara que requiere otro estudio',claims_rectification:'Se declara una posible rectificación'})[receipt.reported_outcome] || 'Efecto pendiente de valoración'}</p>
                                 <p className="mt-2 whitespace-pre-wrap text-slate-700">{receipt.received_summary}</p>
                                 <p className="mt-1 font-semibold text-amber-800">No produce efectos registrales ni modifica la sentencia original.</p>
+                                <div className="mt-3 flex flex-wrap items-center gap-2">
+                                  {receiptChecks[receipt.id]?.chancery_reference_check ? (
+                                    <span className="text-xs font-semibold text-indigo-700">Cotejo de Cancillería registrado</span>
+                                  ) : (
+                                    <Button variant="outline" size="sm" className="border-indigo-200 text-indigo-700" onClick={() => recordChanceryReceiptCheck(receipt,row.id)}>
+                                      Registrar cotejo de Cancillería
+                                    </Button>
+                                  )}
+                                  {receiptChecks[receipt.id]?.diocesan_independent_check ? (
+                                    <span className="text-xs font-semibold text-emerald-700">Contraste diocesano documentado · no certifica autenticidad</span>
+                                  ) : (
+                                    <span className="text-xs text-amber-700">Contraste diocesano independiente pendiente</span>
+                                  )}
+                                </div>
                               </div>
                             ))}
                           </div>

@@ -1,22 +1,22 @@
-SACRAMENTUM FINAL · V109 · 21/10/2026 (Colombia)
+SACRAMENTUM FINAL · V110 · 21/10/2026 COLOMBIA
 
-RECEPCIÓN DE DECISIÓN ATRIBUIDA AL TRIBUNAL, SIN EJECUCIÓN
-- Documento judicial alegado se guarda como SIN VERIFICAR en bitácora separada.
-- Cancillería registra resultado declarado, autoridad, radicado, fecha y descripción; solo cuando el expediente está en estudio jurídico formal.
-- Se comprueban rol activo, diócesis, parroquia, sentencia vigente y Matrimonio nullified; estados incompatibles, referencias duplicadas y fechas futuras rechazadas.
-- Diócesis y Parroquia ven conteo de documentos SIN VERIFICAR dentro de su territorio, sin poder aprobar o ejecutarlos.
-- RLS y grants impiden lectura anónima o INSERT/UPDATE directos de usuarios.
-- No se altera sentencia original, Matrimonio, Bautismos, notas, comunicaciones ni acuses.
-- Dos matrices PostgreSQL reales con casos ficticios y ROLLBACK: roles 3/3 denegados, registro legítimo Cancillería, pre-estudio y duplicados denegados, RLS por 4 roles.
-- Cero expedientes, documentos o auditorías QA persistidos.
-- 26 pruebas sintéticas nuevas (407 esperadas acumuladas), más 23 verificadores históricos y build.
+DOBLE COTEJO DE DOCUMENTOS ATRIBUIDOS AL TRIBUNAL
+- Cancillería registra primer cotejo documental con referencia del contacto externo.
+- Diócesis registra un contraste independiente posterior, por otro usuario.
+- La discrepancia entre sus hallazgos se conserva, sin aprobación automática.
+- Aunque coincidan, el documento permanece UNVERIFIED: NO se ha certificado autenticidad judicial.
+- RLS por jurisdicción, denegación a Admin General, Parroquia no puede escribir, sin DML directo de usuarios.
+- Etapas únicas, locks en recepción para orden y concurrencia, audit log de cada actuación.
+- No se modifican sentencia, Matrimonio, Bautismos, notas, avisos ni acuses.
+- UI de Cancillería y Diócesis para registrar cada cotejo sin ejecutar efectos registrales.
 
-RIESGOS PENDIENTES
-- Autenticidad judicial de documentos NO certificada; ninguna sentencia se ejecuta por V109.
-- Validación visual autenticada, concurrencia entre parroquias y backups restaurados pendientes.
-- 5 HIGH en npm audit mantienen bloqueo de seguridad.
-- Plan maestro de 325 controles aún abierto.
+EVIDENCIA
+- Dos flujos SQL ficticios, uno con discrepancia y otro con coincidencia.
+- ROLLBACK, cero registros de prueba persistidos.
+- 28 pruebas sintéticas adicionales, 435 totales previstas, más 23 verificadores históricos y build.
+- Cinco HIGH de dependencias siguen abiertas y bloquean gate.
 
-INFORME
-AUDITORIA_RECEPCION_DECISION_TRIBUNAL_V109_2026-10-21.md
+PENDIENTE
+Autenticidad real del Tribunal; evaluación jurídica de competencias; ejecución formal de una decisión; E2E visual autenticado; concurrencia entre procesos; restauración aislada de copias.
+AUDITORIA_DOBLE_COTEJO_DECISIONES_V110_2026-10-21.md
 AUDITORIA_MAESTRA_SACRAMENTUM_V90.md

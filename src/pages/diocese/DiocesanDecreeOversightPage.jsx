@@ -1,6 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
 import { useAuth } from '@/context/AuthContext';
+import { useToast } from '@/components/ui/use-toast';
+import { submitCourtReceiptCheck } from '@/services/nullityReceiptDualControl';
 import { supabase } from '@/lib/supabaseClient';
 import { listDecrees } from '@/services/decreeRegistryService';
 import { decreeCategory, decreeTypeLabel, decreeEffect, isHistoricalDecree } from '@/utils/decreeArchiveModel.mjs';
@@ -37,6 +39,7 @@ const impactText = (row) => {
 
 export default function DiocesanDecreeOversightPage() {
   const { user } = useAuth();
+  const { toast } = useToast();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [reload, setReload] = useState(0);
@@ -44,6 +47,8 @@ export default function DiocesanDecreeOversightPage() {
   const [parishNames, setParishNames] = useState({});
   const [nullityReviews, setNullityReviews] = useState({});
   const [unverifiedDecisions, setUnverifiedDecisions] = useState({});
+  const [courtReceiptRows, setCourtReceiptRows] = useState({});
+  const [courtReceiptChecks, setCourtReceiptChecks] = useState({});
   const [query, setQuery] = useState('');
   const [kind, setKind] = useState('todos');
   const [sacrament, setSacrament] = useState('todos');
@@ -63,21 +68,29 @@ export default function DiocesanDecreeOversightPage() {
           dioceseId = data?.diocese_id;
         }
         if (!dioceseId) throw new Error('El usuario no tiene una jurisdicción diocesana válida.');
-        const [records, parishes, reviews, decisions] = await Promise.all([
+        const [records, parishes, reviews, decisions, checks] = await Promise.all([
           listDecrees({dioceseId}),
           supabase.from('parishes').select('id,name').eq('diocese_id',dioceseId),
           supabase.from('nullity_judicial_review_cases').select('nullity_decree_id,request_reference,status').eq('diocese_id',dioceseId),
-          supabase.from('nullity_court_decision_receipts').select('nullity_decree_id').eq('diocese_id',dioceseId)
+          supabase.from('nullity_court_decision_receipts').select('id,nullity_decree_id,court_document_reference,reported_outcome').eq('diocese_id',dioceseId),
+          supabase.from('nullity_court_receipt_checks').select('receipt_id,stage,reported_finding').eq('diocese_id',dioceseId)
         ]);
         if (parishes.error) throw parishes.error;
         if (reviews.error) throw reviews.error;
         if (decisions.error) throw decisions.error;
+        if (checks.error) throw checks.error;
         if (!mounted) return;
         setRows(records);
         setNullityReviews(Object.fromEntries((reviews.data || []).map(r => [r.nullity_decree_id,r])));
         const counts = {};
         for (const receipt of decisions.data || []) counts[receipt.nullity_decree_id] = (counts[receipt.nullity_decree_id] || 0) + 1;
         setUnverifiedDecisions(counts);
+        const byDecree = {};
+        for (const receipt of decisions.data || []) (byDecree[receipt.nullity_decree_id] ||= []).push(receipt);
+        setCourtReceiptRows(byDecree);
+        const byReceipt = {};
+        for (const check of checks.data || []) (byReceipt[check.receipt_id] ||= {})[check.stage] = check;
+        setCourtReceiptChecks(byReceipt);
         setParishNames(Object.fromEntries((parishes.data || []).map(row => [row.id,row.name])));
       } catch (err) {
         if (mounted) { setError(err.message || 'No se pudo consultar el archivo.'); setRows([]); }
@@ -87,6 +100,13 @@ export default function DiocesanDecreeOversightPage() {
     })();
     return () => { mounted = false; };
   }, [user?.dioceseId, user?.diocese_id, user?.email, reload]);
+
+  const recordIndependentCheck = async (receipt) => {
+    const saved = await submitCourtReceiptCheck({
+      receiptId: receipt.id, stage: 'diocesan_independent_check', notify: toast
+    });
+    if (saved) setReload(x => x + 1);
+  };
 
   const counters = useMemo(() => ({
     total: rows.length,
@@ -181,7 +201,7 @@ export default function DiocesanDecreeOversightPage() {
         {selected && <section role="dialog" aria-modal="true" aria-label="Detalle de decreto" className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4">
           <div className="max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-3xl bg-white p-7 shadow-2xl">
             <div className="flex items-start justify-between">
-              <div><p className="text-xs font-semibold uppercase text-blue-700">Consulta · Solo lectura</p>
+              <div><p className="text-xs font-semibold uppercase text-blue-700">Supervisión diocesana · sin facultad para modificar decretos</p>
                 <h2 className="mt-2 font-serif text-2xl font-bold">{selected.decreeNumber || 'Decreto sin número'}</h2></div>
               <button type="button" aria-label="Cerrar" onClick={()=>setSelected(null)} className="rounded-xl p-2 hover:bg-slate-100"><X/></button>
             </div>
@@ -206,6 +226,26 @@ export default function DiocesanDecreeOversightPage() {
               <History className="mb-2 h-4 w-4 text-amber-700"/><strong>Fuente histórica:</strong>
               <p className="mt-2 break-words">{selected.payload.sourceReference}</p>
             </div>}
+            {(courtReceiptRows[selected.id] || []).length > 0 && (
+              <div className="mt-5 space-y-3 rounded-xl border border-amber-200 bg-amber-50 p-4">
+                <p className="text-sm font-bold text-amber-900">Decisiones recibidas · SIN VERIFICAR judicialmente</p>
+                {(courtReceiptRows[selected.id] || []).map(receipt => (
+                  <div key={receipt.id} className="rounded-lg border border-amber-100 bg-white p-3 text-sm">
+                    <p className="font-semibold">{receipt.court_document_reference}</p>
+                    {!courtReceiptChecks[receipt.id]?.chancery_reference_check ? (
+                      <p className="mt-1 text-xs text-amber-800">Primero debe realizarse el cotejo de Cancillería.</p>
+                    ) : courtReceiptChecks[receipt.id]?.diocesan_independent_check ? (
+                      <p className="mt-1 text-xs font-semibold text-indigo-700">Contraste diocesano documentado · no autentica sentencia.</p>
+                    ) : (
+                      <button type="button" onClick={() => recordIndependentCheck(receipt)}
+                        className="mt-2 rounded-lg border border-indigo-200 px-3 py-2 text-xs font-bold text-indigo-700 hover:bg-indigo-50">
+                        Registrar contraste independiente de Diócesis
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
             <div className="mt-5 flex items-center gap-2 text-xs text-slate-600">
               <ShieldCheck className="h-4 w-4"/> Los cambios jurídicos corresponden exclusivamente a Cancillería.
             </div>
