@@ -8,6 +8,7 @@ import DecreeCenterHeader, {
   decreeRouteFor
 } from '@/components/chancery/DecreeCenterHeader';
 import { ArrowRight, FileText, History } from 'lucide-react';
+import HistoricalDecreeReconciliationPanel from '@/components/chancery/HistoricalDecreeReconciliationPanel';
 
 const SacramentalDecreesCenterPage = () => {
   const { user } = useAuth();
@@ -32,6 +33,8 @@ const SacramentalDecreesCenterPage = () => {
               <small className="mt-2 block leading-relaxed text-slate-700">Archivar su antecedente con fuente verificable, sin repetir efectos ya ocurridos.</small></span>
           </button>
         </section>
+
+        <HistoricalDecreeReconciliationPanel />
 
         <section className="grid gap-5 lg:grid-cols-3">
           {Object.entries(DECREE_OPERATION_META).map(([key, operation]) => {
