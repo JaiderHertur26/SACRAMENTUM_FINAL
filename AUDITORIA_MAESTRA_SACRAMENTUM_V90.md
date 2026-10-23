@@ -155,6 +155,7 @@ Avance: 325 controles totales; 10 aprobados; 102 en progreso; 213 pendientes; 0 
   - Evidencia: V160: sin cambios SQL ni permisos. Inventario RPC heredado: 206 SECURITY DEFINER, 145 authenticated, 35 con evidencia parcial, 110 por revisar.
   - Evidencia: V161: inventario SECURITY DEFINER 208 total, 147 RPC authenticated, 37 con pruebas parciales y 110 por revisar.
   - Evidencia: V162: 208 SECURITY DEFINER sin cambios, 147 RPC authenticated, 37 parcialmente verificadas, 110 pendientes.
+  - Evidencia: V163: inventario de 208 SECURITY DEFINER inalterado; proceso de publicación no amplió grants ni alteró Supabase.
 - [ ] 06.07 · Todas las RPC privilegiadas denegadas a terceros (inventario dinámico) — EN_PROGRESO
   - Evidencia: AUDITORIA_BASE_SQL_V90.md: Cero vistas públicas; 129 RPC privilegiadas requieren pruebas de permisos y búsqueda de bypass
   - Evidencia: AUDITORIA_INVENTARIO_RPC_V91.json: 129 funciones catalogadas para revisión de terceros, sin afirmar autorización sin pruebas
@@ -200,6 +201,7 @@ Avance: 325 controles totales; 10 aprobados; 102 en progreso; 213 pendientes; 0 
   - Evidencia: V159: las pruebas de RPC utilizaron SET LOCAL ROLE authenticated para solicitar, autorizar y ejecutar.
   - Evidencia: V161: listado y contadores grant EXECUTE únicamente authenticated, sin abrir lectura directa de tabla ni permisos a anon.
   - Evidencia: V162: campo identityKey incluye user.id, rol, dioceseId y chanceryId; datos sólo visibles si owner y datos recibidos coinciden con identidad actual.
+  - Evidencia: V163: build prod gate comprueba repo JaiderHertur26/SACRAMENTUM_FINAL, rama main y Git SHA íntegro antes de permitir construir.
 - [ ] 06.09 · Filtración por GraphQL — EN_PROGRESO
   - Evidencia: V120: Supabase Advisor informa 64 objetos visibles en GraphQL a authenticated. Acceso a esquema NO equivale a fuga de filas; revisión exhaustiva pendiente.
   - Evidencia: V121: 64 advertencias GraphQL para objetos authenticated según Security Advisor; RLS V121 elimina filtración concreta por artefactos y archivos, no todas las advertencias.
@@ -588,6 +590,7 @@ Avance: 325 controles totales; 10 aprobados; 102 en progreso; 213 pendientes; 0 
   - Evidencia: V160: nueva QA visual de conciliaciones (6 capturas con CDP + 4 interacciones), únicamente roles y expedientes sintéticos.
   - Evidencia: V161: expediente se recupera por filtro y paginación keyset de fecha+UUID; 315 rechazados no hacen desaparecer el pendiente antiguo.
   - Evidencia: V162: cierre de sesión oculta instantáneamente artículos y formulario; nueva sesión recupera sólo su jurisdicción ficticia.
+  - Evidencia: V163: despliegue controlado desde GitHub PR #4 con CI y Preview aprobados previo a merge en main.
 - [ ] 20.03 · Búsqueda diocesana — PENDIENTE
 - [ ] 20.04 · Apellido y nombre — PENDIENTE
 - [ ] 20.05 · Libro Folio Número — PENDIENTE
@@ -685,6 +688,7 @@ Avance: 325 controles totales; 10 aprobados; 102 en progreso; 213 pendientes; 0 
   - Evidencia: V160: interface expresa estado de pending/authorized/rejected/executed y razones motivadas; Chrome capturó los 4 expedientes por rol en 3 tamaños.
   - Evidencia: V161: los contadores de todos/pendientes/autorizados/ejecutados/rechazados provienen del universo jurisdiccional, no de 50 filas visibles.
   - Evidencia: V162: prueba Chrome 6/6 en simulación de dos identidades; auditoría de transiciones y evidencia PNG registradas.
+  - Evidencia: V163: trazabilidad de publicación con SHA exacto, GitHub workflow run 39963410615, deployment URL y tres marcas horarias del gate.
 
 ### 25. Resiliencia (P0) — 0/11
 
@@ -870,6 +874,7 @@ Avance: 325 controles totales; 10 aprobados; 102 en progreso; 213 pendientes; 0 
   - Evidencia: V160: ninguna RPC cambió y pruebas UI no cuentan como cobertura nueva de seguridad de base de datos.
   - Evidencia: V161: 147 RPC autenticadas; 37 con cobertura parcial y 110 pendientes, 61 internas no directamente ejecutables.
   - Evidencia: V162: 208 RPC sin variaciones; QA visual de ámbito no sustituye pruebas de autorización física individual.
+  - Evidencia: V163: 208 RPC privilegiadas heredadas, sin ascender cobertura SQL por una mejora de CI.
 
 ### 28. Privacidad y tratamiento de datos (P0) — 0/9
 
@@ -985,6 +990,7 @@ Avance: 325 controles totales; 10 aprobados; 102 en progreso; 213 pendientes; 0 
   - Evidencia: V160: datos ficticios locales aislados; 6 capturas reales con hashes SHA256 en AUDITORIA_EVIDENCIA_VISUAL_V160 y 4 interacciones documentadas.
   - Evidencia: V161: QA real con 315 cierres ficticios y un pendiente antiguo, luego 2 páginas sin solapamiento y 50 límites; ROLLBACK.
   - Evidencia: V162: navegador real Chrome aislado con retraso artificial 900ms, cambio A→B, respuesta tardía rechazada, logout y recuperación.
+  - Evidencia: V163: prueba de control de despliegue: CI éxito antiguo SHA 1375467 aceptado, fallo histórico ed37375 bloqueado (exit 1), sin mutación sacramental.
 - [ ] 31.08 · Doble click y red caída — PENDIENTE
 - [ ] 31.09 · Impresión/estadística final — PENDIENTE
 - [ ] 31.10 · Destruir sandbox y demostrar cero residuos — EN_PROGRESO
@@ -1020,6 +1026,7 @@ Avance: 325 controles totales; 10 aprobados; 102 en progreso; 213 pendientes; 0 
   - Evidencia: V160: ni navegador aislado ni sus expedientes enviaron llamadas a Supabase; no se creó prueba sacramental real adicional.
   - Evidencia: V161: ensayo utiliza decretos/notas completamente ficticios; no persistieron registros de prueba.
   - Evidencia: V162: pruebas exclusivamente ficticias locales; no se creó ningún registro sacramental o expediente en Supabase.
+  - Evidencia: V163: no se crearon usuarios ni registros ficticios en Supabase y no se aplicaron migraciones.
 
 ### 32. Auditoría forense de cierre (P0) — 1/10
 
@@ -1088,6 +1095,7 @@ Avance: 325 controles totales; 10 aprobados; 102 en progreso; 213 pendientes; 0 
   - Evidencia: V160: 15 nuevas pruebas contractuales de evidencias Chrome/CDP; total 1072/1072 y Quality Gate 28/28.
   - Evidencia: V161: 21 nuevos tests y evidencia Chrome; total 1093/1093 y Quality Gate 28/28.
   - Evidencia: V162: 14 pruebas contractuales nuevas, total 1107/1107 y puerta 28/28.
+  - Evidencia: V163: 18 pruebas nuevas de CI gate para SHA/branch/repo, pending/failure/cancelled, API 403 y previews. Total 1125/1125, gate 28/28.
 - [ ] 32.04 · Guardar capturas — EN_PROGRESO
   - Evidencia: V114: scripts SQL reversibles y prueba de origen de migraciones versionados; todavía faltan capturas de UI.
   - Evidencia: V119: capturas y hashes SHA-256 por viewport/ruta, guardadas en AUDITORIA_EVIDENCIA_VISUAL_V119 (local, no Git).
@@ -1135,6 +1143,7 @@ Avance: 325 controles totales; 10 aprobados; 102 en progreso; 213 pendientes; 0 
   - Evidencia: V160: primer harness visual aislado falló por alias del cliente Supabase y error sintáctico del mock; ambos errores del entorno QA corregidos y 6/6+4/4 finales.
   - Evidencia: V161: detectada brecha operativa de pendientes ocultos por límite fijo; corregida en backend, interfaz y pruebas automáticas.
   - Evidencia: V162: solucionada posible retención visual temporal de datos entre sesiones, con fail-closed en UI y protección frente a respuestas de redes anteriores.
+  - Evidencia: V163: riesgo de producción previa a terminar CI mitigado por buildCommand fail-closed. Previews no se bloquean por CI push de main.
 - [ ] 32.06 · Corregir y repetir — EN_PROGRESO
   - Evidencia: AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: V95 reprodujo fallo antes y verificó reparación tras aplicar migración
   - Evidencia: AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96 corrige hallazgo de identidad institucional y repite prueba antes/después
@@ -1181,6 +1190,7 @@ Avance: 325 controles totales; 10 aprobados; 102 en progreso; 213 pendientes; 0 
   - Evidencia: V160: componente React real probado en Vite aislado, sin alterar frontend de producción y sin despliegue web.
   - Evidencia: V161: migración efectiva Supabase 20261023052453_reconciliation_keyset_pagination_v161, frontend local recompilado; sin despliegue web.
   - Evidencia: V162: Vista previa Vercel separada lista. Vercel Authentication activa para visitante anónimo; producción no fue desplegada.
+  - Evidencia: V163: GitHub PR #4 aprobada e integrada, CI push 39963410615 success, Vercel esperó y sólo tras APPROVED compiló y publicó Ready.
 - [ ] 32.07 · Regresión completa — EN_PROGRESO
   - Evidencia: AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md: Regresión 211 pruebas sintéticas, 23 verificadores, build OK; quedan fallas de dependencias
   - Evidencia: AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: 219 pruebas sintéticas, 23 verificadores y build aprobados; advertencias HIGH de paquetes aún abiertas
@@ -1230,6 +1240,7 @@ Avance: 325 controles totales; 10 aprobados; 102 en progreso; 213 pendientes; 0 
   - Evidencia: V160: compilación, CSS, verificaciones históricas y npm audit producción/completo PASS con 0 vulnerabilidades reportadas.
   - Evidencia: V161: build, CSS, npm audit production+desarrollo sin hallazgos; gate 28/28.
   - Evidencia: V162: npm build, CSS, dependencias de producción+desarrollo y pruebas contractuales pass, auditorías npm 0 vulnerabilidades.
+  - Evidencia: V163: auditoría npm prod+desarrollo sin vulnerabilidades, Vite build y CI funcional superados en GitHub Actions.
 - [ ] 32.08 · Conteos antes/después — EN_PROGRESO
   - Evidencia: AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: Tras V95: 15 políticas, 0 bypass is_app_admin y 0 residuos en 5 catálogos
   - Evidencia: AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96: mis_datos mantiene 1 fila real, 0 fixtures y 0 admin bypass en 3 políticas
@@ -1277,6 +1288,7 @@ Avance: 325 controles totales; 10 aprobados; 102 en progreso; 213 pendientes; 0 
   - Evidencia: V160: las cuentas autenticadas de Cancillería/Diócesis NO se usaron; prueba SQL de dos sesiones mantiene pendiente la certificación de locks simultáneos.
   - Evidencia: V161: Chrome aislado verificó 320 expedientes ficticios, pending antiguo visible con filtro y rechazados 50→100 sin duplicados. Falta usuarios reales y concurrencia.
   - Evidencia: V162: 6 transiciones de usuario simuladas y preview verificada. Faltan inicios de sesión reales y prueba concurrente con dos transacciones PostgreSQL.
+  - Evidencia: V163: simulacro negativo PR #5 falló en CI (39964277481) y sólo creó Preview, sin modificar la producción aprobada. No se forzó despliegue fallido directo a producción ni se activaron checks nativos. Concurrencia y E2E autenticada pendientes.
 - [x] 32.09 · Confirmar producción Ready — APROBADO
   - Evidencia: AUDITORIA_CIERRE_TECNICO_V91_2026-10-21.md: Despliegue Vercel de código V91 Ready; nota: app no certificada integralmente
 - [ ] 32.10 · Dictamen con limitaciones verificadas — EN_PROGRESO

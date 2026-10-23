@@ -598,9 +598,10 @@
         "V159: 206 RPC SECURITY DEFINER inalteradas; 145 EXECUTE authenticated, 35 pruebas parciales y 110 revisiones pendientes.",
         "V160: sin cambios SQL ni permisos. Inventario RPC heredado: 206 SECURITY DEFINER, 145 authenticated, 35 con evidencia parcial, 110 por revisar.",
         "V161: inventario SECURITY DEFINER 208 total, 147 RPC authenticated, 37 con pruebas parciales y 110 por revisar.",
-        "V162: 208 SECURITY DEFINER sin cambios, 147 RPC authenticated, 37 parcialmente verificadas, 110 pendientes."
+        "V162: 208 SECURITY DEFINER sin cambios, 147 RPC authenticated, 37 parcialmente verificadas, 110 pendientes.",
+        "V163: inventario de 208 SECURITY DEFINER inalterado; proceso de publicación no amplió grants ni alteró Supabase."
       ],
-      "updated_at": "2026-10-23T13:05:20.935Z"
+      "updated_at": "2026-10-23T13:51:55.827Z"
     },
     {
       "id": "06.07",
@@ -663,9 +664,10 @@
         "V157: reject RPC sólo authenticated; acceso anon denegado y tabla de conciliación sigue sin grants directos; row lock FOR UPDATE.",
         "V159: las pruebas de RPC utilizaron SET LOCAL ROLE authenticated para solicitar, autorizar y ejecutar.",
         "V161: listado y contadores grant EXECUTE únicamente authenticated, sin abrir lectura directa de tabla ni permisos a anon.",
-        "V162: campo identityKey incluye user.id, rol, dioceseId y chanceryId; datos sólo visibles si owner y datos recibidos coinciden con identidad actual."
+        "V162: campo identityKey incluye user.id, rol, dioceseId y chanceryId; datos sólo visibles si owner y datos recibidos coinciden con identidad actual.",
+        "V163: build prod gate comprueba repo JaiderHertur26/SACRAMENTUM_FINAL, rama main y Git SHA íntegro antes de permitir construir."
       ],
-      "updated_at": "2026-10-23T13:05:20.938Z"
+      "updated_at": "2026-10-23T13:51:55.830Z"
     },
     {
       "id": "06.09",
@@ -2319,9 +2321,10 @@
         "V159: recorrido integral real de solicitud→autorización→conciliación→reversión, para cuatro correcciones y cuatro reposiciones.",
         "V160: nueva QA visual de conciliaciones (6 capturas con CDP + 4 interacciones), únicamente roles y expedientes sintéticos.",
         "V161: expediente se recupera por filtro y paginación keyset de fecha+UUID; 315 rechazados no hacen desaparecer el pendiente antiguo.",
-        "V162: cierre de sesión oculta instantáneamente artículos y formulario; nueva sesión recupera sólo su jurisdicción ficticia."
+        "V162: cierre de sesión oculta instantáneamente artículos y formulario; nueva sesión recupera sólo su jurisdicción ficticia.",
+        "V163: despliegue controlado desde GitHub PR #4 con CI y Preview aprobados previo a merge en main."
       ],
-      "updated_at": "2026-10-23T13:05:20.938Z"
+      "updated_at": "2026-10-23T13:51:55.830Z"
     },
     {
       "id": "20.03",
@@ -2879,9 +2882,10 @@
         "V159: 24 trazas de expediente y 8 notificaciones de conciliación verificadas dentro de dos transacciones revertidas.",
         "V160: interface expresa estado de pending/authorized/rejected/executed y razones motivadas; Chrome capturó los 4 expedientes por rol en 3 tamaños.",
         "V161: los contadores de todos/pendientes/autorizados/ejecutados/rechazados provienen del universo jurisdiccional, no de 50 filas visibles.",
-        "V162: prueba Chrome 6/6 en simulación de dos identidades; auditoría de transiciones y evidencia PNG registradas."
+        "V162: prueba Chrome 6/6 en simulación de dos identidades; auditoría de transiciones y evidencia PNG registradas.",
+        "V163: trazabilidad de publicación con SHA exacto, GitHub workflow run 39963410615, deployment URL y tres marcas horarias del gate."
       ],
-      "updated_at": "2026-10-23T13:05:20.938Z"
+      "updated_at": "2026-10-23T13:51:55.830Z"
     },
     {
       "id": "25.01",
@@ -3358,9 +3362,10 @@
         "V159: revisión parcial reforzada de request, approve, execute; sin alterar estado de auditoría global.",
         "V160: ninguna RPC cambió y pruebas UI no cuentan como cobertura nueva de seguridad de base de datos.",
         "V161: 147 RPC autenticadas; 37 con cobertura parcial y 110 pendientes, 61 internas no directamente ejecutables.",
-        "V162: 208 RPC sin variaciones; QA visual de ámbito no sustituye pruebas de autorización física individual."
+        "V162: 208 RPC sin variaciones; QA visual de ámbito no sustituye pruebas de autorización física individual.",
+        "V163: 208 RPC privilegiadas heredadas, sin ascender cobertura SQL por una mejora de CI."
       ],
-      "updated_at": "2026-10-23T13:05:20.938Z"
+      "updated_at": "2026-10-23T13:51:55.830Z"
     },
     {
       "id": "28.01",
@@ -3797,9 +3802,10 @@
         "V159: QA SQL real con 8 circuitos de corrección/reposición en los cuatro sacramentos, cero persistencia ficticia.",
         "V160: datos ficticios locales aislados; 6 capturas reales con hashes SHA256 en AUDITORIA_EVIDENCIA_VISUAL_V160 y 4 interacciones documentadas.",
         "V161: QA real con 315 cierres ficticios y un pendiente antiguo, luego 2 páginas sin solapamiento y 50 límites; ROLLBACK.",
-        "V162: navegador real Chrome aislado con retraso artificial 900ms, cambio A→B, respuesta tardía rechazada, logout y recuperación."
+        "V162: navegador real Chrome aislado con retraso artificial 900ms, cambio A→B, respuesta tardía rechazada, logout y recuperación.",
+        "V163: prueba de control de despliegue: CI éxito antiguo SHA 1375467 aceptado, fallo histórico ed37375 bloqueado (exit 1), sin mutación sacramental."
       ],
-      "updated_at": "2026-10-23T13:05:20.938Z"
+      "updated_at": "2026-10-23T13:51:55.830Z"
     },
     {
       "id": "31.08",
@@ -3860,9 +3866,10 @@
         "V159: verificación post-ROLLBACK encontró 0 decretos, partidas, notas y expedientes QA-V159 residuales.",
         "V160: ni navegador aislado ni sus expedientes enviaron llamadas a Supabase; no se creó prueba sacramental real adicional.",
         "V161: ensayo utiliza decretos/notas completamente ficticios; no persistieron registros de prueba.",
-        "V162: pruebas exclusivamente ficticias locales; no se creó ningún registro sacramental o expediente en Supabase."
+        "V162: pruebas exclusivamente ficticias locales; no se creó ningún registro sacramental o expediente en Supabase.",
+        "V163: no se crearon usuarios ni registros ficticios en Supabase y no se aplicaron migraciones."
       ],
-      "updated_at": "2026-10-23T13:05:20.938Z"
+      "updated_at": "2026-10-23T13:51:55.830Z"
     },
     {
       "id": "32.01",
@@ -3955,9 +3962,10 @@
         "V159: 19 nuevos tests sintéticos; total 1057/1057 y gate 28/28.",
         "V160: 15 nuevas pruebas contractuales de evidencias Chrome/CDP; total 1072/1072 y Quality Gate 28/28.",
         "V161: 21 nuevos tests y evidencia Chrome; total 1093/1093 y Quality Gate 28/28.",
-        "V162: 14 pruebas contractuales nuevas, total 1107/1107 y puerta 28/28."
+        "V162: 14 pruebas contractuales nuevas, total 1107/1107 y puerta 28/28.",
+        "V163: 18 pruebas nuevas de CI gate para SHA/branch/repo, pending/failure/cancelled, API 403 y previews. Total 1125/1125, gate 28/28."
       ],
-      "updated_at": "2026-10-23T13:05:20.938Z"
+      "updated_at": "2026-10-23T13:51:55.830Z"
     },
     {
       "id": "32.04",
@@ -4022,9 +4030,10 @@
         "V157: defecto funcional de solicitudes rechazables pero sin RPC subsanado, migración aplicada y confirmada en Supabase.",
         "V160: primer harness visual aislado falló por alias del cliente Supabase y error sintáctico del mock; ambos errores del entorno QA corregidos y 6/6+4/4 finales.",
         "V161: detectada brecha operativa de pendientes ocultos por límite fijo; corregida en backend, interfaz y pruebas automáticas.",
-        "V162: solucionada posible retención visual temporal de datos entre sesiones, con fail-closed en UI y protección frente a respuestas de redes anteriores."
+        "V162: solucionada posible retención visual temporal de datos entre sesiones, con fail-closed en UI y protección frente a respuestas de redes anteriores.",
+        "V163: riesgo de producción previa a terminar CI mitigado por buildCommand fail-closed. Previews no se bloquean por CI push de main."
       ],
-      "updated_at": "2026-10-23T13:05:20.938Z"
+      "updated_at": "2026-10-23T13:51:55.830Z"
     },
     {
       "id": "32.06",
@@ -4078,9 +4087,10 @@
         "V159: no fueron necesarias nuevas migraciones de backend para el recorrido de 8 circuitos.",
         "V160: componente React real probado en Vite aislado, sin alterar frontend de producción y sin despliegue web.",
         "V161: migración efectiva Supabase 20261023052453_reconciliation_keyset_pagination_v161, frontend local recompilado; sin despliegue web.",
-        "V162: Vista previa Vercel separada lista. Vercel Authentication activa para visitante anónimo; producción no fue desplegada."
+        "V162: Vista previa Vercel separada lista. Vercel Authentication activa para visitante anónimo; producción no fue desplegada.",
+        "V163: GitHub PR #4 aprobada e integrada, CI push 39963410615 success, Vercel esperó y sólo tras APPROVED compiló y publicó Ready."
       ],
-      "updated_at": "2026-10-23T13:05:20.938Z"
+      "updated_at": "2026-10-23T13:51:55.830Z"
     },
     {
       "id": "32.07",
@@ -4137,9 +4147,10 @@
         "V159: Vite build, verificadores heredados, CSS y dependencias npm aprobados; 0 vulnerabilidades reportadas.",
         "V160: compilación, CSS, verificaciones históricas y npm audit producción/completo PASS con 0 vulnerabilidades reportadas.",
         "V161: build, CSS, npm audit production+desarrollo sin hallazgos; gate 28/28.",
-        "V162: npm build, CSS, dependencias de producción+desarrollo y pruebas contractuales pass, auditorías npm 0 vulnerabilidades."
+        "V162: npm build, CSS, dependencias de producción+desarrollo y pruebas contractuales pass, auditorías npm 0 vulnerabilidades.",
+        "V163: auditoría npm prod+desarrollo sin vulnerabilidades, Vite build y CI funcional superados en GitHub Actions."
       ],
-      "updated_at": "2026-10-23T13:05:20.938Z"
+      "updated_at": "2026-10-23T13:51:55.830Z"
     },
     {
       "id": "32.08",
@@ -4194,9 +4205,10 @@
         "V159: conexiones Postgres distintas observadas, pero sin simultaneidad demostrada; tampoco prueba E2E física con cuentas autenticadas.",
         "V160: las cuentas autenticadas de Cancillería/Diócesis NO se usaron; prueba SQL de dos sesiones mantiene pendiente la certificación de locks simultáneos.",
         "V161: Chrome aislado verificó 320 expedientes ficticios, pending antiguo visible con filtro y rechazados 50→100 sin duplicados. Falta usuarios reales y concurrencia.",
-        "V162: 6 transiciones de usuario simuladas y preview verificada. Faltan inicios de sesión reales y prueba concurrente con dos transacciones PostgreSQL."
+        "V162: 6 transiciones de usuario simuladas y preview verificada. Faltan inicios de sesión reales y prueba concurrente con dos transacciones PostgreSQL.",
+        "V163: simulacro negativo PR #5 falló en CI (39964277481) y sólo creó Preview, sin modificar la producción aprobada. No se forzó despliegue fallido directo a producción ni se activaron checks nativos. Concurrencia y E2E autenticada pendientes."
       ],
-      "updated_at": "2026-10-23T13:05:20.938Z"
+      "updated_at": "2026-10-23T13:51:55.830Z"
     },
     {
       "id": "32.09",
