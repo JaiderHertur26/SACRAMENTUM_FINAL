@@ -18,4 +18,5 @@ Se confirma específicamente que el directorio contiene entradas para el actor l
 Estas pruebas NO certifican autenticación real entre dos diócesis independientes, simultaneidad de dos conexiones PostgreSQL o todo el recorrido E2E de chat y notificaciones.
 La auditoría maestra continúa con 325 controles, de los cuales 10 aprobados, 117 en progreso y 198 pendientes.
 
-Para cerrar la publicación debe instalarse la migración oficial Supabase, repetirse la matriz SQL y regresiones de chat/notificaciones, sincronizar el timestamp en GitHub y confirmar CI y Vercel.
+La migración oficial 20261023223718_strict_chat_notification_profile_v180.sql quedó instalada y se comprobó la misma matriz SQL: 10 casos legítimos y 60 bloqueados. Las diez funciones fueron verificadas y no quedaron usuarios/perfiles ficticios. Además aprobaron seis regresiones PostgreSQL reversibles anteriores de chat, permisos, notificaciones, recepción física, paginación y ciclo completo de chat.
+Pendiente únicamente de completar la integración CI/PR #28 en GitHub y confirmar el despliegue del commit de main en Vercel.

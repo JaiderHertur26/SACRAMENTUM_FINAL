@@ -1,5 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';
-const migration=fs.readFileSync('supabase/migrations/20261023223152_strict_chat_notification_profile_v180.sql','utf8');
+const migration=fs.readFileSync('supabase/migrations/20261023223718_strict_chat_notification_profile_v180.sql','utf8');
 const repro=fs.readFileSync('scripts/qa-rollback-chat-null-status-repro-v180.sql','utf8');
 const qa=fs.readFileSync('scripts/qa-rollback-chat-notification-status-v180.sql','utf8');
 const targets=[

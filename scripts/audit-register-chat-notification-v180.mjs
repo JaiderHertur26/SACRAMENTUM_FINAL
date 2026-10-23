@@ -22,7 +22,7 @@ if(master.controls.length!==325||counts.APROBADO!==10||counts.EN_PROGRESO!==117|
 fs.writeFileSync(masterFile,JSON.stringify(master,null,2)+'\n');
 execFileSync(process.execPath,['scripts/audit-master-plan-v90.mjs'],{stdio:'inherit'});
 const ledger={
- protocol:'V180',date:'2026-10-23',migration:'20261023223152_strict_chat_notification_profile_v180.sql',
+ protocol:'V180',date:'2026-10-23',migration:'20261023223718_strict_chat_notification_profile_v180.sql',
  securityFinding:'One false-active anonymous-looking institutional profile with status NULL and is_active=true was permitted to query a 3-entry internal Chat directory despite current_app_role() denying all institutional role',
  personalContactValuesRetained:false,
  affectedFunctions:['archive_matrimonial_notification_recipient','cancel_matrimonial_notification',
@@ -34,6 +34,17 @@ const ledger={
   negativeStates:['NULL_STATUS','NULL_ACTIVE','SUSPENDED','DISABLED','PENDING','BLANK_STATUS'],
   residue:'Rollback; no permanent fixture data'
  },
+ realPostgresPermanent:{migrationApplied:true,tenInstalledFunctionsVerified:true,
+  tests:70,positiveActive:10,negativeDeniedOrEmpty:60,qaUsersRemaining:0,qaProfilesRemaining:0,
+  chatDirectoryUnauthorizedEntries:0},
+ previousReversibleSqlRegressionsPassed:[
+  'qa-rollback-chat-role-rls-v164.sql',
+  'qa-rollback-notification-archive-active-profile-v171.sql',
+  'qa-rollback-notification-read-spoof-rejected-v174.sql',
+  'qa-rollback-physical-notification-scope-v134.sql',
+  'qa-rollback-chat-keyset-complete-v166.sql',
+  'qa-rollback-chat-full-lifecycle-v165.sql'
+ ],
  software:{syntheticNodeTests:n,strictQualityPassed:28},
  certificationLimits:['No real signed-in two-diocese E2E','No physical overlapping PostgreSQL sessions','No full Chat or matrimonial notification UI business E2E'],
  masterCounts:counts
@@ -60,7 +71,8 @@ const doc=[
  'Estas pruebas NO certifican autenticación real entre dos diócesis independientes, simultaneidad de dos conexiones PostgreSQL o todo el recorrido E2E de chat y notificaciones.',
  'La auditoría maestra continúa con 325 controles, de los cuales 10 aprobados, 117 en progreso y 198 pendientes.',
  '',
- 'Para cerrar la publicación debe instalarse la migración oficial Supabase, repetirse la matriz SQL y regresiones de chat/notificaciones, sincronizar el timestamp en GitHub y confirmar CI y Vercel.'
+ 'La migración oficial 20261023223718_strict_chat_notification_profile_v180.sql quedó instalada y se comprobó la misma matriz SQL: 10 casos legítimos y 60 bloqueados. Las diez funciones fueron verificadas y no quedaron usuarios/perfiles ficticios. Además aprobaron seis regresiones PostgreSQL reversibles anteriores de chat, permisos, notificaciones, recepción física, paginación y ciclo completo de chat.',
+ 'Pendiente únicamente de completar la integración CI/PR #28 en GitHub y confirmar el despliegue del commit de main en Vercel.'
 ].join('\n');
 fs.writeFileSync('AUDITORIA_PRIVACIDAD_CHAT_V180_2026-10-23.md',doc+'\n');
 console.log('V180 evidence recorded: '+n+'/1393 Node and 28/28 quality, 10 positive and 60 negative real SQL, master '+JSON.stringify(counts));
