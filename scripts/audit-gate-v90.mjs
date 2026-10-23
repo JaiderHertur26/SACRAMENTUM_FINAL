@@ -89,7 +89,8 @@ exec('pruebas-sinteticas',node,['--test',
  'scripts/test-chat-session-isolation-v164.mjs',
  'scripts/test-chat-message-order-lifecycle-v165.mjs',
  'scripts/test-chat-history-keyset-v166.mjs',
- 'scripts/test-reconciliation-conflicting-transitions-v167.mjs']);
+ 'scripts/test-reconciliation-conflicting-transitions-v167.mjs',
+ 'scripts/test-multinote-batch-v168.mjs']);
 const scripts=fs.readdirSync(path.join(root,'scripts')).filter(x=>/^verify-.*\.mjs$/.test(x)).sort();
 for(const file of scripts)exec('legacy/'+file,node,['scripts/'+file]);
 const npmOnWindows=process.platform==='win32';

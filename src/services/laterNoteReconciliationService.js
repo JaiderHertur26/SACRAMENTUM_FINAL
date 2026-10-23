@@ -36,3 +36,9 @@ export const rejectLaterNoteReconciliation = ({caseId,rejectionReference,rejecti
 
 export const executeLaterNoteReconciliation = (caseId) =>
   rpc('execute_later_note_reconciliation_v156',{p_case_id:caseId});
+
+
+// V168: a decree with multiple independently approved later notes requires ONE
+// atomic reversal, not repeated single-note executions.
+export const executeLaterNoteReconciliationBatch = (caseIds) =>
+  rpc('execute_later_note_reconciliation_batch_v168',{p_case_ids:caseIds});
