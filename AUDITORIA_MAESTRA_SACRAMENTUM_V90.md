@@ -10,7 +10,7 @@ Regla: no introducir datos falsos permanentes; usar memoria, transacciones ROLLB
 
 Prioridad P0 bloquea la certificación. P1 debe constar resuelta o aceptada con evidencia y responsable.
 
-Avance: 325 controles totales; 10 aprobados; 113 en progreso; 202 pendientes; 0 fallidos; 0 bloqueados.
+Avance: 325 controles totales; 10 aprobados; 117 en progreso; 198 pendientes; 0 fallidos; 0 bloqueados.
 
 ## Fases y controles numerados
 
@@ -36,7 +36,8 @@ Avance: 325 controles totales; 10 aprobados; 113 en progreso; 202 pendientes; 0 
 ### 02. Derecho canónico y alcance documental (P0) — 0/8
 
 - [ ] 02.01 · Modelo de cada sacramento — PENDIENTE
-- [ ] 02.02 · Corrección y reposición — PENDIENTE
+- [ ] 02.02 · Corrección y reposición — EN_PROGRESO
+  - Evidencia: V168: nueva conciliación por lotes probada en Bautismo, Confirmación, Matrimonio y Exequias; cubre reversión de dos notas, no la certificación canónica integral de correcciones/reposiciones.
 - [ ] 02.03 · Nulidad matrimonial de tribunal — EN_PROGRESO
   - Evidencia: AUDITORIA_REVISION_JURIDICA_NULIDAD_V107_2026-10-21.md: V107: inicio de revisión jurídica documental de nulidad; aún no hay decisión ni ejecución posterior del Tribunal
   - Evidencia: AUDITORIA_ACTUACIONES_NULIDAD_V108_2026-10-21.md: V108: Cancillería registra inicio de revisión y correspondencia del Tribunal; decisión formal y ejecución jurídica siguen pendientes
@@ -163,6 +164,7 @@ Avance: 325 controles totales; 10 aprobados; 113 en progreso; 202 pendientes; 0 
   - Evidencia: V165: mark_chat_room_read y withdraw_chat_message tienen nueva verificación parcial; 44 RPC privilegiadas revisadas parcialmente, 103 pendientes.
   - Evidencia: V166: 209 SECURITY DEFINER, 148 authenticated, 45 reviewed partially and 103 pending. Existing auth grants unchanged, new RPC limited to authenticated.
   - Evidencia: V167: cuatro RPC de transición con FOR UPDATE, auth.uid y unicidad de casos abiertos revisadas; sin variación de 209 funciones privilegiadas.
+  - Evidencia: V168: SECURITY DEFINER nuevo con comprobación rol Cancillería/diocésis/parroquia, sin EXECUTE anon; inventario total 210, auth 149, evidencia parcial 46 y 103 revisiones pendientes.
 - [ ] 06.07 · Todas las RPC privilegiadas denegadas a terceros (inventario dinámico) — EN_PROGRESO
   - Evidencia: AUDITORIA_BASE_SQL_V90.md: Cero vistas públicas; 129 RPC privilegiadas requieren pruebas de permisos y búsqueda de bypass
   - Evidencia: AUDITORIA_INVENTARIO_RPC_V91.json: 129 funciones catalogadas para revisión de terceros, sin afirmar autorización sin pruebas
@@ -234,9 +236,11 @@ Avance: 325 controles totales; 10 aprobados; 113 en progreso; 202 pendientes; 0 
   - Evidencia: V167: para cada uno de 4 sacramentos, solicitud duplicada y reintento de ejecución después de éxito denegados; audit 3 y notificación única.
 - [ ] 07.06 · Transacción atomicidad — EN_PROGRESO
   - Evidencia: V167: 4 rutas completas de reversión y conciliación conservan atomicidad: decreto y nota reversed, case executed, audit 3 y notificación 1. BEGIN/ROLLBACK.
+  - Evidencia: V168: transacción única revierte 2 notas y 1 decreto y cierra 2 expedientes, o falla sin cambios; seis auditorías de expedientes y una notificación consolidada por caso.
 - [ ] 07.07 · Llaves foráneas sin huérfanos — PENDIENTE
 - [ ] 07.08 · Bloqueos y deadlocks — PENDIENTE
   - Evidencia: V167: los 4 RPC institucionales verifican bloqueos FOR UPDATE y un índice UNIQUE parcial real; no se han probado deadlocks ni simultaneidad física.
+  - Evidencia: V168: nueva RPC bloquea filas de expedientes, decreto y notas con FOR UPDATE; falta disputa de dos conexiones reales y medir deadlocks.
 - [ ] 07.09 · Restauración tras timeout — PENDIENTE
 
 ### 08. Bautismo (P0) — 0/11
@@ -256,7 +260,8 @@ Avance: 325 controles totales; 10 aprobados; 113 en progreso; 202 pendientes; 0 
   - Evidencia: V115-V117: reposición ficticia de Bautismo emite decreto y partida supletoria; reversión deja partida reversed con nueva nota. SQL ROLLBACK.
 - [ ] 08.10 · Reversión y trazas — EN_PROGRESO
   - Evidencia: V117: reversión restituye original seated o invalida supletoria y rechaza una segunda reversión; doble nota marginal en corrección.
-- [ ] 08.11 · Notas múltiples — PENDIENTE
+- [ ] 08.11 · Notas múltiples — EN_PROGRESO
+  - Evidencia: V168: dos notas independientes sobre reposición de Bautismo con autorizaciones episcopales individuales se concilian con una reversión; SQL BEGIN/ROLLBACK.
 
 ### 09. Confirmación (P0) — 0/11
 
@@ -273,7 +278,8 @@ Avance: 325 controles totales; 10 aprobados; 113 en progreso; 202 pendientes; 0 
   - Evidencia: V115-V117: corrección y reposición ficticias de Confirmación, con concepto, coordenadas, notificaciones y registros relacionados. SQL ROLLBACK.
 - [ ] 09.10 · Reversión — EN_PROGRESO
   - Evidencia: V117: reversión de Confirmación probada para corrección y reposición, duplicación rechazada y nuevas notas marginales.
-- [ ] 09.11 · Notas múltiples — PENDIENTE
+- [ ] 09.11 · Notas múltiples — EN_PROGRESO
+  - Evidencia: V168: dos notas independientes sobre reposición de Confirmación con autorizaciones episcopales individuales se concilian con una reversión; SQL BEGIN/ROLLBACK.
 
 ### 10. Matrimonio (P0) — 0/11
 
@@ -288,6 +294,7 @@ Avance: 325 controles totales; 10 aprobados; 113 en progreso; 202 pendientes; 0 
 - [ ] 10.08 · Notas NTMAT — PENDIENTE
 - [ ] 10.09 · Corrección por decreto — EN_PROGRESO
   - Evidencia: V115: Matrimonio corrección/reversión con partida original anulada/restablecida y supletoria creada/revertida, con notas y aviso. SQL ROLLBACK.
+  - Evidencia: V168: reposición matrimonial con dos notas independientes se reconcilia en transacción única; siete solicitudes inválidas/inapropiadas rechazadas.
 - [ ] 10.10 · Reposición — EN_PROGRESO
   - Evidencia: V115: Matrimonio reposición/reversión, original nulo, partida supletoria, nota, notificación, auditoría. SQL ROLLBACK.
 - [ ] 10.11 · Nulidad como tribunal — EN_PROGRESO
@@ -313,6 +320,7 @@ Avance: 325 controles totales; 10 aprobados; 113 en progreso; 202 pendientes; 0 
   - Evidencia: V115: corrección y reposición de Exequias con competencia Cancillería y rechazo a Parroquia; reversión posterior verificada.
 - [ ] 11.09 · Notas — EN_PROGRESO
   - Evidencia: V115: corrección y reposición generan notas marginales y reversión agrega nota posterior en Exequias.
+  - Evidencia: V168: exequias con dos notas independientes y dos autorizaciones diocesanas reconciliadas de manera atómica, con auditores/notificación.
 - [ ] 11.10 · Impresión — PENDIENTE
 
 ### 12. Decretos nuevos en Cancillería (P0) — 0/11
@@ -430,7 +438,8 @@ Avance: 325 controles totales; 10 aprobados; 113 en progreso; 202 pendientes; 0 
 
 ### 14. Notas marginales (P0) — 0/9
 
-- [ ] 14.01 · Varias notas por partida — PENDIENTE
+- [ ] 14.01 · Varias notas por partida — EN_PROGRESO
+  - Evidencia: V168: cuatro partidas de laboratorio con dos notas por partida y ninguna duplicación persistente; tipos obligatorios y asociaciones futuras requieren pruebas adicionales.
 - [ ] 14.02 · Fechas originales — PENDIENTE
 - [ ] 14.03 · Tipo jurídico correcto — EN_PROGRESO
   - Evidencia: AUDITORIA_REVISION_JURIDICA_NULIDAD_V107_2026-10-21.md: V107: nulidad identificada como actuación de Tribunal y no como decreto documental sin efectos; falta cotejo jurídico final
@@ -490,6 +499,7 @@ Avance: 325 controles totales; 10 aprobados; 113 en progreso; 202 pendientes; 0 
 - [ ] 14.07 · Pendientes sin partida — PENDIENTE
 - [ ] 14.08 · Histórico impreso — PENDIENTE
 - [ ] 14.09 · Auditoría de anotación — PENDIENTE
+  - Evidencia: V168: por cada lote se trazan individualmente nota y expediente; resultado 6 eventos de expediente y una notificación consolidada por decreto.
 
 ### 15. Boletas y pendientes (P0) — 0/10
 
@@ -542,6 +552,7 @@ Avance: 325 controles totales; 10 aprobados; 113 en progreso; 202 pendientes; 0 
 - [ ] 16.11 · Archivos corruptos — PENDIENTE
 - [ ] 16.12 · Rollback sin contaminación — EN_PROGRESO
   - Evidencia: AUDITORIA_AUTORIDAD_MIGRACION_V101_2026-10-21.md: V99-101: cero lotes, filas y conceptos QA tras ROLLBACK; ensayo recuperación completa pendiente
+  - Evidencia: V168: reproducción del bloqueo previo y QA posterior de lote ejecutadas con BEGIN/ROLLBACK sin residuo en base real.
 
 ### 17. Datos auxiliares (P1) — 0/9
 
@@ -562,6 +573,7 @@ Avance: 325 controles totales; 10 aprobados; 113 en progreso; 202 pendientes; 0 
 - [ ] 17.08 · Da Fe histórico sin suposición — PENDIENTE
 - [ ] 17.09 · Duplicados y restricciones — EN_PROGRESO
   - Evidencia: V167: índice parcial uq_later_note_open_decree_v156 rechaza caso doble (decree_id,note_id) pendiente/autorizado. No se certifican todos los duplicados de la aplicación.
+  - Evidencia: V168: validaciones de lote de 2 a 30 IDs únicos, mismo decreto/parroquia/diócesis, snapshot coherente y cierre atómico sin doble ejecución.
 
 ### 18. Notificaciones institucionales (P1) — 0/9
 
@@ -815,6 +827,7 @@ Avance: 325 controles totales; 10 aprobados; 113 en progreso; 202 pendientes; 0 
   - Evidencia: V165: tercera identidad institucional con perfil activo no miembro no puede leer, enviar, marcar ni retirar en sala de otra cuenta.
   - Evidencia: V166: RLS/SECURITY DEFINER prevents cross-room historical data from active but unrelated authenticated roles.
   - Evidencia: V167: rutas de aprobación, rechazo y ejecución verifican rol/scope institucional. Repetir operación terminal falla de modo seguro.
+  - Evidencia: V168: rol Cancillería ejecuta, Diócesis sólo autoriza y no ejecuta; no se concedieron privilegios directos a anon ni tablas privadas.
 - [ ] 27.04 · RPC directa prohibida — EN_PROGRESO
   - Evidencia: AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md: Asignador interno no ejecutable directamente (42501), con ruta institucional auditada operativa
   - Evidencia: AUDITORIA_AUTORIDAD_MIGRACION_V101_2026-10-21.md: V101: bypass por RPC create_legacy_import_batch sin scope reproducido y cerrado
@@ -1033,7 +1046,9 @@ Avance: 325 controles totales; 10 aprobados; 113 en progreso; 202 pendientes; 0 
   - Evidencia: V165: 7 operaciones positivas, 9 negativas en Supabase real bajo authenticated; salas y mensajes ficticios ROLLBACK.
   - Evidencia: V166: 305 legacy + 7 newer messages inserted only inside BEGIN/ROLLBACK, zero residual QA rooms/messages after live test.
   - Evidencia: V167: 4 casos ficticios (uno por sacramento) con 24 rechazos por transición, 4 éxitos y verificaciones por caso; cero persistencia tras ROLLBACK.
+  - Evidencia: V168: matriz SQL reversible de 4 sacramentos, dos notas y aprobaciones independientes por cada decreto; un solo evento jurídico de reversión.
 - [ ] 31.08 · Doble click y red caída — PENDIENTE
+  - Evidencia: V168: reintento de lote ya ejecutado rechazado; faltan pruebas físicas de doble clic con red caída y dos transacciones simultáneas.
 - [ ] 31.09 · Impresión/estadística final — PENDIENTE
 - [ ] 31.10 · Destruir sandbox y demostrar cero residuos — EN_PROGRESO
   - Evidencia: V114: tras dos ensayos SQL reversibles, cero registros QA persistidos en seis entidades verificadas.
@@ -1073,6 +1088,7 @@ Avance: 325 controles totales; 10 aprobados; 113 en progreso; 202 pendientes; 0 
   - Evidencia: V165: ninguna sala o mensaje QA-V165 permanece tras revertir transacción; sin datos sacramentales alterados.
   - Evidencia: V166: QA synthetic data isolated, real chats and sacramental registers untouched; no grants to anon.
   - Evidencia: V167: sin alteración de datos sacramentales; dblink se ensayó sólo dentro de transacción revertida, no se instaló extensión permanente.
+  - Evidencia: V168: 0 decretos/notas/casos/notificaciones QA-V168 residuales, 0 RPC temporal qa_v168_lock_probe; preservada información real.
 
 ### 32. Auditoría forense de cierre (P0) — 1/10
 
@@ -1146,6 +1162,7 @@ Avance: 325 controles totales; 10 aprobados; 113 en progreso; 202 pendientes; 0 
   - Evidencia: V165: 15 nuevas pruebas contractuales de migración y QA SQL, total 1157/1157 y puerta de calidad 28/28.
   - Evidencia: V166: 19 additional contract tests, 1176/1176 synthetic, 28/28 gate; browser visual 6/6.
   - Evidencia: V167: 19 contratos nuevos, 1195/1195 sintéticas, 28/28 Quality Gate, compilación y npm audit sin hallazgos.
+  - Evidencia: V168: 22 tests contractuales nuevos, 1217/1217 tests totales (GitHub CI #39982084560 y puerta local), 28/28 verificadores.
 - [ ] 32.04 · Guardar capturas — EN_PROGRESO
   - Evidencia: V114: scripts SQL reversibles y prueba de origen de migraciones versionados; todavía faltan capturas de UI.
   - Evidencia: V119: capturas y hashes SHA-256 por viewport/ruta, guardadas en AUDITORIA_EVIDENCIA_VISUAL_V119 (local, no Git).
@@ -1198,6 +1215,7 @@ Avance: 325 controles totales; 10 aprobados; 113 en progreso; 202 pendientes; 0 
   - Evidencia: V165: detectado y reparado orden ambiguo en chat: now() constante durante transacción, cursor de leído podía retroceder.
   - Evidencia: V166: date-only legacy RPC remains for compatibility; new RPC uses composite keyset and isolated UI older-message cursor.
   - Evidencia: V167: se revisó el riesgo de doble ejecución y se confirmó defensa existente de fila FOR UPDATE + UNIQUE parcial. No se requirió migración.
+  - Evidencia: V168: hallazgo P0 #12 de conciliación múltiple corregido con RPC versionada y UI Cancillería; dos notas autorizadas ya no bloquean reversión conjunta.
 - [ ] 32.06 · Corregir y repetir — EN_PROGRESO
   - Evidencia: AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: V95 reprodujo fallo antes y verificó reparación tras aplicar migración
   - Evidencia: AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96 corrige hallazgo de identidad institucional y repite prueba antes/después
@@ -1249,6 +1267,7 @@ Avance: 325 controles totales; 10 aprobados; 113 en progreso; 202 pendientes; 0 
   - Evidencia: V165: migración Supabase aplicada 20261023142209_chat_message_order_consistency_v165; frontend existente sin cambios funcionales en esta etapa.
   - Evidencia: V166: Supabase migration 20261023144508 applied; frontend Chat supports older pages without clearing current/received messages.
   - Evidencia: V167: suite SQL de pruebas y evidencia nuevas; backend y frontend sin cambios funcionales. Publicación de evidencia por CI controlado.
+  - Evidencia: V168: migración Supabase aplicada 20261023154826; probado de nuevo contra la función instalada y Vercel publicó tras CI de commit 32dfdbb.
 - [ ] 32.07 · Regresión completa — EN_PROGRESO
   - Evidencia: AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md: Regresión 211 pruebas sintéticas, 23 verificadores, build OK; quedan fallas de dependencias
   - Evidencia: AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: 219 pruebas sintéticas, 23 verificadores y build aprobados; advertencias HIGH de paquetes aún abiertas
@@ -1303,6 +1322,7 @@ Avance: 325 controles totales; 10 aprobados; 113 en progreso; 202 pendientes; 0 
   - Evidencia: V165: Vite compilado, CSS y auditorías npm producción+completa sin hallazgos, Quality Gate PASS.
   - Evidencia: V166: production build CSS and npm audits passed, no vulnerabilities reported.
   - Evidencia: V167: Quality Gate de tests, Vite, CSS y npm audit aprobado, sin vulnerabilidades reportadas.
+  - Evidencia: V168: 1217/1217 test sintéticos, 28/28 Quality Gate, CSS, Vite build y npm audit prod+completo sin vulnerabilidades reportadas.
 - [ ] 32.08 · Conteos antes/después — EN_PROGRESO
   - Evidencia: AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: Tras V95: 15 políticas, 0 bypass is_app_admin y 0 residuos en 5 catálogos
   - Evidencia: AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96: mis_datos mantiene 1 fila real, 0 fixtures y 0 admin bypass en 3 políticas
@@ -1355,10 +1375,13 @@ Avance: 325 controles totales; 10 aprobados; 113 en progreso; 202 pendientes; 0 
   - Evidencia: V165: empate artificial de fecha en mensajes históricos sometido a cursor, historial y resumen de sala. Falta concurrencia de conexiones y pruebas E2E entre distintas diócesis.
   - Evidencia: V166: old chat history recovered completely with timestamp tie and user-switch test; still lacks E2E with real different dioceses and true concurrent PostgreSQL connections.
   - Evidencia: V167: validaciones institucionales secuenciales cumplen, pero sin transacciones solapadas comprobadas; control extremo de concurrencia permanece abierto.
+  - Evidencia: V168: conteos verificados: 4 sacraments × 2 notas, 6 auditorías y 1 notificación por lote, cero QA después de ROLLBACK; concurrencia física no certificada.
 - [x] 32.09 · Confirmar producción Ready — APROBADO
   - Evidencia: AUDITORIA_CIERRE_TECNICO_V91_2026-10-21.md: Despliegue Vercel de código V91 Ready; nota: app no certificada integralmente
+  - Evidencia: V168: GitHub main commit 32dfdbb pasó CI #39982084560 y estado Vercel success en el mismo SHA.
 - [ ] 32.10 · Dictamen con limitaciones verificadas — EN_PROGRESO
   - Evidencia: V124: dictamen parcial identifica dos P0 corregidos, 131 RPC sin validación exhaustiva, default ACL supabase_admin y 64 WARN GraphQL pendientes.
+  - Evidencia: V168: cierre parcial de bug multi-nota; no se declara certificación jurídica, transaccional concurrente ni E2E con dos diócesis reales.
 
 ## Hechos verificados previos al nuevo protocolo
 

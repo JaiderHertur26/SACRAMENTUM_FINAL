@@ -34,11 +34,22 @@ La negativa protegía la base de datos de una reversión parcial, pero dejaba am
 - Prueba equivalente para los cuatro sacramentos: dos notas posteriores y autorizaciones por decreto, cuatro ejecuciones de lote reversibles, 6 eventos de expediente y 1 notificación por sacramento.
 - Las pruebas se ejecutaron incluyendo la definición de la nueva RPC dentro de `BEGIN`, seguida del ensayo y `ROLLBACK`: constituyen validación funcional del código antes de la migración de producción.
 
+## Verificación final y publicación V168
+
+- GitHub PR #13 integrada en main, commit `32dfdbb94a856a811ea136d43e66b95a477f4e55`.
+- GitHub Actions run #39982084560: 1217 pruebas, 0 fallos; funcional y dependencias success.
+- Vercel registró success para ese commit; publicación protegida por el gate V163.
+- Migración aplicada permanentemente en Supabase con versión `20261023154826` y ambas pruebas ejecutadas nuevamente contra la RPC instalada.
+- Confirmados: auth EXECUTE true, anon EXECUTE false, SECURITY DEFINER true, sin residuos ficticios de decretos, notas, expedientes ni notificaciones, y sin RPC temporal.
+- Gate local V168: 1217 pruebas sintéticas y 28/28 controles, dependencias sin vulnerabilidades reportadas.
+- Plan maestro: 325 controles, 10 APROBADO, 117 EN_PROGRESO, 198 PENDIENTE. Cuatro controles adicionales elevados sólo a revisión parcial.
+- Límites vigentes: falta prueba de concurrencia con dos transacciones Postgres superpuestas y E2E de roles realmente distintos.
+
 ## Seguridad, límites y publicación
 
 - **No** se ha demostrado simultaneidad física de dos conexiones PostgreSQL compitiendo por la misma fila: el control #2 sigue abierto. El ensayo HTTP paralelo temporal no terminó y la función experimental se eliminó inmediatamente. No se conservaron extensiones experimentales.
 - Sigue pendiente la certificación E2E física autenticada de dos diócesis distintas (#1).
-- La aplicación no debe llegar a producción hasta que la rama supere compilación, pruebas contractuales y auditoría de dependencias en GitHub; la barrera V163 exige aprobación del mismo commit en Vercel.
+- Completado: GitHub Actions aprobó el mismo commit y Vercel confirmó publicación sucesiva protegida por V163.
 - La función antigua se conserva para conciliaciones individuales y compatibilidad histórica.
 
-**Dictamen:** defecto multinota reproducido y mecanismo de lote verificado reversiblemente en los cuatro sacramentos; el cierre definitivo requiere CI y despliegue verificados. La auditoría integral sigue abierta.
+**Dictamen V168:** defecto multinota reproducido y reparado; RPC migrada, comprobada en los cuatro sacramentos y publicada tras CI. Auditoría integral y concurrencia física permanecen abiertas.
