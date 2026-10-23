@@ -1,6 +1,6 @@
 // V179 · Chancellor authorization gates must reject NULL role as well as suspended accounts.
 import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';
-const migration=fs.readFileSync('supabase/migrations/20261023220844_chancery_decree_fail_closed_v179.sql','utf8');
+const migration=fs.readFileSync('supabase/migrations/20261023221315_chancery_decree_fail_closed_v179.sql','utf8');
 const reproduction=fs.readFileSync('scripts/qa-rollback-chancery-decrees-prepatch-v179.sql','utf8');
 const qa=fs.readFileSync('scripts/qa-rollback-chancery-decree-scope-v179.sql','utf8');
 for(const rpc of ['apply_marriage_correction','apply_funeral_correction','create_marriage_reposition_by_decree','create_funeral_reposition_by_decree','apply_marriage_nullity']){

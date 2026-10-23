@@ -24,12 +24,14 @@ if(master.controls.length!==325||counts.APROBADO!==10||counts.EN_PROGRESO!==117|
 fs.writeFileSync(masterFile,JSON.stringify(master,null,2)+'\n');
 execFileSync(process.execPath,['scripts/audit-master-plan-v90.mjs'],{stdio:'inherit'});
 const manifest={
- version:'V179',date:'2026-10-23',localMigration:'20261023220844_chancery_decree_fail_closed_v179.sql',
+ version:'V179',date:'2026-10-23',installedMigration:'20261023221315_chancery_decree_fail_closed_v179.sql',
  reproduced:'SUSPENDED Chancellor reaches business validation in 5 definer RPCs. When status removed, NULL role comparison failed open unless IS DISTINCT FROM used.',
  rpcNames:['apply_marriage_correction','apply_funeral_correction','create_marriage_reposition_by_decree','create_funeral_reposition_by_decree','apply_marriage_nullity'],
  preliminaryPatch:{fiveActiveAuthorizationPasses:5,twentyFiveInvalidRolesDenied:25,transactions:'BEGIN/ROLLBACK',fullyExecutedDecrees:0},
+ postDeployment:{migrationInstalled:true,realAuthorizationSql:'PASS 5 positive and 25 denied',installedFunctionsGuarded:5,syntheticActorsRemaining:0,syntheticProfilesRemaining:0,
+ fourReversibleBusinessRegressionScriptsPassed:['qa-rollback-marriage-funeral-corrections-late-notes-v155.sql','qa-rollback-marriage-funeral-repositions-late-notes-v155.sql','qa-rollback-tribunal-v114.sql','qa-rollback-nullity-without-preauthorization-rejected-v174.sql']},
  software:{nodeSyntheticPassed:n,qualityGatesPassed:28},
- mustVerifyAfterInstall:['Repeat 5/25 SQL QA on installed migration','Repeat existing marriage/funeral corrections and repositions SQL QA','Retest no fake records persisted'],
+ verificationComplete:['Repeat 5/25 SQL QA on installed migration','Four reversible business regression scripts PASS','Zero fictitious QA users/profiles persisted'],
  scopeRestrictions:['No physical independent cross-diocese sessions','No simultaneous PostgreSQL transactions','No claim of 5 completed decree business operations'],
  masterCounts:counts
 };
@@ -45,18 +47,20 @@ const lines=[
  'La primera variante del parche mostró un fallo adicional de lógica SQL de tres valores: si el filtro del perfil devuelve cero filas, v_role queda NULL y una comprobación IF v_role <> chancery THEN no da TRUE. Se corrigió de manera explícita con IS DISTINCT FROM, y se volvió a ejecutar toda la prueba.',
  '',
  '## Corrección V179',
- 'Migración 20261023220844_chancery_decree_fail_closed_v179.sql: en cinco funciones SECURITY DEFINER se exige is_active IS TRUE, upper(status)=ACTIVE y se cierra explícitamente la ausencia de rol. Los anclajes esperados se verifican antes de redefinir, sin cambiar firmas, permisos, registros, numeración, documentos ni controles documentales previos.',
+ 'Migración oficial 20261023221315_chancery_decree_fail_closed_v179.sql instalada en Supabase: en cinco funciones SECURITY DEFINER se exige is_active IS TRUE, upper(status)=ACTIVE y se cierra explícitamente la ausencia de rol. Los anclajes esperados se verifican antes de redefinir, sin cambiar firmas, permisos, registros, numeración, documentos ni controles documentales previos.',
  '',
  '## Evidencia',
  '5 de 5 llamadas ACTIVE atravesaron correctamente la autorización y alcanzaron validación funcional con entradas incompletas. 25 de 25 combinaciones incorrectas (SUSPENDED, NULL_STATUS, NULL_ACTIVE, DISABLED y WRONG_ROLE en cada una de cinco funciones) fueron denegadas explícitamente.',
  '18 pruebas contractuales nuevas. Total 1.362/1.362 pruebas Node y 28/28 verificaciones estrictas, compilación y dependencias satisfactorias.',
+ 'Instalada la migración permanente: se repitieron satisfactoriamente las 5 comprobaciones de autorización legítima y 25 rechazos. Cinco funciones quedaron verificadas, sin residuos QA-V179.',
+ 'Se ejecutaron y aprobaron cuatro regresiones reales adicionales de correcciones, reposiciones, tribunal y denegación de nulidad sin autorización documental, cada una reversible con BEGIN/ROLLBACK.',
  'Todos los datos de prueba (auth.users y user_profiles) fueron ficticios dentro de BEGIN/ROLLBACK.',
  '',
  '## Límites',
  'No se equipara una comprobación positiva de autorización con una corrección, reposición o nulidad completa. Tampoco se certifican dos sesiones autónomas autenticadas, concurrencia física PostgreSQL ni rendimiento. La certificación E2E íntegra sigue pendiente.',
  'El plan maestro mantiene 325 controles: 10 APROBADO, 117 EN_PROGRESO, 198 PENDIENTE.',
  '',
- 'Pendiente para cierre: aplicar migración oficial, repetir SQL postinstalación, probar regresiones reales de matrimonio/exequias, alinear versión SQL en GitHub, fusionar PR tras CI y verificar Vercel.'
+ 'Migración y QA posteriores concluidos. Queda completar CI del último SHA de la PR, fusionarla y comprobar Vercel para declarar publicación de esta versión.'
 ];
 fs.writeFileSync('AUDITORIA_CANCILLERIA_DECRETOS_V179_2026-10-23.md',lines.join('\n')+'\n');
 console.log('V179 EVIDENCE '+n+'/1362 28/28; '+JSON.stringify(counts));
