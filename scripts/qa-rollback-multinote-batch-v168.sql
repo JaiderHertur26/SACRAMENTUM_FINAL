@@ -92,6 +92,24 @@ BEGIN
    OR (out->>'case_count')::integer IS DISTINCT FROM 2
    OR out->>'decree_status' IS DISTINCT FROM 'reversed'
  THEN RAISE EXCEPTION 'V168 result status/count invalid';END IF;
+
+ BEGIN
+  PERFORM public.execute_later_note_reconciliation_batch_v168(ARRAY[k1,k2]);
+  RAISE EXCEPTION 'V168 duplicate batch succeeded';
+ EXCEPTION WHEN insufficient_privilege THEN denied:=denied+1;END;
+ IF denied<>7 THEN RAISE EXCEPTION 'V168 expected 7 denials, got %',denied;END IF;
+END $checks$;
+RESET ROLE;
+DO $verify$
+DECLARE
+ decree uuid:=current_setting('qa168.decree')::uuid;
+ part uuid:=current_setting('qa168.part')::uuid;
+ n1 uuid:=current_setting('qa168.note1')::uuid;
+ n2 uuid:=current_setting('qa168.note2')::uuid;
+ k1 uuid:=current_setting('qa168.case1')::uuid;
+ k2 uuid:=current_setting('qa168.case2')::uuid;
+ count_actual integer;
+BEGIN
  IF (SELECT status FROM public.decretos WHERE id=decree)<>'reversed'
   OR (SELECT status FROM public.marginal_notes WHERE id=n1)<>'reversed'
   OR (SELECT status FROM public.marginal_notes WHERE id=n2)<>'reversed'
@@ -106,11 +124,5 @@ BEGIN
  WHERE decree_id=decree AND category='decree_reconciliation'
  AND payload->>'batch_v168'='true';
  IF count_actual<>1 THEN RAISE EXCEPTION 'V168 expected one consolidated notification, got %',count_actual;END IF;
- BEGIN
-  PERFORM public.execute_later_note_reconciliation_batch_v168(ARRAY[k1,k2]);
-  RAISE EXCEPTION 'V168 duplicate batch succeeded';
- EXCEPTION WHEN insufficient_privilege THEN denied:=denied+1;END;
- IF denied<>7 THEN RAISE EXCEPTION 'V168 expected 7 denials, got %',denied;END IF;
-END $checks$;
-RESET ROLE;
+END $verify$;
 ROLLBACK;
