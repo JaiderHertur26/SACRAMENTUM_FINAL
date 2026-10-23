@@ -263,9 +263,10 @@
       "criterion": "Sesiones simultáneas",
       "status": "PENDIENTE",
       "evidence": [
-        "V169: 20 pruebas Node sobre handlers reales de conciliación simulan cambio de identidad antes/durante llamadas y suprimen respuestas obsoletas. NO son dos sesiones reales autenticadas ni prueban solapamiento."
+        "V169: 20 pruebas Node sobre handlers reales de conciliación simulan cambio de identidad antes/durante llamadas y suprimen respuestas obsoletas. NO son dos sesiones reales autenticadas ni prueban solapamiento.",
+        "V170: Chrome aislado 6/6 A->B->logout->A comprobó que la vista de conciliaciones oculta inmediatamente contadores y expedientes; identidades simuladas, no dos cuentas Supabase reales."
       ],
-      "updated_at": "2026-10-23T17:23:02.751Z"
+      "updated_at": "2026-10-23T17:43:14.770Z"
     },
     {
       "id": "03.08",
@@ -657,9 +658,10 @@
         "V164: can_access_chat_room false, get_chat_room_messages denegada y send_chat_message denegada a identidad sin perfil; falta actor válido de otra diócesis.",
         "V165: nueve casos denegados por roles/propiedad/validación, incluidos lectura, escritura, recibo de lectura y retiro de mensaje de tercero.",
         "V166: negative auth: actual Parish member of other room and active Diocese user outside target room both denied for historical chat.",
-        "V169: cinco operaciones UI (solicitar, aprobar, rechazar, ejecutar individual y en lote) ya no muestran toasts ni recargan datos de la identidad anterior; los permisos RLS/RPC requieren ensayo interdiocesano real."
+        "V169: cinco operaciones UI (solicitar, aprobar, rechazar, ejecutar individual y en lote) ya no muestran toasts ni recargan datos de la identidad anterior; los permisos RLS/RPC requieren ensayo interdiocesano real.",
+        "V170: contadores estadísticos y errores están condicionados por scopeCurrent/dataCurrent; no se muestran de otra diócesis durante una transición simulada."
       ],
-      "updated_at": "2026-10-23T17:23:02.752Z"
+      "updated_at": "2026-10-23T17:43:14.771Z"
     },
     {
       "id": "06.08",
@@ -681,9 +683,10 @@
         "V159: las pruebas de RPC utilizaron SET LOCAL ROLE authenticated para solicitar, autorizar y ejecutar.",
         "V161: listado y contadores grant EXECUTE únicamente authenticated, sin abrir lectura directa de tabla ni permisos a anon.",
         "V162: campo identityKey incluye user.id, rol, dioceseId y chanceryId; datos sólo visibles si owner y datos recibidos coinciden con identidad actual.",
-        "V163: build prod gate comprueba repo JaiderHertur26/SACRAMENTUM_FINAL, rama main y Git SHA íntegro antes de permitir construir."
+        "V163: build prod gate comprueba repo JaiderHertur26/SACRAMENTUM_FINAL, rama main y Git SHA íntegro antes de permitir construir.",
+        "V170: 6/6 transiciones React/Chrome en entorno sin conexión Supabase, incluidos 900 ms de respuesta antigua y logout. Backend no auditado adicionalmente."
       ],
-      "updated_at": "2026-10-23T13:51:55.830Z"
+      "updated_at": "2026-10-23T17:43:14.771Z"
     },
     {
       "id": "06.09",
@@ -1424,9 +1427,10 @@
         "V159: tras revertir cada corrección, la partida original recuperó estado seated y la supletoria quedó reversed; probados los cuatro sacramentos.",
         "V160: sin acceso a partida desde navegador ficticio; simulación de ejecución posterior documentada sin alterar datos reales.",
         "V161: vista institucional priorizable por filtros pending/authorized no oculta expedientes antiguos por volumen de casos cerrados.",
-        "V162: al cambiar de identidad se descartan respuestas atrasadas de expediente/nota, evitando que datos previos reaparezcan."
+        "V162: al cambiar de identidad se descartan respuestas atrasadas de expediente/nota, evitando que datos previos reaparezcan.",
+        "V170: salida enmascarada para los cuatro contadores y alertas antes del efecto de limpieza, con mismo identityKey conservado."
       ],
-      "updated_at": "2026-10-23T13:05:20.938Z"
+      "updated_at": "2026-10-23T17:43:14.771Z"
     },
     {
       "id": "12.08",
@@ -2390,9 +2394,10 @@
         "V160: nueva QA visual de conciliaciones (6 capturas con CDP + 4 interacciones), únicamente roles y expedientes sintéticos.",
         "V161: expediente se recupera por filtro y paginación keyset de fecha+UUID; 315 rechazados no hacen desaparecer el pendiente antiguo.",
         "V162: cierre de sesión oculta instantáneamente artículos y formulario; nueva sesión recupera sólo su jurisdicción ficticia.",
-        "V163: despliegue controlado desde GitHub PR #4 con CI y Preview aprobados previo a merge en main."
+        "V163: despliegue controlado desde GitHub PR #4 con CI y Preview aprobados previo a merge en main.",
+        "V170: cierre de sesión simulado oculta expedientes, formulario, los cuatro contadores y avisos; la sesión A restaurada recupera solo información ficticia propia."
       ],
-      "updated_at": "2026-10-23T13:51:55.830Z"
+      "updated_at": "2026-10-23T17:43:14.771Z"
     },
     {
       "id": "20.03",
@@ -2951,9 +2956,10 @@
         "V160: interface expresa estado de pending/authorized/rejected/executed y razones motivadas; Chrome capturó los 4 expedientes por rol en 3 tamaños.",
         "V161: los contadores de todos/pendientes/autorizados/ejecutados/rechazados provienen del universo jurisdiccional, no de 50 filas visibles.",
         "V162: prueba Chrome 6/6 en simulación de dos identidades; auditoría de transiciones y evidencia PNG registradas.",
-        "V163: trazabilidad de publicación con SHA exacto, GitHub workflow run 39963410615, deployment URL y tres marcas horarias del gate."
+        "V163: trazabilidad de publicación con SHA exacto, GitHub workflow run 39963410615, deployment URL y tres marcas horarias del gate.",
+        "V170: reconstruido laboratorio React V160 con mock de RPC batch V168 faltante, compilación de fixture aislado y Chrome 6/6."
       ],
-      "updated_at": "2026-10-23T13:51:55.830Z"
+      "updated_at": "2026-10-23T17:43:14.771Z"
     },
     {
       "id": "25.01",
@@ -4057,9 +4063,10 @@
         "V166: 19 additional contract tests, 1176/1176 synthetic, 28/28 gate; browser visual 6/6.",
         "V167: 19 contratos nuevos, 1195/1195 sintéticas, 28/28 Quality Gate, compilación y npm audit sin hallazgos.",
         "V168: 22 tests contractuales nuevos, 1217/1217 tests totales (GitHub CI #39982084560 y puerta local), 28/28 verificadores.",
-        "V169: auditoría reproducible local con 1237/1237 pruebas sintéticas, 28/28 gates, build y npm audit completo; pruebas de sesión son simuladas, no E2E autenticadas."
+        "V169: auditoría reproducible local con 1237/1237 pruebas sintéticas, 28/28 gates, build y npm audit completo; pruebas de sesión son simuladas, no E2E autenticadas.",
+        "V170: nueva regresión de 5 pruebas fuente/evidencia; total 1242/1242 sintéticas y 28/28 quality gate."
       ],
-      "updated_at": "2026-10-23T17:23:02.753Z"
+      "updated_at": "2026-10-23T17:43:14.771Z"
     },
     {
       "id": "32.04",
@@ -4258,9 +4265,10 @@
         "V166: production build CSS and npm audits passed, no vulnerabilities reported.",
         "V167: Quality Gate de tests, Vite, CSS y npm audit aprobado, sin vulnerabilidades reportadas.",
         "V168: 1217/1217 test sintéticos, 28/28 Quality Gate, CSS, Vite build y npm audit prod+completo sin vulnerabilidades reportadas.",
-        "V169: Quality Gate estricto ejecutado localmente con 28/28 verificaciones y cero vulnerabilidades reportadas por npm audit en el momento de prueba."
+        "V169: Quality Gate estricto ejecutado localmente con 28/28 verificaciones y cero vulnerabilidades reportadas por npm audit en el momento de prueba.",
+        "V170: build Vite normal, CSS crítico, npm audit producción y completo sin vulnerabilidades reportadas; QA visual Chrome 6/6."
       ],
-      "updated_at": "2026-10-23T17:23:02.753Z"
+      "updated_at": "2026-10-23T17:43:14.771Z"
     },
     {
       "id": "32.08",

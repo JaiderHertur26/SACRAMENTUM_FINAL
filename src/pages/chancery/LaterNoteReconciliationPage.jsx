@@ -61,6 +61,9 @@ export default function LaterNoteReconciliationPage() {
   const dataCurrent = scopeCurrent && loadedScope===identityKey;
   const visibleItems = dataCurrent ? items : [];
   const visibleTotals = dataCurrent ? totals : {all:0,pending:0,authorized:0,executed:0,rejected:0};
+  // V170: never show a former institution's counts or error text on an identity switch.
+  // React may paint before the cleanup useEffect discards previous state.
+  const visibleError = scopeCurrent ? error : '';
   // Execute all authorized notes of one decree in the same database transaction.
   // Do not offer batch execution until the entire authorized keyset has loaded.
   const authorizedGroups = visibleItems.reduce((by,caseItem)=>{
@@ -306,10 +309,10 @@ export default function LaterNoteReconciliationPage() {
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {[
-          ['Pendientes de aprobación',totals.pending],
-          ['Autorizados sin ejecutar',totals.authorized],
-          ['Ejecutados',totals.executed],
-          ['Rechazados o revocados',totals.rejected]
+          ['Pendientes de aprobación',visibleTotals.pending],
+          ['Autorizados sin ejecutar',visibleTotals.authorized],
+          ['Ejecutados',visibleTotals.executed],
+          ['Rechazados o revocados',visibleTotals.rejected]
         ].map(([label,count])=><div key={label} className="rounded-2xl border border-slate-200 bg-white p-5">
           <p className="text-xs font-semibold text-slate-500">{label}</p>
           <p className="mt-2 text-3xl font-extrabold text-slate-900">{loading?'—':count}</p>
@@ -323,7 +326,7 @@ export default function LaterNoteReconciliationPage() {
           una resolución específica. Las notas originales se conservan para auditoría.</p>
       </section>
 
-      {error && <p role="alert" className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-900">{error}</p>}
+      {visibleError && <p role="alert" className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-900">{visibleError}</p>}
       {(!dioceseId || !scopeCurrent) && <p className="rounded-xl border border-slate-200 p-4 text-sm">No se identificó una diócesis autorizada para esta sesión.</p>}
 
       {chancery && scopeCurrent && <section className="rounded-3xl border border-slate-200 bg-white p-6">

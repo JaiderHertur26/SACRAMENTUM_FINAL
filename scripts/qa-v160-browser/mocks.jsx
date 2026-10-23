@@ -78,6 +78,12 @@ export const rejectLaterNoteReconciliation=async p=>{
 export const executeLaterNoteReconciliation=async id=>{
  window.__v160.history.push({action:'execute',caseId:id});
  const x=records.find(r=>r.id===id);x.status='executed';return {status:'executed'};};
+// V170: V168 batch service is simulated only within the isolated Chrome QA fixture.
+export const executeLaterNoteReconciliationBatch=async ids=>{
+ window.__v160.history.push({action:'executeBatch',caseIds:ids});
+ for(const id of ids){const x=records.find(r=>r.id===id);if(x)x.status='executed';}
+ return {status:'executed',case_count:ids.length};
+};
 export const supabase={
  from(name){
   return {select(){
