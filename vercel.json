@@ -1,4 +1,6 @@
 {
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "node release-gate-v163.mjs && npm run build",
   "rewrites": [
     {
       "source": "/(.*)",
