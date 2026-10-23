@@ -1,0 +1,33 @@
+{
+  "protocol": "V176",
+  "date": "2026-10-23",
+  "migration": "20261023203903_fail_closed_institutional_identity_v176.sql",
+  "helpers": 7,
+  "prepatchDefects": [
+    "suspended effective diocese",
+    "null status grants parish role"
+  ],
+  "temporaryPatchSql": "PASS",
+  "permanentMigrationInstalled": true,
+  "postDeploymentSqlQa": "PASS",
+  "zeroQaUsers": true,
+  "states": [
+    "ACTIVE",
+    "SUSPENDED",
+    "NULL_STATUS",
+    "NULL_ACTIVE",
+    "DISABLED"
+  ],
+  "synthetic": 1308,
+  "quality": 28,
+  "rollback": true,
+  "open": [
+    "independent authenticated E2E",
+    "physical PostgreSQL concurrence"
+  ],
+  "master": {
+    "APROBADO": 10,
+    "EN_PROGRESO": 117,
+    "PENDIENTE": 198
+  }
+}

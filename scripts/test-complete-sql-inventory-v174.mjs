@@ -3,7 +3,8 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 const inventory=JSON.parse(fs.readFileSync('AUDITORIA_INVENTARIO_SQL_V174.json','utf8'));
 const ledger=JSON.parse(fs.readFileSync('AUDITORIA_RESULTADOS_SQL_V174.json','utf8'));
-const original=fs.readdirSync('scripts').filter(f=>/^qa-rollback-.*\.sql$/.test(f)).sort();
+// Frozen V174 receipt: later version fixtures are tested by their own protocol.
+const original=fs.readdirSync('scripts').filter(f=>/^qa-rollback-.*\.sql$/.test(f)).filter(f=>{const v=f.match(/-v(\d+)\.sql$/);return !v||Number(v[1])<=174;}).sort();
 test('V174 inventory includes every and only actual SQL QA file',()=>{
  assert.deepEqual(inventory.inventory.map(x=>x.file),original);
  assert.equal(original.length,97);
