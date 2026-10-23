@@ -19,23 +19,53 @@ if(params.get('backlog')==='1'){
    source_reference:'ARCHIVO HISTORICO QA '+i,
    requested_at:new Date(Date.UTC(2026,9,23,0,i,0)).toISOString()});
 }
+const scopeRace=params.get('scopeRace')==='1';
+if(scopeRace)records.push({id:uuid(502),decree_id:uuid(602),note_id:uuid(702),
+ diocese_id:uuid(22),parish_id:uuid(220),status:'pending',
+ request_reason:'CASO EXCLUSIVO SEGUNDA DIÓCESIS QA-V162 · SÓLO ACTOR B',
+ source_reference:'FUENTE FICTICIA B',requested_at:'2026-10-23T10:00:00Z'});
+let mockActor={id:uuid(9),role,dioceseId:uuid(1),chanceryId:uuid(2)};
 window.__v160={role,history:[],records};
+window.__v160.changeIdentity=(newIdentity)=>{
+ mockActor=newIdentity==='B'
+   ?{id:uuid(29),role:'diocese',dioceseId:uuid(22),chanceryId:null}
+   :newIdentity==='none'?null
+   :{id:uuid(9),role,dioceseId:uuid(1),chanceryId:uuid(2)};
+ window.dispatchEvent(new Event('v162-auth-changed'));
+};
+window.__v160.slowA=false;
 export default function DashboardLayout({children}){return <div className="min-h-screen bg-slate-100">
  <div className="bg-amber-100 px-4 py-2 text-center text-xs font-bold text-amber-900">QA V160 AISLADA · {role.toUpperCase()} · DATOS TOTALMENTE FICTICIOS · SIN CONEXIÓN A SUPABASE</div>
  {children}
  </div>;}
-export const useAuth=()=>({user:{role,dioceseId:uuid(1),chanceryId:uuid(2)}});
+export const useAuth=()=>{
+ const [user,setUser]=React.useState(mockActor);
+ React.useEffect(()=>{
+  const listener=()=>setUser(mockActor?{...mockActor}:null);
+  window.addEventListener('v162-auth-changed',listener);
+  return ()=>window.removeEventListener('v162-auth-changed',listener);
+ },[]);
+ return {user};
+};
 export const useToast=()=>({toast:x=>window.__v160.history.push({action:'toast',title:x.title})});
 export async function institutionalConfirm(x){window.__v160.history.push({action:'confirm',title:x.title});return true;}
-export const listLaterNoteReconciliations=async(_dioceseId,{status='all',limit=50,cursor=null}={})=>records
- .filter(x=>(status==='all'||x.status===status)&&(!cursor||(x.requested_at<cursor.requested_at||(x.requested_at===cursor.requested_at&&x.id<cursor.id))))
- .sort((a,b)=>b.requested_at.localeCompare(a.requested_at)||b.id.localeCompare(a.id)).slice(0,limit).map(x=>({...x}));
-export const countLaterNoteReconciliations=async()=>({
- all:records.length,pending:records.filter(x=>x.status==='pending').length,
- authorized:records.filter(x=>x.status==='authorized').length,
- executed:records.filter(x=>x.status==='executed').length,
- rejected:records.filter(x=>x.status==='rejected').length
-});
+export const listLaterNoteReconciliations=async(_dioceseId,{status='all',limit=50,cursor=null}={})=>{
+ const rows=records.filter(x=>(!scopeRace||x.diocese_id===_dioceseId)&&
+   (status==='all'||x.status===status)&&
+   (!cursor||(x.requested_at<cursor.requested_at||(x.requested_at===cursor.requested_at&&x.id<cursor.id))))
+  .sort((a,b)=>b.requested_at.localeCompare(a.requested_at)||b.id.localeCompare(a.id))
+  .slice(0,limit).map(x=>({...x}));
+ if(scopeRace)await new Promise(resolve=>setTimeout(resolve,_dioceseId===uuid(1)&&window.__v160.slowA?900:75));
+ return rows;
+};
+export const countLaterNoteReconciliations=async(_dioceseId)=>{
+ const own=records.filter(x=>!scopeRace||x.diocese_id===_dioceseId);
+ if(scopeRace)await new Promise(resolve=>setTimeout(resolve,_dioceseId===uuid(1)&&window.__v160.slowA?900:75));
+ return {all:own.length,pending:own.filter(x=>x.status==='pending').length,
+ authorized:own.filter(x=>x.status==='authorized').length,
+ executed:own.filter(x=>x.status==='executed').length,
+ rejected:own.filter(x=>x.status==='rejected').length};
+};
 export const requestLaterNoteReconciliation=async p=>{
  window.__v160.history.push({action:'request',payload:p});
  records.push({id:uuid(105),decree_id:p.decreeId,note_id:p.noteId,diocese_id:uuid(1),status:'pending',request_reason:p.reason,source_reference:p.sourceReference,requested_at:new Date().toISOString()}); return uuid(105);};

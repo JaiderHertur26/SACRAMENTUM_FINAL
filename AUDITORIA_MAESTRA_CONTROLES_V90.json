@@ -597,9 +597,10 @@
         "V157: revisión live catálogo SECURITY DEFINER 206 (197 public + 9 private), 145 EXECUTE authenticated; 35 funciones con evidencia parcial y 110 pendientes.",
         "V159: 206 RPC SECURITY DEFINER inalteradas; 145 EXECUTE authenticated, 35 pruebas parciales y 110 revisiones pendientes.",
         "V160: sin cambios SQL ni permisos. Inventario RPC heredado: 206 SECURITY DEFINER, 145 authenticated, 35 con evidencia parcial, 110 por revisar.",
-        "V161: inventario SECURITY DEFINER 208 total, 147 RPC authenticated, 37 con pruebas parciales y 110 por revisar."
+        "V161: inventario SECURITY DEFINER 208 total, 147 RPC authenticated, 37 con pruebas parciales y 110 por revisar.",
+        "V162: 208 SECURITY DEFINER sin cambios, 147 RPC authenticated, 37 parcialmente verificadas, 110 pendientes."
       ],
-      "updated_at": "2026-10-23T05:31:15.799Z"
+      "updated_at": "2026-10-23T13:05:20.935Z"
     },
     {
       "id": "06.07",
@@ -638,9 +639,10 @@
         "V157: Diócesis puede rechazar/revocar; Cancillería y Parroquia no pueden; no se permite rechazo sin rol diocesano activo ni fuera de jurisdicción.",
         "V159: los cuatro sacramentos superaron autoridad separada Cancillería/Diócesis en 8 flujos correctivos y de reposición.",
         "V160: componente real de conciliación mostrado por Chrome con roles simulados independientes Cancillería/Diócesis; controles exclusivos visibles según rol.",
-        "V161: dos nuevas RPC usan scope de perfil institucional, Diócesis/Cancillería; otras diócesis y usuario sin perfil denegados en SQL real."
+        "V161: dos nuevas RPC usan scope de perfil institucional, Diócesis/Cancillería; otras diócesis y usuario sin perfil denegados en SQL real.",
+        "V162: React en Chrome impide observar expedientes de la diócesis A tras cambio de sesión a la diócesis B."
       ],
-      "updated_at": "2026-10-23T05:31:15.799Z"
+      "updated_at": "2026-10-23T13:05:20.938Z"
     },
     {
       "id": "06.08",
@@ -660,9 +662,10 @@
         "V156: expediente protegido con tabla sin grants directos a authenticated y RLS habilitado. RPC expuestas solo a authenticated, no a anon.",
         "V157: reject RPC sólo authenticated; acceso anon denegado y tabla de conciliación sigue sin grants directos; row lock FOR UPDATE.",
         "V159: las pruebas de RPC utilizaron SET LOCAL ROLE authenticated para solicitar, autorizar y ejecutar.",
-        "V161: listado y contadores grant EXECUTE únicamente authenticated, sin abrir lectura directa de tabla ni permisos a anon."
+        "V161: listado y contadores grant EXECUTE únicamente authenticated, sin abrir lectura directa de tabla ni permisos a anon.",
+        "V162: campo identityKey incluye user.id, rol, dioceseId y chanceryId; datos sólo visibles si owner y datos recibidos coinciden con identidad actual."
       ],
-      "updated_at": "2026-10-23T05:31:15.799Z"
+      "updated_at": "2026-10-23T13:05:20.938Z"
     },
     {
       "id": "06.09",
@@ -1387,9 +1390,10 @@
         "V157: rechazo y revocación conservan intactos partida, decreto y nota, según prueba SQL post-deploy.",
         "V159: tras revertir cada corrección, la partida original recuperó estado seated y la supletoria quedó reversed; probados los cuatro sacramentos.",
         "V160: sin acceso a partida desde navegador ficticio; simulación de ejecución posterior documentada sin alterar datos reales.",
-        "V161: vista institucional priorizable por filtros pending/authorized no oculta expedientes antiguos por volumen de casos cerrados."
+        "V161: vista institucional priorizable por filtros pending/authorized no oculta expedientes antiguos por volumen de casos cerrados.",
+        "V162: al cambiar de identidad se descartan respuestas atrasadas de expediente/nota, evitando que datos previos reaparezcan."
       ],
-      "updated_at": "2026-10-23T05:31:15.799Z"
+      "updated_at": "2026-10-23T13:05:20.938Z"
     },
     {
       "id": "12.08",
@@ -2314,9 +2318,10 @@
         "V157: expediente institucional admite rechazo motivado y revocación de autorización no ejecutada con actor, fecha, referencia y fundamento documentados.",
         "V159: recorrido integral real de solicitud→autorización→conciliación→reversión, para cuatro correcciones y cuatro reposiciones.",
         "V160: nueva QA visual de conciliaciones (6 capturas con CDP + 4 interacciones), únicamente roles y expedientes sintéticos.",
-        "V161: expediente se recupera por filtro y paginación keyset de fecha+UUID; 315 rechazados no hacen desaparecer el pendiente antiguo."
+        "V161: expediente se recupera por filtro y paginación keyset de fecha+UUID; 315 rechazados no hacen desaparecer el pendiente antiguo.",
+        "V162: cierre de sesión oculta instantáneamente artículos y formulario; nueva sesión recupera sólo su jurisdicción ficticia."
       ],
-      "updated_at": "2026-10-23T05:31:15.799Z"
+      "updated_at": "2026-10-23T13:05:20.938Z"
     },
     {
       "id": "20.03",
@@ -2873,9 +2878,10 @@
         "V157: auditoría institucional distingue reconciliation_rejected y reconciliation_authorization_revoked sin afectar partidas.",
         "V159: 24 trazas de expediente y 8 notificaciones de conciliación verificadas dentro de dos transacciones revertidas.",
         "V160: interface expresa estado de pending/authorized/rejected/executed y razones motivadas; Chrome capturó los 4 expedientes por rol en 3 tamaños.",
-        "V161: los contadores de todos/pendientes/autorizados/ejecutados/rechazados provienen del universo jurisdiccional, no de 50 filas visibles."
+        "V161: los contadores de todos/pendientes/autorizados/ejecutados/rechazados provienen del universo jurisdiccional, no de 50 filas visibles.",
+        "V162: prueba Chrome 6/6 en simulación de dos identidades; auditoría de transiciones y evidencia PNG registradas."
       ],
-      "updated_at": "2026-10-23T05:31:15.799Z"
+      "updated_at": "2026-10-23T13:05:20.938Z"
     },
     {
       "id": "25.01",
@@ -3219,9 +3225,10 @@
         "V157: seis rechazos de roles/estado/longitud/falso perfil, reapertura de expediente tras rechazo, y prohibición de ejecutar revocación.",
         "V159: los 8 intentos de ejecución previa sin autorización fueron rechazados; la ejecución posterior funcionó.",
         "V160: clicks reales sobre componente React: Diócesis autoriza/rechaza/revoca, Cancillería ejecuta. 4/4 sin errores JS y usando servicios falsos.",
-        "V161: negativos SQL para filtro phantom, límites >100, cursor incompleto, diocese ajena y actor sin perfil."
+        "V161: negativos SQL para filtro phantom, límites >100, cursor incompleto, diocese ajena y actor sin perfil.",
+        "V162: no hubo cambios en contratos SQL; el aislamiento de datos por rol sigue protegido en RPC V161 y RLS."
       ],
-      "updated_at": "2026-10-23T05:31:15.799Z"
+      "updated_at": "2026-10-23T13:05:20.938Z"
     },
     {
       "id": "27.05",
@@ -3350,9 +3357,10 @@
         "V157: 145 RPC ejecutables autenticadas, 35 parcialmente verificadas y 110 sin QA individual; 61 internas sin ejecución directa siguen pendientes.",
         "V159: revisión parcial reforzada de request, approve, execute; sin alterar estado de auditoría global.",
         "V160: ninguna RPC cambió y pruebas UI no cuentan como cobertura nueva de seguridad de base de datos.",
-        "V161: 147 RPC autenticadas; 37 con cobertura parcial y 110 pendientes, 61 internas no directamente ejecutables."
+        "V161: 147 RPC autenticadas; 37 con cobertura parcial y 110 pendientes, 61 internas no directamente ejecutables.",
+        "V162: 208 RPC sin variaciones; QA visual de ámbito no sustituye pruebas de autorización física individual."
       ],
-      "updated_at": "2026-10-23T05:31:15.799Z"
+      "updated_at": "2026-10-23T13:05:20.938Z"
     },
     {
       "id": "28.01",
@@ -3788,9 +3796,10 @@
         "V157: QA reversible con fixtures matrimoniales, seis negativos, dos motivos registrados, note/decree intactos, BEGIN/ROLLBACK.",
         "V159: QA SQL real con 8 circuitos de corrección/reposición en los cuatro sacramentos, cero persistencia ficticia.",
         "V160: datos ficticios locales aislados; 6 capturas reales con hashes SHA256 en AUDITORIA_EVIDENCIA_VISUAL_V160 y 4 interacciones documentadas.",
-        "V161: QA real con 315 cierres ficticios y un pendiente antiguo, luego 2 páginas sin solapamiento y 50 límites; ROLLBACK."
+        "V161: QA real con 315 cierres ficticios y un pendiente antiguo, luego 2 páginas sin solapamiento y 50 límites; ROLLBACK.",
+        "V162: navegador real Chrome aislado con retraso artificial 900ms, cambio A→B, respuesta tardía rechazada, logout y recuperación."
       ],
-      "updated_at": "2026-10-23T05:31:15.799Z"
+      "updated_at": "2026-10-23T13:05:20.938Z"
     },
     {
       "id": "31.08",
@@ -3850,9 +3859,10 @@
         "V157: tras la QA real, 0 decretos, notas, expedientes y auditorías de ficción QA V157 residuales.",
         "V159: verificación post-ROLLBACK encontró 0 decretos, partidas, notas y expedientes QA-V159 residuales.",
         "V160: ni navegador aislado ni sus expedientes enviaron llamadas a Supabase; no se creó prueba sacramental real adicional.",
-        "V161: ensayo utiliza decretos/notas completamente ficticios; no persistieron registros de prueba."
+        "V161: ensayo utiliza decretos/notas completamente ficticios; no persistieron registros de prueba.",
+        "V162: pruebas exclusivamente ficticias locales; no se creó ningún registro sacramental o expediente en Supabase."
       ],
-      "updated_at": "2026-10-23T05:31:15.799Z"
+      "updated_at": "2026-10-23T13:05:20.938Z"
     },
     {
       "id": "32.01",
@@ -3944,9 +3954,10 @@
         "V157: +24 pruebas contractuales y regresión V156 versionada corregida; total 1029/1029, 28/28 gate.",
         "V159: 19 nuevos tests sintéticos; total 1057/1057 y gate 28/28.",
         "V160: 15 nuevas pruebas contractuales de evidencias Chrome/CDP; total 1072/1072 y Quality Gate 28/28.",
-        "V161: 21 nuevos tests y evidencia Chrome; total 1093/1093 y Quality Gate 28/28."
+        "V161: 21 nuevos tests y evidencia Chrome; total 1093/1093 y Quality Gate 28/28.",
+        "V162: 14 pruebas contractuales nuevas, total 1107/1107 y puerta 28/28."
       ],
-      "updated_at": "2026-10-23T05:31:15.799Z"
+      "updated_at": "2026-10-23T13:05:20.938Z"
     },
     {
       "id": "32.04",
@@ -4010,9 +4021,10 @@
         "V156: corregido conflicto de unicidad de notificación original cambiando categoría a decree_reconciliation antes de desplegar.",
         "V157: defecto funcional de solicitudes rechazables pero sin RPC subsanado, migración aplicada y confirmada en Supabase.",
         "V160: primer harness visual aislado falló por alias del cliente Supabase y error sintáctico del mock; ambos errores del entorno QA corregidos y 6/6+4/4 finales.",
-        "V161: detectada brecha operativa de pendientes ocultos por límite fijo; corregida en backend, interfaz y pruebas automáticas."
+        "V161: detectada brecha operativa de pendientes ocultos por límite fijo; corregida en backend, interfaz y pruebas automáticas.",
+        "V162: solucionada posible retención visual temporal de datos entre sesiones, con fail-closed en UI y protección frente a respuestas de redes anteriores."
       ],
-      "updated_at": "2026-10-23T05:31:15.799Z"
+      "updated_at": "2026-10-23T13:05:20.938Z"
     },
     {
       "id": "32.06",
@@ -4065,9 +4077,10 @@
         "V157: migración SQL 20261023032715 y servicio frontend de listado v157 y rechazo implementados; build y QA de API correctos.",
         "V159: no fueron necesarias nuevas migraciones de backend para el recorrido de 8 circuitos.",
         "V160: componente React real probado en Vite aislado, sin alterar frontend de producción y sin despliegue web.",
-        "V161: migración efectiva Supabase 20261023052453_reconciliation_keyset_pagination_v161, frontend local recompilado; sin despliegue web."
+        "V161: migración efectiva Supabase 20261023052453_reconciliation_keyset_pagination_v161, frontend local recompilado; sin despliegue web.",
+        "V162: Vista previa Vercel separada lista. Vercel Authentication activa para visitante anónimo; producción no fue desplegada."
       ],
-      "updated_at": "2026-10-23T05:31:15.799Z"
+      "updated_at": "2026-10-23T13:05:20.938Z"
     },
     {
       "id": "32.07",
@@ -4123,9 +4136,10 @@
         "V157: build Vite + dependencias prod/dev 0 vulnerabilidades reportadas; 28 verificaciones aprobadas.",
         "V159: Vite build, verificadores heredados, CSS y dependencias npm aprobados; 0 vulnerabilidades reportadas.",
         "V160: compilación, CSS, verificaciones históricas y npm audit producción/completo PASS con 0 vulnerabilidades reportadas.",
-        "V161: build, CSS, npm audit production+desarrollo sin hallazgos; gate 28/28."
+        "V161: build, CSS, npm audit production+desarrollo sin hallazgos; gate 28/28.",
+        "V162: npm build, CSS, dependencias de producción+desarrollo y pruebas contractuales pass, auditorías npm 0 vulnerabilidades."
       ],
-      "updated_at": "2026-10-23T05:31:15.799Z"
+      "updated_at": "2026-10-23T13:05:20.938Z"
     },
     {
       "id": "32.08",
@@ -4179,9 +4193,10 @@
         "V157: Chrome headless aislado confirma pantalla protegida no expuesta a visitante sin sesión. No equivale a QA física de roles autentificados ni concurrencia DB.",
         "V159: conexiones Postgres distintas observadas, pero sin simultaneidad demostrada; tampoco prueba E2E física con cuentas autenticadas.",
         "V160: las cuentas autenticadas de Cancillería/Diócesis NO se usaron; prueba SQL de dos sesiones mantiene pendiente la certificación de locks simultáneos.",
-        "V161: Chrome aislado verificó 320 expedientes ficticios, pending antiguo visible con filtro y rechazados 50→100 sin duplicados. Falta usuarios reales y concurrencia."
+        "V161: Chrome aislado verificó 320 expedientes ficticios, pending antiguo visible con filtro y rechazados 50→100 sin duplicados. Falta usuarios reales y concurrencia.",
+        "V162: 6 transiciones de usuario simuladas y preview verificada. Faltan inicios de sesión reales y prueba concurrente con dos transacciones PostgreSQL."
       ],
-      "updated_at": "2026-10-23T05:31:15.799Z"
+      "updated_at": "2026-10-23T13:05:20.938Z"
     },
     {
       "id": "32.09",

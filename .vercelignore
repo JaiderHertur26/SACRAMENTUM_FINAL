@@ -1,0 +1,16 @@
+# V162 · Only source required by the Vite production build.
+# Protect QA fixtures and institutional audit data from deployment bundles.
+node_modules/
+dist/
+.env
+.env.*
+.vercel/
+.github/
+supabase/
+scripts/
+tests/
+AUDITORIA_*
+*_tmp.sql
+tmp_*.sql
+coverage/
+*.log

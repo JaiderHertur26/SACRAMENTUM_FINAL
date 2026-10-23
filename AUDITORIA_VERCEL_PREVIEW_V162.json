@@ -1,0 +1,25 @@
+{
+  "type": "Vercel Preview",
+  "project": "sacramentum-final",
+  "url": "https://sacramentum-final-9f7ylgecy-jaiderherreras-projects.vercel.app",
+  "inspect_url": "https://vercel.com/jaiderherreras-projects/sacramentum-final/93itbjxeLVXZ9f5KcPTaiasg88p1",
+  "ready": true,
+  "production_replaced": false,
+  "preview_env_keys_confirmed": [
+    "VITE_SUPABASE_URL",
+    "VITE_SUPABASE_ANON_KEY"
+  ],
+  "deployment_upload_bytes": 576700,
+  "authorized_vercel_curl": {
+    "html": true,
+    "app_root": true,
+    "vite_assets": true
+  },
+  "independent_chrome": {
+    "page_title": "Login – Vercel",
+    "sensitive_form_exposed": false,
+    "preview_protected": true
+  },
+  "access_note": "Vercel preview login protection is intact; no real login to the application was performed.",
+  "timestamp": "2026-10-23T13:05:21.115Z"
+}

@@ -83,7 +83,8 @@ exec('pruebas-sinteticas',node,['--test',
  'scripts/test-chancery-picker-rls-v158.mjs',
  'scripts/test-reconciliation-all-sacraments-v159.mjs',
  'scripts/test-browser-reconciliation-v160.mjs',
- 'scripts/test-reconciliation-keyset-v161.mjs']);
+ 'scripts/test-reconciliation-keyset-v161.mjs',
+ 'scripts/test-session-isolation-v162.mjs']);
 const scripts=fs.readdirSync(path.join(root,'scripts')).filter(x=>/^verify-.*\.mjs$/.test(x)).sort();
 for(const file of scripts)exec('legacy/'+file,node,['scripts/'+file]);
 const npmOnWindows=process.platform==='win32';

@@ -31,13 +31,19 @@ export default function LaterNoteReconciliationPage() {
   const role = String(user?.role || '').toLowerCase();
   const chancery = role === 'chancery';
   const dioceseRole = role === 'diocese';
+  const userId = String(user?.id || user?.auth_user_id || '');
+  const identityKey = [userId,role,user?.dioceseId || user?.diocese_id || '',
+    user?.chanceryId || user?.chancery_id || ''].join(':');
   const [dioceseId,setDioceseId]=useState(user?.dioceseId || user?.diocese_id || '');
   const [items,setItems]=useState([]);
+  const [scopeOwner,setScopeOwner]=useState(identityKey);
+  const [loadedScope,setLoadedScope]=useState('');
   const [totals,setTotals]=useState({all:0,pending:0,authorized:0,executed:0,rejected:0});
   const [statusFilter,setStatusFilter]=useState('all');
   const [hasMore,setHasMore]=useState(false);
   const [loadingMore,setLoadingMore]=useState(false);
   const listVersion=useRef(0);
+  const lookupVersion=useRef(0);
   const [form,setForm]=useState(empty);
   const [availableNotes,setAvailableNotes]=useState([]);
   const [lookingUp,setLookingUp]=useState(false);
@@ -46,12 +52,35 @@ export default function LaterNoteReconciliationPage() {
   const [loading,setLoading]=useState(false);
   const [busy,setBusy]=useState('');
   const [error,setError]=useState('');
+  const scopeCurrent = !!userId && (chancery || dioceseRole) && scopeOwner===identityKey;
+  const dataCurrent = scopeCurrent && loadedScope===identityKey;
+  const visibleItems = dataCurrent ? items : [];
+  const visibleTotals = dataCurrent ? totals : {all:0,pending:0,authorized:0,executed:0,rejected:0};
 
   useEffect(()=>{
+    // Fail closed: a new Supabase identity must never see the prior user's
+    // cached jurisdiction, notes or forms, even while the new request is pending.
     let cancelled=false;
+    listVersion.current++;
+    lookupVersion.current++;
+    setDioceseId('');
+    setItems([]);
+    setTotals({all:0,pending:0,authorized:0,executed:0,rejected:0});
+    setHasMore(false);
+    setLoadedScope('');
+    setAvailableNotes([]);
+    setForm(empty);
+    setLookingUp(false);
+    setLoadingMore(false);
+    setBusy('');
+    setApprove({});
+    setReject({});
+    setError('');
+    setScopeOwner(identityKey);
     const resolve=async()=>{
+      if(!userId || (!chancery && !dioceseRole))return;
       const direct=user?.dioceseId || user?.diocese_id;
-      if(direct){ if(!cancelled)setDioceseId(direct); return; }
+      if(direct){if(!cancelled)setDioceseId(direct);return;}
       const cid=user?.chanceryId || user?.chancery_id;
       if(!cid)return;
       const {data,error:err}=await supabase.from('chancelleries').select('diocese_id').eq('id',cid).maybeSingle();
@@ -59,16 +88,16 @@ export default function LaterNoteReconciliationPage() {
       if(!cancelled)setDioceseId(data?.diocese_id || '');
     };
     resolve().catch(e=>{if(!cancelled)setError(e.message);});
-    return ()=>{cancelled=true;};
-  },[user]);
+    return ()=>{cancelled=true;listVersion.current++;lookupVersion.current++;};
+  },[identityKey]);
 
   const reload=useCallback(async()=>{
     const version=++listVersion.current;
-    if(!dioceseId){
+    if(!scopeCurrent || !dioceseId){
       setItems([]);setTotals({all:0,pending:0,authorized:0,executed:0,rejected:0});
-      setHasMore(false);return;
+      setHasMore(false);setLoadedScope('');return;
     }
-    setLoading(true);setError('');setHasMore(false);
+    setLoading(true);setError('');setHasMore(false);setLoadedScope('');setItems([]);
     try{
       const [rows,counts]=await Promise.all([
         listLaterNoteReconciliations(dioceseId,{status:statusFilter,limit:PAGE_SIZE}),
@@ -77,15 +106,16 @@ export default function LaterNoteReconciliationPage() {
       if(version!==listVersion.current)return;
       setItems(rows||[]);
       setTotals(counts||{all:0,pending:0,authorized:0,executed:0,rejected:0});
+      setLoadedScope(identityKey);
       setHasMore((rows||[]).length===PAGE_SIZE);
-    }catch(e){if(version===listVersion.current)setError(e.message);}
+    }catch(e){if(version===listVersion.current){setItems([]);setHasMore(false);setLoadedScope('');setError(e.message);}}
     finally{if(version===listVersion.current)setLoading(false);}
-  },[dioceseId,statusFilter]);
+  },[dioceseId,statusFilter,scopeCurrent,identityKey]);
 
   useEffect(()=>{reload();},[reload]);
 
   const loadMore=async()=>{
-    if(!dioceseId||loading||loadingMore||!hasMore||!items.length)return;
+    if(!dataCurrent||!dioceseId||loading||loadingMore||!hasMore||!items.length)return;
     const last=items[items.length-1],version=listVersion.current;
     setLoadingMore(true);setError('');
     try{
@@ -107,7 +137,8 @@ export default function LaterNoteReconciliationPage() {
     toast({title:'Conciliación no realizada',description:e?.message||'No se completó la operación',variant:'destructive'});
   };
   const findNotes=async()=>{
-    if(!chancery || !form.decreeId.trim() || lookingUp)return;
+    if(!chancery || !scopeCurrent || !form.decreeId.trim() || lookingUp)return;
+    const version=++lookupVersion.current;
     setLookingUp(true);setAvailableNotes([]);setError('');
     try{
       const {data:decree,error:decreeError}=await supabase.from('decretos')
@@ -129,15 +160,16 @@ export default function LaterNoteReconciliationPage() {
         .order('created_at',{ascending:false});
       if(noteError)throw noteError;
       const eligibleNotes=(notes||[]).filter(n=>!n.source_type || String(n.source_type).toLowerCase()==='manual');
+      if(version!==lookupVersion.current)return;
       setAvailableNotes(eligibleNotes);
       setForm(v=>({...v,noteId:''}));
       if(!eligibleNotes.length)setError('No existen notas manuales independientes elegibles para ese decreto.');
-    }catch(e){setError(e.message);}
-    finally{setLookingUp(false);}
+    }catch(e){if(version===lookupVersion.current)setError(e.message);}
+    finally{if(version===lookupVersion.current)setLookingUp(false);}
   };
   const doRequest=async(e)=>{
     e.preventDefault();
-    if(!chancery || !dioceseId || busy)return;
+    if(!chancery || !scopeCurrent || !dioceseId || busy)return;
     setBusy('new');
     try{
       await requestLaterNoteReconciliation(form);
@@ -149,7 +181,7 @@ export default function LaterNoteReconciliationPage() {
     finally{setBusy('');}
   };
   const doApprove=async(x)=>{
-    if(!dioceseRole || busy)return;
+    if(!dioceseRole || !dataCurrent || busy)return;
     const details=approve[x.id]||{};
     if((details.reference||'').trim().length<8 || (details.reason||'').trim().length<15){
       setError('La autorización requiere referencia de al menos 8 caracteres y motivación de al menos 15.');
@@ -170,7 +202,7 @@ export default function LaterNoteReconciliationPage() {
     finally{setBusy('');}
   };
   const doReject=async(x)=>{
-    if(!dioceseRole || busy)return;
+    if(!dioceseRole || !dataCurrent || busy)return;
     const details=reject[x.id]||{};
     if((details.reference||'').trim().length<8 || (details.reason||'').trim().length<20){
       setError('Para rechazar o revocar se requieren una referencia de 8 caracteres y un motivo de al menos 20.');
@@ -194,7 +226,7 @@ export default function LaterNoteReconciliationPage() {
     finally{setBusy('');}
   };
   const doExecute=async(x)=>{
-    if(!chancery || busy)return;
+    if(!chancery || !dataCurrent || busy)return;
     const confirmed=await institutionalConfirm({
       title:'Ejecutar actuación irreversible',
       message:'La nota manual quedará conciliada y el decreto se revertirá dentro de UNA misma transacción. Se generarán auditoría y notificación parroquial. Si existe otra actuación posterior, el servidor detendrá todo. ¿Continuar?',
@@ -249,9 +281,9 @@ export default function LaterNoteReconciliationPage() {
       </section>
 
       {error && <p role="alert" className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-900">{error}</p>}
-      {!dioceseId && <p className="rounded-xl border border-slate-200 p-4 text-sm">No se identificó una diócesis autorizada para esta sesión.</p>}
+      {(!dioceseId || !scopeCurrent) && <p className="rounded-xl border border-slate-200 p-4 text-sm">No se identificó una diócesis autorizada para esta sesión.</p>}
 
-      {chancery && <section className="rounded-3xl border border-slate-200 bg-white p-6">
+      {chancery && scopeCurrent && <section className="rounded-3xl border border-slate-200 bg-white p-6">
         <div className="mb-5 flex items-center gap-3">
           <FileCheck2 className="text-blue-800"/>
           <div><h2 className="text-lg font-bold text-slate-900">1. Solicitar conciliación</h2>
@@ -260,7 +292,7 @@ export default function LaterNoteReconciliationPage() {
         <form className="grid gap-4 md:grid-cols-2" onSubmit={doRequest}>
           <label className="space-y-1 text-sm font-semibold text-slate-700">UUID del decreto
             <input className={inputClass} required value={form.decreeId}
-              onChange={e=>{setForm(v=>({...v,decreeId:e.target.value,noteId:''}));setAvailableNotes([]);}} placeholder="ID de decreto vigente"/>
+              onChange={e=>{lookupVersion.current++;setLookingUp(false);setForm(v=>({...v,decreeId:e.target.value,noteId:''}));setAvailableNotes([]);}} placeholder="ID de decreto vigente"/>
           </label>
           <div className="space-y-2">
             <button type="button" disabled={!form.decreeId || lookingUp}
@@ -303,17 +335,17 @@ export default function LaterNoteReconciliationPage() {
         </div>
         <div aria-label="Filtrar expedientes por estado" className="mb-5 flex flex-wrap gap-2">
           {filters.map(([key,label])=><button key={key} type="button"
-            aria-pressed={statusFilter===key} disabled={loading||!!busy}
-            onClick={()=>setStatusFilter(key)}
+            aria-pressed={statusFilter===key} disabled={loading||!!busy||!scopeCurrent}
+            onClick={()=>{listVersion.current++;setLoadedScope('');setItems([]);setHasMore(false);setStatusFilter(key);}}
             className={buttonClass+(statusFilter===key
               ? ' bg-indigo-800 text-white'
               : ' border border-slate-300 bg-white text-slate-800 hover:bg-indigo-50')}>
-            {label} ({totals[key]??0})
+            {label} ({visibleTotals[key]??0})
           </button>)}
         </div>
         {loading?<p className="py-8 text-center text-sm text-slate-500">Consultando expedientes…</p>:
-          items.length===0?<p className="py-8 text-center text-sm text-slate-500">No hay expedientes para el estado seleccionado.</p>:
-          <div className="space-y-4">{items.map(x=><article key={x.id} className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+          visibleItems.length===0?<p className="py-8 text-center text-sm text-slate-500">No hay expedientes para el estado seleccionado.</p>:
+          <div className="space-y-4">{visibleItems.map(x=><article key={x.id} className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <span className="text-xs font-bold uppercase tracking-wide text-slate-600">{statusLabel[x.status]||x.status}</span>
               <span className="text-xs text-slate-500">{x.requested_at ? new Date(x.requested_at).toLocaleDateString('es-CO'):''}</span>
@@ -355,13 +387,13 @@ export default function LaterNoteReconciliationPage() {
             {chancery && x.status==='authorized' && <button type="button" onClick={()=>doExecute(x)} disabled={!!busy}
               className={buttonClass+' mt-4 bg-amber-700 text-white'}>Ejecutar resolución autorizada</button>}
           </article>)}</div>}
-        {hasMore && !loading && <button type="button" onClick={loadMore}
+        {hasMore && dataCurrent && !loading && <button type="button" onClick={loadMore}
           disabled={loadingMore||!!busy}
           className={buttonClass+' mt-5 w-full border border-indigo-300 bg-indigo-50 text-indigo-900 hover:bg-indigo-100'}>
           {loadingMore?'Cargando expedientes…':'Cargar 50 expedientes anteriores'}
         </button>}
-        {!loading && items.length>0 && <p className="mt-3 text-xs text-slate-500">
-          Mostrando {items.length} expedientes del filtro «{filters.find(x=>x[0]===statusFilter)?.[1]||statusFilter}».
+        {!loading && visibleItems.length>0 && <p className="mt-3 text-xs text-slate-500">
+          Mostrando {visibleItems.length} expedientes del filtro «{filters.find(x=>x[0]===statusFilter)?.[1]||statusFilter}».
           {hasMore?' Hay más páginas disponibles.':' Fin de resultados.'}
         </p>}
       </section>

@@ -1,0 +1,68 @@
+{
+  "scope": "Real React component and Chrome, simulated users and delayed mock requests ONLY, not two real authenticated accounts.",
+  "passed": true,
+  "steps": [
+    {
+      "name": "A_INITIAL_VIEW",
+      "passed": true,
+      "detail": {
+        "articles": 4,
+        "form": 1,
+        "containsB": false
+      }
+    },
+    {
+      "name": "B_SWITCH_IMMEDIATE_MASK",
+      "passed": true,
+      "detail": {
+        "articles": 1,
+        "containsA": false,
+        "form": 0
+      }
+    },
+    {
+      "name": "B_AUTHORIZED_SCOPE",
+      "passed": true,
+      "detail": {
+        "articles": 1,
+        "containsB": true,
+        "counters": [
+          "Todos (1)",
+          "Pendientes (1)",
+          "Autorizados (0)",
+          "Ejecutados (0)",
+          "Rechazados (0)"
+        ]
+      }
+    },
+    {
+      "name": "A_LATE_RESPONSE_DISCARDED",
+      "passed": true,
+      "detail": {
+        "articles": 1,
+        "containsA": false,
+        "containsB": true
+      }
+    },
+    {
+      "name": "LOGOUT_FAILS_CLOSED",
+      "passed": true,
+      "detail": {
+        "articles": 0,
+        "form": 0,
+        "containsA": false,
+        "containsB": false
+      }
+    },
+    {
+      "name": "A_SIGNIN_RECOVERS_OWN_SCOPE",
+      "passed": true,
+      "detail": {
+        "articles": 4,
+        "form": 1,
+        "containsB": false
+      }
+    }
+  ],
+  "errors": []
+}
