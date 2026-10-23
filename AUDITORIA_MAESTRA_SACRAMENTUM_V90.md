@@ -168,6 +168,7 @@ Avance: 325 controles totales; 10 aprobados; 117 en progreso; 198 pendientes; 0 
   - Evidencia: V167: cuatro RPC de transición con FOR UPDATE, auth.uid y unicidad de casos abiertos revisadas; sin variación de 209 funciones privilegiadas.
   - Evidencia: V168: SECURITY DEFINER nuevo con comprobación rol Cancillería/diocésis/parroquia, sin EXECUTE anon; inventario total 210, auth 149, evidencia parcial 46 y 103 revisiones pendientes.
   - Evidencia: V171: SECURITY DEFINER archive_matrimonial_notification_recipient endurecido para exigir status ACTIVE además de is_active=true. Ensayo transaccional en Supabase con usuario/aviso ficticios: antes aceptaba SUSPENDED, corregido con cambio temporal BEGIN/ROLLBACK.
+  - Evidencia: V172: original bishop_tenures RLS de las cuatro operaciones permitía acceso interdiocesano por rol; demostración con diocese A ficticia y tenure de parroquia B. Parche restringe select/insert/update/delete con scope real.
 - [ ] 06.07 · Todas las RPC privilegiadas denegadas a terceros (inventario dinámico) — EN_PROGRESO
   - Evidencia: AUDITORIA_BASE_SQL_V90.md: Cero vistas públicas; 129 RPC privilegiadas requieren pruebas de permisos y búsqueda de bypass
   - Evidencia: AUDITORIA_INVENTARIO_RPC_V91.json: 129 funciones catalogadas para revisión de terceros, sin afirmar autorización sin pruebas
@@ -206,6 +207,7 @@ Avance: 325 controles totales; 10 aprobados; 117 en progreso; 198 pendientes; 0 
   - Evidencia: V169: cinco operaciones UI (solicitar, aprobar, rechazar, ejecutar individual y en lote) ya no muestran toasts ni recargan datos de la identidad anterior; los permisos RLS/RPC requieren ensayo interdiocesano real.
   - Evidencia: V170: contadores estadísticos y errores están condicionados por scopeCurrent/dataCurrent; no se muestran de otra diócesis durante una transición simulada.
   - Evidencia: V171: perfil parroquial ficticio SUSPENDED con is_active=true podía archivar aviso propio; reproducción real reversible y parche SQL comprobado con denegación específica. Falta matriz total de RPC por rol.
+  - Evidencia: V172: prueba PostgreSQL reversible: diócesis extraña no puede leer, crear, actualizar ni eliminar tenure; parroquia titular CRUD válido, admin general lectura y cuenta suspendida bloqueada. No equivale a E2E navegador.
 - [ ] 06.08 · Search path de funciones — EN_PROGRESO
   - Evidencia: AUDITORIA_INVENTARIO_RPC_V91.json: Cribado search_path de funciones privilegiadas; falta verificación de todas sus dependencias
   - Evidencia: V124: ambas RPC destructivas preservaron search_path fijado; revisión de todas las demás sigue pendiente.
@@ -387,6 +389,7 @@ Avance: 325 controles totales; 10 aprobados; 117 en progreso; 198 pendientes; 0 
   - Evidencia: V161: vista institucional priorizable por filtros pending/authorized no oculta expedientes antiguos por volumen de casos cerrados.
   - Evidencia: V162: al cambiar de identidad se descartan respuestas atrasadas de expediente/nota, evitando que datos previos reaparezcan.
   - Evidencia: V170: salida enmascarada para los cuatro contadores y alertas antes del efecto de limpieza, con mismo identityKey conservado.
+  - Evidencia: V172: aislamiento RLS de historial episcopal según parroquia, diócesis y estado activo; falta certificación con dos inicios de sesión Supabase separados.
 - [ ] 12.08 · Archivo único en dos roles — EN_PROGRESO
   - Evidencia: V114: archivo consultado por diocese_id y parish_id sobre misma fila canónica, 52 casos sintéticos; falta prueba UI y RLS real de ambos actores.
   - Evidencia: V118: archivo compartido; panel de conciliación conectado a Centro de Decretos.
@@ -1178,6 +1181,7 @@ Avance: 325 controles totales; 10 aprobados; 117 en progreso; 198 pendientes; 0 
   - Evidencia: V169: auditoría reproducible local con 1237/1237 pruebas sintéticas, 28/28 gates, build y npm audit completo; pruebas de sesión son simuladas, no E2E autenticadas.
   - Evidencia: V170: nueva regresión de 5 pruebas fuente/evidencia; total 1242/1242 sintéticas y 28/28 quality gate.
   - Evidencia: V171: 8 contratos adicionales para archivado parroquial, 1250/1250 sintéticas y 28/28 quality gate.
+  - Evidencia: V172: 1262/1262 pruebas sintéticas, 28/28 gate estricto, 21 SQL rollback de 90 disponibles aprobados; 2 no ejecutados por seguridad y 67 restantes de esta pasada.
 - [ ] 32.04 · Guardar capturas — EN_PROGRESO
   - Evidencia: V114: scripts SQL reversibles y prueba de origen de migraciones versionados; todavía faltan capturas de UI.
   - Evidencia: V119: capturas y hashes SHA-256 por viewport/ruta, guardadas en AUDITORIA_EVIDENCIA_VISUAL_V119 (local, no Git).
@@ -1341,6 +1345,7 @@ Avance: 325 controles totales; 10 aprobados; 117 en progreso; 198 pendientes; 0 
   - Evidencia: V169: Quality Gate estricto ejecutado localmente con 28/28 verificaciones y cero vulnerabilidades reportadas por npm audit en el momento de prueba.
   - Evidencia: V170: build Vite normal, CSS crítico, npm audit producción y completo sin vulnerabilidades reportadas; QA visual Chrome 6/6.
   - Evidencia: V171: compilación Vite, CSS crítico y npm audit prod/completo aprobados; prueba SQL real de V171 sin persistencia QA.
+  - Evidencia: V172: build/CSS/npm audit completos aprobados y 11 verificaciones de integridad de registros existentes con 0 incidencias en los indicadores consultados.
 - [ ] 32.08 · Conteos antes/después — EN_PROGRESO
   - Evidencia: AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: Tras V95: 15 políticas, 0 bypass is_app_admin y 0 residuos en 5 catálogos
   - Evidencia: AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96: mis_datos mantiene 1 fila real, 0 fixtures y 0 admin bypass en 3 políticas
