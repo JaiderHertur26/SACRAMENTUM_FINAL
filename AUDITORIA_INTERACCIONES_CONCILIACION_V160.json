@@ -1,0 +1,92 @@
+{
+  "scope": "Actual reconciliation React component in isolated Chrome, role mocks & fake records, never a production authenticated session",
+  "tests": [
+    {
+      "id": "diocese-authorize",
+      "role": "diocese",
+      "expected": "approve",
+      "passed": true,
+      "history": [
+        {
+          "action": "confirm",
+          "title": "Autorizar conciliación documental"
+        },
+        {
+          "action": "approve",
+          "caseId": "00000000-0000-0000-0000-000000000101"
+        },
+        {
+          "action": "toast",
+          "title": "Autorización registrada"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "id": "diocese-reject",
+      "role": "diocese",
+      "expected": "reject",
+      "passed": true,
+      "history": [
+        {
+          "action": "confirm",
+          "title": "Rechazar solicitud"
+        },
+        {
+          "action": "reject",
+          "caseId": "00000000-0000-0000-0000-000000000101"
+        },
+        {
+          "action": "toast",
+          "title": "Decisión registrada"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "id": "diocese-revoke",
+      "role": "diocese",
+      "expected": "reject",
+      "passed": true,
+      "history": [
+        {
+          "action": "confirm",
+          "title": "Revocar autorización pendiente de ejecución"
+        },
+        {
+          "action": "reject",
+          "caseId": "00000000-0000-0000-0000-000000000102"
+        },
+        {
+          "action": "toast",
+          "title": "Decisión registrada"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "id": "chancery-execute",
+      "role": "chancery",
+      "expected": "execute",
+      "passed": true,
+      "history": [
+        {
+          "action": "confirm",
+          "title": "Ejecutar actuación irreversible"
+        },
+        {
+          "action": "execute",
+          "caseId": "00000000-0000-0000-0000-000000000102"
+        },
+        {
+          "action": "toast",
+          "title": "Actuación registrada"
+        }
+      ],
+      "errors": []
+    }
+  ],
+  "passed": 4,
+  "failed": 0,
+  "runtimeExceptions": []
+}

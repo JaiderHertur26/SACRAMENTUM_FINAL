@@ -594,9 +594,10 @@
         "V155: inventario 139 RPC accesibles; 30 con evidencia parcial y 109 pendientes; 3 funciones con nuevas pruebas de integridad encadenada.",
         "V156: 4 RPC nuevas SECURITY DEFINER verificadas en SQL, 204 totales (195 public/9 private), 143 ejecutables authenticated; 33 evidencias parciales, 110 pendientes.",
         "V157: revisión live catálogo SECURITY DEFINER 206 (197 public + 9 private), 145 EXECUTE authenticated; 35 funciones con evidencia parcial y 110 pendientes.",
-        "V159: 206 RPC SECURITY DEFINER inalteradas; 145 EXECUTE authenticated, 35 pruebas parciales y 110 revisiones pendientes."
+        "V159: 206 RPC SECURITY DEFINER inalteradas; 145 EXECUTE authenticated, 35 pruebas parciales y 110 revisiones pendientes.",
+        "V160: sin cambios SQL ni permisos. Inventario RPC heredado: 206 SECURITY DEFINER, 145 authenticated, 35 con evidencia parcial, 110 por revisar."
       ],
-      "updated_at": "2026-10-23T04:57:03.659Z"
+      "updated_at": "2026-10-23T05:09:51.986Z"
     },
     {
       "id": "06.07",
@@ -633,9 +634,10 @@
         "V155: corrección/reposición de Matrimonio y Exequias requieren conciliación si la supletoria tiene nota marginal independiente activa.",
         "V156: Cancillería solicita/ejecuta, Diócesis aprueba con identidad distinta; Parroquia no puede solicitar, Diócesis no puede ejecutar.",
         "V157: Diócesis puede rechazar/revocar; Cancillería y Parroquia no pueden; no se permite rechazo sin rol diocesano activo ni fuera de jurisdicción.",
-        "V159: los cuatro sacramentos superaron autoridad separada Cancillería/Diócesis en 8 flujos correctivos y de reposición."
+        "V159: los cuatro sacramentos superaron autoridad separada Cancillería/Diócesis en 8 flujos correctivos y de reposición.",
+        "V160: componente real de conciliación mostrado por Chrome con roles simulados independientes Cancillería/Diócesis; controles exclusivos visibles según rol."
       ],
-      "updated_at": "2026-10-23T04:57:03.660Z"
+      "updated_at": "2026-10-23T05:09:51.988Z"
     },
     {
       "id": "06.08",
@@ -1379,9 +1381,10 @@
         "V155: cuando la reversión es rechazada por nota independiente, no cambia ni nota, ni decreto, ni partida supletoria.",
         "V156: conserva instantánea íntegra de nota al solicitar; si nota o decreto cambian antes de autorizar/ejecutar, el procedimiento rechaza.",
         "V157: rechazo y revocación conservan intactos partida, decreto y nota, según prueba SQL post-deploy.",
-        "V159: tras revertir cada corrección, la partida original recuperó estado seated y la supletoria quedó reversed; probados los cuatro sacramentos."
+        "V159: tras revertir cada corrección, la partida original recuperó estado seated y la supletoria quedó reversed; probados los cuatro sacramentos.",
+        "V160: sin acceso a partida desde navegador ficticio; simulación de ejecución posterior documentada sin alterar datos reales."
       ],
-      "updated_at": "2026-10-23T04:57:03.660Z"
+      "updated_at": "2026-10-23T05:09:51.988Z"
     },
     {
       "id": "12.08",
@@ -2304,9 +2307,10 @@
         "V155: concepto de nota marginal independiente sobre supletoria preservado hasta conciliación; no se permite revertir antigua resolución automáticamente.",
         "V156: flujo institucional de conciliación con referencia documental, motivo, autorización diferente y ejecución por Cancillería; integrado a rutas y servicio.",
         "V157: expediente institucional admite rechazo motivado y revocación de autorización no ejecutada con actor, fecha, referencia y fundamento documentados.",
-        "V159: recorrido integral real de solicitud→autorización→conciliación→reversión, para cuatro correcciones y cuatro reposiciones."
+        "V159: recorrido integral real de solicitud→autorización→conciliación→reversión, para cuatro correcciones y cuatro reposiciones.",
+        "V160: nueva QA visual de conciliaciones (6 capturas con CDP + 4 interacciones), únicamente roles y expedientes sintéticos."
       ],
-      "updated_at": "2026-10-23T04:57:03.660Z"
+      "updated_at": "2026-10-23T05:09:51.988Z"
     },
     {
       "id": "20.03",
@@ -2861,9 +2865,10 @@
         "V155: V115 reposiciones y V135 reversión tardía siguen operando tras guardas nuevas en Matrimonios/Exequias.",
         "V156: circuito genera eventos de solicitud, autorización, nota conciliada y ejecución; notificación con categoría decree_reconciliation para evitar duplicación.",
         "V157: auditoría institucional distingue reconciliation_rejected y reconciliation_authorization_revoked sin afectar partidas.",
-        "V159: 24 trazas de expediente y 8 notificaciones de conciliación verificadas dentro de dos transacciones revertidas."
+        "V159: 24 trazas de expediente y 8 notificaciones de conciliación verificadas dentro de dos transacciones revertidas.",
+        "V160: interface expresa estado de pending/authorized/rejected/executed y razones motivadas; Chrome capturó los 4 expedientes por rol en 3 tamaños."
       ],
-      "updated_at": "2026-10-23T04:57:03.660Z"
+      "updated_at": "2026-10-23T05:09:51.988Z"
     },
     {
       "id": "25.01",
@@ -3204,9 +3209,10 @@
         "V155: 4 escenarios de revocación tardía denegada y reversión tras nota conciliada (simulación reversible), más 2 denegaciones de nota a revertidos.",
         "V156: prueba SQL reversible postmigración de solicitud, aprobación y ejecución con 6 negativos, incluida segunda nota activa, sin efectos permanentes.",
         "V157: seis rechazos de roles/estado/longitud/falso perfil, reapertura de expediente tras rechazo, y prohibición de ejecutar revocación.",
-        "V159: los 8 intentos de ejecución previa sin autorización fueron rechazados; la ejecución posterior funcionó."
+        "V159: los 8 intentos de ejecución previa sin autorización fueron rechazados; la ejecución posterior funcionó.",
+        "V160: clicks reales sobre componente React: Diócesis autoriza/rechaza/revoca, Cancillería ejecuta. 4/4 sin errores JS y usando servicios falsos."
       ],
-      "updated_at": "2026-10-23T04:57:03.660Z"
+      "updated_at": "2026-10-23T05:09:51.988Z"
     },
     {
       "id": "27.05",
@@ -3333,9 +3339,10 @@
         "V155: 30 RPC con QA parcial de 139, 109 ejecutables pendientes; concurrency real física aún no certificada.",
         "V156: 143 funciones ejecutables de 204 SECURITY DEFINER; 33 parcialmente revisadas, 110 por revisar; 61 sin ejecución directa requieren cadena de llamadas.",
         "V157: 145 RPC ejecutables autenticadas, 35 parcialmente verificadas y 110 sin QA individual; 61 internas sin ejecución directa siguen pendientes.",
-        "V159: revisión parcial reforzada de request, approve, execute; sin alterar estado de auditoría global."
+        "V159: revisión parcial reforzada de request, approve, execute; sin alterar estado de auditoría global.",
+        "V160: ninguna RPC cambió y pruebas UI no cuentan como cobertura nueva de seguridad de base de datos."
       ],
-      "updated_at": "2026-10-23T04:57:03.660Z"
+      "updated_at": "2026-10-23T05:09:51.988Z"
     },
     {
       "id": "28.01",
@@ -3769,9 +3776,10 @@
         "V155: matrices de corrección/reposición de Matrimonio/Exequias ejecutadas en Supabase con BEGIN/ROLLBACK; sin escrituras QA persistentes.",
         "V156: pruebas reales de roles, autorización distinta, denegación de ejecución previa, rechazo si queda otra nota, idempotencia y rollback.",
         "V157: QA reversible con fixtures matrimoniales, seis negativos, dos motivos registrados, note/decree intactos, BEGIN/ROLLBACK.",
-        "V159: QA SQL real con 8 circuitos de corrección/reposición en los cuatro sacramentos, cero persistencia ficticia."
+        "V159: QA SQL real con 8 circuitos de corrección/reposición en los cuatro sacramentos, cero persistencia ficticia.",
+        "V160: datos ficticios locales aislados; 6 capturas reales con hashes SHA256 en AUDITORIA_EVIDENCIA_VISUAL_V160 y 4 interacciones documentadas."
       ],
-      "updated_at": "2026-10-23T04:57:03.660Z"
+      "updated_at": "2026-10-23T05:09:51.988Z"
     },
     {
       "id": "31.08",
@@ -3829,9 +3837,10 @@
         "V155: verificación tras SQL devuelve 0 decretos QA, 0 matrimonios/exequias qaOnly y 0 notas o auditorías QA-V155.",
         "V156: cero casos de prueba QA persistentes, debido a BEGIN/ROLLBACK; no se ejecutaron actuaciones sobre registros reales.",
         "V157: tras la QA real, 0 decretos, notas, expedientes y auditorías de ficción QA V157 residuales.",
-        "V159: verificación post-ROLLBACK encontró 0 decretos, partidas, notas y expedientes QA-V159 residuales."
+        "V159: verificación post-ROLLBACK encontró 0 decretos, partidas, notas y expedientes QA-V159 residuales.",
+        "V160: ni navegador aislado ni sus expedientes enviaron llamadas a Supabase; no se creó prueba sacramental real adicional."
       ],
-      "updated_at": "2026-10-23T04:57:03.660Z"
+      "updated_at": "2026-10-23T05:09:51.988Z"
     },
     {
       "id": "32.01",
@@ -3921,9 +3930,10 @@
         "V155: 23 pruebas contractuales nuevas, 976/976 total sintéticas y 28/28 checks de Quality Gate.",
         "V156: 29 pruebas contractuales nuevas; total 1005/1005 sintéticas y Quality Gate 28/28.",
         "V157: +24 pruebas contractuales y regresión V156 versionada corregida; total 1029/1029, 28/28 gate.",
-        "V159: 19 nuevos tests sintéticos; total 1057/1057 y gate 28/28."
+        "V159: 19 nuevos tests sintéticos; total 1057/1057 y gate 28/28.",
+        "V160: 15 nuevas pruebas contractuales de evidencias Chrome/CDP; total 1072/1072 y Quality Gate 28/28."
       ],
-      "updated_at": "2026-10-23T04:57:03.660Z"
+      "updated_at": "2026-10-23T05:09:51.988Z"
     },
     {
       "id": "32.04",
@@ -3985,9 +3995,10 @@
         "V154: defecto de nota independiente activa reproducido y corregido; la revisión postmigración detectó Confirmación sin protección y se aplicó V154b.",
         "V155: defecto positivo reproducido y corregido por migración guard_marriage_funeral_independent_notes_v155 en Supabase.",
         "V156: corregido conflicto de unicidad de notificación original cambiando categoría a decree_reconciliation antes de desplegar.",
-        "V157: defecto funcional de solicitudes rechazables pero sin RPC subsanado, migración aplicada y confirmada en Supabase."
+        "V157: defecto funcional de solicitudes rechazables pero sin RPC subsanado, migración aplicada y confirmada en Supabase.",
+        "V160: primer harness visual aislado falló por alias del cliente Supabase y error sintáctico del mock; ambos errores del entorno QA corregidos y 6/6+4/4 finales."
       ],
-      "updated_at": "2026-10-23T03:33:31.891Z"
+      "updated_at": "2026-10-23T05:09:51.988Z"
     },
     {
       "id": "32.06",
@@ -4038,9 +4049,10 @@
         "V155: migración 20261023023443 concordante con supabase_migrations, probada en dry-run y posteriormente sobre funciones reales.",
         "V156: migración 20261023030534 aplicada al backend Supabase, pruebas SQL postmigración correctas; frontend integrado localmente.",
         "V157: migración SQL 20261023032715 y servicio frontend de listado v157 y rechazo implementados; build y QA de API correctos.",
-        "V159: no fueron necesarias nuevas migraciones de backend para el recorrido de 8 circuitos."
+        "V159: no fueron necesarias nuevas migraciones de backend para el recorrido de 8 circuitos.",
+        "V160: componente React real probado en Vite aislado, sin alterar frontend de producción y sin despliegue web."
       ],
-      "updated_at": "2026-10-23T04:57:03.660Z"
+      "updated_at": "2026-10-23T05:09:51.988Z"
     },
     {
       "id": "32.07",
@@ -4094,9 +4106,10 @@
         "V155: build producción y audit de dependencias de producción/desarrollo reportan 0 fallos y 0 vulnerabilidades.",
         "V156: npm build y auditorías de dependencias producción+completo sin hallazgos; Quality Gate completo 28/28.",
         "V157: build Vite + dependencias prod/dev 0 vulnerabilidades reportadas; 28 verificaciones aprobadas.",
-        "V159: Vite build, verificadores heredados, CSS y dependencias npm aprobados; 0 vulnerabilidades reportadas."
+        "V159: Vite build, verificadores heredados, CSS y dependencias npm aprobados; 0 vulnerabilidades reportadas.",
+        "V160: compilación, CSS, verificaciones históricas y npm audit producción/completo PASS con 0 vulnerabilidades reportadas."
       ],
-      "updated_at": "2026-10-23T04:57:03.660Z"
+      "updated_at": "2026-10-23T05:09:51.988Z"
     },
     {
       "id": "32.08",
@@ -4148,9 +4161,10 @@
         "V155: pendiente demo con dos conexiones simultáneas y circuito institucional UI de conciliación; frontend no desplegado.",
         "V156: pruebas SQL reales aprobadas, pero ejecución por personas reales, UI física, concurrencia de conexiones independientes y despliegue frontend todavía no certificados.",
         "V157: Chrome headless aislado confirma pantalla protegida no expuesta a visitante sin sesión. No equivale a QA física de roles autentificados ni concurrencia DB.",
-        "V159: conexiones Postgres distintas observadas, pero sin simultaneidad demostrada; tampoco prueba E2E física con cuentas autenticadas."
+        "V159: conexiones Postgres distintas observadas, pero sin simultaneidad demostrada; tampoco prueba E2E física con cuentas autenticadas.",
+        "V160: las cuentas autenticadas de Cancillería/Diócesis NO se usaron; prueba SQL de dos sesiones mantiene pendiente la certificación de locks simultáneos."
       ],
-      "updated_at": "2026-10-23T04:57:03.661Z"
+      "updated_at": "2026-10-23T05:09:51.988Z"
     },
     {
       "id": "32.09",

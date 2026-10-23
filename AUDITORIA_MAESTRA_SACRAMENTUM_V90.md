@@ -151,6 +151,7 @@ Avance: 325 controles totales; 10 aprobados; 102 en progreso; 213 pendientes; 0 
   - Evidencia: V156: 4 RPC nuevas SECURITY DEFINER verificadas en SQL, 204 totales (195 public/9 private), 143 ejecutables authenticated; 33 evidencias parciales, 110 pendientes.
   - Evidencia: V157: revisión live catálogo SECURITY DEFINER 206 (197 public + 9 private), 145 EXECUTE authenticated; 35 funciones con evidencia parcial y 110 pendientes.
   - Evidencia: V159: 206 RPC SECURITY DEFINER inalteradas; 145 EXECUTE authenticated, 35 pruebas parciales y 110 revisiones pendientes.
+  - Evidencia: V160: sin cambios SQL ni permisos. Inventario RPC heredado: 206 SECURITY DEFINER, 145 authenticated, 35 con evidencia parcial, 110 por revisar.
 - [ ] 06.07 · Todas las RPC privilegiadas denegadas a terceros (inventario dinámico) — EN_PROGRESO
   - Evidencia: AUDITORIA_BASE_SQL_V90.md: Cero vistas públicas; 129 RPC privilegiadas requieren pruebas de permisos y búsqueda de bypass
   - Evidencia: AUDITORIA_INVENTARIO_RPC_V91.json: 129 funciones catalogadas para revisión de terceros, sin afirmar autorización sin pruebas
@@ -180,6 +181,7 @@ Avance: 325 controles totales; 10 aprobados; 102 en progreso; 213 pendientes; 0 
   - Evidencia: V156: Cancillería solicita/ejecuta, Diócesis aprueba con identidad distinta; Parroquia no puede solicitar, Diócesis no puede ejecutar.
   - Evidencia: V157: Diócesis puede rechazar/revocar; Cancillería y Parroquia no pueden; no se permite rechazo sin rol diocesano activo ni fuera de jurisdicción.
   - Evidencia: V159: los cuatro sacramentos superaron autoridad separada Cancillería/Diócesis en 8 flujos correctivos y de reposición.
+  - Evidencia: V160: componente real de conciliación mostrado por Chrome con roles simulados independientes Cancillería/Diócesis; controles exclusivos visibles según rol.
 - [ ] 06.08 · Search path de funciones — EN_PROGRESO
   - Evidencia: AUDITORIA_INVENTARIO_RPC_V91.json: Cribado search_path de funciones privilegiadas; falta verificación de todas sus dependencias
   - Evidencia: V124: ambas RPC destructivas preservaron search_path fijado; revisión de todas las demás sigue pendiente.
@@ -343,6 +345,7 @@ Avance: 325 controles totales; 10 aprobados; 102 en progreso; 213 pendientes; 0 
   - Evidencia: V156: conserva instantánea íntegra de nota al solicitar; si nota o decreto cambian antes de autorizar/ejecutar, el procedimiento rechaza.
   - Evidencia: V157: rechazo y revocación conservan intactos partida, decreto y nota, según prueba SQL post-deploy.
   - Evidencia: V159: tras revertir cada corrección, la partida original recuperó estado seated y la supletoria quedó reversed; probados los cuatro sacramentos.
+  - Evidencia: V160: sin acceso a partida desde navegador ficticio; simulación de ejecución posterior documentada sin alterar datos reales.
 - [ ] 12.08 · Archivo único en dos roles — EN_PROGRESO
   - Evidencia: V114: archivo consultado por diocese_id y parish_id sobre misma fila canónica, 52 casos sintéticos; falta prueba UI y RLS real de ambos actores.
   - Evidencia: V118: archivo compartido; panel de conciliación conectado a Centro de Decretos.
@@ -573,6 +576,7 @@ Avance: 325 controles totales; 10 aprobados; 102 en progreso; 213 pendientes; 0 
   - Evidencia: V156: flujo institucional de conciliación con referencia documental, motivo, autorización diferente y ejecución por Cancillería; integrado a rutas y servicio.
   - Evidencia: V157: expediente institucional admite rechazo motivado y revocación de autorización no ejecutada con actor, fecha, referencia y fundamento documentados.
   - Evidencia: V159: recorrido integral real de solicitud→autorización→conciliación→reversión, para cuatro correcciones y cuatro reposiciones.
+  - Evidencia: V160: nueva QA visual de conciliaciones (6 capturas con CDP + 4 interacciones), únicamente roles y expedientes sintéticos.
 - [ ] 20.03 · Búsqueda diocesana — PENDIENTE
 - [ ] 20.04 · Apellido y nombre — PENDIENTE
 - [ ] 20.05 · Libro Folio Número — PENDIENTE
@@ -667,6 +671,7 @@ Avance: 325 controles totales; 10 aprobados; 102 en progreso; 213 pendientes; 0 
   - Evidencia: V156: circuito genera eventos de solicitud, autorización, nota conciliada y ejecución; notificación con categoría decree_reconciliation para evitar duplicación.
   - Evidencia: V157: auditoría institucional distingue reconciliation_rejected y reconciliation_authorization_revoked sin afectar partidas.
   - Evidencia: V159: 24 trazas de expediente y 8 notificaciones de conciliación verificadas dentro de dos transacciones revertidas.
+  - Evidencia: V160: interface expresa estado de pending/authorized/rejected/executed y razones motivadas; Chrome capturó los 4 expedientes por rol en 3 tamaños.
 
 ### 25. Resiliencia (P0) — 0/11
 
@@ -790,6 +795,7 @@ Avance: 325 controles totales; 10 aprobados; 102 en progreso; 213 pendientes; 0 
   - Evidencia: V156: prueba SQL reversible postmigración de solicitud, aprobación y ejecución con 6 negativos, incluida segunda nota activa, sin efectos permanentes.
   - Evidencia: V157: seis rechazos de roles/estado/longitud/falso perfil, reapertura de expediente tras rechazo, y prohibición de ejecutar revocación.
   - Evidencia: V159: los 8 intentos de ejecución previa sin autorización fueron rechazados; la ejecución posterior funcionó.
+  - Evidencia: V160: clicks reales sobre componente React: Diócesis autoriza/rechaza/revoca, Cancillería ejecuta. 4/4 sin errores JS y usando servicios falsos.
 - [ ] 27.05 · SQL injection — EN_PROGRESO
   - Evidencia: V123: prohibido patrón LIKE libre en limpieza de sombras de Confirmación; parámetro fuente literal sin comodines, >=6 caracteres. Auditoría SQL injection integral aún pendiente.
   - Evidencia: V132: mitigado bypass del cotejo visual mediante RPC directa, no implica certificación judicial de origen.
@@ -845,6 +851,7 @@ Avance: 325 controles totales; 10 aprobados; 102 en progreso; 213 pendientes; 0 
   - Evidencia: V156: 143 funciones ejecutables de 204 SECURITY DEFINER; 33 parcialmente revisadas, 110 por revisar; 61 sin ejecución directa requieren cadena de llamadas.
   - Evidencia: V157: 145 RPC ejecutables autenticadas, 35 parcialmente verificadas y 110 sin QA individual; 61 internas sin ejecución directa siguen pendientes.
   - Evidencia: V159: revisión parcial reforzada de request, approve, execute; sin alterar estado de auditoría global.
+  - Evidencia: V160: ninguna RPC cambió y pruebas UI no cuentan como cobertura nueva de seguridad de base de datos.
 
 ### 28. Privacidad y tratamiento de datos (P0) — 0/9
 
@@ -957,6 +964,7 @@ Avance: 325 controles totales; 10 aprobados; 102 en progreso; 213 pendientes; 0 
   - Evidencia: V156: pruebas reales de roles, autorización distinta, denegación de ejecución previa, rechazo si queda otra nota, idempotencia y rollback.
   - Evidencia: V157: QA reversible con fixtures matrimoniales, seis negativos, dos motivos registrados, note/decree intactos, BEGIN/ROLLBACK.
   - Evidencia: V159: QA SQL real con 8 circuitos de corrección/reposición en los cuatro sacramentos, cero persistencia ficticia.
+  - Evidencia: V160: datos ficticios locales aislados; 6 capturas reales con hashes SHA256 en AUDITORIA_EVIDENCIA_VISUAL_V160 y 4 interacciones documentadas.
 - [ ] 31.08 · Doble click y red caída — PENDIENTE
 - [ ] 31.09 · Impresión/estadística final — PENDIENTE
 - [ ] 31.10 · Destruir sandbox y demostrar cero residuos — EN_PROGRESO
@@ -989,6 +997,7 @@ Avance: 325 controles totales; 10 aprobados; 102 en progreso; 213 pendientes; 0 
   - Evidencia: V156: cero casos de prueba QA persistentes, debido a BEGIN/ROLLBACK; no se ejecutaron actuaciones sobre registros reales.
   - Evidencia: V157: tras la QA real, 0 decretos, notas, expedientes y auditorías de ficción QA V157 residuales.
   - Evidencia: V159: verificación post-ROLLBACK encontró 0 decretos, partidas, notas y expedientes QA-V159 residuales.
+  - Evidencia: V160: ni navegador aislado ni sus expedientes enviaron llamadas a Supabase; no se creó prueba sacramental real adicional.
 
 ### 32. Auditoría forense de cierre (P0) — 1/10
 
@@ -1054,6 +1063,7 @@ Avance: 325 controles totales; 10 aprobados; 102 en progreso; 213 pendientes; 0 
   - Evidencia: V156: 29 pruebas contractuales nuevas; total 1005/1005 sintéticas y Quality Gate 28/28.
   - Evidencia: V157: +24 pruebas contractuales y regresión V156 versionada corregida; total 1029/1029, 28/28 gate.
   - Evidencia: V159: 19 nuevos tests sintéticos; total 1057/1057 y gate 28/28.
+  - Evidencia: V160: 15 nuevas pruebas contractuales de evidencias Chrome/CDP; total 1072/1072 y Quality Gate 28/28.
 - [ ] 32.04 · Guardar capturas — EN_PROGRESO
   - Evidencia: V114: scripts SQL reversibles y prueba de origen de migraciones versionados; todavía faltan capturas de UI.
   - Evidencia: V119: capturas y hashes SHA-256 por viewport/ruta, guardadas en AUDITORIA_EVIDENCIA_VISUAL_V119 (local, no Git).
@@ -1098,6 +1108,7 @@ Avance: 325 controles totales; 10 aprobados; 102 en progreso; 213 pendientes; 0 
   - Evidencia: V155: defecto positivo reproducido y corregido por migración guard_marriage_funeral_independent_notes_v155 en Supabase.
   - Evidencia: V156: corregido conflicto de unicidad de notificación original cambiando categoría a decree_reconciliation antes de desplegar.
   - Evidencia: V157: defecto funcional de solicitudes rechazables pero sin RPC subsanado, migración aplicada y confirmada en Supabase.
+  - Evidencia: V160: primer harness visual aislado falló por alias del cliente Supabase y error sintáctico del mock; ambos errores del entorno QA corregidos y 6/6+4/4 finales.
 - [ ] 32.06 · Corregir y repetir — EN_PROGRESO
   - Evidencia: AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: V95 reprodujo fallo antes y verificó reparación tras aplicar migración
   - Evidencia: AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96 corrige hallazgo de identidad institucional y repite prueba antes/después
@@ -1141,6 +1152,7 @@ Avance: 325 controles totales; 10 aprobados; 102 en progreso; 213 pendientes; 0 
   - Evidencia: V156: migración 20261023030534 aplicada al backend Supabase, pruebas SQL postmigración correctas; frontend integrado localmente.
   - Evidencia: V157: migración SQL 20261023032715 y servicio frontend de listado v157 y rechazo implementados; build y QA de API correctos.
   - Evidencia: V159: no fueron necesarias nuevas migraciones de backend para el recorrido de 8 circuitos.
+  - Evidencia: V160: componente React real probado en Vite aislado, sin alterar frontend de producción y sin despliegue web.
 - [ ] 32.07 · Regresión completa — EN_PROGRESO
   - Evidencia: AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md: Regresión 211 pruebas sintéticas, 23 verificadores, build OK; quedan fallas de dependencias
   - Evidencia: AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: 219 pruebas sintéticas, 23 verificadores y build aprobados; advertencias HIGH de paquetes aún abiertas
@@ -1187,6 +1199,7 @@ Avance: 325 controles totales; 10 aprobados; 102 en progreso; 213 pendientes; 0 
   - Evidencia: V156: npm build y auditorías de dependencias producción+completo sin hallazgos; Quality Gate completo 28/28.
   - Evidencia: V157: build Vite + dependencias prod/dev 0 vulnerabilidades reportadas; 28 verificaciones aprobadas.
   - Evidencia: V159: Vite build, verificadores heredados, CSS y dependencias npm aprobados; 0 vulnerabilidades reportadas.
+  - Evidencia: V160: compilación, CSS, verificaciones históricas y npm audit producción/completo PASS con 0 vulnerabilidades reportadas.
 - [ ] 32.08 · Conteos antes/después — EN_PROGRESO
   - Evidencia: AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: Tras V95: 15 políticas, 0 bypass is_app_admin y 0 residuos en 5 catálogos
   - Evidencia: AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96: mis_datos mantiene 1 fila real, 0 fixtures y 0 admin bypass en 3 políticas
@@ -1231,6 +1244,7 @@ Avance: 325 controles totales; 10 aprobados; 102 en progreso; 213 pendientes; 0 
   - Evidencia: V156: pruebas SQL reales aprobadas, pero ejecución por personas reales, UI física, concurrencia de conexiones independientes y despliegue frontend todavía no certificados.
   - Evidencia: V157: Chrome headless aislado confirma pantalla protegida no expuesta a visitante sin sesión. No equivale a QA física de roles autentificados ni concurrencia DB.
   - Evidencia: V159: conexiones Postgres distintas observadas, pero sin simultaneidad demostrada; tampoco prueba E2E física con cuentas autenticadas.
+  - Evidencia: V160: las cuentas autenticadas de Cancillería/Diócesis NO se usaron; prueba SQL de dos sesiones mantiene pendiente la certificación de locks simultáneos.
 - [x] 32.09 · Confirmar producción Ready — APROBADO
   - Evidencia: AUDITORIA_CIERRE_TECNICO_V91_2026-10-21.md: Despliegue Vercel de código V91 Ready; nota: app no certificada integralmente
 - [ ] 32.10 · Dictamen con limitaciones verificadas — EN_PROGRESO

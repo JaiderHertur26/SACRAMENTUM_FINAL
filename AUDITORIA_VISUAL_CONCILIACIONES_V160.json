@@ -1,0 +1,159 @@
+{
+  "scope": "Real Chrome on isolated local Vite with authentic reconciliation React component, fictitious mock actors/data; NOT production logged-in UI",
+  "generatedAt": "2026-10-23T05:04:00.822Z",
+  "tests": [
+    {
+      "role": "chancery",
+      "size": "mobile",
+      "width": 390,
+      "height": 844,
+      "passed": true,
+      "metrics": {
+        "heading": "Conciliación de notas posteriores",
+        "role": "chancery",
+        "rendered": 2310,
+        "scrollWidth": 390,
+        "formCount": 1,
+        "articles": 4,
+        "buttons": [
+          "Actualizar expedientes",
+          "Buscar notas manuales elegibles del decreto",
+          "Enviar solicitud a Diócesis",
+          "Ejecutar resolución autorizada"
+        ]
+      },
+      "runtimeExceptions": [],
+      "filename": "v160-chancery-mobile.png",
+      "screenshotBytes": 29408,
+      "sha256": "d48f8032abb68b6669b5ef2291a05eaeb445c59d844e2b29593c99626bf57659"
+    },
+    {
+      "role": "chancery",
+      "size": "tablet",
+      "width": 768,
+      "height": 1024,
+      "passed": true,
+      "metrics": {
+        "heading": "Conciliación de notas posteriores",
+        "role": "chancery",
+        "rendered": 2310,
+        "scrollWidth": 753,
+        "formCount": 1,
+        "articles": 4,
+        "buttons": [
+          "Actualizar expedientes",
+          "Buscar notas manuales elegibles del decreto",
+          "Enviar solicitud a Diócesis",
+          "Ejecutar resolución autorizada"
+        ]
+      },
+      "runtimeExceptions": [],
+      "filename": "v160-chancery-tablet.png",
+      "screenshotBytes": 63481,
+      "sha256": "2f254dad65f71341d9b0ec2ec4cbd21e11601fda6fe47d57f9c5814a05579d1a"
+    },
+    {
+      "role": "chancery",
+      "size": "desktop",
+      "width": 1365,
+      "height": 900,
+      "passed": true,
+      "metrics": {
+        "heading": "Conciliación de notas posteriores",
+        "role": "chancery",
+        "rendered": 2310,
+        "scrollWidth": 1350,
+        "formCount": 1,
+        "articles": 4,
+        "buttons": [
+          "Actualizar expedientes",
+          "Buscar notas manuales elegibles del decreto",
+          "Enviar solicitud a Diócesis",
+          "Ejecutar resolución autorizada"
+        ]
+      },
+      "runtimeExceptions": [],
+      "filename": "v160-chancery-desktop.png",
+      "screenshotBytes": 69933,
+      "sha256": "d635b11363f9f32f8e5023df5cab0a3600960691ffe96b4fed741d49ba370252"
+    },
+    {
+      "role": "diocese",
+      "size": "mobile",
+      "width": 390,
+      "height": 844,
+      "passed": true,
+      "metrics": {
+        "heading": "Conciliación de notas posteriores",
+        "role": "diocese",
+        "rendered": 2273,
+        "scrollWidth": 390,
+        "formCount": 0,
+        "articles": 4,
+        "buttons": [
+          "Actualizar expedientes",
+          "Autorizar expediente",
+          "Registrar rechazo",
+          "Revocar autorización"
+        ]
+      },
+      "runtimeExceptions": [],
+      "filename": "v160-diocese-mobile.png",
+      "screenshotBytes": 29333,
+      "sha256": "3e9b7edb180d6d55a8442ba70e44b9a636e0b423312414260840d703cea641bc"
+    },
+    {
+      "role": "diocese",
+      "size": "tablet",
+      "width": 768,
+      "height": 1024,
+      "passed": true,
+      "metrics": {
+        "heading": "Conciliación de notas posteriores",
+        "role": "diocese",
+        "rendered": 2273,
+        "scrollWidth": 753,
+        "formCount": 0,
+        "articles": 4,
+        "buttons": [
+          "Actualizar expedientes",
+          "Autorizar expediente",
+          "Registrar rechazo",
+          "Revocar autorización"
+        ]
+      },
+      "runtimeExceptions": [],
+      "filename": "v160-diocese-tablet.png",
+      "screenshotBytes": 60416,
+      "sha256": "6c63496ae455999dd3b8b3a39fafe359fb38de5425952e5143d1448c93704549"
+    },
+    {
+      "role": "diocese",
+      "size": "desktop",
+      "width": 1365,
+      "height": 900,
+      "passed": true,
+      "metrics": {
+        "heading": "Conciliación de notas posteriores",
+        "role": "diocese",
+        "rendered": 2273,
+        "scrollWidth": 1350,
+        "formCount": 0,
+        "articles": 4,
+        "buttons": [
+          "Actualizar expedientes",
+          "Autorizar expediente",
+          "Registrar rechazo",
+          "Revocar autorización"
+        ]
+      },
+      "runtimeExceptions": [],
+      "filename": "v160-diocese-desktop.png",
+      "screenshotBytes": 61472,
+      "sha256": "710c9a2bac65a20e49ec52999d25fbe23fee2ae040745e90f69af48592c09f66"
+    }
+  ],
+  "passed": 6,
+  "failed": 0,
+  "consoleExceptions": []
+}
