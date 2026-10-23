@@ -10,7 +10,7 @@ La negativa protegía la base de datos de una reversión parcial, pero dejaba am
 
 ## Nueva operación institucional
 
-- Migración `20261023180000_batch_later_note_reconciliation_v168.sql`: nueva RPC `execute_later_note_reconciliation_batch_v168(uuid[])` compatible con el flujo individual existente.
+- Migración `20261023154826_batch_later_note_reconciliation_v168.sql`: nueva RPC `execute_later_note_reconciliation_batch_v168(uuid[])` compatible con el flujo individual existente.
 - Solo rol Cancillería de la diócesis competente; cada expediente debe tener aprobación individual de Diócesis, independiente de quien lo solicitó.
 - Entre 2 y 30 expedientes únicos del **mismo decreto, parroquia y diócesis**.
 - Bloqueos `FOR UPDATE` en casos, decreto y notas; ordenación determinista de casos y notas.
