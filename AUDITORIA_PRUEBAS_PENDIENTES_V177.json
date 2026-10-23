@@ -1,7 +1,9 @@
 {
   "protocol": "V177",
   "date": "2026-10-23",
-  "candidateMigration": "20261023205143_pending_sacraments_active_parish_v177.sql",
+  "installedMigration": "20261023205542_pending_sacraments_active_parish_v177.sql",
+  "postDeploymentSqlQa": "PASS: same 4 positive and 24 negative cases after permanent migration",
+  "installedRpcsVerified": 4,
   "prepatchRepro": "ALL FOUR suspended-account privileged pending sacrament creates succeeded with synthetic accounts in ROLLBACK",
   "qasql": {
     "temporaryMigrationWithinRollback": "PASS",

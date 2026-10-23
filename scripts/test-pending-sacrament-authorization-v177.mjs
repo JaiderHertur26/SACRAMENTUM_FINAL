@@ -1,6 +1,6 @@
 // V177: four pending-sacrament privileged RPCs, fail-closed account and diocese scope.
 import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';
-const mig=fs.readFileSync('supabase/migrations/20261023205143_pending_sacraments_active_parish_v177.sql','utf8');
+const mig=fs.readFileSync('supabase/migrations/20261023205542_pending_sacraments_active_parish_v177.sql','utf8');
 const pre=fs.readFileSync('scripts/qa-rollback-four-pending-prepatch-v177.sql','utf8');
 const post=fs.readFileSync('scripts/qa-rollback-four-pending-authorization-v177.sql','utf8');
 const baptism=fs.readFileSync('scripts/qa-rollback-suspended-parish-pending-repro-v177.sql','utf8');
