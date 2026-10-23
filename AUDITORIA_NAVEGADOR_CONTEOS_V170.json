@@ -1,0 +1,97 @@
+{
+  "scope": "Real React page in Chrome with local fake profiles; no Supabase login, no PostgreSQL concurrency evidence.",
+  "steps": [
+    {
+      "name": "A_COUNTS_FULL",
+      "ok": true,
+      "measure": {
+        "articles": 4,
+        "pending": 1,
+        "authorized": 1,
+        "executed": 1,
+        "rejected": 1,
+        "containsA": true,
+        "containsB": false,
+        "alerts": [],
+        "form": 1
+      }
+    },
+    {
+      "name": "B_IMMEDIATE_FENCING",
+      "ok": true,
+      "measure": {
+        "articles": 0,
+        "pending": -1,
+        "authorized": -1,
+        "executed": -1,
+        "rejected": -1,
+        "containsA": false,
+        "containsB": false,
+        "alerts": [],
+        "form": 0
+      }
+    },
+    {
+      "name": "B_OWN_COUNTS",
+      "ok": true,
+      "measure": {
+        "articles": 1,
+        "pending": 1,
+        "authorized": 0,
+        "executed": 0,
+        "rejected": 0,
+        "containsA": false,
+        "containsB": true,
+        "alerts": [],
+        "form": 0
+      }
+    },
+    {
+      "name": "A_DELAYED_REPLY_NO_LEAK",
+      "ok": true,
+      "measure": {
+        "articles": 1,
+        "pending": 1,
+        "authorized": 0,
+        "executed": 0,
+        "rejected": 0,
+        "containsA": false,
+        "containsB": true,
+        "alerts": [],
+        "form": 0
+      }
+    },
+    {
+      "name": "LOGOUT_FENCES_SENSITIVE_COUNTS",
+      "ok": true,
+      "measure": {
+        "articles": 0,
+        "pending": 0,
+        "authorized": 0,
+        "executed": 0,
+        "rejected": 0,
+        "containsA": false,
+        "containsB": false,
+        "alerts": [],
+        "form": 0
+      }
+    },
+    {
+      "name": "RETURN_A_RESTORES_CORRECT_COUNTS",
+      "ok": true,
+      "measure": {
+        "articles": 4,
+        "pending": 1,
+        "authorized": 1,
+        "executed": 1,
+        "rejected": 1,
+        "containsA": true,
+        "containsB": false,
+        "alerts": [],
+        "form": 1
+      }
+    }
+  ],
+  "exceptions": [],
+  "passed": true
+}

@@ -99,7 +99,8 @@ test('V157 UI gives separate reject and approval controls to diocese',()=>{
 });
 test('V157 UI shows rejection grounds and stats without altering the note',()=>{
  assert.match(ui,/x\.rejection_reason/);
- assert.match(ui,/totals\.rejected/);
+ // V170 security refinement: old raw totals must not be shown across identities.
+ assert.match(ui,/visibleTotals\.rejected/);
  assert.match(ui,/rejectLaterNoteReconciliation/);
  assert.doesNotMatch(ui,/\.from\('marginal_notes'\)[\s\S]*?\.update\(/);
 });

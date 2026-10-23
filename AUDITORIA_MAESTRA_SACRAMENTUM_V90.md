@@ -61,6 +61,7 @@ Avance: 325 controles totales; 10 aprobados; 117 en progreso; 198 pendientes; 0 
 - [ ] 03.06 · Reactivación de usuario — PENDIENTE
 - [ ] 03.07 · Sesiones simultáneas — PENDIENTE
   - Evidencia: V169: 20 pruebas Node sobre handlers reales de conciliación simulan cambio de identidad antes/durante llamadas y suprimen respuestas obsoletas. NO son dos sesiones reales autenticadas ni prueban solapamiento.
+  - Evidencia: V170: Chrome aislado 6/6 A->B->logout->A comprobó que la vista de conciliaciones oculta inmediatamente contadores y expedientes; identidades simuladas, no dos cuentas Supabase reales.
 - [ ] 03.08 · Restauración tras refresh — PENDIENTE
 - [ ] 03.09 · Recuperación de contraseña — PENDIENTE
 - [ ] 03.10 · No claves privilegiadas en frontend — PENDIENTE
@@ -202,6 +203,7 @@ Avance: 325 controles totales; 10 aprobados; 117 en progreso; 198 pendientes; 0 
   - Evidencia: V165: nueve casos denegados por roles/propiedad/validación, incluidos lectura, escritura, recibo de lectura y retiro de mensaje de tercero.
   - Evidencia: V166: negative auth: actual Parish member of other room and active Diocese user outside target room both denied for historical chat.
   - Evidencia: V169: cinco operaciones UI (solicitar, aprobar, rechazar, ejecutar individual y en lote) ya no muestran toasts ni recargan datos de la identidad anterior; los permisos RLS/RPC requieren ensayo interdiocesano real.
+  - Evidencia: V170: contadores estadísticos y errores están condicionados por scopeCurrent/dataCurrent; no se muestran de otra diócesis durante una transición simulada.
 - [ ] 06.08 · Search path de funciones — EN_PROGRESO
   - Evidencia: AUDITORIA_INVENTARIO_RPC_V91.json: Cribado search_path de funciones privilegiadas; falta verificación de todas sus dependencias
   - Evidencia: V124: ambas RPC destructivas preservaron search_path fijado; revisión de todas las demás sigue pendiente.
@@ -216,6 +218,7 @@ Avance: 325 controles totales; 10 aprobados; 117 en progreso; 198 pendientes; 0 
   - Evidencia: V161: listado y contadores grant EXECUTE únicamente authenticated, sin abrir lectura directa de tabla ni permisos a anon.
   - Evidencia: V162: campo identityKey incluye user.id, rol, dioceseId y chanceryId; datos sólo visibles si owner y datos recibidos coinciden con identidad actual.
   - Evidencia: V163: build prod gate comprueba repo JaiderHertur26/SACRAMENTUM_FINAL, rama main y Git SHA íntegro antes de permitir construir.
+  - Evidencia: V170: 6/6 transiciones React/Chrome en entorno sin conexión Supabase, incluidos 900 ms de respuesta antigua y logout. Backend no auditado adicionalmente.
 - [ ] 06.09 · Filtración por GraphQL — EN_PROGRESO
   - Evidencia: V120: Supabase Advisor informa 64 objetos visibles en GraphQL a authenticated. Acceso a esquema NO equivale a fuga de filas; revisión exhaustiva pendiente.
   - Evidencia: V121: 64 advertencias GraphQL para objetos authenticated según Security Advisor; RLS V121 elimina filtración concreta por artefactos y archivos, no todas las advertencias.
@@ -381,6 +384,7 @@ Avance: 325 controles totales; 10 aprobados; 117 en progreso; 198 pendientes; 0 
   - Evidencia: V160: sin acceso a partida desde navegador ficticio; simulación de ejecución posterior documentada sin alterar datos reales.
   - Evidencia: V161: vista institucional priorizable por filtros pending/authorized no oculta expedientes antiguos por volumen de casos cerrados.
   - Evidencia: V162: al cambiar de identidad se descartan respuestas atrasadas de expediente/nota, evitando que datos previos reaparezcan.
+  - Evidencia: V170: salida enmascarada para los cuatro contadores y alertas antes del efecto de limpieza, con mismo identityKey conservado.
 - [ ] 12.08 · Archivo único en dos roles — EN_PROGRESO
   - Evidencia: V114: archivo consultado por diocese_id y parish_id sobre misma fila canónica, 52 casos sintéticos; falta prueba UI y RLS real de ambos actores.
   - Evidencia: V118: archivo compartido; panel de conciliación conectado a Centro de Decretos.
@@ -639,6 +643,7 @@ Avance: 325 controles totales; 10 aprobados; 117 en progreso; 198 pendientes; 0 
   - Evidencia: V161: expediente se recupera por filtro y paginación keyset de fecha+UUID; 315 rechazados no hacen desaparecer el pendiente antiguo.
   - Evidencia: V162: cierre de sesión oculta instantáneamente artículos y formulario; nueva sesión recupera sólo su jurisdicción ficticia.
   - Evidencia: V163: despliegue controlado desde GitHub PR #4 con CI y Preview aprobados previo a merge en main.
+  - Evidencia: V170: cierre de sesión simulado oculta expedientes, formulario, los cuatro contadores y avisos; la sesión A restaurada recupera solo información ficticia propia.
 - [ ] 20.03 · Búsqueda diocesana — PENDIENTE
 - [ ] 20.04 · Apellido y nombre — PENDIENTE
 - [ ] 20.05 · Libro Folio Número — PENDIENTE
@@ -737,6 +742,7 @@ Avance: 325 controles totales; 10 aprobados; 117 en progreso; 198 pendientes; 0 
   - Evidencia: V161: los contadores de todos/pendientes/autorizados/ejecutados/rechazados provienen del universo jurisdiccional, no de 50 filas visibles.
   - Evidencia: V162: prueba Chrome 6/6 en simulación de dos identidades; auditoría de transiciones y evidencia PNG registradas.
   - Evidencia: V163: trazabilidad de publicación con SHA exacto, GitHub workflow run 39963410615, deployment URL y tres marcas horarias del gate.
+  - Evidencia: V170: reconstruido laboratorio React V160 con mock de RPC batch V168 faltante, compilación de fixture aislado y Chrome 6/6.
 
 ### 25. Resiliencia (P0) — 0/11
 
@@ -1168,6 +1174,7 @@ Avance: 325 controles totales; 10 aprobados; 117 en progreso; 198 pendientes; 0 
   - Evidencia: V167: 19 contratos nuevos, 1195/1195 sintéticas, 28/28 Quality Gate, compilación y npm audit sin hallazgos.
   - Evidencia: V168: 22 tests contractuales nuevos, 1217/1217 tests totales (GitHub CI #39982084560 y puerta local), 28/28 verificadores.
   - Evidencia: V169: auditoría reproducible local con 1237/1237 pruebas sintéticas, 28/28 gates, build y npm audit completo; pruebas de sesión son simuladas, no E2E autenticadas.
+  - Evidencia: V170: nueva regresión de 5 pruebas fuente/evidencia; total 1242/1242 sintéticas y 28/28 quality gate.
 - [ ] 32.04 · Guardar capturas — EN_PROGRESO
   - Evidencia: V114: scripts SQL reversibles y prueba de origen de migraciones versionados; todavía faltan capturas de UI.
   - Evidencia: V119: capturas y hashes SHA-256 por viewport/ruta, guardadas en AUDITORIA_EVIDENCIA_VISUAL_V119 (local, no Git).
@@ -1329,6 +1336,7 @@ Avance: 325 controles totales; 10 aprobados; 117 en progreso; 198 pendientes; 0 
   - Evidencia: V167: Quality Gate de tests, Vite, CSS y npm audit aprobado, sin vulnerabilidades reportadas.
   - Evidencia: V168: 1217/1217 test sintéticos, 28/28 Quality Gate, CSS, Vite build y npm audit prod+completo sin vulnerabilidades reportadas.
   - Evidencia: V169: Quality Gate estricto ejecutado localmente con 28/28 verificaciones y cero vulnerabilidades reportadas por npm audit en el momento de prueba.
+  - Evidencia: V170: build Vite normal, CSS crítico, npm audit producción y completo sin vulnerabilidades reportadas; QA visual Chrome 6/6.
 - [ ] 32.08 · Conteos antes/después — EN_PROGRESO
   - Evidencia: AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: Tras V95: 15 políticas, 0 bypass is_app_admin y 0 residuos en 5 catálogos
   - Evidencia: AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96: mis_datos mantiene 1 fila real, 0 fixtures y 0 admin bypass en 3 políticas
