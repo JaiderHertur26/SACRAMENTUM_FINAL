@@ -1,0 +1,1174 @@
+{
+  "protocol": "V174",
+  "generatedAt": "2026-10-23",
+  "available": 97,
+  "validReversible": 97,
+  "baseline": 22,
+  "unqualified": [],
+  "inventory": [
+    {
+      "file": "qa-rollback-auto-civil-registry-print-v141.sql",
+      "reversible": true,
+      "historicBaseline": false,
+      "bytes": 3070,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-backlog-starvation-baseline-v161.sql",
+      "reversible": true,
+      "historicBaseline": true,
+      "bytes": 3421,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-baptism-confirmation-integrity-v153.sql",
+      "reversible": true,
+      "historicBaseline": false,
+      "bytes": 13223,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-baptism-confirmation-v115.sql",
+      "reversible": true,
+      "historicBaseline": false,
+      "bytes": 9854,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-baptism-duplicate-exact-audit-v138.sql",
+      "reversible": true,
+      "historicBaseline": false,
+      "bytes": 8967,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-baptism-missing-exact-audit-v138.sql",
+      "reversible": true,
+      "historicBaseline": false,
+      "bytes": 8397,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-bishop-tenure-cross-diocese-repro-v172.sql",
+      "reversible": true,
+      "historicBaseline": true,
+      "bytes": 2030,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-bishop-tenure-jurisdiction-v172.sql",
+      "reversible": true,
+      "historicBaseline": false,
+      "bytes": 5040,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-block-legacy-anulacion-v126.sql",
+      "reversible": true,
+      "historicBaseline": false,
+      "bytes": 2289,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-cancelled-notice-archive-baseline-v139.sql",
+      "reversible": true,
+      "historicBaseline": true,
+      "bytes": 1141,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-chancery-picker-rls-v158.sql",
+      "reversible": true,
+      "historicBaseline": false,
+      "bytes": 3510,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-chat-full-lifecycle-v165.sql",
+      "reversible": true,
+      "historicBaseline": false,
+      "bytes": 10089,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-chat-keyset-complete-v166.sql",
+      "reversible": true,
+      "historicBaseline": false,
+      "bytes": 5414,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-chat-role-rls-v164.sql",
+      "reversible": true,
+      "historicBaseline": false,
+      "bytes": 3754,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-confirmation-audit-number-collision-baseline-v138.sql",
+      "reversible": true,
+      "historicBaseline": true,
+      "bytes": 11099,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-confirmation-duplicate-exact-audit-v138.sql",
+      "reversible": true,
+      "historicBaseline": false,
+      "bytes": 9006,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-confirmation-missing-exact-audit-v138.sql",
+      "reversible": true,
+      "historicBaseline": false,
+      "bytes": 8431,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-confirmation-shadow-safety-v123.sql",
+      "reversible": true,
+      "historicBaseline": false,
+      "bytes": 1820,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-corrections-reconciliation-all-sacraments-v159.sql",
+      "reversible": true,
+      "historicBaseline": false,
+      "bytes": 10106,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-corrections-v115.sql",
+      "reversible": true,
+      "historicBaseline": false,
+      "bytes": 4568,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-cross-diocese-rls-v120.sql",
+      "reversible": true,
+      "historicBaseline": false,
+      "bytes": 4558,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-cross-parish-notes-receipts-v133.sql",
+      "reversible": true,
+      "historicBaseline": false,
+      "bytes": 2561,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-decree-concept-trace-v152.sql",
+      "reversible": true,
+      "historicBaseline": false,
+      "bytes": 4958,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-decree-role-matrix-v115.sql",
+      "reversible": true,
+      "historicBaseline": false,
+      "bytes": 2931,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-destructive-grants-v122.sql",
+      "reversible": true,
+      "historicBaseline": false,
+      "bytes": 1008,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-digital-notification-unlinked-baseline-v135.sql",
+      "reversible": true,
+      "historicBaseline": true,
+      "bytes": 1996,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-documentary-decree-lifecycle-v152.sql",
+      "reversible": true,
+      "historicBaseline": false,
+      "bytes": 6917,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-documentary-v114.sql",
+      "reversible": true,
+      "historicBaseline": false,
+      "bytes": 5575,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-fail-closed-parish-access-v150.sql",
+      "reversible": true,
+      "historicBaseline": false,
+      "bytes": 2019,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-historical-adversarial-v118.sql",
+      "reversible": true,
+      "historicBaseline": false,
+      "bytes": 5849,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-historical-baptism-active-parish-v173.sql",
+      "reversible": true,
+      "historicBaseline": false,
+      "bytes": 5555,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-historical-baptism-suspended-repro-v173.sql",
+      "reversible": true,
+      "historicBaseline": true,
+      "bytes": 2420,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-historical-decrees-v118.sql",
+      "reversible": true,
+      "historicBaseline": false,
+      "bytes": 8750,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-historical-four-workflows-v173.sql",
+      "reversible": true,
+      "historicBaseline": false,
+      "bytes": 4702,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-historical-print-lineage-v145.sql",
+      "reversible": true,
+      "historicBaseline": false,
+      "bytes": 2551,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-independent-marginal-decree-guards-v154.sql",
+      "reversible": true,
+      "historicBaseline": false,
+      "bytes": 13086,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-late-manual-notes-baseline-v154.sql",
+      "reversible": true,
+      "historicBaseline": true,
+      "bytes": 10352,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-later-active-decree-baptism-confirmation-v137.sql",
+      "reversible": true,
+      "historicBaseline": false,
+      "bytes": 9770,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-later-note-rejection-v157.sql",
+      "reversible": true,
+      "historicBaseline": false,
+      "bytes": 9122,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-legacy-materializer-roles-v151.sql",
+      "reversible": true,
+      "historicBaseline": false,
+      "bytes": 3539,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-malformed-historical-lineage-postfix-v146.sql",
+      "reversible": true,
+      "historicBaseline": false,
+      "bytes": 2708,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-malformed-legacy-print-baseline-v146.sql",
+      "reversible": true,
+      "historicBaseline": true,
+      "bytes": 1281,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-mandatory-note-print-baseline-v140.sql",
+      "reversible": true,
+      "historicBaseline": true,
+      "bytes": 1424,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-manual-note-admin-role-v133.sql",
+      "reversible": true,
+      "historicBaseline": false,
+      "bytes": 1050,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-marginal-note-notification-matrix-v133.sql",
+      "reversible": true,
+      "historicBaseline": false,
+      "bytes": 3599,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-marriage-funeral-corrections-late-notes-v155.sql",
+      "reversible": true,
+      "historicBaseline": false,
+      "bytes": 5128,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-marriage-funeral-late-note-baseline-v155.sql",
+      "reversible": true,
+      "historicBaseline": true,
+      "bytes": 6289,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-marriage-funeral-repositions-late-notes-v155.sql",
+      "reversible": true,
+      "historicBaseline": false,
+      "bytes": 7646,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-matrimonial-notes-global-scope-v125.sql",
+      "reversible": true,
+      "historicBaseline": false,
+      "bytes": 1700,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-matrimonial-notes-parish-authority-v125.sql",
+      "reversible": true,
+      "historicBaseline": false,
+      "bytes": 3313,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-monotonic-version-all-sacraments-v148.sql",
+      "reversible": true,
+      "historicBaseline": false,
+      "bytes": 4332,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-multinote-batch-v168.sql",
+      "reversible": true,
+      "historicBaseline": false,
+      "bytes": 7073,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-multinote-four-sacraments-v168.sql",
+      "reversible": true,
+      "historicBaseline": false,
+      "bytes": 10502,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-note-reconciliation-grants-v156.sql",
+      "reversible": true,
+      "historicBaseline": false,
+      "bytes": 1517,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-notice-status-transitions-v139.sql",
+      "reversible": true,
+      "historicBaseline": false,
+      "bytes": 6259,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-notification-archive-active-profile-v171.sql",
+      "reversible": true,
+      "historicBaseline": false,
+      "bytes": 3748,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-notification-archive-status-repro-v171.sql",
+      "reversible": true,
+      "historicBaseline": true,
+      "bytes": 2701,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-notification-read-spoof-rejected-v174.sql",
+      "reversible": true,
+      "historicBaseline": false,
+      "bytes": 1566,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-notification-read-spoof-v133.sql",
+      "reversible": true,
+      "historicBaseline": true,
+      "bytes": 1151,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-nullity-dual-authorization-v128.sql",
+      "reversible": true,
+      "historicBaseline": false,
+      "bytes": 8349,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-nullity-preflight-cross-diocese-v130.sql",
+      "reversible": true,
+      "historicBaseline": false,
+      "bytes": 3217,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-nullity-preflight-read-scope-v130.sql",
+      "reversible": true,
+      "historicBaseline": false,
+      "bytes": 1422,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-nullity-without-preauthorization-rejected-v174.sql",
+      "reversible": true,
+      "historicBaseline": false,
+      "bytes": 1755,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-nullity-without-preauthorization-v128.sql",
+      "reversible": true,
+      "historicBaseline": true,
+      "bytes": 1210,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-physical-confirmation-source-v134.sql",
+      "reversible": true,
+      "historicBaseline": false,
+      "bytes": 2391,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-physical-notification-cancelled-baseline-v134.sql",
+      "reversible": true,
+      "historicBaseline": true,
+      "bytes": 1693,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-physical-notification-scope-v134.sql",
+      "reversible": true,
+      "historicBaseline": false,
+      "bytes": 2806,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-physical-notification-source-status-v134.sql",
+      "reversible": true,
+      "historicBaseline": false,
+      "bytes": 3933,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-physical-provenance-legitimate-v121.sql",
+      "reversible": true,
+      "historicBaseline": false,
+      "bytes": 3374,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-physical-provenance-rls-v121.sql",
+      "reversible": true,
+      "historicBaseline": false,
+      "bytes": 2672,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-print-optimistic-coordinates-v143.sql",
+      "reversible": true,
+      "historicBaseline": false,
+      "bytes": 6596,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-print-receipt-authenticated-v142.sql",
+      "reversible": true,
+      "historicBaseline": false,
+      "bytes": 3889,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-print-request-lineage-v144.sql",
+      "reversible": true,
+      "historicBaseline": false,
+      "bytes": 3999,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-print-reversed-decree-notes-v140.sql",
+      "reversible": true,
+      "historicBaseline": false,
+      "bytes": 3482,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-processed-notice-read-baseline-v139.sql",
+      "reversible": true,
+      "historicBaseline": true,
+      "bytes": 1049,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-reconciliation-all-sacraments-v159.sql",
+      "reversible": true,
+      "historicBaseline": false,
+      "bytes": 9120,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-reconciliation-conflicting-transitions-v167.sql",
+      "reversible": true,
+      "historicBaseline": false,
+      "bytes": 11304,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-reconciliation-keyset-v161.sql",
+      "reversible": true,
+      "historicBaseline": false,
+      "bytes": 5531,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-registry-print-four-sacraments-v141.sql",
+      "reversible": true,
+      "historicBaseline": false,
+      "bytes": 3258,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-registry-print-integrity-v140.sql",
+      "reversible": true,
+      "historicBaseline": false,
+      "bytes": 7294,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-repositions-v115.sql",
+      "reversible": true,
+      "historicBaseline": false,
+      "bytes": 5719,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-reversed-marriage-funeral-notes-v155.sql",
+      "reversible": true,
+      "historicBaseline": false,
+      "bytes": 1712,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-reversed-record-manual-note-v154.sql",
+      "reversible": true,
+      "historicBaseline": false,
+      "bytes": 1735,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-shadow-positive-and-negative-v123.sql",
+      "reversible": true,
+      "historicBaseline": false,
+      "bytes": 4109,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-shadow-role-matrix-v124.sql",
+      "reversible": true,
+      "historicBaseline": false,
+      "bytes": 2338,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-stale-baptism-confirmation-baseline-v136.sql",
+      "reversible": true,
+      "historicBaseline": true,
+      "bytes": 8500,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-stale-baptism-confirmation-original-v136.sql",
+      "reversible": true,
+      "historicBaseline": false,
+      "bytes": 9625,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-stale-baptism-confirmation-postfix-v136.sql",
+      "reversible": true,
+      "historicBaseline": false,
+      "bytes": 9608,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-stale-correction-reversal-baseline-v135.sql",
+      "reversible": true,
+      "historicBaseline": true,
+      "bytes": 2812,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-stale-correction-reversal-postfix-v135.sql",
+      "reversible": true,
+      "historicBaseline": false,
+      "bytes": 3272,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-stale-original-correction-v135.sql",
+      "reversible": true,
+      "historicBaseline": true,
+      "bytes": 3183,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-stale-print-coordinates-baseline-v143.sql",
+      "reversible": true,
+      "historicBaseline": true,
+      "bytes": 1119,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-stale-record-version-baseline-v148.sql",
+      "reversible": true,
+      "historicBaseline": true,
+      "bytes": 1409,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-stale-reposition-reversal-v135.sql",
+      "reversible": true,
+      "historicBaseline": true,
+      "bytes": 5250,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-tribunal-v114.sql",
+      "reversible": true,
+      "historicBaseline": false,
+      "bytes": 5341,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-two-later-notes-repro-v168.sql",
+      "reversible": true,
+      "historicBaseline": true,
+      "bytes": 4791,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    },
+    {
+      "file": "qa-rollback-valid-parish-roles-v150.sql",
+      "reversible": true,
+      "historicBaseline": false,
+      "bytes": 2969,
+      "transactions": {
+        "begins": 1,
+        "rollbacks": 1,
+        "commits": 0
+      },
+      "externalOperations": false
+    }
+  ]
+}
