@@ -49,8 +49,7 @@ const initials = (name = '') => String(name)
   .join('')
   .toUpperCase() || 'SC';
 
-const CommunicationsPage = () => {
-  const { profile, user } = useAuth();
+const CommunicationsPageSession = ({ profile, user }) => {
   const myProfileId = profile?.id || null;
 
   const [rooms, setRooms] = useState([]);
@@ -130,7 +129,8 @@ const CommunicationsPage = () => {
     const connect = async () => {
       try {
         await loadMessages(selectedRoomId);
-        unsubscribe = await subscribeToChatRoom(
+        if (cancelled) return;
+        const stopSubscription = await subscribeToChatRoom(
           selectedRoomId,
           async () => {
             if (cancelled) return;
@@ -138,6 +138,11 @@ const CommunicationsPage = () => {
           },
           (status) => !cancelled && setConnectionStatus(status)
         );
+        if (cancelled) {
+          stopSubscription?.();
+          return;
+        }
+        unsubscribe = stopSubscription;
       } catch (e) {
         if (!cancelled) setError(e?.message || 'No fue posible abrir la conversación.');
       }
@@ -485,6 +490,34 @@ const CommunicationsPage = () => {
       )}
     </DashboardLayout>
   );
+};
+
+const CommunicationsPage = () => {
+  const { profile, user } = useAuth();
+  const authId = user?.id || user?.auth_user_id || '';
+  const role = String(profile?.role || user?.role || '').toLowerCase();
+  const allowed = ['parish', 'chancery', 'diocese'].includes(role);
+  const statusActive = String(profile?.status || 'ACTIVE').toUpperCase() === 'ACTIVE';
+  const scopeKey = [authId,profile?.id || '',role,
+    profile?.diocese_id || user?.dioceseId || user?.diocese_id || '',
+    profile?.parish_id || user?.parishId || user?.parish_id || '',
+    profile?.chancery_id || user?.chanceryId || user?.chancery_id || ''
+  ].join(':');
+
+  // A keyed subtree is completely unmounted on identity/jurisdiction change:
+  // neither chat messages nor drafts, room lists or realtime subscriptions
+  // can be reused by the next ecclesiastical account.
+  if (!authId || !profile?.id || !allowed || profile?.is_active === false || !statusActive) {
+    return <DashboardLayout>
+      <div className="max-w-3xl mx-auto bg-white border border-slate-200 rounded-3xl p-10 text-center shadow-sm">
+        <ShieldCheck className="w-12 h-12 mx-auto text-[#4B7BA7] mb-4" />
+        <h1 className="text-2xl font-black text-slate-900">Chat Diocesano Institucional</h1>
+        <p className="mt-3 text-slate-500">Este canal requiere una sesión institucional activa y autorizada.</p>
+      </div>
+    </DashboardLayout>;
+  }
+
+  return <CommunicationsPageSession key={scopeKey} profile={profile} user={user} />;
 };
 
 export default CommunicationsPage;

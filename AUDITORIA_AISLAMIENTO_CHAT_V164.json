@@ -1,0 +1,126 @@
+{
+  "scenario": "Real Chat React component with local mock users and two fictitious dioceses; no Supabase client connected.",
+  "steps": [
+    {
+      "name": "A_ONLY",
+      "passed": true,
+      "observation": {
+        "aRoom": true,
+        "bRoom": false,
+        "aMessage": true,
+        "bMessage": false,
+        "draft": "",
+        "subscribed": 1,
+        "unsubscribed": 0,
+        "active": 1,
+        "denied": false,
+        "heading": true,
+        "bodyLength": 419
+      }
+    },
+    {
+      "name": "B_IMMEDIATE_NO_A",
+      "passed": true,
+      "observation": {
+        "aRoom": false,
+        "bRoom": true,
+        "aMessage": false,
+        "bMessage": false,
+        "draft": "",
+        "subscribed": 1,
+        "unsubscribed": 1,
+        "active": 0,
+        "denied": false,
+        "heading": true,
+        "bodyLength": 366
+      }
+    },
+    {
+      "name": "B_ONLY",
+      "passed": true,
+      "observation": {
+        "aRoom": false,
+        "bRoom": true,
+        "aMessage": false,
+        "bMessage": true,
+        "draft": "",
+        "subscribed": 2,
+        "unsubscribed": 1,
+        "active": 1,
+        "denied": false,
+        "heading": true,
+        "bodyLength": 419
+      }
+    },
+    {
+      "name": "A_LATE_RESPONSE_EXCLUDED",
+      "passed": true,
+      "observation": {
+        "aRoom": false,
+        "bRoom": true,
+        "aMessage": false,
+        "bMessage": true,
+        "draft": "",
+        "subscribed": 2,
+        "unsubscribed": 1,
+        "active": 1,
+        "denied": false,
+        "heading": true,
+        "bodyLength": 419
+      }
+    },
+    {
+      "name": "LOGOUT_NO_MESSAGES",
+      "passed": true,
+      "observation": {
+        "aRoom": false,
+        "bRoom": false,
+        "aMessage": false,
+        "bMessage": false,
+        "draft": "",
+        "subscribed": 2,
+        "unsubscribed": 2,
+        "active": 0,
+        "denied": true,
+        "heading": true,
+        "bodyLength": 163
+      }
+    },
+    {
+      "name": "LOGOUT_UNSUBSCRIBED",
+      "passed": true,
+      "observation": {
+        "aRoom": false,
+        "bRoom": false,
+        "aMessage": false,
+        "bMessage": false,
+        "draft": "",
+        "subscribed": 2,
+        "unsubscribed": 2,
+        "active": 0,
+        "denied": true,
+        "heading": true,
+        "bodyLength": 163
+      }
+    },
+    {
+      "name": "A_SIGNIN_NO_CROSS_DATA_OR_DRAFT",
+      "passed": true,
+      "observation": {
+        "aRoom": true,
+        "bRoom": false,
+        "aMessage": true,
+        "bMessage": false,
+        "draft": "",
+        "subscribed": 3,
+        "unsubscribed": 2,
+        "active": 1,
+        "denied": false,
+        "heading": true,
+        "bodyLength": 419
+      }
+    }
+  ],
+  "errors": [],
+  "passed": true
+}
