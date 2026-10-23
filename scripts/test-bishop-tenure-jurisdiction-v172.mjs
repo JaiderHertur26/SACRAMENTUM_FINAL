@@ -2,7 +2,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-const migration=fs.readFileSync('supabase/migrations/20261023185600_isolate_bishop_tenures_by_diocese_v172.sql','utf8');
+const migration=fs.readFileSync('supabase/migrations/20261023190421_isolate_bishop_tenures_by_diocese_v172.sql','utf8');
 const post=fs.readFileSync('scripts/qa-rollback-bishop-tenure-jurisdiction-v172.sql','utf8');
 const pre=fs.readFileSync('scripts/qa-rollback-bishop-tenure-cross-diocese-repro-v172.sql','utf8');
 for(const op of ['select','insert','update','delete']){

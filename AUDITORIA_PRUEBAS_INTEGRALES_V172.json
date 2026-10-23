@@ -8,7 +8,12 @@
   "sqlRollbackScriptsAvailable": 92,
   "sqlRollbackPassed": 21,
   "sqlRollbackBlockedBySafety": 2,
-  "sqlRollbackNotExecutedThisRun": 69,
+  "sqlRollbackVerifiedSeparately": 2,
+  "sqlRollbackVerifiedSeparatelyFiles": [
+    "qa-rollback-bishop-tenure-cross-diocese-repro-v172.sql",
+    "qa-rollback-bishop-tenure-jurisdiction-v172.sql"
+  ],
+  "sqlRollbackNotExecutedThisRun": 67,
   "sqlRollbackPassedFiles": [
     "qa-rollback-multinote-four-sacraments-v168.sql",
     "qa-rollback-chat-full-lifecycle-v165.sql",
@@ -40,6 +45,8 @@
   "bishopTenure": {
     "originalPolicyExploit": "Reproduced with synthetic diocese A and synthetic episcopal tenure tied to a parish of another diocese; read and delete accepted under original RLS, rolled back.",
     "temporaryMigrationQA": "Four cross-diocese actions denied; own parish CRUD, admin general visibility, and suspended profile denial verified in reversible transaction.",
+    "installedMigration": "20261023190421_isolate_bishop_tenures_by_diocese_v172",
+    "postDeploymentReversibleQA": "PASS: the same jurisdiction test ran successfully again after installing the migration permanently.",
     "productProofLimit": "Not two independent real authenticated browser sessions. Does not prove SQL connection overlap."
   },
   "readOnlyConsistency": {

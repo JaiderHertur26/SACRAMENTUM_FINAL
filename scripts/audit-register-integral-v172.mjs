@@ -35,8 +35,9 @@ const blocked=[
  'qa-rollback-registry-print-integrity-v140.sql'
 ];
 const all=fs.readdirSync('scripts').filter(x=>/^qa-rollback-.*\.sql$/.test(x));
+const separatelyVerified=['qa-rollback-bishop-tenure-cross-diocese-repro-v172.sql','qa-rollback-bishop-tenure-jurisdiction-v172.sql'];
 if(new Set([...passed,...blocked]).size!==23||!passed.every(x=>all.includes(x))||
- !blocked.every(x=>all.includes(x))) throw Error('SQL evidence inventory drift');
+ !blocked.every(x=>all.includes(x))||!separatelyVerified.every(x=>all.includes(x))) throw Error('SQL evidence inventory drift');
 const ledger={
  protocol:'V172',
  date:'2026-10-23',
@@ -46,13 +47,17 @@ const ledger={
  sqlRollbackScriptsAvailable:all.length,
  sqlRollbackPassed:passed.length,
  sqlRollbackBlockedBySafety:blocked.length,
- sqlRollbackNotExecutedThisRun:all.length-passed.length-blocked.length,
+ sqlRollbackVerifiedSeparately:separatelyVerified.length,
+ sqlRollbackVerifiedSeparatelyFiles:separatelyVerified,
+ sqlRollbackNotExecutedThisRun:all.length-passed.length-blocked.length-separatelyVerified.length,
  sqlRollbackPassedFiles:passed,
  sqlRollbackBlockedFiles:blocked,
  sqlRollbackFailuresConfirmed:0,
  bishopTenure:{
   originalPolicyExploit:'Reproduced with synthetic diocese A and synthetic episcopal tenure tied to a parish of another diocese; read and delete accepted under original RLS, rolled back.',
   temporaryMigrationQA:'Four cross-diocese actions denied; own parish CRUD, admin general visibility, and suspended profile denial verified in reversible transaction.',
+  installedMigration:'20261023190421_isolate_bishop_tenures_by_diocese_v172',
+  postDeploymentReversibleQA:'PASS: the same jurisdiction test ran successfully again after installing the migration permanently.',
   productProofLimit:'Not two independent real authenticated browser sessions. Does not prove SQL connection overlap.'
  },
  readOnlyConsistency:{
@@ -91,16 +96,17 @@ const report=`# SACRAMENTUM · V172 — Auditoría integral y aislamiento episco
 - **${synthetic}/${synthetic} pruebas sintéticas Node**; **28/28 gates**, incluidas compilación, CSS, pruebas heredadas e informes de seguridad de dependencias.
 - **${passed.length} guiones de PostgreSQL reales con BEGIN/ROLLBACK**, aprobados y sin cambios persistentes; cubren impresión de cuatro sacramentos, notas marginales, decretos, correcciones, nulidad, chat, procedencia histórica, permisos, importaciones y notificaciones.
 - **${blocked.length} pruebas SQL** fueron bloqueadas por el sistema de seguridad antes de su ejecución; **no** se presentan como aprobadas ni como defectos de aplicación.
-- **${all.length-passed.length-blocked.length} guiones adicionales del inventario** no se ejecutaron durante esta pasada.
+- **${all.length-passed.length-blocked.length-separatelyVerified.length} guiones adicionales del inventario** no se ejecutaron durante esta pasada.
+- **2 ensayos V172 adicionales** (reproducción antes del parche y comprobación de jurisdicción después) fueron ejecutados con ROLLBACK.
 - **11 verificaciones de integridad de datos en lectura**: ninguna inconsistencia en las condiciones consultadas (jurisdicciones, notas/partidas, relaciones de parroquia, claves activas de Cancillería). Esto no demuestra que todos los datos sean correctos.
 - Conjunto consultado: 5.040 Bautismos, 2.091 Confirmaciones, 1.261 Matrimonios, 1 Exequia, 2 Decretos y 82 Notas marginales.
 
 ## Vulnerabilidad P0 reproducida y mitigada
 La política RLS de \`public.bishop_tenures\` daba visibilidad y eliminación de cualquier registro a un usuario con rol \`diocese\` o \`archdiocese\`, sin comprobar que perteneciera a la diócesis del registro. Se reprodujo con una cuenta de diócesis A ficticia y un período episcopal ficticio asociado a una parroquia de otra jurisdicción; SELECT y DELETE fueron permitidos. Toda la operación terminó con ROLLBACK.
 
-Migración \`supabase/migrations/20261023185600_isolate_bishop_tenures_by_diocese_v172.sql\` cierra las cuatro políticas de SELECT, INSERT, UPDATE, DELETE y exige un perfil institucional activo, pertenencia diocesana real, y limita a cada parroquia a sus períodos. Admin General mantiene alcance global autorizado.
+Migración \`supabase/migrations/20261023190421_isolate_bishop_tenures_by_diocese_v172.sql\` cierra las cuatro políticas de SELECT, INSERT, UPDATE, DELETE y exige un perfil institucional activo, pertenencia diocesana real, y limita a cada parroquia a sus períodos. Admin General mantiene alcance global autorizado.
 
-Verificación SQL de migración aplicada solo dentro de transacción: ajenos no pueden leer, crear, modificar ni eliminar; propia parroquia puede operar y Administrador General consultar; usuario suspendido rechazado. Pruebas ficticias y reversibles. La migración permanente debe alinearse con la versión realmente asignada por Supabase antes de fusionar.
+Primero se verificó la migración dentro de una transacción reversible; después se instaló en Supabase con versión 20261023190421 y se repitió la prueba de autorización contra la política ya instalada. Resultado: ajenos no pueden leer, crear, modificar ni eliminar; propia parroquia puede operar y Administrador General consultar; usuario suspendido rechazado. Todas las pruebas con identidad ficticia y ROLLBACK.
 
 ## Trazabilidad y límites
 - Inventario legible por máquina: \`AUDITORIA_PRUEBAS_INTEGRALES_V172.json\`; reproducibles disponibles como scripts SQL en \`scripts\`.
