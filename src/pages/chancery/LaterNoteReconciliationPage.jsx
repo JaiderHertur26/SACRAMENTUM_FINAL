@@ -44,6 +44,8 @@ export default function LaterNoteReconciliationPage() {
   const [hasMore,setHasMore]=useState(false);
   const [loadingMore,setLoadingMore]=useState(false);
   const listVersion=useRef(0);
+  const currentIdentityRef=useRef(identityKey);
+  currentIdentityRef.current=identityKey;
   const lookupVersion=useRef(0);
   const [form,setForm]=useState(empty);
   const [availableNotes,setAvailableNotes]=useState([]);
@@ -266,11 +268,11 @@ export default function LaterNoteReconciliationPage() {
     setBusy('batch:'+group[0].decree_id);setError('');
     try{
       await executeLaterNoteReconciliationBatch(group.map(x=>x.id));
-      if(scopeAtStart!==identityKey)return;
+      if(scopeAtStart!==currentIdentityRef.current)return;
       toast({title:'Conciliación conjunta registrada',description:group.length+' notas conciliadas, decreto revertido y notificación consolidada.'});
       await reload();
-    }catch(err){if(scopeAtStart===identityKey)notifyError(err);}
-    finally{setBusy('');}
+    }catch(err){if(scopeAtStart===currentIdentityRef.current)notifyError(err);}
+    finally{if(scopeAtStart===currentIdentityRef.current)setBusy('');}
   };
 
   return <DashboardLayout>
