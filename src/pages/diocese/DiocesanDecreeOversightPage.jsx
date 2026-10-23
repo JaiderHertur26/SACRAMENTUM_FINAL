@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 import DashboardLayout from '@/components/DashboardLayout';
 import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/components/ui/use-toast';
@@ -148,6 +149,7 @@ export default function DiocesanDecreeOversightPage() {
             </div>
           </div>
         </header>
+        <Link to="/diocese/decretos/conciliaciones" className="inline-flex rounded-xl border border-indigo-200 bg-indigo-50 px-4 py-3 text-xs font-bold text-indigo-900 hover:bg-indigo-100">Revisar autorizaciones de conciliación de notas →</Link>
         <NullityInstitutionalPreflightPanel />
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {[

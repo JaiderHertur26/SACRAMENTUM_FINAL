@@ -4,7 +4,7 @@ import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/components/ui/use-toast';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/Input';
-import { useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import DecreeCenterHeader from '@/components/chancery/DecreeCenterHeader';
 import { supabase } from '@/lib/supabaseClient';
 import { listDecrees } from '@/services/decreeRegistryService';
@@ -710,6 +710,7 @@ const SacramentalDecreeArchivePage = () => {
     <DashboardLayout entityName={user?.dioceseName || 'Cancillería'}>
       <div className="mx-auto max-w-7xl space-y-7 pb-20">
         <DecreeCenterHeader mode="archive" sacrament={sacrament} />
+        <Link to="/chancery/decretos/conciliaciones" className="inline-flex rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-xs font-bold text-amber-900 hover:bg-amber-100">Conciliación institucional de notas posteriores →</Link>
 
         <section className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
           <div className="flex flex-col gap-4 border-b border-slate-100 p-6 lg:flex-row lg:items-center lg:justify-between">

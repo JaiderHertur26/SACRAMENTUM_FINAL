@@ -91,6 +91,7 @@ const FuneralDecreesPage = lazy(() => import('@/pages/chancery/exequias/FuneralD
 const SacramentalDecreesCenterPage = lazy(() => import('@/pages/chancery/SacramentalDecreesCenterPage'));
 const SacramentalDecreeArchivePage = lazy(() => import('@/pages/chancery/SacramentalDecreeArchivePage'));
 const DocumentaryDecreePage = lazy(() => import('@/pages/chancery/DocumentaryDecreePage'));
+const LaterNoteReconciliationPage = lazy(() => import('@/pages/chancery/LaterNoteReconciliationPage'));
 const MarriageDecreesPage = lazy(() => import('@/pages/chancery/marriage/MarriageDecreesPage'));
 
 const NewDecreeReplacementPage = lazy(() => import('@/pages/chancery/decree-replacement/NewDecreeReplacementPage'));
@@ -165,6 +166,7 @@ const AppContent = () => {
                 {/* -------- DIOCESE -------- */}
                 <Route path="/diocese/dashboard" element={<ProtectedRoute requiredRole={ROLE_TYPES.DIOCESE}><DioceseUserDashboard /></ProtectedRoute>} />
                 <Route path="/diocese/decretos/archivo" element={<ProtectedRoute requiredRole={ROLE_TYPES.DIOCESE}><DiocesanDecreeOversightPage /></ProtectedRoute>} />
+                <Route path="/diocese/decretos/conciliaciones" element={<ProtectedRoute requiredRole={ROLE_TYPES.DIOCESE}><LaterNoteReconciliationPage /></ProtectedRoute>} />
                 <Route path="/diocese/ecclesiastical" element={<ProtectedRoute requiredRole={ROLE_TYPES.DIOCESE}><DioceseEcclesiasticalPage /></ProtectedRoute>} />
                 <Route path="/diocese/settings" element={<Navigate to="/diocese/dashboard" replace />} />
                 <Route path="/diocese/parishes" element={<Navigate to="/diocese/ecclesiastical" replace />} />
@@ -267,6 +269,7 @@ const AppContent = () => {
                 {/* --- CENTRO UNIFICADO DE DECRETOS SACRAMENTALES Â· FASE 033 --- */}
                 <Route path="/chancery/decretos" element={<ProtectedRoute requiredRole={ROLE_TYPES.CHANCERY}><SacramentalDecreesCenterPage /></ProtectedRoute>} />
                 <Route path="/chancery/decretos/archivo" element={<ProtectedRoute requiredRole={ROLE_TYPES.CHANCERY}><SacramentalDecreeArchivePage /></ProtectedRoute>} />
+                <Route path="/chancery/decretos/conciliaciones" element={<ProtectedRoute requiredRole={ROLE_TYPES.CHANCERY}><LaterNoteReconciliationPage /></ProtectedRoute>} />
           <Route path="/chancery/decretos/documental" element={<ProtectedRoute requiredRole={ROLE_TYPES.CHANCERY}><DocumentaryDecreePage /></ProtectedRoute>} />
                 <Route path="/chancery/matrimonio/decretos" element={<ProtectedRoute requiredRole={ROLE_TYPES.CHANCERY}><MarriageDecreesPage /></ProtectedRoute>} />
 

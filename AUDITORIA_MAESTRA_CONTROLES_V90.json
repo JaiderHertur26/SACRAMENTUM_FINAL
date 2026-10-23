@@ -550,9 +550,10 @@
         "AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: V95 delete: 20 escenarios en 5 catálogos; titulares parroquiales conservan permisos",
         "V123: limpieza directa de Confirmaciones podía borrar manual seated; reproducido con QA y corregido. La reversión real en DBF se restringe a sombras importadas y no vigentes.",
         "V154: nuevo defecto de integridad reproducido: reversión antigua admitía nota marginal manual posterior activa en la supletoria. Dos migraciones V154/V154b aplicadas.",
-        "V155: reproducido en MATRIMONIO y EXEQUIAS un fallo de reversión con nota posterior manual activa sobre supletoria (2 casos). Reparado en backend con migración 20261023023443."
+        "V155: reproducido en MATRIMONIO y EXEQUIAS un fallo de reversión con nota posterior manual activa sobre supletoria (2 casos). Reparado en backend con migración 20261023023443.",
+        "V156: circuito de conciliación de nota manual independiente, autorizado por dos roles y ejecutado atómicamente con reversión, auditoría y aviso parroquial."
       ],
-      "updated_at": "2026-10-23T02:40:21.591Z"
+      "updated_at": "2026-10-23T03:13:52.179Z"
     },
     {
       "id": "06.06",
@@ -589,9 +590,10 @@
         "V152: 3 funciones (decreto documental, traza, política de concepto privada) obtienen revisión parcial sobre inventario 139 ejecutables; 27 parciales, 112 aún pendientes.",
         "V153: sobre 139 RPC ejecutables se añaden 3 con QA parcial; 30 verificadas parcialmente y 109 pendientes.",
         "V154: el catálogo sigue con 139 RPC ejecutables authenticated, 30 con evidencia parcial y 109 pendientes; cinco funciones agregaron evidencia de bloqueo de notas.",
-        "V155: inventario 139 RPC accesibles; 30 con evidencia parcial y 109 pendientes; 3 funciones con nuevas pruebas de integridad encadenada."
+        "V155: inventario 139 RPC accesibles; 30 con evidencia parcial y 109 pendientes; 3 funciones con nuevas pruebas de integridad encadenada.",
+        "V156: 4 RPC nuevas SECURITY DEFINER verificadas en SQL, 204 totales (195 public/9 private), 143 ejecutables authenticated; 33 evidencias parciales, 110 pendientes."
       ],
-      "updated_at": "2026-10-23T02:40:21.592Z"
+      "updated_at": "2026-10-23T03:13:52.181Z"
     },
     {
       "id": "06.07",
@@ -625,9 +627,10 @@
         "V152: Diócesis no pudo emitir decreto documental ni imponer concepto; Parroquia ajena no pudo consultar traza y actor sin perfil tampoco.",
         "V153: los tres roles ajenos (Parroquia/Diócesis/Admin General) fueron rechazados en 8 RPC emisoras, 24 negativos con ROLLBACK.",
         "V154: una nota marginal independiente activa detiene reversión de decreto de corrección/reposición en Bautismo y Confirmación, exige conciliación.",
-        "V155: corrección/reposición de Matrimonio y Exequias requieren conciliación si la supletoria tiene nota marginal independiente activa."
+        "V155: corrección/reposición de Matrimonio y Exequias requieren conciliación si la supletoria tiene nota marginal independiente activa.",
+        "V156: Cancillería solicita/ejecuta, Diócesis aprueba con identidad distinta; Parroquia no puede solicitar, Diócesis no puede ejecutar."
       ],
-      "updated_at": "2026-10-23T02:40:21.592Z"
+      "updated_at": "2026-10-23T03:13:52.181Z"
     },
     {
       "id": "06.08",
@@ -643,9 +646,10 @@
         "V152: private.attach_decree_concept_policy_internal conserva control exclusivo de Cancillería y bloquea conceptos en decretos documentales e históricos.",
         "V153: seis RPC ligadas a Bautismo/Confirmación añaden evidencia de numeración, relaciones, notas, reversión e idempotencia.",
         "V154: la creación de notas manuales adquiere FOR SHARE de Bautismo/Confirmación; reversión examina notas tras FOR UPDATE de supletoria, reduciendo carrera insert/reverse.",
-        "V155: creación de nota manual usa FOR SHARE de Matrimonio/Exequias; reversión examina la nota tras adquirir FOR UPDATE de la supletoria."
+        "V155: creación de nota manual usa FOR SHARE de Matrimonio/Exequias; reversión examina la nota tras adquirir FOR UPDATE de la supletoria.",
+        "V156: expediente protegido con tabla sin grants directos a authenticated y RLS habilitado. RPC expuestas solo a authenticated, no a anon."
       ],
-      "updated_at": "2026-10-23T02:40:21.592Z"
+      "updated_at": "2026-10-23T03:13:52.181Z"
     },
     {
       "id": "06.09",
@@ -1365,9 +1369,10 @@
         "V152: verificación de emisión documental y consulta de traza por función autorizada sin conceder SELECT sobre registry_audit_log.",
         "V153: en cuatro casos validada vinculación Canillería/Parroquia, diocese_id/chancery_id y titularidad de partida supletoria.",
         "V154: restitución y reversión preservan nota posterior independiente mientras está activa; no se invalida sin conciliación documental.",
-        "V155: cuando la reversión es rechazada por nota independiente, no cambia ni nota, ni decreto, ni partida supletoria."
+        "V155: cuando la reversión es rechazada por nota independiente, no cambia ni nota, ni decreto, ni partida supletoria.",
+        "V156: conserva instantánea íntegra de nota al solicitar; si nota o decreto cambian antes de autorizar/ejecutar, el procedimiento rechaza."
       ],
-      "updated_at": "2026-10-23T02:40:21.592Z"
+      "updated_at": "2026-10-23T03:13:52.181Z"
     },
     {
       "id": "12.08",
@@ -1633,9 +1638,10 @@
         "V152: las operaciones de decreto histórico se consideran documentales y no generan efectos registrales, comprobado comparando conteo de cuatro sacramentos antes/después.",
         "V153: la prueba controla libro/folio/número físicos de cada supletoria y avance del cursor de parámetros parroquiales.",
         "V154: las notas marginales de partida supletoria revertida no pueden crearse por RPC manual ordinaria; pruebas negativas en Bautismo y Confirmación.",
-        "V155: se rechazan nuevas notas manuales en partida matrimonial o de exequias ya revertida, con dos casos ficticios."
+        "V155: se rechazan nuevas notas manuales en partida matrimonial o de exequias ya revertida, con dos casos ficticios.",
+        "V156: notas manuales independientes activas y opcionales son elegibles; notas obligatorias, bloqueadas o vinculadas a otro decreto excluidas."
       ],
-      "updated_at": "2026-10-23T02:40:21.592Z"
+      "updated_at": "2026-10-23T03:13:52.181Z"
     },
     {
       "id": "14.05",
@@ -1676,9 +1682,10 @@
         "V150: el aislamiento por usuario parroquial se probó con su parroquia propia y otra parroquia del mismo entorno, en SELECT reversible.",
         "V153: cada una de cuatro operaciones de Bautismo/Confirmación creó notas marginales y notificaciones oficiales bajo rollback.",
         "V154: los cuatro casos de Bautismo/Confirmación mantienen el historial marginal; tras resolver artificialmente nota posterior en QA, reversión genera nota de reversión.",
-        "V155: corrección y reposición de los otros dos sacramentos suman cuatro cadenas probadas con nota posterior y vuelta a reversión tras simulación QA."
+        "V155: corrección y reposición de los otros dos sacramentos suman cuatro cadenas probadas con nota posterior y vuelta a reversión tras simulación QA.",
+        "V156: nota conciliada sólo dentro de la misma transacción que la reversión; si otra nota vigente impide la operación, se revierte íntegramente."
       ],
-      "updated_at": "2026-10-23T02:40:21.592Z"
+      "updated_at": "2026-10-23T03:13:52.181Z"
     },
     {
       "id": "14.07",
@@ -2281,9 +2288,10 @@
         "V152: Cancillería emite decreto documental nuevo e histórico, con diferenciación de status active vs archived e issued_by apropiado; ROLLBACK.",
         "V153: comprobación integral positiva de cuatro rutas corrección/reposición, con identificación de cancillería de su diócesis y de parroquia propietaria.",
         "V154: corrección y reposición con nota posterior manual se bloquearon en 4 flujos, sin alterar la partida ni el decreto durante denegación.",
-        "V155: concepto de nota marginal independiente sobre supletoria preservado hasta conciliación; no se permite revertir antigua resolución automáticamente."
+        "V155: concepto de nota marginal independiente sobre supletoria preservado hasta conciliación; no se permite revertir antigua resolución automáticamente.",
+        "V156: flujo institucional de conciliación con referencia documental, motivo, autorización diferente y ejecución por Cancillería; integrado a rutas y servicio."
       ],
-      "updated_at": "2026-10-23T02:40:21.592Z"
+      "updated_at": "2026-10-23T03:13:52.182Z"
     },
     {
       "id": "20.03",
@@ -2835,9 +2843,10 @@
         "V152: 3 decretos ficticios creados sólo dentro de transacción reversible con número QA152 y sin persistir.",
         "V153: una auditoría registral por UUID de decreto y parroquia verificada en cada operación; reversión deja una nota adicional.",
         "V154: no se pierden ni alteran notas posteriores activas cuando se rechaza reversión, prueba sobre los 4 escenarios.",
-        "V155: V115 reposiciones y V135 reversión tardía siguen operando tras guardas nuevas en Matrimonios/Exequias."
+        "V155: V115 reposiciones y V135 reversión tardía siguen operando tras guardas nuevas en Matrimonios/Exequias.",
+        "V156: circuito genera eventos de solicitud, autorización, nota conciliada y ejecución; notificación con categoría decree_reconciliation para evitar duplicación."
       ],
-      "updated_at": "2026-10-23T02:40:21.592Z"
+      "updated_at": "2026-10-23T03:13:52.182Z"
     },
     {
       "id": "25.01",
@@ -3082,9 +3091,10 @@
         "V152: 3 RPC privilegiadas probadas parcialmente; setter de política privado no admite decreto documental y se mantiene inaccesible para rol diocesano.",
         "V153: tres RPC emisoras promocionadas a evidencia parcial tras pruebas de efectos reales y autorizaciones; otras tres reforzadas.",
         "V154: cinco funciones privilegiadas anotadas con evidencia de bloqueo y seguridad de notas; ni privilegios SQL ni RLS fueron ampliados.",
-        "V155: 3 RPC SECURITY DEFINER con nuevas evidencias, no se añadieron privilegios ni cambió catálogo."
+        "V155: 3 RPC SECURITY DEFINER con nuevas evidencias, no se añadieron privilegios ni cambió catálogo.",
+        "V156: cuatro nuevas RPC privilegiadas declaradas y protegidas con autorización scoped por diócesis; list se mantiene pendiente de QA dinámica individual."
       ],
-      "updated_at": "2026-10-23T02:40:21.592Z"
+      "updated_at": "2026-10-23T03:13:52.182Z"
     },
     {
       "id": "27.02",
@@ -3173,9 +3183,10 @@
         "V152: nueva matriz de autorización de decreto documental, traza parroquial y política conceptual con resultados reales en Supabase.",
         "V153: 4 ejecuciones positivas de corrección/reposición y 24 denegaciones por roles; todas transacciones reales revertidas.",
         "V154: matriz positiva/negativa de reversiones de 4 flujos y dos negativas adicionales por nota sobre registros revertidos.",
-        "V155: 4 escenarios de revocación tardía denegada y reversión tras nota conciliada (simulación reversible), más 2 denegaciones de nota a revertidos."
+        "V155: 4 escenarios de revocación tardía denegada y reversión tras nota conciliada (simulación reversible), más 2 denegaciones de nota a revertidos.",
+        "V156: prueba SQL reversible postmigración de solicitud, aprobación y ejecución con 6 negativos, incluida segunda nota activa, sin efectos permanentes."
       ],
-      "updated_at": "2026-10-23T02:40:21.592Z"
+      "updated_at": "2026-10-23T03:13:52.182Z"
     },
     {
       "id": "27.05",
@@ -3299,9 +3310,10 @@
         "V152: inventario dinámico de 139 RPC ejecutables: 27 parcialmente verificadas y 112 pendientes; 61 otras no directas siguen necesitadas de análisis de llamadas internas.",
         "V153: 30 RPC parcialmente examinadas, 109 pendientes de 139 con EXECUTE authenticated; otras 61 sin EXECUTE directo requieren inspección indirecta.",
         "V154: inventario 139 ejecutables, 30 parcialmente revisadas, 109 pendientes; 61 funciones internas sin ejecución directa siguen no certificadas.",
-        "V155: 30 RPC con QA parcial de 139, 109 ejecutables pendientes; concurrency real física aún no certificada."
+        "V155: 30 RPC con QA parcial de 139, 109 ejecutables pendientes; concurrency real física aún no certificada.",
+        "V156: 143 funciones ejecutables de 204 SECURITY DEFINER; 33 parcialmente revisadas, 110 por revisar; 61 sin ejecución directa requieren cadena de llamadas."
       ],
-      "updated_at": "2026-10-23T02:40:21.592Z"
+      "updated_at": "2026-10-23T03:13:52.182Z"
     },
     {
       "id": "28.01",
@@ -3368,9 +3380,10 @@
       "evidence": [
         "V152: get_decree_trace_v89 mostró 1 evento de emisión autorizado, negó traza de otra parroquia y no abrió SELECT directo en log.",
         "V154: V140 de impresión de notas de reversión pasó tras migración; la nota de reversión mantiene tratamiento necesario sin revalidar decreto revertido.",
-        "V155: evidencia de que notas activas independientes ya no permanecen sobre supletoria invalidada por reversión permisiva."
+        "V155: evidencia de que notas activas independientes ya no permanecen sobre supletoria invalidada por reversión permisiva.",
+        "V156: expediente de conciliación mantiene trazas de autoridad y razón de cierre de nota, además del aviso parroquial asociado al decreto."
       ],
-      "updated_at": "2026-10-23T02:40:21.592Z"
+      "updated_at": "2026-10-23T03:13:52.182Z"
     },
     {
       "id": "28.07",
@@ -3730,9 +3743,10 @@
         "V152: dos scripts QA con BEGIN/ROLLBACK ejecutados exitosamente; no hay evidencia de concurrencia independiente.",
         "V153: QA real en Supabase con los cuatro flujos y matriz de 24 denegaciones, reversión y examen de integridad, íntegramente ROLLBACK.",
         "V154: 4 casos de reversión bloqueada y posterior recuperación QA; 2 bloqueos de anotación tras reversión; regresiones V137,V115,V140 por ROLLBACK.",
-        "V155: matrices de corrección/reposición de Matrimonio/Exequias ejecutadas en Supabase con BEGIN/ROLLBACK; sin escrituras QA persistentes."
+        "V155: matrices de corrección/reposición de Matrimonio/Exequias ejecutadas en Supabase con BEGIN/ROLLBACK; sin escrituras QA persistentes.",
+        "V156: pruebas reales de roles, autorización distinta, denegación de ejecución previa, rechazo si queda otra nota, idempotencia y rollback."
       ],
-      "updated_at": "2026-10-23T02:40:21.592Z"
+      "updated_at": "2026-10-23T03:13:52.182Z"
     },
     {
       "id": "31.08",
@@ -3787,9 +3801,10 @@
         "V152: ensayo de decreto documental no cambió conteo de Bautismos, Confirmaciones, Matrimonios o Exequias y transacción revertida.",
         "V153: posterior a QA, 0 decretos QA-V115, 0 partidas ficticias de Bautismo/Confirmación, 0 notas y auditorías QA.",
         "V154: tras ensayos SQL no quedaron decretos QA-V115, notas QA V154 ni partidas qaOnly ni registros con libro QA154.",
-        "V155: verificación tras SQL devuelve 0 decretos QA, 0 matrimonios/exequias qaOnly y 0 notas o auditorías QA-V155."
+        "V155: verificación tras SQL devuelve 0 decretos QA, 0 matrimonios/exequias qaOnly y 0 notas o auditorías QA-V155.",
+        "V156: cero casos de prueba QA persistentes, debido a BEGIN/ROLLBACK; no se ejecutaron actuaciones sobre registros reales."
       ],
-      "updated_at": "2026-10-23T02:40:21.592Z"
+      "updated_at": "2026-10-23T03:13:52.182Z"
     },
     {
       "id": "32.01",
@@ -3876,9 +3891,10 @@
         "V152: 22 pruebas sintéticas adicionales; total 912/912, 28/28 puerta estricta local.",
         "V153: +21 pruebas contractuales, 933/933 sintéticas integrales, 28/28 comprobaciones estrictas.",
         "V154: 20 pruebas contractuales adicionales; total 953/953, Quality Gate 28/28, compilación y npm audit completos correctos.",
-        "V155: 23 pruebas contractuales nuevas, 976/976 total sintéticas y 28/28 checks de Quality Gate."
+        "V155: 23 pruebas contractuales nuevas, 976/976 total sintéticas y 28/28 checks de Quality Gate.",
+        "V156: 29 pruebas contractuales nuevas; total 1005/1005 sintéticas y Quality Gate 28/28."
       ],
-      "updated_at": "2026-10-23T02:40:21.592Z"
+      "updated_at": "2026-10-23T03:13:52.182Z"
     },
     {
       "id": "32.04",
@@ -3938,9 +3954,10 @@
         "V152: no se detectó un nuevo defecto que exigiera migración; rechazos por rol, tipo de decreto, historial y número duplicado operaron correctamente.",
         "V153: no se observó defecto nuevo en backend de corrección/reposición; se corrigió el QA para no usar NOT IN con NULL en notas.",
         "V154: defecto de nota independiente activa reproducido y corregido; la revisión postmigración detectó Confirmación sin protección y se aplicó V154b.",
-        "V155: defecto positivo reproducido y corregido por migración guard_marriage_funeral_independent_notes_v155 en Supabase."
+        "V155: defecto positivo reproducido y corregido por migración guard_marriage_funeral_independent_notes_v155 en Supabase.",
+        "V156: corregido conflicto de unicidad de notificación original cambiando categoría a decree_reconciliation antes de desplegar."
       ],
-      "updated_at": "2026-10-23T02:40:21.592Z"
+      "updated_at": "2026-10-23T03:13:52.183Z"
     },
     {
       "id": "32.06",
@@ -3988,9 +4005,10 @@
         "V152: fixtures SQL verificaron 3 decretos documentales de ensayo y 2 matrices de rechazo; sin importación o emisiones permanentes.",
         "V153: se verificaron supplement cursor, unicidad de decreto diocesano, asociación de notas y exactitud de referencias canónicas, todo sin writes persistentes.",
         "V154/V154b: migraciones 20261023012458 y 20261023012719 verificadas en Supabase con QA real post-despliegue.",
-        "V155: migración 20261023023443 concordante con supabase_migrations, probada en dry-run y posteriormente sobre funciones reales."
+        "V155: migración 20261023023443 concordante con supabase_migrations, probada en dry-run y posteriormente sobre funciones reales.",
+        "V156: migración 20261023030534 aplicada al backend Supabase, pruebas SQL postmigración correctas; frontend integrado localmente."
       ],
-      "updated_at": "2026-10-23T02:40:21.592Z"
+      "updated_at": "2026-10-23T03:13:52.184Z"
     },
     {
       "id": "32.07",
@@ -4041,9 +4059,10 @@
         "V152: verificadores históricos, build producción, CSS y auditoría npm completa y producción aprobaron.",
         "V153: build, CSS, verificadores históricos y auditoría de dependencias production+dev aprobaron; cero vulnerabilidades reportadas.",
         "V154: Quality Gate estricto completo 28/28, 953 pruebas, cero hallazgos npm audit prod y dev.",
-        "V155: build producción y audit de dependencias de producción/desarrollo reportan 0 fallos y 0 vulnerabilidades."
+        "V155: build producción y audit de dependencias de producción/desarrollo reportan 0 fallos y 0 vulnerabilidades.",
+        "V156: npm build y auditorías de dependencias producción+completo sin hallazgos; Quality Gate completo 28/28."
       ],
-      "updated_at": "2026-10-23T02:40:21.592Z"
+      "updated_at": "2026-10-23T03:13:52.184Z"
     },
     {
       "id": "32.08",
@@ -4092,9 +4111,10 @@
         "V152: auditada emisión documental sin modificación de partidas; impresión física, decreto correctivo con efecto positivo y concurrencia simultánea aún no certificados.",
         "V153: QA positivas y negativas validadas; impresión física, navegación UI autenticada y simultaneidad entre conexiones independientes todavía abiertas.",
         "V154: no se certificó concurrencia con dos conexiones físicas ni flujo público final de conciliación de nota; QA simula resultado institucional bajo rollback.",
-        "V155: pendiente demo con dos conexiones simultáneas y circuito institucional UI de conciliación; frontend no desplegado."
+        "V155: pendiente demo con dos conexiones simultáneas y circuito institucional UI de conciliación; frontend no desplegado.",
+        "V156: pruebas SQL reales aprobadas, pero ejecución por personas reales, UI física, concurrencia de conexiones independientes y despliegue frontend todavía no certificados."
       ],
-      "updated_at": "2026-10-23T02:40:21.592Z"
+      "updated_at": "2026-10-23T03:13:52.184Z"
     },
     {
       "id": "32.09",
