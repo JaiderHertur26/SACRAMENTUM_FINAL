@@ -1,0 +1,66 @@
+{
+  "protocol": "V168",
+  "date": "2026-10-23",
+  "sha": "32dfdbb94a856a811ea136d43e66b95a477f4e55",
+  "pull_request": "https://github.com/JaiderHertur26/SACRAMENTUM_FINAL/pull/13",
+  "github_ci": "https://github.com/JaiderHertur26/SACRAMENTUM_FINAL/actions/runs/39982084560",
+  "github_ci_result": "success",
+  "vercel_state_for_same_sha": "success",
+  "production_smoke": {
+    "canonical": "https://sacramentum-final.vercel.app/",
+    "http_status": 200,
+    "html_title": "Sacramentum | Registro Sacramental",
+    "vite_assets_present": true,
+    "vercel_deployment": "https://sacramentum-final-31zdupozz-jaiderherreras-projects.vercel.app",
+    "deployment_target": "Production",
+    "deployment_status": "Ready"
+  },
+  "vercel_project": "https://vercel.com/jaiderherreras-projects/sacramentum-final",
+  "supabase_migration": "20261023154826_batch_later_note_reconciliation_v168",
+  "database_tests": [
+    "scripts/qa-rollback-two-later-notes-repro-v168.sql",
+    "scripts/qa-rollback-multinote-batch-v168.sql",
+    "scripts/qa-rollback-multinote-four-sacraments-v168.sql"
+  ],
+  "database_tests_passed": true,
+  "post_qa_residue": {
+    "decrees": 0,
+    "marginal_notes": 0,
+    "reconciliation_cases": 0,
+    "official_notifications": 0,
+    "temporary_lock_probe": 0
+  },
+  "roles": "chancery executes; diocese independently authorizes",
+  "sacraments": [
+    "bautismo",
+    "confirmacion",
+    "matrimonio",
+    "exequias"
+  ],
+  "notes_per_case": 2,
+  "audits_per_case": 6,
+  "consolidated_notifications_per_decree": 1,
+  "test_results": {
+    "synthetic_total": 1217,
+    "synthetic_failures": 0,
+    "quality_gate_pass": 28,
+    "quality_gate_total": 28
+  },
+  "plan": {
+    "approved": 10,
+    "in_progress": 117,
+    "pending": 198,
+    "total": 325
+  },
+  "privileges": {
+    "security_definer": 210,
+    "authenticated_executable": 149,
+    "partially_tested": 46,
+    "manual_pending": 103
+  },
+  "pending": [
+    "two physically overlapping PostgreSQL sessions with NOWAIT/lock wait and one-winner semantics",
+    "browser E2E with two genuine diocesan authenticated sessions",
+    "full ecclesiastical legal and print-document certification"
+  ]
+}

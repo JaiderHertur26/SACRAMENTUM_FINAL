@@ -122,9 +122,11 @@
       "area": "Derecho canónico y alcance documental",
       "priority": "P0",
       "criterion": "Corrección y reposición",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "V168: nueva conciliación por lotes probada en Bautismo, Confirmación, Matrimonio y Exequias; cubre reversión de dos notas, no la certificación canónica integral de correcciones/reposiciones."
+      ],
+      "updated_at": "2026-10-23T16:09:46.260Z"
     },
     {
       "id": "02.03",
@@ -606,9 +608,10 @@
         "V164: auditoría parcial en cinco SECURITY DEFINER de Chat Diocesano, 42 de 147 funciones authenticated con evidencia parcial, 105 pendientes. Sin grants nuevos.",
         "V165: mark_chat_room_read y withdraw_chat_message tienen nueva verificación parcial; 44 RPC privilegiadas revisadas parcialmente, 103 pendientes.",
         "V166: 209 SECURITY DEFINER, 148 authenticated, 45 reviewed partially and 103 pending. Existing auth grants unchanged, new RPC limited to authenticated.",
-        "V167: cuatro RPC de transición con FOR UPDATE, auth.uid y unicidad de casos abiertos revisadas; sin variación de 209 funciones privilegiadas."
+        "V167: cuatro RPC de transición con FOR UPDATE, auth.uid y unicidad de casos abiertos revisadas; sin variación de 209 funciones privilegiadas.",
+        "V168: SECURITY DEFINER nuevo con comprobación rol Cancillería/diocésis/parroquia, sin EXECUTE anon; inventario total 210, auth 149, evidencia parcial 46 y 103 revisiones pendientes."
       ],
-      "updated_at": "2026-10-23T15:10:28.901Z"
+      "updated_at": "2026-10-23T16:09:46.262Z"
     },
     {
       "id": "06.07",
@@ -789,9 +792,10 @@
       "criterion": "Transacción atomicidad",
       "status": "EN_PROGRESO",
       "evidence": [
-        "V167: 4 rutas completas de reversión y conciliación conservan atomicidad: decreto y nota reversed, case executed, audit 3 y notificación 1. BEGIN/ROLLBACK."
+        "V167: 4 rutas completas de reversión y conciliación conservan atomicidad: decreto y nota reversed, case executed, audit 3 y notificación 1. BEGIN/ROLLBACK.",
+        "V168: transacción única revierte 2 notas y 1 decreto y cierra 2 expedientes, o falla sin cambios; seis auditorías de expedientes y una notificación consolidada por caso."
       ],
-      "updated_at": "2026-10-23T15:10:28.903Z"
+      "updated_at": "2026-10-23T16:09:46.262Z"
     },
     {
       "id": "07.07",
@@ -811,9 +815,10 @@
       "criterion": "Bloqueos y deadlocks",
       "status": "PENDIENTE",
       "evidence": [
-        "V167: los 4 RPC institucionales verifican bloqueos FOR UPDATE y un índice UNIQUE parcial real; no se han probado deadlocks ni simultaneidad física."
+        "V167: los 4 RPC institucionales verifican bloqueos FOR UPDATE y un índice UNIQUE parcial real; no se han probado deadlocks ni simultaneidad física.",
+        "V168: nueva RPC bloquea filas de expedientes, decreto y notas con FOR UPDATE; falta disputa de dos conexiones reales y medir deadlocks."
       ],
-      "updated_at": "2026-10-23T15:10:28.903Z"
+      "updated_at": "2026-10-23T16:09:46.262Z"
     },
     {
       "id": "07.09",
@@ -941,9 +946,11 @@
       "area": "Bautismo",
       "priority": "P0",
       "criterion": "Notas múltiples",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "V168: dos notas independientes sobre reposición de Bautismo con autorizaciones episcopales individuales se concilian con una reversión; SQL BEGIN/ROLLBACK."
+      ],
+      "updated_at": "2026-10-23T16:09:46.262Z"
     },
     {
       "id": "09.01",
@@ -1057,9 +1064,11 @@
       "area": "Confirmación",
       "priority": "P0",
       "criterion": "Notas múltiples",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "V168: dos notas independientes sobre reposición de Confirmación con autorizaciones episcopales individuales se concilian con una reversión; SQL BEGIN/ROLLBACK."
+      ],
+      "updated_at": "2026-10-23T16:09:46.262Z"
     },
     {
       "id": "10.01",
@@ -1151,9 +1160,10 @@
       "criterion": "Corrección por decreto",
       "status": "EN_PROGRESO",
       "evidence": [
-        "V115: Matrimonio corrección/reversión con partida original anulada/restablecida y supletoria creada/revertida, con notas y aviso. SQL ROLLBACK."
+        "V115: Matrimonio corrección/reversión con partida original anulada/restablecida y supletoria creada/revertida, con notas y aviso. SQL ROLLBACK.",
+        "V168: reposición matrimonial con dos notas independientes se reconcilia en transacción única; siete solicitudes inválidas/inapropiadas rechazadas."
       ],
-      "updated_at": "2026-10-22T03:51:56.085Z"
+      "updated_at": "2026-10-23T16:09:46.262Z"
     },
     {
       "id": "10.10",
@@ -1277,9 +1287,10 @@
       "criterion": "Notas",
       "status": "EN_PROGRESO",
       "evidence": [
-        "V115: corrección y reposición generan notas marginales y reversión agrega nota posterior en Exequias."
+        "V115: corrección y reposición generan notas marginales y reversión agrega nota posterior en Exequias.",
+        "V168: exequias con dos notas independientes y dos autorizaciones diocesanas reconciliadas de manera atómica, con auditores/notificación."
       ],
-      "updated_at": "2026-10-22T03:51:56.085Z"
+      "updated_at": "2026-10-23T16:09:46.262Z"
     },
     {
       "id": "11.10",
@@ -1622,9 +1633,11 @@
       "area": "Notas marginales",
       "priority": "P0",
       "criterion": "Varias notas por partida",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "V168: cuatro partidas de laboratorio con dos notas por partida y ninguna duplicación persistente; tipos obligatorios y asociaciones futuras requieren pruebas adicionales."
+      ],
+      "updated_at": "2026-10-23T16:09:46.262Z"
     },
     {
       "id": "14.02",
@@ -1758,8 +1771,10 @@
       "priority": "P0",
       "criterion": "Auditoría de anotación",
       "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "evidence": [
+        "V168: por cada lote se trazan individualmente nota y expediente; resultado 6 eventos de expediente y una notificación consolidada por decreto."
+      ],
+      "updated_at": "2026-10-23T16:09:46.262Z"
     },
     {
       "id": "15.01",
@@ -2008,9 +2023,10 @@
       "criterion": "Rollback sin contaminación",
       "status": "EN_PROGRESO",
       "evidence": [
-        "AUDITORIA_AUTORIDAD_MIGRACION_V101_2026-10-21.md: V99-101: cero lotes, filas y conceptos QA tras ROLLBACK; ensayo recuperación completa pendiente"
+        "AUDITORIA_AUTORIDAD_MIGRACION_V101_2026-10-21.md: V99-101: cero lotes, filas y conceptos QA tras ROLLBACK; ensayo recuperación completa pendiente",
+        "V168: reproducción del bloqueo previo y QA posterior de lote ejecutadas con BEGIN/ROLLBACK sin residuo en base real."
       ],
-      "updated_at": "2026-10-21T21:33:28.147Z"
+      "updated_at": "2026-10-23T16:09:46.262Z"
     },
     {
       "id": "17.01",
@@ -2114,9 +2130,10 @@
       "criterion": "Duplicados y restricciones",
       "status": "EN_PROGRESO",
       "evidence": [
-        "V167: índice parcial uq_later_note_open_decree_v156 rechaza caso doble (decree_id,note_id) pendiente/autorizado. No se certifican todos los duplicados de la aplicación."
+        "V167: índice parcial uq_later_note_open_decree_v156 rechaza caso doble (decree_id,note_id) pendiente/autorizado. No se certifican todos los duplicados de la aplicación.",
+        "V168: validaciones de lote de 2 a 30 IDs únicos, mismo decreto/parroquia/diócesis, snapshot coherente y cierre atómico sin doble ejecución."
       ],
-      "updated_at": "2026-10-23T15:10:28.903Z"
+      "updated_at": "2026-10-23T16:09:46.262Z"
     },
     {
       "id": "18.01",
@@ -3234,9 +3251,10 @@
         "V164: prueba de chat IDOR con UUID real de sala y perfil inexistente bajo rol authenticated: denegado en acceso directo y RPC.",
         "V165: tercera identidad institucional con perfil activo no miembro no puede leer, enviar, marcar ni retirar en sala de otra cuenta.",
         "V166: RLS/SECURITY DEFINER prevents cross-room historical data from active but unrelated authenticated roles.",
-        "V167: rutas de aprobación, rechazo y ejecución verifican rol/scope institucional. Repetir operación terminal falla de modo seguro."
+        "V167: rutas de aprobación, rechazo y ejecución verifican rol/scope institucional. Repetir operación terminal falla de modo seguro.",
+        "V168: rol Cancillería ejecuta, Diócesis sólo autoriza y no ejecuta; no se concedieron privilegios directos a anon ni tablas privadas."
       ],
-      "updated_at": "2026-10-23T15:10:28.903Z"
+      "updated_at": "2026-10-23T16:09:46.263Z"
     },
     {
       "id": "27.04",
@@ -3860,9 +3878,10 @@
         "V164: consulta QA reversible contra Supabase real; sin contenidos de mensajes publicados, sin cambios sacramentales ni escrituras persistentes.",
         "V165: 7 operaciones positivas, 9 negativas en Supabase real bajo authenticated; salas y mensajes ficticios ROLLBACK.",
         "V166: 305 legacy + 7 newer messages inserted only inside BEGIN/ROLLBACK, zero residual QA rooms/messages after live test.",
-        "V167: 4 casos ficticios (uno por sacramento) con 24 rechazos por transición, 4 éxitos y verificaciones por caso; cero persistencia tras ROLLBACK."
+        "V167: 4 casos ficticios (uno por sacramento) con 24 rechazos por transición, 4 éxitos y verificaciones por caso; cero persistencia tras ROLLBACK.",
+        "V168: matriz SQL reversible de 4 sacramentos, dos notas y aprobaciones independientes por cada decreto; un solo evento jurídico de reversión."
       ],
-      "updated_at": "2026-10-23T15:10:28.903Z"
+      "updated_at": "2026-10-23T16:09:46.263Z"
     },
     {
       "id": "31.08",
@@ -3871,8 +3890,10 @@
       "priority": "P0",
       "criterion": "Doble click y red caída",
       "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "evidence": [
+        "V168: reintento de lote ya ejecutado rechazado; faltan pruebas físicas de doble clic con red caída y dos transacciones simultáneas."
+      ],
+      "updated_at": "2026-10-23T16:09:46.263Z"
     },
     {
       "id": "31.09",
@@ -3928,9 +3949,10 @@
         "V164: Chat Diocesano QA sólo lectura real bajo BEGIN/ROLLBACK; Chrome local con datos y roles sintéticos.",
         "V165: ninguna sala o mensaje QA-V165 permanece tras revertir transacción; sin datos sacramentales alterados.",
         "V166: QA synthetic data isolated, real chats and sacramental registers untouched; no grants to anon.",
-        "V167: sin alteración de datos sacramentales; dblink se ensayó sólo dentro de transacción revertida, no se instaló extensión permanente."
+        "V167: sin alteración de datos sacramentales; dblink se ensayó sólo dentro de transacción revertida, no se instaló extensión permanente.",
+        "V168: 0 decretos/notas/casos/notificaciones QA-V168 residuales, 0 RPC temporal qa_v168_lock_probe; preservada información real."
       ],
-      "updated_at": "2026-10-23T15:10:28.903Z"
+      "updated_at": "2026-10-23T16:09:46.263Z"
     },
     {
       "id": "32.01",
@@ -4028,9 +4050,10 @@
         "V164: 17 tests nuevos, total 1142/1142 sintéticos y 28/28 Quality Gate; npm audit 0 hallazgos.",
         "V165: 15 nuevas pruebas contractuales de migración y QA SQL, total 1157/1157 y puerta de calidad 28/28.",
         "V166: 19 additional contract tests, 1176/1176 synthetic, 28/28 gate; browser visual 6/6.",
-        "V167: 19 contratos nuevos, 1195/1195 sintéticas, 28/28 Quality Gate, compilación y npm audit sin hallazgos."
+        "V167: 19 contratos nuevos, 1195/1195 sintéticas, 28/28 Quality Gate, compilación y npm audit sin hallazgos.",
+        "V168: 22 tests contractuales nuevos, 1217/1217 tests totales (GitHub CI #39982084560 y puerta local), 28/28 verificadores."
       ],
-      "updated_at": "2026-10-23T15:10:28.903Z"
+      "updated_at": "2026-10-23T16:09:46.263Z"
     },
     {
       "id": "32.04",
@@ -4100,9 +4123,10 @@
         "V164: se corrigió riesgo de conservar chat anterior en cambio de cuenta; instancia React key por identidad y desuscripción contra respuestas tardías.",
         "V165: detectado y reparado orden ambiguo en chat: now() constante durante transacción, cursor de leído podía retroceder.",
         "V166: date-only legacy RPC remains for compatibility; new RPC uses composite keyset and isolated UI older-message cursor.",
-        "V167: se revisó el riesgo de doble ejecución y se confirmó defensa existente de fila FOR UPDATE + UNIQUE parcial. No se requirió migración."
+        "V167: se revisó el riesgo de doble ejecución y se confirmó defensa existente de fila FOR UPDATE + UNIQUE parcial. No se requirió migración.",
+        "V168: hallazgo P0 #12 de conciliación múltiple corregido con RPC versionada y UI Cancillería; dos notas autorizadas ya no bloquean reversión conjunta."
       ],
-      "updated_at": "2026-10-23T15:10:28.903Z"
+      "updated_at": "2026-10-23T16:09:46.263Z"
     },
     {
       "id": "32.06",
@@ -4161,9 +4185,10 @@
         "V164: frontend chat corregido y compilado localmente; backend sin migraciones.",
         "V165: migración Supabase aplicada 20261023142209_chat_message_order_consistency_v165; frontend existente sin cambios funcionales en esta etapa.",
         "V166: Supabase migration 20261023144508 applied; frontend Chat supports older pages without clearing current/received messages.",
-        "V167: suite SQL de pruebas y evidencia nuevas; backend y frontend sin cambios funcionales. Publicación de evidencia por CI controlado."
+        "V167: suite SQL de pruebas y evidencia nuevas; backend y frontend sin cambios funcionales. Publicación de evidencia por CI controlado.",
+        "V168: migración Supabase aplicada 20261023154826; probado de nuevo contra la función instalada y Vercel publicó tras CI de commit 32dfdbb."
       ],
-      "updated_at": "2026-10-23T15:10:28.903Z"
+      "updated_at": "2026-10-23T16:09:46.263Z"
     },
     {
       "id": "32.07",
@@ -4225,9 +4250,10 @@
         "V164: Vite build, checks CSS, ensayos históricos y npm audit producción+total aprobaron.",
         "V165: Vite compilado, CSS y auditorías npm producción+completa sin hallazgos, Quality Gate PASS.",
         "V166: production build CSS and npm audits passed, no vulnerabilities reported.",
-        "V167: Quality Gate de tests, Vite, CSS y npm audit aprobado, sin vulnerabilidades reportadas."
+        "V167: Quality Gate de tests, Vite, CSS y npm audit aprobado, sin vulnerabilidades reportadas.",
+        "V168: 1217/1217 test sintéticos, 28/28 Quality Gate, CSS, Vite build y npm audit prod+completo sin vulnerabilidades reportadas."
       ],
-      "updated_at": "2026-10-23T15:10:28.903Z"
+      "updated_at": "2026-10-23T16:09:46.263Z"
     },
     {
       "id": "32.08",
@@ -4287,9 +4313,10 @@
         "V164: QA local de cambio de cuenta 7/7, RLS real 1 miembro/1 actor sin perfil. Faltan E2E reales de dos diócesis y concurrencia.",
         "V165: empate artificial de fecha en mensajes históricos sometido a cursor, historial y resumen de sala. Falta concurrencia de conexiones y pruebas E2E entre distintas diócesis.",
         "V166: old chat history recovered completely with timestamp tie and user-switch test; still lacks E2E with real different dioceses and true concurrent PostgreSQL connections.",
-        "V167: validaciones institucionales secuenciales cumplen, pero sin transacciones solapadas comprobadas; control extremo de concurrencia permanece abierto."
+        "V167: validaciones institucionales secuenciales cumplen, pero sin transacciones solapadas comprobadas; control extremo de concurrencia permanece abierto.",
+        "V168: conteos verificados: 4 sacraments × 2 notas, 6 auditorías y 1 notificación por lote, cero QA después de ROLLBACK; concurrencia física no certificada."
       ],
-      "updated_at": "2026-10-23T15:10:28.903Z"
+      "updated_at": "2026-10-23T16:09:46.263Z"
     },
     {
       "id": "32.09",
@@ -4299,9 +4326,10 @@
       "criterion": "Confirmar producción Ready",
       "status": "APROBADO",
       "evidence": [
-        "AUDITORIA_CIERRE_TECNICO_V91_2026-10-21.md: Despliegue Vercel de código V91 Ready; nota: app no certificada integralmente"
+        "AUDITORIA_CIERRE_TECNICO_V91_2026-10-21.md: Despliegue Vercel de código V91 Ready; nota: app no certificada integralmente",
+        "V168: GitHub main commit 32dfdbb pasó CI #39982084560 y estado Vercel success en el mismo SHA."
       ],
-      "updated_at": "2026-10-21T17:24:16.166Z"
+      "updated_at": "2026-10-23T16:09:46.263Z"
     },
     {
       "id": "32.10",
@@ -4311,9 +4339,10 @@
       "criterion": "Dictamen con limitaciones verificadas",
       "status": "EN_PROGRESO",
       "evidence": [
-        "V124: dictamen parcial identifica dos P0 corregidos, 131 RPC sin validación exhaustiva, default ACL supabase_admin y 64 WARN GraphQL pendientes."
+        "V124: dictamen parcial identifica dos P0 corregidos, 131 RPC sin validación exhaustiva, default ACL supabase_admin y 64 WARN GraphQL pendientes.",
+        "V168: cierre parcial de bug multi-nota; no se declara certificación jurídica, transaccional concurrente ni E2E con dos diócesis reales."
       ],
-      "updated_at": "2026-10-22T13:46:56.492Z"
+      "updated_at": "2026-10-23T16:09:46.263Z"
     }
   ]
 }
