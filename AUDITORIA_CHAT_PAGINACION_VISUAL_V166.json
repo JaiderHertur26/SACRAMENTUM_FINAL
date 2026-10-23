@@ -1,0 +1,103 @@
+{
+  "scope": "Real React chat + isolated fictitious 312-message Chrome test, two mock users; no Supabase network.",
+  "steps": [
+    {
+      "name": "INITIAL_80",
+      "passed": true,
+      "observed": {
+        "count": 80,
+        "legacy": 73,
+        "recent": 7,
+        "unique": 80,
+        "hasOlder": true,
+        "aRoom": true,
+        "bRoom": false,
+        "bMessage": false,
+        "overflow": false,
+        "subscriptions": 1
+      }
+    },
+    {
+      "name": "PAGE_160",
+      "passed": true,
+      "observed": {
+        "count": 160,
+        "legacy": 153,
+        "recent": 7,
+        "unique": 160,
+        "hasOlder": true,
+        "aRoom": true,
+        "bRoom": false,
+        "bMessage": false,
+        "overflow": false,
+        "subscriptions": 1
+      }
+    },
+    {
+      "name": "PAGE_240",
+      "passed": true,
+      "observed": {
+        "count": 240,
+        "legacy": 233,
+        "recent": 7,
+        "unique": 240,
+        "hasOlder": true,
+        "aRoom": true,
+        "bRoom": false,
+        "bMessage": false,
+        "overflow": false,
+        "subscriptions": 1
+      }
+    },
+    {
+      "name": "PAGE_312",
+      "passed": true,
+      "observed": {
+        "count": 312,
+        "legacy": 305,
+        "recent": 7,
+        "unique": 312,
+        "hasOlder": false,
+        "aRoom": true,
+        "bRoom": false,
+        "bMessage": false,
+        "overflow": false,
+        "subscriptions": 1
+      }
+    },
+    {
+      "name": "FULL_HISTORY",
+      "passed": true,
+      "observed": {
+        "count": 312,
+        "legacy": 305,
+        "recent": 7,
+        "unique": 312,
+        "hasOlder": false,
+        "aRoom": true,
+        "bRoom": false,
+        "bMessage": false,
+        "overflow": false,
+        "subscriptions": 1
+      }
+    },
+    {
+      "name": "CROSS_IDENTITY_HISTORY_REMOVED",
+      "passed": true,
+      "observed": {
+        "count": 0,
+        "legacy": 0,
+        "recent": 0,
+        "unique": 0,
+        "hasOlder": false,
+        "aRoom": false,
+        "bRoom": true,
+        "bMessage": true,
+        "overflow": false,
+        "subscriptions": 1
+      }
+    }
+  ],
+  "errors": [],
+  "passed": true
+}

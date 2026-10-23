@@ -24,9 +24,13 @@ export const startDirectChat = async (profileId) => {
   return data;
 };
 
-export const getChatRoomMessages = async (roomId, limit = 100, before = null) => {
-  const { data, error } = await supabase.rpc('get_chat_room_messages', {
-    p_room_id: roomId, p_limit: limit, p_before: before,
+// V166: a stable (created_at, id) cursor prevents omitted legacy rows with tied timestamps.
+export const getChatRoomMessages = async (roomId, limit = 80, before = null) => {
+  const { data, error } = await supabase.rpc('get_chat_room_messages_v166', {
+    p_room_id: roomId,
+    p_limit: limit,
+    p_before_created_at: before?.created_at || null,
+    p_before_id: before?.id || null,
   });
   if (error) throw error;
   return Array.isArray(data) ? data : [];

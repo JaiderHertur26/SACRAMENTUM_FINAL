@@ -13,6 +13,19 @@ const messages={
  A:[{id:uuid(701),room_id:uuid(501),body:'MENSAJE CONFIDENCIAL A · V164',sender_profile_id:uuid(151),sender_name:'Usuario A',created_at:'2026-10-23T12:00:00Z'}],
  B:[{id:uuid(702),room_id:uuid(502),body:'MENSAJE CONFIDENCIAL B · V164',sender_profile_id:uuid(152),sender_name:'Usuario B',created_at:'2026-10-23T12:01:00Z'}]
 };
+if(new URLSearchParams(location.search).get('v166History')==='1'){
+ messages.A.splice(0,messages.A.length,
+  ...Array.from({length:305},(_,i)=>({
+    id:uuid(10000+i),room_id:uuid(501),body:'QA-V166-LEGACY-'+String(i+1).padStart(4,'0'),
+    sender_profile_id:uuid(151),sender_name:'Usuario A',created_at:'2012-01-01T10:00:00.000Z'
+  })),
+  ...Array.from({length:7},(_,i)=>({
+    id:uuid(20000+i),room_id:uuid(501),body:'QA-V166-RECENT-'+String(i+1),
+    sender_profile_id:uuid(151),sender_name:'Usuario A',
+    created_at:new Date(Date.UTC(2026,0,1,10,0,i+1)).toISOString()
+  }))
+ );
+}
 const key=()=>actor?.profile?.diocese_id===uuid(11)?'A':'B';
 window.__chatqa={
  subscriptions:0,subscribed:0,unsubscribed:0,history:[],slowA:false,
@@ -37,10 +50,14 @@ export const listMyChatRooms=async()=>{
  if(scope==='A'&&window.__chatqa.slowA)await delay(900);else await delay(65);
  return result;
 };
-export const getChatRoomMessages=async(roomId)=>{
+export const getChatRoomMessages=async(roomId,limit=80,before=null)=>{
  const scope=roomId===uuid(501)?'A':'B';
  if(scope==='A'&&window.__chatqa.slowA)await delay(900);else await delay(65);
- return messages[scope].map(x=>({...x}));
+ const sorted=messages[scope].filter(x=>!before||
+  x.created_at<before.created_at||(x.created_at===before.created_at&&x.id<before.id))
+  .sort((a,b)=>b.created_at.localeCompare(a.created_at)||b.id.localeCompare(a.id))
+  .slice(0,limit).reverse();
+ return sorted.map(x=>({...x}));
 };
 export const markChatRoomRead=async()=>{};
 export const requestChatBadgeRefresh=()=>{};
