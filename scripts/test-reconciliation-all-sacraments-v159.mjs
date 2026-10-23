@@ -54,7 +54,7 @@ test('V159 has rollback and no committed QA rows',()=>{
  assert.doesNotMatch(qa,/^\s*COMMIT\b/im);
 });
 test('V159 service lists via the scoped institutional RPC',()=>{
- assert.match(svc,/list_later_note_reconciliations_v157/);
+ assert.match(svc,/list_later_note_reconciliations_v157|list_later_note_reconciliations_v161/);
  assert.match(schema,/current_app_diocese_id\(\) IS DISTINCT FROM p_diocese_id/);
 });
 test('V159 UI supports both roles but does not directly alter sacramental records',()=>{

@@ -34,15 +34,15 @@ try{
   throw Error('Page did not render '+role);
  }
  const scenarios=[
-  {id:'diocese-authorize',role:'diocese',index:0,button:'Autorizar expediente',ref:'APROBACIÓN QA V160 101',reason:'Autorización ficticia documental suficientemente motivada y controlada.',expected:'approve'},
-  {id:'diocese-reject',role:'diocese',index:0,button:'Registrar rechazo',ref:'RECHAZO QA V160 102',reason:'El expediente no cumple los requisitos documentales de este ensayo.',expected:'reject'},
-  {id:'diocese-revoke',role:'diocese',index:1,button:'Revocar autorización',ref:'REVOCACIÓN QA V160 103',reason:'La autorización ficticia requiere dejarse sin efectos por nueva evidencia.',expected:'reject'},
-  {id:'chancery-execute',role:'chancery',index:1,button:'Ejecutar resolución autorizada',expected:'execute'}
+  {id:'diocese-authorize',role:'diocese',statusText:'Pendiente de Diócesis',button:'Autorizar expediente',ref:'APROBACIÓN QA V160 101',reason:'Autorización ficticia documental suficientemente motivada y controlada.',expected:'approve'},
+  {id:'diocese-reject',role:'diocese',statusText:'Pendiente de Diócesis',button:'Registrar rechazo',ref:'RECHAZO QA V160 102',reason:'El expediente no cumple los requisitos documentales de este ensayo.',expected:'reject'},
+  {id:'diocese-revoke',role:'diocese',statusText:'Autorizado · por ejecutar',button:'Revocar autorización',ref:'REVOCACIÓN QA V160 103',reason:'La autorización ficticia requiere dejarse sin efectos por nueva evidencia.',expected:'reject'},
+  {id:'chancery-execute',role:'chancery',statusText:'Autorizado · por ejecutar',button:'Ejecutar resolución autorizada',expected:'execute'}
  ];
  for(const x of scenarios){
   await navigate(x.role);
   const payload=JSON.stringify(x);
-  const click=await js(`(()=>{const s=${payload};const article=document.querySelectorAll('article')[s.index];
+  const click=await js(`(()=>{const s=${payload};const article=[...document.querySelectorAll('article')].find(x=>[...x.querySelectorAll('button')].some(b=>b.innerText.trim()===s.button));
    if(!article)return {error:'article-missing'};
    const button=[...article.querySelectorAll('button')].find(x=>x.innerText.trim()===s.button);
    if(!button)return {error:'button-missing',available:[...article.querySelectorAll('button')].map(x=>x.innerText.trim())};
@@ -58,7 +58,7 @@ try{
   })()`);
   if(!click.clicked){outcomes.push({id:x.id,passed:false,click});console.log('FAIL '+x.id+': '+JSON.stringify(click));continue;}
   await sleep(150);
-  await js(`(()=>{const s=${payload};const article=document.querySelectorAll('article')[s.index];
+  await js(`(()=>{const s=${payload};const article=[...document.querySelectorAll('article')].find(x=>[...x.querySelectorAll('button')].some(b=>b.innerText.trim()===s.button));
    const button=[...article.querySelectorAll('button')].find(x=>x.innerText.trim()===s.button);
    if(button)button.click();return true;})()`);
   await sleep(450);

@@ -1,0 +1,29 @@
+{
+  "scope": "Actual React component, isolated real Chrome, 315+ fictional rejected and old pending, no real Supabase authentication or data.",
+  "initial": {
+    "articles": 50,
+    "counters": [
+      "Todos (320)",
+      "Pendientes (2)",
+      "Autorizados (1)",
+      "Ejecutados (1)",
+      "Rechazados (316)"
+    ],
+    "oldVisible": false
+  },
+  "pending": {
+    "articles": 2,
+    "oldVisible": true
+  },
+  "rejectedFirst": {
+    "articles": 50,
+    "loadMore": true
+  },
+  "rejectedSecond": {
+    "articles": 100,
+    "unique": 100
+  },
+  "allNoOverflow": true,
+  "errors": [],
+  "passed": true
+}

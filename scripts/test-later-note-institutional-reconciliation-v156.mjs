@@ -72,7 +72,7 @@ test('V156 limits list to own diocese and authorized roles',()=>{
 test('V156 frontend uses RPC wrappers and no direct marginal note status mutation',()=>{
  for(const name of ['request_later_note_reconciliation_v156','approve_later_note_reconciliation_v156','execute_later_note_reconciliation_v156'])
  assert.ok(svc.includes(name),name);
- assert.ok(svc.includes('list_later_note_reconciliations_v156') || svc.includes('list_later_note_reconciliations_v157'), 'expected scoped versioned list RPC');
+ assert.ok(svc.includes('list_later_note_reconciliations_v156') || svc.includes('list_later_note_reconciliations_v157') || svc.includes('list_later_note_reconciliations_v161'), 'expected scoped versioned list RPC');
  assert.doesNotMatch(page,/\.from\('marginal_notes'\)[\s\S]*?\.update\(/);
 });
 test('V156 has distinct protected routes for chancery and diocese',()=>{

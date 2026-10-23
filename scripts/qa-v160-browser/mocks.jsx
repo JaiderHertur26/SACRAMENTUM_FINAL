@@ -8,6 +8,17 @@ const records=[
 {id:uuid(103),decree_id:uuid(203),note_id:uuid(303),diocese_id:uuid(1),parish_id:uuid(10),status:'rejected',request_reason:'La fuente documental necesita nuevas comprobaciones.',source_reference:'ARCHIVO V160 / TOMO 3',rejection_reference:'RECHAZO FICTICIO V160 003',rejection_reason:'Referencia documental insuficiente: se rechazó sin alterar partidas ni decretos.',requested_at:'2026-10-22T17:00:00Z'},
 {id:uuid(104),decree_id:uuid(204),note_id:uuid(304),diocese_id:uuid(1),parish_id:uuid(10),status:'executed',request_reason:'Conciliación ficticia ejecutada con auditoría y notificación.',source_reference:'ARCHIVO V160 / TOMO 4',requested_at:'2026-10-22T18:00:00Z'}
 ];
+if(params.get('backlog')==='1'){
+ records.push({id:uuid(9999),decree_id:uuid(2999),note_id:uuid(3999),
+   diocese_id:uuid(1),parish_id:uuid(10),status:'pending',
+   request_reason:'EXPEDIENTE ANTIGUO PENDIENTE V161 · NO DEBE DESAPARECER',
+   source_reference:'ARCHIVO ANTIGUO QA V161',requested_at:'2026-09-01T00:00:00Z'});
+ for(let i=0;i<315;i++)records.push({id:uuid(10000+i),decree_id:uuid(20000+i),
+   note_id:uuid(30000+i),diocese_id:uuid(1),parish_id:uuid(10),status:'rejected',
+   request_reason:'Expediente histórico rechazado ficticio V161 '+i,
+   source_reference:'ARCHIVO HISTORICO QA '+i,
+   requested_at:new Date(Date.UTC(2026,9,23,0,i,0)).toISOString()});
+}
 window.__v160={role,history:[],records};
 export default function DashboardLayout({children}){return <div className="min-h-screen bg-slate-100">
  <div className="bg-amber-100 px-4 py-2 text-center text-xs font-bold text-amber-900">QA V160 AISLADA · {role.toUpperCase()} · DATOS TOTALMENTE FICTICIOS · SIN CONEXIÓN A SUPABASE</div>
@@ -16,7 +27,15 @@ export default function DashboardLayout({children}){return <div className="min-h
 export const useAuth=()=>({user:{role,dioceseId:uuid(1),chanceryId:uuid(2)}});
 export const useToast=()=>({toast:x=>window.__v160.history.push({action:'toast',title:x.title})});
 export async function institutionalConfirm(x){window.__v160.history.push({action:'confirm',title:x.title});return true;}
-export const listLaterNoteReconciliations=async()=>records.map(x=>({...x}));
+export const listLaterNoteReconciliations=async(_dioceseId,{status='all',limit=50,cursor=null}={})=>records
+ .filter(x=>(status==='all'||x.status===status)&&(!cursor||(x.requested_at<cursor.requested_at||(x.requested_at===cursor.requested_at&&x.id<cursor.id))))
+ .sort((a,b)=>b.requested_at.localeCompare(a.requested_at)||b.id.localeCompare(a.id)).slice(0,limit).map(x=>({...x}));
+export const countLaterNoteReconciliations=async()=>({
+ all:records.length,pending:records.filter(x=>x.status==='pending').length,
+ authorized:records.filter(x=>x.status==='authorized').length,
+ executed:records.filter(x=>x.status==='executed').length,
+ rejected:records.filter(x=>x.status==='rejected').length
+});
 export const requestLaterNoteReconciliation=async p=>{
  window.__v160.history.push({action:'request',payload:p});
  records.push({id:uuid(105),decree_id:p.decreeId,note_id:p.noteId,diocese_id:uuid(1),status:'pending',request_reason:p.reason,source_reference:p.sourceReference,requested_at:new Date().toISOString()}); return uuid(105);};

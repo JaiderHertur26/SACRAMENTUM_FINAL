@@ -88,7 +88,7 @@ test('V157 QA is rollback-only',()=>{
  assert.doesNotMatch(qa,/^\s*COMMIT\b/im);
 });
 test('V157 frontend service uses versioned read and rejection RPC',()=>{
- assert.match(service,/list_later_note_reconciliations_v157/);
+ assert.match(service,/list_later_note_reconciliations_v157|list_later_note_reconciliations_v161/);
  assert.match(service,/reject_later_note_reconciliation_v157/);
  assert.doesNotMatch(service,/\.from\('later_note_reconciliations_v156'\)/);
 });

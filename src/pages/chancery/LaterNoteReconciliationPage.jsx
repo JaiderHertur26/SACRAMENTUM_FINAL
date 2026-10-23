@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import DashboardLayout from '@/components/DashboardLayout';
 import { useAuth } from '@/context/AuthContext';
@@ -9,6 +9,7 @@ import {
   approveLaterNoteReconciliation,
   executeLaterNoteReconciliation,
   listLaterNoteReconciliations,
+  countLaterNoteReconciliations,
   requestLaterNoteReconciliation,
   rejectLaterNoteReconciliation
 } from '@/services/laterNoteReconciliationService';
@@ -19,6 +20,8 @@ const statusLabel = {
   executed:'Ejecutado y notificado',rejected:'Rechazado'
 };
 const empty = {decreeId:'',noteId:'',reason:'',sourceReference:''};
+const PAGE_SIZE=50;
+const filters=[['all','Todos'],['pending','Pendientes'],['authorized','Autorizados'],['executed','Ejecutados'],['rejected','Rechazados']];
 const inputClass = 'w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 focus:border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-100';
 const buttonClass = 'inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-bold disabled:cursor-not-allowed disabled:opacity-50';
 
@@ -30,6 +33,11 @@ export default function LaterNoteReconciliationPage() {
   const dioceseRole = role === 'diocese';
   const [dioceseId,setDioceseId]=useState(user?.dioceseId || user?.diocese_id || '');
   const [items,setItems]=useState([]);
+  const [totals,setTotals]=useState({all:0,pending:0,authorized:0,executed:0,rejected:0});
+  const [statusFilter,setStatusFilter]=useState('all');
+  const [hasMore,setHasMore]=useState(false);
+  const [loadingMore,setLoadingMore]=useState(false);
+  const listVersion=useRef(0);
   const [form,setForm]=useState(empty);
   const [availableNotes,setAvailableNotes]=useState([]);
   const [lookingUp,setLookingUp]=useState(false);
@@ -55,21 +63,45 @@ export default function LaterNoteReconciliationPage() {
   },[user]);
 
   const reload=useCallback(async()=>{
-    if(!dioceseId)return;
-    setLoading(true);setError('');
-    try{setItems((await listLaterNoteReconciliations(dioceseId))||[]);}
-    catch(e){setError(e.message);}
-    finally{setLoading(false);}
-  },[dioceseId]);
+    const version=++listVersion.current;
+    if(!dioceseId){
+      setItems([]);setTotals({all:0,pending:0,authorized:0,executed:0,rejected:0});
+      setHasMore(false);return;
+    }
+    setLoading(true);setError('');setHasMore(false);
+    try{
+      const [rows,counts]=await Promise.all([
+        listLaterNoteReconciliations(dioceseId,{status:statusFilter,limit:PAGE_SIZE}),
+        countLaterNoteReconciliations(dioceseId)
+      ]);
+      if(version!==listVersion.current)return;
+      setItems(rows||[]);
+      setTotals(counts||{all:0,pending:0,authorized:0,executed:0,rejected:0});
+      setHasMore((rows||[]).length===PAGE_SIZE);
+    }catch(e){if(version===listVersion.current)setError(e.message);}
+    finally{if(version===listVersion.current)setLoading(false);}
+  },[dioceseId,statusFilter]);
 
   useEffect(()=>{reload();},[reload]);
 
-  const totals=useMemo(()=>({
-    pending:items.filter(x=>x.status==='pending').length,
-    authorized:items.filter(x=>x.status==='authorized').length,
-    executed:items.filter(x=>x.status==='executed').length,
-    rejected:items.filter(x=>x.status==='rejected').length
-  }),[items]);
+  const loadMore=async()=>{
+    if(!dioceseId||loading||loadingMore||!hasMore||!items.length)return;
+    const last=items[items.length-1],version=listVersion.current;
+    setLoadingMore(true);setError('');
+    try{
+      const rows=(await listLaterNoteReconciliations(dioceseId,{
+        status:statusFilter,limit:PAGE_SIZE,
+        cursor:{requested_at:last.requested_at,id:last.id}
+      }))||[];
+      if(version!==listVersion.current)return;
+      setItems(prev=>{
+        const existing=new Set(prev.map(item=>item.id));
+        return [...prev,...rows.filter(item=>!existing.has(item.id))];
+      });
+      setHasMore(rows.length===PAGE_SIZE);
+    }catch(e){if(version===listVersion.current)setError(e.message);}
+    finally{if(version===listVersion.current)setLoadingMore(false);}
+  };
 
   const notifyError=e=>{
     toast({title:'Conciliación no realizada',description:e?.message||'No se completó la operación',variant:'destructive'});
@@ -269,8 +301,18 @@ export default function LaterNoteReconciliationPage() {
           <div><h2 className="text-lg font-bold text-slate-900">Expedientes institucionales</h2>
             <p className="text-xs text-slate-600">Diócesis autoriza de forma independiente; Cancillería ejecuta únicamente los autorizados.</p></div>
         </div>
+        <div aria-label="Filtrar expedientes por estado" className="mb-5 flex flex-wrap gap-2">
+          {filters.map(([key,label])=><button key={key} type="button"
+            aria-pressed={statusFilter===key} disabled={loading||!!busy}
+            onClick={()=>setStatusFilter(key)}
+            className={buttonClass+(statusFilter===key
+              ? ' bg-indigo-800 text-white'
+              : ' border border-slate-300 bg-white text-slate-800 hover:bg-indigo-50')}>
+            {label} ({totals[key]??0})
+          </button>)}
+        </div>
         {loading?<p className="py-8 text-center text-sm text-slate-500">Consultando expedientes…</p>:
-          items.length===0?<p className="py-8 text-center text-sm text-slate-500">No hay solicitudes registradas en esta diócesis.</p>:
+          items.length===0?<p className="py-8 text-center text-sm text-slate-500">No hay expedientes para el estado seleccionado.</p>:
           <div className="space-y-4">{items.map(x=><article key={x.id} className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <span className="text-xs font-bold uppercase tracking-wide text-slate-600">{statusLabel[x.status]||x.status}</span>
@@ -313,6 +355,15 @@ export default function LaterNoteReconciliationPage() {
             {chancery && x.status==='authorized' && <button type="button" onClick={()=>doExecute(x)} disabled={!!busy}
               className={buttonClass+' mt-4 bg-amber-700 text-white'}>Ejecutar resolución autorizada</button>}
           </article>)}</div>}
+        {hasMore && !loading && <button type="button" onClick={loadMore}
+          disabled={loadingMore||!!busy}
+          className={buttonClass+' mt-5 w-full border border-indigo-300 bg-indigo-50 text-indigo-900 hover:bg-indigo-100'}>
+          {loadingMore?'Cargando expedientes…':'Cargar 50 expedientes anteriores'}
+        </button>}
+        {!loading && items.length>0 && <p className="mt-3 text-xs text-slate-500">
+          Mostrando {items.length} expedientes del filtro «{filters.find(x=>x[0]===statusFilter)?.[1]||statusFilter}».
+          {hasMore?' Hay más páginas disponibles.':' Fin de resultados.'}
+        </p>}
       </section>
 
       <Link to={chancery?'/chancery/decretos/archivo':'/diocese/decretos/archivo'}

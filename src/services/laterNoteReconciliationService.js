@@ -8,8 +8,16 @@ const rpc = async (name, params) => {
   return data;
 };
 
-export const listLaterNoteReconciliations = (dioceseId) =>
-  rpc('list_later_note_reconciliations_v157',{p_diocese_id:dioceseId});
+// V161: fetch current scope in bounded, deterministic keyset pages.
+export const listLaterNoteReconciliations = (dioceseId, {status='all',limit=50,cursor=null}={}) =>
+  rpc('list_later_note_reconciliations_v161',{
+    p_diocese_id:dioceseId,p_status:status,p_page_size:limit,
+    p_before_requested_at:cursor?.requested_at || null,
+    p_before_id:cursor?.id || null
+  });
+
+export const countLaterNoteReconciliations = (dioceseId) =>
+  rpc('count_later_note_reconciliations_v161',{p_diocese_id:dioceseId});
 
 export const requestLaterNoteReconciliation = ({decreeId,noteId,reason,sourceReference}) =>
   rpc('request_later_note_reconciliation_v156',{
