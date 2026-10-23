@@ -2,7 +2,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-const migration=fs.readFileSync('supabase/migrations/20261023175641_archive_notification_active_profile_v171.sql','utf8');
+const migration=fs.readFileSync('supabase/migrations/20261023180236_archive_notification_active_profile_v171.sql','utf8');
 const pre=fs.readFileSync('scripts/qa-rollback-notification-archive-status-repro-v171.sql','utf8');
 const post=fs.readFileSync('scripts/qa-rollback-notification-archive-active-profile-v171.sql','utf8');
 test('V171 hardens precisely one preexisting archive SECURITY DEFINER RPC',()=>{

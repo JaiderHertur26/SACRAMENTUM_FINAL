@@ -31,7 +31,7 @@ Fecha: 23 de octubre de 2026. Ruta de trabajo: C:\\SACRAMENTUM\\SACRAMENTUM_FINA
 La RPC \`archive_matrimonial_notification_recipient(uuid)\` (SECURITY DEFINER) sólo exigía \`is_active=true\` y rol parroquia, pero no comprobaba \`user_profiles.status='ACTIVE'\`. Por ello, un perfil ficticio \`status='SUSPENDED'\` / \`is_active=true\` consiguió cancelar un aviso ficticio propio. Se verificó directamente en PostgreSQL Supabase bajo \`BEGIN/ROLLBACK\` antes de aplicar el parche.
 
 ## Corrección
-Migración \`supabase/migrations/20261023175641_archive_notification_active_profile_v171.sql\`: cambio quirúrgico en la función existente mediante \`pg_get_functiondef\` y comparación de anclaje exacto. Añade \`upper(coalesce(up.status,'ACTIVE'))='ACTIVE'\` al filtro de autoridad. Firma, permisos, otras RPC, notas y partidas sin cambios.
+Migración \`supabase/migrations/20261023180236_archive_notification_active_profile_v171.sql\`: cambio quirúrgico en la función existente mediante \`pg_get_functiondef\` y comparación de anclaje exacto. Añade \`upper(coalesce(up.status,'ACTIVE'))='ACTIVE'\` al filtro de autoridad. Firma, permisos, otras RPC, notas y partidas sin cambios.
 
 ## Ensayos realizados
 - Pre-corrección en Supabase: \`scripts/qa-rollback-notification-archive-status-repro-v171.sql\`, cuenta de laboratorio suspendida logró cancelar aviso ficticio (defecto comprobado).
@@ -42,9 +42,9 @@ Migración \`supabase/migrations/20261023175641_archive_notification_active_prof
 - Auditoría maestra sin promociones de controles: ${JSON.stringify(counts)}.
 
 ## Publicación
-La migración permanente en Supabase y la comprobación GitHub/Vercel se registrarán después de superar los gates de integración. Hasta entonces no declarar reparación productiva completa.
+GitHub PR #17 aprobó sus controles de integración. La migración permanente 20261023180236_archive_notification_active_profile_v171 fue aplicada a Supabase y la prueba reversible volvió a aprobar directamente contra la RPC instalada. PostgreSQL confirma validación de status presente, EXECUTE de authenticated=true, anon=false, y cero usuarios, avisos y trazas QA-V171 residuales. La publicación del mismo commit en Vercel requiere verificar el CI final tras reconciliar el nombre de archivo.
 
-**Dictamen local:** falla de control del estado institucional reproducida y mitigación validada reversiblemente; pendiente su publicación y verificación permanente.
+**Dictamen V171:** vulnerabilidad de archivado por perfil suspendido reproducida y corregida en Supabase, con QA transaccional posterior satisfactoria. La certificación E2E autenticada entre diócesis y la concurrencia física PostgreSQL siguen pendientes.
 `;
 fs.writeFileSync('AUDITORIA_ARCHIVADO_NOTIFICACIONES_V171_2026-10-23.md',report);
 console.log('V171 evidence local: '+t+' synthetic, 28/28 gates, '+JSON.stringify(counts));
