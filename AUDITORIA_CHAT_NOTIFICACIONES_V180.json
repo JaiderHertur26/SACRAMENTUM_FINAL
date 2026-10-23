@@ -1,0 +1,48 @@
+{
+  "protocol": "V180",
+  "date": "2026-10-23",
+  "migration": "20261023223152_strict_chat_notification_profile_v180.sql",
+  "securityFinding": "One false-active anonymous-looking institutional profile with status NULL and is_active=true was permitted to query a 3-entry internal Chat directory despite current_app_role() denying all institutional role",
+  "personalContactValuesRetained": false,
+  "affectedFunctions": [
+    "archive_matrimonial_notification_recipient",
+    "cancel_matrimonial_notification",
+    "ensure_diocesan_chat_defaults",
+    "issue_document_from_template",
+    "issue_matrimonial_notification",
+    "list_chat_directory",
+    "list_my_chat_rooms",
+    "mark_sacramental_notification_read",
+    "mark_sacramental_receipt_read",
+    "process_manual_matrimonial_notification_physical"
+  ],
+  "realPostgresTemporary": {
+    "tests": 70,
+    "positiveActive": 10,
+    "negativeDeniedOrEmpty": 60,
+    "privacyRecordsReturnedToInvalidActor": 0,
+    "negativeStates": [
+      "NULL_STATUS",
+      "NULL_ACTIVE",
+      "SUSPENDED",
+      "DISABLED",
+      "PENDING",
+      "BLANK_STATUS"
+    ],
+    "residue": "Rollback; no permanent fixture data"
+  },
+  "software": {
+    "syntheticNodeTests": 1393,
+    "strictQualityPassed": 28
+  },
+  "certificationLimits": [
+    "No real signed-in two-diocese E2E",
+    "No physical overlapping PostgreSQL sessions",
+    "No full Chat or matrimonial notification UI business E2E"
+  ],
+  "masterCounts": {
+    "APROBADO": 10,
+    "EN_PROGRESO": 117,
+    "PENDIENTE": 198
+  }
+}
