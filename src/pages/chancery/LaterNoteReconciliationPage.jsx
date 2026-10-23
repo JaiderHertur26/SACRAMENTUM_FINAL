@@ -8,6 +8,7 @@ import { institutionalConfirm } from '@/lib/institutionalDialog';
 import {
   approveLaterNoteReconciliation,
   executeLaterNoteReconciliation,
+  executeLaterNoteReconciliationBatch,
   listLaterNoteReconciliations,
   countLaterNoteReconciliations,
   requestLaterNoteReconciliation,
@@ -56,6 +57,15 @@ export default function LaterNoteReconciliationPage() {
   const dataCurrent = scopeCurrent && loadedScope===identityKey;
   const visibleItems = dataCurrent ? items : [];
   const visibleTotals = dataCurrent ? totals : {all:0,pending:0,authorized:0,executed:0,rejected:0};
+  // Execute all authorized notes of one decree in the same database transaction.
+  // Do not offer batch execution until the entire authorized keyset has loaded.
+  const authorizedGroups = visibleItems.reduce((by,caseItem)=>{
+    if (caseItem.status==='authorized') {
+      (by[caseItem.decree_id]??=[]).push(caseItem);
+    }
+    return by;
+  },{});
+  const completeAuthorizedList = statusFilter==='authorized' && !hasMore && !loading && !loadingMore;
 
   useEffect(()=>{
     // Fail closed: a new Supabase identity must never see the prior user's
@@ -242,6 +252,27 @@ export default function LaterNoteReconciliationPage() {
     finally{setBusy('');}
   };
 
+  const doExecuteGroup=async(group)=>{
+    if(!chancery || !dataCurrent || busy || !completeAuthorizedList ||
+        !Array.isArray(group) || group.length<2 || group.length>30 ||
+        new Set(group.map(x=>x.decree_id)).size!==1) return;
+    const confirmed=await institutionalConfirm({
+      title:'Conciliar varias notas autorizadas',
+      message:'Se conciliarán '+group.length+' notas manuales independientes autorizadas del mismo decreto y se revertirá el decreto UNA sola vez. Cada expediente conserva su aprobación diocesana; se registrará auditoría individual y una notificación consolidada. Si falta alguna nota o cambió el expediente, no se aplicará ningún cambio. ¿Continuar?',
+      confirmText:'Ejecutar conciliación conjunta',tone:'danger'
+    });
+    if(!confirmed)return;
+    const scopeAtStart=identityKey;
+    setBusy('batch:'+group[0].decree_id);setError('');
+    try{
+      await executeLaterNoteReconciliationBatch(group.map(x=>x.id));
+      if(scopeAtStart!==identityKey)return;
+      toast({title:'Conciliación conjunta registrada',description:group.length+' notas conciliadas, decreto revertido y notificación consolidada.'});
+      await reload();
+    }catch(err){if(scopeAtStart===identityKey)notifyError(err);}
+    finally{setBusy('');}
+  };
+
   return <DashboardLayout>
     <main className="mx-auto max-w-6xl space-y-6 p-4 pb-16 md:p-7">
       <header className="rounded-3xl bg-slate-900 px-6 py-8 text-white shadow-lg">
@@ -384,8 +415,30 @@ export default function LaterNoteReconciliationPage() {
                 {x.status==='authorized'?'Revocar autorización':'Registrar rechazo'}
               </button>
             </div>}
-            {chancery && x.status==='authorized' && <button type="button" onClick={()=>doExecute(x)} disabled={!!busy}
-              className={buttonClass+' mt-4 bg-amber-700 text-white'}>Ejecutar resolución autorizada</button>}
+            {chancery && x.status==='authorized' && !completeAuthorizedList &&
+              <p className="mt-3 text-xs font-semibold text-amber-900">
+                Para ejecutar, seleccione «Autorizados» y cargue todas las páginas. Así se verificarán todas las notas del decreto.
+              </p>}
+            {chancery && x.status==='authorized' && completeAuthorizedList &&
+              (authorizedGroups[x.decree_id]?.length||0)===1 &&
+              <button type="button" onClick={()=>doExecute(x)} disabled={!!busy}
+                className={buttonClass+' mt-4 bg-amber-700 text-white'}>
+                Ejecutar resolución autorizada
+              </button>}
+            {chancery && x.status==='authorized' && completeAuthorizedList &&
+              (authorizedGroups[x.decree_id]?.length||0)>1 &&
+              authorizedGroups[x.decree_id]?.[0]?.id===x.id &&
+              <button type="button" onClick={()=>doExecuteGroup(authorizedGroups[x.decree_id])}
+                disabled={!!busy || authorizedGroups[x.decree_id].length>30}
+                className={buttonClass+' mt-4 bg-amber-700 text-white'}>
+                Ejecutar conciliación conjunta ({authorizedGroups[x.decree_id].length} notas)
+              </button>}
+            {chancery && x.status==='authorized' && completeAuthorizedList &&
+              (authorizedGroups[x.decree_id]?.length||0)>1 &&
+              authorizedGroups[x.decree_id]?.[0]?.id!==x.id &&
+              <p className="mt-3 text-xs font-semibold text-amber-900">
+                Esta nota se ejecutará conjuntamente con los demás expedientes autorizados del decreto.
+              </p>}
           </article>)}</div>}
         {hasMore && dataCurrent && !loading && <button type="button" onClick={loadMore}
           disabled={loadingMore||!!busy}
