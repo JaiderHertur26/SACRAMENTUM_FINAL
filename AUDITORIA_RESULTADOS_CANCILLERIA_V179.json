@@ -1,0 +1,38 @@
+{
+  "version": "V179",
+  "date": "2026-10-23",
+  "localMigration": "20261023220844_chancery_decree_fail_closed_v179.sql",
+  "reproduced": "SUSPENDED Chancellor reaches business validation in 5 definer RPCs. When status removed, NULL role comparison failed open unless IS DISTINCT FROM used.",
+  "rpcNames": [
+    "apply_marriage_correction",
+    "apply_funeral_correction",
+    "create_marriage_reposition_by_decree",
+    "create_funeral_reposition_by_decree",
+    "apply_marriage_nullity"
+  ],
+  "preliminaryPatch": {
+    "fiveActiveAuthorizationPasses": 5,
+    "twentyFiveInvalidRolesDenied": 25,
+    "transactions": "BEGIN/ROLLBACK",
+    "fullyExecutedDecrees": 0
+  },
+  "software": {
+    "nodeSyntheticPassed": 1362,
+    "qualityGatesPassed": 28
+  },
+  "mustVerifyAfterInstall": [
+    "Repeat 5/25 SQL QA on installed migration",
+    "Repeat existing marriage/funeral corrections and repositions SQL QA",
+    "Retest no fake records persisted"
+  ],
+  "scopeRestrictions": [
+    "No physical independent cross-diocese sessions",
+    "No simultaneous PostgreSQL transactions",
+    "No claim of 5 completed decree business operations"
+  ],
+  "masterCounts": {
+    "APROBADO": 10,
+    "EN_PROGRESO": 117,
+    "PENDIENTE": 198
+  }
+}
