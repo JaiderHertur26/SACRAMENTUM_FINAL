@@ -1,5 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';
-const migration=fs.readFileSync('supabase/migrations/20261023203219_fail_closed_institutional_identity_v176.sql','utf8');
+const migration=fs.readFileSync('supabase/migrations/20261023203903_fail_closed_institutional_identity_v176.sql','utf8');
 const repro=fs.readFileSync('scripts/qa-rollback-undefined-profile-role-repro-v176.sql','utf8');
 const qa=fs.readFileSync('scripts/qa-rollback-institutional-identity-v176.sql','utf8');
 const names=['current_app_role','current_app_diocese_id','current_app_parish_id','current_app_chancery_id','current_chat_profile_id','can_access_chat_room','current_effective_diocese_id'];
