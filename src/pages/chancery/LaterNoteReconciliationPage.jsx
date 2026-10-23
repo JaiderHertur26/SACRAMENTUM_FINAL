@@ -9,7 +9,8 @@ import {
   approveLaterNoteReconciliation,
   executeLaterNoteReconciliation,
   listLaterNoteReconciliations,
-  requestLaterNoteReconciliation
+  requestLaterNoteReconciliation,
+  rejectLaterNoteReconciliation
 } from '@/services/laterNoteReconciliationService';
 import { FileCheck2, RefreshCw, ShieldCheck, Scale, AlertTriangle } from 'lucide-react';
 
@@ -33,6 +34,7 @@ export default function LaterNoteReconciliationPage() {
   const [availableNotes,setAvailableNotes]=useState([]);
   const [lookingUp,setLookingUp]=useState(false);
   const [approve,setApprove]=useState({});
+  const [reject,setReject]=useState({});
   const [loading,setLoading]=useState(false);
   const [busy,setBusy]=useState('');
   const [error,setError]=useState('');
@@ -65,7 +67,8 @@ export default function LaterNoteReconciliationPage() {
   const totals=useMemo(()=>({
     pending:items.filter(x=>x.status==='pending').length,
     authorized:items.filter(x=>x.status==='authorized').length,
-    executed:items.filter(x=>x.status==='executed').length
+    executed:items.filter(x=>x.status==='executed').length,
+    rejected:items.filter(x=>x.status==='rejected').length
   }),[items]);
 
   const notifyError=e=>{
@@ -93,7 +96,8 @@ export default function LaterNoteReconciliationPage() {
         .eq('print_policy','optional')
         .order('created_at',{ascending:false});
       if(noteError)throw noteError;
-      setAvailableNotes(notes||[]);
+      setAvailableNotes((notes||[]).filter(n=>!n.source_type || String(n.source_type).toLowerCase()==='manual'));
+      setForm(v=>({...v,noteId:''}));
       if(!notes?.length)setError('No existen notas manuales independientes elegibles para ese decreto.');
     }catch(e){setError(e.message);}
     finally{setLookingUp(false);}
@@ -105,6 +109,7 @@ export default function LaterNoteReconciliationPage() {
     try{
       await requestLaterNoteReconciliation(form);
       setForm(empty);
+      setAvailableNotes([]);
       toast({title:'Solicitud registrada',description:'Pendiente de autorización independiente de Diócesis.'});
       await reload();
     }catch(err){notifyError(err);}
@@ -127,6 +132,30 @@ export default function LaterNoteReconciliationPage() {
     try{
       await approveLaterNoteReconciliation({caseId:x.id,authorizationReference:details.reference,approvalReason:details.reason});
       toast({title:'Autorización registrada',description:'Cancillería podrá ejecutar la operación conjunta tras verificar los antecedentes.'});
+      await reload();
+    }catch(err){notifyError(err);}
+    finally{setBusy('');}
+  };
+  const doReject=async(x)=>{
+    if(!dioceseRole || busy)return;
+    const details=reject[x.id]||{};
+    if((details.reference||'').trim().length<8 || (details.reason||'').trim().length<20){
+      setError('Para rechazar o revocar se requieren una referencia de 8 caracteres y un motivo de al menos 20.');
+      return;
+    }
+    const confirmed=await institutionalConfirm({
+      title:x.status==='authorized'?'Revocar autorización pendiente de ejecución':'Rechazar solicitud',
+      message:'Se archivará la decisión motivada y quedará liberada la posibilidad de una nueva solicitud. No se modifica la partida, la nota ni el decreto. ¿Confirmar?',
+      confirmText:x.status==='authorized'?'Revocar autorización':'Registrar rechazo',
+      tone:'warning'
+    });
+    if(!confirmed)return;
+    setBusy(x.id);setError('');
+    try{
+      await rejectLaterNoteReconciliation({
+        caseId:x.id,rejectionReference:details.reference,rejectionReason:details.reason
+      });
+      toast({title:'Decisión registrada',description:'El expediente quedó rechazado con su fundamento y sin alterar ninguna partida.'});
       await reload();
     }catch(err){notifyError(err);}
     finally{setBusy('');}
@@ -167,11 +196,12 @@ export default function LaterNoteReconciliationPage() {
         </div>
       </header>
 
-      <div className="grid gap-3 sm:grid-cols-3">
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {[
           ['Pendientes de aprobación',totals.pending],
           ['Autorizados sin ejecutar',totals.authorized],
-          ['Ejecutados',totals.executed]
+          ['Ejecutados',totals.executed],
+          ['Rechazados o revocados',totals.rejected]
         ].map(([label,count])=><div key={label} className="rounded-2xl border border-slate-200 bg-white p-5">
           <p className="text-xs font-semibold text-slate-500">{label}</p>
           <p className="mt-2 text-3xl font-extrabold text-slate-900">{loading?'—':count}</p>
@@ -197,7 +227,7 @@ export default function LaterNoteReconciliationPage() {
         <form className="grid gap-4 md:grid-cols-2" onSubmit={doRequest}>
           <label className="space-y-1 text-sm font-semibold text-slate-700">UUID del decreto
             <input className={inputClass} required value={form.decreeId}
-              onChange={e=>setForm(v=>({...v,decreeId:e.target.value}))} placeholder="ID de decreto vigente"/>
+              onChange={e=>{setForm(v=>({...v,decreeId:e.target.value,noteId:''}));setAvailableNotes([]);}} placeholder="ID de decreto vigente"/>
           </label>
           <div className="space-y-2">
             <button type="button" disabled={!form.decreeId || lookingUp}
@@ -249,6 +279,10 @@ export default function LaterNoteReconciliationPage() {
             <p className="mt-2 whitespace-pre-wrap text-sm text-slate-900">{x.request_reason}</p>
             <p className="mt-2 text-xs font-semibold text-slate-700">Fuente: {x.source_reference}</p>
             {x.approval_reference && <p className="mt-2 text-xs text-indigo-800">Autorización: {x.approval_reference}</p>}
+            {x.rejection_reason && <div className="mt-3 rounded-xl border border-red-200 bg-white p-3 text-xs text-red-900">
+              <strong>Rechazo o revocación:</strong> {x.rejection_reason}
+              <p className="mt-1">Referencia: {x.rejection_reference || 'No identificada'}</p>
+            </div>}
             {dioceseRole && x.status==='pending' && <div className="mt-4 space-y-3">
               <label className="block text-xs font-semibold text-slate-700">Referencia de autorización
                 <input className={inputClass+' mt-1'} value={approve[x.id]?.reference||''} onChange={e=>setApprove(v=>({...v,[x.id]:{...v[x.id],reference:e.target.value}}))} />
@@ -257,6 +291,23 @@ export default function LaterNoteReconciliationPage() {
                 <textarea className={inputClass+' mt-1'} rows={2} value={approve[x.id]?.reason||''} onChange={e=>setApprove(v=>({...v,[x.id]:{...v[x.id],reason:e.target.value}}))}/>
               </label>
               <button type="button" onClick={()=>doApprove(x)} disabled={!!busy} className={buttonClass+' bg-indigo-800 text-white'}>Autorizar expediente</button>
+            </div>}
+            {dioceseRole && (x.status==='pending' || x.status==='authorized') && <div className="mt-4 space-y-3 rounded-xl border border-red-200 bg-white p-4">
+              <p className="text-xs font-bold text-red-900">{x.status==='authorized'?'Revocar autorización antes de ejecutar':'Rechazar solicitud motivadamente'}</p>
+              <label className="block text-xs font-semibold text-slate-700">Referencia documental del rechazo
+                <input className={inputClass+' mt-1'} minLength={8}
+                  value={reject[x.id]?.reference||''}
+                  onChange={e=>setReject(v=>({...v,[x.id]:{...v[x.id],reference:e.target.value}}))}/>
+              </label>
+              <label className="block text-xs font-semibold text-slate-700">Motivo documentado
+                <textarea className={inputClass+' mt-1'} rows={2} minLength={20}
+                  value={reject[x.id]?.reason||''}
+                  onChange={e=>setReject(v=>({...v,[x.id]:{...v[x.id],reason:e.target.value}}))}/>
+              </label>
+              <button type="button" onClick={()=>doReject(x)} disabled={!!busy}
+                className={buttonClass+' border border-red-300 text-red-900 hover:bg-red-50'}>
+                {x.status==='authorized'?'Revocar autorización':'Registrar rechazo'}
+              </button>
             </div>}
             {chancery && x.status==='authorized' && <button type="button" onClick={()=>doExecute(x)} disabled={!!busy}
               className={buttonClass+' mt-4 bg-amber-700 text-white'}>Ejecutar resolución autorizada</button>}
