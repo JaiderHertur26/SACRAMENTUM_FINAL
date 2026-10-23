@@ -62,6 +62,7 @@ Avance: 325 controles totales; 10 aprobados; 117 en progreso; 198 pendientes; 0 
 - [ ] 03.07 · Sesiones simultáneas — PENDIENTE
   - Evidencia: V169: 20 pruebas Node sobre handlers reales de conciliación simulan cambio de identidad antes/durante llamadas y suprimen respuestas obsoletas. NO son dos sesiones reales autenticadas ni prueban solapamiento.
   - Evidencia: V170: Chrome aislado 6/6 A->B->logout->A comprobó que la vista de conciliaciones oculta inmediatamente contadores y expedientes; identidades simuladas, no dos cuentas Supabase reales.
+  - Evidencia: V175: Chrome with a completely fresh anonymous profile tested 107 actual React routes on production Vercel and local Vite. 58 protected and 49 aliases all redirected to login without browser exceptions. Does NOT cover authenticated UI.
 - [ ] 03.08 · Restauración tras refresh — PENDIENTE
 - [ ] 03.09 · Recuperación de contraseña — PENDIENTE
 - [ ] 03.10 · No claves privilegiadas en frontend — PENDIENTE
@@ -211,6 +212,7 @@ Avance: 325 controles totales; 10 aprobados; 117 en progreso; 198 pendientes; 0 
   - Evidencia: V172: prueba PostgreSQL reversible: diócesis extraña no puede leer, crear, actualizar ni eliminar tenure; parroquia titular CRUD válido, admin general lectura y cuenta suspendida bloqueada. No equivale a E2E navegador.
   - Evidencia: V173: funciones SECURITY DEFINER de Bautismo, Confirmación, Matrimonio, Exequias y narrativos fueron acotadas; pruebas con cuenta suspendida y diócesis falsa denegaron las acciones. E2E autenticado físico aún pendiente.
   - Evidencia: V174: 75/75 regresiones SQL activas con evidencia acumulada (30 previamente aprobadas, 45 verificadas ahora); 22 reproducciones históricas archivadas y no incluidas como éxitos actuales.
+  - Evidencia: V175: fifteen real HTTPS PostgREST anonymous requests against private tables returned HTTP 401 / SQL 42501, zero private rows; the published client key was recognized. RLS with real sessions across two dioceses still pending.
 - [ ] 06.08 · Search path de funciones — EN_PROGRESO
   - Evidencia: AUDITORIA_INVENTARIO_RPC_V91.json: Cribado search_path de funciones privilegiadas; falta verificación de todas sus dependencias
   - Evidencia: V124: ambas RPC destructivas preservaron search_path fijado; revisión de todas las demás sigue pendiente.
@@ -654,6 +656,7 @@ Avance: 325 controles totales; 10 aprobados; 117 en progreso; 198 pendientes; 0 
   - Evidencia: V162: cierre de sesión oculta instantáneamente artículos y formulario; nueva sesión recupera sólo su jurisdicción ficticia.
   - Evidencia: V163: despliegue controlado desde GitHub PR #4 con CI y Preview aprobados previo a merge en main.
   - Evidencia: V170: cierre de sesión simulado oculta expedientes, formulario, los cuatro contadores y avisos; la sesión A restaurada recupera solo información ficticia propia.
+  - Evidencia: V175: no-session navigation of 107 routes redirected correctly in browser. Authenticated role switching and token revocation were not physically re-certified.
 - [ ] 20.03 · Búsqueda diocesana — PENDIENTE
 - [ ] 20.04 · Apellido y nombre — PENDIENTE
 - [ ] 20.05 · Libro Folio Número — PENDIENTE
@@ -1191,6 +1194,7 @@ Avance: 325 controles totales; 10 aprobados; 117 en progreso; 198 pendientes; 0 
   - Evidencia: V172: 1262/1262 pruebas sintéticas, 28/28 gate estricto, 21 SQL rollback de 90 disponibles aprobados; 2 no ejecutados por seguridad y 67 restantes de esta pasada.
   - Evidencia: V173: 15 pruebas contractuales nuevas, 1277/1277 sintéticas y 28/28 strict gates, QA PostgreSQL sintética reversible de casos de denegación y positivo Bautismo.
   - Evidencia: V174: cierre de inventario 97 guiones SQL, 75 regresiones verificadas nominalmente (30 previas + 43 recientes + 2 nuevas), 22 repro históricas excluidas del gate.
+  - Evidencia: V175: new 7-case regression test validates live-browser snapshots and anonymous Data API evidence, 1292/1292 synthetic suite, all 28 quality gates.
 - [ ] 32.04 · Guardar capturas — EN_PROGRESO
   - Evidencia: V114: scripts SQL reversibles y prueba de origen de migraciones versionados; todavía faltan capturas de UI.
   - Evidencia: V119: capturas y hashes SHA-256 por viewport/ruta, guardadas en AUDITORIA_EVIDENCIA_VISUAL_V119 (local, no Git).
@@ -1357,6 +1361,7 @@ Avance: 325 controles totales; 10 aprobados; 117 en progreso; 198 pendientes; 0 
   - Evidencia: V172: build/CSS/npm audit completos aprobados y 11 verificaciones de integridad de registros existentes con 0 incidencias en los indicadores consultados.
   - Evidencia: V173: Vite producción, verificación CSS, auditoría de dependencias de producción y completa sin vulnerabilidades; pruebas de permisos en PostgreSQL ejecutadas con BEGIN/ROLLBACK.
   - Evidencia: V174: ocho comprobaciones de integridad en lectura con cero anomalías, cero residuos QA-V174 confirmados; E2E, rendimiento y concurrencia real aún pendientes.
+  - Evidencia: V175: local build and production 107/107 route check; performance/security advisors identified pending remediation, not falsely claimed as 0 vulnerabilities.
 - [ ] 32.08 · Conteos antes/después — EN_PROGRESO
   - Evidencia: AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: Tras V95: 15 políticas, 0 bypass is_app_admin y 0 residuos en 5 catálogos
   - Evidencia: AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96: mis_datos mantiene 1 fila real, 0 fixtures y 0 admin bypass en 3 políticas
