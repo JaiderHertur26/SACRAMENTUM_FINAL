@@ -613,9 +613,10 @@
         "V166: 209 SECURITY DEFINER, 148 authenticated, 45 reviewed partially and 103 pending. Existing auth grants unchanged, new RPC limited to authenticated.",
         "V167: cuatro RPC de transición con FOR UPDATE, auth.uid y unicidad de casos abiertos revisadas; sin variación de 209 funciones privilegiadas.",
         "V168: SECURITY DEFINER nuevo con comprobación rol Cancillería/diocésis/parroquia, sin EXECUTE anon; inventario total 210, auth 149, evidencia parcial 46 y 103 revisiones pendientes.",
-        "V171: SECURITY DEFINER archive_matrimonial_notification_recipient endurecido para exigir status ACTIVE además de is_active=true. Ensayo transaccional en Supabase con usuario/aviso ficticios: antes aceptaba SUSPENDED, corregido con cambio temporal BEGIN/ROLLBACK."
+        "V171: SECURITY DEFINER archive_matrimonial_notification_recipient endurecido para exigir status ACTIVE además de is_active=true. Ensayo transaccional en Supabase con usuario/aviso ficticios: antes aceptaba SUSPENDED, corregido con cambio temporal BEGIN/ROLLBACK.",
+        "V172: original bishop_tenures RLS de las cuatro operaciones permitía acceso interdiocesano por rol; demostración con diocese A ficticia y tenure de parroquia B. Parche restringe select/insert/update/delete con scope real."
       ],
-      "updated_at": "2026-10-23T18:01:16.422Z"
+      "updated_at": "2026-10-23T19:02:50.793Z"
     },
     {
       "id": "06.07",
@@ -661,9 +662,10 @@
         "V166: negative auth: actual Parish member of other room and active Diocese user outside target room both denied for historical chat.",
         "V169: cinco operaciones UI (solicitar, aprobar, rechazar, ejecutar individual y en lote) ya no muestran toasts ni recargan datos de la identidad anterior; los permisos RLS/RPC requieren ensayo interdiocesano real.",
         "V170: contadores estadísticos y errores están condicionados por scopeCurrent/dataCurrent; no se muestran de otra diócesis durante una transición simulada.",
-        "V171: perfil parroquial ficticio SUSPENDED con is_active=true podía archivar aviso propio; reproducción real reversible y parche SQL comprobado con denegación específica. Falta matriz total de RPC por rol."
+        "V171: perfil parroquial ficticio SUSPENDED con is_active=true podía archivar aviso propio; reproducción real reversible y parche SQL comprobado con denegación específica. Falta matriz total de RPC por rol.",
+        "V172: prueba PostgreSQL reversible: diócesis extraña no puede leer, crear, actualizar ni eliminar tenure; parroquia titular CRUD válido, admin general lectura y cuenta suspendida bloqueada. No equivale a E2E navegador."
       ],
-      "updated_at": "2026-10-23T18:01:16.424Z"
+      "updated_at": "2026-10-23T19:02:50.795Z"
     },
     {
       "id": "06.08",
@@ -1430,9 +1432,10 @@
         "V160: sin acceso a partida desde navegador ficticio; simulación de ejecución posterior documentada sin alterar datos reales.",
         "V161: vista institucional priorizable por filtros pending/authorized no oculta expedientes antiguos por volumen de casos cerrados.",
         "V162: al cambiar de identidad se descartan respuestas atrasadas de expediente/nota, evitando que datos previos reaparezcan.",
-        "V170: salida enmascarada para los cuatro contadores y alertas antes del efecto de limpieza, con mismo identityKey conservado."
+        "V170: salida enmascarada para los cuatro contadores y alertas antes del efecto de limpieza, con mismo identityKey conservado.",
+        "V172: aislamiento RLS de historial episcopal según parroquia, diócesis y estado activo; falta certificación con dos inicios de sesión Supabase separados."
       ],
-      "updated_at": "2026-10-23T17:43:14.771Z"
+      "updated_at": "2026-10-23T19:02:50.795Z"
     },
     {
       "id": "12.08",
@@ -4067,9 +4070,10 @@
         "V168: 22 tests contractuales nuevos, 1217/1217 tests totales (GitHub CI #39982084560 y puerta local), 28/28 verificadores.",
         "V169: auditoría reproducible local con 1237/1237 pruebas sintéticas, 28/28 gates, build y npm audit completo; pruebas de sesión son simuladas, no E2E autenticadas.",
         "V170: nueva regresión de 5 pruebas fuente/evidencia; total 1242/1242 sintéticas y 28/28 quality gate.",
-        "V171: 8 contratos adicionales para archivado parroquial, 1250/1250 sintéticas y 28/28 quality gate."
+        "V171: 8 contratos adicionales para archivado parroquial, 1250/1250 sintéticas y 28/28 quality gate.",
+        "V172: 1262/1262 pruebas sintéticas, 28/28 gate estricto, 21 SQL rollback de 90 disponibles aprobados; 2 no ejecutados por seguridad y 67 restantes de esta pasada."
       ],
-      "updated_at": "2026-10-23T18:01:16.424Z"
+      "updated_at": "2026-10-23T19:02:50.795Z"
     },
     {
       "id": "32.04",
@@ -4270,9 +4274,10 @@
         "V168: 1217/1217 test sintéticos, 28/28 Quality Gate, CSS, Vite build y npm audit prod+completo sin vulnerabilidades reportadas.",
         "V169: Quality Gate estricto ejecutado localmente con 28/28 verificaciones y cero vulnerabilidades reportadas por npm audit en el momento de prueba.",
         "V170: build Vite normal, CSS crítico, npm audit producción y completo sin vulnerabilidades reportadas; QA visual Chrome 6/6.",
-        "V171: compilación Vite, CSS crítico y npm audit prod/completo aprobados; prueba SQL real de V171 sin persistencia QA."
+        "V171: compilación Vite, CSS crítico y npm audit prod/completo aprobados; prueba SQL real de V171 sin persistencia QA.",
+        "V172: build/CSS/npm audit completos aprobados y 11 verificaciones de integridad de registros existentes con 0 incidencias en los indicadores consultados."
       ],
-      "updated_at": "2026-10-23T18:01:16.424Z"
+      "updated_at": "2026-10-23T19:02:50.795Z"
     },
     {
       "id": "32.08",

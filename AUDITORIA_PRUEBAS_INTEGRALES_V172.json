@@ -1,0 +1,77 @@
+{
+  "protocol": "V172",
+  "date": "2026-10-23",
+  "database": "REGISTRO SACRAMENTOS · Supabase",
+  "scope": "Tests actually executed via managed SQL connection, each with BEGIN/ROLLBACK; not full application acceptance.",
+  "staticSyntheticPassed": 1262,
+  "strictGatesPassed": 28,
+  "sqlRollbackScriptsAvailable": 92,
+  "sqlRollbackPassed": 21,
+  "sqlRollbackBlockedBySafety": 2,
+  "sqlRollbackNotExecutedThisRun": 69,
+  "sqlRollbackPassedFiles": [
+    "qa-rollback-multinote-four-sacraments-v168.sql",
+    "qa-rollback-chat-full-lifecycle-v165.sql",
+    "qa-rollback-registry-print-four-sacraments-v141.sql",
+    "qa-rollback-monotonic-version-all-sacraments-v148.sql",
+    "qa-rollback-cross-diocese-rls-v120.sql",
+    "qa-rollback-decree-role-matrix-v115.sql",
+    "qa-rollback-legacy-materializer-roles-v151.sql",
+    "qa-rollback-nullity-dual-authorization-v128.sql",
+    "qa-rollback-physical-notification-scope-v134.sql",
+    "qa-rollback-documentary-decree-lifecycle-v152.sql",
+    "qa-rollback-chat-keyset-complete-v166.sql",
+    "qa-rollback-baptism-confirmation-integrity-v153.sql",
+    "qa-rollback-cross-parish-notes-receipts-v133.sql",
+    "qa-rollback-nullity-preflight-cross-diocese-v130.sql",
+    "qa-rollback-physical-provenance-rls-v121.sql",
+    "qa-rollback-multinote-batch-v168.sql",
+    "qa-rollback-chat-role-rls-v164.sql",
+    "qa-rollback-physical-notification-source-status-v134.sql",
+    "qa-rollback-reconciliation-keyset-v161.sql",
+    "qa-rollback-historical-decrees-v118.sql",
+    "qa-rollback-destructive-grants-v122.sql"
+  ],
+  "sqlRollbackBlockedFiles": [
+    "qa-rollback-corrections-reconciliation-all-sacraments-v159.sql",
+    "qa-rollback-registry-print-integrity-v140.sql"
+  ],
+  "sqlRollbackFailuresConfirmed": 0,
+  "bishopTenure": {
+    "originalPolicyExploit": "Reproduced with synthetic diocese A and synthetic episcopal tenure tied to a parish of another diocese; read and delete accepted under original RLS, rolled back.",
+    "temporaryMigrationQA": "Four cross-diocese actions denied; own parish CRUD, admin general visibility, and suspended profile denial verified in reversible transaction.",
+    "productProofLimit": "Not two independent real authenticated browser sessions. Does not prove SQL connection overlap."
+  },
+  "readOnlyConsistency": {
+    "checks": 11,
+    "nonzero": 0,
+    "categories": [
+      "four sacramental tables link to parishes",
+      "decree jurisdiction",
+      "note target and parish alignment by sacrament",
+      "legacy import batch jurisdiction",
+      "reconciliation jurisdiction",
+      "no duplicate active chancery per chancery"
+    ]
+  },
+  "originalRegistryCounts": {
+    "baptisms": 5040,
+    "confirmations": 2091,
+    "marriages": 1261,
+    "funerals": 1,
+    "decrees": 2,
+    "marginalNotes": 82
+  },
+  "qaResidueBeforePermanentMigration": {
+    "users": 0,
+    "dioceses": 0,
+    "bishopTenures": 0
+  },
+  "unresolved": [
+    "P0: two independent physical Postgres transactions race test",
+    "P0: authenticated browser E2E across real separate dioceses",
+    "67 other rollback SQL scripts not executed in this run",
+    "two QA scripts blocked by platform safety"
+  ],
+  "certification": "Partial reproducible audit evidence, never 100% system-certified"
+}
