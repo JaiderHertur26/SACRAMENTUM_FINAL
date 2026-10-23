@@ -1,0 +1,42 @@
+{
+  "protocol": "V173",
+  "generated_at": "2026-10-23",
+  "scope": "Backend PostgreSQL functions and existing Node gates; NOT full physical/browser application certification.",
+  "prepatchConfirmed": {
+    "function": "register_historical_baptism(uuid,jsonb)",
+    "actor": "Fictional parish account is_active=true / status=SUSPENDED",
+    "outcome": "Fictional historic baptism inserted and audit created; entire transaction rolled back."
+  },
+  "sqlFunctionsHardened": [
+    "register_historical_baptism_internal(uuid,jsonb)",
+    "register_historical_confirmation_internal(uuid,jsonb,uuid,text)",
+    "register_historical_marriage(uuid,jsonb)",
+    "register_historical_funeral(uuid,jsonb)",
+    "register_historical_narrative(uuid,text,jsonb)",
+    "register_historical_confirmation(uuid,jsonb,uuid,text)"
+  ],
+  "temporaryPostPatchQa": {
+    "historicalBaptism": "SUSPENDED denied; foreign diocese denied; legitimate ACTIVE parish inserted one fictitious baptism and exactly one audit. Transaction rolled back.",
+    "otherFour": "Confirmation, Marriage, Funeral and Narrative RPC entry points rejected SUSPENDED and foreign diocese (8 denials). Transaction rolled back.",
+    "actualOtherFourLegitimateInsertTests": "Not exercised during V173."
+  },
+  "priorPassingSqlThisTurn": [
+    "qa-rollback-note-reconciliation-grants-v156.sql",
+    "qa-rollback-shadow-role-matrix-v124.sql",
+    "qa-rollback-documentary-v114.sql",
+    "qa-rollback-print-request-lineage-v144.sql",
+    "qa-rollback-physical-confirmation-source-v134.sql",
+    "qa-rollback-manual-note-admin-role-v133.sql"
+  ],
+  "strictGates": 28,
+  "syntheticTests": 1277,
+  "securityGateFailed": 0,
+  "installedMigration": "20261023194004_guard_historical_baptism_active_parish_v173",
+  "postDeployQA": "Both baptism and four-workflow test suites passed again against the permanently installed migration. Six definitions have active status guards; QA users, Baptisms, dioceses and audit residuals all zero.",
+  "status": "Permanent Supabase migration installed and validated; GitHub main and Vercel verification pending.",
+  "unresolved": [
+    "Two independent authenticated dioceses in separate browser sessions",
+    "Two independent PostgreSQL concurrent transactions",
+    "Remaining unexecuted reversible SQL scripts from V172"
+  ]
+}
