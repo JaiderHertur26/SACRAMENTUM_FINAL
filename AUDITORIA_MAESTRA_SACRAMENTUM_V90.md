@@ -1198,6 +1198,7 @@ Avance: 325 controles totales; 10 aprobados; 117 en progreso; 198 pendientes; 0 
   - Evidencia: V174: cierre de inventario 97 guiones SQL, 75 regresiones verificadas nominalmente (30 previas + 43 recientes + 2 nuevas), 22 repro históricas excluidas del gate.
   - Evidencia: V175: new 7-case regression test validates live-browser snapshots and anonymous Data API evidence, 1292/1292 synthetic suite, all 28 quality gates.
   - Evidencia: V176: 15 new identity authorization contracts, total 1307/1307 Node tests and 28/28 strict quality checks.
+  - Evidencia: V176: 16 identity authorization contracts including browser profile validation, total 1308/1308 Node tests and 28/28 strict quality checks.
 - [ ] 32.04 · Guardar capturas — EN_PROGRESO
   - Evidencia: V114: scripts SQL reversibles y prueba de origen de migraciones versionados; todavía faltan capturas de UI.
   - Evidencia: V119: capturas y hashes SHA-256 por viewport/ruta, guardadas en AUDITORIA_EVIDENCIA_VISUAL_V119 (local, no Git).
@@ -1366,6 +1367,7 @@ Avance: 325 controles totales; 10 aprobados; 117 en progreso; 198 pendientes; 0 
   - Evidencia: V174: ocho comprobaciones de integridad en lectura con cero anomalías, cero residuos QA-V174 confirmados; E2E, rendimiento y concurrencia real aún pendientes.
   - Evidencia: V175: local build and production 107/107 route check; performance/security advisors identified pending remediation, not falsely claimed as 0 vulnerabilities.
   - Evidencia: V176: schema-anchored migration hardens 7 SECURITY DEFINER identity helpers without changing data rows, signatures or grants. Real reversible positive/negative QA passed.
+  - Evidencia: V176: schema-anchored migration hardens 7 SECURITY DEFINER identity helpers; frontend validateProfileScope now also rejects NULL status/is_active. Real reversible SQL QA, build and Node tests passed.
 - [ ] 32.08 · Conteos antes/después — EN_PROGRESO
   - Evidencia: AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: Tras V95: 15 políticas, 0 bypass is_app_admin y 0 residuos en 5 catálogos
   - Evidencia: AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96: mis_datos mantiene 1 fila real, 0 fixtures y 0 admin bypass en 3 políticas

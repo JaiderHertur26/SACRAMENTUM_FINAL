@@ -58,7 +58,9 @@ export const validateProfileScope = (profile) => {
     return { valid: false, role, message: 'La cuenta no tiene un rol válido asignado.' };
   }
 
-  if (profile?.is_active === false || (profile?.status && String(profile.status).trim().toUpperCase() !== 'ACTIVE')) {
+  // Fail-closed: estados nulos/indefinidos nunca representan una cuenta autorizada.
+  // Debe coincidir con las RPC institucionales V176 de Supabase.
+  if (profile?.is_active !== true || String(profile?.status ?? '').trim().toUpperCase() !== 'ACTIVE') {
     return { valid: false, role, message: 'La cuenta no se encuentra activa.' };
   }
 

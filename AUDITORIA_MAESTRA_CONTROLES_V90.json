@@ -4087,9 +4087,10 @@
         "V173: 15 pruebas contractuales nuevas, 1277/1277 sintéticas y 28/28 strict gates, QA PostgreSQL sintética reversible de casos de denegación y positivo Bautismo.",
         "V174: cierre de inventario 97 guiones SQL, 75 regresiones verificadas nominalmente (30 previas + 43 recientes + 2 nuevas), 22 repro históricas excluidas del gate.",
         "V175: new 7-case regression test validates live-browser snapshots and anonymous Data API evidence, 1292/1292 synthetic suite, all 28 quality gates.",
-        "V176: 15 new identity authorization contracts, total 1307/1307 Node tests and 28/28 strict quality checks."
+        "V176: 15 new identity authorization contracts, total 1307/1307 Node tests and 28/28 strict quality checks.",
+        "V176: 16 identity authorization contracts including browser profile validation, total 1308/1308 Node tests and 28/28 strict quality checks."
       ],
-      "updated_at": "2026-10-23T20:35:38.992Z"
+      "updated_at": "2026-10-23T20:38:08.364Z"
     },
     {
       "id": "32.04",
@@ -4295,9 +4296,10 @@
         "V173: Vite producción, verificación CSS, auditoría de dependencias de producción y completa sin vulnerabilidades; pruebas de permisos en PostgreSQL ejecutadas con BEGIN/ROLLBACK.",
         "V174: ocho comprobaciones de integridad en lectura con cero anomalías, cero residuos QA-V174 confirmados; E2E, rendimiento y concurrencia real aún pendientes.",
         "V175: local build and production 107/107 route check; performance/security advisors identified pending remediation, not falsely claimed as 0 vulnerabilities.",
-        "V176: schema-anchored migration hardens 7 SECURITY DEFINER identity helpers without changing data rows, signatures or grants. Real reversible positive/negative QA passed."
+        "V176: schema-anchored migration hardens 7 SECURITY DEFINER identity helpers without changing data rows, signatures or grants. Real reversible positive/negative QA passed.",
+        "V176: schema-anchored migration hardens 7 SECURITY DEFINER identity helpers; frontend validateProfileScope now also rejects NULL status/is_active. Real reversible SQL QA, build and Node tests passed."
       ],
-      "updated_at": "2026-10-23T20:35:38.992Z"
+      "updated_at": "2026-10-23T20:38:08.366Z"
     },
     {
       "id": "32.08",

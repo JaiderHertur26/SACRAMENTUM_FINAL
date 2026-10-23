@@ -12,7 +12,7 @@ Requiere is_active IS TRUE y upper(status)=ACTIVE, incluidos los tres subselects
 
 ## Evidencias
 Prepatch reproducido en SQL real y reversado. Patch temporal: usuario ACTIVE propio conservó rol y jurisdicción; SUSPENDED, NULL_STATUS, NULL_ACTIVE, DISABLED dejaron de acceder a las seis funciones de identidad consultadas. Prueba con ROLLBACK.
-Quince contratos Node nuevos; 1307/1307 pruebas sintéticas y 28/28 verificaciones estrictas, incluyendo build, CSS y dependencias.
+Dieciséis contratos Node nuevos; 1308/1308 pruebas sintéticas y 28/28 verificaciones estrictas, incluyendo build, CSS y dependencias. validateProfileScope de React deniega cuentas con estado indefinido de forma consistente con las funciones SQL.
 ## Límites
 No representa dos sesiones de navegador autenticadas ni dos transacciones físicas PostgreSQL solapadas. Instalar migración permanente y repetir prueba SQL antes de declarar publicación.
 Plan maestro se mantiene: 10 APROBADO, 117 EN_PROGRESO, 198 PENDIENTE (325 en total).

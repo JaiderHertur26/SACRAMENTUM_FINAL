@@ -36,3 +36,22 @@ test('V176 four invalid states must all yield NULL scope from six helpers',()=>{
 test('V176 all real database QA files create only synthetic users and roll back',()=>{
  for(const sql of [repro,qa]){assert.match(sql,/^BEGIN;$/m);assert.match(sql,/ROLLBACK;\s*$/);assert.match(sql,/@example\.invalid/);assert.doesNotMatch(sql,/^\s*COMMIT\s*;/mi);}
 });
+
+test('V176 frontend validates explicit active state, matching PostgreSQL institutional identity',async()=>{
+ const source=fs.readFileSync('src/lib/authz.js','utf8');
+ const isolated=source.replace(/^import \{ ROLE_TYPES \} from .*;$/m,
+  "const ROLE_TYPES={ADMIN_GENERAL:'admin_general',DIOCESE:'diocese',CHANCERY:'chancery',PARISH:'parish'};");
+ const {validateProfileScope}=await import('data:text/javascript,'+encodeURIComponent(isolated));
+ const profile={role:'parish',parish_id:'parish-fixture',diocese_id:'diocese-fixture',is_active:true,status:'ACTIVE'};
+ assert.equal(validateProfileScope(profile).valid,true);
+ for(const invalid of [
+  {...profile,status:'SUSPENDED'},
+  {...profile,status:null},
+  {...profile,status:undefined},
+  {...profile,status:''},
+  {...profile,is_active:null},
+  {...profile,is_active:undefined},
+  {...profile,is_active:false}
+ ])assert.equal(validateProfileScope(invalid).valid,false,JSON.stringify(invalid));
+ assert.equal(validateProfileScope({...profile,status:'active'}).valid,true);
+});
