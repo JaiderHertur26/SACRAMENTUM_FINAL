@@ -1,0 +1,145 @@
+{
+  "protocol": "V175",
+  "date": "2026-10-23T20:21:14.656Z",
+  "method": "Real HTTPS Supabase PostgREST with publishable client key and anonymous role, no authenticated session",
+  "checks": 15,
+  "privateRowsSeen": 0,
+  "unverified": 0,
+  "results": [
+    {
+      "table": "baptisms",
+      "status": 401,
+      "returnedRows": null,
+      "privateExposed": false,
+      "responseKind": "error-or-object",
+      "errorCode": "42501",
+      "gatewayKeyError": false
+    },
+    {
+      "table": "confirmations",
+      "status": 401,
+      "returnedRows": null,
+      "privateExposed": false,
+      "responseKind": "error-or-object",
+      "errorCode": "42501",
+      "gatewayKeyError": false
+    },
+    {
+      "table": "marriages",
+      "status": 401,
+      "returnedRows": null,
+      "privateExposed": false,
+      "responseKind": "error-or-object",
+      "errorCode": "42501",
+      "gatewayKeyError": false
+    },
+    {
+      "table": "funerals",
+      "status": 401,
+      "returnedRows": null,
+      "privateExposed": false,
+      "responseKind": "error-or-object",
+      "errorCode": "42501",
+      "gatewayKeyError": false
+    },
+    {
+      "table": "decretos",
+      "status": 401,
+      "returnedRows": null,
+      "privateExposed": false,
+      "responseKind": "error-or-object",
+      "errorCode": "42501",
+      "gatewayKeyError": false
+    },
+    {
+      "table": "marginal_notes",
+      "status": 401,
+      "returnedRows": null,
+      "privateExposed": false,
+      "responseKind": "error-or-object",
+      "errorCode": "42501",
+      "gatewayKeyError": false
+    },
+    {
+      "table": "user_profiles",
+      "status": 401,
+      "returnedRows": null,
+      "privateExposed": false,
+      "responseKind": "error-or-object",
+      "errorCode": "42501",
+      "gatewayKeyError": false
+    },
+    {
+      "table": "chat_messages",
+      "status": 401,
+      "returnedRows": null,
+      "privateExposed": false,
+      "responseKind": "error-or-object",
+      "errorCode": "42501",
+      "gatewayKeyError": false
+    },
+    {
+      "table": "chat_rooms",
+      "status": 401,
+      "returnedRows": null,
+      "privateExposed": false,
+      "responseKind": "error-or-object",
+      "errorCode": "42501",
+      "gatewayKeyError": false
+    },
+    {
+      "table": "registry_audit_log",
+      "status": 401,
+      "returnedRows": null,
+      "privateExposed": false,
+      "responseKind": "error-or-object",
+      "errorCode": "42501",
+      "gatewayKeyError": false
+    },
+    {
+      "table": "legacy_archive_records",
+      "status": 401,
+      "returnedRows": null,
+      "privateExposed": false,
+      "responseKind": "error-or-object",
+      "errorCode": "42501",
+      "gatewayKeyError": false
+    },
+    {
+      "table": "bishop_tenures",
+      "status": 401,
+      "returnedRows": null,
+      "privateExposed": false,
+      "responseKind": "error-or-object",
+      "errorCode": "42501",
+      "gatewayKeyError": false
+    },
+    {
+      "table": "later_note_reconciliations_v156",
+      "status": 401,
+      "returnedRows": null,
+      "privateExposed": false,
+      "responseKind": "error-or-object",
+      "errorCode": "42501",
+      "gatewayKeyError": false
+    },
+    {
+      "table": "matrimonial_notifications",
+      "status": 401,
+      "returnedRows": null,
+      "privateExposed": false,
+      "responseKind": "error-or-object",
+      "errorCode": "42501",
+      "gatewayKeyError": false
+    },
+    {
+      "table": "matrimonial_notification_recipients",
+      "status": 401,
+      "returnedRows": null,
+      "privateExposed": false,
+      "responseKind": "error-or-object",
+      "errorCode": "42501",
+      "gatewayKeyError": false
+    }
+  ]
+}

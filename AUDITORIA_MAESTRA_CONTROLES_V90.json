@@ -264,9 +264,10 @@
       "status": "PENDIENTE",
       "evidence": [
         "V169: 20 pruebas Node sobre handlers reales de conciliación simulan cambio de identidad antes/durante llamadas y suprimen respuestas obsoletas. NO son dos sesiones reales autenticadas ni prueban solapamiento.",
-        "V170: Chrome aislado 6/6 A->B->logout->A comprobó que la vista de conciliaciones oculta inmediatamente contadores y expedientes; identidades simuladas, no dos cuentas Supabase reales."
+        "V170: Chrome aislado 6/6 A->B->logout->A comprobó que la vista de conciliaciones oculta inmediatamente contadores y expedientes; identidades simuladas, no dos cuentas Supabase reales.",
+        "V175: Chrome with a completely fresh anonymous profile tested 107 actual React routes on production Vercel and local Vite. 58 protected and 49 aliases all redirected to login without browser exceptions. Does NOT cover authenticated UI."
       ],
-      "updated_at": "2026-10-23T17:43:14.770Z"
+      "updated_at": "2026-10-23T20:25:05.702Z"
     },
     {
       "id": "03.08",
@@ -666,9 +667,10 @@
         "V171: perfil parroquial ficticio SUSPENDED con is_active=true podía archivar aviso propio; reproducción real reversible y parche SQL comprobado con denegación específica. Falta matriz total de RPC por rol.",
         "V172: prueba PostgreSQL reversible: diócesis extraña no puede leer, crear, actualizar ni eliminar tenure; parroquia titular CRUD válido, admin general lectura y cuenta suspendida bloqueada. No equivale a E2E navegador.",
         "V173: funciones SECURITY DEFINER de Bautismo, Confirmación, Matrimonio, Exequias y narrativos fueron acotadas; pruebas con cuenta suspendida y diócesis falsa denegaron las acciones. E2E autenticado físico aún pendiente.",
-        "V174: 75/75 regresiones SQL activas con evidencia acumulada (30 previamente aprobadas, 45 verificadas ahora); 22 reproducciones históricas archivadas y no incluidas como éxitos actuales."
+        "V174: 75/75 regresiones SQL activas con evidencia acumulada (30 previamente aprobadas, 45 verificadas ahora); 22 reproducciones históricas archivadas y no incluidas como éxitos actuales.",
+        "V175: fifteen real HTTPS PostgREST anonymous requests against private tables returned HTTP 401 / SQL 42501, zero private rows; the published client key was recognized. RLS with real sessions across two dioceses still pending."
       ],
-      "updated_at": "2026-10-23T19:57:40.018Z"
+      "updated_at": "2026-10-23T20:25:05.704Z"
     },
     {
       "id": "06.08",
@@ -2405,9 +2407,10 @@
         "V161: expediente se recupera por filtro y paginación keyset de fecha+UUID; 315 rechazados no hacen desaparecer el pendiente antiguo.",
         "V162: cierre de sesión oculta instantáneamente artículos y formulario; nueva sesión recupera sólo su jurisdicción ficticia.",
         "V163: despliegue controlado desde GitHub PR #4 con CI y Preview aprobados previo a merge en main.",
-        "V170: cierre de sesión simulado oculta expedientes, formulario, los cuatro contadores y avisos; la sesión A restaurada recupera solo información ficticia propia."
+        "V170: cierre de sesión simulado oculta expedientes, formulario, los cuatro contadores y avisos; la sesión A restaurada recupera solo información ficticia propia.",
+        "V175: no-session navigation of 107 routes redirected correctly in browser. Authenticated role switching and token revocation were not physically re-certified."
       ],
-      "updated_at": "2026-10-23T17:43:14.771Z"
+      "updated_at": "2026-10-23T20:25:05.704Z"
     },
     {
       "id": "20.03",
@@ -4080,9 +4083,10 @@
         "V171: 8 contratos adicionales para archivado parroquial, 1250/1250 sintéticas y 28/28 quality gate.",
         "V172: 1262/1262 pruebas sintéticas, 28/28 gate estricto, 21 SQL rollback de 90 disponibles aprobados; 2 no ejecutados por seguridad y 67 restantes de esta pasada.",
         "V173: 15 pruebas contractuales nuevas, 1277/1277 sintéticas y 28/28 strict gates, QA PostgreSQL sintética reversible de casos de denegación y positivo Bautismo.",
-        "V174: cierre de inventario 97 guiones SQL, 75 regresiones verificadas nominalmente (30 previas + 43 recientes + 2 nuevas), 22 repro históricas excluidas del gate."
+        "V174: cierre de inventario 97 guiones SQL, 75 regresiones verificadas nominalmente (30 previas + 43 recientes + 2 nuevas), 22 repro históricas excluidas del gate.",
+        "V175: new 7-case regression test validates live-browser snapshots and anonymous Data API evidence, 1292/1292 synthetic suite, all 28 quality gates."
       ],
-      "updated_at": "2026-10-23T19:57:40.020Z"
+      "updated_at": "2026-10-23T20:25:05.704Z"
     },
     {
       "id": "32.04",
@@ -4286,9 +4290,10 @@
         "V171: compilación Vite, CSS crítico y npm audit prod/completo aprobados; prueba SQL real de V171 sin persistencia QA.",
         "V172: build/CSS/npm audit completos aprobados y 11 verificaciones de integridad de registros existentes con 0 incidencias en los indicadores consultados.",
         "V173: Vite producción, verificación CSS, auditoría de dependencias de producción y completa sin vulnerabilidades; pruebas de permisos en PostgreSQL ejecutadas con BEGIN/ROLLBACK.",
-        "V174: ocho comprobaciones de integridad en lectura con cero anomalías, cero residuos QA-V174 confirmados; E2E, rendimiento y concurrencia real aún pendientes."
+        "V174: ocho comprobaciones de integridad en lectura con cero anomalías, cero residuos QA-V174 confirmados; E2E, rendimiento y concurrencia real aún pendientes.",
+        "V175: local build and production 107/107 route check; performance/security advisors identified pending remediation, not falsely claimed as 0 vulnerabilities."
       ],
-      "updated_at": "2026-10-23T19:57:40.020Z"
+      "updated_at": "2026-10-23T20:25:05.704Z"
     },
     {
       "id": "32.08",

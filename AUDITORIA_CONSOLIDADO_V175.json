@@ -1,0 +1,52 @@
+{
+  "protocol": "V175",
+  "date": "2026-10-23",
+  "path": "C:\\SACRAMENTUM\\SACRAMENTUM_FINAL",
+  "localBrowser": {
+    "routes": 107,
+    "passed": 107,
+    "protected": 58,
+    "aliases": 49,
+    "exceptions": 0
+  },
+  "productionBrowser": {
+    "routes": 107,
+    "passed": 107,
+    "protected": 58,
+    "aliases": 49,
+    "exceptions": 0,
+    "environment": "https://sacramentum-final.vercel.app"
+  },
+  "realAnonymousRest": {
+    "resources": 15,
+    "permissionDenied": 15,
+    "unexpectedPrivateRows": 0,
+    "expectedSqlCode": "42501"
+  },
+  "automaticTests": {
+    "synthetic": 1292,
+    "strictGates": 28
+  },
+  "priorV174ActiveSqlRegressions": 75,
+  "physicalConcurrency": {
+    "attemptedWithDistinctManagedSqlCalls": true,
+    "overlapObserved": false,
+    "result": "NO_PHYSICAL_OVERLAP; no evidence of race tested",
+    "directCliAttempt": "Supabase db query --linked was rejected by management API (403), did not obtain two physical direct connections"
+  },
+  "securityAdvisorsCurrent": {
+    "rlsTablesIntentionallyWithoutPolicies": 3,
+    "graphqlObjectsVisibleToAuthenticatedRole": 64,
+    "definerFunctionsCallableByAuthenticated": 146,
+    "leakedPasswordProtectionConfigurationWarnings": 1,
+    "unindexedForeignKeys": 26,
+    "unusedIndexes": 93
+  },
+  "limitations": [
+    "No actual login of two independent diocesan users",
+    "No real browser CRUD across all roles and sacraments",
+    "No overlapping transactions on two independent PostgreSQL connections",
+    "Advisors are broad warnings, not proof of 146 exploitable vulnerabilities",
+    "No high load/performance or disaster recovery benchmark"
+  ]
+}
