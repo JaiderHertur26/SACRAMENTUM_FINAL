@@ -31,7 +31,9 @@
   "strictGates": 28,
   "syntheticTests": 1277,
   "securityGateFailed": 0,
-  "status": "Validated reversible patch; permanent deployment tracked via migration and GitHub PR.",
+  "installedMigration": "20261023194004_guard_historical_baptism_active_parish_v173",
+  "postDeployQA": "Both baptism and four-workflow test suites passed again against the permanently installed migration. Six definitions have active status guards; QA users, Baptisms, dioceses and audit residuals all zero.",
+  "status": "Permanent Supabase migration installed and validated; GitHub main and Vercel verification pending.",
   "unresolved": [
     "Two independent authenticated dioceses in separate browser sessions",
     "Two independent PostgreSQL concurrent transactions",

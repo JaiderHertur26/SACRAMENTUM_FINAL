@@ -52,7 +52,9 @@ const ledger={
  'qa-rollback-manual-note-admin-role-v133.sql'
  ],
  strictGates:28,syntheticTests:n,securityGateFailed:0,
- status:'Validated reversible patch; permanent deployment tracked via migration and GitHub PR.',
+ installedMigration:'20261023194004_guard_historical_baptism_active_parish_v173',
+  postDeployQA:'Both baptism and four-workflow test suites passed again against the permanently installed migration. Six definitions have active status guards; QA users, Baptisms, dioceses and audit residuals all zero.',
+ status:'Permanent Supabase migration installed and validated; GitHub main and Vercel verification pending.',
  unresolved:['Two independent authenticated dioceses in separate browser sessions','Two independent PostgreSQL concurrent transactions','Remaining unexecuted reversible SQL scripts from V172']
 };
 fs.writeFileSync('AUDITORIA_SQL_REAL_V173.json',JSON.stringify(ledger,null,2)+'\n');
@@ -66,7 +68,7 @@ La función interna de registro histórico de Bautismo comprobaba que el actor f
 La misma cláusula débil existía en los registros históricos de Confirmación, Matrimonio, Exequias, asientos narrativos y en la función pública de Confirmación. No afirmamos que se explotaran físicamente las otras cinco funciones antes del parche: quedaron acreditadas por examen directo del SQL.
 
 ## Reparación integral
-Migración \`20261023192627_guard_historical_baptism_active_parish_v173.sql\`:
+Migración \`20261023194004_guard_historical_baptism_active_parish_v173.sql\`:
 - Afecta exclusivamente seis funciones SQL preexistentes (cinco flujos históricos, incluida entrada de Confirmación).
 - Requiere \`is_active IS TRUE\`, \`status=ACTIVE\` y asociación comprobada entre la diócesis del perfil y la parroquia objetivo; conserva el filtro parroquial existente.
 - Preserva coordenadas físicas Libro/Folio/Número, autorización diferenciada, firma RPC, auditoría y permisos. Aborta si cambian las firmas o las cláusulas esperadas.
@@ -78,10 +80,13 @@ Migración \`20261023192627_guard_historical_baptism_active_parish_v173.sql\`:
 - Otros seis guiones históricos de permisos y documentación, seleccionados en esta pasada, aprobaron en SQL real con transacciones reversibles.
 - 15 pruebas contractuales nuevas en Node; ${n}/${n} sintéticas y 28/28 comprobaciones generales aprobadas.
 
+## Verificación de instalación
+Supabase registró la migración oficial 20261023194004. Se repitieron los dos guiones SQL reversibles contra las funciones ya instaladas; ambos aprobaron. Las seis definiciones privilegiadas contienen la validación estricta de estado y diócesis. Los recuentos de usuarios ficticios, Bautismos ficticios, diócesis ficticias y trazas de auditoría QA-V173 residuales son cero.
+
 ## Límites
 No certifica el alta legítima a través del navegador en todos los módulos, ni dos sesiones Supabase reales separadas, ni concurrencia simultánea PostgreSQL. Los datos QA no se persistieron. Se conserva el plan maestro: ${JSON.stringify(count)}.
 
-**Dictamen:** autorización histórica vulnerable confirmada; las seis funciones quedaron verificadas transaccionalmente con la corrección propuesta. Confirmar aplicación permanente, verificación posterior y despliegue del mismo SHA antes de afirmar publicación.
+**Dictamen V173:** vulnerabilidad real de Bautismo corregida en Supabase y seis funciones históricas reforzadas, con repetición positiva de las pruebas SQL. La publicación GitHub/Vercel solo se declarará al confirmar el mismo commit.
 `;
 fs.writeFileSync('AUDITORIA_AUTORIZACION_HISTORICA_V173_2026-10-23.md',report);
 console.log('V173 EVIDENCE '+n+'/'+n+', 28/28, master '+JSON.stringify(count));

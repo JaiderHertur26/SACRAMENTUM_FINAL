@@ -2,7 +2,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-const migration=fs.readFileSync('supabase/migrations/20261023192627_guard_historical_baptism_active_parish_v173.sql','utf8');
+const migration=fs.readFileSync('supabase/migrations/20261023194004_guard_historical_baptism_active_parish_v173.sql','utf8');
 const pre=fs.readFileSync('scripts/qa-rollback-historical-baptism-suspended-repro-v173.sql','utf8');
 const baptism=fs.readFileSync('scripts/qa-rollback-historical-baptism-active-parish-v173.sql','utf8');
 const others=fs.readFileSync('scripts/qa-rollback-historical-four-workflows-v173.sql','utf8');
