@@ -49,6 +49,9 @@ const initials = (name = '') => String(name)
   .join('')
   .toUpperCase() || 'SC';
 
+const CHAT_PAGE_SIZE = 80;
+const chronological = (a, b) => String(a.created_at).localeCompare(String(b.created_at)) || String(a.id).localeCompare(String(b.id));
+
 const CommunicationsPageSession = ({ profile, user }) => {
   const myProfileId = profile?.id || null;
 
@@ -56,6 +59,9 @@ const CommunicationsPageSession = ({ profile, user }) => {
   const [directory, setDirectory] = useState([]);
   const [selectedRoomId, setSelectedRoomId] = useState(null);
   const [messages, setMessages] = useState([]);
+  const [loadedRoomId, setLoadedRoomId] = useState(null);
+  const [hasEarlier, setHasEarlier] = useState(false);
+  const [olderLoading, setOlderLoading] = useState(false);
   const [draft, setDraft] = useState('');
   const [searchRooms, setSearchRooms] = useState('');
   const [searchPeople, setSearchPeople] = useState('');
@@ -66,6 +72,11 @@ const CommunicationsPageSession = ({ profile, user }) => {
   const [connectionStatus, setConnectionStatus] = useState('CLOSED');
   const [error, setError] = useState('');
   const bottomRef = useRef(null);
+  const activeRoomRef = useRef(null);
+  const roomVersionRef = useRef(0);
+  const loadedRoomRef = useRef(null);
+  const skipAutoScrollRef = useRef(false);
+  const visibleMessages = loadedRoomId === selectedRoomId ? messages : [];
 
   const selectedRoom = useMemo(
     () => rooms.find((room) => room.id === selectedRoomId) || null,
@@ -82,17 +93,52 @@ const CommunicationsPageSession = ({ profile, user }) => {
 
   const loadMessages = useCallback(async (roomId, { silent = false } = {}) => {
     if (!roomId) return;
+    const version = roomVersionRef.current;
     if (!silent) setMessagesLoading(true);
     try {
-      const data = await getChatRoomMessages(roomId, 120);
-      setMessages(data);
+      const data = await getChatRoomMessages(roomId, CHAT_PAGE_SIZE);
+      if (version !== roomVersionRef.current || activeRoomRef.current !== roomId) return;
+      const sameRoom = loadedRoomRef.current === roomId;
+      const merging = sameRoom;
+      setMessages(previous => {
+        const entries = merging ? [...previous, ...data] : data;
+        return [...new Map(entries.map(message => [message.id, message])).values()].sort(chronological);
+      });
+      if (!sameRoom) setHasEarlier(data.length === CHAT_PAGE_SIZE);
+      loadedRoomRef.current = roomId;
+      setLoadedRoomId(roomId);
       await markChatRoomRead(roomId);
+      if (version !== roomVersionRef.current || activeRoomRef.current !== roomId) return;
       requestChatBadgeRefresh();
       await refreshRooms();
     } finally {
-      if (!silent) setMessagesLoading(false);
+      if (!silent && version === roomVersionRef.current) setMessagesLoading(false);
     }
   }, [refreshRooms]);
+
+  const loadEarlier = async () => {
+    if (!selectedRoomId || loadedRoomId !== selectedRoomId || olderLoading ||
+        messagesLoading || !hasEarlier || !messages.length) return;
+    const roomId = selectedRoomId;
+    const version = roomVersionRef.current;
+    const oldest = messages[0];
+    setOlderLoading(true);
+    setError('');
+    try {
+      const older = await getChatRoomMessages(roomId, CHAT_PAGE_SIZE, {
+        created_at: oldest.created_at, id: oldest.id
+      });
+      if (version !== roomVersionRef.current || activeRoomRef.current !== roomId) return;
+      skipAutoScrollRef.current = true;
+      setMessages(previous => [...new Map([...older, ...previous].map(message => [message.id, message])).values()]
+        .sort(chronological));
+      setHasEarlier(older.length === CHAT_PAGE_SIZE);
+    } catch (e) {
+      if (version === roomVersionRef.current) setError(e?.message || 'No fue posible consultar el historial anterior.');
+    } finally {
+      if (version === roomVersionRef.current) setOlderLoading(false);
+    }
+  };
 
   useEffect(() => {
     let mounted = true;
@@ -117,10 +163,14 @@ const CommunicationsPageSession = ({ profile, user }) => {
   }, []);
 
   useEffect(() => {
-    if (!selectedRoomId) {
-      setMessages([]);
-      return undefined;
-    }
+    roomVersionRef.current += 1;
+    activeRoomRef.current = selectedRoomId;
+    loadedRoomRef.current = null;
+    setLoadedRoomId(null);
+    setMessages([]);
+    setHasEarlier(false);
+    setOlderLoading(false);
+    if (!selectedRoomId) return undefined;
 
     let unsubscribe = null;
     let cancelled = false;
@@ -156,8 +206,12 @@ const CommunicationsPageSession = ({ profile, user }) => {
   }, [selectedRoomId, loadMessages]);
 
   useEffect(() => {
+    if (skipAutoScrollRef.current) {
+      skipAutoScrollRef.current = false;
+      return;
+    }
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages.length, selectedRoomId]);
+  }, [visibleMessages.length, selectedRoomId]);
 
   const filteredRooms = useMemo(() => {
     const term = searchRooms.trim().toLowerCase();
@@ -366,7 +420,7 @@ const CommunicationsPageSession = ({ profile, user }) => {
                 <div className="flex-1 overflow-y-auto px-4 md:px-8 py-6 bg-[linear-gradient(180deg,#ffffff_0%,#f8fafc_100%)]">
                   {messagesLoading ? (
                     <div className="h-full flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-[#4B7BA7]" /></div>
-                  ) : messages.length === 0 ? (
+                  ) : visibleMessages.length === 0 ? (
                     <div className="h-full flex flex-col items-center justify-center text-center">
                       <div className="w-16 h-16 rounded-3xl bg-slate-100 flex items-center justify-center">
                         <MessageCircleMore className="w-8 h-8 text-slate-300" />
@@ -376,7 +430,13 @@ const CommunicationsPageSession = ({ profile, user }) => {
                     </div>
                   ) : (
                     <div className="max-w-4xl mx-auto space-y-3">
-                      {messages.map((message) => {
+                      {hasEarlier && (
+                        <button type="button" onClick={loadEarlier} disabled={olderLoading || messagesLoading}
+                          className="mx-auto mb-4 flex items-center gap-2 rounded-2xl border border-blue-200 bg-blue-50 px-5 py-2.5 text-xs font-bold text-[#335e88] hover:bg-blue-100 disabled:opacity-50">
+                          {olderLoading ? 'Cargando mensajes anteriores…' : 'Cargar 80 mensajes anteriores'}
+                        </button>
+                      )}
+                      {visibleMessages.map((message) => {
                         const mine = message.sender_profile_id === myProfileId;
                         return (
                           <div key={message.id} className={`flex ${mine ? 'justify-end' : 'justify-start'}`}>
