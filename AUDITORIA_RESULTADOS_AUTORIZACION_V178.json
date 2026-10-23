@@ -1,7 +1,7 @@
 {
   "protocol": "V178",
   "date": "2026-10-23",
-  "migration": "20261023214651_seat_sacraments_scope_v178.sql",
+  "migration": "20261023215121_seat_sacraments_scope_v178.sql",
   "prepatch": "Six SUSPENDED account calls reached business validation, while current_app_role() returned null",
   "rpcNames": [
     "create_pending_baptism_with_confirmation_flow",
@@ -11,6 +11,11 @@
     "seat_funeral_record",
     "process_matrimonial_notification_recipient"
   ],
+  "installedSupabaseMigration": true,
+  "postDeploymentRealSqlPass": true,
+  "retainedV177RegressionPass": true,
+  "zeroResidualSyntheticUsers": true,
+  "functionsVerified": 6,
   "postpatchTemporaryRealSql": {
     "pass": true,
     "authenticatedGateAllowed": 6,

@@ -10,14 +10,15 @@ Funciones analizadas: create_pending_baptism_with_confirmation_flow; seat_baptis
 
 ## Corrección
 
-Migración 20261023214651_seat_sacraments_scope_v178.sql: las seis verifican is_active IS TRUE, upper(status)=ACTIVE y una unión real entre la parroquia del actor y la diócesis del perfil. Conserva los parámetros, funciones de negocio, consecutivos, asientos, integridad de notas, firmas y permisos.
+Migración oficial instalada 20261023215121_seat_sacraments_scope_v178.sql: las seis verifican is_active IS TRUE, upper(status)=ACTIVE y una unión real entre la parroquia del actor y la diócesis del perfil. Conserva los parámetros, funciones de negocio, consecutivos, asientos, integridad de notas, firmas y permisos.
 
 ## Prueba PostgreSQL REAL dentro de transacción
 
 - Antes: seis llamadas de parroquia SUSPENDED alcanzaron la validación funcional en lugar del rechazo de autorización.
 - Después de parche temporal: seis llamadas como usuario ACTIVE pasaron correctamente el filtro y alcanzaron la validación de entradas deliberadamente incompletas.
 - 36/36 pruebas negativas rechazadas: SUSPENDED, NULL_STATUS, NULL_ACTIVE, DISABLED, FOREIGN_DIOCESE y WRONG_ROLE para cada una de seis funciones.
-- Ningún dato QA se persiste: todas las consultas de escritura se encapsulan en BEGIN/ROLLBACK.
+- Se instaló la migración permanente en Supabase y se repitió el ensayo: 6 permisos positivos alcanzaron validación de entrada, 36 rechazos correctos. Además, la matriz V177 (4 altas legítimas y 24 denegaciones) continuó aprobando.
+- Ningún dato QA se persiste: todas las consultas de escritura se encapsulan en BEGIN/ROLLBACK. Las seis funciones se verificaron instaladas y no quedaron usuarios/diócesis ficticios V178.
 
 ## Puerta de calidad
 

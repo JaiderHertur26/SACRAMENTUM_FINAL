@@ -1,5 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';
-const migration=fs.readFileSync('supabase/migrations/20261023214651_seat_sacraments_scope_v178.sql','utf8');
+const migration=fs.readFileSync('supabase/migrations/20261023215121_seat_sacraments_scope_v178.sql','utf8');
 const baseline=fs.readFileSync('scripts/qa-rollback-seating-privileges-prepatch-v178.sql','utf8');
 const qa=fs.readFileSync('scripts/qa-rollback-seating-authorization-v178.sql','utf8');
 const rpcs=['create_pending_baptism_with_confirmation_flow','seat_baptism_records','seat_confirmation_records','seat_pending_marriage','seat_funeral_record','process_matrimonial_notification_recipient'];

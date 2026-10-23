@@ -22,9 +22,10 @@ if(master.controls.length!==325||statuses.APROBADO!==10||statuses.EN_PROGRESO!==
 fs.writeFileSync(masterFile,JSON.stringify(master,null,2)+'\n');
 execFileSync(process.execPath,['scripts/audit-master-plan-v90.mjs'],{stdio:'inherit'});
 const ledger={
- protocol:'V178',date:'2026-10-23',migration:'20261023214651_seat_sacraments_scope_v178.sql',
+ protocol:'V178',date:'2026-10-23',migration:'20261023215121_seat_sacraments_scope_v178.sql',
  prepatch:'Six SUSPENDED account calls reached business validation, while current_app_role() returned null',
  rpcNames:['create_pending_baptism_with_confirmation_flow','seat_baptism_records','seat_confirmation_records','seat_pending_marriage','seat_funeral_record','process_matrimonial_notification_recipient'],
+ installedSupabaseMigration:true,postDeploymentRealSqlPass:true,retainedV177RegressionPass:true,zeroResidualSyntheticUsers:true,functionsVerified:6,
  postpatchTemporaryRealSql:{pass:true,authenticatedGateAllowed:6,denied:36,deniedStates:['SUSPENDED','NULL_STATUS','NULL_ACTIVE','DISABLED','FOREIGN_DIOCESE','WRONG_ROLE'],transactionRollback:true},
  testSuite:{node:count,strictQuality:28},master:statuses,
  certificationLimits:['Authorized controls reached validation only, not six complete successful business operations','No two physical concurrent PostgreSQL connections','No independent multi-diocese browser authentication','No full visual traversal with all roles']
@@ -43,14 +44,15 @@ const report=[
  '',
  '## Corrección',
  '',
- 'Migración 20261023214651_seat_sacraments_scope_v178.sql: las seis verifican is_active IS TRUE, upper(status)=ACTIVE y una unión real entre la parroquia del actor y la diócesis del perfil. Conserva los parámetros, funciones de negocio, consecutivos, asientos, integridad de notas, firmas y permisos.',
+ 'Migración oficial instalada 20261023215121_seat_sacraments_scope_v178.sql: las seis verifican is_active IS TRUE, upper(status)=ACTIVE y una unión real entre la parroquia del actor y la diócesis del perfil. Conserva los parámetros, funciones de negocio, consecutivos, asientos, integridad de notas, firmas y permisos.',
  '',
  '## Prueba PostgreSQL REAL dentro de transacción',
  '',
  '- Antes: seis llamadas de parroquia SUSPENDED alcanzaron la validación funcional en lugar del rechazo de autorización.',
  '- Después de parche temporal: seis llamadas como usuario ACTIVE pasaron correctamente el filtro y alcanzaron la validación de entradas deliberadamente incompletas.',
  '- 36/36 pruebas negativas rechazadas: SUSPENDED, NULL_STATUS, NULL_ACTIVE, DISABLED, FOREIGN_DIOCESE y WRONG_ROLE para cada una de seis funciones.',
- '- Ningún dato QA se persiste: todas las consultas de escritura se encapsulan en BEGIN/ROLLBACK.',
+ '- Se instaló la migración permanente en Supabase y se repitió el ensayo: 6 permisos positivos alcanzaron validación de entrada, 36 rechazos correctos. Además, la matriz V177 (4 altas legítimas y 24 denegaciones) continuó aprobando.',
+ '- Ningún dato QA se persiste: todas las consultas de escritura se encapsulan en BEGIN/ROLLBACK. Las seis funciones se verificaron instaladas y no quedaron usuarios/diócesis ficticios V178.',
  '',
  '## Puerta de calidad',
  '',
