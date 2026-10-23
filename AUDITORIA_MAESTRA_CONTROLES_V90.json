@@ -262,8 +262,10 @@
       "priority": "P0",
       "criterion": "Sesiones simultáneas",
       "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "evidence": [
+        "V169: 20 pruebas Node sobre handlers reales de conciliación simulan cambio de identidad antes/durante llamadas y suprimen respuestas obsoletas. NO son dos sesiones reales autenticadas ni prueban solapamiento."
+      ],
+      "updated_at": "2026-10-23T17:23:02.751Z"
     },
     {
       "id": "03.08",
@@ -654,9 +656,10 @@
         "V162: React en Chrome impide observar expedientes de la diócesis A tras cambio de sesión a la diócesis B.",
         "V164: can_access_chat_room false, get_chat_room_messages denegada y send_chat_message denegada a identidad sin perfil; falta actor válido de otra diócesis.",
         "V165: nueve casos denegados por roles/propiedad/validación, incluidos lectura, escritura, recibo de lectura y retiro de mensaje de tercero.",
-        "V166: negative auth: actual Parish member of other room and active Diocese user outside target room both denied for historical chat."
+        "V166: negative auth: actual Parish member of other room and active Diocese user outside target room both denied for historical chat.",
+        "V169: cinco operaciones UI (solicitar, aprobar, rechazar, ejecutar individual y en lote) ya no muestran toasts ni recargan datos de la identidad anterior; los permisos RLS/RPC requieren ensayo interdiocesano real."
       ],
-      "updated_at": "2026-10-23T14:50:23.558Z"
+      "updated_at": "2026-10-23T17:23:02.752Z"
     },
     {
       "id": "06.08",
@@ -2131,9 +2134,10 @@
       "status": "EN_PROGRESO",
       "evidence": [
         "V167: índice parcial uq_later_note_open_decree_v156 rechaza caso doble (decree_id,note_id) pendiente/autorizado. No se certifican todos los duplicados de la aplicación.",
-        "V168: validaciones de lote de 2 a 30 IDs únicos, mismo decreto/parroquia/diócesis, snapshot coherente y cierre atómico sin doble ejecución."
+        "V168: validaciones de lote de 2 a 30 IDs únicos, mismo decreto/parroquia/diócesis, snapshot coherente y cierre atómico sin doble ejecución.",
+        "V169: nueva prueba de regresión sobre ejecución por lotes evita que la confirmación de una identidad previa dispare RPC tras cambiar de usuario; una RPC ya enviada puede terminar en servidor."
       ],
-      "updated_at": "2026-10-23T16:09:46.262Z"
+      "updated_at": "2026-10-23T17:23:02.752Z"
     },
     {
       "id": "18.01",
@@ -3891,9 +3895,10 @@
       "criterion": "Doble click y red caída",
       "status": "PENDIENTE",
       "evidence": [
-        "V168: reintento de lote ya ejecutado rechazado; faltan pruebas físicas de doble clic con red caída y dos transacciones simultáneas."
+        "V168: reintento de lote ya ejecutado rechazado; faltan pruebas físicas de doble clic con red caída y dos transacciones simultáneas.",
+        "V169: 20 pruebas de comportamiento en Node sobre cinco handlers, incluyendo respuesta tardía satisfactoria, error tardío, cambio durante diálogo y ruta legítima; falta doble clic físico y redes reales."
       ],
-      "updated_at": "2026-10-23T16:09:46.263Z"
+      "updated_at": "2026-10-23T17:23:02.753Z"
     },
     {
       "id": "31.09",
@@ -4051,9 +4056,10 @@
         "V165: 15 nuevas pruebas contractuales de migración y QA SQL, total 1157/1157 y puerta de calidad 28/28.",
         "V166: 19 additional contract tests, 1176/1176 synthetic, 28/28 gate; browser visual 6/6.",
         "V167: 19 contratos nuevos, 1195/1195 sintéticas, 28/28 Quality Gate, compilación y npm audit sin hallazgos.",
-        "V168: 22 tests contractuales nuevos, 1217/1217 tests totales (GitHub CI #39982084560 y puerta local), 28/28 verificadores."
+        "V168: 22 tests contractuales nuevos, 1217/1217 tests totales (GitHub CI #39982084560 y puerta local), 28/28 verificadores.",
+        "V169: auditoría reproducible local con 1237/1237 pruebas sintéticas, 28/28 gates, build y npm audit completo; pruebas de sesión son simuladas, no E2E autenticadas."
       ],
-      "updated_at": "2026-10-23T16:09:46.263Z"
+      "updated_at": "2026-10-23T17:23:02.753Z"
     },
     {
       "id": "32.04",
@@ -4251,9 +4257,10 @@
         "V165: Vite compilado, CSS y auditorías npm producción+completa sin hallazgos, Quality Gate PASS.",
         "V166: production build CSS and npm audits passed, no vulnerabilities reported.",
         "V167: Quality Gate de tests, Vite, CSS y npm audit aprobado, sin vulnerabilidades reportadas.",
-        "V168: 1217/1217 test sintéticos, 28/28 Quality Gate, CSS, Vite build y npm audit prod+completo sin vulnerabilidades reportadas."
+        "V168: 1217/1217 test sintéticos, 28/28 Quality Gate, CSS, Vite build y npm audit prod+completo sin vulnerabilidades reportadas.",
+        "V169: Quality Gate estricto ejecutado localmente con 28/28 verificaciones y cero vulnerabilidades reportadas por npm audit en el momento de prueba."
       ],
-      "updated_at": "2026-10-23T16:09:46.263Z"
+      "updated_at": "2026-10-23T17:23:02.753Z"
     },
     {
       "id": "32.08",

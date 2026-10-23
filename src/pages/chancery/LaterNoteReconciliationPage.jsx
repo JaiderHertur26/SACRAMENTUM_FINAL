@@ -46,6 +46,8 @@ export default function LaterNoteReconciliationPage() {
   const listVersion=useRef(0);
   const currentIdentityRef=useRef(identityKey);
   currentIdentityRef.current=identityKey;
+  // A completed request may belong to a previous institutional account.
+  const isCurrentIdentity=key=>key===currentIdentityRef.current;
   const lookupVersion=useRef(0);
   const [form,setForm]=useState(empty);
   const [availableNotes,setAvailableNotes]=useState([]);
@@ -182,15 +184,17 @@ export default function LaterNoteReconciliationPage() {
   const doRequest=async(e)=>{
     e.preventDefault();
     if(!chancery || !scopeCurrent || !dioceseId || busy)return;
+    const scopeAtStart=identityKey;
     setBusy('new');
     try{
       await requestLaterNoteReconciliation(form);
+      if(!isCurrentIdentity(scopeAtStart))return;
       setForm(empty);
       setAvailableNotes([]);
       toast({title:'Solicitud registrada',description:'Pendiente de autorización independiente de Diócesis.'});
       await reload();
-    }catch(err){notifyError(err);}
-    finally{setBusy('');}
+    }catch(err){if(isCurrentIdentity(scopeAtStart))notifyError(err);}
+    finally{if(isCurrentIdentity(scopeAtStart))setBusy('');}
   };
   const doApprove=async(x)=>{
     if(!dioceseRole || !dataCurrent || busy)return;
@@ -199,19 +203,21 @@ export default function LaterNoteReconciliationPage() {
       setError('La autorización requiere referencia de al menos 8 caracteres y motivación de al menos 15.');
       return;
     }
+    const scopeAtStart=identityKey;
     const confirmed=await institutionalConfirm({
       title:'Autorizar conciliación documental',
       message:'Esta aprobación es independiente de Cancillería. Todavía no modifica la nota ni revierte el decreto. ¿Autorizar el expediente?',
       confirmText:'Autorizar expediente',tone:'warning'
     });
-    if(!confirmed)return;
+    if(!confirmed || !isCurrentIdentity(scopeAtStart))return;
     setBusy(x.id);setError('');
     try{
       await approveLaterNoteReconciliation({caseId:x.id,authorizationReference:details.reference,approvalReason:details.reason});
+      if(!isCurrentIdentity(scopeAtStart))return;
       toast({title:'Autorización registrada',description:'Cancillería podrá ejecutar la operación conjunta tras verificar los antecedentes.'});
       await reload();
-    }catch(err){notifyError(err);}
-    finally{setBusy('');}
+    }catch(err){if(isCurrentIdentity(scopeAtStart))notifyError(err);}
+    finally{if(isCurrentIdentity(scopeAtStart))setBusy('');}
   };
   const doReject=async(x)=>{
     if(!dioceseRole || !dataCurrent || busy)return;
@@ -220,51 +226,55 @@ export default function LaterNoteReconciliationPage() {
       setError('Para rechazar o revocar se requieren una referencia de 8 caracteres y un motivo de al menos 20.');
       return;
     }
+    const scopeAtStart=identityKey;
     const confirmed=await institutionalConfirm({
       title:x.status==='authorized'?'Revocar autorización pendiente de ejecución':'Rechazar solicitud',
       message:'Se archivará la decisión motivada y quedará liberada la posibilidad de una nueva solicitud. No se modifica la partida, la nota ni el decreto. ¿Confirmar?',
       confirmText:x.status==='authorized'?'Revocar autorización':'Registrar rechazo',
       tone:'warning'
     });
-    if(!confirmed)return;
+    if(!confirmed || !isCurrentIdentity(scopeAtStart))return;
     setBusy(x.id);setError('');
     try{
       await rejectLaterNoteReconciliation({
         caseId:x.id,rejectionReference:details.reference,rejectionReason:details.reason
       });
+      if(!isCurrentIdentity(scopeAtStart))return;
       toast({title:'Decisión registrada',description:'El expediente quedó rechazado con su fundamento y sin alterar ninguna partida.'});
       await reload();
-    }catch(err){notifyError(err);}
-    finally{setBusy('');}
+    }catch(err){if(isCurrentIdentity(scopeAtStart))notifyError(err);}
+    finally{if(isCurrentIdentity(scopeAtStart))setBusy('');}
   };
   const doExecute=async(x)=>{
     if(!chancery || !dataCurrent || busy)return;
+    const scopeAtStart=identityKey;
     const confirmed=await institutionalConfirm({
       title:'Ejecutar actuación irreversible',
       message:'La nota manual quedará conciliada y el decreto se revertirá dentro de UNA misma transacción. Se generarán auditoría y notificación parroquial. Si existe otra actuación posterior, el servidor detendrá todo. ¿Continuar?',
       confirmText:'Ejecutar conciliación autorizada',tone:'danger'
     });
-    if(!confirmed)return;
+    if(!confirmed || !isCurrentIdentity(scopeAtStart))return;
     setBusy(x.id);setError('');
     try{
       await executeLaterNoteReconciliation(x.id);
+      if(!isCurrentIdentity(scopeAtStart))return;
       toast({title:'Actuación registrada',description:'Nota conciliada, decreto revertido, auditoría y notificación generadas.'});
       await reload();
-    }catch(err){notifyError(err);}
-    finally{setBusy('');}
+    }catch(err){if(isCurrentIdentity(scopeAtStart))notifyError(err);}
+    finally{if(isCurrentIdentity(scopeAtStart))setBusy('');}
   };
 
   const doExecuteGroup=async(group)=>{
     if(!chancery || !dataCurrent || busy || !completeAuthorizedList ||
         !Array.isArray(group) || group.length<2 || group.length>30 ||
         new Set(group.map(x=>x.decree_id)).size!==1) return;
+    const scopeAtStart=identityKey;
     const confirmed=await institutionalConfirm({
       title:'Conciliar varias notas autorizadas',
       message:'Se conciliarán '+group.length+' notas manuales independientes autorizadas del mismo decreto y se revertirá el decreto UNA sola vez. Cada expediente conserva su aprobación diocesana; se registrará auditoría individual y una notificación consolidada. Si falta alguna nota o cambió el expediente, no se aplicará ningún cambio. ¿Continuar?',
       confirmText:'Ejecutar conciliación conjunta',tone:'danger'
     });
-    if(!confirmed)return;
-    const scopeAtStart=identityKey;
+    if(!confirmed || !isCurrentIdentity(scopeAtStart))return;
     setBusy('batch:'+group[0].decree_id);setError('');
     try{
       await executeLaterNoteReconciliationBatch(group.map(x=>x.id));

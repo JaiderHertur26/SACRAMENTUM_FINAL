@@ -60,6 +60,7 @@ Avance: 325 controles totales; 10 aprobados; 117 en progreso; 198 pendientes; 0 
 - [ ] 03.05 · Usuario bloqueado — PENDIENTE
 - [ ] 03.06 · Reactivación de usuario — PENDIENTE
 - [ ] 03.07 · Sesiones simultáneas — PENDIENTE
+  - Evidencia: V169: 20 pruebas Node sobre handlers reales de conciliación simulan cambio de identidad antes/durante llamadas y suprimen respuestas obsoletas. NO son dos sesiones reales autenticadas ni prueban solapamiento.
 - [ ] 03.08 · Restauración tras refresh — PENDIENTE
 - [ ] 03.09 · Recuperación de contraseña — PENDIENTE
 - [ ] 03.10 · No claves privilegiadas en frontend — PENDIENTE
@@ -200,6 +201,7 @@ Avance: 325 controles totales; 10 aprobados; 117 en progreso; 198 pendientes; 0 
   - Evidencia: V164: can_access_chat_room false, get_chat_room_messages denegada y send_chat_message denegada a identidad sin perfil; falta actor válido de otra diócesis.
   - Evidencia: V165: nueve casos denegados por roles/propiedad/validación, incluidos lectura, escritura, recibo de lectura y retiro de mensaje de tercero.
   - Evidencia: V166: negative auth: actual Parish member of other room and active Diocese user outside target room both denied for historical chat.
+  - Evidencia: V169: cinco operaciones UI (solicitar, aprobar, rechazar, ejecutar individual y en lote) ya no muestran toasts ni recargan datos de la identidad anterior; los permisos RLS/RPC requieren ensayo interdiocesano real.
 - [ ] 06.08 · Search path de funciones — EN_PROGRESO
   - Evidencia: AUDITORIA_INVENTARIO_RPC_V91.json: Cribado search_path de funciones privilegiadas; falta verificación de todas sus dependencias
   - Evidencia: V124: ambas RPC destructivas preservaron search_path fijado; revisión de todas las demás sigue pendiente.
@@ -574,6 +576,7 @@ Avance: 325 controles totales; 10 aprobados; 117 en progreso; 198 pendientes; 0 
 - [ ] 17.09 · Duplicados y restricciones — EN_PROGRESO
   - Evidencia: V167: índice parcial uq_later_note_open_decree_v156 rechaza caso doble (decree_id,note_id) pendiente/autorizado. No se certifican todos los duplicados de la aplicación.
   - Evidencia: V168: validaciones de lote de 2 a 30 IDs únicos, mismo decreto/parroquia/diócesis, snapshot coherente y cierre atómico sin doble ejecución.
+  - Evidencia: V169: nueva prueba de regresión sobre ejecución por lotes evita que la confirmación de una identidad previa dispare RPC tras cambiar de usuario; una RPC ya enviada puede terminar en servidor.
 
 ### 18. Notificaciones institucionales (P1) — 0/9
 
@@ -1049,6 +1052,7 @@ Avance: 325 controles totales; 10 aprobados; 117 en progreso; 198 pendientes; 0 
   - Evidencia: V168: matriz SQL reversible de 4 sacramentos, dos notas y aprobaciones independientes por cada decreto; un solo evento jurídico de reversión.
 - [ ] 31.08 · Doble click y red caída — PENDIENTE
   - Evidencia: V168: reintento de lote ya ejecutado rechazado; faltan pruebas físicas de doble clic con red caída y dos transacciones simultáneas.
+  - Evidencia: V169: 20 pruebas de comportamiento en Node sobre cinco handlers, incluyendo respuesta tardía satisfactoria, error tardío, cambio durante diálogo y ruta legítima; falta doble clic físico y redes reales.
 - [ ] 31.09 · Impresión/estadística final — PENDIENTE
 - [ ] 31.10 · Destruir sandbox y demostrar cero residuos — EN_PROGRESO
   - Evidencia: V114: tras dos ensayos SQL reversibles, cero registros QA persistidos en seis entidades verificadas.
@@ -1163,6 +1167,7 @@ Avance: 325 controles totales; 10 aprobados; 117 en progreso; 198 pendientes; 0 
   - Evidencia: V166: 19 additional contract tests, 1176/1176 synthetic, 28/28 gate; browser visual 6/6.
   - Evidencia: V167: 19 contratos nuevos, 1195/1195 sintéticas, 28/28 Quality Gate, compilación y npm audit sin hallazgos.
   - Evidencia: V168: 22 tests contractuales nuevos, 1217/1217 tests totales (GitHub CI #39982084560 y puerta local), 28/28 verificadores.
+  - Evidencia: V169: auditoría reproducible local con 1237/1237 pruebas sintéticas, 28/28 gates, build y npm audit completo; pruebas de sesión son simuladas, no E2E autenticadas.
 - [ ] 32.04 · Guardar capturas — EN_PROGRESO
   - Evidencia: V114: scripts SQL reversibles y prueba de origen de migraciones versionados; todavía faltan capturas de UI.
   - Evidencia: V119: capturas y hashes SHA-256 por viewport/ruta, guardadas en AUDITORIA_EVIDENCIA_VISUAL_V119 (local, no Git).
@@ -1323,6 +1328,7 @@ Avance: 325 controles totales; 10 aprobados; 117 en progreso; 198 pendientes; 0 
   - Evidencia: V166: production build CSS and npm audits passed, no vulnerabilities reported.
   - Evidencia: V167: Quality Gate de tests, Vite, CSS y npm audit aprobado, sin vulnerabilidades reportadas.
   - Evidencia: V168: 1217/1217 test sintéticos, 28/28 Quality Gate, CSS, Vite build y npm audit prod+completo sin vulnerabilidades reportadas.
+  - Evidencia: V169: Quality Gate estricto ejecutado localmente con 28/28 verificaciones y cero vulnerabilidades reportadas por npm audit en el momento de prueba.
 - [ ] 32.08 · Conteos antes/después — EN_PROGRESO
   - Evidencia: AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: Tras V95: 15 políticas, 0 bypass is_app_admin y 0 residuos en 5 catálogos
   - Evidencia: AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96: mis_datos mantiene 1 fila real, 0 fixtures y 0 admin bypass en 3 políticas
