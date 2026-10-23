@@ -101,7 +101,8 @@ exec('pruebas-sinteticas',node,['--test',
  'scripts/test-fail-closed-institutional-identity-v176.mjs',
  'scripts/test-pending-sacrament-authorization-v177.mjs',
  'scripts/test-seating-scope-v178.mjs',
- 'scripts/test-chancery-decree-fail-closed-v179.mjs']);
+ 'scripts/test-chancery-decree-fail-closed-v179.mjs',
+ 'scripts/test-chat-notification-fail-closed-v180.mjs']);
 const scripts=fs.readdirSync(path.join(root,'scripts')).filter(x=>/^verify-.*\.mjs$/.test(x)).sort();
 for(const file of scripts)exec('legacy/'+file,node,['scripts/'+file]);
 const npmOnWindows=process.platform==='win32';
