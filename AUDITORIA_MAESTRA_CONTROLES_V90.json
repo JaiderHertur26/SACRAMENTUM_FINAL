@@ -665,9 +665,10 @@
         "V170: contadores estadísticos y errores están condicionados por scopeCurrent/dataCurrent; no se muestran de otra diócesis durante una transición simulada.",
         "V171: perfil parroquial ficticio SUSPENDED con is_active=true podía archivar aviso propio; reproducción real reversible y parche SQL comprobado con denegación específica. Falta matriz total de RPC por rol.",
         "V172: prueba PostgreSQL reversible: diócesis extraña no puede leer, crear, actualizar ni eliminar tenure; parroquia titular CRUD válido, admin general lectura y cuenta suspendida bloqueada. No equivale a E2E navegador.",
-        "V173: funciones SECURITY DEFINER de Bautismo, Confirmación, Matrimonio, Exequias y narrativos fueron acotadas; pruebas con cuenta suspendida y diócesis falsa denegaron las acciones. E2E autenticado físico aún pendiente."
+        "V173: funciones SECURITY DEFINER de Bautismo, Confirmación, Matrimonio, Exequias y narrativos fueron acotadas; pruebas con cuenta suspendida y diócesis falsa denegaron las acciones. E2E autenticado físico aún pendiente.",
+        "V174: 75/75 regresiones SQL activas con evidencia acumulada (30 previamente aprobadas, 45 verificadas ahora); 22 reproducciones históricas archivadas y no incluidas como éxitos actuales."
       ],
-      "updated_at": "2026-10-23T19:38:13.601Z"
+      "updated_at": "2026-10-23T19:57:40.018Z"
     },
     {
       "id": "06.08",
@@ -2147,9 +2148,10 @@
       "evidence": [
         "V167: índice parcial uq_later_note_open_decree_v156 rechaza caso doble (decree_id,note_id) pendiente/autorizado. No se certifican todos los duplicados de la aplicación.",
         "V168: validaciones de lote de 2 a 30 IDs únicos, mismo decreto/parroquia/diócesis, snapshot coherente y cierre atómico sin doble ejecución.",
-        "V169: nueva prueba de regresión sobre ejecución por lotes evita que la confirmación de una identidad previa dispare RPC tras cambiar de usuario; una RPC ya enviada puede terminar en servidor."
+        "V169: nueva prueba de regresión sobre ejecución por lotes evita que la confirmación de una identidad previa dispare RPC tras cambiar de usuario; una RPC ya enviada puede terminar en servidor.",
+        "V174: ensayos seriales y transiciones de conciliación aprobados en SQL. P0 de dos conexiones PostgreSQL simultáneas continúa sin demostrar."
       ],
-      "updated_at": "2026-10-23T17:23:02.752Z"
+      "updated_at": "2026-10-23T19:57:40.020Z"
     },
     {
       "id": "18.01",
@@ -2965,9 +2967,10 @@
         "V161: los contadores de todos/pendientes/autorizados/ejecutados/rechazados provienen del universo jurisdiccional, no de 50 filas visibles.",
         "V162: prueba Chrome 6/6 en simulación de dos identidades; auditoría de transiciones y evidencia PNG registradas.",
         "V163: trazabilidad de publicación con SHA exacto, GitHub workflow run 39963410615, deployment URL y tres marcas horarias del gate.",
-        "V170: reconstruido laboratorio React V160 con mock de RPC batch V168 faltante, compilación de fixture aislado y Chrome 6/6."
+        "V170: reconstruido laboratorio React V160 con mock de RPC batch V168 faltante, compilación de fixture aislado y Chrome 6/6.",
+        "V174: notificaciones no pueden marcarse leídas desde una diócesis que no es su parroquia receptora, verificado por error específico y estado sin cambios."
       ],
-      "updated_at": "2026-10-23T17:43:14.771Z"
+      "updated_at": "2026-10-23T19:57:40.020Z"
     },
     {
       "id": "25.01",
@@ -3737,9 +3740,10 @@
       "criterion": "Variables secretas",
       "status": "EN_PROGRESO",
       "evidence": [
-        "AUDITORIA_EXP_DEPENDENCIAS_Y_RLS_V91.md: En laboratorios solo variables VITE públicas, excluido VERCEL_OIDC_TOKEN; faltan otros secretos"
+        "AUDITORIA_EXP_DEPENDENCIAS_Y_RLS_V91.md: En laboratorios solo variables VITE públicas, excluido VERCEL_OIDC_TOKEN; faltan otros secretos",
+        "V174: nulidad matrimonial sin validación documental previa denegada con error institucional y sin alterar la partida, verificada con ROLLBACK."
       ],
-      "updated_at": "2026-10-21T17:18:17.192Z"
+      "updated_at": "2026-10-23T19:57:40.020Z"
     },
     {
       "id": "30.07",
@@ -4075,9 +4079,10 @@
         "V170: nueva regresión de 5 pruebas fuente/evidencia; total 1242/1242 sintéticas y 28/28 quality gate.",
         "V171: 8 contratos adicionales para archivado parroquial, 1250/1250 sintéticas y 28/28 quality gate.",
         "V172: 1262/1262 pruebas sintéticas, 28/28 gate estricto, 21 SQL rollback de 90 disponibles aprobados; 2 no ejecutados por seguridad y 67 restantes de esta pasada.",
-        "V173: 15 pruebas contractuales nuevas, 1277/1277 sintéticas y 28/28 strict gates, QA PostgreSQL sintética reversible de casos de denegación y positivo Bautismo."
+        "V173: 15 pruebas contractuales nuevas, 1277/1277 sintéticas y 28/28 strict gates, QA PostgreSQL sintética reversible de casos de denegación y positivo Bautismo.",
+        "V174: cierre de inventario 97 guiones SQL, 75 regresiones verificadas nominalmente (30 previas + 43 recientes + 2 nuevas), 22 repro históricas excluidas del gate."
       ],
-      "updated_at": "2026-10-23T19:38:13.601Z"
+      "updated_at": "2026-10-23T19:57:40.020Z"
     },
     {
       "id": "32.04",
@@ -4280,9 +4285,10 @@
         "V170: build Vite normal, CSS crítico, npm audit producción y completo sin vulnerabilidades reportadas; QA visual Chrome 6/6.",
         "V171: compilación Vite, CSS crítico y npm audit prod/completo aprobados; prueba SQL real de V171 sin persistencia QA.",
         "V172: build/CSS/npm audit completos aprobados y 11 verificaciones de integridad de registros existentes con 0 incidencias en los indicadores consultados.",
-        "V173: Vite producción, verificación CSS, auditoría de dependencias de producción y completa sin vulnerabilidades; pruebas de permisos en PostgreSQL ejecutadas con BEGIN/ROLLBACK."
+        "V173: Vite producción, verificación CSS, auditoría de dependencias de producción y completa sin vulnerabilidades; pruebas de permisos en PostgreSQL ejecutadas con BEGIN/ROLLBACK.",
+        "V174: ocho comprobaciones de integridad en lectura con cero anomalías, cero residuos QA-V174 confirmados; E2E, rendimiento y concurrencia real aún pendientes."
       ],
-      "updated_at": "2026-10-23T19:38:13.601Z"
+      "updated_at": "2026-10-23T19:57:40.020Z"
     },
     {
       "id": "32.08",

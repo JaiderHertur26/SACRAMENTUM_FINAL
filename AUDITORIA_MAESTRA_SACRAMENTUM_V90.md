@@ -210,6 +210,7 @@ Avance: 325 controles totales; 10 aprobados; 117 en progreso; 198 pendientes; 0 
   - Evidencia: V171: perfil parroquial ficticio SUSPENDED con is_active=true podía archivar aviso propio; reproducción real reversible y parche SQL comprobado con denegación específica. Falta matriz total de RPC por rol.
   - Evidencia: V172: prueba PostgreSQL reversible: diócesis extraña no puede leer, crear, actualizar ni eliminar tenure; parroquia titular CRUD válido, admin general lectura y cuenta suspendida bloqueada. No equivale a E2E navegador.
   - Evidencia: V173: funciones SECURITY DEFINER de Bautismo, Confirmación, Matrimonio, Exequias y narrativos fueron acotadas; pruebas con cuenta suspendida y diócesis falsa denegaron las acciones. E2E autenticado físico aún pendiente.
+  - Evidencia: V174: 75/75 regresiones SQL activas con evidencia acumulada (30 previamente aprobadas, 45 verificadas ahora); 22 reproducciones históricas archivadas y no incluidas como éxitos actuales.
 - [ ] 06.08 · Search path de funciones — EN_PROGRESO
   - Evidencia: AUDITORIA_INVENTARIO_RPC_V91.json: Cribado search_path de funciones privilegiadas; falta verificación de todas sus dependencias
   - Evidencia: V124: ambas RPC destructivas preservaron search_path fijado; revisión de todas las demás sigue pendiente.
@@ -589,6 +590,7 @@ Avance: 325 controles totales; 10 aprobados; 117 en progreso; 198 pendientes; 0 
   - Evidencia: V167: índice parcial uq_later_note_open_decree_v156 rechaza caso doble (decree_id,note_id) pendiente/autorizado. No se certifican todos los duplicados de la aplicación.
   - Evidencia: V168: validaciones de lote de 2 a 30 IDs únicos, mismo decreto/parroquia/diócesis, snapshot coherente y cierre atómico sin doble ejecución.
   - Evidencia: V169: nueva prueba de regresión sobre ejecución por lotes evita que la confirmación de una identidad previa dispare RPC tras cambiar de usuario; una RPC ya enviada puede terminar en servidor.
+  - Evidencia: V174: ensayos seriales y transiciones de conciliación aprobados en SQL. P0 de dos conexiones PostgreSQL simultáneas continúa sin demostrar.
 
 ### 18. Notificaciones institucionales (P1) — 0/9
 
@@ -751,6 +753,7 @@ Avance: 325 controles totales; 10 aprobados; 117 en progreso; 198 pendientes; 0 
   - Evidencia: V162: prueba Chrome 6/6 en simulación de dos identidades; auditoría de transiciones y evidencia PNG registradas.
   - Evidencia: V163: trazabilidad de publicación con SHA exacto, GitHub workflow run 39963410615, deployment URL y tres marcas horarias del gate.
   - Evidencia: V170: reconstruido laboratorio React V160 con mock de RPC batch V168 faltante, compilación de fixture aislado y Chrome 6/6.
+  - Evidencia: V174: notificaciones no pueden marcarse leídas desde una diócesis que no es su parroquia receptora, verificado por error específico y estado sin cambios.
 
 ### 25. Resiliencia (P0) — 0/11
 
@@ -1005,6 +1008,7 @@ Avance: 325 controles totales; 10 aprobados; 117 en progreso; 198 pendientes; 0 
 - [ ] 30.05 · Preview de Vercel — PENDIENTE
 - [ ] 30.06 · Variables secretas — EN_PROGRESO
   - Evidencia: AUDITORIA_EXP_DEPENDENCIAS_Y_RLS_V91.md: En laboratorios solo variables VITE públicas, excluido VERCEL_OIDC_TOKEN; faltan otros secretos
+  - Evidencia: V174: nulidad matrimonial sin validación documental previa denegada con error institucional y sin alterar la partida, verificada con ROLLBACK.
 - [x] 30.07 · Construcción de producción — APROBADO
   - Evidencia: AUDITORIA_CIERRE_TECNICO_V91_2026-10-21.md: Vercel V91 build Ready, CSS de producción idéntico por SHA256
   - Evidencia: Puerta de compilación V112 correctamente ejecutada en equipo de trabajo; no acredita pruebas visuales autenticadas ni despliegue de V111/V112.
@@ -1186,6 +1190,7 @@ Avance: 325 controles totales; 10 aprobados; 117 en progreso; 198 pendientes; 0 
   - Evidencia: V171: 8 contratos adicionales para archivado parroquial, 1250/1250 sintéticas y 28/28 quality gate.
   - Evidencia: V172: 1262/1262 pruebas sintéticas, 28/28 gate estricto, 21 SQL rollback de 90 disponibles aprobados; 2 no ejecutados por seguridad y 67 restantes de esta pasada.
   - Evidencia: V173: 15 pruebas contractuales nuevas, 1277/1277 sintéticas y 28/28 strict gates, QA PostgreSQL sintética reversible de casos de denegación y positivo Bautismo.
+  - Evidencia: V174: cierre de inventario 97 guiones SQL, 75 regresiones verificadas nominalmente (30 previas + 43 recientes + 2 nuevas), 22 repro históricas excluidas del gate.
 - [ ] 32.04 · Guardar capturas — EN_PROGRESO
   - Evidencia: V114: scripts SQL reversibles y prueba de origen de migraciones versionados; todavía faltan capturas de UI.
   - Evidencia: V119: capturas y hashes SHA-256 por viewport/ruta, guardadas en AUDITORIA_EVIDENCIA_VISUAL_V119 (local, no Git).
@@ -1351,6 +1356,7 @@ Avance: 325 controles totales; 10 aprobados; 117 en progreso; 198 pendientes; 0 
   - Evidencia: V171: compilación Vite, CSS crítico y npm audit prod/completo aprobados; prueba SQL real de V171 sin persistencia QA.
   - Evidencia: V172: build/CSS/npm audit completos aprobados y 11 verificaciones de integridad de registros existentes con 0 incidencias en los indicadores consultados.
   - Evidencia: V173: Vite producción, verificación CSS, auditoría de dependencias de producción y completa sin vulnerabilidades; pruebas de permisos en PostgreSQL ejecutadas con BEGIN/ROLLBACK.
+  - Evidencia: V174: ocho comprobaciones de integridad en lectura con cero anomalías, cero residuos QA-V174 confirmados; E2E, rendimiento y concurrencia real aún pendientes.
 - [ ] 32.08 · Conteos antes/después — EN_PROGRESO
   - Evidencia: AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: Tras V95: 15 políticas, 0 bypass is_app_admin y 0 residuos en 5 catálogos
   - Evidencia: AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96: mis_datos mantiene 1 fila real, 0 fixtures y 0 admin bypass en 3 políticas
