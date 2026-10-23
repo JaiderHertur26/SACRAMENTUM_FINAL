@@ -174,6 +174,7 @@ Avance: 325 controles totales; 10 aprobados; 117 en progreso; 198 pendientes; 0 
   - Evidencia: V176: real PostgreSQL prepatch: SUSPENDED profile retained current_effective_diocese_id and NULL status retained current_app_role=parish. Fictional transaction ROLLBACK, seven identity helpers hardened.
   - Evidencia: V177: reproduced real suspended-account create_pending_baptism/confirmation/marriage/funeral bypass through four privileged functions, fully fictitious records and BEGIN/ROLLBACK. All four RPCs required fail-closed account scope.
   - Evidencia: V178: 6 privileged seating, combined draft and matrimonial recipient RPCs permitted SUSPENDED parish actor past authorization checks, proven in transaction; not proof of completion of real seating. Migration requires explicit ACTIVE/diocese concordance.
+  - Evidencia: V179: simulated SUSPENDED Chancellor passed five definer decree/correction/nullity role guards into business validation. SQL NULL <> role bypass also exposed after first hardening; patched via IS DISTINCT FROM. Fully reversible synthetic SQL test.
 - [ ] 06.07 · Todas las RPC privilegiadas denegadas a terceros (inventario dinámico) — EN_PROGRESO
   - Evidencia: AUDITORIA_BASE_SQL_V90.md: Cero vistas públicas; 129 RPC privilegiadas requieren pruebas de permisos y búsqueda de bypass
   - Evidencia: AUDITORIA_INVENTARIO_RPC_V91.json: 129 funciones catalogadas para revisión de terceros, sin afirmar autorización sin pruebas
@@ -219,6 +220,7 @@ Avance: 325 controles totales; 10 aprobados; 117 en progreso; 198 pendientes; 0 
   - Evidencia: V176: reversible PostgreSQL patch: ACTIVE identity retains role, parish, diocese and chat; SUSPENDED, NULL_STATUS, NULL_ACTIVE and DISABLED denied in central helpers. Separate real browser E2E remains pending.
   - Evidencia: V177: 4 legitimate active parish pending sacrament calls PASS; 24 forbidden combinations (SUSPENDED, NULL_STATUS, NULL_ACTIVE, DISABLED, FOREIGN_DIOCESE, DIOCESE_ROLE) explicitly denied in real reversible PostgreSQL QA.
   - Evidencia: V178: 42 transactional authorization checks on six SECURITY DEFINER RPCs: six ACTIVE actors reached business validation; 36 forbidden states/roles/dioceses denied; fully synthetic and rolled back.
+  - Evidencia: V179: temporary PostgreSQL patch proved 5 ACTIVE Chancellor RPC calls reached business input validation and 25 forbidden profile combinations rejected; includes explicit null-role fail-close, no full decree issuance claimed.
 - [ ] 06.08 · Search path de funciones — EN_PROGRESO
   - Evidencia: AUDITORIA_INVENTARIO_RPC_V91.json: Cribado search_path de funciones privilegiadas; falta verificación de todas sus dependencias
   - Evidencia: V124: ambas RPC destructivas preservaron search_path fijado; revisión de todas las demás sigue pendiente.
@@ -1020,6 +1022,7 @@ Avance: 325 controles totales; 10 aprobados; 117 en progreso; 198 pendientes; 0 
 - [ ] 30.06 · Variables secretas — EN_PROGRESO
   - Evidencia: AUDITORIA_EXP_DEPENDENCIAS_Y_RLS_V91.md: En laboratorios solo variables VITE públicas, excluido VERCEL_OIDC_TOKEN; faltan otros secretos
   - Evidencia: V174: nulidad matrimonial sin validación documental previa denegada con error institucional y sin alterar la partida, verificada con ROLLBACK.
+  - Evidencia: V179: marriage nullity Chancellor authorization now rejects SUSPENDED, NULL status, NULL is_active, disabled and wrong-role actors before documentary preauthorization; existing tribunal and nullity constraints preserved.
 - [x] 30.07 · Construcción de producción — APROBADO
   - Evidencia: AUDITORIA_CIERRE_TECNICO_V91_2026-10-21.md: Vercel V91 build Ready, CSS de producción idéntico por SHA256
   - Evidencia: Puerta de compilación V112 correctamente ejecutada en equipo de trabajo; no acredita pruebas visuales autenticadas ni despliegue de V111/V112.
@@ -1207,6 +1210,7 @@ Avance: 325 controles totales; 10 aprobados; 117 en progreso; 198 pendientes; 0 
   - Evidencia: V176: 16 identity authorization contracts including browser profile validation, total 1308/1308 Node tests and 28/28 strict quality checks.
   - Evidencia: V177: 16 additional Node contracts, total 1324/1324 synthetic tests and 28/28 quality checks, including build, CSS and npm audit.
   - Evidencia: V178: 20 new contract tests, 1344/1344 synthetic tests, 28/28 strict gates and real PostgreSQL 6 permitted/36 denied authorization cases.
+  - Evidencia: V179: 18 new Node identity/scope tests, 1362/1362 synthetic tests and 28/28 strict quality gates (production build and dependencies).
 - [ ] 32.04 · Guardar capturas — EN_PROGRESO
   - Evidencia: V114: scripts SQL reversibles y prueba de origen de migraciones versionados; todavía faltan capturas de UI.
   - Evidencia: V119: capturas y hashes SHA-256 por viewport/ruta, guardadas en AUDITORIA_EVIDENCIA_VISUAL_V119 (local, no Git).
@@ -1378,6 +1382,7 @@ Avance: 325 controles totales; 10 aprobados; 117 en progreso; 198 pendientes; 0 
   - Evidencia: V176: schema-anchored migration hardens 7 SECURITY DEFINER identity helpers; frontend validateProfileScope now also rejects NULL status/is_active. Real reversible SQL QA, build and Node tests passed.
   - Evidencia: V177: all four pending RPCs preserve their book sequencing and audit internals; 24 denied calls did not change 4 legitimate fictitious rows, and QA residue 0 across users, dioceses and all four pending tables.
   - Evidencia: V178: isolated SQL function predicate patch with no table, grants or book changes, fail-safe function-signature checks and full ROLLBACK of QA. Full legitimate seating E2E still open.
+  - Evidencia: V179: migration modifies existing five privileged function bodies only, preserving records, constraints, signature and grants; actual SQL temporary patch succeeded in BEGIN/ROLLBACK.
 - [ ] 32.08 · Conteos antes/después — EN_PROGRESO
   - Evidencia: AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: Tras V95: 15 políticas, 0 bypass is_app_admin y 0 residuos en 5 catálogos
   - Evidencia: AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96: mis_datos mantiene 1 fila real, 0 fixtures y 0 admin bypass en 3 políticas

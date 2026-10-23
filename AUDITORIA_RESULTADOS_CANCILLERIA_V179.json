@@ -1,0 +1,51 @@
+{
+  "version": "V179",
+  "date": "2026-10-23",
+  "installedMigration": "20261023221315_chancery_decree_fail_closed_v179.sql",
+  "reproduced": "SUSPENDED Chancellor reaches business validation in 5 definer RPCs. When status removed, NULL role comparison failed open unless IS DISTINCT FROM used.",
+  "rpcNames": [
+    "apply_marriage_correction",
+    "apply_funeral_correction",
+    "create_marriage_reposition_by_decree",
+    "create_funeral_reposition_by_decree",
+    "apply_marriage_nullity"
+  ],
+  "preliminaryPatch": {
+    "fiveActiveAuthorizationPasses": 5,
+    "twentyFiveInvalidRolesDenied": 25,
+    "transactions": "BEGIN/ROLLBACK",
+    "fullyExecutedDecrees": 0
+  },
+  "postDeployment": {
+    "migrationInstalled": true,
+    "realAuthorizationSql": "PASS 5 positive and 25 denied",
+    "installedFunctionsGuarded": 5,
+    "syntheticActorsRemaining": 0,
+    "syntheticProfilesRemaining": 0,
+    "fourReversibleBusinessRegressionScriptsPassed": [
+      "qa-rollback-marriage-funeral-corrections-late-notes-v155.sql",
+      "qa-rollback-marriage-funeral-repositions-late-notes-v155.sql",
+      "qa-rollback-tribunal-v114.sql",
+      "qa-rollback-nullity-without-preauthorization-rejected-v174.sql"
+    ]
+  },
+  "software": {
+    "nodeSyntheticPassed": 1362,
+    "qualityGatesPassed": 28
+  },
+  "verificationComplete": [
+    "Repeat 5/25 SQL QA on installed migration",
+    "Four reversible business regression scripts PASS",
+    "Zero fictitious QA users/profiles persisted"
+  ],
+  "scopeRestrictions": [
+    "No physical independent cross-diocese sessions",
+    "No simultaneous PostgreSQL transactions",
+    "No claim of 5 completed decree business operations"
+  ],
+  "masterCounts": {
+    "APROBADO": 10,
+    "EN_PROGRESO": 117,
+    "PENDIENTE": 198
+  }
+}

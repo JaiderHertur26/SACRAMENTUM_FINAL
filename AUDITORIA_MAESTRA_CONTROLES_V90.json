@@ -619,9 +619,10 @@
         "V173: reproducción real con rol authenticated, usuario parroquial ficticio status=SUSPENDED que digitalizó un Bautismo histórico; tras parche transaccional, rechazado. Otros cuatro tipos y wrapper Confirmación protegidos por estado ACTIVE y diócesis real.",
         "V176: real PostgreSQL prepatch: SUSPENDED profile retained current_effective_diocese_id and NULL status retained current_app_role=parish. Fictional transaction ROLLBACK, seven identity helpers hardened.",
         "V177: reproduced real suspended-account create_pending_baptism/confirmation/marriage/funeral bypass through four privileged functions, fully fictitious records and BEGIN/ROLLBACK. All four RPCs required fail-closed account scope.",
-        "V178: 6 privileged seating, combined draft and matrimonial recipient RPCs permitted SUSPENDED parish actor past authorization checks, proven in transaction; not proof of completion of real seating. Migration requires explicit ACTIVE/diocese concordance."
+        "V178: 6 privileged seating, combined draft and matrimonial recipient RPCs permitted SUSPENDED parish actor past authorization checks, proven in transaction; not proof of completion of real seating. Migration requires explicit ACTIVE/diocese concordance.",
+        "V179: simulated SUSPENDED Chancellor passed five definer decree/correction/nullity role guards into business validation. SQL NULL <> role bypass also exposed after first hardening; patched via IS DISTINCT FROM. Fully reversible synthetic SQL test."
       ],
-      "updated_at": "2026-10-23T21:49:51.019Z"
+      "updated_at": "2026-10-23T22:11:54.911Z"
     },
     {
       "id": "06.07",
@@ -674,9 +675,10 @@
         "V175: fifteen real HTTPS PostgREST anonymous requests against private tables returned HTTP 401 / SQL 42501, zero private rows; the published client key was recognized. RLS with real sessions across two dioceses still pending.",
         "V176: reversible PostgreSQL patch: ACTIVE identity retains role, parish, diocese and chat; SUSPENDED, NULL_STATUS, NULL_ACTIVE and DISABLED denied in central helpers. Separate real browser E2E remains pending.",
         "V177: 4 legitimate active parish pending sacrament calls PASS; 24 forbidden combinations (SUSPENDED, NULL_STATUS, NULL_ACTIVE, DISABLED, FOREIGN_DIOCESE, DIOCESE_ROLE) explicitly denied in real reversible PostgreSQL QA.",
-        "V178: 42 transactional authorization checks on six SECURITY DEFINER RPCs: six ACTIVE actors reached business validation; 36 forbidden states/roles/dioceses denied; fully synthetic and rolled back."
+        "V178: 42 transactional authorization checks on six SECURITY DEFINER RPCs: six ACTIVE actors reached business validation; 36 forbidden states/roles/dioceses denied; fully synthetic and rolled back.",
+        "V179: temporary PostgreSQL patch proved 5 ACTIVE Chancellor RPC calls reached business input validation and 25 forbidden profile combinations rejected; includes explicit null-role fail-close, no full decree issuance claimed."
       ],
-      "updated_at": "2026-10-23T21:49:51.021Z"
+      "updated_at": "2026-10-23T22:11:54.914Z"
     },
     {
       "id": "06.08",
@@ -3752,9 +3754,10 @@
       "status": "EN_PROGRESO",
       "evidence": [
         "AUDITORIA_EXP_DEPENDENCIAS_Y_RLS_V91.md: En laboratorios solo variables VITE públicas, excluido VERCEL_OIDC_TOKEN; faltan otros secretos",
-        "V174: nulidad matrimonial sin validación documental previa denegada con error institucional y sin alterar la partida, verificada con ROLLBACK."
+        "V174: nulidad matrimonial sin validación documental previa denegada con error institucional y sin alterar la partida, verificada con ROLLBACK.",
+        "V179: marriage nullity Chancellor authorization now rejects SUSPENDED, NULL status, NULL is_active, disabled and wrong-role actors before documentary preauthorization; existing tribunal and nullity constraints preserved."
       ],
-      "updated_at": "2026-10-23T19:57:40.020Z"
+      "updated_at": "2026-10-23T22:11:54.914Z"
     },
     {
       "id": "30.07",
@@ -4096,9 +4099,10 @@
         "V176: 15 new identity authorization contracts, total 1307/1307 Node tests and 28/28 strict quality checks.",
         "V176: 16 identity authorization contracts including browser profile validation, total 1308/1308 Node tests and 28/28 strict quality checks.",
         "V177: 16 additional Node contracts, total 1324/1324 synthetic tests and 28/28 quality checks, including build, CSS and npm audit.",
-        "V178: 20 new contract tests, 1344/1344 synthetic tests, 28/28 strict gates and real PostgreSQL 6 permitted/36 denied authorization cases."
+        "V178: 20 new contract tests, 1344/1344 synthetic tests, 28/28 strict gates and real PostgreSQL 6 permitted/36 denied authorization cases.",
+        "V179: 18 new Node identity/scope tests, 1362/1362 synthetic tests and 28/28 strict quality gates (production build and dependencies)."
       ],
-      "updated_at": "2026-10-23T21:49:51.021Z"
+      "updated_at": "2026-10-23T22:11:54.914Z"
     },
     {
       "id": "32.04",
@@ -4307,9 +4311,10 @@
         "V176: schema-anchored migration hardens 7 SECURITY DEFINER identity helpers without changing data rows, signatures or grants. Real reversible positive/negative QA passed.",
         "V176: schema-anchored migration hardens 7 SECURITY DEFINER identity helpers; frontend validateProfileScope now also rejects NULL status/is_active. Real reversible SQL QA, build and Node tests passed.",
         "V177: all four pending RPCs preserve their book sequencing and audit internals; 24 denied calls did not change 4 legitimate fictitious rows, and QA residue 0 across users, dioceses and all four pending tables.",
-        "V178: isolated SQL function predicate patch with no table, grants or book changes, fail-safe function-signature checks and full ROLLBACK of QA. Full legitimate seating E2E still open."
+        "V178: isolated SQL function predicate patch with no table, grants or book changes, fail-safe function-signature checks and full ROLLBACK of QA. Full legitimate seating E2E still open.",
+        "V179: migration modifies existing five privileged function bodies only, preserving records, constraints, signature and grants; actual SQL temporary patch succeeded in BEGIN/ROLLBACK."
       ],
-      "updated_at": "2026-10-23T21:49:51.021Z"
+      "updated_at": "2026-10-23T22:11:54.914Z"
     },
     {
       "id": "32.08",
