@@ -1,0 +1,51 @@
+{
+  "protocol": "V177",
+  "date": "2026-10-23",
+  "installedMigration": "20261023205542_pending_sacraments_active_parish_v177.sql",
+  "postDeploymentSqlQa": "PASS: same 4 positive and 24 negative cases after permanent migration",
+  "installedRpcsVerified": 4,
+  "prepatchRepro": "ALL FOUR suspended-account privileged pending sacrament creates succeeded with synthetic accounts in ROLLBACK",
+  "qasql": {
+    "temporaryMigrationWithinRollback": "PASS",
+    "legitimateActiveParish": 4,
+    "denied": [
+      "SUSPENDED",
+      "NULL_STATUS",
+      "NULL_ACTIVE",
+      "DISABLED",
+      "FOREIGN_DIOCESE",
+      "DIOCESE_ROLE"
+    ],
+    "deniedCount": 24,
+    "unexpectedMutations": 0,
+    "allTransactionRollbacks": true,
+    "residues": {
+      "qaUsers": 0,
+      "qaDioceses": 0,
+      "qaBaptisms": 0,
+      "qaConfirmations": 0,
+      "qaMarriages": 0,
+      "qaFunerals": 0
+    }
+  },
+  "fourRpcNames": [
+    "create_pending_baptism",
+    "create_pending_confirmation",
+    "create_pending_marriage",
+    "create_pending_funeral"
+  ],
+  "qualityGatePassed": 28,
+  "nodeTestsPassed": 1324,
+  "master": {
+    "APROBADO": 10,
+    "EN_PROGRESO": 117,
+    "PENDIENTE": 198
+  },
+  "notCertified": [
+    "Independent authenticated browser E2E across dioceses",
+    "Two overlapping PostgreSQL transactions",
+    "Full UI functional workflow of all 4 sacraments",
+    "Production stress testing"
+  ],
+  "note": "The original rejected hypothesis about NULL bishop tenure visibility was not an exploit and was not included; only reproduced vulnerabilities and passing tests are reported."
+}
