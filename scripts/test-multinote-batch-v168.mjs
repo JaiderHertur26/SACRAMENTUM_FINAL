@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 const read=p=>fs.readFileSync(p,'utf8');
-const sql=read('supabase/migrations/20261023180000_batch_later_note_reconciliation_v168.sql');
+const sql=read('supabase/migrations/20261023154826_batch_later_note_reconciliation_v168.sql');
 const one=read('scripts/qa-rollback-multinote-batch-v168.sql');
 const four=read('scripts/qa-rollback-multinote-four-sacraments-v168.sql');
 const service=read('src/services/laterNoteReconciliationService.js');
