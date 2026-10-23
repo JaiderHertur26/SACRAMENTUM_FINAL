@@ -618,9 +618,10 @@
         "V172: original bishop_tenures RLS de las cuatro operaciones permitía acceso interdiocesano por rol; demostración con diocese A ficticia y tenure de parroquia B. Parche restringe select/insert/update/delete con scope real.",
         "V173: reproducción real con rol authenticated, usuario parroquial ficticio status=SUSPENDED que digitalizó un Bautismo histórico; tras parche transaccional, rechazado. Otros cuatro tipos y wrapper Confirmación protegidos por estado ACTIVE y diócesis real.",
         "V176: real PostgreSQL prepatch: SUSPENDED profile retained current_effective_diocese_id and NULL status retained current_app_role=parish. Fictional transaction ROLLBACK, seven identity helpers hardened.",
-        "V177: reproduced real suspended-account create_pending_baptism/confirmation/marriage/funeral bypass through four privileged functions, fully fictitious records and BEGIN/ROLLBACK. All four RPCs required fail-closed account scope."
+        "V177: reproduced real suspended-account create_pending_baptism/confirmation/marriage/funeral bypass through four privileged functions, fully fictitious records and BEGIN/ROLLBACK. All four RPCs required fail-closed account scope.",
+        "V178: 6 privileged seating, combined draft and matrimonial recipient RPCs permitted SUSPENDED parish actor past authorization checks, proven in transaction; not proof of completion of real seating. Migration requires explicit ACTIVE/diocese concordance."
       ],
-      "updated_at": "2026-10-23T20:54:32.270Z"
+      "updated_at": "2026-10-23T21:49:51.019Z"
     },
     {
       "id": "06.07",
@@ -672,9 +673,10 @@
         "V174: 75/75 regresiones SQL activas con evidencia acumulada (30 previamente aprobadas, 45 verificadas ahora); 22 reproducciones históricas archivadas y no incluidas como éxitos actuales.",
         "V175: fifteen real HTTPS PostgREST anonymous requests against private tables returned HTTP 401 / SQL 42501, zero private rows; the published client key was recognized. RLS with real sessions across two dioceses still pending.",
         "V176: reversible PostgreSQL patch: ACTIVE identity retains role, parish, diocese and chat; SUSPENDED, NULL_STATUS, NULL_ACTIVE and DISABLED denied in central helpers. Separate real browser E2E remains pending.",
-        "V177: 4 legitimate active parish pending sacrament calls PASS; 24 forbidden combinations (SUSPENDED, NULL_STATUS, NULL_ACTIVE, DISABLED, FOREIGN_DIOCESE, DIOCESE_ROLE) explicitly denied in real reversible PostgreSQL QA."
+        "V177: 4 legitimate active parish pending sacrament calls PASS; 24 forbidden combinations (SUSPENDED, NULL_STATUS, NULL_ACTIVE, DISABLED, FOREIGN_DIOCESE, DIOCESE_ROLE) explicitly denied in real reversible PostgreSQL QA.",
+        "V178: 42 transactional authorization checks on six SECURITY DEFINER RPCs: six ACTIVE actors reached business validation; 36 forbidden states/roles/dioceses denied; fully synthetic and rolled back."
       ],
-      "updated_at": "2026-10-23T20:54:32.272Z"
+      "updated_at": "2026-10-23T21:49:51.021Z"
     },
     {
       "id": "06.08",
@@ -1444,9 +1446,10 @@
         "V170: salida enmascarada para los cuatro contadores y alertas antes del efecto de limpieza, con mismo identityKey conservado.",
         "V172: aislamiento RLS de historial episcopal según parroquia, diócesis y estado activo; falta certificación con dos inicios de sesión Supabase separados.",
         "V173: seis funciones de digitalización histórica exigen rol parroquial legítimo, is_active=true, status ACTIVE y pertenencia diocesana de la parroquia. Falta probar cada acción legítima de los otros cuatro flujos con navegador real.",
-        "V177: four pending sacramental workflows now require account explicitly ACTIVE, is_active true and actual parish-diocese correspondence. This is PostgreSQL reversible integration, NOT full authenticated browser E2E."
+        "V177: four pending sacramental workflows now require account explicitly ACTIVE, is_active true and actual parish-diocese correspondence. This is PostgreSQL reversible integration, NOT full authenticated browser E2E.",
+        "V178: seating Baptism/Confirmation/Marriage/Funeral, combined Baptism-Confirmation draft and matrimonial recipient processing require is_active=true, status ACTIVE and proper parish-to-diocese match, independently of frontend role logic."
       ],
-      "updated_at": "2026-10-23T20:54:32.272Z"
+      "updated_at": "2026-10-23T21:49:51.021Z"
     },
     {
       "id": "12.08",
@@ -4092,9 +4095,10 @@
         "V175: new 7-case regression test validates live-browser snapshots and anonymous Data API evidence, 1292/1292 synthetic suite, all 28 quality gates.",
         "V176: 15 new identity authorization contracts, total 1307/1307 Node tests and 28/28 strict quality checks.",
         "V176: 16 identity authorization contracts including browser profile validation, total 1308/1308 Node tests and 28/28 strict quality checks.",
-        "V177: 16 additional Node contracts, total 1324/1324 synthetic tests and 28/28 quality checks, including build, CSS and npm audit."
+        "V177: 16 additional Node contracts, total 1324/1324 synthetic tests and 28/28 quality checks, including build, CSS and npm audit.",
+        "V178: 20 new contract tests, 1344/1344 synthetic tests, 28/28 strict gates and real PostgreSQL 6 permitted/36 denied authorization cases."
       ],
-      "updated_at": "2026-10-23T20:54:32.273Z"
+      "updated_at": "2026-10-23T21:49:51.021Z"
     },
     {
       "id": "32.04",
@@ -4302,9 +4306,10 @@
         "V175: local build and production 107/107 route check; performance/security advisors identified pending remediation, not falsely claimed as 0 vulnerabilities.",
         "V176: schema-anchored migration hardens 7 SECURITY DEFINER identity helpers without changing data rows, signatures or grants. Real reversible positive/negative QA passed.",
         "V176: schema-anchored migration hardens 7 SECURITY DEFINER identity helpers; frontend validateProfileScope now also rejects NULL status/is_active. Real reversible SQL QA, build and Node tests passed.",
-        "V177: all four pending RPCs preserve their book sequencing and audit internals; 24 denied calls did not change 4 legitimate fictitious rows, and QA residue 0 across users, dioceses and all four pending tables."
+        "V177: all four pending RPCs preserve their book sequencing and audit internals; 24 denied calls did not change 4 legitimate fictitious rows, and QA residue 0 across users, dioceses and all four pending tables.",
+        "V178: isolated SQL function predicate patch with no table, grants or book changes, fail-safe function-signature checks and full ROLLBACK of QA. Full legitimate seating E2E still open."
       ],
-      "updated_at": "2026-10-23T20:54:32.273Z"
+      "updated_at": "2026-10-23T21:49:51.021Z"
     },
     {
       "id": "32.08",

@@ -1,0 +1,43 @@
+{
+  "protocol": "V178",
+  "date": "2026-10-23",
+  "migration": "20261023214651_seat_sacraments_scope_v178.sql",
+  "prepatch": "Six SUSPENDED account calls reached business validation, while current_app_role() returned null",
+  "rpcNames": [
+    "create_pending_baptism_with_confirmation_flow",
+    "seat_baptism_records",
+    "seat_confirmation_records",
+    "seat_pending_marriage",
+    "seat_funeral_record",
+    "process_matrimonial_notification_recipient"
+  ],
+  "postpatchTemporaryRealSql": {
+    "pass": true,
+    "authenticatedGateAllowed": 6,
+    "denied": 36,
+    "deniedStates": [
+      "SUSPENDED",
+      "NULL_STATUS",
+      "NULL_ACTIVE",
+      "DISABLED",
+      "FOREIGN_DIOCESE",
+      "WRONG_ROLE"
+    ],
+    "transactionRollback": true
+  },
+  "testSuite": {
+    "node": 1344,
+    "strictQuality": 28
+  },
+  "master": {
+    "APROBADO": 10,
+    "EN_PROGRESO": 117,
+    "PENDIENTE": 198
+  },
+  "certificationLimits": [
+    "Authorized controls reached validation only, not six complete successful business operations",
+    "No two physical concurrent PostgreSQL connections",
+    "No independent multi-diocese browser authentication",
+    "No full visual traversal with all roles"
+  ]
+}
