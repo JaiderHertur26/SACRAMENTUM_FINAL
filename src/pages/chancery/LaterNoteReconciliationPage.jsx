@@ -96,9 +96,10 @@ export default function LaterNoteReconciliationPage() {
         .eq('print_policy','optional')
         .order('created_at',{ascending:false});
       if(noteError)throw noteError;
-      setAvailableNotes((notes||[]).filter(n=>!n.source_type || String(n.source_type).toLowerCase()==='manual'));
+      const eligibleNotes=(notes||[]).filter(n=>!n.source_type || String(n.source_type).toLowerCase()==='manual');
+      setAvailableNotes(eligibleNotes);
       setForm(v=>({...v,noteId:''}));
-      if(!notes?.length)setError('No existen notas manuales independientes elegibles para ese decreto.');
+      if(!eligibleNotes.length)setError('No existen notas manuales independientes elegibles para ese decreto.');
     }catch(e){setError(e.message);}
     finally{setLookingUp(false);}
   };
