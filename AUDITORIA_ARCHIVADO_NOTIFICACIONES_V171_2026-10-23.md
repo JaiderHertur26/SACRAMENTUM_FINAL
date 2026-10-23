@@ -1,0 +1,22 @@
+# SACRAMENTUM · Auditoría V171 — Protección del archivado de avisos matrimoniales
+
+Fecha: 23 de octubre de 2026. Ruta de trabajo: C:\SACRAMENTUM\SACRAMENTUM_FINAL.
+
+## Vulnerabilidad reproducida
+La RPC `archive_matrimonial_notification_recipient(uuid)` (SECURITY DEFINER) sólo exigía `is_active=true` y rol parroquia, pero no comprobaba `user_profiles.status='ACTIVE'`. Por ello, un perfil ficticio `status='SUSPENDED'` / `is_active=true` consiguió cancelar un aviso ficticio propio. Se verificó directamente en PostgreSQL Supabase bajo `BEGIN/ROLLBACK` antes de aplicar el parche.
+
+## Corrección
+Migración `supabase/migrations/20261023175641_archive_notification_active_profile_v171.sql`: cambio quirúrgico en la función existente mediante `pg_get_functiondef` y comparación de anclaje exacto. Añade `upper(coalesce(up.status,'ACTIVE'))='ACTIVE'` al filtro de autoridad. Firma, permisos, otras RPC, notas y partidas sin cambios.
+
+## Ensayos realizados
+- Pre-corrección en Supabase: `scripts/qa-rollback-notification-archive-status-repro-v171.sql`, cuenta de laboratorio suspendida logró cancelar aviso ficticio (defecto comprobado).
+- Parche instalado solamente dentro de transacción: `scripts/qa-rollback-notification-archive-active-profile-v171.sql` denegó cuenta SUSPENDED, mantuvo aviso pending, luego la misma cuenta ficticia pasó a ACTIVE y archivó legítimamente; segundo archivado idempotente y un único evento de auditoría.
+- En ambas pruebas se creó usuario de prueba con dominio `example.invalid` y aviso ficticio, todo en una transacción `ROLLBACK`. Ningún usuario ni partida existentes fueron editados.
+- 8 pruebas contractuales nuevas integradas. 1250/1250 sintéticas y 28/28 controles estrictos aprobados.
+- La QA evalúa la función de BD bajo `SET LOCAL ROLE authenticated` y JWT de ficción; NO certifica sesiones completas de dos diócesis.
+- Auditoría maestra sin promociones de controles: {"APROBADO":10,"EN_PROGRESO":117,"PENDIENTE":198}.
+
+## Publicación
+La migración permanente en Supabase y la comprobación GitHub/Vercel se registrarán después de superar los gates de integración. Hasta entonces no declarar reparación productiva completa.
+
+**Dictamen local:** falla de control del estado institucional reproducida y mitigación validada reversiblemente; pendiente su publicación y verificación permanente.

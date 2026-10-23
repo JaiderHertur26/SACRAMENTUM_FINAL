@@ -612,9 +612,10 @@
         "V165: mark_chat_room_read y withdraw_chat_message tienen nueva verificación parcial; 44 RPC privilegiadas revisadas parcialmente, 103 pendientes.",
         "V166: 209 SECURITY DEFINER, 148 authenticated, 45 reviewed partially and 103 pending. Existing auth grants unchanged, new RPC limited to authenticated.",
         "V167: cuatro RPC de transición con FOR UPDATE, auth.uid y unicidad de casos abiertos revisadas; sin variación de 209 funciones privilegiadas.",
-        "V168: SECURITY DEFINER nuevo con comprobación rol Cancillería/diocésis/parroquia, sin EXECUTE anon; inventario total 210, auth 149, evidencia parcial 46 y 103 revisiones pendientes."
+        "V168: SECURITY DEFINER nuevo con comprobación rol Cancillería/diocésis/parroquia, sin EXECUTE anon; inventario total 210, auth 149, evidencia parcial 46 y 103 revisiones pendientes.",
+        "V171: SECURITY DEFINER archive_matrimonial_notification_recipient endurecido para exigir status ACTIVE además de is_active=true. Ensayo transaccional en Supabase con usuario/aviso ficticios: antes aceptaba SUSPENDED, corregido con cambio temporal BEGIN/ROLLBACK."
       ],
-      "updated_at": "2026-10-23T16:09:46.262Z"
+      "updated_at": "2026-10-23T18:01:16.422Z"
     },
     {
       "id": "06.07",
@@ -659,9 +660,10 @@
         "V165: nueve casos denegados por roles/propiedad/validación, incluidos lectura, escritura, recibo de lectura y retiro de mensaje de tercero.",
         "V166: negative auth: actual Parish member of other room and active Diocese user outside target room both denied for historical chat.",
         "V169: cinco operaciones UI (solicitar, aprobar, rechazar, ejecutar individual y en lote) ya no muestran toasts ni recargan datos de la identidad anterior; los permisos RLS/RPC requieren ensayo interdiocesano real.",
-        "V170: contadores estadísticos y errores están condicionados por scopeCurrent/dataCurrent; no se muestran de otra diócesis durante una transición simulada."
+        "V170: contadores estadísticos y errores están condicionados por scopeCurrent/dataCurrent; no se muestran de otra diócesis durante una transición simulada.",
+        "V171: perfil parroquial ficticio SUSPENDED con is_active=true podía archivar aviso propio; reproducción real reversible y parche SQL comprobado con denegación específica. Falta matriz total de RPC por rol."
       ],
-      "updated_at": "2026-10-23T17:43:14.771Z"
+      "updated_at": "2026-10-23T18:01:16.424Z"
     },
     {
       "id": "06.08",
@@ -4064,9 +4066,10 @@
         "V167: 19 contratos nuevos, 1195/1195 sintéticas, 28/28 Quality Gate, compilación y npm audit sin hallazgos.",
         "V168: 22 tests contractuales nuevos, 1217/1217 tests totales (GitHub CI #39982084560 y puerta local), 28/28 verificadores.",
         "V169: auditoría reproducible local con 1237/1237 pruebas sintéticas, 28/28 gates, build y npm audit completo; pruebas de sesión son simuladas, no E2E autenticadas.",
-        "V170: nueva regresión de 5 pruebas fuente/evidencia; total 1242/1242 sintéticas y 28/28 quality gate."
+        "V170: nueva regresión de 5 pruebas fuente/evidencia; total 1242/1242 sintéticas y 28/28 quality gate.",
+        "V171: 8 contratos adicionales para archivado parroquial, 1250/1250 sintéticas y 28/28 quality gate."
       ],
-      "updated_at": "2026-10-23T17:43:14.771Z"
+      "updated_at": "2026-10-23T18:01:16.424Z"
     },
     {
       "id": "32.04",
@@ -4266,9 +4269,10 @@
         "V167: Quality Gate de tests, Vite, CSS y npm audit aprobado, sin vulnerabilidades reportadas.",
         "V168: 1217/1217 test sintéticos, 28/28 Quality Gate, CSS, Vite build y npm audit prod+completo sin vulnerabilidades reportadas.",
         "V169: Quality Gate estricto ejecutado localmente con 28/28 verificaciones y cero vulnerabilidades reportadas por npm audit en el momento de prueba.",
-        "V170: build Vite normal, CSS crítico, npm audit producción y completo sin vulnerabilidades reportadas; QA visual Chrome 6/6."
+        "V170: build Vite normal, CSS crítico, npm audit producción y completo sin vulnerabilidades reportadas; QA visual Chrome 6/6.",
+        "V171: compilación Vite, CSS crítico y npm audit prod/completo aprobados; prueba SQL real de V171 sin persistencia QA."
       ],
-      "updated_at": "2026-10-23T17:43:14.771Z"
+      "updated_at": "2026-10-23T18:01:16.424Z"
     },
     {
       "id": "32.08",
