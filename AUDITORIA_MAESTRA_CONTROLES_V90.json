@@ -505,9 +505,10 @@
         "V121: cierre de lectura cruzada en artefactos/filas/archivos físicos; RLS probada con actor diocesano y ROLLBACK, acceso legítimo conservado.",
         "V122: privilegios TRUNCATE/REFERENCES/TRIGGER/MAINTAIN revocados de authenticated en todas las 78 tablas públicas; 57 concedían cada permiso antes. Consulta SELECT esencial preservada.",
         "V128-V130: función apply_marriage_nullity ya no puede modificar Matrimonio sin autorización documental previa verificable y autorización diocesana independiente; QA ROLLBACK.",
-        "V132: nulidad matrimonial requiere revisión diocesana con SHA-256 coincidente tanto en React como en la función privilegiada."
+        "V132: nulidad matrimonial requiere revisión diocesana con SHA-256 coincidente tanto en React como en la función privilegiada.",
+        "V164: RLS SELECT bajo SET LOCAL ROLE authenticated: miembro legítimo puede leer su sala; actor sin perfil no puede leer sala ni mensajes. SQL read-only con ROLLBACK."
       ],
-      "updated_at": "2026-10-22T15:42:58.262Z"
+      "updated_at": "2026-10-23T14:09:03.429Z"
     },
     {
       "id": "06.03",
@@ -599,9 +600,10 @@
         "V160: sin cambios SQL ni permisos. Inventario RPC heredado: 206 SECURITY DEFINER, 145 authenticated, 35 con evidencia parcial, 110 por revisar.",
         "V161: inventario SECURITY DEFINER 208 total, 147 RPC authenticated, 37 con pruebas parciales y 110 por revisar.",
         "V162: 208 SECURITY DEFINER sin cambios, 147 RPC authenticated, 37 parcialmente verificadas, 110 pendientes.",
-        "V163: inventario de 208 SECURITY DEFINER inalterado; proceso de publicación no amplió grants ni alteró Supabase."
+        "V163: inventario de 208 SECURITY DEFINER inalterado; proceso de publicación no amplió grants ni alteró Supabase.",
+        "V164: auditoría parcial en cinco SECURITY DEFINER de Chat Diocesano, 42 de 147 funciones authenticated con evidencia parcial, 105 pendientes. Sin grants nuevos."
       ],
-      "updated_at": "2026-10-23T13:51:55.827Z"
+      "updated_at": "2026-10-23T14:09:03.445Z"
     },
     {
       "id": "06.07",
@@ -641,9 +643,10 @@
         "V159: los cuatro sacramentos superaron autoridad separada Cancillería/Diócesis en 8 flujos correctivos y de reposición.",
         "V160: componente real de conciliación mostrado por Chrome con roles simulados independientes Cancillería/Diócesis; controles exclusivos visibles según rol.",
         "V161: dos nuevas RPC usan scope de perfil institucional, Diócesis/Cancillería; otras diócesis y usuario sin perfil denegados en SQL real.",
-        "V162: React en Chrome impide observar expedientes de la diócesis A tras cambio de sesión a la diócesis B."
+        "V162: React en Chrome impide observar expedientes de la diócesis A tras cambio de sesión a la diócesis B.",
+        "V164: can_access_chat_room false, get_chat_room_messages denegada y send_chat_message denegada a identidad sin perfil; falta actor válido de otra diócesis."
       ],
-      "updated_at": "2026-10-23T13:05:20.938Z"
+      "updated_at": "2026-10-23T14:09:03.445Z"
     },
     {
       "id": "06.08",
@@ -2199,9 +2202,11 @@
       "area": "Chat y comunicaciones",
       "priority": "P1",
       "criterion": "Miembros de sala",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "V164: perfil de miembro activo resuelve current_chat_profile_id y su sala bajo RLS; pertenencia validada en función SECURITY DEFINER."
+      ],
+      "updated_at": "2026-10-23T14:09:03.445Z"
     },
     {
       "id": "19.02",
@@ -2209,9 +2214,11 @@
       "area": "Chat y comunicaciones",
       "priority": "P1",
       "criterion": "Prohibir sala ajena",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "V164: sin perfil, RLS de salas y mensajes oculta registros; no se pudo ensayar segunda diócesis REAL porque sólo una tiene chat configurado."
+      ],
+      "updated_at": "2026-10-23T14:09:03.445Z"
     },
     {
       "id": "19.03",
@@ -2219,9 +2226,11 @@
       "area": "Chat y comunicaciones",
       "priority": "P1",
       "criterion": "Enviar mensaje",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "V164: send_chat_message rechaza una identidad sin perfil antes de escribir. Envío positivo y escenarios de concurrencia siguen pendientes."
+      ],
+      "updated_at": "2026-10-23T14:09:03.445Z"
     },
     {
       "id": "19.04",
@@ -2289,9 +2298,11 @@
       "area": "Chat y comunicaciones",
       "priority": "P1",
       "criterion": "Sesión expirada",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "V164: navegador Chrome ejecutó 7/7 transiciones de sesión A→B→logout→A, incluidas respuesta tardía y limpieza de realtime/draft; cuentas simuladas."
+      ],
+      "updated_at": "2026-10-23T14:09:03.445Z"
     },
     {
       "id": "20.01",
@@ -3181,9 +3192,10 @@
         "AUDITORIA_EXP_DEPENDENCIAS_Y_RLS_V91.md: Acceso horizontal a partida Bautismo fuera de jurisdicción denegado; faltan 3 sacramentos",
         "AUDITORIA_AUTORIDAD_MIGRACION_V101_2026-10-21.md: V100: aislamiento IDOR de lotes y vínculos confirmado en PostgREST/RLS con sesión Parroquia",
         "V120: acceso IDOR por origen y referencia parroquial ajena reproducido con fixture y corregido con doble pertenencia.",
-        "V121: acceso IDOR por origen físico extranjero reproducido: antes artefactos=1, filas=1, archivos=1; después todos=0."
+        "V121: acceso IDOR por origen físico extranjero reproducido: antes artefactos=1, filas=1, archivos=1; después todos=0.",
+        "V164: prueba de chat IDOR con UUID real de sala y perfil inexistente bajo rol authenticated: denegado en acceso directo y RPC."
       ],
-      "updated_at": "2026-10-22T13:23:24.315Z"
+      "updated_at": "2026-10-23T14:09:03.445Z"
     },
     {
       "id": "27.04",
@@ -3803,9 +3815,10 @@
         "V160: datos ficticios locales aislados; 6 capturas reales con hashes SHA256 en AUDITORIA_EVIDENCIA_VISUAL_V160 y 4 interacciones documentadas.",
         "V161: QA real con 315 cierres ficticios y un pendiente antiguo, luego 2 páginas sin solapamiento y 50 límites; ROLLBACK.",
         "V162: navegador real Chrome aislado con retraso artificial 900ms, cambio A→B, respuesta tardía rechazada, logout y recuperación.",
-        "V163: prueba de control de despliegue: CI éxito antiguo SHA 1375467 aceptado, fallo histórico ed37375 bloqueado (exit 1), sin mutación sacramental."
+        "V163: prueba de control de despliegue: CI éxito antiguo SHA 1375467 aceptado, fallo histórico ed37375 bloqueado (exit 1), sin mutación sacramental.",
+        "V164: consulta QA reversible contra Supabase real; sin contenidos de mensajes publicados, sin cambios sacramentales ni escrituras persistentes."
       ],
-      "updated_at": "2026-10-23T13:51:55.830Z"
+      "updated_at": "2026-10-23T14:09:03.445Z"
     },
     {
       "id": "31.08",
@@ -3867,9 +3880,10 @@
         "V160: ni navegador aislado ni sus expedientes enviaron llamadas a Supabase; no se creó prueba sacramental real adicional.",
         "V161: ensayo utiliza decretos/notas completamente ficticios; no persistieron registros de prueba.",
         "V162: pruebas exclusivamente ficticias locales; no se creó ningún registro sacramental o expediente en Supabase.",
-        "V163: no se crearon usuarios ni registros ficticios en Supabase y no se aplicaron migraciones."
+        "V163: no se crearon usuarios ni registros ficticios en Supabase y no se aplicaron migraciones.",
+        "V164: Chat Diocesano QA sólo lectura real bajo BEGIN/ROLLBACK; Chrome local con datos y roles sintéticos."
       ],
-      "updated_at": "2026-10-23T13:51:55.830Z"
+      "updated_at": "2026-10-23T14:09:03.445Z"
     },
     {
       "id": "32.01",
@@ -3963,9 +3977,10 @@
         "V160: 15 nuevas pruebas contractuales de evidencias Chrome/CDP; total 1072/1072 y Quality Gate 28/28.",
         "V161: 21 nuevos tests y evidencia Chrome; total 1093/1093 y Quality Gate 28/28.",
         "V162: 14 pruebas contractuales nuevas, total 1107/1107 y puerta 28/28.",
-        "V163: 18 pruebas nuevas de CI gate para SHA/branch/repo, pending/failure/cancelled, API 403 y previews. Total 1125/1125, gate 28/28."
+        "V163: 18 pruebas nuevas de CI gate para SHA/branch/repo, pending/failure/cancelled, API 403 y previews. Total 1125/1125, gate 28/28.",
+        "V164: 17 tests nuevos, total 1142/1142 sintéticos y 28/28 Quality Gate; npm audit 0 hallazgos."
       ],
-      "updated_at": "2026-10-23T13:51:55.830Z"
+      "updated_at": "2026-10-23T14:09:03.445Z"
     },
     {
       "id": "32.04",
@@ -4031,9 +4046,10 @@
         "V160: primer harness visual aislado falló por alias del cliente Supabase y error sintáctico del mock; ambos errores del entorno QA corregidos y 6/6+4/4 finales.",
         "V161: detectada brecha operativa de pendientes ocultos por límite fijo; corregida en backend, interfaz y pruebas automáticas.",
         "V162: solucionada posible retención visual temporal de datos entre sesiones, con fail-closed en UI y protección frente a respuestas de redes anteriores.",
-        "V163: riesgo de producción previa a terminar CI mitigado por buildCommand fail-closed. Previews no se bloquean por CI push de main."
+        "V163: riesgo de producción previa a terminar CI mitigado por buildCommand fail-closed. Previews no se bloquean por CI push de main.",
+        "V164: se corrigió riesgo de conservar chat anterior en cambio de cuenta; instancia React key por identidad y desuscripción contra respuestas tardías."
       ],
-      "updated_at": "2026-10-23T13:51:55.830Z"
+      "updated_at": "2026-10-23T14:09:03.445Z"
     },
     {
       "id": "32.06",
@@ -4088,9 +4104,10 @@
         "V160: componente React real probado en Vite aislado, sin alterar frontend de producción y sin despliegue web.",
         "V161: migración efectiva Supabase 20261023052453_reconciliation_keyset_pagination_v161, frontend local recompilado; sin despliegue web.",
         "V162: Vista previa Vercel separada lista. Vercel Authentication activa para visitante anónimo; producción no fue desplegada.",
-        "V163: GitHub PR #4 aprobada e integrada, CI push 39963410615 success, Vercel esperó y sólo tras APPROVED compiló y publicó Ready."
+        "V163: GitHub PR #4 aprobada e integrada, CI push 39963410615 success, Vercel esperó y sólo tras APPROVED compiló y publicó Ready.",
+        "V164: frontend chat corregido y compilado localmente; backend sin migraciones."
       ],
-      "updated_at": "2026-10-23T13:51:55.830Z"
+      "updated_at": "2026-10-23T14:09:03.445Z"
     },
     {
       "id": "32.07",
@@ -4148,9 +4165,10 @@
         "V160: compilación, CSS, verificaciones históricas y npm audit producción/completo PASS con 0 vulnerabilidades reportadas.",
         "V161: build, CSS, npm audit production+desarrollo sin hallazgos; gate 28/28.",
         "V162: npm build, CSS, dependencias de producción+desarrollo y pruebas contractuales pass, auditorías npm 0 vulnerabilidades.",
-        "V163: auditoría npm prod+desarrollo sin vulnerabilidades, Vite build y CI funcional superados en GitHub Actions."
+        "V163: auditoría npm prod+desarrollo sin vulnerabilidades, Vite build y CI funcional superados en GitHub Actions.",
+        "V164: Vite build, checks CSS, ensayos históricos y npm audit producción+total aprobaron."
       ],
-      "updated_at": "2026-10-23T13:51:55.830Z"
+      "updated_at": "2026-10-23T14:09:03.445Z"
     },
     {
       "id": "32.08",
@@ -4206,9 +4224,10 @@
         "V160: las cuentas autenticadas de Cancillería/Diócesis NO se usaron; prueba SQL de dos sesiones mantiene pendiente la certificación de locks simultáneos.",
         "V161: Chrome aislado verificó 320 expedientes ficticios, pending antiguo visible con filtro y rechazados 50→100 sin duplicados. Falta usuarios reales y concurrencia.",
         "V162: 6 transiciones de usuario simuladas y preview verificada. Faltan inicios de sesión reales y prueba concurrente con dos transacciones PostgreSQL.",
-        "V163: simulacro negativo PR #5 falló en CI (39964277481) y sólo creó Preview, sin modificar la producción aprobada. No se forzó despliegue fallido directo a producción ni se activaron checks nativos. Concurrencia y E2E autenticada pendientes."
+        "V163: simulacro negativo PR #5 falló en CI (39964277481) y sólo creó Preview, sin modificar la producción aprobada. No se forzó despliegue fallido directo a producción ni se activaron checks nativos. Concurrencia y E2E autenticada pendientes.",
+        "V164: QA local de cambio de cuenta 7/7, RLS real 1 miembro/1 actor sin perfil. Faltan E2E reales de dos diócesis y concurrencia."
       ],
-      "updated_at": "2026-10-23T13:51:55.830Z"
+      "updated_at": "2026-10-23T14:09:03.445Z"
     },
     {
       "id": "32.09",

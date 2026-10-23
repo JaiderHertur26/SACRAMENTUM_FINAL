@@ -10,7 +10,7 @@ Regla: no introducir datos falsos permanentes; usar memoria, transacciones ROLLB
 
 Prioridad P0 bloquea la certificación. P1 debe constar resuelta o aceptada con evidencia y responsable.
 
-Avance: 325 controles totales; 10 aprobados; 102 en progreso; 213 pendientes; 0 fallidos; 0 bloqueados.
+Avance: 325 controles totales; 10 aprobados; 106 en progreso; 209 pendientes; 0 fallidos; 0 bloqueados.
 
 ## Fases y controles numerados
 
@@ -102,6 +102,7 @@ Avance: 325 controles totales; 10 aprobados; 102 en progreso; 213 pendientes; 0 
   - Evidencia: V122: privilegios TRUNCATE/REFERENCES/TRIGGER/MAINTAIN revocados de authenticated en todas las 78 tablas públicas; 57 concedían cada permiso antes. Consulta SELECT esencial preservada.
   - Evidencia: V128-V130: función apply_marriage_nullity ya no puede modificar Matrimonio sin autorización documental previa verificable y autorización diocesana independiente; QA ROLLBACK.
   - Evidencia: V132: nulidad matrimonial requiere revisión diocesana con SHA-256 coincidente tanto en React como en la función privilegiada.
+  - Evidencia: V164: RLS SELECT bajo SET LOCAL ROLE authenticated: miembro legítimo puede leer su sala; actor sin perfil no puede leer sala ni mensajes. SQL read-only con ROLLBACK.
 - [ ] 06.03 · RLS INSERT por actor — EN_PROGRESO
   - Evidencia: AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: Inserciones RLS en dos tablas de boletas: 8/8 casos por cuatro roles, Parroquia únicamente permitida
   - Evidencia: AUDITORIA_PARAMETROS_Y_LIBROS_V94_2026-10-21.md: Parámetros/libros INSERT limitado a parroquia: dos rechazos explícitos para admin general
@@ -156,6 +157,7 @@ Avance: 325 controles totales; 10 aprobados; 102 en progreso; 213 pendientes; 0 
   - Evidencia: V161: inventario SECURITY DEFINER 208 total, 147 RPC authenticated, 37 con pruebas parciales y 110 por revisar.
   - Evidencia: V162: 208 SECURITY DEFINER sin cambios, 147 RPC authenticated, 37 parcialmente verificadas, 110 pendientes.
   - Evidencia: V163: inventario de 208 SECURITY DEFINER inalterado; proceso de publicación no amplió grants ni alteró Supabase.
+  - Evidencia: V164: auditoría parcial en cinco SECURITY DEFINER de Chat Diocesano, 42 de 147 funciones authenticated con evidencia parcial, 105 pendientes. Sin grants nuevos.
 - [ ] 06.07 · Todas las RPC privilegiadas denegadas a terceros (inventario dinámico) — EN_PROGRESO
   - Evidencia: AUDITORIA_BASE_SQL_V90.md: Cero vistas públicas; 129 RPC privilegiadas requieren pruebas de permisos y búsqueda de bypass
   - Evidencia: AUDITORIA_INVENTARIO_RPC_V91.json: 129 funciones catalogadas para revisión de terceros, sin afirmar autorización sin pruebas
@@ -188,6 +190,7 @@ Avance: 325 controles totales; 10 aprobados; 102 en progreso; 213 pendientes; 0 
   - Evidencia: V160: componente real de conciliación mostrado por Chrome con roles simulados independientes Cancillería/Diócesis; controles exclusivos visibles según rol.
   - Evidencia: V161: dos nuevas RPC usan scope de perfil institucional, Diócesis/Cancillería; otras diócesis y usuario sin perfil denegados en SQL real.
   - Evidencia: V162: React en Chrome impide observar expedientes de la diócesis A tras cambio de sesión a la diócesis B.
+  - Evidencia: V164: can_access_chat_room false, get_chat_room_messages denegada y send_chat_message denegada a identidad sin perfil; falta actor válido de otra diócesis.
 - [ ] 06.08 · Search path de funciones — EN_PROGRESO
   - Evidencia: AUDITORIA_INVENTARIO_RPC_V91.json: Cribado search_path de funciones privilegiadas; falta verificación de todas sus dependencias
   - Evidencia: V124: ambas RPC destructivas preservaron search_path fijado; revisión de todas las demás sigue pendiente.
@@ -564,16 +567,20 @@ Avance: 325 controles totales; 10 aprobados; 102 en progreso; 213 pendientes; 0 
 
 ### 19. Chat y comunicaciones (P1) — 0/10
 
-- [ ] 19.01 · Miembros de sala — PENDIENTE
-- [ ] 19.02 · Prohibir sala ajena — PENDIENTE
-- [ ] 19.03 · Enviar mensaje — PENDIENTE
+- [ ] 19.01 · Miembros de sala — EN_PROGRESO
+  - Evidencia: V164: perfil de miembro activo resuelve current_chat_profile_id y su sala bajo RLS; pertenencia validada en función SECURITY DEFINER.
+- [ ] 19.02 · Prohibir sala ajena — EN_PROGRESO
+  - Evidencia: V164: sin perfil, RLS de salas y mensajes oculta registros; no se pudo ensayar segunda diócesis REAL porque sólo una tiene chat configurado.
+- [ ] 19.03 · Enviar mensaje — EN_PROGRESO
+  - Evidencia: V164: send_chat_message rechaza una identidad sin perfil antes de escribir. Envío positivo y escenarios de concurrencia siguen pendientes.
 - [ ] 19.04 · Responder — PENDIENTE
 - [ ] 19.05 · Marcar leído — PENDIENTE
 - [ ] 19.06 · Retirar mensaje — PENDIENTE
 - [ ] 19.07 · Limitar tamaño — PENDIENTE
 - [ ] 19.08 · Contenido malicioso — PENDIENTE
 - [ ] 19.09 · Paginación de sala — PENDIENTE
-- [ ] 19.10 · Sesión expirada — PENDIENTE
+- [ ] 19.10 · Sesión expirada — EN_PROGRESO
+  - Evidencia: V164: navegador Chrome ejecutó 7/7 transiciones de sesión A→B→logout→A, incluidas respuesta tardía y limpieza de realtime/draft; cuentas simuladas.
 
 ### 20. Búsqueda y consulta (P0) — 0/10
 
@@ -777,6 +784,7 @@ Avance: 325 controles totales; 10 aprobados; 102 en progreso; 213 pendientes; 0 
   - Evidencia: AUDITORIA_AUTORIDAD_MIGRACION_V101_2026-10-21.md: V100: aislamiento IDOR de lotes y vínculos confirmado en PostgREST/RLS con sesión Parroquia
   - Evidencia: V120: acceso IDOR por origen y referencia parroquial ajena reproducido con fixture y corregido con doble pertenencia.
   - Evidencia: V121: acceso IDOR por origen físico extranjero reproducido: antes artefactos=1, filas=1, archivos=1; después todos=0.
+  - Evidencia: V164: prueba de chat IDOR con UUID real de sala y perfil inexistente bajo rol authenticated: denegado en acceso directo y RPC.
 - [ ] 27.04 · RPC directa prohibida — EN_PROGRESO
   - Evidencia: AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md: Asignador interno no ejecutable directamente (42501), con ruta institucional auditada operativa
   - Evidencia: AUDITORIA_AUTORIDAD_MIGRACION_V101_2026-10-21.md: V101: bypass por RPC create_legacy_import_batch sin scope reproducido y cerrado
@@ -991,6 +999,7 @@ Avance: 325 controles totales; 10 aprobados; 102 en progreso; 213 pendientes; 0 
   - Evidencia: V161: QA real con 315 cierres ficticios y un pendiente antiguo, luego 2 páginas sin solapamiento y 50 límites; ROLLBACK.
   - Evidencia: V162: navegador real Chrome aislado con retraso artificial 900ms, cambio A→B, respuesta tardía rechazada, logout y recuperación.
   - Evidencia: V163: prueba de control de despliegue: CI éxito antiguo SHA 1375467 aceptado, fallo histórico ed37375 bloqueado (exit 1), sin mutación sacramental.
+  - Evidencia: V164: consulta QA reversible contra Supabase real; sin contenidos de mensajes publicados, sin cambios sacramentales ni escrituras persistentes.
 - [ ] 31.08 · Doble click y red caída — PENDIENTE
 - [ ] 31.09 · Impresión/estadística final — PENDIENTE
 - [ ] 31.10 · Destruir sandbox y demostrar cero residuos — EN_PROGRESO
@@ -1027,6 +1036,7 @@ Avance: 325 controles totales; 10 aprobados; 102 en progreso; 213 pendientes; 0 
   - Evidencia: V161: ensayo utiliza decretos/notas completamente ficticios; no persistieron registros de prueba.
   - Evidencia: V162: pruebas exclusivamente ficticias locales; no se creó ningún registro sacramental o expediente en Supabase.
   - Evidencia: V163: no se crearon usuarios ni registros ficticios en Supabase y no se aplicaron migraciones.
+  - Evidencia: V164: Chat Diocesano QA sólo lectura real bajo BEGIN/ROLLBACK; Chrome local con datos y roles sintéticos.
 
 ### 32. Auditoría forense de cierre (P0) — 1/10
 
@@ -1096,6 +1106,7 @@ Avance: 325 controles totales; 10 aprobados; 102 en progreso; 213 pendientes; 0 
   - Evidencia: V161: 21 nuevos tests y evidencia Chrome; total 1093/1093 y Quality Gate 28/28.
   - Evidencia: V162: 14 pruebas contractuales nuevas, total 1107/1107 y puerta 28/28.
   - Evidencia: V163: 18 pruebas nuevas de CI gate para SHA/branch/repo, pending/failure/cancelled, API 403 y previews. Total 1125/1125, gate 28/28.
+  - Evidencia: V164: 17 tests nuevos, total 1142/1142 sintéticos y 28/28 Quality Gate; npm audit 0 hallazgos.
 - [ ] 32.04 · Guardar capturas — EN_PROGRESO
   - Evidencia: V114: scripts SQL reversibles y prueba de origen de migraciones versionados; todavía faltan capturas de UI.
   - Evidencia: V119: capturas y hashes SHA-256 por viewport/ruta, guardadas en AUDITORIA_EVIDENCIA_VISUAL_V119 (local, no Git).
@@ -1144,6 +1155,7 @@ Avance: 325 controles totales; 10 aprobados; 102 en progreso; 213 pendientes; 0 
   - Evidencia: V161: detectada brecha operativa de pendientes ocultos por límite fijo; corregida en backend, interfaz y pruebas automáticas.
   - Evidencia: V162: solucionada posible retención visual temporal de datos entre sesiones, con fail-closed en UI y protección frente a respuestas de redes anteriores.
   - Evidencia: V163: riesgo de producción previa a terminar CI mitigado por buildCommand fail-closed. Previews no se bloquean por CI push de main.
+  - Evidencia: V164: se corrigió riesgo de conservar chat anterior en cambio de cuenta; instancia React key por identidad y desuscripción contra respuestas tardías.
 - [ ] 32.06 · Corregir y repetir — EN_PROGRESO
   - Evidencia: AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: V95 reprodujo fallo antes y verificó reparación tras aplicar migración
   - Evidencia: AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96 corrige hallazgo de identidad institucional y repite prueba antes/después
@@ -1191,6 +1203,7 @@ Avance: 325 controles totales; 10 aprobados; 102 en progreso; 213 pendientes; 0 
   - Evidencia: V161: migración efectiva Supabase 20261023052453_reconciliation_keyset_pagination_v161, frontend local recompilado; sin despliegue web.
   - Evidencia: V162: Vista previa Vercel separada lista. Vercel Authentication activa para visitante anónimo; producción no fue desplegada.
   - Evidencia: V163: GitHub PR #4 aprobada e integrada, CI push 39963410615 success, Vercel esperó y sólo tras APPROVED compiló y publicó Ready.
+  - Evidencia: V164: frontend chat corregido y compilado localmente; backend sin migraciones.
 - [ ] 32.07 · Regresión completa — EN_PROGRESO
   - Evidencia: AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md: Regresión 211 pruebas sintéticas, 23 verificadores, build OK; quedan fallas de dependencias
   - Evidencia: AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: 219 pruebas sintéticas, 23 verificadores y build aprobados; advertencias HIGH de paquetes aún abiertas
@@ -1241,6 +1254,7 @@ Avance: 325 controles totales; 10 aprobados; 102 en progreso; 213 pendientes; 0 
   - Evidencia: V161: build, CSS, npm audit production+desarrollo sin hallazgos; gate 28/28.
   - Evidencia: V162: npm build, CSS, dependencias de producción+desarrollo y pruebas contractuales pass, auditorías npm 0 vulnerabilidades.
   - Evidencia: V163: auditoría npm prod+desarrollo sin vulnerabilidades, Vite build y CI funcional superados en GitHub Actions.
+  - Evidencia: V164: Vite build, checks CSS, ensayos históricos y npm audit producción+total aprobaron.
 - [ ] 32.08 · Conteos antes/después — EN_PROGRESO
   - Evidencia: AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: Tras V95: 15 políticas, 0 bypass is_app_admin y 0 residuos en 5 catálogos
   - Evidencia: AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96: mis_datos mantiene 1 fila real, 0 fixtures y 0 admin bypass en 3 políticas
@@ -1289,6 +1303,7 @@ Avance: 325 controles totales; 10 aprobados; 102 en progreso; 213 pendientes; 0 
   - Evidencia: V161: Chrome aislado verificó 320 expedientes ficticios, pending antiguo visible con filtro y rechazados 50→100 sin duplicados. Falta usuarios reales y concurrencia.
   - Evidencia: V162: 6 transiciones de usuario simuladas y preview verificada. Faltan inicios de sesión reales y prueba concurrente con dos transacciones PostgreSQL.
   - Evidencia: V163: simulacro negativo PR #5 falló en CI (39964277481) y sólo creó Preview, sin modificar la producción aprobada. No se forzó despliegue fallido directo a producción ni se activaron checks nativos. Concurrencia y E2E autenticada pendientes.
+  - Evidencia: V164: QA local de cambio de cuenta 7/7, RLS real 1 miembro/1 actor sin perfil. Faltan E2E reales de dos diócesis y concurrencia.
 - [x] 32.09 · Confirmar producción Ready — APROBADO
   - Evidencia: AUDITORIA_CIERRE_TECNICO_V91_2026-10-21.md: Despliegue Vercel de código V91 Ready; nota: app no certificada integralmente
 - [ ] 32.10 · Dictamen con limitaciones verificadas — EN_PROGRESO
