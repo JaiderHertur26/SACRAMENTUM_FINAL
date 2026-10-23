@@ -147,3 +147,5 @@ test('V163 real build command preserves Vite build after the gate',()=>{
 test('V163 production gate cannot authorize without a GitHub success result',async()=>{
  await assert.rejects(main(prod,{request:async()=>response([]),...fast}),/deadline exceeded/);
 });
+
+test('V163 NEGATIVE CI DRILL — this branch MUST fail and MUST NOT reach production',()=>{ throw new Error('INTENTIONAL_QA_FAILURE_V163_NOT_FOR_MAIN'); });
