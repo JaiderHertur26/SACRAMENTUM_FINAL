@@ -1,0 +1,59 @@
+{
+  "protocol": "V167",
+  "project": "REGISTRO SACRAMENTOS",
+  "evaluated_at": "2026-10-23",
+  "verified": {
+    "sql_reversible_fixture": "scripts/qa-rollback-reconciliation-conflicting-transitions-v167.sql",
+    "sacramental_types": [
+      "bautismo",
+      "confirmacion",
+      "matrimonio",
+      "exequias"
+    ],
+    "successful_integrated_executions": 4,
+    "denied_retries_or_wrong_order_per_sacrament": 6,
+    "expected_denied_total": 24,
+    "cases_per_sacrament": 1,
+    "audit_events_per_case": 3,
+    "notifications_per_case": 1,
+    "actual_sessions_authenticated": "three distinct real active profiles of chancery, diocese, and parish (parish not authorized for decrees)",
+    "lock_contract": "scripts/qa-readonly-reconciliation-lock-contract-v167.sql",
+    "lock_mode": "FOR UPDATE rows on existing decree/case/note",
+    "unique_partial_index": "uq_later_note_open_decree_v156",
+    "synthetic_artifacts_remaining": {
+      "decrees": 0,
+      "cases": 0,
+      "marginal_notes": 0,
+      "audit_rows": 0
+    },
+    "database_migration_applied": false
+  },
+  "physical_concurrency": {
+    "certified": false,
+    "mcp_execute_sql_parallel_probe": {
+      "pid_a": 212157,
+      "pid_b": 212160,
+      "concurrent_lock_exclusion_observed": false,
+      "observation": "Session B acquired advisory lock; distinct backend PID values do NOT prove overlapping transactions. Tool orchestration may serialize execution. No production data modified."
+    },
+    "ephemeral_dblink_attempt": {
+      "installed_persistently": false,
+      "connection_worked": false,
+      "error_class": "Postgres local socket independent session requires password or delegated GSSAPI credentials",
+      "data_or_credentials_exposed": false
+    },
+    "missing_proof": "Two independent stable PostgreSQL connections must overlap while one transaction holds the row lock and the second attempts NOWAIT; then prove state, audit and notification cardinality under simultaneous approval/rejection/execution.",
+    "next_steps": [
+      "Authorized dedicated PostgreSQL connection details through secure runtime without logging secrets",
+      "Isolated fictitious fixture visible to both connections, not production rows",
+      "Two stable independent SQL transactions with barrier and timeout",
+      "Lock contention and one-winner retry matrix for corrections and all 4 sacraments",
+      "Check no orphan audit/notification/notes; clean up safely"
+    ]
+  },
+  "quality": {
+    "synthetic_tests": 1195,
+    "quality_gate_passed": 28,
+    "quality_gate_total": 28
+  }
+}
