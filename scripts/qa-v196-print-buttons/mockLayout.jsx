@@ -1,0 +1,1 @@
+import React from 'react';export default function DashboardLayout({children}){return <div data-testid="qa-layout">{children}</div>};

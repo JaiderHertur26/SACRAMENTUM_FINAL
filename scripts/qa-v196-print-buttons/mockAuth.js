@@ -1,0 +1,1 @@
+export const useAuth=()=>({user:{id:'qa-actor',parishId:'00000000-0000-4000-a000-000000000112',parishName:'PARROQUIA FICTICIA QA V196',dioceseName:'ARQUIDIÓCESIS DE BARRANQUILLA',role:'parish',city:'Barranquilla'}});

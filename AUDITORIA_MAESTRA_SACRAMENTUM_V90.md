@@ -294,6 +294,7 @@ Avance: 325 controles totales; 26 aprobados; 121 en progreso; 178 pendientes; 0 
   - Evidencia: AUDITORIA_IMPRESION_CANONICA_V194_2026-10-24.md: Asiento Baptismo usa coordenadas canónicas y plantilla prioridad DB impide raw_data histórico divergente con QA V193 y V194
 - [ ] 08.05 · Impresión — EN_PROGRESO
   - Evidencia: AUDITORIA_IMPRESION_CANONICA_V194_2026-10-24.md: Cotejo backend y plantilla canónica listos falta navegador e impresión física
+  - Evidencia: AUDITORIA_BOTONES_REALES_IMPRESION_V196_2026-10-24.md: V196 boton real Bautismo Chrome QA rechazo impide print y exito invoca print una vez con coordenadas canónicas
 - [ ] 08.06 · Importación de partida — PENDIENTE
 - [ ] 08.07 · Digitalización sin consumir consecutivo — PENDIENTE
 - [ ] 08.08 · Corrección por decreto — EN_PROGRESO
@@ -315,6 +316,7 @@ Avance: 325 controles totales; 26 aprobados; 121 en progreso; 178 pendientes; 0 
   - Evidencia: AUDITORIA_CIRCUITOS_REGISTRALES_V193_2026-10-24.md: V193 Confirmacion asiento real RPC status seated y boleta archivada con auditoria y reintento bloqueado
 - [ ] 09.05 · Impresión — EN_PROGRESO
   - Evidencia: AUDITORIA_IMPRESION_CANONICA_V194_2026-10-24.md: Cotejo backend y plantilla canónica listos falta navegador e impresión física
+  - Evidencia: AUDITORIA_BOTONES_REALES_IMPRESION_V196_2026-10-24.md: V196 botón Confirmación revisado en Chrome denegación bloquea y camino feliz imprime con ficha simulada
 - [ ] 09.06 · Referencia a Bautismo — PENDIENTE
 - [ ] 09.07 · Importación reportada — PENDIENTE
 - [ ] 09.08 · Importación no reportada — PENDIENTE
@@ -336,6 +338,7 @@ Avance: 325 controles totales; 26 aprobados; 121 en progreso; 178 pendientes; 0 
   - Evidencia: AUDITORIA_CIRCUITOS_REGISTRALES_V193_2026-10-24.md: V193 Matrimonio boleta asiento libro ordinario y proteccion de doble asiento en PostgreSQL
 - [ ] 10.06 · Impresión — EN_PROGRESO
   - Evidencia: AUDITORIA_IMPRESION_CANONICA_V194_2026-10-24.md: Cotejo backend y plantilla canónica listos falta navegador e impresión física
+  - Evidencia: AUDITORIA_BOTONES_REALES_IMPRESION_V196_2026-10-24.md: V196 Matrimonio auditado por clic real con bloqueo de auditoría y HTML canónico
 - [ ] 10.07 · Importación MATRIMON — PENDIENTE
 - [ ] 10.08 · Notas NTMAT — PENDIENTE
 - [ ] 10.09 · Corrección por decreto — EN_PROGRESO
@@ -371,6 +374,7 @@ Avance: 325 controles totales; 26 aprobados; 121 en progreso; 178 pendientes; 0 
   - Evidencia: V168: exequias con dos notas independientes y dos autorizaciones diocesanas reconciliadas de manera atómica, con auditores/notificación.
 - [ ] 11.10 · Impresión — EN_PROGRESO
   - Evidencia: AUDITORIA_IMPRESION_CANONICA_V194_2026-10-24.md: HTML Exequias canónico y RPC backend auditada falta impresión real en navegador
+  - Evidencia: AUDITORIA_BOTONES_REALES_IMPRESION_V196_2026-10-24.md: V196 Exequias ver e imprimir: auditoría denegada cierra popup y autorizada crea HTML
 
 ### 12. Decretos nuevos en Cancillería (P0) — 0/11
 

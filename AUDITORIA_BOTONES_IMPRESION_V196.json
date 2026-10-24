@@ -1,0 +1,94 @@
+{
+  "protocol": "V196",
+  "scope": "REAL React modal buttons, fake data/services, NO authenticated Supabase session or physical printer",
+  "rows": [
+    {
+      "kind": "bautismo",
+      "passed": true,
+      "faults": [],
+      "denied": {
+        "calls": 1,
+        "printed": 0,
+        "popupClosed": 0,
+        "toasts": 1
+      },
+      "allowed": {
+        "calls": 2,
+        "printed": 1,
+        "popups": 0,
+        "htmlLength": 1280,
+        "book": "31",
+        "folio": "442",
+        "number": "888",
+        "hasHtml": true
+      }
+    },
+    {
+      "kind": "confirmacion",
+      "passed": true,
+      "faults": [],
+      "denied": {
+        "calls": 1,
+        "printed": 0,
+        "popupClosed": 0,
+        "toasts": 1
+      },
+      "allowed": {
+        "calls": 2,
+        "printed": 1,
+        "popups": 0,
+        "htmlLength": 1243,
+        "book": "31",
+        "folio": "442",
+        "number": "888",
+        "hasHtml": true
+      }
+    },
+    {
+      "kind": "matrimonio",
+      "passed": true,
+      "faults": [],
+      "denied": {
+        "calls": 1,
+        "printed": 0,
+        "popupClosed": 0,
+        "toasts": 1
+      },
+      "allowed": {
+        "calls": 2,
+        "printed": 1,
+        "popups": 0,
+        "htmlLength": 1016,
+        "book": "31",
+        "folio": "442",
+        "number": "888",
+        "hasHtml": true
+      }
+    },
+    {
+      "kind": "exequias",
+      "passed": true,
+      "faults": [],
+      "denied": {
+        "calls": 1,
+        "printed": 0,
+        "popupClosed": 1,
+        "toasts": 1
+      },
+      "allowed": {
+        "calls": 2,
+        "printed": 0,
+        "popups": 2,
+        "htmlLength": 11057,
+        "book": "31",
+        "folio": "442",
+        "number": "888",
+        "hasHtml": true
+      }
+    }
+  ],
+  "passed": 4,
+  "total": 4,
+  "exceptions": [],
+  "date": "2026-10-24T23:41:37.960Z"
+}

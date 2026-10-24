@@ -1,0 +1,1 @@
+import React from 'react';export default function MarginalNoteComposer(){return <p data-testid="qa-marginal-composer">Notas QA (sin escritura)</p>};
