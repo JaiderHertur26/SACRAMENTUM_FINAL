@@ -1,0 +1,31 @@
+{
+  "protocol": "V181",
+  "dateColombia": "2026-10-23",
+  "migration": "20261024005811_fail_closed_management_and_sacrament_params_v181.sql",
+  "priority": "P0",
+  "finding": "Profileless authenticated actor could disable and reassign another fictional parish account due to NULL NOT IN manager guard. SUSPENDED diocese and SUSPENDED parish also bypassed selected privileged guards.",
+  "functions": [
+    "set_managed_user_active",
+    "update_managed_user_profile",
+    "save_baptism_parameters",
+    "save_confirmation_parameters"
+  ],
+  "realPostgresTemporary": {
+    "positive": 4,
+    "denied": 28,
+    "rollback": true
+  },
+  "synthetic": 1415,
+  "qualityGates": 28,
+  "qaPermanentData": false,
+  "masterCounts": {
+    "APROBADO": 10,
+    "EN_PROGRESO": 117,
+    "PENDIENTE": 198
+  },
+  "limits": [
+    "No independent authenticated browser sessions between dioceses",
+    "No two physically concurrent PostgreSQL sessions",
+    "No full application authenticated E2E"
+  ]
+}
