@@ -23,10 +23,12 @@ fs.writeFileSync(masterFile,JSON.stringify(master,null,2)+'\n');
 execFileSync(process.execPath,['scripts/audit-master-plan-v90.mjs'],{stdio:'inherit'});
 const results={
  protocol:'V181',dateColombia:'2026-10-23',
- migration:'20261024005811_fail_closed_management_and_sacrament_params_v181.sql',
+ migration:'20261024010301_fail_closed_management_and_sacrament_params_v181.sql',
  priority:'P0',finding:'Profileless authenticated actor could disable and reassign another fictional parish account due to NULL NOT IN manager guard. SUSPENDED diocese and SUSPENDED parish also bypassed selected privileged guards.',
  functions:['set_managed_user_active','update_managed_user_profile','save_baptism_parameters','save_confirmation_parameters'],
  realPostgresTemporary:{positive:4,denied:28,rollback:true},
+ realPostgresPermanent:{migrationInstalled:true,positive:4,denied:28,rollback:true,guardedFunctions:4,nullSafeManagerFunctions:2,zeroQaUsers:true,zeroQaProfiles:true},
+ legacyRegressionScriptsPassed:['qa-rollback-shadow-role-matrix-v124.sql','qa-rollback-physical-confirmation-source-v134.sql','qa-rollback-manual-note-admin-role-v133.sql','qa-rollback-documentary-v114.sql'],
  synthetic:tests,qualityGates:28,qaPermanentData:false,masterCounts:counts,
  limits:['No independent authenticated browser sessions between dioceses','No two physically concurrent PostgreSQL sessions','No full application authenticated E2E']
 };
@@ -42,18 +44,20 @@ const doc=[
  'Todos los casos fueron realizados con actores y objetivos ficticios dentro de BEGIN/ROLLBACK, sin efecto persistente sobre personas, partidas o libros reales.',
  '',
  '## Corrección',
- 'La migración 20261024005811_fail_closed_management_and_sacrament_params_v181.sql modifica de forma estricta el control de is_active IS TRUE y upper(status)=ACTIVE en cuatro funciones privilegiadas, y en las dos administrativas exige explícitamente v_actor_role IS NULL como error de autorización.',
+ 'La migración oficial 20261024010301_fail_closed_management_and_sacrament_params_v181.sql, instalada en Supabase, modifica de forma estricta el control de is_active IS TRUE y upper(status)=ACTIVE en cuatro funciones privilegiadas, y en las dos administrativas exige explícitamente v_actor_role IS NULL como error de autorización.',
  'No toca registros existentes, nombres, relaciones, consecutivos, auditoría o reglas de negocio de los mismos procedimientos.',
  '',
  '## QA',
  'Postpatch reversible: 4 operaciones autorizadas (dos acciones efectivas en un perfil falso y dos verificaciones positivas del acceso a la validación de versión de libros). 28/28 operaciones de identidad/rol no autorizados expresamente rechazadas. Las denegaciones no alteraron los cambios autorizados sobre el perfil ficticio.',
+ 'Tras instalar la migración definitiva en Supabase, volvió a aprobar 4/4 operaciones legítimas y 28/28 denegaciones. Cuatro funciones y dos controles especiales de rol NULL quedaron verificados. Se detectaron cero usuarios/perfiles ficticios residuales y cero estados ambiguos existentes.',
+ 'Aprobaron además cuatro regresiones SQL reales reversibles: matriz de roles, Confirmación física, nota administrativa y documentación.',
  '22 pruebas de contrato nuevas. 1415/1415 pruebas sintéticas y 28/28 controles de calidad, build CSS y dependencias.',
  '',
  '## Límites',
  'No equivale a E2E autenticado de sesiones independientes de dos diócesis ni a dos transacciones PostgreSQL concurrentes físicas. Estos riesgos continúan abiertos.',
  'Plan maestro de 325 controles: 10 APROBADO, 117 EN_PROGRESO, 198 PENDIENTE.',
  '',
- 'Para concluir: CI de PR, migración permanente, QA real postinstalación y regresiones, conciliar nombre oficial, aprobar CI de main y comprobar despliegue de Vercel.'
+ 'La migración y las regresiones postinstalación ya se verificaron. Pendiente: aprobar CI definitivo de la PR, fusionar en main y comprobar mismo commit publicado por Vercel.'
 ];
 fs.writeFileSync('AUDITORIA_SEGURIDAD_USUARIOS_V181_2026-10-23.md',doc.join('\n')+'\n');
 console.log('V181 recorded '+tests+' Node tests, 28 gates, 4 positive 28 blocked; '+JSON.stringify(counts));

@@ -1,7 +1,7 @@
 {
   "protocol": "V181",
   "dateColombia": "2026-10-23",
-  "migration": "20261024005811_fail_closed_management_and_sacrament_params_v181.sql",
+  "migration": "20261024010301_fail_closed_management_and_sacrament_params_v181.sql",
   "priority": "P0",
   "finding": "Profileless authenticated actor could disable and reassign another fictional parish account due to NULL NOT IN manager guard. SUSPENDED diocese and SUSPENDED parish also bypassed selected privileged guards.",
   "functions": [
@@ -15,6 +15,22 @@
     "denied": 28,
     "rollback": true
   },
+  "realPostgresPermanent": {
+    "migrationInstalled": true,
+    "positive": 4,
+    "denied": 28,
+    "rollback": true,
+    "guardedFunctions": 4,
+    "nullSafeManagerFunctions": 2,
+    "zeroQaUsers": true,
+    "zeroQaProfiles": true
+  },
+  "legacyRegressionScriptsPassed": [
+    "qa-rollback-shadow-role-matrix-v124.sql",
+    "qa-rollback-physical-confirmation-source-v134.sql",
+    "qa-rollback-manual-note-admin-role-v133.sql",
+    "qa-rollback-documentary-v114.sql"
+  ],
   "synthetic": 1415,
   "qualityGates": 28,
   "qaPermanentData": false,

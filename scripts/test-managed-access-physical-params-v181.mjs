@@ -1,5 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';
-const mig=fs.readFileSync('supabase/migrations/20261024005811_fail_closed_management_and_sacrament_params_v181.sql','utf8');
+const mig=fs.readFileSync('supabase/migrations/20261024010301_fail_closed_management_and_sacrament_params_v181.sql','utf8');
 const repro1=fs.readFileSync('scripts/qa-rollback-user-management-and-parameters-repro-v181.sql','utf8');
 const repro2=fs.readFileSync('scripts/qa-rollback-profileless-manager-repro-v181.sql','utf8');
 const qa=fs.readFileSync('scripts/qa-rollback-management-physical-params-v181.sql','utf8');
