@@ -104,13 +104,15 @@ exec('pruebas-sinteticas',node,['--test',
  'scripts/test-chancery-decree-fail-closed-v179.mjs',
  'scripts/test-chat-notification-fail-closed-v180.mjs',
  'scripts/test-managed-access-physical-params-v181.mjs',
- 'scripts/test-juridical-reconciliation-identity-v182.mjs']);
+ 'scripts/test-juridical-reconciliation-identity-v182.mjs',
+ 'scripts/test-production-secrets-v183.mjs']);
 const scripts=fs.readdirSync(path.join(root,'scripts')).filter(x=>/^verify-.*\.mjs$/.test(x)).sort();
 for(const file of scripts)exec('legacy/'+file,node,['scripts/'+file]);
 const npmOnWindows=process.platform==='win32';
 const command=npmOnWindows?'cmd.exe':'npm';
 const npmArgs=cmd=>npmOnWindows?['/d','/s','/c',cmd]:cmd.split(' ').slice(1);
 exec('build-produccion',command,npmArgs('npm run build'));
+exec('frontera-secretos-build-v183',node,['scripts/audit-production-secrets-v183.mjs']);
 exec('css-critico',node,['scripts/check-critical-css-v91.mjs']);
 if(strict){
   // Exige cero vulnerabilidades en runtime Y herramientas de desarrollo.

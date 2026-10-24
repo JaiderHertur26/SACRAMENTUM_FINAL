@@ -295,9 +295,11 @@
       "area": "Autenticación y sesión",
       "priority": "P0",
       "criterion": "No claves privilegiadas en frontend",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "AUDITORIA_SEGURIDAD_COMPILACION_V183_2026-10-24.md: Frontera de secretos locales y publicacion comprobada; falta revision exhaustiva de configuraciones externas"
+      ],
+      "updated_at": "2026-10-24T16:17:05.749Z"
     },
     {
       "id": "04.01",
@@ -3399,9 +3401,11 @@
       "area": "Ciberseguridad adversarial",
       "priority": "P0",
       "criterion": "Secretos en build",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "APROBADO",
+      "evidence": [
+        "AUDITORIA_SEGURIDAD_COMPILACION_V183_2026-10-24.md: Compilacion y 170 recursos publicos comprobados con pruebas adversariales y sin secretos detectables en este alcance"
+      ],
+      "updated_at": "2026-10-24T16:17:05.637Z"
     },
     {
       "id": "27.09",
