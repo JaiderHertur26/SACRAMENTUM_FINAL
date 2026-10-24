@@ -685,9 +685,10 @@
         "V179: temporary PostgreSQL patch proved 5 ACTIVE Chancellor RPC calls reached business input validation and 25 forbidden profile combinations rejected; includes explicit null-role fail-close, no full decree issuance claimed.",
         "V180: temporary patch of ten privileged Chat, matrimonial notification and template RPCs passed 10 ACTIVE cases and 60 denial cases (NULL_STATUS, NULL_ACTIVE, SUSPENDED, DISABLED, PENDING, BLANK_STATUS), all transactional.",
         "V181: four SQL privileged functions hardened to require explicitly ACTIVE profile, real PostgreSQL 4 legitimate actor flows and 28 negative cases PASSED in BEGIN/ROLLBACK.",
-        "V182 PostgreSQL reversible QA: 5 active-role court and authorization business gates reachable, 24 invalid profile/role cases denied, no court records read or persisted."
+        "V182 PostgreSQL reversible QA: 5 active-role court and authorization business gates reachable, 24 invalid profile/role cases denied, no court records read or persisted.",
+        "AUDITORIA_CANCILLERIA_FALLO_IDENTIDAD_V191_2026-10-24.md: V191 confirma NULL_STATUS y NULL_ACTIVE previamente admitidos y ahora 24 negativas correctas en seis RPC de Cancilleria con rollback"
       ],
-      "updated_at": "2026-10-24T01:20:50.810Z"
+      "updated_at": "2026-10-24T20:45:59.629Z"
     },
     {
       "id": "06.08",
@@ -710,9 +711,10 @@
         "V161: listado y contadores grant EXECUTE únicamente authenticated, sin abrir lectura directa de tabla ni permisos a anon.",
         "V162: campo identityKey incluye user.id, rol, dioceseId y chanceryId; datos sólo visibles si owner y datos recibidos coinciden con identidad actual.",
         "V163: build prod gate comprueba repo JaiderHertur26/SACRAMENTUM_FINAL, rama main y Git SHA íntegro antes de permitir construir.",
-        "V170: 6/6 transiciones React/Chrome en entorno sin conexión Supabase, incluidos 900 ms de respuesta antigua y logout. Backend no auditado adicionalmente."
+        "V170: 6/6 transiciones React/Chrome en entorno sin conexión Supabase, incluidos 900 ms de respuesta antigua y logout. Backend no auditado adicionalmente.",
+        "AUDITORIA_FUNCIONES_PRIVILEGIADAS_V190_2026-10-24.md: V190 revisa 210 funciones SECURITY DEFINER 149 autenticadas cero anon tres search_path endurecidos y pruebas reales reversibles"
       ],
-      "updated_at": "2026-10-23T17:43:14.771Z"
+      "updated_at": "2026-10-24T20:30:17.835Z"
     },
     {
       "id": "06.09",
