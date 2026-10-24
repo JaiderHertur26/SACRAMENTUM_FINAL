@@ -769,9 +769,11 @@
       "area": "Integridad y concurrencia",
       "priority": "P0",
       "criterion": "Unicidad Libro Folio Número",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "APROBADO",
+      "evidence": [
+        "AUDITORIA_NUMERACION_Y_DECRETOS_V188_2026-10-24.md: PostgreSQL V187 y V188 8393 partidas sin choques, 4 inserciones identicas y 4 equivalentes normalizadas bloqueadas por indices unicos"
+      ],
+      "updated_at": "2026-10-24T18:43:23.697Z"
     },
     {
       "id": "07.02",
@@ -779,9 +781,11 @@
       "area": "Integridad y concurrencia",
       "priority": "P0",
       "criterion": "Colisión de número de decreto",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "APROBADO",
+      "evidence": [
+        "AUDITORIA_NUMERACION_Y_DECRETOS_V188_2026-10-24.md: RPC documental de Cancilleria V187 bloqueo colision con diferencias de espacios y mayusculas, indice unico por diocesis y ROLLBACK"
+      ],
+      "updated_at": "2026-10-24T18:43:23.834Z"
     },
     {
       "id": "07.03",
