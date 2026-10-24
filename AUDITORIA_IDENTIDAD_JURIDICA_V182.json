@@ -1,0 +1,29 @@
+{
+  "version": "V182",
+  "date": "2026-10-23",
+  "migration": "20261024011824_juridical_reconciliation_identity_v182.sql",
+  "finding": "Profile with NULL status and is_active=true reached business validation in three privileged reconciliation and nullity court receipt functions while current_app_role() returned NULL.",
+  "functions": [
+    "approve_later_note_reconciliation_v156",
+    "get_court_clarifications_v113",
+    "get_court_receipt_dual_control_summary_v111"
+  ],
+  "realSqlTemporary": {
+    "positiveAuthorizationGates": 5,
+    "denied": 24,
+    "rollbacks": true
+  },
+  "syntheticNodePassed": 1434,
+  "qualityChecks": 28,
+  "masterCounts": {
+    "APROBADO": 10,
+    "EN_PROGRESO": 117,
+    "PENDIENTE": 198
+  },
+  "scopeLimits": [
+    "Positive cases reached input validation using fictional unknown receipt IDs, not full legal reconciliation or court reading",
+    "No two independent authenticated browser sessions",
+    "No physically overlapping PostgreSQL transactions"
+  ],
+  "noPrivateCourtDataExported": true
+}
