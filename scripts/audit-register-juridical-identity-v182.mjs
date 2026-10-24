@@ -22,10 +22,12 @@ if(master.controls.length!==325||counts.APROBADO!==10||counts.EN_PROGRESO!==117|
 fs.writeFileSync(path,JSON.stringify(master,null,2)+'\n');
 execFileSync(process.execPath,['scripts/audit-master-plan-v90.mjs'],{stdio:'inherit'});
 const record={
- version:'V182',date:'2026-10-23',migration:'20261024011824_juridical_reconciliation_identity_v182.sql',
+ version:'V182',date:'2026-10-23',migration:'20261024012204_juridical_reconciliation_identity_v182.sql',
  finding:'Profile with NULL status and is_active=true reached business validation in three privileged reconciliation and nullity court receipt functions while current_app_role() returned NULL.',
  functions:['approve_later_note_reconciliation_v156','get_court_clarifications_v113','get_court_receipt_dual_control_summary_v111'],
  realSqlTemporary:{positiveAuthorizationGates:5,denied:24,rollbacks:true},
+ realSqlPermanent:{migrationInstalled:true,positiveAuthorizationGates:5,denied:24,rollbacks:true,installedFunctionsGuarded:3,nullableRoleGuarded:1,remainingQaUsers:0,remainingQaProfiles:0},
+ priorSqlRegressionsPassed:['qa-rollback-note-reconciliation-grants-v156.sql','qa-rollback-tribunal-v114.sql','qa-rollback-nullity-dual-authorization-v128.sql','qa-rollback-reconciliation-all-sacraments-v159.sql'],
  syntheticNodePassed:count,qualityChecks:28,masterCounts:counts,
  scopeLimits:['Positive cases reached input validation using fictional unknown receipt IDs, not full legal reconciliation or court reading','No two independent authenticated browser sessions','No physically overlapping PostgreSQL transactions'],
  noPrivateCourtDataExported:true
@@ -40,7 +42,7 @@ const doc=[
  'Un usuario ficticio diocesano con is_active=true pero status=NULL pudo ejecutar tres RPC SECURITY DEFINER hasta alcanzar la validación de negocio, aunque current_app_role devolvía NULL. La reproducción no demostró una aprobación documental indebida ni abrió expedientes reales. Toda la evidencia SQL usa BEGIN/ROLLBACK.',
  '',
  '## Protección',
- 'La migración 20261024011824_juridical_reconciliation_identity_v182.sql modifica los tres controles institucionales para exigir u.is_active IS TRUE y upper(u.status)=ACTIVE: aprobación diocesana de conciliación posterior de notas, consulta de aclaraciones del tribunal y resumen de doble verificación de recepción judicial. En el resumen se rechaza expresamente v_role NULL. Se preservan requisitos jurídicos, validaciones de jurisdicción, documentación, firma, separación de funciones y contratos RPC.',
+ 'La migración oficial 20261024012204_juridical_reconciliation_identity_v182.sql ya instalada en Supabase modifica los tres controles institucionales para exigir u.is_active IS TRUE y upper(u.status)=ACTIVE: aprobación diocesana de conciliación posterior de notas, consulta de aclaraciones del tribunal y resumen de doble verificación de recepción judicial. En el resumen se rechaza expresamente v_role NULL. Se preservan requisitos jurídicos, validaciones de jurisdicción, documentación, firma, separación de funciones y contratos RPC.',
  '',
  '## Prueba real y regresión',
  'Con cuentas ficticias: cinco puertas permitidas con roles legítimos de Diócesis y Cancillería alcanzaron validaciones de entrada; 24 combinaciones no permitidas (SUSPENDED, NULL_STATUS, NULL_ACTIVE, DISABLED, PENDING, BLANK_STATUS, WRONG_ROLE y PROFILELESS en cada función) fueron rechazadas con mensajes exactos.',
@@ -49,7 +51,8 @@ const doc=[
  '## Límites',
  'No son pruebas de aprobación completa de conciliación o lectura de expedientes legítimos; éstas requieren recorridos funcionales adicionales. No se usaron datos judiciales reales como material de prueba. Siguen abiertos el E2E con sesiones reales independientes y las conexiones SQL simultáneas. El plan maestro conserva 325 controles, 10 APROBADO, 117 EN_PROGRESO y 198 PENDIENTE.',
  '',
- 'Antes de declarar publicación: CI de PR, migración Supabase permanente, matriz posterior, regresiones judiciales, conciliación de versión de migración, merge y comprobación SHA Vercel.'
+ 'Supabase V182 instalada y matriz PostgreSQL repetida: 5 controles legítimos y 24 rechazos; las tres funciones y el rechazo expreso de rol nulo comprobados; cero usuarios/perfiles ficticios residuales.',
+ 'Cuatro regresiones adicionales pasaron: conciliación de notas, tribunal, doble autorización de nulidad y reconciliación de todos los sacramentos. Pendiente el CI definitivo de la PR, la fusión en main y la comprobación del SHA Vercel.'
 ];
 fs.writeFileSync('AUDITORIA_SEGURIDAD_JURIDICA_V182_2026-10-23.md',doc.join('\n')+'\n');
 console.log('V182 '+count+' tests, 28 quality, 5 active, 24 denied');

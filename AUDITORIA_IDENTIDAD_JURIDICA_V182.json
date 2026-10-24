@@ -1,7 +1,7 @@
 {
   "version": "V182",
   "date": "2026-10-23",
-  "migration": "20261024011824_juridical_reconciliation_identity_v182.sql",
+  "migration": "20261024012204_juridical_reconciliation_identity_v182.sql",
   "finding": "Profile with NULL status and is_active=true reached business validation in three privileged reconciliation and nullity court receipt functions while current_app_role() returned NULL.",
   "functions": [
     "approve_later_note_reconciliation_v156",
@@ -13,6 +13,22 @@
     "denied": 24,
     "rollbacks": true
   },
+  "realSqlPermanent": {
+    "migrationInstalled": true,
+    "positiveAuthorizationGates": 5,
+    "denied": 24,
+    "rollbacks": true,
+    "installedFunctionsGuarded": 3,
+    "nullableRoleGuarded": 1,
+    "remainingQaUsers": 0,
+    "remainingQaProfiles": 0
+  },
+  "priorSqlRegressionsPassed": [
+    "qa-rollback-note-reconciliation-grants-v156.sql",
+    "qa-rollback-tribunal-v114.sql",
+    "qa-rollback-nullity-dual-authorization-v128.sql",
+    "qa-rollback-reconciliation-all-sacraments-v159.sql"
+  ],
   "syntheticNodePassed": 1434,
   "qualityChecks": 28,
   "masterCounts": {

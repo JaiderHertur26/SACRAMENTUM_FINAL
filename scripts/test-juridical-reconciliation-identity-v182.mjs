@@ -1,5 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';
-const migration=fs.readFileSync('supabase/migrations/20261024011824_juridical_reconciliation_identity_v182.sql','utf8');
+const migration=fs.readFileSync('supabase/migrations/20261024012204_juridical_reconciliation_identity_v182.sql','utf8');
 const baseline=fs.readFileSync('scripts/qa-rollback-juridical-reconciliation-prepatch-v182.sql','utf8');
 const qa=fs.readFileSync('scripts/qa-rollback-juridical-reconciliation-identity-v182.sql','utf8');
 const rpcs=['approve_later_note_reconciliation_v156','get_court_clarifications_v113','get_court_receipt_dual_control_summary_v111'];
