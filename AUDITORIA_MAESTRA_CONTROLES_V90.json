@@ -838,9 +838,11 @@
       "area": "Integridad y concurrencia",
       "priority": "P0",
       "criterion": "Llaves foráneas sin huérfanos",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "APROBADO",
+      "evidence": [
+        "AUDITORIA_INTEGRIDAD_REFERENCIAL_V185_2026-10-24.md: QA live PostgreSQL 165 FKs validadas sin huerfanos ni triggers desactivados, BEGIN READ ONLY y ROLLBACK"
+      ],
+      "updated_at": "2026-10-24T16:46:30.528Z"
     },
     {
       "id": "07.08",

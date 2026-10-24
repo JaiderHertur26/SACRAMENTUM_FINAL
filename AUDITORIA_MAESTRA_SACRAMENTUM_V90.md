@@ -10,7 +10,7 @@ Regla: no introducir datos falsos permanentes; usar memoria, transacciones ROLLB
 
 Prioridad P0 bloquea la certificación. P1 debe constar resuelta o aceptada con evidencia y responsable.
 
-Avance: 325 controles totales; 12 aprobados; 118 en progreso; 195 pendientes; 0 fallidos; 0 bloqueados.
+Avance: 325 controles totales; 13 aprobados; 118 en progreso; 194 pendientes; 0 fallidos; 0 bloqueados.
 
 ## Fases y controles numerados
 
@@ -255,7 +255,7 @@ Avance: 325 controles totales; 12 aprobados; 118 en progreso; 195 pendientes; 0 
 - [x] 06.12 · No metadatos de usuario editables para autorizar — APROBADO
   - Evidencia: AUDITORIA_IDENTIDAD_Y_AISLAMIENTO_V184_2026-10-24.md: Inventario PostgreSQL 248 funciones y 130 politicas sin user_metadata editable; 275 fuentes frontend, QA read-only y gate reproducibles
 
-### 07. Integridad y concurrencia (P0) — 0/9
+### 07. Integridad y concurrencia (P0) — 1/9
 
 - [ ] 07.01 · Unicidad Libro Folio Número — PENDIENTE
 - [ ] 07.02 · Colisión de número de decreto — PENDIENTE
@@ -269,7 +269,8 @@ Avance: 325 controles totales; 12 aprobados; 118 en progreso; 195 pendientes; 0 
 - [ ] 07.06 · Transacción atomicidad — EN_PROGRESO
   - Evidencia: V167: 4 rutas completas de reversión y conciliación conservan atomicidad: decreto y nota reversed, case executed, audit 3 y notificación 1. BEGIN/ROLLBACK.
   - Evidencia: V168: transacción única revierte 2 notas y 1 decreto y cierra 2 expedientes, o falla sin cambios; seis auditorías de expedientes y una notificación consolidada por caso.
-- [ ] 07.07 · Llaves foráneas sin huérfanos — PENDIENTE
+- [x] 07.07 · Llaves foráneas sin huérfanos — APROBADO
+  - Evidencia: AUDITORIA_INTEGRIDAD_REFERENCIAL_V185_2026-10-24.md: QA live PostgreSQL 165 FKs validadas sin huerfanos ni triggers desactivados, BEGIN READ ONLY y ROLLBACK
 - [ ] 07.08 · Bloqueos y deadlocks — PENDIENTE
   - Evidencia: V167: los 4 RPC institucionales verifican bloqueos FOR UPDATE y un índice UNIQUE parcial real; no se han probado deadlocks ni simultaneidad física.
   - Evidencia: V168: nueva RPC bloquea filas de expedientes, decreto y notas con FOR UPDATE; falta disputa de dos conexiones reales y medir deadlocks.
