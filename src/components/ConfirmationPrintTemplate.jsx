@@ -1,6 +1,7 @@
 import React, { forwardRef } from 'react';
 import { convertDateToSpanishText } from '@/utils/dateTimeFormatters';
 import { getLocalDateISO } from '@/utils/localDate';
+import { getCanonicalRegistryCoordinates } from '@/utils/canonicalRegistryCoordinates';
 import { useAppData } from '@/context/AppDataContext';
 import {
   DataCard,
@@ -56,17 +57,18 @@ const ConfirmationPrintTemplate = forwardRef(({ data, parroquiaInfo, incluirNota
   const region = clean(header.region);
   const location = [ciudad, region].filter(Boolean).join(', ') + ([ciudad, region].some(Boolean) ? ' · COLOMBIA' : '');
 
-  const tipoLibro = clean(raw.tipoLibro || raw.book_type || 'ORDINARIO');
-  const libro = padRef(raw.Libro || raw.libro || raw.book_number);
-  const folio = padRef(raw.folio || raw.page_number);
-  const numero = padRef(raw.numero || raw.numeroActa || raw.entry_number || raw.number);
+  const tipoLibro = clean(data.book_type || raw.book_type || raw.tipoLibro || 'ORDINARIO');
+  const registryCoordinates = getCanonicalRegistryCoordinates(data);
+  const libro = padRef(registryCoordinates.book);
+  const folio = padRef(registryCoordinates.folio);
+  const numero = padRef(registryCoordinates.number);
   const historicalEntryMode = String(raw.historicalEntryMode || raw.historical_entry_mode || '').toLowerCase();
   const literalTranscription = String(raw.literalTranscription || raw.literal_transcription || '');
   const referenceName = clean(raw.referenceName || raw.reference_name);
   const isNarrative = historicalEntryMode === 'narrative' && literalTranscription.trim().length > 0;
 
-  const confirmado = `${clean(raw.nombres || raw.firstName)} ${clean(raw.apellidos || raw.lastName)}`.trim();
-  const fechaConfirmacion = dateText(raw.fechaSacramento || raw.fechaConfirmacion || raw.celebration_date);
+  const confirmado = `${clean(data.nombres ?? raw.nombres ?? raw.firstName)} ${clean(data.apellidos ?? raw.apellidos ?? raw.lastName)}`.trim();
+  const fechaConfirmacion = dateText(data.celebration_date ?? raw.fechaSacramento ?? raw.fechaConfirmacion ?? raw.celebration_date);
   const lugarConfirmacion = clean(raw.lugarSacramento || raw.lugarConfirmacion || raw.place);
   const fechaNacimiento = dateText(raw.fechaNacimiento || raw.birthDate || data.fecha_nacimiento);
   const lugarNacimiento = clean(raw.lugarNacimiento || data.lugar_nacimiento);
