@@ -17,6 +17,7 @@ import {
   subscribeToSacramentalNotificationActivity
 } from '@/services/matrimonialNotificationsService';
 import { SACRAMENTUM_BRAND } from '@/config/brand';
+import { isBarranquillaInstitutionalUser, BARRANQUILLA_CREST, BARRANQUILLA_NAME } from '@/lib/institutionalBranding';
 import { countUnreadChatMessages, subscribeToChatActivity } from '@/services/chatService';
 
 // =========================================================================
@@ -163,6 +164,7 @@ const Sidebar = ({ isOpen, onClose, onLogout, role, menuItems: externalMenuItems
 
   const rawRole = profile?.role || user?.role || (typeof role === 'object' && role !== null ? (role.role || role.name) : role);
   const safeRole = normalizeRole(rawRole);
+  const showBarranquillaIdentity = isBarranquillaInstitutionalUser(user);
 
   useEffect(() => {
     let mounted = true;
@@ -385,8 +387,16 @@ const Sidebar = ({ isOpen, onClose, onLogout, role, menuItems: externalMenuItems
             </button>
           </div>
 
-          <div className="flex-1 overflow-y-auto py-8 px-5 custom-scrollbar bg-white">
-            <p className="text-[9px] font-black text-slate-300 uppercase tracking-[0.3em] mb-6 px-4">Centro de Operaciones</p>
+          <div className="flex-1 overflow-y-auto py-6 px-5 custom-scrollbar bg-white">
+            {showBarranquillaIdentity && (
+              <section aria-label="Identidad institucional" className="relative mb-7 overflow-hidden rounded-[1.25rem] border border-[#d9b967]/40 bg-gradient-to-br from-[#20364b] via-[#1a2f42] to-[#122435] px-4 py-4 text-center shadow-md shadow-slate-900/10">
+                <div className="pointer-events-none absolute -left-8 -top-14 h-32 w-32 rounded-full border border-[#d5af55]/15" aria-hidden="true" />
+                <img src={BARRANQUILLA_CREST} alt="" aria-hidden="true" className="relative mx-auto h-20 w-auto object-contain drop-shadow-[0_3px_7px_rgba(0,0,0,0.2)]" />
+                <p className="relative mt-2 text-[10px] font-semibold leading-snug tracking-wide text-[#e8c46c]">{BARRANQUILLA_NAME}</p>
+                <div className="relative mx-auto mt-3 h-px w-16 bg-gradient-to-r from-transparent via-[#d6b35a] to-transparent" aria-hidden="true" />
+              </section>
+            )}
+            <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.3em] mb-6 px-4">Centro de Operaciones</p>
             {finalMenuItems.map((item, idx) => {
               const isActive = location.pathname === item.path || 
                                (item.children && item.children.some(c => location.pathname.startsWith(c.path))) ||

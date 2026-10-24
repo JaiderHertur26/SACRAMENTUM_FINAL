@@ -10,6 +10,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/lib/supabaseClient';
 import { getDashboardPathForRole } from '@/lib/authz';
+import { BARRANQUILLA_CREST, BARRANQUILLA_NAME } from '@/lib/institutionalBranding';
 
 const PublicSearchPage = () => {
   const { login } = useAuth();
@@ -137,27 +138,27 @@ const PublicSearchPage = () => {
   const renderLogin = () => (
     <motion.form key="login" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} onSubmit={handleLogin} className="space-y-5">
         <div className="space-y-1">
-            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Email Registrado</label>
+            <label className="text-[10px] font-extrabold text-[#2d5278] uppercase tracking-widest ml-1">Email Registrado</label>
             <div className="relative group">
                 <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-300 group-focus-within:text-[#4B7BA7] transition-colors" />
-                <input type="email" required value={credentials.username} onChange={e => setCredentials({...credentials, username: e.target.value})} className="w-full pl-12 pr-4 py-4 bg-slate-50 border border-transparent rounded-2xl outline-none focus:bg-white focus:ring-4 focus:ring-blue-500/5 transition-all font-bold text-slate-700" placeholder="admin@ejemplo.com" />
+                <input type="email" required value={credentials.username} onChange={e => setCredentials({...credentials, username: e.target.value})} className="w-full pl-12 pr-4 py-4 bg-white/65 border border-[#bad3e9] rounded-2xl outline-none focus:bg-white focus:ring-4 focus:ring-blue-500/10 focus:border-[#4B7BA7] transition-all font-bold text-slate-700 shadow-[0_1px_4px_rgba(31,61,91,0.04)]" placeholder="admin@ejemplo.com" />
             </div>
         </div>
         <div className="space-y-1">
             <div className="flex justify-between items-center px-1">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Contraseña</label>
+                <label className="text-[10px] font-extrabold text-[#2d5278] uppercase tracking-widest">Contraseña</label>
                 <button type="button" onClick={() => setAuthView('forgot')} className="text-[9px] font-bold text-blue-600 hover:underline uppercase tracking-tighter">¿Olvidó su clave?</button>
             </div>
             <div className="relative group">
                 <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-300 group-focus-within:text-[#4B7BA7] transition-colors" />
-                <input type="password" required value={credentials.password} onChange={e => setCredentials({...credentials, password: e.target.value})} className="w-full pl-12 pr-4 py-4 bg-slate-50 border border-transparent rounded-2xl outline-none focus:bg-white focus:ring-4 focus:ring-blue-500/5 transition-all font-bold" placeholder="••••••••" />
+                <input type="password" required value={credentials.password} onChange={e => setCredentials({...credentials, password: e.target.value})} className="w-full pl-12 pr-4 py-4 bg-white/65 border border-[#bad3e9] rounded-2xl outline-none focus:bg-white focus:ring-4 focus:ring-blue-500/10 focus:border-[#4B7BA7] transition-all font-bold shadow-[0_1px_4px_rgba(31,61,91,0.04)]" placeholder="••••••••" />
             </div>
         </div>
         {loginError && <div className="bg-red-50 text-red-600 p-3 rounded-xl text-[11px] font-bold flex items-center gap-2 border border-red-100 uppercase tracking-tight"><AlertCircle className="w-4 h-4" /> {loginError}</div>}
-        <Button disabled={loginLoading} className="w-full py-7 rounded-2xl bg-gradient-to-r from-[#D4AF37] to-[#B4932A] hover:shadow-xl text-white font-black uppercase tracking-widest text-xs transition-all transform active:scale-95">
+        <Button disabled={loginLoading} className="w-full py-7 rounded-2xl bg-gradient-to-r from-[#e7b820] via-[#D4AF37] to-[#bd9220] hover:shadow-xl shadow-amber-800/10 text-white font-black uppercase tracking-widest text-xs transition-all transform active:scale-95 border border-[#b78a27]/30">
             {loginLoading ? <Loader2 className="animate-spin w-5 h-5" /> : 'Iniciar Sesión'}
         </Button>
-        <div className="text-center pt-4 border-t border-slate-50">
+        <div className="text-center pt-5 border-t border-[#b3c8dc]/35">
             <button type="button" onClick={() => setAuthView('register')} className="text-[10px] font-black text-[#4B7BA7] uppercase tracking-widest hover:underline">¿Primer acceso? Activa tu cuenta</button>
         </div>
     </motion.form>
@@ -201,44 +202,51 @@ const PublicSearchPage = () => {
   );
 
   return (
-    <div className="min-h-screen lg:h-screen w-full bg-slate-50 flex flex-col lg:flex-row lg:overflow-hidden font-sans">
+    <div className="min-h-screen lg:h-screen w-full bg-[#1c2c3c] flex flex-col lg:flex-row lg:overflow-hidden font-sans relative">
+      <div className="pointer-events-none absolute z-40 left-0 top-0 h-[3px] w-full bg-gradient-to-r from-[#dfb34d] via-[#e9c45d] to-[#9d7b2d]" aria-hidden="true" />
       <Helmet><title>Acceso Seguro · SACRAMENTUM</title></Helmet>
 
       {/* PANEL LATERAL (LOGIN) */}
-      <aside className="w-full lg:w-[450px] bg-white lg:border-r border-b lg:border-b-0 border-slate-100 flex flex-col p-8 lg:p-10 shadow-2xl relative z-20 shrink-0 lg:overflow-y-auto">
-        <div className="flex-1 flex flex-col justify-center max-w-sm mx-auto w-full py-10">
-            <div className="text-center mb-12">
+      <aside className="w-full lg:w-[450px] bg-gradient-to-br from-[#fffdf9] via-[#f8fbff] to-[#eaf2fa] lg:border-r border-b lg:border-b-0 border-[#d9cba5] flex flex-col p-8 lg:p-10 shadow-2xl relative z-20 shrink-0 lg:overflow-y-auto overflow-hidden [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        <div className="pointer-events-none absolute -top-20 -left-28 w-[520px] h-[560px] rounded-[50%] border border-[#d4af37]/15" aria-hidden="true" />
+        <div className="pointer-events-none absolute -top-28 -left-20 w-[520px] h-[610px] rounded-[50%] border border-[#d4af37]/10" aria-hidden="true" />
+        <Church className="pointer-events-none absolute -bottom-16 -left-24 w-48 h-48 text-[#395d7c]/[0.035]" aria-hidden="true" />
+        <div className="relative z-10 flex-1 flex flex-col justify-center max-w-sm mx-auto w-full py-10">
+            <div className="text-center mb-10">
                 <div className="bg-[#4B7BA7] w-16 h-16 rounded-3xl rotate-12 flex items-center justify-center mx-auto mb-6 shadow-xl shadow-blue-900/20">
                     <Church className="w-8 h-8 text-white -rotate-12" />
                 </div>
                 <h2 className="text-3xl font-black text-slate-900 tracking-tighter">Sacramentum</h2>
-                <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mt-2 italic">Sistema Eclesial de Registro Sacramental</p>
+                <p className="text-[10px] font-extrabold text-[#527ea6] uppercase tracking-[0.25em] mt-2 italic">Sistema Eclesial de Registro Sacramental</p>
+                <div className="mt-6 flex items-center justify-center gap-2" aria-hidden="true"><span className="h-px w-20 bg-[#d4af37]/70"/><span className="h-2 w-2 rotate-45 border border-[#d4af37]"/><span className="h-px w-20 bg-[#d4af37]/70"/></div>
             </div>
             <AnimatePresence mode="wait">
                 {authView === 'login' ? renderLogin() : authView === 'register' ? renderRegister() : renderForgot()}
             </AnimatePresence>
         </div>
-        <div className="pt-6 lg:pt-10 flex items-center justify-center gap-2 opacity-30 text-[9px] font-black uppercase tracking-widest text-slate-400">
+        <div className="relative z-10 pt-6 lg:pt-10 flex items-center justify-center gap-2 text-[9px] font-bold uppercase tracking-widest text-[#89a3bf]">
             <ShieldCheck className="w-4 h-4" /> Sesión protegida · Supabase Auth
         </div>
       </aside>
 
       {/* PANEL PRINCIPAL (PORTADA INSTITUCIONAL) */}
-      <main className="flex-1 w-full h-full relative bg-gradient-to-br from-[#2C3E50] to-[#1A252F] flex items-center justify-center p-12 overflow-hidden">
-          {/* Decoración de fondo */}
-          <Church className="absolute -bottom-20 -right-20 w-[600px] h-[600px] text-white opacity-5 rotate-12" />
-          <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-[#D4AF37] via-[#4B7BA7] to-[#D4AF37]"></div>
-
-          <div className="relative z-10 text-center max-w-3xl">
-              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
-                  <h1 className="text-4xl lg:text-6xl font-black text-white tracking-tight leading-tight mb-6">
-                      Plataforma Eclesial <br/><span className="text-[#D4AF37]">Unificada</span>
-                  </h1>
-                  <p className="text-lg text-slate-300 font-medium leading-relaxed mb-10 max-w-2xl mx-auto">
-                      Sistema integral y seguro para la gestión de archivos parroquiales, emisión de actas sacramentales y control diocesano.
-                  </p>
-              </motion.div>
-          </div>
+      <main className="relative flex flex-1 w-full min-h-[360px] lg:min-h-0 lg:h-full items-center justify-center overflow-hidden bg-[radial-gradient(ellipse_at_38%_36%,#28455e_0%,#1b3044_52%,#142536_100%)] p-6 sm:p-10 lg:p-12" aria-label="Presentación institucional de la Arquidiócesis de Barranquilla">
+          <Church className="pointer-events-none absolute -bottom-24 -right-28 h-[570px] w-[570px] rotate-12 text-[#c8d3db]/[0.045]" aria-hidden="true" />
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} className="relative z-10 flex max-w-lg w-full flex-col items-center text-center">
+            <div className="relative flex w-full max-w-[380px] flex-col items-center rounded-t-[11rem] border-x border-t border-[#d4af37]/45 px-6 pt-8 pb-8 lg:px-10 lg:pt-10">
+              <span className="pointer-events-none absolute top-[44%] -left-1 h-2 w-2 rotate-45 bg-[#d4af37]" aria-hidden="true" />
+              <span className="pointer-events-none absolute top-[44%] -right-1 h-2 w-2 rotate-45 bg-[#d4af37]" aria-hidden="true" />
+              <img src={BARRANQUILLA_CREST} alt="Escudo de la Arquidiócesis de Barranquilla" className="h-48 sm:h-56 lg:h-[310px] w-auto object-contain drop-shadow-[0_6px_20px_rgba(0,0,0,0.2)]" />
+              <h1 className="mt-4 text-[clamp(1.6rem,3vw,2.8rem)] font-light leading-[1.13] tracking-tight text-[#ebc66d]">
+                Arquidiócesis<br />de Barranquilla
+              </h1>
+              <div className="mt-7 flex w-full items-center justify-center gap-3 text-[#d4af37]" aria-hidden="true">
+                <span className="h-px w-20 bg-gradient-to-r from-transparent to-[#d4af37]" />
+                <span className="h-2 w-2 rotate-45 border border-[#d4af37]" />
+                <span className="h-px w-20 bg-gradient-to-l from-transparent to-[#d4af37]" />
+              </div>
+            </div>
+          </motion.div>
       </main>
     </div>
   );

@@ -69,14 +69,19 @@ export const AuthProvider = ({ children }) => {
 
     const role = normalizeRole(prof.role);
     let organizationName = '';
+    let brandingDioceseId = null;
 
     try {
       if (role === 'parish' && prof.parish_id) {
-        const { data } = await supabase.from('parishes').select('name').eq('id', prof.parish_id).maybeSingle();
+        const { data } = await supabase.from('parishes').select('name,diocese_id').eq('id', prof.parish_id).maybeSingle();
         organizationName = data?.name || '';
+        // Evita atribuir el escudo a una parroquia de otra jurisdicción.
+        brandingDioceseId = data?.diocese_id && (!prof.diocese_id || prof.diocese_id === data.diocese_id)
+          ? data.diocese_id : null;
       } else if ((role === 'diocese' || role === 'chancery') && prof.diocese_id) {
-        const { data } = await supabase.from('dioceses').select('name').eq('id', prof.diocese_id).maybeSingle();
+        const { data } = await supabase.from('dioceses').select('id,name').eq('id', prof.diocese_id).maybeSingle();
         organizationName = data?.name || '';
+        brandingDioceseId = data?.id || null;
       }
     } catch (error) {
       console.warn('No fue posible resolver el nombre de la jurisdicción.', error);
@@ -98,6 +103,8 @@ export const AuthProvider = ({ children }) => {
       parish_name: role === 'parish' ? organizationName : '',
       dioceseName: role !== 'parish' ? organizationName : '',
       diocese_name: role !== 'parish' ? organizationName : '',
+      // Sólo identidad visual, resuelta desde la base institucional autenticada.
+      brandingDioceseId,
     };
 
     return { ok: true, profile: { ...prof, role }, user: enrichedUser };
