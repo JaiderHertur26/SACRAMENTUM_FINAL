@@ -932,9 +932,10 @@
       "criterion": "Impresión",
       "status": "EN_PROGRESO",
       "evidence": [
-        "AUDITORIA_IMPRESION_CANONICA_V194_2026-10-24.md: Cotejo backend y plantilla canónica listos falta navegador e impresión física"
+        "AUDITORIA_IMPRESION_CANONICA_V194_2026-10-24.md: Cotejo backend y plantilla canónica listos falta navegador e impresión física",
+        "AUDITORIA_BOTONES_REALES_IMPRESION_V196_2026-10-24.md: V196 boton real Bautismo Chrome QA rechazo impide print y exito invoca print una vez con coordenadas canónicas"
       ],
-      "updated_at": "2026-10-24T21:29:28.825Z"
+      "updated_at": "2026-10-24T23:42:43.641Z"
     },
     {
       "id": "08.06",
@@ -1056,9 +1057,10 @@
       "criterion": "Impresión",
       "status": "EN_PROGRESO",
       "evidence": [
-        "AUDITORIA_IMPRESION_CANONICA_V194_2026-10-24.md: Cotejo backend y plantilla canónica listos falta navegador e impresión física"
+        "AUDITORIA_IMPRESION_CANONICA_V194_2026-10-24.md: Cotejo backend y plantilla canónica listos falta navegador e impresión física",
+        "AUDITORIA_BOTONES_REALES_IMPRESION_V196_2026-10-24.md: V196 botón Confirmación revisado en Chrome denegación bloquea y camino feliz imprime con ficha simulada"
       ],
-      "updated_at": "2026-10-24T21:29:28.912Z"
+      "updated_at": "2026-10-24T23:42:44.025Z"
     },
     {
       "id": "09.06",
@@ -1188,9 +1190,10 @@
       "criterion": "Impresión",
       "status": "EN_PROGRESO",
       "evidence": [
-        "AUDITORIA_IMPRESION_CANONICA_V194_2026-10-24.md: Cotejo backend y plantilla canónica listos falta navegador e impresión física"
+        "AUDITORIA_IMPRESION_CANONICA_V194_2026-10-24.md: Cotejo backend y plantilla canónica listos falta navegador e impresión física",
+        "AUDITORIA_BOTONES_REALES_IMPRESION_V196_2026-10-24.md: V196 Matrimonio auditado por clic real con bloqueo de auditoría y HTML canónico"
       ],
-      "updated_at": "2026-10-24T21:29:29.008Z"
+      "updated_at": "2026-10-24T23:42:44.168Z"
     },
     {
       "id": "10.07",
@@ -1364,9 +1367,10 @@
       "criterion": "Impresión",
       "status": "EN_PROGRESO",
       "evidence": [
-        "AUDITORIA_IMPRESION_CANONICA_V194_2026-10-24.md: HTML Exequias canónico y RPC backend auditada falta impresión real en navegador"
+        "AUDITORIA_IMPRESION_CANONICA_V194_2026-10-24.md: HTML Exequias canónico y RPC backend auditada falta impresión real en navegador",
+        "AUDITORIA_BOTONES_REALES_IMPRESION_V196_2026-10-24.md: V196 Exequias ver e imprimir: auditoría denegada cierra popup y autorizada crea HTML"
       ],
-      "updated_at": "2026-10-24T21:29:29.102Z"
+      "updated_at": "2026-10-24T23:42:44.326Z"
     },
     {
       "id": "12.01",
