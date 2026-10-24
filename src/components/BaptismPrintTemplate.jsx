@@ -1,6 +1,7 @@
 import React, { forwardRef } from 'react';
 import { convertDateToSpanishText } from '@/utils/dateTimeFormatters';
 import { getLocalDateISO } from '@/utils/localDate';
+import { getCanonicalRegistryCoordinates } from '@/utils/canonicalRegistryCoordinates';
 import { useAppData } from '@/context/AppDataContext';
 import {
   DataCard,
@@ -56,17 +57,18 @@ const BaptismPrintTemplate = forwardRef(({ data, parroquiaInfo }, ref) => {
   const region = clean(header.region);
   const location = [ciudad, region].filter(Boolean).join(', ') + ([ciudad, region].some(Boolean) ? ' · COLOMBIA' : '');
 
-  const tipoLibro = clean(raw.tipoLibro || raw.book_type || data.book_type || 'ORDINARIO');
-  const libro = padRef(raw.Libro || raw.book_number || raw.numeroLibro || data.book_number || data.Libro);
-  const folio = padRef(raw.folio || raw.page_number || data.folio || data.page_number);
-  const numero = padRef(raw.numero || raw.number || raw.numeroActa || data.numero || data.number);
+  const tipoLibro = clean(data.book_type || raw.book_type || raw.tipoLibro || 'ORDINARIO');
+  const registryCoordinates = getCanonicalRegistryCoordinates(data);
+  const libro = padRef(registryCoordinates.book);
+  const folio = padRef(registryCoordinates.folio);
+  const numero = padRef(registryCoordinates.number);
   const historicalEntryMode = String(raw.historicalEntryMode || raw.historical_entry_mode || '').toLowerCase();
   const literalTranscription = String(raw.literalTranscription || raw.literal_transcription || '');
   const referenceName = clean(raw.referenceName || raw.reference_name);
   const isNarrative = historicalEntryMode === 'narrative' && literalTranscription.trim().length > 0;
 
-  const bautizado = `${clean(raw.nombres || raw.firstName)} ${clean(raw.apellidos || raw.lastName)}`.trim();
-  const fechaBautismo = dateText(raw.fechaSacramento || raw.fecbau || data.celebration_date);
+  const bautizado = `${clean(data.nombres ?? raw.nombres ?? raw.firstName)} ${clean(data.apellidos ?? raw.apellidos ?? raw.lastName)}`.trim();
+  const fechaBautismo = dateText(data.celebration_date ?? raw.fechaSacramento ?? raw.fecbau);
   const lugarBautismo = clean(raw.lugarBautismo || raw.lugbau || raw.place || data.lugar_bautismo);
   const fechaNacimiento = dateText(raw.fechaNacimiento || raw.fecnac || data.fecha_nacimiento);
   const lugarNacimiento = clean(raw.lugarNacimiento || raw.lugarn || data.lugar_nacimiento);

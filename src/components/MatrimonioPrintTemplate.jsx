@@ -1,5 +1,6 @@
 import React, { forwardRef } from 'react';
 import { convertDateToSpanishText } from '@/utils/dateTimeFormatters';
+import { getCanonicalRegistryCoordinates } from '@/utils/canonicalRegistryCoordinates';
 import {
   DataCard,
   DataField,
@@ -59,9 +60,10 @@ const MatrimonioPrintTemplate = forwardRef(({ data, parroquiaInfo }, ref) => {
   const region = clean(inst.region);
   const location = [ciudad, region].filter(Boolean).join(', ') + ([ciudad, region].some(Boolean) ? ' · COLOMBIA' : '');
 
-  const libro = pad4(data.book_number || raw.book_number || raw.libro);
-  const folio = pad4(data.page_number || data.folio || raw.page_number || raw.folio);
-  const numero = pad4(data.entry_number || data.number || raw.entry_number || raw.numero);
+  const registryCoordinates = getCanonicalRegistryCoordinates(data);
+  const libro = pad4(registryCoordinates.book);
+  const folio = pad4(registryCoordinates.folio);
+  const numero = pad4(registryCoordinates.number);
   const historicalEntryMode = String(raw.historicalEntryMode || raw.historical_entry_mode || '').toLowerCase();
   const literalTranscription = String(raw.literalTranscription || raw.literal_transcription || '');
   const referenceName = clean(raw.referenceName || raw.reference_name);

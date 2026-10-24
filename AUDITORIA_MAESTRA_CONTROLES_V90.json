@@ -917,11 +917,12 @@
       "area": "Bautismo",
       "priority": "P0",
       "criterion": "Libro Folio Número",
-      "status": "EN_PROGRESO",
+      "status": "APROBADO",
       "evidence": [
-        "AUDITORIA_PARAMETROS_Y_LIBROS_V94_2026-10-21.md: Libros y parámetros de Bautismo no modificables por Administrador General vía RLS"
+        "AUDITORIA_PARAMETROS_Y_LIBROS_V94_2026-10-21.md: Libros y parámetros de Bautismo no modificables por Administrador General vía RLS",
+        "AUDITORIA_IMPRESION_CANONICA_V194_2026-10-24.md: Asiento Baptismo usa coordenadas canónicas y plantilla prioridad DB impide raw_data histórico divergente con QA V193 y V194"
       ],
-      "updated_at": "2026-10-21T18:13:49.650Z"
+      "updated_at": "2026-10-24T21:29:28.662Z"
     },
     {
       "id": "08.05",
@@ -929,9 +930,11 @@
       "area": "Bautismo",
       "priority": "P0",
       "criterion": "Impresión",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "AUDITORIA_IMPRESION_CANONICA_V194_2026-10-24.md: Cotejo backend y plantilla canónica listos falta navegador e impresión física"
+      ],
+      "updated_at": "2026-10-24T21:29:28.825Z"
     },
     {
       "id": "08.06",
@@ -1051,9 +1054,11 @@
       "area": "Confirmación",
       "priority": "P0",
       "criterion": "Impresión",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "AUDITORIA_IMPRESION_CANONICA_V194_2026-10-24.md: Cotejo backend y plantilla canónica listos falta navegador e impresión física"
+      ],
+      "updated_at": "2026-10-24T21:29:28.912Z"
     },
     {
       "id": "09.06",
@@ -1181,9 +1186,11 @@
       "area": "Matrimonio",
       "priority": "P0",
       "criterion": "Impresión",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "AUDITORIA_IMPRESION_CANONICA_V194_2026-10-24.md: Cotejo backend y plantilla canónica listos falta navegador e impresión física"
+      ],
+      "updated_at": "2026-10-24T21:29:29.008Z"
     },
     {
       "id": "10.07",
@@ -1355,9 +1362,11 @@
       "area": "Exequias",
       "priority": "P0",
       "criterion": "Impresión",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "AUDITORIA_IMPRESION_CANONICA_V194_2026-10-24.md: HTML Exequias canónico y RPC backend auditada falta impresión real en navegador"
+      ],
+      "updated_at": "2026-10-24T21:29:29.102Z"
     },
     {
       "id": "12.01",
@@ -2739,9 +2748,11 @@
       "area": "Impresiones y plantillas",
       "priority": "P0",
       "criterion": "Registro de impresión",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "APROBADO",
+      "evidence": [
+        "AUDITORIA_IMPRESION_CANONICA_V194_2026-10-24.md: Impresion registral cuatro sacramentos: 4 constancias cotejadas 20 denegaciones y notas obligatorias auditadas en Supabase con rollback"
+      ],
+      "updated_at": "2026-10-24T21:29:28.732Z"
     },
     {
       "id": "22.11",

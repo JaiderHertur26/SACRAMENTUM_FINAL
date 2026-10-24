@@ -10,7 +10,7 @@ Regla: no introducir datos falsos permanentes; usar memoria, transacciones ROLLB
 
 Prioridad P0 bloquea la certificación. P1 debe constar resuelta o aceptada con evidencia y responsable.
 
-Avance: 325 controles totales; 22 aprobados; 118 en progreso; 185 pendientes; 0 fallidos; 0 bloqueados.
+Avance: 325 controles totales; 24 aprobados; 121 en progreso; 180 pendientes; 0 fallidos; 0 bloqueados.
 
 ## Fases y controles numerados
 
@@ -282,16 +282,18 @@ Avance: 325 controles totales; 22 aprobados; 118 en progreso; 185 pendientes; 0 
   - Evidencia: V168: nueva RPC bloquea filas de expedientes, decreto y notas con FOR UPDATE; falta disputa de dos conexiones reales y medir deadlocks.
 - [ ] 07.09 · Restauración tras timeout — PENDIENTE
 
-### 08. Bautismo (P0) — 1/11
+### 08. Bautismo (P0) — 2/11
 
 - [ ] 08.01 · Nueva boleta — EN_PROGRESO
   - Evidencia: AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: Boleta Bautismo permite inserción como Parroquia y deniega otros tres roles en API; falta UI y ciclo completo
 - [ ] 08.02 · Celebración — PENDIENTE
 - [x] 08.03 · Asiento en libro — APROBADO
   - Evidencia: AUDITORIA_CIRCUITOS_REGISTRALES_V193_2026-10-24.md: V193 circuito de Bautismo boleta a asiento con libro folio numero cierre y traza SQL ROLLBACK
-- [ ] 08.04 · Libro Folio Número — EN_PROGRESO
+- [x] 08.04 · Libro Folio Número — APROBADO
   - Evidencia: AUDITORIA_PARAMETROS_Y_LIBROS_V94_2026-10-21.md: Libros y parámetros de Bautismo no modificables por Administrador General vía RLS
-- [ ] 08.05 · Impresión — PENDIENTE
+  - Evidencia: AUDITORIA_IMPRESION_CANONICA_V194_2026-10-24.md: Asiento Baptismo usa coordenadas canónicas y plantilla prioridad DB impide raw_data histórico divergente con QA V193 y V194
+- [ ] 08.05 · Impresión — EN_PROGRESO
+  - Evidencia: AUDITORIA_IMPRESION_CANONICA_V194_2026-10-24.md: Cotejo backend y plantilla canónica listos falta navegador e impresión física
 - [ ] 08.06 · Importación de partida — PENDIENTE
 - [ ] 08.07 · Digitalización sin consumir consecutivo — PENDIENTE
 - [ ] 08.08 · Corrección por decreto — EN_PROGRESO
@@ -311,7 +313,8 @@ Avance: 325 controles totales; 22 aprobados; 118 en progreso; 185 pendientes; 0 
 - [ ] 09.03 · Celebración — PENDIENTE
 - [x] 09.04 · Asiento en libro — APROBADO
   - Evidencia: AUDITORIA_CIRCUITOS_REGISTRALES_V193_2026-10-24.md: V193 Confirmacion asiento real RPC status seated y boleta archivada con auditoria y reintento bloqueado
-- [ ] 09.05 · Impresión — PENDIENTE
+- [ ] 09.05 · Impresión — EN_PROGRESO
+  - Evidencia: AUDITORIA_IMPRESION_CANONICA_V194_2026-10-24.md: Cotejo backend y plantilla canónica listos falta navegador e impresión física
 - [ ] 09.06 · Referencia a Bautismo — PENDIENTE
 - [ ] 09.07 · Importación reportada — PENDIENTE
 - [ ] 09.08 · Importación no reportada — PENDIENTE
@@ -331,7 +334,8 @@ Avance: 325 controles totales; 22 aprobados; 118 en progreso; 185 pendientes; 0 
 - [ ] 10.04 · Celebración — PENDIENTE
 - [x] 10.05 · Asiento y libro — APROBADO
   - Evidencia: AUDITORIA_CIRCUITOS_REGISTRALES_V193_2026-10-24.md: V193 Matrimonio boleta asiento libro ordinario y proteccion de doble asiento en PostgreSQL
-- [ ] 10.06 · Impresión — PENDIENTE
+- [ ] 10.06 · Impresión — EN_PROGRESO
+  - Evidencia: AUDITORIA_IMPRESION_CANONICA_V194_2026-10-24.md: Cotejo backend y plantilla canónica listos falta navegador e impresión física
 - [ ] 10.07 · Importación MATRIMON — PENDIENTE
 - [ ] 10.08 · Notas NTMAT — PENDIENTE
 - [ ] 10.09 · Corrección por decreto — EN_PROGRESO
@@ -365,7 +369,8 @@ Avance: 325 controles totales; 22 aprobados; 118 en progreso; 185 pendientes; 0 
 - [ ] 11.09 · Notas — EN_PROGRESO
   - Evidencia: V115: corrección y reposición generan notas marginales y reversión agrega nota posterior en Exequias.
   - Evidencia: V168: exequias con dos notas independientes y dos autorizaciones diocesanas reconciliadas de manera atómica, con auditores/notificación.
-- [ ] 11.10 · Impresión — PENDIENTE
+- [ ] 11.10 · Impresión — EN_PROGRESO
+  - Evidencia: AUDITORIA_IMPRESION_CANONICA_V194_2026-10-24.md: HTML Exequias canónico y RPC backend auditada falta impresión real en navegador
 
 ### 12. Decretos nuevos en Cancillería (P0) — 0/11
 
@@ -714,7 +719,7 @@ Avance: 325 controles totales; 22 aprobados; 118 en progreso; 185 pendientes; 0 
 - [ ] 21.09 · Archivo histórico y corriente — PENDIENTE
 - [ ] 21.10 · Consistencia con reportes — PENDIENTE
 
-### 22. Impresiones y plantillas (P0) — 0/11
+### 22. Impresiones y plantillas (P0) — 1/11
 
 - [ ] 22.01 · Partidas completas — EN_PROGRESO
   - Evidencia: AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96 restringe la escritura de identidad que interviene en partidas; falta revisión documental impresa
@@ -727,7 +732,8 @@ Avance: 325 controles totales; 22 aprobados; 118 en progreso; 185 pendientes; 0 
 - [ ] 22.07 · Nombres largos — PENDIENTE
 - [ ] 22.08 · Saltos de página — PENDIENTE
 - [ ] 22.09 · Escapar HTML — PENDIENTE
-- [ ] 22.10 · Registro de impresión — PENDIENTE
+- [x] 22.10 · Registro de impresión — APROBADO
+  - Evidencia: AUDITORIA_IMPRESION_CANONICA_V194_2026-10-24.md: Impresion registral cuatro sacramentos: 4 constancias cotejadas 20 denegaciones y notas obligatorias auditadas en Supabase con rollback
 - [ ] 22.11 · Concordancia jurídica — EN_PROGRESO
   - Evidencia: AUDITORIA_REVISION_JURIDICA_NULIDAD_V107_2026-10-21.md: V107: cotejo estructural de sentencia y matrimonio; identidad jurídica del documento se valida fuera de sistema
   - Evidencia: AUDITORIA_ACTUACIONES_NULIDAD_V108_2026-10-21.md: V108: referencia documental, fecha y explicación exigidas, sin afirmar autenticidad jurídica
