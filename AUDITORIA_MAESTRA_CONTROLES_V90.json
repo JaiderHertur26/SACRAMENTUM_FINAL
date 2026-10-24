@@ -905,9 +905,11 @@
       "area": "Bautismo",
       "priority": "P0",
       "criterion": "Asiento en libro",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "APROBADO",
+      "evidence": [
+        "AUDITORIA_CIRCUITOS_REGISTRALES_V193_2026-10-24.md: V193 circuito de Bautismo boleta a asiento con libro folio numero cierre y traza SQL ROLLBACK"
+      ],
+      "updated_at": "2026-10-24T21:11:19.114Z"
     },
     {
       "id": "08.04",
@@ -1037,9 +1039,11 @@
       "area": "Confirmación",
       "priority": "P0",
       "criterion": "Asiento en libro",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "APROBADO",
+      "evidence": [
+        "AUDITORIA_CIRCUITOS_REGISTRALES_V193_2026-10-24.md: V193 Confirmacion asiento real RPC status seated y boleta archivada con auditoria y reintento bloqueado"
+      ],
+      "updated_at": "2026-10-24T21:11:19.240Z"
     },
     {
       "id": "09.05",
@@ -1165,9 +1169,11 @@
       "area": "Matrimonio",
       "priority": "P0",
       "criterion": "Asiento y libro",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "APROBADO",
+      "evidence": [
+        "AUDITORIA_CIRCUITOS_REGISTRALES_V193_2026-10-24.md: V193 Matrimonio boleta asiento libro ordinario y proteccion de doble asiento en PostgreSQL"
+      ],
+      "updated_at": "2026-10-24T21:11:19.320Z"
     },
     {
       "id": "10.06",
@@ -1248,9 +1254,11 @@
       "area": "Exequias",
       "priority": "P0",
       "criterion": "Inscripción",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "APROBADO",
+      "evidence": [
+        "AUDITORIA_CIRCUITOS_REGISTRALES_V193_2026-10-24.md: V193 Exequias inscripcion desde borrador hasta partida y cierre con auditoria"
+      ],
+      "updated_at": "2026-10-24T21:11:19.431Z"
     },
     {
       "id": "11.02",
@@ -1278,9 +1286,11 @@
       "area": "Exequias",
       "priority": "P0",
       "criterion": "Libro ordinario",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "APROBADO",
+      "evidence": [
+        "AUDITORIA_CIRCUITOS_REGISTRALES_V193_2026-10-24.md: V193 asiento Exequias confirmo libro ordinario con libro folio numero e id unico"
+      ],
+      "updated_at": "2026-10-24T21:11:19.547Z"
     },
     {
       "id": "11.05",
