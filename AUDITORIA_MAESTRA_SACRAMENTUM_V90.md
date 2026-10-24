@@ -229,6 +229,7 @@ Avance: 325 controles totales; 15 aprobados; 118 en progreso; 192 pendientes; 0 
   - Evidencia: V180: temporary patch of ten privileged Chat, matrimonial notification and template RPCs passed 10 ACTIVE cases and 60 denial cases (NULL_STATUS, NULL_ACTIVE, SUSPENDED, DISABLED, PENDING, BLANK_STATUS), all transactional.
   - Evidencia: V181: four SQL privileged functions hardened to require explicitly ACTIVE profile, real PostgreSQL 4 legitimate actor flows and 28 negative cases PASSED in BEGIN/ROLLBACK.
   - Evidencia: V182 PostgreSQL reversible QA: 5 active-role court and authorization business gates reachable, 24 invalid profile/role cases denied, no court records read or persisted.
+  - Evidencia: AUDITORIA_CANCILLERIA_FALLO_IDENTIDAD_V191_2026-10-24.md: V191 confirma NULL_STATUS y NULL_ACTIVE previamente admitidos y ahora 24 negativas correctas en seis RPC de Cancilleria con rollback
 - [ ] 06.08 · Search path de funciones — EN_PROGRESO
   - Evidencia: AUDITORIA_INVENTARIO_RPC_V91.json: Cribado search_path de funciones privilegiadas; falta verificación de todas sus dependencias
   - Evidencia: V124: ambas RPC destructivas preservaron search_path fijado; revisión de todas las demás sigue pendiente.
@@ -244,6 +245,7 @@ Avance: 325 controles totales; 15 aprobados; 118 en progreso; 192 pendientes; 0 
   - Evidencia: V162: campo identityKey incluye user.id, rol, dioceseId y chanceryId; datos sólo visibles si owner y datos recibidos coinciden con identidad actual.
   - Evidencia: V163: build prod gate comprueba repo JaiderHertur26/SACRAMENTUM_FINAL, rama main y Git SHA íntegro antes de permitir construir.
   - Evidencia: V170: 6/6 transiciones React/Chrome en entorno sin conexión Supabase, incluidos 900 ms de respuesta antigua y logout. Backend no auditado adicionalmente.
+  - Evidencia: AUDITORIA_FUNCIONES_PRIVILEGIADAS_V190_2026-10-24.md: V190 revisa 210 funciones SECURITY DEFINER 149 autenticadas cero anon tres search_path endurecidos y pruebas reales reversibles
 - [ ] 06.09 · Filtración por GraphQL — EN_PROGRESO
   - Evidencia: V120: Supabase Advisor informa 64 objetos visibles en GraphQL a authenticated. Acceso a esquema NO equivale a fuga de filas; revisión exhaustiva pendiente.
   - Evidencia: V121: 64 advertencias GraphQL para objetos authenticated según Security Advisor; RLS V121 elimina filtración concreta por artefactos y archivos, no todas las advertencias.
