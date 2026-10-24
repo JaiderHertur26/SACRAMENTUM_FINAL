@@ -10,7 +10,7 @@ Regla: no introducir datos falsos permanentes; usar memoria, transacciones ROLLB
 
 Prioridad P0 bloquea la certificación. P1 debe constar resuelta o aceptada con evidencia y responsable.
 
-Avance: 325 controles totales; 15 aprobados; 118 en progreso; 192 pendientes; 0 fallidos; 0 bloqueados.
+Avance: 325 controles totales; 17 aprobados; 118 en progreso; 190 pendientes; 0 fallidos; 0 bloqueados.
 
 ## Fases y controles numerados
 
@@ -68,12 +68,13 @@ Avance: 325 controles totales; 15 aprobados; 118 en progreso; 192 pendientes; 0 
 - [ ] 03.10 · No claves privilegiadas en frontend — EN_PROGRESO
   - Evidencia: AUDITORIA_SEGURIDAD_COMPILACION_V183_2026-10-24.md: Frontera de secretos locales y publicacion comprobada; falta revision exhaustiva de configuraciones externas
 
-### 04. Roles y creación de usuarios (P0) — 0/10
+### 04. Roles y creación de usuarios (P0) — 1/10
 
 - [ ] 04.01 · Administrador General crea diócesis — PENDIENTE
 - [ ] 04.02 · Diócesis crea parroquia — PENDIENTE
 - [ ] 04.03 · Diócesis crea Canciller — PENDIENTE
-- [ ] 04.04 · Canciller único activo — PENDIENTE
+- [x] 04.04 · Canciller único activo — APROBADO
+  - Evidencia: AUDITORIA_BLOQUE_FUNCIONAL_V192_2026-10-24.md: Canciller unico activo probado con indice PostgreSQL parcial tres colisiones denegadas y sustitucion por suspension permitida en ROLLBACK
 - [ ] 04.05 · Parroquia no crea superiores — EN_PROGRESO
   - Evidencia: AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96 mantiene autoridad institucional por rol, deniega escritura de identidad parroquial por Administrador General
 - [ ] 04.06 · Rol inválido denegado — PENDIENTE
@@ -257,7 +258,7 @@ Avance: 325 controles totales; 15 aprobados; 118 en progreso; 192 pendientes; 0 
 - [x] 06.12 · No metadatos de usuario editables para autorizar — APROBADO
   - Evidencia: AUDITORIA_IDENTIDAD_Y_AISLAMIENTO_V184_2026-10-24.md: Inventario PostgreSQL 248 funciones y 130 politicas sin user_metadata editable; 275 fuentes frontend, QA read-only y gate reproducibles
 
-### 07. Integridad y concurrencia (P0) — 3/9
+### 07. Integridad y concurrencia (P0) — 4/9
 
 - [x] 07.01 · Unicidad Libro Folio Número — APROBADO
   - Evidencia: AUDITORIA_NUMERACION_Y_DECRETOS_V188_2026-10-24.md: PostgreSQL V187 y V188 8393 partidas sin choques, 4 inserciones identicas y 4 equivalentes normalizadas bloqueadas por indices unicos
@@ -266,7 +267,8 @@ Avance: 325 controles totales; 15 aprobados; 118 en progreso; 192 pendientes; 0 
 - [ ] 07.03 · Concurrencia de dos usuarios en una partida — PENDIENTE
   - Evidencia: V167: ensayo de dos sesiones SQL por conector no demostró solapamiento (PID distintos, pero B adquirió lock). Concurrencia física NO certificada.
   - Evidencia: AUDITORIA_IDENTIDAD_Y_AISLAMIENTO_V184_2026-10-24.md: Intento de concurrencia no probo solapamiento y no se certifica
-- [ ] 07.04 · Consecutivos de boletas — PENDIENTE
+- [x] 07.04 · Consecutivos de boletas — APROBADO
+  - Evidencia: AUDITORIA_BLOQUE_FUNCIONAL_V192_2026-10-24.md: Ocho boletas ficticias por cuatro sacramentos creadas via RPC en rol authenticated con numeros estrictamente consecutivos y ROLLBACK
 - [ ] 07.05 · Reintento idempotente — EN_PROGRESO
   - Evidencia: AUDITORIA_RECEPCION_NULIDAD_MATRIMONIAL_V106_2026-10-21.md: V106: segunda aceptación por Parroquia devuelve processed sin duplicar nota; falta concurrencia real multi-sesión
   - Evidencia: V167: para cada uno de 4 sacramentos, solicitud duplicada y reintento de ejecución después de éxito denegados; audit 3 y notificación única.

@@ -337,9 +337,11 @@
       "area": "Roles y creación de usuarios",
       "priority": "P0",
       "criterion": "Canciller único activo",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "APROBADO",
+      "evidence": [
+        "AUDITORIA_BLOQUE_FUNCIONAL_V192_2026-10-24.md: Canciller unico activo probado con indice PostgreSQL parcial tres colisiones denegadas y sustitucion por suspension permitida en ROLLBACK"
+      ],
+      "updated_at": "2026-10-24T21:01:33.109Z"
     },
     {
       "id": "04.05",
@@ -808,9 +810,11 @@
       "area": "Integridad y concurrencia",
       "priority": "P0",
       "criterion": "Consecutivos de boletas",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "APROBADO",
+      "evidence": [
+        "AUDITORIA_BLOQUE_FUNCIONAL_V192_2026-10-24.md: Ocho boletas ficticias por cuatro sacramentos creadas via RPC en rol authenticated con numeros estrictamente consecutivos y ROLLBACK"
+      ],
+      "updated_at": "2026-10-24T21:01:33.278Z"
     },
     {
       "id": "07.05",
