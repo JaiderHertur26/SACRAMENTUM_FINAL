@@ -2698,9 +2698,11 @@
       "area": "Impresiones y plantillas",
       "priority": "P0",
       "criterion": "Títulos y tipografías",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "APROBADO",
+      "evidence": [
+        "AUDITORIA_VISUAL_IMPRESION_V195_2026-10-24.md: V195 Chrome real valido 8 capturas de las cuatro plantillas en papel carta y emulacion movil con titulos y tipografias legibles"
+      ],
+      "updated_at": "2026-10-24T21:56:58.111Z"
     },
     {
       "id": "22.06",
@@ -2738,9 +2740,11 @@
       "area": "Impresiones y plantillas",
       "priority": "P0",
       "criterion": "Escapar HTML",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "APROBADO",
+      "evidence": [
+        "AUDITORIA_VISUAL_IMPRESION_V195_2026-10-24.md: V195 ocho pruebas en navegador con HTML hostil en nombre parroquia notas y familia sin nodos ejecutables"
+      ],
+      "updated_at": "2026-10-24T21:56:58.254Z"
     },
     {
       "id": "22.10",

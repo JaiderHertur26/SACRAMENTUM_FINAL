@@ -10,7 +10,7 @@ Regla: no introducir datos falsos permanentes; usar memoria, transacciones ROLLB
 
 Prioridad P0 bloquea la certificación. P1 debe constar resuelta o aceptada con evidencia y responsable.
 
-Avance: 325 controles totales; 24 aprobados; 121 en progreso; 180 pendientes; 0 fallidos; 0 bloqueados.
+Avance: 325 controles totales; 26 aprobados; 121 en progreso; 178 pendientes; 0 fallidos; 0 bloqueados.
 
 ## Fases y controles numerados
 
@@ -719,7 +719,7 @@ Avance: 325 controles totales; 24 aprobados; 121 en progreso; 180 pendientes; 0 
 - [ ] 21.09 · Archivo histórico y corriente — PENDIENTE
 - [ ] 21.10 · Consistencia con reportes — PENDIENTE
 
-### 22. Impresiones y plantillas (P0) — 1/11
+### 22. Impresiones y plantillas (P0) — 3/11
 
 - [ ] 22.01 · Partidas completas — EN_PROGRESO
   - Evidencia: AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96 restringe la escritura de identidad que interviene en partidas; falta revisión documental impresa
@@ -727,11 +727,13 @@ Avance: 325 controles totales; 24 aprobados; 121 en progreso; 180 pendientes; 0 
   - Evidencia: AUDITORIA_DOCUMENTOS_OFICIALES_V102_2026-10-21.md: Documentación oficial V102: emisión/anulación por rol probadas con documentos sintéticos y auditoría; impresión física aún pendiente
 - [ ] 22.03 · Documento histórico marcado — PENDIENTE
 - [ ] 22.04 · No inventar firma — PENDIENTE
-- [ ] 22.05 · Títulos y tipografías — PENDIENTE
+- [x] 22.05 · Títulos y tipografías — APROBADO
+  - Evidencia: AUDITORIA_VISUAL_IMPRESION_V195_2026-10-24.md: V195 Chrome real valido 8 capturas de las cuatro plantillas en papel carta y emulacion movil con titulos y tipografias legibles
 - [ ] 22.06 · Formato carta y A4 — PENDIENTE
 - [ ] 22.07 · Nombres largos — PENDIENTE
 - [ ] 22.08 · Saltos de página — PENDIENTE
-- [ ] 22.09 · Escapar HTML — PENDIENTE
+- [x] 22.09 · Escapar HTML — APROBADO
+  - Evidencia: AUDITORIA_VISUAL_IMPRESION_V195_2026-10-24.md: V195 ocho pruebas en navegador con HTML hostil en nombre parroquia notas y familia sin nodos ejecutables
 - [x] 22.10 · Registro de impresión — APROBADO
   - Evidencia: AUDITORIA_IMPRESION_CANONICA_V194_2026-10-24.md: Impresion registral cuatro sacramentos: 4 constancias cotejadas 20 denegaciones y notas obligatorias auditadas en Supabase con rollback
 - [ ] 22.11 · Concordancia jurídica — EN_PROGRESO
