@@ -621,9 +621,10 @@
         "V177: reproduced real suspended-account create_pending_baptism/confirmation/marriage/funeral bypass through four privileged functions, fully fictitious records and BEGIN/ROLLBACK. All four RPCs required fail-closed account scope.",
         "V178: 6 privileged seating, combined draft and matrimonial recipient RPCs permitted SUSPENDED parish actor past authorization checks, proven in transaction; not proof of completion of real seating. Migration requires explicit ACTIVE/diocese concordance.",
         "V179: simulated SUSPENDED Chancellor passed five definer decree/correction/nullity role guards into business validation. SQL NULL <> role bypass also exposed after first hardening; patched via IS DISTINCT FROM. Fully reversible synthetic SQL test.",
-        "V180: real Postgres reproduction proved a NULL status parish profile could access a 3-contact internal Chat directory although current_app_role() was NULL; no personal values copied, fixture rolled back."
+        "V180: real Postgres reproduction proved a NULL status parish profile could access a 3-contact internal Chat directory although current_app_role() was NULL; no personal values copied, fixture rolled back.",
+        "V181 P0: authenticated actor WITHOUT user_profiles called set_managed_user_active and update_managed_user_profile on another fictional parish profile due NULL NOT IN manager guard. Suspended diocese actor disabled fake parish target. Full rollback."
       ],
-      "updated_at": "2026-10-23T22:35:58.734Z"
+      "updated_at": "2026-10-24T01:01:54.881Z"
     },
     {
       "id": "06.07",
@@ -678,9 +679,10 @@
         "V177: 4 legitimate active parish pending sacrament calls PASS; 24 forbidden combinations (SUSPENDED, NULL_STATUS, NULL_ACTIVE, DISABLED, FOREIGN_DIOCESE, DIOCESE_ROLE) explicitly denied in real reversible PostgreSQL QA.",
         "V178: 42 transactional authorization checks on six SECURITY DEFINER RPCs: six ACTIVE actors reached business validation; 36 forbidden states/roles/dioceses denied; fully synthetic and rolled back.",
         "V179: temporary PostgreSQL patch proved 5 ACTIVE Chancellor RPC calls reached business input validation and 25 forbidden profile combinations rejected; includes explicit null-role fail-close, no full decree issuance claimed.",
-        "V180: temporary patch of ten privileged Chat, matrimonial notification and template RPCs passed 10 ACTIVE cases and 60 denial cases (NULL_STATUS, NULL_ACTIVE, SUSPENDED, DISABLED, PENDING, BLANK_STATUS), all transactional."
+        "V180: temporary patch of ten privileged Chat, matrimonial notification and template RPCs passed 10 ACTIVE cases and 60 denial cases (NULL_STATUS, NULL_ACTIVE, SUSPENDED, DISABLED, PENDING, BLANK_STATUS), all transactional.",
+        "V181: four SQL privileged functions hardened to require explicitly ACTIVE profile, real PostgreSQL 4 legitimate actor flows and 28 negative cases PASSED in BEGIN/ROLLBACK."
       ],
-      "updated_at": "2026-10-23T22:35:58.736Z"
+      "updated_at": "2026-10-24T01:01:54.883Z"
     },
     {
       "id": "06.08",
@@ -2421,9 +2423,10 @@
         "V162: cierre de sesión oculta instantáneamente artículos y formulario; nueva sesión recupera sólo su jurisdicción ficticia.",
         "V163: despliegue controlado desde GitHub PR #4 con CI y Preview aprobados previo a merge en main.",
         "V170: cierre de sesión simulado oculta expedientes, formulario, los cuatro contadores y avisos; la sesión A restaurada recupera solo información ficticia propia.",
-        "V175: no-session navigation of 107 routes redirected correctly in browser. Authenticated role switching and token revocation were not physically re-certified."
+        "V175: no-session navigation of 107 routes redirected correctly in browser. Authenticated role switching and token revocation were not physically re-certified.",
+        "V181: profileless authenticated actor could deactivate and reassign another fictitious parish account; a SUSPENDED diocese actor also bypassed admin guard. Now actor role NULL denied. Real session-revocation E2E remains open."
       ],
-      "updated_at": "2026-10-23T20:25:05.704Z"
+      "updated_at": "2026-10-24T01:01:54.883Z"
     },
     {
       "id": "20.03",
@@ -4104,9 +4107,10 @@
         "V177: 16 additional Node contracts, total 1324/1324 synthetic tests and 28/28 quality checks, including build, CSS and npm audit.",
         "V178: 20 new contract tests, 1344/1344 synthetic tests, 28/28 strict gates and real PostgreSQL 6 permitted/36 denied authorization cases.",
         "V179: 18 new Node identity/scope tests, 1362/1362 synthetic tests and 28/28 strict quality gates (production build and dependencies).",
-        "V180: 31 new contract tests, 1393/1393 synthetic Node and 28/28 strict quality checks; real PostgreSQL 70-case account status authorization matrix passed."
+        "V180: 31 new contract tests, 1393/1393 synthetic Node and 28/28 strict quality checks; real PostgreSQL 70-case account status authorization matrix passed.",
+        "V181: 22 new test contracts, 1415/1415 synthetic tests and 28/28 strict quality gates with production build, CSS and full dependency audits."
       ],
-      "updated_at": "2026-10-23T22:35:58.736Z"
+      "updated_at": "2026-10-24T01:01:54.883Z"
     },
     {
       "id": "32.04",
@@ -4317,9 +4321,10 @@
         "V177: all four pending RPCs preserve their book sequencing and audit internals; 24 denied calls did not change 4 legitimate fictitious rows, and QA residue 0 across users, dioceses and all four pending tables.",
         "V178: isolated SQL function predicate patch with no table, grants or book changes, fail-safe function-signature checks and full ROLLBACK of QA. Full legitimate seating E2E still open.",
         "V179: migration modifies existing five privileged function bodies only, preserving records, constraints, signature and grants; actual SQL temporary patch succeeded in BEGIN/ROLLBACK.",
-        "V180: ten privileged function replacements anchored to exact preexisting predicate and signatures without broad changes to grants or records; Chat directory privacy verified with aggregate counts only."
+        "V180: ten privileged function replacements anchored to exact preexisting predicate and signatures without broad changes to grants or records; Chat directory privacy verified with aggregate counts only.",
+        "V181: baptism and confirmation physical book settings now require is_active TRUE/status ACTIVE and ownership. Anchored SQL migration preserves sequencing and existing audit. Real 4 positives/28 negatives verified."
       ],
-      "updated_at": "2026-10-23T22:35:58.736Z"
+      "updated_at": "2026-10-24T01:01:54.883Z"
     },
     {
       "id": "32.08",
