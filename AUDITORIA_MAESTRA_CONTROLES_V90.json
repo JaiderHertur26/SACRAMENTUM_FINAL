@@ -1378,9 +1378,10 @@
       "status": "EN_PROGRESO",
       "evidence": [
         "AUDITORIA_CONCEPTOS_DEC_REGLAS_V98_2026-10-21.md: Conceptos de corrección/archivo protegidos por ámbito y fuente; compatibilidad jurídica total pendiente",
-        "AUDITORIA_NULIDAD_VINCULOS_BAUTISMO_V105_2026-10-21.md: V105: nulidad matrimonial con cotejo de identidad y coordenadas de Bautismos, sólo evidencias ficticias; tribunal real pendiente"
+        "AUDITORIA_NULIDAD_VINCULOS_BAUTISMO_V105_2026-10-21.md: V105: nulidad matrimonial con cotejo de identidad y coordenadas de Bautismos, sólo evidencias ficticias; tribunal real pendiente",
+        "AUDITORIA_RESTRICCIONES_DECRETOS_V189_2026-10-24.md: Migracion V189 valida dos CHECK preexistentes de decretos, DB read-only QA y ensayo ficticio rollback deniegan valores ilegales; pendientes concepto juridico integral y nulabilidad"
       ],
-      "updated_at": "2026-10-22T00:34:33.180Z"
+      "updated_at": "2026-10-24T20:17:06.229Z"
     },
     {
       "id": "12.04",

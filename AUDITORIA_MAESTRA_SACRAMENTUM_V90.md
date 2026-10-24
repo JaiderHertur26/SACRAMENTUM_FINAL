@@ -370,6 +370,7 @@ Avance: 325 controles totales; 15 aprobados; 118 en progreso; 192 pendientes; 0 
 - [ ] 12.03 · Concepto jurídico compatible — EN_PROGRESO
   - Evidencia: AUDITORIA_CONCEPTOS_DEC_REGLAS_V98_2026-10-21.md: Conceptos de corrección/archivo protegidos por ámbito y fuente; compatibilidad jurídica total pendiente
   - Evidencia: AUDITORIA_NULIDAD_VINCULOS_BAUTISMO_V105_2026-10-21.md: V105: nulidad matrimonial con cotejo de identidad y coordenadas de Bautismos, sólo evidencias ficticias; tribunal real pendiente
+  - Evidencia: AUDITORIA_RESTRICCIONES_DECRETOS_V189_2026-10-24.md: Migracion V189 valida dos CHECK preexistentes de decretos, DB read-only QA y ensayo ficticio rollback deniegan valores ilegales; pendientes concepto juridico integral y nulabilidad
 - [ ] 12.04 · Corrección afecta original — EN_PROGRESO
   - Evidencia: V115: ocho flujos nuevos de corrección/reposición por cuatro sacramentos, par original/supletoria y estado registral comprobado en SQL.
 - [ ] 12.05 · Reposición crea supletoria — EN_PROGRESO
