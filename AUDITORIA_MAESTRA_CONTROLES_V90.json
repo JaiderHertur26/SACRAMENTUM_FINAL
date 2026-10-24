@@ -516,9 +516,10 @@
         "V132: nulidad matrimonial requiere revisión diocesana con SHA-256 coincidente tanto en React como en la función privilegiada.",
         "V164: RLS SELECT bajo SET LOCAL ROLE authenticated: miembro legítimo puede leer su sala; actor sin perfil no puede leer sala ni mensajes. SQL read-only con ROLLBACK.",
         "V165: usuario activo con perfil pero sin membresía ve 0 chat_messages y 0 chat_rooms por RLS, aunque pertenece a la misma diócesis.",
-        "V166: sala scope enforced in versioned SECURITY DEFINER; actual active nonmember denied despite authenticated role."
+        "V166: sala scope enforced in versioned SECURITY DEFINER; actual active nonmember denied despite authenticated role.",
+        "AUDITORIA_IDENTIDAD_Y_AISLAMIENTO_V184_2026-10-24.md: Repetidas dos matrices RLS entre diocesis en SQL ROLLBACK, pendiente E2E autenticado real"
       ],
-      "updated_at": "2026-10-23T14:50:23.557Z"
+      "updated_at": "2026-10-24T16:41:15.945Z"
     },
     {
       "id": "06.03",
@@ -756,9 +757,11 @@
       "area": "RLS y privilegios del backend",
       "priority": "P0",
       "criterion": "No metadatos de usuario editables para autorizar",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "APROBADO",
+      "evidence": [
+        "AUDITORIA_IDENTIDAD_Y_AISLAMIENTO_V184_2026-10-24.md: Inventario PostgreSQL 248 funciones y 130 politicas sin user_metadata editable; 275 fuentes frontend, QA read-only y gate reproducibles"
+      ],
+      "updated_at": "2026-10-24T16:41:15.844Z"
     },
     {
       "id": "07.01",
@@ -788,9 +791,10 @@
       "criterion": "Concurrencia de dos usuarios en una partida",
       "status": "PENDIENTE",
       "evidence": [
-        "V167: ensayo de dos sesiones SQL por conector no demostró solapamiento (PID distintos, pero B adquirió lock). Concurrencia física NO certificada."
+        "V167: ensayo de dos sesiones SQL por conector no demostró solapamiento (PID distintos, pero B adquirió lock). Concurrencia física NO certificada.",
+        "AUDITORIA_IDENTIDAD_Y_AISLAMIENTO_V184_2026-10-24.md: Intento de concurrencia no probo solapamiento y no se certifica"
       ],
-      "updated_at": "2026-10-23T15:10:28.903Z"
+      "updated_at": "2026-10-24T16:41:16.062Z"
     },
     {
       "id": "07.04",
