@@ -10,7 +10,7 @@ Regla: no introducir datos falsos permanentes; usar memoria, transacciones ROLLB
 
 Prioridad P0 bloquea la certificación. P1 debe constar resuelta o aceptada con evidencia y responsable.
 
-Avance: 325 controles totales; 17 aprobados; 118 en progreso; 190 pendientes; 0 fallidos; 0 bloqueados.
+Avance: 325 controles totales; 22 aprobados; 118 en progreso; 185 pendientes; 0 fallidos; 0 bloqueados.
 
 ## Fases y controles numerados
 
@@ -282,12 +282,13 @@ Avance: 325 controles totales; 17 aprobados; 118 en progreso; 190 pendientes; 0 
   - Evidencia: V168: nueva RPC bloquea filas de expedientes, decreto y notas con FOR UPDATE; falta disputa de dos conexiones reales y medir deadlocks.
 - [ ] 07.09 · Restauración tras timeout — PENDIENTE
 
-### 08. Bautismo (P0) — 0/11
+### 08. Bautismo (P0) — 1/11
 
 - [ ] 08.01 · Nueva boleta — EN_PROGRESO
   - Evidencia: AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: Boleta Bautismo permite inserción como Parroquia y deniega otros tres roles en API; falta UI y ciclo completo
 - [ ] 08.02 · Celebración — PENDIENTE
-- [ ] 08.03 · Asiento en libro — PENDIENTE
+- [x] 08.03 · Asiento en libro — APROBADO
+  - Evidencia: AUDITORIA_CIRCUITOS_REGISTRALES_V193_2026-10-24.md: V193 circuito de Bautismo boleta a asiento con libro folio numero cierre y traza SQL ROLLBACK
 - [ ] 08.04 · Libro Folio Número — EN_PROGRESO
   - Evidencia: AUDITORIA_PARAMETROS_Y_LIBROS_V94_2026-10-21.md: Libros y parámetros de Bautismo no modificables por Administrador General vía RLS
 - [ ] 08.05 · Impresión — PENDIENTE
@@ -302,13 +303,14 @@ Avance: 325 controles totales; 17 aprobados; 118 en progreso; 190 pendientes; 0 
 - [ ] 08.11 · Notas múltiples — EN_PROGRESO
   - Evidencia: V168: dos notas independientes sobre reposición de Bautismo con autorizaciones episcopales individuales se concilian con una reversión; SQL BEGIN/ROLLBACK.
 
-### 09. Confirmación (P0) — 0/11
+### 09. Confirmación (P0) — 1/11
 
 - [ ] 09.01 · Nueva boleta — EN_PROGRESO
   - Evidencia: AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: Boleta Confirmación permite inserción como Parroquia y deniega otros tres roles en API; falta UI y ciclo completo
 - [ ] 09.02 · Fecha y hora — PENDIENTE
 - [ ] 09.03 · Celebración — PENDIENTE
-- [ ] 09.04 · Asiento en libro — PENDIENTE
+- [x] 09.04 · Asiento en libro — APROBADO
+  - Evidencia: AUDITORIA_CIRCUITOS_REGISTRALES_V193_2026-10-24.md: V193 Confirmacion asiento real RPC status seated y boleta archivada con auditoria y reintento bloqueado
 - [ ] 09.05 · Impresión — PENDIENTE
 - [ ] 09.06 · Referencia a Bautismo — PENDIENTE
 - [ ] 09.07 · Importación reportada — PENDIENTE
@@ -320,14 +322,15 @@ Avance: 325 controles totales; 17 aprobados; 118 en progreso; 190 pendientes; 0 
 - [ ] 09.11 · Notas múltiples — EN_PROGRESO
   - Evidencia: V168: dos notas independientes sobre reposición de Confirmación con autorizaciones episcopales individuales se concilian con una reversión; SQL BEGIN/ROLLBACK.
 
-### 10. Matrimonio (P0) — 0/11
+### 10. Matrimonio (P0) — 1/11
 
 - [ ] 10.01 · Datos de ambos contrayentes — PENDIENTE
 - [ ] 10.02 · Expediente matrimonial — PENDIENTE
 - [ ] 10.03 · Notificaciones — EN_PROGRESO
   - Evidencia: AUDITORIA_RECEPCION_NULIDAD_MATRIMONIAL_V106_2026-10-21.md: V106: nulidad sin decreto no llega a nota marginal; sentencia y Bautismo se cotejan al recibir
 - [ ] 10.04 · Celebración — PENDIENTE
-- [ ] 10.05 · Asiento y libro — PENDIENTE
+- [x] 10.05 · Asiento y libro — APROBADO
+  - Evidencia: AUDITORIA_CIRCUITOS_REGISTRALES_V193_2026-10-24.md: V193 Matrimonio boleta asiento libro ordinario y proteccion de doble asiento en PostgreSQL
 - [ ] 10.06 · Impresión — PENDIENTE
 - [ ] 10.07 · Importación MATRIMON — PENDIENTE
 - [ ] 10.08 · Notas NTMAT — PENDIENTE
@@ -345,12 +348,14 @@ Avance: 325 controles totales; 17 aprobados; 118 en progreso; 190 pendientes; 0 
   - Evidencia: V111/V112: se separó revisión documental y aclaraciones de una decisión jurídica con efectos registrales. Evidencia de migraciones locales y test de contratos, sin recorrido E2E completo.
   - Evidencia: V114: ensayo transaccional nulidad ficticia con dos funcionarios y respuesta sin efectos; UI visual autenticada y aval canónico externo pendientes.
 
-### 11. Exequias (P0) — 0/10
+### 11. Exequias (P0) — 2/10
 
-- [ ] 11.01 · Inscripción — PENDIENTE
+- [x] 11.01 · Inscripción — APROBADO
+  - Evidencia: AUDITORIA_CIRCUITOS_REGISTRALES_V193_2026-10-24.md: V193 Exequias inscripcion desde borrador hasta partida y cierre con auditoria
 - [ ] 11.02 · Nacimiento antes de defunción — PENDIENTE
 - [ ] 11.03 · Exequias después de defunción — PENDIENTE
-- [ ] 11.04 · Libro ordinario — PENDIENTE
+- [x] 11.04 · Libro ordinario — APROBADO
+  - Evidencia: AUDITORIA_CIRCUITOS_REGISTRALES_V193_2026-10-24.md: V193 asiento Exequias confirmo libro ordinario con libro folio numero e id unico
 - [ ] 11.05 · Libro supletorio — EN_PROGRESO
   - Evidencia: V115: reposición de Exequias al libro supletorio, partida creada y reversión en SQL reversible. Falta impresión real.
 - [ ] 11.06 · Busca Bautismo — PENDIENTE
