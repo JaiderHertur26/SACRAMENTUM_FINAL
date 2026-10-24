@@ -40,3 +40,6 @@ AUDITORIA_EVIDENCIA_VISUAL_V131/
 Thumbs.db
 
 tmp_*.sql
+
+# V186: capturas anonimas visuales regenerables
+AUDITORIA_EVIDENCIA_IDENTIDAD_V186/

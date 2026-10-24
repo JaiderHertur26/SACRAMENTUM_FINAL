@@ -1,0 +1,61 @@
+{
+  "protocol": "V186 visual actual sin inicio de sesión",
+  "rows": [
+    {
+      "size": "desktop",
+      "width": 1440,
+      "height": 900,
+      "title": "Acceso Seguro · SACRAMENTUM",
+      "innerWidth": 1440,
+      "scrollWidth": 1440,
+      "formVisible": true,
+      "heading": "Arquidiócesis\nde Barranquilla",
+      "oldHeading": false,
+      "crestLoaded": true,
+      "crestSrc": "/barranquilla-archdiocese-crest.svg",
+      "asideBackground": "linear-gradient(to right bottom in oklab, rgb(255, 253, 249) 0%, rgb(248, 251, 255) 50%, rgb(234, 242, 250) 100%)",
+      "mainVisible": true,
+      "pass": true,
+      "sha256": "5111dc2f8be39e35de4a7bb3ae52e53b02ad98f6fa9288dd0d153aebdc5817a1",
+      "screenshot": "v186-desktop.png"
+    },
+    {
+      "size": "tablet",
+      "width": 768,
+      "height": 1024,
+      "title": "Acceso Seguro · SACRAMENTUM",
+      "innerWidth": 768,
+      "scrollWidth": 768,
+      "formVisible": true,
+      "heading": "Arquidiócesis\nde Barranquilla",
+      "oldHeading": false,
+      "crestLoaded": true,
+      "crestSrc": "/barranquilla-archdiocese-crest.svg",
+      "asideBackground": "linear-gradient(to right bottom in oklab, rgb(255, 253, 249) 0%, rgb(248, 251, 255) 50%, rgb(234, 242, 250) 100%)",
+      "mainVisible": true,
+      "pass": true,
+      "sha256": "9699c08b7bafa6bf57fb92061a0daf9bfca4aceffcc6082ac5725a727e741157",
+      "screenshot": "v186-tablet.png"
+    },
+    {
+      "size": "mobile",
+      "width": 390,
+      "height": 844,
+      "title": "Acceso Seguro · SACRAMENTUM",
+      "innerWidth": 390,
+      "scrollWidth": 390,
+      "formVisible": true,
+      "heading": "Arquidiócesis\nde Barranquilla",
+      "oldHeading": false,
+      "crestLoaded": true,
+      "crestSrc": "/barranquilla-archdiocese-crest.svg",
+      "asideBackground": "linear-gradient(to right bottom in oklab, rgb(255, 253, 249) 0%, rgb(248, 251, 255) 50%, rgb(234, 242, 250) 100%)",
+      "mainVisible": true,
+      "pass": true,
+      "sha256": "62103dc1bb3229c7de8c0e86d6230ef9348e99339cc4071877f0679c0dfa8e64",
+      "screenshot": "v186-mobile.png"
+    }
+  ],
+  "jsExceptions": 0,
+  "approved": true
+}
