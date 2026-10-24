@@ -10,7 +10,7 @@ Regla: no introducir datos falsos permanentes; usar memoria, transacciones ROLLB
 
 Prioridad P0 bloquea la certificación. P1 debe constar resuelta o aceptada con evidencia y responsable.
 
-Avance: 325 controles totales; 10 aprobados; 117 en progreso; 198 pendientes; 0 fallidos; 0 bloqueados.
+Avance: 325 controles totales; 11 aprobados; 118 en progreso; 196 pendientes; 0 fallidos; 0 bloqueados.
 
 ## Fases y controles numerados
 
@@ -65,7 +65,8 @@ Avance: 325 controles totales; 10 aprobados; 117 en progreso; 198 pendientes; 0 
   - Evidencia: V175: Chrome with a completely fresh anonymous profile tested 107 actual React routes on production Vercel and local Vite. 58 protected and 49 aliases all redirected to login without browser exceptions. Does NOT cover authenticated UI.
 - [ ] 03.08 · Restauración tras refresh — PENDIENTE
 - [ ] 03.09 · Recuperación de contraseña — PENDIENTE
-- [ ] 03.10 · No claves privilegiadas en frontend — PENDIENTE
+- [ ] 03.10 · No claves privilegiadas en frontend — EN_PROGRESO
+  - Evidencia: AUDITORIA_SEGURIDAD_COMPILACION_V183_2026-10-24.md: Frontera de secretos locales y publicacion comprobada; falta revision exhaustiva de configuraciones externas
 
 ### 04. Roles y creación de usuarios (P0) — 0/10
 
@@ -804,7 +805,7 @@ Avance: 325 controles totales; 10 aprobados; 117 en progreso; 198 pendientes; 0 
 - [ ] 26.09 · Rate limiting — PENDIENTE
 - [ ] 26.10 · Errores bajo carga — PENDIENTE
 
-### 27. Ciberseguridad adversarial (P0) — 0/12
+### 27. Ciberseguridad adversarial (P0) — 1/12
 
 - [ ] 27.01 · Escalamiento vertical — EN_PROGRESO
   - Evidencia: AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md: Usuario Parroquia ya no puede consumir consecutivo de ámbito diocesano sin documento
@@ -926,7 +927,8 @@ Avance: 325 controles totales; 10 aprobados; 117 en progreso; 198 pendientes; 0 
   - Evidencia: V149: la impresión client-side se bloquea antes del RPC si no existe versión de partida recuperada.
 - [ ] 27.06 · XSS — PENDIENTE
 - [ ] 27.07 · Fuga JWT — PENDIENTE
-- [ ] 27.08 · Secretos en build — PENDIENTE
+- [x] 27.08 · Secretos en build — APROBADO
+  - Evidencia: AUDITORIA_SEGURIDAD_COMPILACION_V183_2026-10-24.md: Compilacion y 170 recursos publicos comprobados con pruebas adversariales y sin secretos detectables en este alcance
 - [ ] 27.09 · CORS — PENDIENTE
 - [ ] 27.10 · CSRF — PENDIENTE
 - [ ] 27.11 · Privilegios de storage — PENDIENTE
