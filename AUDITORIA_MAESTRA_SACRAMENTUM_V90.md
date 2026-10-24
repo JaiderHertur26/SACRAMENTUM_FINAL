@@ -10,7 +10,7 @@ Regla: no introducir datos falsos permanentes; usar memoria, transacciones ROLLB
 
 Prioridad P0 bloquea la certificación. P1 debe constar resuelta o aceptada con evidencia y responsable.
 
-Avance: 325 controles totales; 11 aprobados; 118 en progreso; 196 pendientes; 0 fallidos; 0 bloqueados.
+Avance: 325 controles totales; 12 aprobados; 118 en progreso; 195 pendientes; 0 fallidos; 0 bloqueados.
 
 ## Fases y controles numerados
 
@@ -95,7 +95,7 @@ Avance: 325 controles totales; 11 aprobados; 118 en progreso; 196 pendientes; 0 
 - [ ] 05.08 · Catálogos eclesiales — EN_PROGRESO
   - Evidencia: AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: Catálogos parroquiales: cinco tablas revisadas con pruebas positivas y negativas; falta examinar usos y consistencia completa
 
-### 06. RLS y privilegios del backend (P0) — 2/12
+### 06. RLS y privilegios del backend (P0) — 3/12
 
 - [x] 06.01 · RLS de tablas públicas — APROBADO
   - Evidencia: AUDITORIA_BASE_SQL_V90.md: Consulta SQL al catálogo: las 73 tablas públicas tienen RLS y cero carecen de RLS
@@ -110,6 +110,7 @@ Avance: 325 controles totales; 11 aprobados; 118 en progreso; 196 pendientes; 0 
   - Evidencia: V164: RLS SELECT bajo SET LOCAL ROLE authenticated: miembro legítimo puede leer su sala; actor sin perfil no puede leer sala ni mensajes. SQL read-only con ROLLBACK.
   - Evidencia: V165: usuario activo con perfil pero sin membresía ve 0 chat_messages y 0 chat_rooms por RLS, aunque pertenece a la misma diócesis.
   - Evidencia: V166: sala scope enforced in versioned SECURITY DEFINER; actual active nonmember denied despite authenticated role.
+  - Evidencia: AUDITORIA_IDENTIDAD_Y_AISLAMIENTO_V184_2026-10-24.md: Repetidas dos matrices RLS entre diocesis en SQL ROLLBACK, pendiente E2E autenticado real
 - [ ] 06.03 · RLS INSERT por actor — EN_PROGRESO
   - Evidencia: AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: Inserciones RLS en dos tablas de boletas: 8/8 casos por cuatro roles, Parroquia únicamente permitida
   - Evidencia: AUDITORIA_PARAMETROS_Y_LIBROS_V94_2026-10-21.md: Parámetros/libros INSERT limitado a parroquia: dos rechazos explícitos para admin general
@@ -251,7 +252,8 @@ Avance: 325 controles totales; 11 aprobados; 118 en progreso; 196 pendientes; 0 
 - [x] 06.10 · No privilegios anónimos — APROBADO
   - Evidencia: AUDITORIA_BASE_SQL_V90.md: Catálogo de grants: cero RPC SECURITY DEFINER ejecutables por rol anon
 - [ ] 06.11 · Identidad JWT validada en servidor — PENDIENTE
-- [ ] 06.12 · No metadatos de usuario editables para autorizar — PENDIENTE
+- [x] 06.12 · No metadatos de usuario editables para autorizar — APROBADO
+  - Evidencia: AUDITORIA_IDENTIDAD_Y_AISLAMIENTO_V184_2026-10-24.md: Inventario PostgreSQL 248 funciones y 130 politicas sin user_metadata editable; 275 fuentes frontend, QA read-only y gate reproducibles
 
 ### 07. Integridad y concurrencia (P0) — 0/9
 
@@ -259,6 +261,7 @@ Avance: 325 controles totales; 11 aprobados; 118 en progreso; 196 pendientes; 0 
 - [ ] 07.02 · Colisión de número de decreto — PENDIENTE
 - [ ] 07.03 · Concurrencia de dos usuarios en una partida — PENDIENTE
   - Evidencia: V167: ensayo de dos sesiones SQL por conector no demostró solapamiento (PID distintos, pero B adquirió lock). Concurrencia física NO certificada.
+  - Evidencia: AUDITORIA_IDENTIDAD_Y_AISLAMIENTO_V184_2026-10-24.md: Intento de concurrencia no probo solapamiento y no se certifica
 - [ ] 07.04 · Consecutivos de boletas — PENDIENTE
 - [ ] 07.05 · Reintento idempotente — EN_PROGRESO
   - Evidencia: AUDITORIA_RECEPCION_NULIDAD_MATRIMONIAL_V106_2026-10-21.md: V106: segunda aceptación por Parroquia devuelve processed sin duplicar nota; falta concurrencia real multi-sesión
