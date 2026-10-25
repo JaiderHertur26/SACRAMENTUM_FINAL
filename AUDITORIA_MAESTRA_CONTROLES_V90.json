@@ -507,7 +507,7 @@
       "area": "RLS y privilegios del backend",
       "priority": "P0",
       "criterion": "RLS SELECT por actor",
-      "status": "EN_PROGRESO",
+      "status": "APROBADO",
       "evidence": [
         "AUDITORIA_RLS_PARROQUIAL_V90.md: Ensayo con rol Parroquia autenticado: cero filas de otras parroquias en 10 entidades; falta matriz completa y operaciones de escritura",
         "AUDITORIA_EXP_DEPENDENCIAS_Y_RLS_V91.md: Cuatro roles no pudieron leer Bautismo de segunda diócesis ficticia; falta matriz completa",
@@ -519,9 +519,10 @@
         "V164: RLS SELECT bajo SET LOCAL ROLE authenticated: miembro legítimo puede leer su sala; actor sin perfil no puede leer sala ni mensajes. SQL read-only con ROLLBACK.",
         "V165: usuario activo con perfil pero sin membresía ve 0 chat_messages y 0 chat_rooms por RLS, aunque pertenece a la misma diócesis.",
         "V166: sala scope enforced in versioned SECURITY DEFINER; actual active nonmember denied despite authenticated role.",
-        "AUDITORIA_IDENTIDAD_Y_AISLAMIENTO_V184_2026-10-24.md: Repetidas dos matrices RLS entre diocesis en SQL ROLLBACK, pendiente E2E autenticado real"
+        "AUDITORIA_IDENTIDAD_Y_AISLAMIENTO_V184_2026-10-24.md: Repetidas dos matrices RLS entre diocesis en SQL ROLLBACK, pendiente E2E autenticado real",
+        "AUDITORIA_AISLAMIENTO_ROLES_V197_2026-10-24.md: RLS_SELECT_cuatro_roles_11_tablas_con_44_alcances_y_44_denegaciones_suspendidos_en_SQL_con_rollback"
       ],
-      "updated_at": "2026-10-24T16:41:15.945Z"
+      "updated_at": "2026-10-25T00:00:06.730Z"
     },
     {
       "id": "06.03",
