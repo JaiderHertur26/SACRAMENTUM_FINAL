@@ -534,9 +534,10 @@
       "evidence": [
         "AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: Inserciones RLS en dos tablas de boletas: 8/8 casos por cuatro roles, Parroquia únicamente permitida",
         "AUDITORIA_PARAMETROS_Y_LIBROS_V94_2026-10-21.md: Parámetros/libros INSERT limitado a parroquia: dos rechazos explícitos para admin general",
-        "AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: V95 insert: 20 llamadas 4 roles x 5 catálogos; solo Parroquia propia permitida; cinco cruces ajenos denegados"
+        "AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: V95 insert: 20 llamadas 4 roles x 5 catálogos; solo Parroquia propia permitida; cinco cruces ajenos denegados",
+        "AUDITORIA_INTERDIOCESANA_CIERRE_ASIENTOS_V198_2026-10-24.md: V198 insertos ilegales de boletas y nueva parroquia bloqueados"
       ],
-      "updated_at": "2026-10-21T19:48:14.611Z"
+      "updated_at": "2026-10-25T00:22:15.225Z"
     },
     {
       "id": "06.04",
@@ -548,9 +549,10 @@
       "evidence": [
         "AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: Actualizaciones RLS en dos tablas de boletas: 8/8 casos, sólo parroquia titular",
         "AUDITORIA_PARAMETROS_Y_LIBROS_V94_2026-10-21.md: UPDATE de parámetros y libro: 8/8 pruebas por cuatro roles; parroquia propia conserva acceso",
-        "AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: V95 update: 20 escenarios en 5 catálogos; 15 políticas de escritura corregidas"
+        "AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: V95 update: 20 escenarios en 5 catálogos; 15 políticas de escritura corregidas",
+        "AUDITORIA_INTERDIOCESANA_CIERRE_ASIENTOS_V198_2026-10-24.md: V198 evita edicion clienta directa de boleta sentada y traslado entre diocesis"
       ],
-      "updated_at": "2026-10-21T19:48:15.574Z"
+      "updated_at": "2026-10-25T00:22:15.480Z"
     },
     {
       "id": "06.05",
@@ -568,9 +570,10 @@
         "V155: reproducido en MATRIMONIO y EXEQUIAS un fallo de reversión con nota posterior manual activa sobre supletoria (2 casos). Reparado en backend con migración 20261023023443.",
         "V156: circuito de conciliación de nota manual independiente, autorizado por dos roles y ejecutado atómicamente con reversión, auditoría y aviso parroquial.",
         "V157: se cerró estado rejected previamente declarado sin RPC, habilitando rechazo pendiente y revocación autorizada no ejecutada mediante Diócesis.",
-        "V161: un expediente de conciliación pending con 315 rejected posteriores se ocultaba por LIMIT 300. Defecto real reproducido y corregido con listado v161."
+        "V161: un expediente de conciliación pending con 315 rejected posteriores se ocultaba por LIMIT 300. Defecto real reproducido y corregido con listado v161.",
+        "AUDITORIA_INTERDIOCESANA_CIERRE_ASIENTOS_V198_2026-10-24.md: V198 delete foraneo denegado sobre parroquias y boletas"
       ],
-      "updated_at": "2026-10-23T05:31:15.797Z"
+      "updated_at": "2026-10-25T00:22:15.638Z"
     },
     {
       "id": "06.06",
@@ -839,9 +842,10 @@
       "status": "EN_PROGRESO",
       "evidence": [
         "V167: 4 rutas completas de reversión y conciliación conservan atomicidad: decreto y nota reversed, case executed, audit 3 y notificación 1. BEGIN/ROLLBACK.",
-        "V168: transacción única revierte 2 notas y 1 decreto y cierra 2 expedientes, o falla sin cambios; seis auditorías de expedientes y una notificación consolidada por caso."
+        "V168: transacción única revierte 2 notas y 1 decreto y cierra 2 expedientes, o falla sin cambios; seis auditorías de expedientes y una notificación consolidada por caso.",
+        "AUDITORIA_INTERDIOCESANA_CIERRE_ASIENTOS_V198_2026-10-24.md: V198 problema real de boleta asentada sin partida corregido con 20 prohibiciones y dos asientos oficiales efectivos con rollback"
       ],
-      "updated_at": "2026-10-23T16:09:46.262Z"
+      "updated_at": "2026-10-25T00:22:15.765Z"
     },
     {
       "id": "07.07",
@@ -3343,9 +3347,10 @@
         "V165: tercera identidad institucional con perfil activo no miembro no puede leer, enviar, marcar ni retirar en sala de otra cuenta.",
         "V166: RLS/SECURITY DEFINER prevents cross-room historical data from active but unrelated authenticated roles.",
         "V167: rutas de aprobación, rechazo y ejecución verifican rol/scope institucional. Repetir operación terminal falla de modo seguro.",
-        "V168: rol Cancillería ejecuta, Diócesis sólo autoriza y no ejecuta; no se concedieron privilegios directos a anon ni tablas privadas."
+        "V168: rol Cancillería ejecuta, Diócesis sólo autoriza y no ejecuta; no se concedieron privilegios directos a anon ni tablas privadas.",
+        "AUDITORIA_INTERDIOCESANA_CIERRE_ASIENTOS_V198_2026-10-24.md: V198 dos diocesis temporales dentro de transaccion 26 verificaciones de lectura y 12 rechazos de DML falta JWT real"
       ],
-      "updated_at": "2026-10-23T16:09:46.263Z"
+      "updated_at": "2026-10-25T00:22:15.843Z"
     },
     {
       "id": "27.04",
@@ -3392,9 +3397,10 @@
         "V159: los 8 intentos de ejecución previa sin autorización fueron rechazados; la ejecución posterior funcionó.",
         "V160: clicks reales sobre componente React: Diócesis autoriza/rechaza/revoca, Cancillería ejecuta. 4/4 sin errores JS y usando servicios falsos.",
         "V161: negativos SQL para filtro phantom, límites >100, cursor incompleto, diocese ajena y actor sin perfil.",
-        "V162: no hubo cambios en contratos SQL; el aislamiento de datos por rol sigue protegido en RPC V161 y RLS."
+        "V162: no hubo cambios en contratos SQL; el aislamiento de datos por rol sigue protegido en RPC V161 y RLS.",
+        "AUDITORIA_INTERDIOCESANA_CIERRE_ASIENTOS_V198_2026-10-24.md: V198 cerrada via triggers via directa de falsas boletas sentadas faltan otras RPC privilegiadas"
       ],
-      "updated_at": "2026-10-23T13:05:20.938Z"
+      "updated_at": "2026-10-25T00:22:15.955Z"
     },
     {
       "id": "27.05",
