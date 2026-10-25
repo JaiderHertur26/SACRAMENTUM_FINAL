@@ -1195,9 +1195,10 @@
       "criterion": "Asiento y libro",
       "status": "APROBADO",
       "evidence": [
-        "AUDITORIA_CIRCUITOS_REGISTRALES_V193_2026-10-24.md: V193 Matrimonio boleta asiento libro ordinario y proteccion de doble asiento en PostgreSQL"
+        "AUDITORIA_CIRCUITOS_REGISTRALES_V193_2026-10-24.md: V193 Matrimonio boleta asiento libro ordinario y proteccion de doble asiento en PostgreSQL",
+        "AUDITORIA_RECUPERACION_MATRIMONIO_V205_2026-10-25.md: V205_pagina_React_real_Matrimonio_8_escenarios_con_servicios_simulados_recuperacion_de_lote_respuesta_perdida_lectura_fallida_y_doble_click_CI_103_archivos_de_prueba_sin_E2E_Auth_ni_concurrencia_PG"
       ],
-      "updated_at": "2026-10-24T21:11:19.320Z"
+      "updated_at": "2026-10-25T22:58:33.073Z"
     },
     {
       "id": "10.06",
@@ -1946,11 +1947,12 @@
       "area": "Boletas y pendientes",
       "priority": "P0",
       "criterion": "Doble clic sin duplicado",
-      "status": "PENDIENTE",
+      "status": "EN_PROGRESO",
       "evidence": [
-        "V167: reintentos duplicados de API rechazados por índice/estado. Prueba de doble clic del navegador todavía pendiente."
+        "V167: reintentos duplicados de API rechazados por índice/estado. Prueba de doble clic del navegador todavía pendiente.",
+        "AUDITORIA_RECUPERACION_MATRIMONIO_V205_2026-10-25.md: V205_pagina_React_real_Matrimonio_8_escenarios_con_servicios_simulados_recuperacion_de_lote_respuesta_perdida_lectura_fallida_y_doble_click_CI_103_archivos_de_prueba_sin_E2E_Auth_ni_concurrencia_PG"
       ],
-      "updated_at": "2026-10-23T15:10:28.903Z"
+      "updated_at": "2026-10-25T22:58:33.075Z"
     },
     {
       "id": "15.09",
@@ -3018,9 +3020,11 @@
       "area": "Diseño y accesibilidad",
       "priority": "P1",
       "criterion": "Mensajes de error",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "AUDITORIA_RECUPERACION_MATRIMONIO_V205_2026-10-25.md: V205_pagina_React_real_Matrimonio_8_escenarios_con_servicios_simulados_recuperacion_de_lote_respuesta_perdida_lectura_fallida_y_doble_click_CI_103_archivos_de_prueba_sin_E2E_Auth_ni_concurrencia_PG"
+      ],
+      "updated_at": "2026-10-25T22:58:33.075Z"
     },
     {
       "id": "24.12",
@@ -3074,9 +3078,11 @@
       "area": "Resiliencia",
       "priority": "P0",
       "criterion": "Sin conexión durante RPC",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "AUDITORIA_RECUPERACION_MATRIMONIO_V205_2026-10-25.md: V205_pagina_React_real_Matrimonio_8_escenarios_con_servicios_simulados_recuperacion_de_lote_respuesta_perdida_lectura_fallida_y_doble_click_CI_103_archivos_de_prueba_sin_E2E_Auth_ni_concurrencia_PG"
+      ],
+      "updated_at": "2026-10-25T22:58:33.075Z"
     },
     {
       "id": "25.03",
@@ -3084,9 +3090,11 @@
       "area": "Resiliencia",
       "priority": "P0",
       "criterion": "Sin conexión después de respuesta",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "AUDITORIA_RECUPERACION_MATRIMONIO_V205_2026-10-25.md: V205_pagina_React_real_Matrimonio_8_escenarios_con_servicios_simulados_recuperacion_de_lote_respuesta_perdida_lectura_fallida_y_doble_click_CI_103_archivos_de_prueba_sin_E2E_Auth_ni_concurrencia_PG"
+      ],
+      "updated_at": "2026-10-25T22:58:33.075Z"
     },
     {
       "id": "25.04",
@@ -3124,9 +3132,11 @@
       "area": "Resiliencia",
       "priority": "P0",
       "criterion": "Timeout",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "AUDITORIA_RECUPERACION_MATRIMONIO_V205_2026-10-25.md: V205_pagina_React_real_Matrimonio_8_escenarios_con_servicios_simulados_recuperacion_de_lote_respuesta_perdida_lectura_fallida_y_doble_click_CI_103_archivos_de_prueba_sin_E2E_Auth_ni_concurrencia_PG"
+      ],
+      "updated_at": "2026-10-25T22:58:33.075Z"
     },
     {
       "id": "25.08",
@@ -3134,9 +3144,11 @@
       "area": "Resiliencia",
       "priority": "P0",
       "criterion": "Retry seguro",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "AUDITORIA_RECUPERACION_MATRIMONIO_V205_2026-10-25.md: V205_pagina_React_real_Matrimonio_8_escenarios_con_servicios_simulados_recuperacion_de_lote_respuesta_perdida_lectura_fallida_y_doble_click_CI_103_archivos_de_prueba_sin_E2E_Auth_ni_concurrencia_PG"
+      ],
+      "updated_at": "2026-10-25T22:58:33.075Z"
     },
     {
       "id": "25.09",
@@ -3164,9 +3176,11 @@
       "area": "Resiliencia",
       "priority": "P0",
       "criterion": "Error de lectura sin pérdida",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "AUDITORIA_RECUPERACION_MATRIMONIO_V205_2026-10-25.md: V205_pagina_React_real_Matrimonio_8_escenarios_con_servicios_simulados_recuperacion_de_lote_respuesta_perdida_lectura_fallida_y_doble_click_CI_103_archivos_de_prueba_sin_E2E_Auth_ni_concurrencia_PG"
+      ],
+      "updated_at": "2026-10-25T22:58:33.075Z"
     },
     {
       "id": "26.01",
@@ -3792,9 +3806,10 @@
       "evidence": [
         ".github/workflows/sacramentum-auditoria-v90.yml: CI de tests build y npm audit creada y validada como YAML; falta ejecutarla en GitHub Actions",
         "AUDITORIA_CI_GITHUB_V90.md: GitHub Actions funcionó y trabajo funcional completó SUCCESS en commit 84bbb16; seguridad FAIL esperado por dependencias",
-        "V127: CI exige npm audit runtime y total, y amplía suite; su ejecución remota desde esta rama sigue pendiente."
+        "V127: CI exige npm audit runtime y total, y amplía suite; su ejecución remota desde esta rama sigue pendiente.",
+        "AUDITORIA_RECUPERACION_MATRIMONIO_V205_2026-10-25.md: V205_pagina_React_real_Matrimonio_8_escenarios_con_servicios_simulados_recuperacion_de_lote_respuesta_perdida_lectura_fallida_y_doble_click_CI_103_archivos_de_prueba_sin_E2E_Auth_ni_concurrencia_PG"
       ],
-      "updated_at": "2026-10-22T14:50:32.145Z"
+      "updated_at": "2026-10-25T22:58:33.075Z"
     },
     {
       "id": "30.04",
@@ -4003,12 +4018,13 @@
       "area": "E2E de personajes ficticios",
       "priority": "P0",
       "criterion": "Doble click y red caída",
-      "status": "PENDIENTE",
+      "status": "EN_PROGRESO",
       "evidence": [
         "V168: reintento de lote ya ejecutado rechazado; faltan pruebas físicas de doble clic con red caída y dos transacciones simultáneas.",
-        "V169: 20 pruebas de comportamiento en Node sobre cinco handlers, incluyendo respuesta tardía satisfactoria, error tardío, cambio durante diálogo y ruta legítima; falta doble clic físico y redes reales."
+        "V169: 20 pruebas de comportamiento en Node sobre cinco handlers, incluyendo respuesta tardía satisfactoria, error tardío, cambio durante diálogo y ruta legítima; falta doble clic físico y redes reales.",
+        "AUDITORIA_RECUPERACION_MATRIMONIO_V205_2026-10-25.md: V205_pagina_React_real_Matrimonio_8_escenarios_con_servicios_simulados_recuperacion_de_lote_respuesta_perdida_lectura_fallida_y_doble_click_CI_103_archivos_de_prueba_sin_E2E_Auth_ni_concurrencia_PG"
       ],
-      "updated_at": "2026-10-23T17:23:02.753Z"
+      "updated_at": "2026-10-25T22:58:33.075Z"
     },
     {
       "id": "31.09",
@@ -4316,9 +4332,10 @@
         "V165: migración Supabase aplicada 20261023142209_chat_message_order_consistency_v165; frontend existente sin cambios funcionales en esta etapa.",
         "V166: Supabase migration 20261023144508 applied; frontend Chat supports older pages without clearing current/received messages.",
         "V167: suite SQL de pruebas y evidencia nuevas; backend y frontend sin cambios funcionales. Publicación de evidencia por CI controlado.",
-        "V168: migración Supabase aplicada 20261023154826; probado de nuevo contra la función instalada y Vercel publicó tras CI de commit 32dfdbb."
+        "V168: migración Supabase aplicada 20261023154826; probado de nuevo contra la función instalada y Vercel publicó tras CI de commit 32dfdbb.",
+        "AUDITORIA_RECUPERACION_MATRIMONIO_V205_2026-10-25.md: V205_pagina_React_real_Matrimonio_8_escenarios_con_servicios_simulados_recuperacion_de_lote_respuesta_perdida_lectura_fallida_y_doble_click_CI_103_archivos_de_prueba_sin_E2E_Auth_ni_concurrencia_PG"
       ],
-      "updated_at": "2026-10-23T16:09:46.263Z"
+      "updated_at": "2026-10-25T22:58:33.075Z"
     },
     {
       "id": "32.07",
@@ -4396,9 +4413,10 @@
         "V179: migration modifies existing five privileged function bodies only, preserving records, constraints, signature and grants; actual SQL temporary patch succeeded in BEGIN/ROLLBACK.",
         "V180: ten privileged function replacements anchored to exact preexisting predicate and signatures without broad changes to grants or records; Chat directory privacy verified with aggregate counts only.",
         "V181: baptism and confirmation physical book settings now require is_active TRUE/status ACTIVE and ownership. Anchored SQL migration preserves sequencing and existing audit. Real 4 positives/28 negatives verified.",
-        "V182 targeted and anchored replacement in 3 privileged RPCs, preserving signatures/grants, with JWT-fictitious actors and BEGIN/ROLLBACK SQL proof."
+        "V182 targeted and anchored replacement in 3 privileged RPCs, preserving signatures/grants, with JWT-fictitious actors and BEGIN/ROLLBACK SQL proof.",
+        "AUDITORIA_RECUPERACION_MATRIMONIO_V205_2026-10-25.md: V205_pagina_React_real_Matrimonio_8_escenarios_con_servicios_simulados_recuperacion_de_lote_respuesta_perdida_lectura_fallida_y_doble_click_CI_103_archivos_de_prueba_sin_E2E_Auth_ni_concurrencia_PG"
       ],
-      "updated_at": "2026-10-24T01:20:50.810Z"
+      "updated_at": "2026-10-25T22:58:33.075Z"
     },
     {
       "id": "32.08",

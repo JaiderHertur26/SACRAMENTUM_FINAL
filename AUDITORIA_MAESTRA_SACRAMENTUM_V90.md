@@ -10,7 +10,7 @@ Regla: no introducir datos falsos permanentes; usar memoria, transacciones ROLLB
 
 Prioridad P0 bloquea la certificación. P1 debe constar resuelta o aceptada con evidencia y responsable.
 
-Avance: 325 controles totales; 29 aprobados; 121 en progreso; 175 pendientes; 0 fallidos; 0 bloqueados.
+Avance: 325 controles totales; 29 aprobados; 129 en progreso; 167 pendientes; 0 fallidos; 0 bloqueados.
 
 ## Fases y controles numerados
 
@@ -352,6 +352,7 @@ Avance: 325 controles totales; 29 aprobados; 121 en progreso; 175 pendientes; 0 
 - [ ] 10.04 · Celebración — PENDIENTE
 - [x] 10.05 · Asiento y libro — APROBADO
   - Evidencia: AUDITORIA_CIRCUITOS_REGISTRALES_V193_2026-10-24.md: V193 Matrimonio boleta asiento libro ordinario y proteccion de doble asiento en PostgreSQL
+  - Evidencia: AUDITORIA_RECUPERACION_MATRIMONIO_V205_2026-10-25.md: V205_pagina_React_real_Matrimonio_8_escenarios_con_servicios_simulados_recuperacion_de_lote_respuesta_perdida_lectura_fallida_y_doble_click_CI_103_archivos_de_prueba_sin_E2E_Auth_ni_concurrencia_PG
 - [ ] 10.06 · Impresión — EN_PROGRESO
   - Evidencia: AUDITORIA_IMPRESION_CANONICA_V194_2026-10-24.md: Cotejo backend y plantilla canónica listos falta navegador e impresión física
   - Evidencia: AUDITORIA_BOTONES_REALES_IMPRESION_V196_2026-10-24.md: V196 Matrimonio auditado por clic real con bloqueo de auditoría y HTML canónico
@@ -586,8 +587,9 @@ Avance: 325 controles totales; 29 aprobados; 121 en progreso; 175 pendientes; 0 
 - [ ] 15.05 · Sin fechas inventadas — PENDIENTE
 - [ ] 15.06 · Edición autorizada — PENDIENTE
 - [ ] 15.07 · Cancelación controlada — PENDIENTE
-- [ ] 15.08 · Doble clic sin duplicado — PENDIENTE
+- [ ] 15.08 · Doble clic sin duplicado — EN_PROGRESO
   - Evidencia: V167: reintentos duplicados de API rechazados por índice/estado. Prueba de doble clic del navegador todavía pendiente.
+  - Evidencia: AUDITORIA_RECUPERACION_MATRIMONIO_V205_2026-10-25.md: V205_pagina_React_real_Matrimonio_8_escenarios_con_servicios_simulados_recuperacion_de_lote_respuesta_perdida_lectura_fallida_y_doble_click_CI_103_archivos_de_prueba_sin_E2E_Auth_ni_concurrencia_PG
 - [ ] 15.09 · Cierre en partida — PENDIENTE
 - [ ] 15.10 · Cruce histórico — PENDIENTE
 
@@ -793,7 +795,8 @@ Avance: 325 controles totales; 29 aprobados; 121 en progreso; 175 pendientes; 0 
 - [ ] 24.08 · Foco — PENDIENTE
 - [ ] 24.09 · Etiquetas accesibles — PENDIENTE
 - [ ] 24.10 · Botones activos — PENDIENTE
-- [ ] 24.11 · Mensajes de error — PENDIENTE
+- [ ] 24.11 · Mensajes de error — EN_PROGRESO
+  - Evidencia: AUDITORIA_RECUPERACION_MATRIMONIO_V205_2026-10-25.md: V205_pagina_React_real_Matrimonio_8_escenarios_con_servicios_simulados_recuperacion_de_lote_respuesta_perdida_lectura_fallida_y_doble_click_CI_103_archivos_de_prueba_sin_E2E_Auth_ni_concurrencia_PG
 - [ ] 24.12 · Capturas de evidencia — EN_PROGRESO
   - Evidencia: AUDITORIA_VISUAL_PUBLICA_V91.json: Seis capturas PNG públicas con huellas SHA256 guardadas en C:\SACRAMENTUM\AUDITORIA_EVIDENCIAS_V91
   - Evidencia: V119: 7 capturas PNG con SHA-256, evidencia del navegador anónimo local; faltan pantallas autenticadas.
@@ -824,16 +827,21 @@ Avance: 325 controles totales; 29 aprobados; 121 en progreso; 175 pendientes; 0 
 ### 25. Resiliencia (P0) — 0/11
 
 - [ ] 25.01 · Sin conexión antes de guardar — PENDIENTE
-- [ ] 25.02 · Sin conexión durante RPC — PENDIENTE
-- [ ] 25.03 · Sin conexión después de respuesta — PENDIENTE
+- [ ] 25.02 · Sin conexión durante RPC — EN_PROGRESO
+  - Evidencia: AUDITORIA_RECUPERACION_MATRIMONIO_V205_2026-10-25.md: V205_pagina_React_real_Matrimonio_8_escenarios_con_servicios_simulados_recuperacion_de_lote_respuesta_perdida_lectura_fallida_y_doble_click_CI_103_archivos_de_prueba_sin_E2E_Auth_ni_concurrencia_PG
+- [ ] 25.03 · Sin conexión después de respuesta — EN_PROGRESO
+  - Evidencia: AUDITORIA_RECUPERACION_MATRIMONIO_V205_2026-10-25.md: V205_pagina_React_real_Matrimonio_8_escenarios_con_servicios_simulados_recuperacion_de_lote_respuesta_perdida_lectura_fallida_y_doble_click_CI_103_archivos_de_prueba_sin_E2E_Auth_ni_concurrencia_PG
 - [ ] 25.04 · HTTP 401/403 — PENDIENTE
 - [ ] 25.05 · HTTP 409 — PENDIENTE
 - [ ] 25.06 · HTTP 500 — PENDIENTE
-- [ ] 25.07 · Timeout — PENDIENTE
-- [ ] 25.08 · Retry seguro — PENDIENTE
+- [ ] 25.07 · Timeout — EN_PROGRESO
+  - Evidencia: AUDITORIA_RECUPERACION_MATRIMONIO_V205_2026-10-25.md: V205_pagina_React_real_Matrimonio_8_escenarios_con_servicios_simulados_recuperacion_de_lote_respuesta_perdida_lectura_fallida_y_doble_click_CI_103_archivos_de_prueba_sin_E2E_Auth_ni_concurrencia_PG
+- [ ] 25.08 · Retry seguro — EN_PROGRESO
+  - Evidencia: AUDITORIA_RECUPERACION_MATRIMONIO_V205_2026-10-25.md: V205_pagina_React_real_Matrimonio_8_escenarios_con_servicios_simulados_recuperacion_de_lote_respuesta_perdida_lectura_fallida_y_doble_click_CI_103_archivos_de_prueba_sin_E2E_Auth_ni_concurrencia_PG
 - [ ] 25.09 · Refresh en formulario — PENDIENTE
 - [ ] 25.10 · Interrupción de impresión — PENDIENTE
-- [ ] 25.11 · Error de lectura sin pérdida — PENDIENTE
+- [ ] 25.11 · Error de lectura sin pérdida — EN_PROGRESO
+  - Evidencia: AUDITORIA_RECUPERACION_MATRIMONIO_V205_2026-10-25.md: V205_pagina_React_real_Matrimonio_8_escenarios_con_servicios_simulados_recuperacion_de_lote_respuesta_perdida_lectura_fallida_y_doble_click_CI_103_archivos_de_prueba_sin_E2E_Auth_ni_concurrencia_PG
 
 ### 26. Rendimiento (P1) — 0/10
 
@@ -1068,6 +1076,7 @@ Avance: 325 controles totales; 29 aprobados; 121 en progreso; 175 pendientes; 0 
   - Evidencia: .github/workflows/sacramentum-auditoria-v90.yml: CI de tests build y npm audit creada y validada como YAML; falta ejecutarla en GitHub Actions
   - Evidencia: AUDITORIA_CI_GITHUB_V90.md: GitHub Actions funcionó y trabajo funcional completó SUCCESS en commit 84bbb16; seguridad FAIL esperado por dependencias
   - Evidencia: V127: CI exige npm audit runtime y total, y amplía suite; su ejecución remota desde esta rama sigue pendiente.
+  - Evidencia: AUDITORIA_RECUPERACION_MATRIMONIO_V205_2026-10-25.md: V205_pagina_React_real_Matrimonio_8_escenarios_con_servicios_simulados_recuperacion_de_lote_respuesta_perdida_lectura_fallida_y_doble_click_CI_103_archivos_de_prueba_sin_E2E_Auth_ni_concurrencia_PG
 - [ ] 30.04 · Migraciones reproducibles — EN_PROGRESO
   - Evidencia: AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md: Migración V92 creada por CLI y aplicada; falta reconstrucción de esquema desde cero
   - Evidencia: Se copiaron al repositorio las migraciones exactas V111/V112 recuperando su definición de Supabase y se añadieron 10 verificaciones estáticas; restauración limpia pendiente.
@@ -1139,9 +1148,10 @@ Avance: 325 controles totales; 29 aprobados; 121 en progreso; 175 pendientes; 0 
   - Evidencia: V166: 305 legacy + 7 newer messages inserted only inside BEGIN/ROLLBACK, zero residual QA rooms/messages after live test.
   - Evidencia: V167: 4 casos ficticios (uno por sacramento) con 24 rechazos por transición, 4 éxitos y verificaciones por caso; cero persistencia tras ROLLBACK.
   - Evidencia: V168: matriz SQL reversible de 4 sacramentos, dos notas y aprobaciones independientes por cada decreto; un solo evento jurídico de reversión.
-- [ ] 31.08 · Doble click y red caída — PENDIENTE
+- [ ] 31.08 · Doble click y red caída — EN_PROGRESO
   - Evidencia: V168: reintento de lote ya ejecutado rechazado; faltan pruebas físicas de doble clic con red caída y dos transacciones simultáneas.
   - Evidencia: V169: 20 pruebas de comportamiento en Node sobre cinco handlers, incluyendo respuesta tardía satisfactoria, error tardío, cambio durante diálogo y ruta legítima; falta doble clic físico y redes reales.
+  - Evidencia: AUDITORIA_RECUPERACION_MATRIMONIO_V205_2026-10-25.md: V205_pagina_React_real_Matrimonio_8_escenarios_con_servicios_simulados_recuperacion_de_lote_respuesta_perdida_lectura_fallida_y_doble_click_CI_103_archivos_de_prueba_sin_E2E_Auth_ni_concurrencia_PG
 - [ ] 31.09 · Impresión/estadística final — PENDIENTE
 - [ ] 31.10 · Destruir sandbox y demostrar cero residuos — EN_PROGRESO
   - Evidencia: V114: tras dos ensayos SQL reversibles, cero registros QA persistidos en seis entidades verificadas.
@@ -1376,6 +1386,7 @@ Avance: 325 controles totales; 29 aprobados; 121 en progreso; 175 pendientes; 0 
   - Evidencia: V166: Supabase migration 20261023144508 applied; frontend Chat supports older pages without clearing current/received messages.
   - Evidencia: V167: suite SQL de pruebas y evidencia nuevas; backend y frontend sin cambios funcionales. Publicación de evidencia por CI controlado.
   - Evidencia: V168: migración Supabase aplicada 20261023154826; probado de nuevo contra la función instalada y Vercel publicó tras CI de commit 32dfdbb.
+  - Evidencia: AUDITORIA_RECUPERACION_MATRIMONIO_V205_2026-10-25.md: V205_pagina_React_real_Matrimonio_8_escenarios_con_servicios_simulados_recuperacion_de_lote_respuesta_perdida_lectura_fallida_y_doble_click_CI_103_archivos_de_prueba_sin_E2E_Auth_ni_concurrencia_PG
 - [ ] 32.07 · Regresión completa — EN_PROGRESO
   - Evidencia: AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md: Regresión 211 pruebas sintéticas, 23 verificadores, build OK; quedan fallas de dependencias
   - Evidencia: AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: 219 pruebas sintéticas, 23 verificadores y build aprobados; advertencias HIGH de paquetes aún abiertas
@@ -1446,6 +1457,7 @@ Avance: 325 controles totales; 29 aprobados; 121 en progreso; 175 pendientes; 0 
   - Evidencia: V180: ten privileged function replacements anchored to exact preexisting predicate and signatures without broad changes to grants or records; Chat directory privacy verified with aggregate counts only.
   - Evidencia: V181: baptism and confirmation physical book settings now require is_active TRUE/status ACTIVE and ownership. Anchored SQL migration preserves sequencing and existing audit. Real 4 positives/28 negatives verified.
   - Evidencia: V182 targeted and anchored replacement in 3 privileged RPCs, preserving signatures/grants, with JWT-fictitious actors and BEGIN/ROLLBACK SQL proof.
+  - Evidencia: AUDITORIA_RECUPERACION_MATRIMONIO_V205_2026-10-25.md: V205_pagina_React_real_Matrimonio_8_escenarios_con_servicios_simulados_recuperacion_de_lote_respuesta_perdida_lectura_fallida_y_doble_click_CI_103_archivos_de_prueba_sin_E2E_Auth_ni_concurrencia_PG
 - [ ] 32.08 · Conteos antes/después — EN_PROGRESO
   - Evidencia: AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: Tras V95: 15 políticas, 0 bypass is_app_admin y 0 residuos en 5 catálogos
   - Evidencia: AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96: mis_datos mantiene 1 fila real, 0 fixtures y 0 admin bypass en 3 políticas
