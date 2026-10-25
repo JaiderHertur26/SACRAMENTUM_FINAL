@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-const read=f=>fs.readFileSync(f,'utf8');
+const read=f=>fs.readFileSync(f,'utf8').replace(/\r\n/g,'\n');
 const batch=read('scripts/qa-rollback-batch-atomicity-v201.sql');
 const stale=read('scripts/qa-rollback-stale-client-numbering-v201.sql');
 const expectedRPCs=['create_pending_baptism','create_pending_confirmation','seat_baptism_records','seat_confirmation_records'];

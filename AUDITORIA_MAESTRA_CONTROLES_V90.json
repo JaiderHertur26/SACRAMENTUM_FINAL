@@ -844,15 +844,16 @@
       "area": "Integridad y concurrencia",
       "priority": "P0",
       "criterion": "Transacción atomicidad",
-      "status": "EN_PROGRESO",
+      "status": "APROBADO",
       "evidence": [
         "V167: 4 rutas completas de reversión y conciliación conservan atomicidad: decreto y nota reversed, case executed, audit 3 y notificación 1. BEGIN/ROLLBACK.",
         "V168: transacción única revierte 2 notas y 1 decreto y cierra 2 expedientes, o falla sin cambios; seis auditorías de expedientes y una notificación consolidada por caso.",
         "AUDITORIA_INTERDIOCESANA_CIERRE_ASIENTOS_V198_2026-10-24.md: V198 problema real de boleta asentada sin partida corregido con 20 prohibiciones y dos asientos oficiales efectivos con rollback",
         "AUDITORIA_CIERRE_BOLETAS_V199_2026-10-24.md: V199_boletas_asentadas_conservadas_20_operaciones_seguras_en_sistema_sql_falta_concurrencia_real_y_e2e",
-        "AUDITORIA_ATOMICIDAD_REINTENTOS_V201_2026-10-24.md: V201_dos_lotes_bautismo_y_confirmacion_segundo_registro_falla_primero_revertido_sin_avance_de_consecutivo_ni_auditoria_y_reintento_seguro_falta_matrimonio_y_exequias"
+        "AUDITORIA_ATOMICIDAD_REINTENTOS_V201_2026-10-24.md: V201_dos_lotes_bautismo_y_confirmacion_segundo_registro_falla_primero_revertido_sin_avance_de_consecutivo_ni_auditoria_y_reintento_seguro_falta_matrimonio_y_exequias",
+        "AUDITORIA_ATOMICIDAD_CUATRO_SACRAMENTOS_V202_2026-10-25.md: V202_cuatro_RPCS_de_asiento_ensayadas_en_PG_con_rollback_y_cierre_coherente_de_boleta_partida_parametros_y_auditoria_matrimonio_exequias_falla_posterior_y_bautismo_confirmacion_segundo_invalido"
       ],
-      "updated_at": "2026-10-25T03:21:11.562Z"
+      "updated_at": "2026-10-25T19:56:04.581Z"
     },
     {
       "id": "07.07",
