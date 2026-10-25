@@ -1,0 +1,1 @@
+import React from 'react';export default function Component(){return <span data-qa="external-component"/>}

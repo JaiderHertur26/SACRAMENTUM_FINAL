@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '@/components/DashboardLayout';
 import { useAuth } from '@/context/AuthContext';
@@ -51,6 +51,8 @@ const ConfirmationSentarRegistrosPage = () => {
 
     const [isLoading, setIsLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
+    const seatInFlight = useRef(false);
+    const [loadError, setLoadError] = useState('');
     const [parishInfo, setParishInfo] = useState(null); 
 
     const isDateInFuture = (dateString) => {
@@ -71,8 +73,9 @@ const ConfirmationSentarRegistrosPage = () => {
     }, [user]);
 
     const loadData = async () => {
-        if (!resolvedParishId) return;
+        if (!resolvedParishId) return false;
         setIsLoading(true);
+        setLoadError('');
 
         try {
             const { data: tempData, error: tempError } = await supabase
@@ -81,6 +84,7 @@ const ConfirmationSentarRegistrosPage = () => {
                 .eq('parish_id', resolvedParishId)
                 .order('created_at', { ascending: false });
 
+            if (tempError) throw tempError;
             let recordsMapped = [];
             
             if (!tempError && tempData && tempData.length > 0) {
@@ -126,6 +130,8 @@ const ConfirmationSentarRegistrosPage = () => {
 
             setPendingConfirmations(pendientes);
             setReportedConfirmations(reportados);
+            setSelectedIds(ids => ids.filter(id => pendientes.some(record => record.id === id)));
+            setCurrentIndex(index => Math.min(index, Math.max(0, pendientes.length - 1)));
 
             const p = await getConfirmationParameters(resolvedParishId);
             setFullParamsCache(p);
@@ -144,8 +150,12 @@ const ConfirmationSentarRegistrosPage = () => {
                 console.warn('No fue posible cargar el perfil institucional para Confirmación:', profileError);
                 setParishInfo(legacyProfile);
             }
+            return true;
         } catch (error) {
-            console.error("Error cargando datos:", error);
+            const message = error?.message || 'No fue posible consultar las boletas y consecutivos de Confirmación.';
+            setLoadError(message);
+            toast({ title: 'Error de sincronización', description: message, variant: 'destructive' });
+            return false;
         } finally {
             setIsLoading(false);
         }
@@ -231,8 +241,9 @@ const ConfirmationSentarRegistrosPage = () => {
 
     // 🚀 LÓGICA DE ASENTAMIENTO INDIVIDUAL CON AUTO-ENLACE
     const handleRegisterIndividual = async () => {
-        if (!currentConfirmation || isSaving || currentIsFuture || currentBaptismReferencePending) return;
+        if (!currentConfirmation || isSaving || seatInFlight.current || loadError || currentIsFuture || currentBaptismReferencePending) return;
 
+        seatInFlight.current = true;
         setIsSaving(true);
         try {
             const cleanDate = (d) => (d && String(d).trim() !== '' && String(d).trim() !== '---') ? d : null;
@@ -284,12 +295,14 @@ const ConfirmationSentarRegistrosPage = () => {
             
             toast({ title: "Éxito", description: "Confirmación y Nota Marginal asentadas permanentemente.", className: "bg-green-50 text-green-900 border-green-200" });
             await loadData();
-            if (currentIndex >= pendingConfirmations.length - 1) setCurrentIndex(Math.max(0, pendingConfirmations.length - 2));
-
         } catch (error) { 
-            toast({ title: "Error", description: error.message, variant: "destructive" }); 
+            const verified = await loadData();
+            toast({ title: 'Asiento sin confirmar', description: verified
+                ? 'Se consultó el estado actual. Revise el historial y los pendientes antes de volver a asentar. ' + (error?.message || '')
+                : 'No se pudo verificar el resultado. Reintente la sincronización antes de volver a asentar.', variant: 'destructive' });
         } finally { 
-            setIsSaving(false); 
+            setIsSaving(false);
+            seatInFlight.current = false;
         }
     };
 
@@ -312,16 +325,17 @@ const ConfirmationSentarRegistrosPage = () => {
 
     // 🚀 LÓGICA DE ASENTAMIENTO POR LOTE CON AUTO-ENLACE MASIVO
     const handleBatchConfirm = async () => {
-        if (selectedIds.length === 0 || isSaving) return;
-        if (!(await institutionalConfirm({
-            title: 'Asentar registros de Confirmación',
-            message: `Se asentarán permanentemente ${selectedIds.length} registros y se consumirán sus consecutivos oficiales.`,
-            confirmText: 'Sí, asentar registros',
-            tone: 'warning'
-        }))) return;
-
+        if (selectedIds.length === 0 || isSaving || seatInFlight.current || loadError) return;
+        seatInFlight.current = true;
         setIsSaving(true);
         try {
+            if (!(await institutionalConfirm({
+                title: 'Asentar registros de Confirmación',
+                message: `Se asentarán permanentemente ${selectedIds.length} registros y se consumirán sus consecutivos oficiales.`,
+                confirmText: 'Sí, asentar registros',
+                tone: 'warning'
+            }))) return;
+
             const cleanDate = (d) => (d && String(d).trim() !== '' && String(d).trim() !== '---') ? d : null;
             const p = fullParamsCache || await getConfirmationParameters(resolvedParishId);
             let cFolio = parseInt(p.ordinarioFolio || 1, 10);
@@ -398,9 +412,13 @@ const ConfirmationSentarRegistrosPage = () => {
             await loadData();
 
         } catch (err) { 
-            toast({ title: "Error", description: err.message, variant: "destructive" }); 
+            const verified = await loadData();
+            toast({ title: 'Asiento sin confirmar', description: verified
+                ? 'Se consultó el estado actual. La selección conserva solo pendientes. Revise el historial antes de continuar. ' + (err?.message || '')
+                : 'No se pudo verificar el resultado. Reintente la sincronización antes de continuar.', variant: 'destructive' });
         } finally { 
-            setIsSaving(false); 
+            setIsSaving(false);
+            seatInFlight.current = false;
         }
     };
 
@@ -417,6 +435,18 @@ const ConfirmationSentarRegistrosPage = () => {
     if (isLoading) return (
         <DashboardLayout entityName={nombreParroquia}>
             <div className="flex justify-center py-20"><Loader2 className="animate-spin text-[#4B7BA7] w-8 h-8" /></div>
+        </DashboardLayout>
+    );
+
+    if (loadError) return (
+        <DashboardLayout entityName={nombreParroquia}>
+            <div role="alert" className="mx-auto mt-12 max-w-2xl rounded-2xl border border-red-200 bg-red-50 p-10 text-center">
+                <AlertCircle className="mx-auto mb-4 h-12 w-12 text-red-500" />
+                <h2 className="text-xl font-black text-red-800">No fue posible verificar los registros de Confirmación</h2>
+                <p className="mt-3 text-sm text-red-700">{loadError}</p>
+                <p className="mt-2 text-sm text-red-700">Verifique los pendientes y consecutivos antes de volver a asentar.</p>
+                <Button onClick={loadData} className="mt-6">Reintentar sincronización</Button>
+            </div>
         </DashboardLayout>
     );
 

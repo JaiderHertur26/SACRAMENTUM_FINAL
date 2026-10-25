@@ -151,6 +151,9 @@ const FuneralRegistryPage = () => {
   const [pending, setPending] = useState([]);
   const [busy, setBusy] = useState(false);
   const [seatingId, setSeatingId] = useState(null);
+  const [syncError, setSyncError] = useState('');
+  const [isRefreshing, setIsRefreshing] = useState(true);
+  const seatInFlight = useRef(false);
   const [search, setSearch] = useState('');
   const [notesRecord, setNotesRecord] = useState(null);
   const [baptismSearch, setBaptismSearch] = useState('');
@@ -164,18 +167,32 @@ const FuneralRegistryPage = () => {
   const historicalAuthorityRef = useRef({ ministro: '', da_fe: '' });
 
   const refresh = useCallback(async () => {
-    if (!parishId) return;
-
-    const [p, r, pe] = await Promise.all([
-      getFuneralParametersCloud(parishId),
-      getFuneralsCloud(parishId),
-      getPendingFuneralsCloud(parishId)
-    ]);
-
-    setParams({ ...defaultParams, ...(p || {}) });
-    setRecords(r || []);
-    setPending(pe || []);
-  }, [parishId]);
+    if (!parishId) {
+      setSyncError('No fue posible identificar la parroquia.');
+      setIsRefreshing(false);
+      return false;
+    }
+    setIsRefreshing(true);
+    setSyncError('');
+    try {
+      const [p, r, pe] = await Promise.all([
+        getFuneralParametersCloud(parishId),
+        getFuneralsCloud(parishId),
+        getPendingFuneralsCloud(parishId)
+      ]);
+      setParams({ ...defaultParams, ...(p || {}) });
+      setRecords(r || []);
+      setPending(pe || []);
+      return true;
+    } catch (error) {
+      const message = error?.message || 'No fue posible sincronizar Exequias.';
+      setSyncError(message);
+      toast({ title: 'Error de sincronización', description: message, variant: 'destructive' });
+      return false;
+    } finally {
+      setIsRefreshing(false);
+    }
+  }, [parishId, toast]);
 
   useEffect(() => {
     refresh().catch((error) =>
@@ -354,6 +371,7 @@ const FuneralRegistryPage = () => {
   };
 
   const handlePending = async () => {
+    if (seatInFlight.current || busy || syncError || isRefreshing) return;
     const validation = validateCore(form);
 
     if (validation) {
@@ -397,6 +415,7 @@ const FuneralRegistryPage = () => {
   };
 
   const seatPending = async (item) => {
+    if (seatInFlight.current || busy || syncError || isRefreshing) return;
     const data = item?.raw_data || {};
     const validation = validateCore(data);
 
@@ -418,6 +437,7 @@ const FuneralRegistryPage = () => {
       return;
     }
 
+    seatInFlight.current = true;
     setSeatingId(item.id);
 
     try {
@@ -426,8 +446,7 @@ const FuneralRegistryPage = () => {
         formData: data
       });
 
-      await refresh();
-      setActiveTab('libro');
+      if (await refresh()) setActiveTab('libro');
 
       toast({
         title: 'Registro asentado',
@@ -436,16 +455,20 @@ const FuneralRegistryPage = () => {
       });
     } catch (error) {
       toast({
-        title: 'No se pudo asentar',
-        description: error?.message || 'No fue posible generar el asiento definitivo.',
+        title: 'Asiento sin confirmar',
+        description: (await refresh())
+          ? 'Se consultó el estado actual. Revise el libro y los pendientes antes de volver a asentar. ' + (error?.message || '')
+          : 'No se pudo verificar el resultado. Reintente la sincronización antes de volver a asentar.',
         variant: 'destructive'
       });
     } finally {
       setSeatingId(null);
+      seatInFlight.current = false;
     }
   };
 
   const registerHistorical = async () => {
+    if (seatInFlight.current || busy || syncError || isRefreshing) return;
     const narrative = historical.historicalEntryMode === 'narrative';
     const required = narrative
       ? [historical.book_number, historical.folio, historical.number, historical.literalTranscription]
@@ -571,6 +594,22 @@ const FuneralRegistryPage = () => {
     folio: pad4(params.ordinarioFolio || params.folio),
     number: pad4(params.ordinarioNumero || params.numero)
   };
+
+  if (isRefreshing) return (
+    <DashboardLayout entityName={ownerParishName}>
+      <div role="status" className="p-12 text-center">Sincronizando registros de Exequias...</div>
+    </DashboardLayout>
+  );
+  if (syncError) return (
+    <DashboardLayout entityName={ownerParishName}>
+      <div role="alert" className="mx-auto mt-12 max-w-2xl rounded-2xl border border-red-200 bg-red-50 p-10 text-center">
+        <h2 className="text-xl font-black text-red-800">No fue posible verificar los registros de Exequias</h2>
+        <p className="mt-3 text-sm text-red-700">{syncError}</p>
+        <p className="mt-2 text-sm text-red-700">Verifique el libro, los pendientes y los consecutivos antes de continuar.</p>
+        <Button onClick={refresh} className="mt-6">Reintentar sincronización</Button>
+      </div>
+    </DashboardLayout>
+  );
 
   return (
     <DashboardLayout entityName={user?.parishName || 'Parroquia'}>
@@ -929,7 +968,7 @@ const FuneralRegistryPage = () => {
                   </div>
 
                   <Button
-                    disabled={busy}
+                    disabled={busy || Boolean(seatingId)}
                     onClick={handlePending}
                     className="bg-slate-900 text-white"
                   >
@@ -1002,7 +1041,7 @@ const FuneralRegistryPage = () => {
                       </div>
 
                       <Button
-                        disabled={!allowed || seatingId === item.id}
+                        disabled={!allowed || Boolean(seatingId) || busy || isRefreshing || Boolean(syncError)}
                         onClick={() => seatPending(item)}
                         className="bg-slate-900 text-white"
                       >
@@ -1296,7 +1335,7 @@ const FuneralRegistryPage = () => {
 
                 <div className="flex justify-end border-t pt-5">
                   <Button
-                    disabled={busy}
+                    disabled={busy || Boolean(seatingId)}
                     onClick={registerHistorical}
                     className="bg-amber-700 hover:bg-amber-800 text-white"
                   >

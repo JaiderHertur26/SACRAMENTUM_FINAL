@@ -1,0 +1,1559 @@
+{
+  "protocol": "V206",
+  "scope": "Actual React pages; isolated fictitious services; no authenticated production E2E or physical network fault",
+  "sourceSha256": {
+    "src/pages/parish/BaptismSentarRegistrosPage.jsx": "7ba9fc5cd86872bdca02f0c5e11c87f9d8d14628d48cba9e18cd7c47bf59799b",
+    "src/pages/parish/ConfirmationSentarRegistrosPage.jsx": "8b4afb4e08ead47518db59d6e8136c2a2dd8e4dd84e615e1c3c10de53a74b275",
+    "src/pages/parish/FuneralRegistryPage.jsx": "cbc65e1a2ee5c9cb4ce22db5d67a4761c3b7e0cb7ea0e43d53092e534eb2718a"
+  },
+  "date": "2026-10-25T23:12:29.676Z",
+  "rows": [
+    {
+      "kind": "bautismo",
+      "scenario": "individual-timeout",
+      "passed": true,
+      "faults": [],
+      "first": {
+        "calls": [
+          {
+            "ids": [
+              "qa-1"
+            ],
+            "expected": 1
+          }
+        ],
+        "pending": [
+          "qa-1",
+          "qa-2",
+          "qa-3"
+        ],
+        "reported": [],
+        "next": 1,
+        "reads": 4,
+        "confirmCalls": 0,
+        "toasts": [
+          {
+            "title": "Asiento sin confirmar",
+            "description": "Se consultó el estado actual. Revise el historial y los pendientes antes de volver a asentar. canceling statement due to statement timeout"
+          }
+        ],
+        "text": "Libro de BautismoSentar Registros de Bautismo Firma de Actas Temporales Individual (3) Por Lote (3) Reportadas / Historial (0)Documento 1 de 3Libro Destino0031Folio Destino0442Acta Nº00011PERSONA FICTICIA 1 QA V206Nº Registro Previo#000001Dirección---Expediente mayores de 8 añosNO APLICAConfirmación vinculadaNO APLICA Imprimir Boleta PreviaFirmar y Sellar Permanente"
+      },
+      "final": {
+        "calls": [
+          {
+            "ids": [
+              "qa-1"
+            ],
+            "expected": 1
+          },
+          {
+            "ids": [
+              "qa-1"
+            ],
+            "expected": 1
+          }
+        ],
+        "pending": [
+          "qa-2",
+          "qa-3"
+        ],
+        "reported": [
+          "qa-1"
+        ],
+        "next": 2,
+        "reads": 6,
+        "confirmCalls": 0,
+        "toasts": [
+          {
+            "title": "Asiento sin confirmar",
+            "description": "Se consultó el estado actual. Revise el historial y los pendientes antes de volver a asentar. canceling statement due to statement timeout"
+          },
+          {
+            "title": "Éxito",
+            "description": "Bautismo asentado permanentemente desde el borrador oficial de Supabase."
+          }
+        ],
+        "text": "Libro de BautismoSentar Registros de Bautismo Firma de Actas Temporales Individual (2) Por Lote (2) Reportadas / Historial (1)Documento 1 de 2Libro Destino0031Folio Destino0442Acta Nº00021PERSONA FICTICIA 2 QA V206Nº Registro Previo#000002Dirección---Expediente mayores de 8 añosNO APLICAConfirmación vinculadaNO APLICA Imprimir Boleta PreviaFirmar y Sellar Permanente"
+      }
+    },
+    {
+      "kind": "bautismo",
+      "scenario": "individual-lost-response",
+      "passed": true,
+      "faults": [],
+      "first": {
+        "calls": [
+          {
+            "ids": [
+              "qa-1"
+            ],
+            "expected": 1
+          }
+        ],
+        "pending": [
+          "qa-2",
+          "qa-3"
+        ],
+        "reported": [
+          "qa-1"
+        ],
+        "next": 2,
+        "reads": 4,
+        "confirmCalls": 0,
+        "toasts": [
+          {
+            "title": "Asiento sin confirmar",
+            "description": "Se consultó el estado actual. Revise el historial y los pendientes antes de volver a asentar. Failed to fetch after commit"
+          }
+        ],
+        "text": "Libro de BautismoSentar Registros de Bautismo Firma de Actas Temporales Individual (2) Por Lote (2) Reportadas / Historial (1)Documento 1 de 2Libro Destino0031Folio Destino0442Acta Nº00021PERSONA FICTICIA 2 QA V206Nº Registro Previo#000002Dirección---Expediente mayores de 8 añosNO APLICAConfirmación vinculadaNO APLICA Imprimir Boleta PreviaFirmar y Sellar Permanente"
+      },
+      "final": {
+        "calls": [
+          {
+            "ids": [
+              "qa-1"
+            ],
+            "expected": 1
+          },
+          {
+            "ids": [
+              "qa-2"
+            ],
+            "expected": 2
+          }
+        ],
+        "pending": [
+          "qa-3"
+        ],
+        "reported": [
+          "qa-1",
+          "qa-2"
+        ],
+        "next": 3,
+        "reads": 6,
+        "confirmCalls": 0,
+        "toasts": [
+          {
+            "title": "Asiento sin confirmar",
+            "description": "Se consultó el estado actual. Revise el historial y los pendientes antes de volver a asentar. Failed to fetch after commit"
+          },
+          {
+            "title": "Éxito",
+            "description": "Bautismo asentado permanentemente desde el borrador oficial de Supabase."
+          }
+        ],
+        "text": "Libro de BautismoSentar Registros de Bautismo Firma de Actas Temporales Individual (1) Por Lote (1) Reportadas / Historial (2)Documento 1 de 1Libro Destino0031Folio Destino0443Acta Nº00031PERSONA FICTICIA 3 QA V206Nº Registro Previo#000003Dirección---Expediente mayores de 8 añosNO APLICAConfirmación vinculadaNO APLICA Imprimir Boleta PreviaFirmar y Sellar Permanente"
+      }
+    },
+    {
+      "kind": "bautismo",
+      "scenario": "individual-read-failure",
+      "passed": true,
+      "faults": [],
+      "first": {
+        "calls": [
+          {
+            "ids": [
+              "qa-1"
+            ],
+            "expected": 1
+          }
+        ],
+        "pending": [
+          "qa-2",
+          "qa-3"
+        ],
+        "reported": [
+          "qa-1"
+        ],
+        "next": 2,
+        "reads": 3,
+        "confirmCalls": 0,
+        "toasts": [
+          {
+            "title": "Error de sincronización",
+            "description": "QA V206 lectura no disponible"
+          },
+          {
+            "title": "Asiento sin confirmar",
+            "description": "No se pudo verificar el resultado. Reintente la sincronización antes de volver a asentar."
+          }
+        ],
+        "text": "No fue posible verificar los registros pendientesQA V206 lectura no disponibleNo se mostrará “Archivo al Día” mientras la fuente canónica no pueda confirmarse.Reintentar sincronización"
+      },
+      "final": {
+        "calls": [
+          {
+            "ids": [
+              "qa-1"
+            ],
+            "expected": 1
+          },
+          {
+            "ids": [
+              "qa-2"
+            ],
+            "expected": 2
+          }
+        ],
+        "pending": [
+          "qa-3"
+        ],
+        "reported": [
+          "qa-1",
+          "qa-2"
+        ],
+        "next": 3,
+        "reads": 7,
+        "confirmCalls": 0,
+        "toasts": [
+          {
+            "title": "Error de sincronización",
+            "description": "QA V206 lectura no disponible"
+          },
+          {
+            "title": "Asiento sin confirmar",
+            "description": "No se pudo verificar el resultado. Reintente la sincronización antes de volver a asentar."
+          },
+          {
+            "title": "Éxito",
+            "description": "Bautismo asentado permanentemente desde el borrador oficial de Supabase."
+          }
+        ],
+        "text": "Libro de BautismoSentar Registros de Bautismo Firma de Actas Temporales Individual (1) Por Lote (1) Reportadas / Historial (2)Documento 1 de 1Libro Destino0031Folio Destino0443Acta Nº00031PERSONA FICTICIA 3 QA V206Nº Registro Previo#000003Dirección---Expediente mayores de 8 añosNO APLICAConfirmación vinculadaNO APLICA Imprimir Boleta PreviaFirmar y Sellar Permanente"
+      }
+    },
+    {
+      "kind": "bautismo",
+      "scenario": "success-read-failure",
+      "passed": true,
+      "faults": [],
+      "first": {
+        "calls": [
+          {
+            "ids": [
+              "qa-1"
+            ],
+            "expected": 1
+          }
+        ],
+        "pending": [
+          "qa-2",
+          "qa-3"
+        ],
+        "reported": [
+          "qa-1"
+        ],
+        "next": 2,
+        "reads": 3,
+        "confirmCalls": 0,
+        "toasts": [
+          {
+            "title": "Éxito",
+            "description": "Bautismo asentado permanentemente desde el borrador oficial de Supabase."
+          },
+          {
+            "title": "Error de sincronización",
+            "description": "QA V206 lectura no disponible"
+          }
+        ],
+        "text": "No fue posible verificar los registros pendientesQA V206 lectura no disponibleNo se mostrará “Archivo al Día” mientras la fuente canónica no pueda confirmarse.Reintentar sincronización"
+      },
+      "final": {
+        "calls": [
+          {
+            "ids": [
+              "qa-1"
+            ],
+            "expected": 1
+          }
+        ],
+        "pending": [
+          "qa-2",
+          "qa-3"
+        ],
+        "reported": [
+          "qa-1"
+        ],
+        "next": 2,
+        "reads": 5,
+        "confirmCalls": 0,
+        "toasts": [
+          {
+            "title": "Éxito",
+            "description": "Bautismo asentado permanentemente desde el borrador oficial de Supabase."
+          },
+          {
+            "title": "Error de sincronización",
+            "description": "QA V206 lectura no disponible"
+          }
+        ],
+        "text": "Libro de BautismoSentar Registros de Bautismo Firma de Actas Temporales Individual (2) Por Lote (2) Reportadas / Historial (1)Documento 1 de 2Libro Destino0031Folio Destino0442Acta Nº00021PERSONA FICTICIA 2 QA V206Nº Registro Previo#000002Dirección---Expediente mayores de 8 añosNO APLICAConfirmación vinculadaNO APLICA Imprimir Boleta PreviaFirmar y Sellar Permanente"
+      }
+    },
+    {
+      "kind": "bautismo",
+      "scenario": "batch-timeout",
+      "passed": true,
+      "faults": [],
+      "first": {
+        "calls": [
+          {
+            "ids": [
+              "qa-1",
+              "qa-2",
+              "qa-3"
+            ],
+            "expected": 1
+          }
+        ],
+        "pending": [
+          "qa-1",
+          "qa-2",
+          "qa-3"
+        ],
+        "reported": [],
+        "next": 1,
+        "reads": 4,
+        "confirmCalls": 1,
+        "toasts": [
+          {
+            "title": "Asiento sin confirmar",
+            "description": "Se consultó el estado actual. La selección conserva solo pendientes. Revise el historial antes de continuar. canceling statement due to statement timeout"
+          }
+        ],
+        "text": "Libro de BautismoSentar Registros de Bautismo Firma de Actas Temporales Individual (3) Por Lote (3) Reportadas / Historial (0)ESTADOBautizandoFecha SacramentoDirecciónListoQA V206, PERSONA FICTICIA 1#00000101/01/2026---ListoQA V206, PERSONA FICTICIA 2#00000201/01/2026---ListoQA V206, PERSONA FICTICIA 3#00000301/01/2026---Seleccionados: 3Registros aptos para firma Asentar Selección"
+      },
+      "final": {
+        "calls": [
+          {
+            "ids": [
+              "qa-1",
+              "qa-2",
+              "qa-3"
+            ],
+            "expected": 1
+          },
+          {
+            "ids": [
+              "qa-1",
+              "qa-2",
+              "qa-3"
+            ],
+            "expected": 1
+          }
+        ],
+        "pending": [],
+        "reported": [
+          "qa-1",
+          "qa-2",
+          "qa-3"
+        ],
+        "next": 4,
+        "reads": 6,
+        "confirmCalls": 2,
+        "toasts": [
+          {
+            "title": "Asiento sin confirmar",
+            "description": "Se consultó el estado actual. La selección conserva solo pendientes. Revise el historial antes de continuar. canceling statement due to statement timeout"
+          },
+          {
+            "title": "Lote Procesado",
+            "description": "3 Bautismo(s) asentado(s) de forma atómica."
+          }
+        ],
+        "text": "Libro de BautismoSentar Registros de Bautismo Firma de Actas Temporales Individual (0) Por Lote (0) Reportadas / Historial (3)Archivo al DíaNo hay borradores pendientes en la nube para procesar por lote.Ver Actas Permanentes"
+      }
+    },
+    {
+      "kind": "bautismo",
+      "scenario": "batch-lost-response",
+      "passed": true,
+      "faults": [],
+      "first": {
+        "calls": [
+          {
+            "ids": [
+              "qa-1",
+              "qa-2",
+              "qa-3"
+            ],
+            "expected": 1
+          }
+        ],
+        "pending": [],
+        "reported": [
+          "qa-1",
+          "qa-2",
+          "qa-3"
+        ],
+        "next": 4,
+        "reads": 4,
+        "confirmCalls": 1,
+        "toasts": [
+          {
+            "title": "Asiento sin confirmar",
+            "description": "Se consultó el estado actual. La selección conserva solo pendientes. Revise el historial antes de continuar. Failed to fetch after commit"
+          }
+        ],
+        "text": "Libro de BautismoSentar Registros de Bautismo Firma de Actas Temporales Individual (0) Por Lote (0) Reportadas / Historial (3)Archivo al DíaNo hay borradores pendientes en la nube para procesar por lote.Ver Actas Permanentes"
+      },
+      "final": {
+        "calls": [
+          {
+            "ids": [
+              "qa-1",
+              "qa-2",
+              "qa-3"
+            ],
+            "expected": 1
+          }
+        ],
+        "pending": [],
+        "reported": [
+          "qa-1",
+          "qa-2",
+          "qa-3"
+        ],
+        "next": 4,
+        "reads": 4,
+        "confirmCalls": 1,
+        "toasts": [
+          {
+            "title": "Asiento sin confirmar",
+            "description": "Se consultó el estado actual. La selección conserva solo pendientes. Revise el historial antes de continuar. Failed to fetch after commit"
+          }
+        ],
+        "text": "Libro de BautismoSentar Registros de Bautismo Firma de Actas Temporales Individual (0) Por Lote (0) Reportadas / Historial (3)Archivo al DíaNo hay borradores pendientes en la nube para procesar por lote.Ver Actas Permanentes"
+      }
+    },
+    {
+      "kind": "bautismo",
+      "scenario": "batch-read-failure",
+      "passed": true,
+      "faults": [],
+      "first": {
+        "calls": [
+          {
+            "ids": [
+              "qa-1",
+              "qa-2",
+              "qa-3"
+            ],
+            "expected": 1
+          }
+        ],
+        "pending": [],
+        "reported": [
+          "qa-1",
+          "qa-2",
+          "qa-3"
+        ],
+        "next": 4,
+        "reads": 3,
+        "confirmCalls": 1,
+        "toasts": [
+          {
+            "title": "Error de sincronización",
+            "description": "QA V206 lectura no disponible"
+          },
+          {
+            "title": "Asiento sin confirmar",
+            "description": "No se pudo verificar el resultado. Reintente la sincronización antes de continuar."
+          }
+        ],
+        "text": "No fue posible verificar los registros pendientesQA V206 lectura no disponibleNo se mostrará “Archivo al Día” mientras la fuente canónica no pueda confirmarse.Reintentar sincronización"
+      },
+      "final": {
+        "calls": [
+          {
+            "ids": [
+              "qa-1",
+              "qa-2",
+              "qa-3"
+            ],
+            "expected": 1
+          }
+        ],
+        "pending": [],
+        "reported": [
+          "qa-1",
+          "qa-2",
+          "qa-3"
+        ],
+        "next": 4,
+        "reads": 5,
+        "confirmCalls": 1,
+        "toasts": [
+          {
+            "title": "Error de sincronización",
+            "description": "QA V206 lectura no disponible"
+          },
+          {
+            "title": "Asiento sin confirmar",
+            "description": "No se pudo verificar el resultado. Reintente la sincronización antes de continuar."
+          }
+        ],
+        "text": "Libro de BautismoSentar Registros de Bautismo Firma de Actas Temporales Individual (0) Por Lote (0) Reportadas / Historial (3)Archivo al DíaNo hay borradores pendientes en la nube para procesar por lote.Ver Actas Permanentes"
+      }
+    },
+    {
+      "kind": "bautismo",
+      "scenario": "initial-read-error",
+      "passed": true,
+      "faults": [],
+      "first": {
+        "calls": [],
+        "pending": [
+          "qa-1",
+          "qa-2",
+          "qa-3"
+        ],
+        "reported": [],
+        "next": 1,
+        "reads": 1,
+        "confirmCalls": 0,
+        "toasts": [
+          {
+            "title": "Error de sincronización",
+            "description": "QA V206 lectura no disponible"
+          }
+        ],
+        "text": "No fue posible verificar los registros pendientesQA V206 lectura no disponibleNo se mostrará “Archivo al Día” mientras la fuente canónica no pueda confirmarse.Reintentar sincronización"
+      },
+      "final": {
+        "calls": [],
+        "pending": [
+          "qa-1",
+          "qa-2",
+          "qa-3"
+        ],
+        "reported": [],
+        "next": 1,
+        "reads": 3,
+        "confirmCalls": 0,
+        "toasts": [
+          {
+            "title": "Error de sincronización",
+            "description": "QA V206 lectura no disponible"
+          }
+        ],
+        "text": "Libro de BautismoSentar Registros de Bautismo Firma de Actas Temporales Individual (3) Por Lote (3) Reportadas / Historial (0)Documento 1 de 3Libro Destino0031Folio Destino0442Acta Nº00011PERSONA FICTICIA 1 QA V206Nº Registro Previo#000001Dirección---Expediente mayores de 8 añosNO APLICAConfirmación vinculadaNO APLICA Imprimir Boleta PreviaFirmar y Sellar Permanente"
+      }
+    },
+    {
+      "kind": "bautismo",
+      "scenario": "batch-cancel",
+      "passed": true,
+      "faults": [],
+      "first": {
+        "calls": [],
+        "pending": [
+          "qa-1",
+          "qa-2",
+          "qa-3"
+        ],
+        "reported": [],
+        "next": 1,
+        "reads": 2,
+        "confirmCalls": 1,
+        "toasts": [],
+        "text": "Libro de BautismoSentar Registros de Bautismo Firma de Actas Temporales Individual (3) Por Lote (3) Reportadas / Historial (0)ESTADOBautizandoFecha SacramentoDirecciónListoQA V206, PERSONA FICTICIA 1#00000101/01/2026---ListoQA V206, PERSONA FICTICIA 2#00000201/01/2026---ListoQA V206, PERSONA FICTICIA 3#00000301/01/2026---Seleccionados: 3Registros aptos para firma Asentar Selección"
+      },
+      "final": {
+        "calls": [
+          {
+            "ids": [
+              "qa-1",
+              "qa-2",
+              "qa-3"
+            ],
+            "expected": 1
+          }
+        ],
+        "pending": [],
+        "reported": [
+          "qa-1",
+          "qa-2",
+          "qa-3"
+        ],
+        "next": 4,
+        "reads": 4,
+        "confirmCalls": 2,
+        "toasts": [
+          {
+            "title": "Lote Procesado",
+            "description": "3 Bautismo(s) asentado(s) de forma atómica."
+          }
+        ],
+        "text": "Libro de BautismoSentar Registros de Bautismo Firma de Actas Temporales Individual (0) Por Lote (0) Reportadas / Historial (3)Archivo al DíaNo hay borradores pendientes en la nube para procesar por lote.Ver Actas Permanentes"
+      }
+    },
+    {
+      "kind": "confirmacion",
+      "scenario": "individual-timeout",
+      "passed": true,
+      "faults": [],
+      "first": {
+        "calls": [
+          {
+            "ids": [
+              "qa-1"
+            ],
+            "expected": 1
+          }
+        ],
+        "pending": [
+          "qa-1",
+          "qa-2",
+          "qa-3"
+        ],
+        "reported": [],
+        "next": 1,
+        "reads": 4,
+        "confirmCalls": 0,
+        "toasts": [
+          {
+            "title": "Asiento sin confirmar",
+            "description": "Se consultó el estado actual. Revise el historial y los pendientes antes de volver a asentar. canceling statement due to statement timeout"
+          }
+        ],
+        "text": "Libro de ConfirmaciónSentar Registros de Confirmación Firma de Actas Temporales Individual (3) Por Lote (3) Reportadas / Historial (0)Documento 1 de 3Libro Destino0031Folio Destino0442Acta Nº00011PERSONA FICTICIA 1 QA V206Nº Registro Previo#000001Lugar de Confirmación--- Re-imprimir BoletaFirmar y Sellar Permanente"
+      },
+      "final": {
+        "calls": [
+          {
+            "ids": [
+              "qa-1"
+            ],
+            "expected": 1
+          },
+          {
+            "ids": [
+              "qa-1"
+            ],
+            "expected": 1
+          }
+        ],
+        "pending": [
+          "qa-2",
+          "qa-3"
+        ],
+        "reported": [
+          "qa-1"
+        ],
+        "next": 2,
+        "reads": 6,
+        "confirmCalls": 0,
+        "toasts": [
+          {
+            "title": "Asiento sin confirmar",
+            "description": "Se consultó el estado actual. Revise el historial y los pendientes antes de volver a asentar. canceling statement due to statement timeout"
+          },
+          {
+            "title": "Éxito",
+            "description": "Confirmación y Nota Marginal asentadas permanentemente."
+          }
+        ],
+        "text": "Libro de ConfirmaciónSentar Registros de Confirmación Firma de Actas Temporales Individual (2) Por Lote (2) Reportadas / Historial (1)Documento 1 de 2Libro Destino0031Folio Destino0442Acta Nº00021PERSONA FICTICIA 2 QA V206Nº Registro Previo#000002Lugar de Confirmación--- Re-imprimir BoletaFirmar y Sellar Permanente"
+      }
+    },
+    {
+      "kind": "confirmacion",
+      "scenario": "individual-lost-response",
+      "passed": true,
+      "faults": [],
+      "first": {
+        "calls": [
+          {
+            "ids": [
+              "qa-1"
+            ],
+            "expected": 1
+          }
+        ],
+        "pending": [
+          "qa-2",
+          "qa-3"
+        ],
+        "reported": [
+          "qa-1"
+        ],
+        "next": 2,
+        "reads": 4,
+        "confirmCalls": 0,
+        "toasts": [
+          {
+            "title": "Asiento sin confirmar",
+            "description": "Se consultó el estado actual. Revise el historial y los pendientes antes de volver a asentar. Failed to fetch after commit"
+          }
+        ],
+        "text": "Libro de ConfirmaciónSentar Registros de Confirmación Firma de Actas Temporales Individual (2) Por Lote (2) Reportadas / Historial (1)Documento 1 de 2Libro Destino0031Folio Destino0442Acta Nº00021PERSONA FICTICIA 2 QA V206Nº Registro Previo#000002Lugar de Confirmación--- Re-imprimir BoletaFirmar y Sellar Permanente"
+      },
+      "final": {
+        "calls": [
+          {
+            "ids": [
+              "qa-1"
+            ],
+            "expected": 1
+          },
+          {
+            "ids": [
+              "qa-2"
+            ],
+            "expected": 2
+          }
+        ],
+        "pending": [
+          "qa-3"
+        ],
+        "reported": [
+          "qa-1",
+          "qa-2"
+        ],
+        "next": 3,
+        "reads": 6,
+        "confirmCalls": 0,
+        "toasts": [
+          {
+            "title": "Asiento sin confirmar",
+            "description": "Se consultó el estado actual. Revise el historial y los pendientes antes de volver a asentar. Failed to fetch after commit"
+          },
+          {
+            "title": "Éxito",
+            "description": "Confirmación y Nota Marginal asentadas permanentemente."
+          }
+        ],
+        "text": "Libro de ConfirmaciónSentar Registros de Confirmación Firma de Actas Temporales Individual (1) Por Lote (1) Reportadas / Historial (2)Documento 1 de 1Libro Destino0031Folio Destino0443Acta Nº00031PERSONA FICTICIA 3 QA V206Nº Registro Previo#000003Lugar de Confirmación--- Re-imprimir BoletaFirmar y Sellar Permanente"
+      }
+    },
+    {
+      "kind": "confirmacion",
+      "scenario": "individual-read-failure",
+      "passed": true,
+      "faults": [],
+      "first": {
+        "calls": [
+          {
+            "ids": [
+              "qa-1"
+            ],
+            "expected": 1
+          }
+        ],
+        "pending": [
+          "qa-2",
+          "qa-3"
+        ],
+        "reported": [
+          "qa-1"
+        ],
+        "next": 2,
+        "reads": 3,
+        "confirmCalls": 0,
+        "toasts": [
+          {
+            "title": "Error de sincronización",
+            "description": "QA V206 lectura no disponible"
+          },
+          {
+            "title": "Asiento sin confirmar",
+            "description": "No se pudo verificar el resultado. Reintente la sincronización antes de volver a asentar."
+          }
+        ],
+        "text": "No fue posible verificar los registros de ConfirmaciónQA V206 lectura no disponibleVerifique los pendientes y consecutivos antes de volver a asentar.Reintentar sincronización"
+      },
+      "final": {
+        "calls": [
+          {
+            "ids": [
+              "qa-1"
+            ],
+            "expected": 1
+          },
+          {
+            "ids": [
+              "qa-2"
+            ],
+            "expected": 2
+          }
+        ],
+        "pending": [
+          "qa-3"
+        ],
+        "reported": [
+          "qa-1",
+          "qa-2"
+        ],
+        "next": 3,
+        "reads": 7,
+        "confirmCalls": 0,
+        "toasts": [
+          {
+            "title": "Error de sincronización",
+            "description": "QA V206 lectura no disponible"
+          },
+          {
+            "title": "Asiento sin confirmar",
+            "description": "No se pudo verificar el resultado. Reintente la sincronización antes de volver a asentar."
+          },
+          {
+            "title": "Éxito",
+            "description": "Confirmación y Nota Marginal asentadas permanentemente."
+          }
+        ],
+        "text": "Libro de ConfirmaciónSentar Registros de Confirmación Firma de Actas Temporales Individual (1) Por Lote (1) Reportadas / Historial (2)Documento 1 de 1Libro Destino0031Folio Destino0443Acta Nº00031PERSONA FICTICIA 3 QA V206Nº Registro Previo#000003Lugar de Confirmación--- Re-imprimir BoletaFirmar y Sellar Permanente"
+      }
+    },
+    {
+      "kind": "confirmacion",
+      "scenario": "success-read-failure",
+      "passed": true,
+      "faults": [],
+      "first": {
+        "calls": [
+          {
+            "ids": [
+              "qa-1"
+            ],
+            "expected": 1
+          }
+        ],
+        "pending": [
+          "qa-2",
+          "qa-3"
+        ],
+        "reported": [
+          "qa-1"
+        ],
+        "next": 2,
+        "reads": 3,
+        "confirmCalls": 0,
+        "toasts": [
+          {
+            "title": "Éxito",
+            "description": "Confirmación y Nota Marginal asentadas permanentemente."
+          },
+          {
+            "title": "Error de sincronización",
+            "description": "QA V206 lectura no disponible"
+          }
+        ],
+        "text": "No fue posible verificar los registros de ConfirmaciónQA V206 lectura no disponibleVerifique los pendientes y consecutivos antes de volver a asentar.Reintentar sincronización"
+      },
+      "final": {
+        "calls": [
+          {
+            "ids": [
+              "qa-1"
+            ],
+            "expected": 1
+          }
+        ],
+        "pending": [
+          "qa-2",
+          "qa-3"
+        ],
+        "reported": [
+          "qa-1"
+        ],
+        "next": 2,
+        "reads": 5,
+        "confirmCalls": 0,
+        "toasts": [
+          {
+            "title": "Éxito",
+            "description": "Confirmación y Nota Marginal asentadas permanentemente."
+          },
+          {
+            "title": "Error de sincronización",
+            "description": "QA V206 lectura no disponible"
+          }
+        ],
+        "text": "Libro de ConfirmaciónSentar Registros de Confirmación Firma de Actas Temporales Individual (2) Por Lote (2) Reportadas / Historial (1)Documento 1 de 2Libro Destino0031Folio Destino0442Acta Nº00021PERSONA FICTICIA 2 QA V206Nº Registro Previo#000002Lugar de Confirmación--- Re-imprimir BoletaFirmar y Sellar Permanente"
+      }
+    },
+    {
+      "kind": "confirmacion",
+      "scenario": "batch-timeout",
+      "passed": true,
+      "faults": [],
+      "first": {
+        "calls": [
+          {
+            "ids": [
+              "qa-1",
+              "qa-2",
+              "qa-3"
+            ],
+            "expected": 1
+          }
+        ],
+        "pending": [
+          "qa-1",
+          "qa-2",
+          "qa-3"
+        ],
+        "reported": [],
+        "next": 1,
+        "reads": 4,
+        "confirmCalls": 1,
+        "toasts": [
+          {
+            "title": "Asiento sin confirmar",
+            "description": "Se consultó el estado actual. La selección conserva solo pendientes. Revise el historial antes de continuar. canceling statement due to statement timeout"
+          }
+        ],
+        "text": "Libro de ConfirmaciónSentar Registros de Confirmación Firma de Actas Temporales Individual (3) Por Lote (3) Reportadas / Historial (0)ESTADOConfirmandoFecha SacramentoLugar de CelebraciónListoQA V206, PERSONA FICTICIA 1#0000012026-01-01---ListoQA V206, PERSONA FICTICIA 2#0000022026-01-01---ListoQA V206, PERSONA FICTICIA 3#0000032026-01-01---Seleccionados: 3Registros aptos para firma Asentar Selección"
+      },
+      "final": {
+        "calls": [
+          {
+            "ids": [
+              "qa-1",
+              "qa-2",
+              "qa-3"
+            ],
+            "expected": 1
+          },
+          {
+            "ids": [
+              "qa-1",
+              "qa-2",
+              "qa-3"
+            ],
+            "expected": 1
+          }
+        ],
+        "pending": [],
+        "reported": [
+          "qa-1",
+          "qa-2",
+          "qa-3"
+        ],
+        "next": 4,
+        "reads": 6,
+        "confirmCalls": 2,
+        "toasts": [
+          {
+            "title": "Asiento sin confirmar",
+            "description": "Se consultó el estado actual. La selección conserva solo pendientes. Revise el historial antes de continuar. canceling statement due to statement timeout"
+          },
+          {
+            "title": "Lote Procesado"
+          }
+        ],
+        "text": "Libro de ConfirmaciónSentar Registros de Confirmación Firma de Actas Temporales Individual (0) Por Lote (0) Reportadas / Historial (3)Archivo al DíaNo hay borradores pendientes en la nube para procesar por lote.Ver Actas Permanentes"
+      }
+    },
+    {
+      "kind": "confirmacion",
+      "scenario": "batch-lost-response",
+      "passed": true,
+      "faults": [],
+      "first": {
+        "calls": [
+          {
+            "ids": [
+              "qa-1",
+              "qa-2",
+              "qa-3"
+            ],
+            "expected": 1
+          }
+        ],
+        "pending": [],
+        "reported": [
+          "qa-1",
+          "qa-2",
+          "qa-3"
+        ],
+        "next": 4,
+        "reads": 4,
+        "confirmCalls": 1,
+        "toasts": [
+          {
+            "title": "Asiento sin confirmar",
+            "description": "Se consultó el estado actual. La selección conserva solo pendientes. Revise el historial antes de continuar. Failed to fetch after commit"
+          }
+        ],
+        "text": "Libro de ConfirmaciónSentar Registros de Confirmación Firma de Actas Temporales Individual (0) Por Lote (0) Reportadas / Historial (3)Archivo al DíaNo hay borradores pendientes en la nube para procesar por lote.Ver Actas Permanentes"
+      },
+      "final": {
+        "calls": [
+          {
+            "ids": [
+              "qa-1",
+              "qa-2",
+              "qa-3"
+            ],
+            "expected": 1
+          }
+        ],
+        "pending": [],
+        "reported": [
+          "qa-1",
+          "qa-2",
+          "qa-3"
+        ],
+        "next": 4,
+        "reads": 4,
+        "confirmCalls": 1,
+        "toasts": [
+          {
+            "title": "Asiento sin confirmar",
+            "description": "Se consultó el estado actual. La selección conserva solo pendientes. Revise el historial antes de continuar. Failed to fetch after commit"
+          }
+        ],
+        "text": "Libro de ConfirmaciónSentar Registros de Confirmación Firma de Actas Temporales Individual (0) Por Lote (0) Reportadas / Historial (3)Archivo al DíaNo hay borradores pendientes en la nube para procesar por lote.Ver Actas Permanentes"
+      }
+    },
+    {
+      "kind": "confirmacion",
+      "scenario": "batch-read-failure",
+      "passed": true,
+      "faults": [],
+      "first": {
+        "calls": [
+          {
+            "ids": [
+              "qa-1",
+              "qa-2",
+              "qa-3"
+            ],
+            "expected": 1
+          }
+        ],
+        "pending": [],
+        "reported": [
+          "qa-1",
+          "qa-2",
+          "qa-3"
+        ],
+        "next": 4,
+        "reads": 3,
+        "confirmCalls": 1,
+        "toasts": [
+          {
+            "title": "Error de sincronización",
+            "description": "QA V206 lectura no disponible"
+          },
+          {
+            "title": "Asiento sin confirmar",
+            "description": "No se pudo verificar el resultado. Reintente la sincronización antes de continuar."
+          }
+        ],
+        "text": "No fue posible verificar los registros de ConfirmaciónQA V206 lectura no disponibleVerifique los pendientes y consecutivos antes de volver a asentar.Reintentar sincronización"
+      },
+      "final": {
+        "calls": [
+          {
+            "ids": [
+              "qa-1",
+              "qa-2",
+              "qa-3"
+            ],
+            "expected": 1
+          }
+        ],
+        "pending": [],
+        "reported": [
+          "qa-1",
+          "qa-2",
+          "qa-3"
+        ],
+        "next": 4,
+        "reads": 5,
+        "confirmCalls": 1,
+        "toasts": [
+          {
+            "title": "Error de sincronización",
+            "description": "QA V206 lectura no disponible"
+          },
+          {
+            "title": "Asiento sin confirmar",
+            "description": "No se pudo verificar el resultado. Reintente la sincronización antes de continuar."
+          }
+        ],
+        "text": "Libro de ConfirmaciónSentar Registros de Confirmación Firma de Actas Temporales Individual (0) Por Lote (0) Reportadas / Historial (3)Archivo al DíaNo hay borradores pendientes en la nube para procesar por lote.Ver Actas Permanentes"
+      }
+    },
+    {
+      "kind": "confirmacion",
+      "scenario": "initial-read-error",
+      "passed": true,
+      "faults": [],
+      "first": {
+        "calls": [],
+        "pending": [
+          "qa-1",
+          "qa-2",
+          "qa-3"
+        ],
+        "reported": [],
+        "next": 1,
+        "reads": 1,
+        "confirmCalls": 0,
+        "toasts": [
+          {
+            "title": "Error de sincronización",
+            "description": "QA V206 lectura no disponible"
+          }
+        ],
+        "text": "No fue posible verificar los registros de ConfirmaciónQA V206 lectura no disponibleVerifique los pendientes y consecutivos antes de volver a asentar.Reintentar sincronización"
+      },
+      "final": {
+        "calls": [],
+        "pending": [
+          "qa-1",
+          "qa-2",
+          "qa-3"
+        ],
+        "reported": [],
+        "next": 1,
+        "reads": 3,
+        "confirmCalls": 0,
+        "toasts": [
+          {
+            "title": "Error de sincronización",
+            "description": "QA V206 lectura no disponible"
+          }
+        ],
+        "text": "Libro de ConfirmaciónSentar Registros de Confirmación Firma de Actas Temporales Individual (3) Por Lote (3) Reportadas / Historial (0)Documento 1 de 3Libro Destino0031Folio Destino0442Acta Nº00011PERSONA FICTICIA 1 QA V206Nº Registro Previo#000001Lugar de Confirmación--- Re-imprimir BoletaFirmar y Sellar Permanente"
+      }
+    },
+    {
+      "kind": "confirmacion",
+      "scenario": "batch-cancel",
+      "passed": true,
+      "faults": [],
+      "first": {
+        "calls": [],
+        "pending": [
+          "qa-1",
+          "qa-2",
+          "qa-3"
+        ],
+        "reported": [],
+        "next": 1,
+        "reads": 2,
+        "confirmCalls": 1,
+        "toasts": [],
+        "text": "Libro de ConfirmaciónSentar Registros de Confirmación Firma de Actas Temporales Individual (3) Por Lote (3) Reportadas / Historial (0)ESTADOConfirmandoFecha SacramentoLugar de CelebraciónListoQA V206, PERSONA FICTICIA 1#0000012026-01-01---ListoQA V206, PERSONA FICTICIA 2#0000022026-01-01---ListoQA V206, PERSONA FICTICIA 3#0000032026-01-01---Seleccionados: 3Registros aptos para firma Asentar Selección"
+      },
+      "final": {
+        "calls": [
+          {
+            "ids": [
+              "qa-1",
+              "qa-2",
+              "qa-3"
+            ],
+            "expected": 1
+          }
+        ],
+        "pending": [],
+        "reported": [
+          "qa-1",
+          "qa-2",
+          "qa-3"
+        ],
+        "next": 4,
+        "reads": 4,
+        "confirmCalls": 2,
+        "toasts": [
+          {
+            "title": "Lote Procesado"
+          }
+        ],
+        "text": "Libro de ConfirmaciónSentar Registros de Confirmación Firma de Actas Temporales Individual (0) Por Lote (0) Reportadas / Historial (3)Archivo al DíaNo hay borradores pendientes en la nube para procesar por lote.Ver Actas Permanentes"
+      }
+    },
+    {
+      "kind": "exequias",
+      "scenario": "individual-timeout",
+      "passed": true,
+      "faults": [],
+      "first": {
+        "calls": [
+          {
+            "ids": [
+              "qa-1"
+            ]
+          }
+        ],
+        "pending": [
+          "qa-1",
+          "qa-2",
+          "qa-3"
+        ],
+        "reported": [],
+        "next": 1,
+        "reads": 6,
+        "confirmCalls": 0,
+        "toasts": [
+          {
+            "title": "Asiento sin confirmar",
+            "description": "Se consultó el estado actual. Revise el libro y los pendientes antes de volver a asentar. canceling statement due to statement timeout"
+          }
+        ],
+        "text": "Registro de ExequiasLibro parroquial · trazabilidad sacramentalParámetrosNuevo registroPendientes (3)Libro de ExequiasDigitalización históricaREG. 000001ordinarioQA V206 PERSONA FICTICIA 1Defunción: 2026-01-01 · Exequias: 2026-01-02 Destino previstoL-0031 · F-0442 · N-0001Se consume sólo al asentarAsentar ahoraREG. 000002ordinarioQA V206 PERSONA FICTICIA 2Defunción: 2026-01-01 · Exequias: 2026-01-02 Destino previstoL-0031 · F-0442 · N-0001Se consume sólo al asentarAsentar ahoraREG. 000003ordinarioQA V206 PERSONA FICTICIA 3Defunción: 2026-01-01 · Exequias: 2026-01-02 Destino previstoL-0031 · F-0442 · N-0001Se consume sólo al asentarAsentar ahora"
+      },
+      "final": {
+        "calls": [
+          {
+            "ids": [
+              "qa-1"
+            ]
+          },
+          {
+            "ids": [
+              "qa-1"
+            ]
+          }
+        ],
+        "pending": [
+          "qa-2",
+          "qa-3"
+        ],
+        "reported": [
+          "qa-1"
+        ],
+        "next": 2,
+        "reads": 9,
+        "confirmCalls": 0,
+        "toasts": [
+          {
+            "title": "Asiento sin confirmar",
+            "description": "Se consultó el estado actual. Revise el libro y los pendientes antes de volver a asentar. canceling statement due to statement timeout"
+          },
+          {
+            "title": "Registro asentado",
+            "description": "Exequias registradas de forma atómica en L-31 F-442 N-1."
+          }
+        ],
+        "text": "Registro de ExequiasLibro parroquial · trazabilidad sacramentalParámetrosNuevo registroPendientes (2)Libro de ExequiasDigitalización históricaLibro/Folio/NºFiel difuntoDefunciónExequiasLugarControl internoNotasL-31 F-442 N-1ordinarioQA V206 PERSONA FICTICIA 12026-01-02---REG. 000001Notas"
+      }
+    },
+    {
+      "kind": "exequias",
+      "scenario": "individual-lost-response",
+      "passed": true,
+      "faults": [],
+      "first": {
+        "calls": [
+          {
+            "ids": [
+              "qa-1"
+            ]
+          }
+        ],
+        "pending": [
+          "qa-2",
+          "qa-3"
+        ],
+        "reported": [
+          "qa-1"
+        ],
+        "next": 2,
+        "reads": 6,
+        "confirmCalls": 0,
+        "toasts": [
+          {
+            "title": "Asiento sin confirmar",
+            "description": "Se consultó el estado actual. Revise el libro y los pendientes antes de volver a asentar. Failed to fetch after commit"
+          }
+        ],
+        "text": "Registro de ExequiasLibro parroquial · trazabilidad sacramentalParámetrosNuevo registroPendientes (2)Libro de ExequiasDigitalización históricaREG. 000002ordinarioQA V206 PERSONA FICTICIA 2Defunción: 2026-01-01 · Exequias: 2026-01-02 Destino previstoL-0031 · F-0442 · N-0002Se consume sólo al asentarAsentar ahoraREG. 000003ordinarioQA V206 PERSONA FICTICIA 3Defunción: 2026-01-01 · Exequias: 2026-01-02 Destino previstoL-0031 · F-0442 · N-0002Se consume sólo al asentarAsentar ahora"
+      },
+      "final": {
+        "calls": [
+          {
+            "ids": [
+              "qa-1"
+            ]
+          },
+          {
+            "ids": [
+              "qa-2"
+            ]
+          }
+        ],
+        "pending": [
+          "qa-3"
+        ],
+        "reported": [
+          "qa-1",
+          "qa-2"
+        ],
+        "next": 3,
+        "reads": 9,
+        "confirmCalls": 0,
+        "toasts": [
+          {
+            "title": "Asiento sin confirmar",
+            "description": "Se consultó el estado actual. Revise el libro y los pendientes antes de volver a asentar. Failed to fetch after commit"
+          },
+          {
+            "title": "Registro asentado",
+            "description": "Exequias registradas de forma atómica en L-31 F-442 N-2."
+          }
+        ],
+        "text": "Registro de ExequiasLibro parroquial · trazabilidad sacramentalParámetrosNuevo registroPendientes (1)Libro de ExequiasDigitalización históricaLibro/Folio/NºFiel difuntoDefunciónExequiasLugarControl internoNotasL-31 F-442 N-1ordinarioQA V206 PERSONA FICTICIA 12026-01-02---REG. 000001NotasL-31 F-442 N-2ordinarioQA V206 PERSONA FICTICIA 22026-01-02---REG. 000002Notas"
+      }
+    },
+    {
+      "kind": "exequias",
+      "scenario": "individual-read-failure",
+      "passed": true,
+      "faults": [],
+      "first": {
+        "calls": [
+          {
+            "ids": [
+              "qa-1"
+            ]
+          }
+        ],
+        "pending": [
+          "qa-2",
+          "qa-3"
+        ],
+        "reported": [
+          "qa-1"
+        ],
+        "next": 2,
+        "reads": 6,
+        "confirmCalls": 0,
+        "toasts": [
+          {
+            "title": "Error de sincronización",
+            "description": "QA V206 lectura no disponible"
+          },
+          {
+            "title": "Asiento sin confirmar",
+            "description": "No se pudo verificar el resultado. Reintente la sincronización antes de volver a asentar."
+          }
+        ],
+        "text": "No fue posible verificar los registros de ExequiasQA V206 lectura no disponibleVerifique el libro, los pendientes y los consecutivos antes de continuar.Reintentar sincronización"
+      },
+      "final": {
+        "calls": [
+          {
+            "ids": [
+              "qa-1"
+            ]
+          },
+          {
+            "ids": [
+              "qa-2"
+            ]
+          }
+        ],
+        "pending": [
+          "qa-3"
+        ],
+        "reported": [
+          "qa-1",
+          "qa-2"
+        ],
+        "next": 3,
+        "reads": 12,
+        "confirmCalls": 0,
+        "toasts": [
+          {
+            "title": "Error de sincronización",
+            "description": "QA V206 lectura no disponible"
+          },
+          {
+            "title": "Asiento sin confirmar",
+            "description": "No se pudo verificar el resultado. Reintente la sincronización antes de volver a asentar."
+          },
+          {
+            "title": "Registro asentado",
+            "description": "Exequias registradas de forma atómica en L-31 F-442 N-2."
+          }
+        ],
+        "text": "Registro de ExequiasLibro parroquial · trazabilidad sacramentalParámetrosNuevo registroPendientes (1)Libro de ExequiasDigitalización históricaLibro/Folio/NºFiel difuntoDefunciónExequiasLugarControl internoNotasL-31 F-442 N-1ordinarioQA V206 PERSONA FICTICIA 12026-01-02---REG. 000001NotasL-31 F-442 N-2ordinarioQA V206 PERSONA FICTICIA 22026-01-02---REG. 000002Notas"
+      }
+    },
+    {
+      "kind": "exequias",
+      "scenario": "success-read-failure",
+      "passed": true,
+      "faults": [],
+      "first": {
+        "calls": [
+          {
+            "ids": [
+              "qa-1"
+            ]
+          }
+        ],
+        "pending": [
+          "qa-2",
+          "qa-3"
+        ],
+        "reported": [
+          "qa-1"
+        ],
+        "next": 2,
+        "reads": 6,
+        "confirmCalls": 0,
+        "toasts": [
+          {
+            "title": "Error de sincronización",
+            "description": "QA V206 lectura no disponible"
+          },
+          {
+            "title": "Registro asentado",
+            "description": "Exequias registradas de forma atómica en L-31 F-442 N-1."
+          }
+        ],
+        "text": "No fue posible verificar los registros de ExequiasQA V206 lectura no disponibleVerifique el libro, los pendientes y los consecutivos antes de continuar.Reintentar sincronización"
+      },
+      "final": {
+        "calls": [
+          {
+            "ids": [
+              "qa-1"
+            ]
+          }
+        ],
+        "pending": [
+          "qa-2",
+          "qa-3"
+        ],
+        "reported": [
+          "qa-1"
+        ],
+        "next": 2,
+        "reads": 9,
+        "confirmCalls": 0,
+        "toasts": [
+          {
+            "title": "Error de sincronización",
+            "description": "QA V206 lectura no disponible"
+          },
+          {
+            "title": "Registro asentado",
+            "description": "Exequias registradas de forma atómica en L-31 F-442 N-1."
+          }
+        ],
+        "text": "Registro de ExequiasLibro parroquial · trazabilidad sacramentalParámetrosNuevo registroPendientes (2)Libro de ExequiasDigitalización históricaREG. 000002ordinarioQA V206 PERSONA FICTICIA 2Defunción: 2026-01-01 · Exequias: 2026-01-02 Destino previstoL-0031 · F-0442 · N-0002Se consume sólo al asentarAsentar ahoraREG. 000003ordinarioQA V206 PERSONA FICTICIA 3Defunción: 2026-01-01 · Exequias: 2026-01-02 Destino previstoL-0031 · F-0442 · N-0002Se consume sólo al asentarAsentar ahora"
+      }
+    },
+    {
+      "kind": "exequias",
+      "scenario": "initial-read-error",
+      "passed": true,
+      "faults": [],
+      "first": {
+        "calls": [],
+        "pending": [
+          "qa-1",
+          "qa-2",
+          "qa-3"
+        ],
+        "reported": [],
+        "next": 1,
+        "reads": 3,
+        "confirmCalls": 0,
+        "toasts": [
+          {
+            "title": "Error de sincronización",
+            "description": "QA V206 lectura no disponible"
+          }
+        ],
+        "text": "No fue posible verificar los registros de ExequiasQA V206 lectura no disponibleVerifique el libro, los pendientes y los consecutivos antes de continuar.Reintentar sincronización"
+      },
+      "final": {
+        "calls": [],
+        "pending": [
+          "qa-1",
+          "qa-2",
+          "qa-3"
+        ],
+        "reported": [],
+        "next": 1,
+        "reads": 6,
+        "confirmCalls": 0,
+        "toasts": [
+          {
+            "title": "Error de sincronización",
+            "description": "QA V206 lectura no disponible"
+          }
+        ],
+        "text": "Registro de ExequiasLibro parroquial · trazabilidad sacramentalParámetrosNuevo registroPendientes (3)Libro de ExequiasDigitalización históricaREG. 000001ordinarioQA V206 PERSONA FICTICIA 1Defunción: 2026-01-01 · Exequias: 2026-01-02 Destino previstoL-0031 · F-0442 · N-0001Se consume sólo al asentarAsentar ahoraREG. 000002ordinarioQA V206 PERSONA FICTICIA 2Defunción: 2026-01-01 · Exequias: 2026-01-02 Destino previstoL-0031 · F-0442 · N-0001Se consume sólo al asentarAsentar ahoraREG. 000003ordinarioQA V206 PERSONA FICTICIA 3Defunción: 2026-01-01 · Exequias: 2026-01-02 Destino previstoL-0031 · F-0442 · N-0001Se consume sólo al asentarAsentar ahora"
+      }
+    },
+    {
+      "kind": "exequias",
+      "scenario": "double-across-records",
+      "passed": true,
+      "faults": [],
+      "first": {
+        "calls": [
+          {
+            "ids": [
+              "qa-1"
+            ]
+          }
+        ],
+        "pending": [
+          "qa-1",
+          "qa-2",
+          "qa-3"
+        ],
+        "reported": [],
+        "next": 1,
+        "reads": 3,
+        "confirmCalls": 0,
+        "toasts": [],
+        "text": "Registro de ExequiasLibro parroquial · trazabilidad sacramentalParámetrosNuevo registroPendientes (3)Libro de ExequiasDigitalización históricaREG. 000001ordinarioQA V206 PERSONA FICTICIA 1Defunción: 2026-01-01 · Exequias: 2026-01-02 Destino previstoL-0031 · F-0442 · N-0001Se consume sólo al asentarAsentando...REG. 000002ordinarioQA V206 PERSONA FICTICIA 2Defunción: 2026-01-01 · Exequias: 2026-01-02 Destino previstoL-0031 · F-0442 · N-0001Se consume sólo al asentarAsentar ahoraREG. 000003ordinarioQA V206 PERSONA FICTICIA 3Defunción: 2026-01-01 · Exequias: 2026-01-02 Destino previstoL-0031 · F-0442 · N-0001Se consume sólo al asentarAsentar ahora"
+      },
+      "final": {
+        "calls": [
+          {
+            "ids": [
+              "qa-1"
+            ]
+          },
+          {
+            "ids": [
+              "qa-2"
+            ]
+          }
+        ],
+        "pending": [
+          "qa-3"
+        ],
+        "reported": [
+          "qa-1",
+          "qa-2"
+        ],
+        "next": 3,
+        "reads": 9,
+        "confirmCalls": 0,
+        "toasts": [
+          {
+            "title": "Registro asentado",
+            "description": "Exequias registradas de forma atómica en L-31 F-442 N-1."
+          },
+          {
+            "title": "Registro asentado",
+            "description": "Exequias registradas de forma atómica en L-31 F-442 N-2."
+          }
+        ],
+        "text": "Registro de ExequiasLibro parroquial · trazabilidad sacramentalParámetrosNuevo registroPendientes (1)Libro de ExequiasDigitalización históricaLibro/Folio/NºFiel difuntoDefunciónExequiasLugarControl internoNotasL-31 F-442 N-1ordinarioQA V206 PERSONA FICTICIA 12026-01-02---REG. 000001NotasL-31 F-442 N-2ordinarioQA V206 PERSONA FICTICIA 22026-01-02---REG. 000002Notas"
+      }
+    }
+  ],
+  "passed": 24,
+  "total": 24,
+  "exceptions": [],
+  "externalRequests": []
+}

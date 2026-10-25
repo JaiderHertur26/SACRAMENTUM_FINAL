@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '@/components/DashboardLayout';
 import { useAuth } from '@/context/AuthContext';
@@ -42,6 +42,7 @@ const BaptismSentarRegistrosPage = () => {
 
     const [isLoading, setIsLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
+    const seatInFlight = useRef(false);
     const [loadError, setLoadError] = useState('');
     const [parishInfo, setParishInfo] = useState(null); 
 
@@ -70,7 +71,7 @@ const BaptismSentarRegistrosPage = () => {
     }, [user]);
 
     const loadData = useCallback(async () => {
-        if (!resolvedParishId) return;
+        if (!resolvedParishId) return false;
         setIsLoading(true);
         setLoadError('');
 
@@ -114,6 +115,8 @@ const BaptismSentarRegistrosPage = () => {
 
             setPendingBaptisms(pendientes);
             setReportedBaptisms(reportados);
+            setSelectedIds(ids => ids.filter(id => pendientes.some(record => record.id === id)));
+            setCurrentIndex(index => Math.min(index, Math.max(0, pendientes.length - 1)));
 
             const p = await getBaptismParameters(resolvedParishId);
             setFullParamsCache(p);
@@ -132,11 +135,13 @@ const BaptismSentarRegistrosPage = () => {
                 console.warn('No fue posible cargar el perfil institucional desde Supabase:', profileError);
                 if (misDatos?.length > 0) setParishInfo(legacyPrintInfo);
             }
+            return true;
         } catch (error) {
             console.error('Error cargando datos:', error);
             const message = error?.message || 'No fue posible consultar los borradores de Bautismo en Supabase.';
             setLoadError(message);
             toast({ title: 'Error de sincronización', description: message, variant: 'destructive' });
+            return false;
         } finally {
             setIsLoading(false);
         }
@@ -156,8 +161,9 @@ const BaptismSentarRegistrosPage = () => {
     };
 
     const handleRegisterIndividual = async () => {
-        if (!currentBaptism || isSaving || currentIsFuture) return;
+        if (!currentBaptism || isSaving || seatInFlight.current || loadError || currentIsFuture) return;
 
+        seatInFlight.current = true;
         setIsSaving(true);
         try {
             const { error: seatError } = await supabase.rpc('seat_baptism_records', {
@@ -181,13 +187,14 @@ const BaptismSentarRegistrosPage = () => {
             });
 
             await loadData();
-            if (currentIndex >= pendingBaptisms.length - 1) {
-                setCurrentIndex(Math.max(0, pendingBaptisms.length - 2));
-            }
         } catch (error) {
-            toast({ title: "Error", description: error.message, variant: "destructive" });
+            const verified = await loadData();
+            toast({ title: 'Asiento sin confirmar', description: verified
+                ? 'Se consultó el estado actual. Revise el historial y los pendientes antes de volver a asentar. ' + (error?.message || '')
+                : 'No se pudo verificar el resultado. Reintente la sincronización antes de volver a asentar.', variant: 'destructive' });
         } finally {
             setIsSaving(false);
+            seatInFlight.current = false;
         }
     };
 
@@ -209,16 +216,17 @@ const BaptismSentarRegistrosPage = () => {
     };
 
     const handleBatchConfirm = async () => {
-        if (selectedIds.length === 0 || isSaving) return;
-        if (!(await institutionalConfirm({
-            title: 'Asentar registros de Bautismo',
-            message: `Se asentarán permanentemente ${selectedIds.length} registros y se consumirán sus consecutivos oficiales.`,
-            confirmText: 'Sí, asentar registros',
-            tone: 'warning'
-        }))) return;
-
+        if (selectedIds.length === 0 || isSaving || seatInFlight.current || loadError) return;
+        seatInFlight.current = true;
         setIsSaving(true);
         try {
+            if (!(await institutionalConfirm({
+                title: 'Asentar registros de Bautismo',
+                message: `Se asentarán permanentemente ${selectedIds.length} registros y se consumirán sus consecutivos oficiales.`,
+                confirmText: 'Sí, asentar registros',
+                tone: 'warning'
+            }))) return;
+
             const p = fullParamsCache || await getBaptismParameters(resolvedParishId);
             let cFolio = parseInt(p.ordinarioFolio || 1, 10);
             let cNumero = parseInt(p.ordinarioNumero || 1, 10);
@@ -272,9 +280,13 @@ const BaptismSentarRegistrosPage = () => {
             setSelectedIds([]);
             await loadData();
         } catch (err) {
-            toast({ title: "Error", description: err.message, variant: "destructive" });
+            const verified = await loadData();
+            toast({ title: 'Asiento sin confirmar', description: verified
+                ? 'Se consultó el estado actual. La selección conserva solo pendientes. Revise el historial antes de continuar. ' + (err?.message || '')
+                : 'No se pudo verificar el resultado. Reintente la sincronización antes de continuar.', variant: 'destructive' });
         } finally {
             setIsSaving(false);
+            seatInFlight.current = false;
         }
     };
 

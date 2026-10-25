@@ -126,7 +126,8 @@ exec('pruebas-sinteticas',node,['--test',
  'scripts/test-marriage-funeral-atomicity-v202.mjs',
  'scripts/test-real-statement-timeout-v203.mjs',
  'scripts/test-uniform-sacramental-lock-order-v204.mjs',
- 'scripts/test-seat-recovery-browser-v205.mjs']);
+ 'scripts/test-seat-recovery-browser-v205.mjs',
+ 'scripts/test-three-sacrament-recovery-v206.mjs']);
 const scripts=fs.readdirSync(path.join(root,'scripts')).filter(x=>/^verify-.*\.mjs$/.test(x)).sort();
 for(const file of scripts)exec('legacy/'+file,node,['scripts/'+file]);
 const npmOnWindows=process.platform==='win32';
