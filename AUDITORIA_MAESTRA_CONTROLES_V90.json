@@ -873,12 +873,13 @@
       "area": "Integridad y concurrencia",
       "priority": "P0",
       "criterion": "Bloqueos y deadlocks",
-      "status": "PENDIENTE",
+      "status": "EN_PROGRESO",
       "evidence": [
         "V167: los 4 RPC institucionales verifican bloqueos FOR UPDATE y un índice UNIQUE parcial real; no se han probado deadlocks ni simultaneidad física.",
-        "V168: nueva RPC bloquea filas de expedientes, decreto y notas con FOR UPDATE; falta disputa de dos conexiones reales y medir deadlocks."
+        "V168: nueva RPC bloquea filas de expedientes, decreto y notas con FOR UPDATE; falta disputa de dos conexiones reales y medir deadlocks.",
+        "AUDITORIA_ORDEN_BLOQUEOS_V204_2026-10-25.md: V204_orden_de_bloqueo_parish_parameters_antes_de_boleta_unificado_en_4_RPC_ensayos_de_regresion_exitosos_pero_sin_dos_backends_simultaneos"
       ],
-      "updated_at": "2026-10-23T16:09:46.262Z"
+      "updated_at": "2026-10-25T22:34:25.650Z"
     },
     {
       "id": "07.09",
