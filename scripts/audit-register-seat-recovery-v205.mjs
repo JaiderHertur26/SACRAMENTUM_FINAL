@@ -51,6 +51,9 @@ Puerta local: ${tests}/${tests} pruebas y ${gate.passed}/${gate.checks} verifica
 
 Se detectó que el workflow mantenía la lista de pruebas hasta V168 aunque la puerta local incluía V204. Se sincronizó con los 103 archivos explícitos actuales, incluyendo V169–V205. La nueva prueba comprueba que ninguna entrada de la puerta quede ausente en CI. GitHub Actions ejecuta primero el navegador aislado y después valida su evidencia junto a toda la regresión.
 
+## Arranque de Chrome en CI
+La PR #51 aprobó en Linux (run 40242668069), pero el primer run de main 40242787626 falló antes de ejecutar escenarios: Chrome no creó DevToolsActivePort dentro del plazo de ocho segundos. El despliegue productivo 7320482479 quedó en failure; el sitio mantuvo V204. Se ajustó el arranque del navegador de pruebas con flags exclusivos de Linux, espera máxima de 30 segundos, detección de salida anticipada y diagnóstico stderr. No se omite ni se convierte en aprobada ninguna prueba de navegador. Este cambio solo afecta el ensayo con datos ficticios.
+
 ## Alcance y siguiente trabajo
 Esta evidencia verifica comportamiento real de React con fallos simulados, sin sesión Auth productiva. No demuestra un corte físico de red, dos conexiones PostgreSQL simultáneas, recuperación de los otros tres sacramentos ni E2E autenticado.
 

@@ -2,7 +2,7 @@
   "protocol": "V205",
   "scope": "Actual React marriage seating page; in-memory fictitious services; no authenticated production E2E or physical network fault",
   "sourceSha256": "54c14fefe6635e53f2cacbe88195c47ab8d8353b1b76a38aeb3da41d39d44df1",
-  "date": "2026-10-25T22:56:50.579Z",
+  "date": "2026-10-25T23:03:13.061Z",
   "rows": [
     {
       "scenario": "individual-reject",

@@ -9,8 +9,15 @@ const vite=spawn(process.execPath,['node_modules/vite/bin/vite.js','--config','s
 let browser,socket;const rows=[],exceptions=[],externalRequests=[];
 try{
  let ready=false;for(let i=0;i<80;i++){try{ready=(await fetch('http://127.0.0.1:4855/')).ok}catch{}if(ready)break;await sleep(100)}if(!ready)throw Error('Vite unavailable');
- browser=spawn(chrome,['--headless=new','--disable-gpu','--disable-extensions','--no-first-run','--disable-background-networking','--remote-debugging-port=0','--user-data-dir='+tmp,'about:blank'],{stdio:'ignore'});
- const portfile=path.join(tmp,'DevToolsActivePort');for(let i=0;i<80&&!fs.existsSync(portfile);i++)await sleep(100);
+ // Hosted Linux runners can restrict Chromium user namespaces; this browser only serves isolated fake data.
+ const platformFlags=process.platform==='linux'?['--no-sandbox','--disable-dev-shm-usage']:[];
+ let chromeDiagnostics='';
+ browser=spawn(chrome,[...platformFlags,'--headless=new','--disable-gpu','--disable-extensions','--no-first-run','--disable-background-networking','--remote-debugging-port=0','--user-data-dir='+tmp,'about:blank'],{stdio:['ignore','ignore','pipe']});
+ browser.stderr.on('data',chunk=>{chromeDiagnostics=(chromeDiagnostics+chunk.toString()).slice(-2400)});
+ browser.on('error',error=>{chromeDiagnostics=error.message});
+ const portfile=path.join(tmp,'DevToolsActivePort');
+ for(let i=0;i<300&&!fs.existsSync(portfile);i++){if(browser.exitCode!==null||browser.signalCode)break;await sleep(100)}
+ if(!fs.existsSync(portfile))throw Error('Chrome startup failed (exit='+browser.exitCode+'): '+chromeDiagnostics);
  const port=fs.readFileSync(portfile,'utf8').split(/\r?\n/)[0];
  const pages=await(await fetch('http://127.0.0.1:'+port+'/json/list')).json();
  socket=new WebSocket(pages.find(p=>p.type==='page').webSocketDebuggerUrl);

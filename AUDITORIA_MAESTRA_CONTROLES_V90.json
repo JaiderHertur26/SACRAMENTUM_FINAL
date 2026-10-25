@@ -1198,7 +1198,7 @@
         "AUDITORIA_CIRCUITOS_REGISTRALES_V193_2026-10-24.md: V193 Matrimonio boleta asiento libro ordinario y proteccion de doble asiento en PostgreSQL",
         "AUDITORIA_RECUPERACION_MATRIMONIO_V205_2026-10-25.md: V205_pagina_React_real_Matrimonio_8_escenarios_con_servicios_simulados_recuperacion_de_lote_respuesta_perdida_lectura_fallida_y_doble_click_CI_103_archivos_de_prueba_sin_E2E_Auth_ni_concurrencia_PG"
       ],
-      "updated_at": "2026-10-25T22:58:33.073Z"
+      "updated_at": "2026-10-25T23:03:43.600Z"
     },
     {
       "id": "10.06",
@@ -1952,7 +1952,7 @@
         "V167: reintentos duplicados de API rechazados por índice/estado. Prueba de doble clic del navegador todavía pendiente.",
         "AUDITORIA_RECUPERACION_MATRIMONIO_V205_2026-10-25.md: V205_pagina_React_real_Matrimonio_8_escenarios_con_servicios_simulados_recuperacion_de_lote_respuesta_perdida_lectura_fallida_y_doble_click_CI_103_archivos_de_prueba_sin_E2E_Auth_ni_concurrencia_PG"
       ],
-      "updated_at": "2026-10-25T22:58:33.075Z"
+      "updated_at": "2026-10-25T23:03:43.603Z"
     },
     {
       "id": "15.09",
@@ -3024,7 +3024,7 @@
       "evidence": [
         "AUDITORIA_RECUPERACION_MATRIMONIO_V205_2026-10-25.md: V205_pagina_React_real_Matrimonio_8_escenarios_con_servicios_simulados_recuperacion_de_lote_respuesta_perdida_lectura_fallida_y_doble_click_CI_103_archivos_de_prueba_sin_E2E_Auth_ni_concurrencia_PG"
       ],
-      "updated_at": "2026-10-25T22:58:33.075Z"
+      "updated_at": "2026-10-25T23:03:43.603Z"
     },
     {
       "id": "24.12",
@@ -3082,7 +3082,7 @@
       "evidence": [
         "AUDITORIA_RECUPERACION_MATRIMONIO_V205_2026-10-25.md: V205_pagina_React_real_Matrimonio_8_escenarios_con_servicios_simulados_recuperacion_de_lote_respuesta_perdida_lectura_fallida_y_doble_click_CI_103_archivos_de_prueba_sin_E2E_Auth_ni_concurrencia_PG"
       ],
-      "updated_at": "2026-10-25T22:58:33.075Z"
+      "updated_at": "2026-10-25T23:03:43.603Z"
     },
     {
       "id": "25.03",
@@ -3094,7 +3094,7 @@
       "evidence": [
         "AUDITORIA_RECUPERACION_MATRIMONIO_V205_2026-10-25.md: V205_pagina_React_real_Matrimonio_8_escenarios_con_servicios_simulados_recuperacion_de_lote_respuesta_perdida_lectura_fallida_y_doble_click_CI_103_archivos_de_prueba_sin_E2E_Auth_ni_concurrencia_PG"
       ],
-      "updated_at": "2026-10-25T22:58:33.075Z"
+      "updated_at": "2026-10-25T23:03:43.603Z"
     },
     {
       "id": "25.04",
@@ -3136,7 +3136,7 @@
       "evidence": [
         "AUDITORIA_RECUPERACION_MATRIMONIO_V205_2026-10-25.md: V205_pagina_React_real_Matrimonio_8_escenarios_con_servicios_simulados_recuperacion_de_lote_respuesta_perdida_lectura_fallida_y_doble_click_CI_103_archivos_de_prueba_sin_E2E_Auth_ni_concurrencia_PG"
       ],
-      "updated_at": "2026-10-25T22:58:33.075Z"
+      "updated_at": "2026-10-25T23:03:43.603Z"
     },
     {
       "id": "25.08",
@@ -3148,7 +3148,7 @@
       "evidence": [
         "AUDITORIA_RECUPERACION_MATRIMONIO_V205_2026-10-25.md: V205_pagina_React_real_Matrimonio_8_escenarios_con_servicios_simulados_recuperacion_de_lote_respuesta_perdida_lectura_fallida_y_doble_click_CI_103_archivos_de_prueba_sin_E2E_Auth_ni_concurrencia_PG"
       ],
-      "updated_at": "2026-10-25T22:58:33.075Z"
+      "updated_at": "2026-10-25T23:03:43.603Z"
     },
     {
       "id": "25.09",
@@ -3180,7 +3180,7 @@
       "evidence": [
         "AUDITORIA_RECUPERACION_MATRIMONIO_V205_2026-10-25.md: V205_pagina_React_real_Matrimonio_8_escenarios_con_servicios_simulados_recuperacion_de_lote_respuesta_perdida_lectura_fallida_y_doble_click_CI_103_archivos_de_prueba_sin_E2E_Auth_ni_concurrencia_PG"
       ],
-      "updated_at": "2026-10-25T22:58:33.075Z"
+      "updated_at": "2026-10-25T23:03:43.603Z"
     },
     {
       "id": "26.01",
@@ -3809,7 +3809,7 @@
         "V127: CI exige npm audit runtime y total, y amplía suite; su ejecución remota desde esta rama sigue pendiente.",
         "AUDITORIA_RECUPERACION_MATRIMONIO_V205_2026-10-25.md: V205_pagina_React_real_Matrimonio_8_escenarios_con_servicios_simulados_recuperacion_de_lote_respuesta_perdida_lectura_fallida_y_doble_click_CI_103_archivos_de_prueba_sin_E2E_Auth_ni_concurrencia_PG"
       ],
-      "updated_at": "2026-10-25T22:58:33.075Z"
+      "updated_at": "2026-10-25T23:03:43.603Z"
     },
     {
       "id": "30.04",
@@ -4024,7 +4024,7 @@
         "V169: 20 pruebas de comportamiento en Node sobre cinco handlers, incluyendo respuesta tardía satisfactoria, error tardío, cambio durante diálogo y ruta legítima; falta doble clic físico y redes reales.",
         "AUDITORIA_RECUPERACION_MATRIMONIO_V205_2026-10-25.md: V205_pagina_React_real_Matrimonio_8_escenarios_con_servicios_simulados_recuperacion_de_lote_respuesta_perdida_lectura_fallida_y_doble_click_CI_103_archivos_de_prueba_sin_E2E_Auth_ni_concurrencia_PG"
       ],
-      "updated_at": "2026-10-25T22:58:33.075Z"
+      "updated_at": "2026-10-25T23:03:43.603Z"
     },
     {
       "id": "31.09",
@@ -4335,7 +4335,7 @@
         "V168: migración Supabase aplicada 20261023154826; probado de nuevo contra la función instalada y Vercel publicó tras CI de commit 32dfdbb.",
         "AUDITORIA_RECUPERACION_MATRIMONIO_V205_2026-10-25.md: V205_pagina_React_real_Matrimonio_8_escenarios_con_servicios_simulados_recuperacion_de_lote_respuesta_perdida_lectura_fallida_y_doble_click_CI_103_archivos_de_prueba_sin_E2E_Auth_ni_concurrencia_PG"
       ],
-      "updated_at": "2026-10-25T22:58:33.075Z"
+      "updated_at": "2026-10-25T23:03:43.604Z"
     },
     {
       "id": "32.07",
@@ -4416,7 +4416,7 @@
         "V182 targeted and anchored replacement in 3 privileged RPCs, preserving signatures/grants, with JWT-fictitious actors and BEGIN/ROLLBACK SQL proof.",
         "AUDITORIA_RECUPERACION_MATRIMONIO_V205_2026-10-25.md: V205_pagina_React_real_Matrimonio_8_escenarios_con_servicios_simulados_recuperacion_de_lote_respuesta_perdida_lectura_fallida_y_doble_click_CI_103_archivos_de_prueba_sin_E2E_Auth_ni_concurrencia_PG"
       ],
-      "updated_at": "2026-10-25T22:58:33.075Z"
+      "updated_at": "2026-10-25T23:03:43.604Z"
     },
     {
       "id": "32.08",
