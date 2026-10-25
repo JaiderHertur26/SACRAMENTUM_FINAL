@@ -10,7 +10,7 @@ Regla: no introducir datos falsos permanentes; usar memoria, transacciones ROLLB
 
 Prioridad P0 bloquea la certificación. P1 debe constar resuelta o aceptada con evidencia y responsable.
 
-Avance: 325 controles totales; 27 aprobados; 121 en progreso; 177 pendientes; 0 fallidos; 0 bloqueados.
+Avance: 325 controles totales; 28 aprobados; 120 en progreso; 177 pendientes; 0 fallidos; 0 bloqueados.
 
 ## Fases y controles numerados
 
@@ -264,7 +264,7 @@ Avance: 325 controles totales; 27 aprobados; 121 en progreso; 177 pendientes; 0 
 - [x] 06.12 · No metadatos de usuario editables para autorizar — APROBADO
   - Evidencia: AUDITORIA_IDENTIDAD_Y_AISLAMIENTO_V184_2026-10-24.md: Inventario PostgreSQL 248 funciones y 130 politicas sin user_metadata editable; 275 fuentes frontend, QA read-only y gate reproducibles
 
-### 07. Integridad y concurrencia (P0) — 4/9
+### 07. Integridad y concurrencia (P0) — 5/9
 
 - [x] 07.01 · Unicidad Libro Folio Número — APROBADO
   - Evidencia: AUDITORIA_NUMERACION_Y_DECRETOS_V188_2026-10-24.md: PostgreSQL V187 y V188 8393 partidas sin choques, 4 inserciones identicas y 4 equivalentes normalizadas bloqueadas por indices unicos
@@ -281,12 +281,13 @@ Avance: 325 controles totales; 27 aprobados; 121 en progreso; 177 pendientes; 0 
   - Evidencia: AUDITORIA_RECEPCION_NULIDAD_MATRIMONIAL_V106_2026-10-21.md: V106: segunda aceptación por Parroquia devuelve processed sin duplicar nota; falta concurrencia real multi-sesión
   - Evidencia: V167: para cada uno de 4 sacramentos, solicitud duplicada y reintento de ejecución después de éxito denegados; audit 3 y notificación única.
   - Evidencia: AUDITORIA_ATOMICIDAD_REINTENTOS_V201_2026-10-24.md: V201_dos_sacramentos_rechazan_segunda_peticion_obsoleta_y_reintentan_consecutivo_actualizado_falta_matriz_global
-- [ ] 07.06 · Transacción atomicidad — EN_PROGRESO
+- [x] 07.06 · Transacción atomicidad — APROBADO
   - Evidencia: V167: 4 rutas completas de reversión y conciliación conservan atomicidad: decreto y nota reversed, case executed, audit 3 y notificación 1. BEGIN/ROLLBACK.
   - Evidencia: V168: transacción única revierte 2 notas y 1 decreto y cierra 2 expedientes, o falla sin cambios; seis auditorías de expedientes y una notificación consolidada por caso.
   - Evidencia: AUDITORIA_INTERDIOCESANA_CIERRE_ASIENTOS_V198_2026-10-24.md: V198 problema real de boleta asentada sin partida corregido con 20 prohibiciones y dos asientos oficiales efectivos con rollback
   - Evidencia: AUDITORIA_CIERRE_BOLETAS_V199_2026-10-24.md: V199_boletas_asentadas_conservadas_20_operaciones_seguras_en_sistema_sql_falta_concurrencia_real_y_e2e
   - Evidencia: AUDITORIA_ATOMICIDAD_REINTENTOS_V201_2026-10-24.md: V201_dos_lotes_bautismo_y_confirmacion_segundo_registro_falla_primero_revertido_sin_avance_de_consecutivo_ni_auditoria_y_reintento_seguro_falta_matrimonio_y_exequias
+  - Evidencia: AUDITORIA_ATOMICIDAD_CUATRO_SACRAMENTOS_V202_2026-10-25.md: V202_cuatro_RPCS_de_asiento_ensayadas_en_PG_con_rollback_y_cierre_coherente_de_boleta_partida_parametros_y_auditoria_matrimonio_exequias_falla_posterior_y_bautismo_confirmacion_segundo_invalido
 - [x] 07.07 · Llaves foráneas sin huérfanos — APROBADO
   - Evidencia: AUDITORIA_INTEGRIDAD_REFERENCIAL_V185_2026-10-24.md: QA live PostgreSQL 165 FKs validadas sin huerfanos ni triggers desactivados, BEGIN READ ONLY y ROLLBACK
 - [ ] 07.08 · Bloqueos y deadlocks — PENDIENTE
