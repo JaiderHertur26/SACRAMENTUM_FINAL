@@ -123,6 +123,7 @@ Avance: 325 controles totales; 27 aprobados; 120 en progreso; 178 pendientes; 0 
   - Evidencia: AUDITORIA_PARAMETROS_Y_LIBROS_V94_2026-10-21.md: UPDATE de parámetros y libro: 8/8 pruebas por cuatro roles; parroquia propia conserva acceso
   - Evidencia: AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: V95 update: 20 escenarios en 5 catálogos; 15 políticas de escritura corregidas
   - Evidencia: AUDITORIA_INTERDIOCESANA_CIERRE_ASIENTOS_V198_2026-10-24.md: V198 evita edicion clienta directa de boleta sentada y traslado entre diocesis
+  - Evidencia: AUDITORIA_CIERRE_BOLETAS_V199_2026-10-24.md: V199_status_reportado_y_referencias_selladas_inmutables_directamente_en_bautismo_y_confirmacion_falta_matriz_general
 - [ ] 06.05 · RLS DELETE por actor — EN_PROGRESO
   - Evidencia: AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: Eliminaciones RLS en dos tablas de boletas: 8/8 casos, sólo parroquia titular
   - Evidencia: AUDITORIA_PARAMETROS_Y_LIBROS_V94_2026-10-21.md: DELETE de libro por cuatro roles: sólo parroquia titular afecta una fila ficticia
@@ -134,6 +135,7 @@ Avance: 325 controles totales; 27 aprobados; 120 en progreso; 178 pendientes; 0 
   - Evidencia: V157: se cerró estado rejected previamente declarado sin RPC, habilitando rechazo pendiente y revocación autorizada no ejecutada mediante Diócesis.
   - Evidencia: V161: un expediente de conciliación pending con 315 rejected posteriores se ocultaba por LIMIT 300. Defecto real reproducido y corregido con listado v161.
   - Evidencia: AUDITORIA_INTERDIOCESANA_CIERRE_ASIENTOS_V198_2026-10-24.md: V198 delete foraneo denegado sobre parroquias y boletas
+  - Evidencia: AUDITORIA_CIERRE_BOLETAS_V199_2026-10-24.md: V199_delete_directo_de_boletas_asentadas_e_historicas_bloqueado_en_dos_sacramentos_falta_matriz_total
 - [ ] 06.06 · Todas las RPC privilegiadas autorizadas (inventario dinámico) — EN_PROGRESO
   - Evidencia: AUDITORIA_INVENTARIO_RPC_V91.json: 129 funciones privilegiadas clasificadas; faltan pruebas positivas y negativas función por función
   - Evidencia: V111/V112: se verificaron privilegios de ejecución anon=false y authenticated=true de nuevas RPC; las demás funciones privilegiadas requieren matriz completa por rol.
@@ -280,6 +282,7 @@ Avance: 325 controles totales; 27 aprobados; 120 en progreso; 178 pendientes; 0 
   - Evidencia: V167: 4 rutas completas de reversión y conciliación conservan atomicidad: decreto y nota reversed, case executed, audit 3 y notificación 1. BEGIN/ROLLBACK.
   - Evidencia: V168: transacción única revierte 2 notas y 1 decreto y cierra 2 expedientes, o falla sin cambios; seis auditorías de expedientes y una notificación consolidada por caso.
   - Evidencia: AUDITORIA_INTERDIOCESANA_CIERRE_ASIENTOS_V198_2026-10-24.md: V198 problema real de boleta asentada sin partida corregido con 20 prohibiciones y dos asientos oficiales efectivos con rollback
+  - Evidencia: AUDITORIA_CIERRE_BOLETAS_V199_2026-10-24.md: V199_boletas_asentadas_conservadas_20_operaciones_seguras_en_sistema_sql_falta_concurrencia_real_y_e2e
 - [x] 07.07 · Llaves foráneas sin huérfanos — APROBADO
   - Evidencia: AUDITORIA_INTEGRIDAD_REFERENCIAL_V185_2026-10-24.md: QA live PostgreSQL 165 FKs validadas sin huerfanos ni triggers desactivados, BEGIN READ ONLY y ROLLBACK
 - [ ] 07.08 · Bloqueos y deadlocks — PENDIENTE
