@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import { generateUUID } from '@/utils/supabaseHelpers';
+import React, { useState, useEffect, useRef } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
 import { useAuth } from '@/context/AuthContext';
 import { useAppData } from '@/context/AppDataContext';
@@ -175,6 +176,8 @@ const MatrimonioNewPage = () => {
   
   // UI States
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const createInFlight = useRef(false);
+  const creationRequestId = useRef(null);
   const [activeTab, setActiveTab] = useState("novio");
   const [cities, setCities] = useState([]);
   const [isSaved, setIsSaved] = useState(false);
@@ -411,9 +414,12 @@ const MatrimonioNewPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+      if (createInFlight.current || isSubmitting || isSaved) return;
     if (!validateForm()) return;
 
-    setIsSubmitting(true);
+    createInFlight.current = true;
+      creationRequestId.current ||= generateUUID();
+      setIsSubmitting(true);
     
     try {
         if (!parishId) throw new Error('La cuenta no tiene una parroquia asignada.');
@@ -425,6 +431,7 @@ const MatrimonioNewPage = () => {
 
         const reserved = await savePendingMarriageCloud({
             parishId,
+            requestId: creationRequestId.current,
             formData: {
                 ...formData,
                 canonicalMarriageCategory,
@@ -465,6 +472,7 @@ const MatrimonioNewPage = () => {
         });
     } finally {
         setIsSubmitting(false);
+      createInFlight.current = false;
     }
   };
 

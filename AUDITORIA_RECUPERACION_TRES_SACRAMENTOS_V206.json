@@ -4,9 +4,9 @@
   "sourceSha256": {
     "src/pages/parish/BaptismSentarRegistrosPage.jsx": "7ba9fc5cd86872bdca02f0c5e11c87f9d8d14628d48cba9e18cd7c47bf59799b",
     "src/pages/parish/ConfirmationSentarRegistrosPage.jsx": "8b4afb4e08ead47518db59d6e8136c2a2dd8e4dd84e615e1c3c10de53a74b275",
-    "src/pages/parish/FuneralRegistryPage.jsx": "cbc65e1a2ee5c9cb4ce22db5d67a4761c3b7e0cb7ea0e43d53092e534eb2718a"
+    "src/pages/parish/FuneralRegistryPage.jsx": "cc79390d03718b1354477cd849d4acc56a679bb98a5d5b2c7b44c17065f84630"
   },
-  "date": "2026-10-25T23:12:29.676Z",
+  "date": "2026-10-25T23:33:13.629Z",
   "rows": [
     {
       "kind": "bautismo",

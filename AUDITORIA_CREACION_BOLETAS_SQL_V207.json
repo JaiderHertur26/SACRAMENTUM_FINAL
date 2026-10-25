@@ -1,0 +1,32 @@
+{
+  "protocol": "V207",
+  "migration": "20261025232301_idempotent_pending_creation_v207.sql",
+  "project": "foczofcmwampjvlfbsqn",
+  "actual_postgres_tests": {
+    "circuits": 5,
+    "same_receipt_replays": 15,
+    "changed_payload_rejected": 5,
+    "unauthorized_rejected": 2,
+    "direct_ledger_read_denied": true,
+    "counter_changes_after_replay": 0,
+    "rollback": true
+  },
+  "post_rollback": {
+    "persisted_receipts": 0,
+    "qa_residue": 0,
+    "anon_execute": false,
+    "authenticated_ledger_select": false,
+    "search_path": ""
+  },
+  "limitations": [
+    "SQL tests use authenticated PostgreSQL role and scoped claims, not independently signed Auth JWTs.",
+    "No two physically overlapping database sessions were certified.",
+    "Legacy direct create RPCs remain available for compatibility; durable receipt protection applies to create_pending_registration_v207."
+  ],
+  "atomicity": {
+    "forced_receipt_failures": 4,
+    "recovered_with_same_request_ids": 4,
+    "receipts_after_recovery": 4,
+    "orphaned_records_or_audits": 0
+  }
+}
