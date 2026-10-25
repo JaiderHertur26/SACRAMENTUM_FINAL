@@ -1,0 +1,1 @@
+import React from 'react';export default function Ticket(){return <div>BOLETA FICTICIA V205</div>}

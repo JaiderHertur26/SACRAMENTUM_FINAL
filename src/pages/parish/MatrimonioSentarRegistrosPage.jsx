@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '@/components/DashboardLayout';
 import { useAuth } from '@/context/AuthContext';
@@ -93,6 +93,8 @@ const MatrimonioSentarRegistrosPage = () => {
 
     const [isLoading, setIsLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
+    const [loadError, setLoadError] = useState(null);
+    const seatInFlight = useRef(false);
 
     const isDateInFuture = (dateString) => {
         if (!dateString) return false;
@@ -134,18 +136,23 @@ const MatrimonioSentarRegistrosPage = () => {
 
     // 2. CARGA DE BORRADORES + HISTORIAL DE BOLETAS
     const loadData = async () => {
-        if (!resolvedParishId) return;
+        if (!resolvedParishId) return null;
         setIsLoading(true);
+        setLoadError(null);
         try {
             const [pending, reported, p] = await Promise.all([
                 listPendingMarriagesCloud(resolvedParishId),
                 listReportedMarriageTicketsCloud(resolvedParishId),
                 getMatrimonioParameters(resolvedParishId)
             ]);
-            setPendingMarriages(pending || []);
+            const available = pending || [];
+            setPendingMarriages(available);
             setReportedMarriages(reported || []);
             setMarriageParams(p || null);
-            if ((pending || []).length === 0 && (reported || []).length > 0) setMode('reported');
+            // Only keep selections which the server still identifies as pending.
+            setSelectedIds(ids => ids.filter(id => available.some(record => record.id === id)));
+            setCurrentIndex(index => Math.min(index, Math.max(0, available.length - 1)));
+            if (available.length === 0 && (reported || []).length > 0) setMode('reported');
             let legacy = {};
             try {
                 const rows = getMisDatosList(resolvedParishId) || [];
@@ -158,9 +165,12 @@ const MatrimonioSentarRegistrosPage = () => {
                 console.warn('No fue posible cargar identidad institucional de Matrimonio:', error);
                 setParishInfo(legacy);
             }
+            return { pending: available, reported: reported || [] };
         } catch (error) {
-            console.error('Error cargando expedientes matrimoniales:', error);
-            toast({ title: 'Error', description: error.message, variant: 'destructive' });
+            const message = error?.message || 'No fue posible consultar las boletas y los consecutivos de Matrimonio.';
+            setLoadError(message);
+            toast({ title: 'Error de sincronización', description: message, variant: 'destructive' });
+            return null;
         } finally { setIsLoading(false); }
     };
 
@@ -176,19 +186,26 @@ const MatrimonioSentarRegistrosPage = () => {
     const currentIsFuture = currentMarriage ? isDateInFuture(currentMarriageDateValue) : false;
 
     const handleRegisterIndividual = async () => {
-        if (!currentMarriage || isSaving || currentIsFuture) return;
-
+        if (!currentMarriage || isSaving || seatInFlight.current || loadError || currentIsFuture) return;
+        seatInFlight.current = true;
         setIsSaving(true);
         try {
-            await seatPendingMarriageCloud({ pendingId: currentMarriage.id, parishId: resolvedParishId, actorUserId: user?.id || null, dioceseId: user?.dioceseId || null });
-            toast({ title: "Éxito", description: "Matrimonio asentado permanentemente en Supabase.", className: "bg-green-50 text-green-900 border-green-200" });
-            await loadData();
-            setMode('reported');
-            if (currentIndex >= pendingMarriages.length - 1) setCurrentIndex(Math.max(0, pendingMarriages.length - 2));
-        } catch (error) { 
-            toast({ title: "Error", variant: "destructive" }); 
-        } finally { 
-            setIsSaving(false); 
+            await seatPendingMarriageCloud({ pendingId: currentMarriage.id, parishId: resolvedParishId });
+            toast({ title: 'Registro asentado', description: 'Matrimonio asentado permanentemente en Supabase.', className: 'bg-green-50 text-green-900 border-green-200' });
+            if (await loadData()) setMode('reported');
+        } catch (error) {
+            // A failed response can follow a committed RPC. Read before offering another write.
+            const verified = await loadData();
+            toast({
+                title: 'Asiento sin confirmar',
+                description: verified
+                    ? 'Se consultó el estado actual. Revise las boletas emitidas y los pendientes antes de volver a asentar. ' + (error?.message || '')
+                    : 'No se pudo verificar el resultado. Reintente la sincronización antes de volver a asentar.',
+                variant: 'destructive'
+            });
+        } finally {
+            setIsSaving(false);
+            seatInFlight.current = false;
         }
     };
 
@@ -210,27 +227,37 @@ const MatrimonioSentarRegistrosPage = () => {
     };
 
     const handleBatchConfirm = async () => {
-        if (selectedIds.length === 0 || isSaving) return;
-        if (!(await institutionalConfirm({
-            title: 'Asentar actas de Matrimonio',
-            message: `Se asentarán permanentemente ${selectedIds.length} actas y se consumirán sus consecutivos oficiales.`,
-            confirmText: 'Sí, asentar actas',
-            tone: 'warning'
-        }))) return;
-
+        if (selectedIds.length === 0 || isSaving || seatInFlight.current || loadError) return;
+        // Acquire before opening the asynchronous confirmation to reject duplicate clicks.
+        seatInFlight.current = true;
         setIsSaving(true);
+        let completed = 0;
         try {
+            if (!(await institutionalConfirm({
+                title: 'Asentar actas de Matrimonio',
+                message: 'Se asentarán ' + selectedIds.length + ' actas una por una. Si se interrumpe el lote, las actas ya asentadas se conservarán.',
+                confirmText: 'Sí, asentar actas',
+                tone: 'warning'
+            }))) return;
             for (const id of selectedIds) {
-                await seatPendingMarriageCloud({ pendingId: id, parishId: resolvedParishId, actorUserId: user?.id || null, dioceseId: user?.dioceseId || null });
+                await seatPendingMarriageCloud({ pendingId: id, parishId: resolvedParishId });
+                completed++;
             }
-            toast({ title: "Lote Procesado", description: `${selectedIds.length} matrimonios asentados en Supabase.`, className: "bg-green-50 text-green-900 border-green-200" });
+            toast({ title: 'Lote procesado', description: completed + ' matrimonios asentados en Supabase.', className: 'bg-green-50 text-green-900 border-green-200' });
             setSelectedIds([]);
-            await loadData();
-            setMode('reported');
-        } catch (err) { 
-            toast({ title: "Error", variant: "destructive" }); 
-        } finally { 
-            setIsSaving(false); 
+            if (await loadData()) setMode('reported');
+        } catch (error) {
+            const verified = await loadData();
+            toast({
+                title: 'Lote interrumpido',
+                description: completed + ' acta(s) confirmada(s) antes de la interrupción. ' + (verified
+                    ? 'Se consultó el estado actual y la selección conserva solo pendientes. Revise las boletas emitidas antes de continuar. ' + (error?.message || '')
+                    : 'No se pudo verificar el resto. Reintente la sincronización antes de continuar.'),
+                variant: 'destructive'
+            });
+        } finally {
+            setIsSaving(false);
+            seatInFlight.current = false;
         }
     };
 
@@ -251,6 +278,18 @@ const MatrimonioSentarRegistrosPage = () => {
     if (isLoading) return (
         <DashboardLayout entityName={nombreParroquia}>
             <div className="flex justify-center py-20"><Loader2 className="animate-spin text-[#4B7BA7] w-8 h-8" /></div>
+        </DashboardLayout>
+    );
+
+    if (loadError) return (
+        <DashboardLayout entityName={nombreParroquia}>
+            <div role="alert" className="mx-auto mt-12 max-w-2xl rounded-2xl border border-red-200 bg-red-50 p-10 text-center">
+                <AlertCircle className="mx-auto mb-4 h-12 w-12 text-red-500" />
+                <h2 className="text-xl font-black text-red-800">No fue posible verificar los registros de Matrimonio</h2>
+                <p className="mt-3 text-sm text-red-700">{loadError}</p>
+                <p className="mt-2 text-sm text-red-700">Verifique los pendientes, las boletas emitidas y los consecutivos antes de volver a asentar.</p>
+                <Button onClick={loadData} className="mt-6">Reintentar sincronización</Button>
+            </div>
         </DashboardLayout>
     );
 

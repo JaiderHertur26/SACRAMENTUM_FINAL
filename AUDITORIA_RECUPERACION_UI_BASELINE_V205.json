@@ -1,0 +1,350 @@
+{
+  "protocol": "V205",
+  "scope": "Actual React marriage seating page; in-memory fictitious services; no authenticated production E2E or physical network fault",
+  "sourceSha256": "049cf11c11bb8c0acc1f14612f164c3e7633f03aef8e1df1023aaa21a8e8b8f7",
+  "date": "2026-10-25T22:56:31.736Z",
+  "rows": [
+    {
+      "scenario": "individual-reject",
+      "passed": false,
+      "faults": [
+        "duplicate or automatic mutation replay",
+        "counter was not refreshed",
+        "retry action unavailable"
+      ],
+      "first": {
+        "calls": [
+          "qa-1",
+          "qa-1"
+        ],
+        "pending": [
+          "qa-2",
+          "qa-3"
+        ],
+        "reported": [
+          "qa-1"
+        ],
+        "next": 2,
+        "reads": 6,
+        "confirmCalls": 0,
+        "toasts": [
+          {
+            "title": "Éxito",
+            "description": "Matrimonio asentado permanentemente en Supabase."
+          },
+          {
+            "title": "Error"
+          }
+        ],
+        "text": "Libro de MatrimonioSentar Registros de Matrimonio Firma de Actas Matrimoniales Individual Por Lote Boletas EmitidasArchivo de impresiónBoletas matrimoniales emitidasLa boleta original puede re-imprimirse incluso después de asentar el acta.EstadoContrayentesN.º RegistroFecha previstaAcción AsentadoNOVIO FICTICIO 1 & NOVIA FICTICIA 1 00000101/01/2026 Re-imprimir"
+      },
+      "final": {
+        "calls": [
+          "qa-1",
+          "qa-1"
+        ],
+        "pending": [
+          "qa-2",
+          "qa-3"
+        ],
+        "reported": [
+          "qa-1"
+        ],
+        "next": 2,
+        "reads": 6,
+        "confirmCalls": 0,
+        "toasts": [
+          {
+            "title": "Éxito",
+            "description": "Matrimonio asentado permanentemente en Supabase."
+          },
+          {
+            "title": "Error"
+          }
+        ],
+        "text": "Libro de MatrimonioSentar Registros de Matrimonio Firma de Actas Matrimoniales Individual Por Lote Boletas EmitidasArchivo de impresiónBoletas matrimoniales emitidasLa boleta original puede re-imprimirse incluso después de asentar el acta.EstadoContrayentesN.º RegistroFecha previstaAcción AsentadoNOVIO FICTICIO 1 & NOVIA FICTICIA 1 00000101/01/2026 Re-imprimir"
+      }
+    },
+    {
+      "scenario": "individual-lost-response",
+      "passed": false,
+      "faults": [
+        "duplicate or automatic mutation replay",
+        "counter was not refreshed",
+        "retry action unavailable",
+        "Timeout explicit retry: {\"text\":\"Libro de MatrimonioSentar Registros de Matrimonio Firma de Actas Matrimoniales Individual Por Lote Boletas EmitidasArchivo de impresiónBoletas matrimoniales emitidasLa boleta original puede re-imprimirse incluso después de asentar el acta.EstadoContrayentesN.º RegistroFecha previstaAcción AsentadoNOVIO FICTICIO 1 & NOVIA FICTICIA 1 00000101/01/2026 Re-imprimir\",\"buttons\":[{\"text\":\"\",\"disabled\":false},{\"text\":\" Individual\",\"disabled\":false},{\"text\":\" Por Lote\",\"disabled\":false},{\"text\":\" Boletas Emitidas\",\"disabled\":false},{\"text\":\" Re-imprimir\",\"disabled\":false}],\"calls\":[\"qa-1\",\"qa-1\"],\"pending\":[\"qa-2\",\"qa-3\"],\"reported\":[\"qa-1\"],\"next\":2,\"reads\":6,\"toasts\":[{\"title\":\"Éxito\",\"description\":\"Matrimonio asentado permanentemente en Supabase.\",\"className\":\"bg-green-50 text-green-900 border-green-200\"},{\"title\":\"Error\",\"variant\":\"destructive\"}],\"confirmCalls\":0}"
+      ],
+      "first": {
+        "calls": [
+          "qa-1",
+          "qa-1"
+        ],
+        "pending": [
+          "qa-2",
+          "qa-3"
+        ],
+        "reported": [
+          "qa-1"
+        ],
+        "next": 2,
+        "reads": 6,
+        "confirmCalls": 0,
+        "toasts": [
+          {
+            "title": "Éxito",
+            "description": "Matrimonio asentado permanentemente en Supabase."
+          },
+          {
+            "title": "Error"
+          }
+        ],
+        "text": "Libro de MatrimonioSentar Registros de Matrimonio Firma de Actas Matrimoniales Individual Por Lote Boletas EmitidasArchivo de impresiónBoletas matrimoniales emitidasLa boleta original puede re-imprimirse incluso después de asentar el acta.EstadoContrayentesN.º RegistroFecha previstaAcción AsentadoNOVIO FICTICIO 1 & NOVIA FICTICIA 1 00000101/01/2026 Re-imprimir"
+      },
+      "final": null
+    },
+    {
+      "scenario": "individual-read-failure",
+      "passed": false,
+      "faults": [
+        "duplicate or automatic mutation replay",
+        "unverified snapshot remained writable",
+        "missing sync retry",
+        "counter was not refreshed",
+        "retry action unavailable",
+        "Timeout explicit retry: {\"text\":\"Libro de MatrimonioSentar Registros de Matrimonio Firma de Actas Matrimoniales Individual Por Lote Boletas EmitidasArchivo de impresiónBoletas matrimoniales emitidasLa boleta original puede re-imprimirse incluso después de asentar el acta.EstadoContrayentesN.º RegistroFecha previstaAcción AsentadoNOVIO FICTICIO 1 & NOVIA FICTICIA 1 00000101/01/2026 Re-imprimir\",\"buttons\":[{\"text\":\"\",\"disabled\":false},{\"text\":\" Individual\",\"disabled\":false},{\"text\":\" Por Lote\",\"disabled\":false},{\"text\":\" Boletas Emitidas\",\"disabled\":false},{\"text\":\" Re-imprimir\",\"disabled\":false}],\"calls\":[\"qa-1\",\"qa-1\"],\"pending\":[\"qa-2\",\"qa-3\"],\"reported\":[\"qa-1\"],\"next\":2,\"reads\":6,\"toasts\":[{\"title\":\"Éxito\",\"description\":\"Matrimonio asentado permanentemente en Supabase.\",\"className\":\"bg-green-50 text-green-900 border-green-200\"},{\"title\":\"Error\",\"variant\":\"destructive\"}],\"confirmCalls\":0}"
+      ],
+      "first": {
+        "calls": [
+          "qa-1",
+          "qa-1"
+        ],
+        "pending": [
+          "qa-2",
+          "qa-3"
+        ],
+        "reported": [
+          "qa-1"
+        ],
+        "next": 2,
+        "reads": 6,
+        "confirmCalls": 0,
+        "toasts": [
+          {
+            "title": "Éxito",
+            "description": "Matrimonio asentado permanentemente en Supabase."
+          },
+          {
+            "title": "Error"
+          }
+        ],
+        "text": "Libro de MatrimonioSentar Registros de Matrimonio Firma de Actas Matrimoniales Individual Por Lote Boletas EmitidasArchivo de impresiónBoletas matrimoniales emitidasLa boleta original puede re-imprimirse incluso después de asentar el acta.EstadoContrayentesN.º RegistroFecha previstaAcción AsentadoNOVIO FICTICIO 1 & NOVIA FICTICIA 1 00000101/01/2026 Re-imprimir"
+      },
+      "final": null
+    },
+    {
+      "scenario": "batch-partial",
+      "passed": false,
+      "faults": [
+        "duplicate or automatic mutation replay",
+        "missing actionable failure detail",
+        "no post-failure verification",
+        "selection includes committed marriages",
+        "wrong retry mutation count"
+      ],
+      "first": {
+        "calls": [
+          "qa-1",
+          "qa-1",
+          "qa-2"
+        ],
+        "pending": [
+          "qa-2",
+          "qa-3"
+        ],
+        "reported": [
+          "qa-1"
+        ],
+        "next": 2,
+        "reads": 3,
+        "confirmCalls": 2,
+        "toasts": [
+          {
+            "title": "Error"
+          }
+        ],
+        "text": "Libro de MatrimonioSentar Registros de Matrimonio Firma de Actas Matrimoniales Individual Por Lote Boletas EmitidasESTADOContrayentesClasificaciónFecha SacramentoListoNOVIO FICTICIO 1 & NOVIA FICTICIA 1 Situación canónica por revisar01/01/2026ListoNOVIO FICTICIO 2 & NOVIA FICTICIA 2 Situación canónica por revisar01/01/2026ListoNOVIO FICTICIO 3 & NOVIA FICTICIA 3 Situación canónica por revisar01/01/2026Seleccionados: 3Actas listas para firma Asentar Selección"
+      },
+      "final": {
+        "calls": [
+          "qa-1",
+          "qa-1",
+          "qa-2",
+          "qa-1",
+          "qa-1",
+          "qa-3"
+        ],
+        "pending": [],
+        "reported": [
+          "qa-1",
+          "qa-2",
+          "qa-3"
+        ],
+        "next": 4,
+        "reads": 6,
+        "confirmCalls": 4,
+        "toasts": [
+          {
+            "title": "Error"
+          },
+          {
+            "title": "Error"
+          },
+          {
+            "title": "Error"
+          },
+          {
+            "title": "Lote Procesado",
+            "description": "3 matrimonios asentados en Supabase."
+          }
+        ],
+        "text": "Libro de MatrimonioSentar Registros de Matrimonio Firma de Actas Matrimoniales Individual Por Lote Boletas EmitidasArchivo de impresiónBoletas matrimoniales emitidasLa boleta original puede re-imprimirse incluso después de asentar el acta.EstadoContrayentesN.º RegistroFecha previstaAcción AsentadoNOVIO FICTICIO 1 & NOVIA FICTICIA 1 00000101/01/2026 Re-imprimir AsentadoNOVIO FICTICIO 2 & NOVIA FICTICIA 2 00000201/01/2026 Re-imprimir AsentadoNOVIO FICTICIO 3 & NOVIA FICTICIA 3 00000301/01/2026 Re-imprimir"
+      }
+    },
+    {
+      "scenario": "batch-lost-response",
+      "passed": false,
+      "faults": [
+        "missing actionable failure detail",
+        "no post-failure verification",
+        "selection includes committed marriages",
+        "Timeout explicit retry: {\"text\":\"Libro de MatrimonioSentar Registros de Matrimonio Firma de Actas Matrimoniales Individual Por Lote Boletas EmitidasESTADOContrayentesClasificaciónFecha SacramentoListoNOVIO FICTICIO 1 & NOVIA FICTICIA 1 Situación canónica por revisar01/01/2026ListoNOVIO FICTICIO 2 & NOVIA FICTICIA 2 Situación canónica por revisar01/01/2026ListoNOVIO FICTICIO 3 & NOVIA FICTICIA 3 Situación canónica por revisar01/01/2026Seleccionados: 3Actas listas para firma Asentar Selección\",\"buttons\":[{\"text\":\"\",\"disabled\":false},{\"text\":\" Individual\",\"disabled\":false},{\"text\":\" Por Lote\",\"disabled\":false},{\"text\":\" Boletas Emitidas\",\"disabled\":false},{\"text\":\"\",\"disabled\":false},{\"text\":\" Asentar Selección\",\"disabled\":false}],\"calls\":[\"qa-1\",\"qa-1\",\"qa-1\",\"qa-1\"],\"pending\":[\"qa-2\",\"qa-3\"],\"reported\":[\"qa-1\"],\"next\":2,\"reads\":3,\"toasts\":[{\"title\":\"Error\",\"variant\":\"destructive\"},{\"title\":\"Error\",\"variant\":\"des"
+      ],
+      "first": {
+        "calls": [
+          "qa-1",
+          "qa-1"
+        ],
+        "pending": [
+          "qa-2",
+          "qa-3"
+        ],
+        "reported": [
+          "qa-1"
+        ],
+        "next": 2,
+        "reads": 3,
+        "confirmCalls": 2,
+        "toasts": [
+          {
+            "title": "Error"
+          },
+          {
+            "title": "Error"
+          }
+        ],
+        "text": "Libro de MatrimonioSentar Registros de Matrimonio Firma de Actas Matrimoniales Individual Por Lote Boletas EmitidasESTADOContrayentesClasificaciónFecha SacramentoListoNOVIO FICTICIO 1 & NOVIA FICTICIA 1 Situación canónica por revisar01/01/2026ListoNOVIO FICTICIO 2 & NOVIA FICTICIA 2 Situación canónica por revisar01/01/2026ListoNOVIO FICTICIO 3 & NOVIA FICTICIA 3 Situación canónica por revisar01/01/2026Seleccionados: 3Actas listas para firma Asentar Selección"
+      },
+      "final": null
+    },
+    {
+      "scenario": "batch-read-failure",
+      "passed": false,
+      "faults": [
+        "missing actionable failure detail",
+        "unverified snapshot remained writable",
+        "write action shown after failed refresh",
+        "missing sync retry",
+        "selection includes committed marriages",
+        "Timeout explicit retry: {\"text\":\"Libro de MatrimonioSentar Registros de Matrimonio Firma de Actas Matrimoniales Individual Por Lote Boletas EmitidasESTADOContrayentesClasificaciónFecha SacramentoListoNOVIO FICTICIO 1 & NOVIA FICTICIA 1 Situación canónica por revisar01/01/2026ListoNOVIO FICTICIO 2 & NOVIA FICTICIA 2 Situación canónica por revisar01/01/2026ListoNOVIO FICTICIO 3 & NOVIA FICTICIA 3 Situación canónica por revisar01/01/2026Seleccionados: 3Actas listas para firma Asentar Selección\",\"buttons\":[{\"text\":\"\",\"disabled\":false},{\"text\":\" Individual\",\"disabled\":false},{\"text\":\" Por Lote\",\"disabled\":false},{\"text\":\" Boletas Emitidas\",\"disabled\":false},{\"text\":\"\",\"disabled\":false},{\"text\":\" Asentar Selección\",\"disabled\":false}],\"calls\":[\"qa-1\",\"qa-1\",\"qa-1\",\"qa-1\"],\"pending\":[\"qa-2\",\"qa-3\"],\"reported\":[\"qa-1\"],\"next\":2,\"reads\":3,\"toasts\":[{\"title\":\"Error\",\"variant\":\"destructive\"},{\"title\":\"Error\",\"variant\":\"des"
+      ],
+      "first": {
+        "calls": [
+          "qa-1",
+          "qa-1"
+        ],
+        "pending": [
+          "qa-2",
+          "qa-3"
+        ],
+        "reported": [
+          "qa-1"
+        ],
+        "next": 2,
+        "reads": 3,
+        "confirmCalls": 2,
+        "toasts": [
+          {
+            "title": "Error"
+          },
+          {
+            "title": "Error"
+          }
+        ],
+        "text": "Libro de MatrimonioSentar Registros de Matrimonio Firma de Actas Matrimoniales Individual Por Lote Boletas EmitidasESTADOContrayentesClasificaciónFecha SacramentoListoNOVIO FICTICIO 1 & NOVIA FICTICIA 1 Situación canónica por revisar01/01/2026ListoNOVIO FICTICIO 2 & NOVIA FICTICIA 2 Situación canónica por revisar01/01/2026ListoNOVIO FICTICIO 3 & NOVIA FICTICIA 3 Situación canónica por revisar01/01/2026Seleccionados: 3Actas listas para firma Asentar Selección"
+      },
+      "final": null
+    },
+    {
+      "scenario": "initial-read-error",
+      "passed": false,
+      "faults": [
+        "Timeout initial load: {\"text\":\"Archivo al DíaNo hay expedientes pendientes ni boletas matrimoniales emitidas.Ver Actas de Matrimonio\",\"buttons\":[{\"text\":\"Ver Actas de Matrimonio\",\"disabled\":false}],\"calls\":[],\"pending\":[\"qa-1\",\"qa-2\",\"qa-3\"],\"reported\":[],\"next\":1,\"reads\":3,\"toasts\":[{\"title\":\"Error\",\"description\":\"QA V205 lectura no disponible\",\"variant\":\"destructive\"}],\"confirmCalls\":0}"
+      ],
+      "first": null,
+      "final": null
+    },
+    {
+      "scenario": "batch-cancel",
+      "passed": false,
+      "faults": [
+        "cancel/double confirmation not guarded",
+        "cancel left lock or duplicate confirmation"
+      ],
+      "first": {
+        "calls": [],
+        "pending": [
+          "qa-1",
+          "qa-2",
+          "qa-3"
+        ],
+        "reported": [],
+        "next": 1,
+        "reads": 3,
+        "confirmCalls": 2,
+        "toasts": [],
+        "text": "Libro de MatrimonioSentar Registros de Matrimonio Firma de Actas Matrimoniales Individual Por Lote Boletas EmitidasESTADOContrayentesClasificaciónFecha SacramentoListoNOVIO FICTICIO 1 & NOVIA FICTICIA 1 Situación canónica por revisar01/01/2026ListoNOVIO FICTICIO 2 & NOVIA FICTICIA 2 Situación canónica por revisar01/01/2026ListoNOVIO FICTICIO 3 & NOVIA FICTICIA 3 Situación canónica por revisar01/01/2026Seleccionados: 3Actas listas para firma Asentar Selección"
+      },
+      "final": {
+        "calls": [
+          "qa-1",
+          "qa-1",
+          "qa-2",
+          "qa-3"
+        ],
+        "pending": [],
+        "reported": [
+          "qa-1",
+          "qa-2",
+          "qa-3"
+        ],
+        "next": 4,
+        "reads": 6,
+        "confirmCalls": 4,
+        "toasts": [
+          {
+            "title": "Error"
+          },
+          {
+            "title": "Lote Procesado",
+            "description": "3 matrimonios asentados en Supabase."
+          }
+        ],
+        "text": "Libro de MatrimonioSentar Registros de Matrimonio Firma de Actas Matrimoniales Individual Por Lote Boletas EmitidasArchivo de impresiónBoletas matrimoniales emitidasLa boleta original puede re-imprimirse incluso después de asentar el acta.EstadoContrayentesN.º RegistroFecha previstaAcción AsentadoNOVIO FICTICIO 1 & NOVIA FICTICIA 1 00000101/01/2026 Re-imprimir AsentadoNOVIO FICTICIO 2 & NOVIA FICTICIA 2 00000201/01/2026 Re-imprimir AsentadoNOVIO FICTICIO 3 & NOVIA FICTICIA 3 00000301/01/2026 Re-imprimir"
+      }
+    }
+  ],
+  "passed": 0,
+  "total": 8,
+  "exceptions": [],
+  "externalRequests": []
+}
