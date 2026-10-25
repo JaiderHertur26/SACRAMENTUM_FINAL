@@ -10,7 +10,7 @@ Regla: no introducir datos falsos permanentes; usar memoria, transacciones ROLLB
 
 Prioridad P0 bloquea la certificación. P1 debe constar resuelta o aceptada con evidencia y responsable.
 
-Avance: 325 controles totales; 28 aprobados; 120 en progreso; 177 pendientes; 0 fallidos; 0 bloqueados.
+Avance: 325 controles totales; 29 aprobados; 120 en progreso; 176 pendientes; 0 fallidos; 0 bloqueados.
 
 ## Fases y controles numerados
 
@@ -264,7 +264,7 @@ Avance: 325 controles totales; 28 aprobados; 120 en progreso; 177 pendientes; 0 
 - [x] 06.12 · No metadatos de usuario editables para autorizar — APROBADO
   - Evidencia: AUDITORIA_IDENTIDAD_Y_AISLAMIENTO_V184_2026-10-24.md: Inventario PostgreSQL 248 funciones y 130 politicas sin user_metadata editable; 275 fuentes frontend, QA read-only y gate reproducibles
 
-### 07. Integridad y concurrencia (P0) — 5/9
+### 07. Integridad y concurrencia (P0) — 6/9
 
 - [x] 07.01 · Unicidad Libro Folio Número — APROBADO
   - Evidencia: AUDITORIA_NUMERACION_Y_DECRETOS_V188_2026-10-24.md: PostgreSQL V187 y V188 8393 partidas sin choques, 4 inserciones identicas y 4 equivalentes normalizadas bloqueadas por indices unicos
@@ -293,8 +293,9 @@ Avance: 325 controles totales; 28 aprobados; 120 en progreso; 177 pendientes; 0 
 - [ ] 07.08 · Bloqueos y deadlocks — PENDIENTE
   - Evidencia: V167: los 4 RPC institucionales verifican bloqueos FOR UPDATE y un índice UNIQUE parcial real; no se han probado deadlocks ni simultaneidad física.
   - Evidencia: V168: nueva RPC bloquea filas de expedientes, decreto y notas con FOR UPDATE; falta disputa de dos conexiones reales y medir deadlocks.
-- [ ] 07.09 · Restauración tras timeout — PENDIENTE
+- [x] 07.09 · Restauración tras timeout — APROBADO
   - Evidencia: AUDITORIA_ATOMICIDAD_REINTENTOS_V201_2026-10-24.md: V201_no_hubo_timeout_real_ni_espera_solapada_requiere_sesiones_independientes_y_prueba_de_recovery
+  - Evidencia: AUDITORIA_RECUPERACION_TIMEOUT_V203_2026-10-25.md: V203_cuatro_cancelaciones_SQLSTATE_57014_despues_de_asiento_sacramental_exitoso_en_transaccion_los_diez_controles_de_residuos_cero_y_cuatro_reintentos_PG_correctos_limite_no_incluye_reconexion_UI
 
 ### 08. Bautismo (P0) — 2/11
 

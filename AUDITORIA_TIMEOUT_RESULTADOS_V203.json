@@ -1,0 +1,67 @@
+{
+  "protocol": "V203",
+  "date": "2026-10-25",
+  "supabase_project": "foczofcmwampjvlfbsqn",
+  "method": "Actual SQL execution through Supabase connector; each transaction is BEGIN, SET LOCAL statement_timeout, simulated authenticated role, official RPC seat, verify boleta/partida, pg_sleep(2), expected server cancellation; separate independent residue verification",
+  "timeout_ms": 900,
+  "wait_after_success_ms": 2000,
+  "expected_sqlstate": "57014",
+  "sacraments": [
+    {
+      "kind": "baptism",
+      "rpc": "seat_baptism_records",
+      "baseline_before": "SEAT_AND_CONTROL_SLEEP_COMPLETED",
+      "timeout_sqlstate": "57014",
+      "timeout_context": "SELECT pg_sleep(2)",
+      "control_after": "SEAT_AND_CONTROL_SLEEP_COMPLETED"
+    },
+    {
+      "kind": "confirmation",
+      "rpc": "seat_confirmation_records",
+      "baseline_before": "SEAT_AND_CONTROL_SLEEP_COMPLETED",
+      "timeout_sqlstate": "57014",
+      "timeout_context": "SELECT pg_sleep(2)",
+      "control_after": "SEAT_AND_CONTROL_SLEEP_COMPLETED"
+    },
+    {
+      "kind": "marriage",
+      "rpc": "seat_pending_marriage",
+      "baseline_before": "SEAT_AND_CONTROL_SLEEP_COMPLETED",
+      "timeout_sqlstate": "57014",
+      "timeout_context": "SELECT pg_sleep(2)",
+      "control_after": "SEAT_AND_CONTROL_SLEEP_COMPLETED"
+    },
+    {
+      "kind": "funeral",
+      "rpc": "seat_funeral_record",
+      "baseline_before": "SEAT_AND_CONTROL_SLEEP_COMPLETED",
+      "timeout_sqlstate": "57014",
+      "timeout_context": "SELECT pg_sleep(2)",
+      "control_after": "SEAT_AND_CONTROL_SLEEP_COMPLETED"
+    }
+  ],
+  "post_timeout_rows": {
+    "baptism_partidas": 0,
+    "confirmation_partidas": 0,
+    "marriage_partidas": 0,
+    "funeral_partidas": 0,
+    "baptism_pending": 0,
+    "confirmation_pending": 0,
+    "marriage_pending": 0,
+    "funeral_pending": 0,
+    "parameter_rows": 0,
+    "audit_rows": 0
+  },
+  "four_sacraments_regression": {
+    "sacramental_lifecycles": 4,
+    "duplicate_seating_rejected": 4,
+    "min_seat_audit_entries": 4,
+    "rollback": true
+  },
+  "limitations": [
+    "No network disconnect or actual logged-in UI session",
+    "No two truly overlapping database connections",
+    "No lock_timeout/deadlock tests",
+    "JWT claims simulated under PostgreSQL authenticated role; not independent signed JWTs"
+  ]
+}

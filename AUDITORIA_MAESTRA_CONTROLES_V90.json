@@ -886,11 +886,12 @@
       "area": "Integridad y concurrencia",
       "priority": "P0",
       "criterion": "Restauración tras timeout",
-      "status": "PENDIENTE",
+      "status": "APROBADO",
       "evidence": [
-        "AUDITORIA_ATOMICIDAD_REINTENTOS_V201_2026-10-24.md: V201_no_hubo_timeout_real_ni_espera_solapada_requiere_sesiones_independientes_y_prueba_de_recovery"
+        "AUDITORIA_ATOMICIDAD_REINTENTOS_V201_2026-10-24.md: V201_no_hubo_timeout_real_ni_espera_solapada_requiere_sesiones_independientes_y_prueba_de_recovery",
+        "AUDITORIA_RECUPERACION_TIMEOUT_V203_2026-10-25.md: V203_cuatro_cancelaciones_SQLSTATE_57014_despues_de_asiento_sacramental_exitoso_en_transaccion_los_diez_controles_de_residuos_cero_y_cuatro_reintentos_PG_correctos_limite_no_incluye_reconexion_UI"
       ],
-      "updated_at": "2026-10-25T03:21:11.695Z"
+      "updated_at": "2026-10-25T21:50:45.029Z"
     },
     {
       "id": "08.01",
