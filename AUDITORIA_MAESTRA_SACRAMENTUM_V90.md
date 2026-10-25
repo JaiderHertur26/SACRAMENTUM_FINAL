@@ -10,7 +10,7 @@ Regla: no introducir datos falsos permanentes; usar memoria, transacciones ROLLB
 
 Prioridad P0 bloquea la certificación. P1 debe constar resuelta o aceptada con evidencia y responsable.
 
-Avance: 325 controles totales; 29 aprobados; 120 en progreso; 176 pendientes; 0 fallidos; 0 bloqueados.
+Avance: 325 controles totales; 29 aprobados; 121 en progreso; 175 pendientes; 0 fallidos; 0 bloqueados.
 
 ## Fases y controles numerados
 
@@ -290,9 +290,10 @@ Avance: 325 controles totales; 29 aprobados; 120 en progreso; 176 pendientes; 0 
   - Evidencia: AUDITORIA_ATOMICIDAD_CUATRO_SACRAMENTOS_V202_2026-10-25.md: V202_cuatro_RPCS_de_asiento_ensayadas_en_PG_con_rollback_y_cierre_coherente_de_boleta_partida_parametros_y_auditoria_matrimonio_exequias_falla_posterior_y_bautismo_confirmacion_segundo_invalido
 - [x] 07.07 · Llaves foráneas sin huérfanos — APROBADO
   - Evidencia: AUDITORIA_INTEGRIDAD_REFERENCIAL_V185_2026-10-24.md: QA live PostgreSQL 165 FKs validadas sin huerfanos ni triggers desactivados, BEGIN READ ONLY y ROLLBACK
-- [ ] 07.08 · Bloqueos y deadlocks — PENDIENTE
+- [ ] 07.08 · Bloqueos y deadlocks — EN_PROGRESO
   - Evidencia: V167: los 4 RPC institucionales verifican bloqueos FOR UPDATE y un índice UNIQUE parcial real; no se han probado deadlocks ni simultaneidad física.
   - Evidencia: V168: nueva RPC bloquea filas de expedientes, decreto y notas con FOR UPDATE; falta disputa de dos conexiones reales y medir deadlocks.
+  - Evidencia: AUDITORIA_ORDEN_BLOQUEOS_V204_2026-10-25.md: V204_orden_de_bloqueo_parish_parameters_antes_de_boleta_unificado_en_4_RPC_ensayos_de_regresion_exitosos_pero_sin_dos_backends_simultaneos
 - [x] 07.09 · Restauración tras timeout — APROBADO
   - Evidencia: AUDITORIA_ATOMICIDAD_REINTENTOS_V201_2026-10-24.md: V201_no_hubo_timeout_real_ni_espera_solapada_requiere_sesiones_independientes_y_prueba_de_recovery
   - Evidencia: AUDITORIA_RECUPERACION_TIMEOUT_V203_2026-10-25.md: V203_cuatro_cancelaciones_SQLSTATE_57014_despues_de_asiento_sacramental_exitoso_en_transaccion_los_diez_controles_de_residuos_cero_y_cuatro_reintentos_PG_correctos_limite_no_incluye_reconexion_UI

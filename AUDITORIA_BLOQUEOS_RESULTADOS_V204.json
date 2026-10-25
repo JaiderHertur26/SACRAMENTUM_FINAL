@@ -1,0 +1,40 @@
+{
+  "protocol": "V204",
+  "date": "2026-10-25",
+  "issue": "Lock-order inversion among four official sacramental seat RPCs: two obtained parish_parameters FOR UPDATE before pending rows; two previously obtained pending first.",
+  "mitigation": "Early parish_parameters SELECT FOR UPDATE added before pending row reads in seat_pending_marriage(uuid) and seat_funeral_record(jsonb,uuid); existing logic unchanged; rollback definitions captured.",
+  "live_sql_production": {
+    "installed": true,
+    "rpcs_hardened": 2,
+    "total_lock_order_consistent": 4,
+    "security_definer_preserved": 4,
+    "fixed_search_path_preserved": 4,
+    "acl_unchanged": 4,
+    "postgres_deadlocks_observed": 0
+  },
+  "actual_sql_tests": {
+    "V202_marriage_funeral_forced_failures": 2,
+    "V202_marriage_funeral_retries": 2,
+    "V202_marriage_funeral_sequential_unique_seats": 4,
+    "V202_sequential_duplicates_blocked": 4,
+    "V193_all_sacrament_lifecycles": 4,
+    "V193_duplicates_denied": 4,
+    "V201_stale_client_rejections": 2,
+    "V201_recoveries": 2,
+    "V203_real_timeout_SQLSTATE_57014_reproduced_after_patch": 2,
+    "V203_fake_pending_residue": 0,
+    "V203_fake_partida_residue": 0
+  },
+  "limitations": [
+    "No true two-backend overlapping sessions with valid independent credentials; dblink refused passwordless self connection (2F003).",
+    "No observed deadlock reproduction. pg_stat_database reports 0 historical deadlocks, but cannot prove absence of future deadlocks.",
+    "No production role changes or historical sacrament mutations; dummy records only in rolled-back transactions.",
+    "Do not approve 07.03 or 07.08 based on these tests."
+  ],
+  "certification": {
+    "approved": 29,
+    "total": 325,
+    "approved_control_change": 0,
+    "control_07_08": "EN_PROGRESO"
+  }
+}
