@@ -1,3 +1,4 @@
+import { createPendingRegistration } from '@/services/pendingCreationService';
 import { supabase } from '@/lib/supabaseClient';
 import { TABLE_NAMES } from '@/config/supabaseConfig';
 import {
@@ -152,7 +153,7 @@ export async function listReportedMarriageTicketsCloud(parishId) {
 
 // Fase 5C: PostgreSQL reserva el Nº de Registro y crea el expediente en una
 // sola transacción. El navegador no inserta directamente en pending_marriages.
-export async function savePendingMarriageCloud({ parishId, formData }) {
+export async function savePendingMarriageCloud({ parishId, formData, requestId }) {
   if (!parishId) throw new Error('No se pudo identificar la parroquia.');
 
   const payload = {
@@ -163,10 +164,7 @@ export async function savePendingMarriageCloud({ parishId, formData }) {
     type: formData?.type || 'marriage_expediente'
   };
 
-  const { data: rpcData, error } = await supabase.rpc('create_pending_marriage', {
-    p_parish_id: parishId,
-    p_record: payload
-  });
+  const { data: rpcData, error } = await createPendingRegistration({kind: 'matrimonio', parishId, record: payload, requestId});
 
   if (error) {
     const message = String(error.message || '');

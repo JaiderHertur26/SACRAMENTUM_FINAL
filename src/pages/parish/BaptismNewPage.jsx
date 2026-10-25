@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import { generateUUID } from '@/utils/supabaseHelpers';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '@/components/DashboardLayout';
 import { useAuth } from '@/context/AuthContext';
@@ -39,6 +40,8 @@ const BaptismNewPage = () => {
 
     const [isSuccess, setIsSuccess] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const createInFlight = useRef(false);
+    const creationRequestId = useRef(null);
     const [ticketData, setTicketData] = useState(null);
     const [linkedConfirmationData, setLinkedConfirmationData] = useState(null);
     const [parishInfo, setParishInfo] = useState(null); 
@@ -207,6 +210,7 @@ const BaptismNewPage = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (createInFlight.current || isSubmitting || isSuccess) return;
 
         if (!parishId) {
             toast({ title: 'Parroquia no identificada', description: 'La sesión no tiene una parroquia operativa válida.', variant: 'destructive' });
@@ -276,13 +280,15 @@ const BaptismNewPage = () => {
             source: 'baptism_registration_v42'
         } : null;
 
+        createInFlight.current = true;
+        creationRequestId.current ||= generateUUID();
         setIsSubmitting(true);
         try {
             const res = await saveBaptismToSource(
                 baptismPayload,
                 parishId,
                 'pending',
-                { confirmationData: confirmationPayload }
+                { confirmationData: confirmationPayload, creationRequestId: creationRequestId.current }
             );
 
             if (res.success) {
@@ -311,6 +317,7 @@ const BaptismNewPage = () => {
             toast({ title: "Error", description: error.message, variant: "destructive" });
         } finally {
             setIsSubmitting(false);
+        createInFlight.current = false;
         }
     };
 

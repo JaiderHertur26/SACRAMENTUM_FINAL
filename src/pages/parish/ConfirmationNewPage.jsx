@@ -1,3 +1,4 @@
+import { generateUUID } from '@/utils/supabaseHelpers';
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '@/components/DashboardLayout';
@@ -37,6 +38,8 @@ const ConfirmationNewPage = () => {
 
     const [isSuccess, setIsSuccess] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const createInFlight = useRef(false);
+    const creationRequestId = useRef(null);
     const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
     
     const [ticketData, setTicketData] = useState(null);
@@ -207,10 +210,13 @@ const ConfirmationNewPage = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (createInFlight.current || isSubmitting || isSuccess) return;
+        createInFlight.current = true;
+        creationRequestId.current ||= generateUUID();
         setIsSubmitting(true);
         
         try {
-            const res = await saveConfirmationToSource(formData, parishId, 'pending');
+            const res = await saveConfirmationToSource(formData, parishId, 'pending', { creationRequestId: creationRequestId.current });
             if (!res.success) throw new Error(res.message);
 
             const dataToSave = {
@@ -233,6 +239,7 @@ const ConfirmationNewPage = () => {
             toast({ title: "Error", description: error.message, variant: "destructive" });
         } finally {
             setIsSubmitting(false);
+        createInFlight.current = false;
         }
     };
 

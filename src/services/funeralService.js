@@ -1,3 +1,4 @@
+import { createPendingRegistration } from '@/services/pendingCreationService';
 import { supabase } from '@/lib/supabaseClient';
 import {
   extractLegacyResolved,
@@ -41,11 +42,8 @@ const hydrateFuneralRow = (row) => {
   };
 };
 
-export const createPendingFuneralCloud = async ({ parishId, record }) => {
-  const { data, error } = await supabase.rpc('create_pending_funeral', {
-    p_parish_id: parishId,
-    p_record: record
-  });
+export const createPendingFuneralCloud = async ({ parishId, record, requestId }) => {
+  const { data, error } = await createPendingRegistration({kind: 'exequias', parishId, record, requestId});
 
   if (error) throw error;
   return firstRow(data);

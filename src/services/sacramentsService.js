@@ -1,3 +1,4 @@
+import { createPendingRegistration } from '@/services/pendingCreationService';
 import { supabase } from '@/lib/supabaseClient';
 import { generateUUID } from '@/utils/supabaseHelpers';
 import { convertDateToSpanishText } from '@/utils/dateTimeFormatters';
@@ -264,10 +265,9 @@ export const saveBaptismToSource = async (data, parishId, mode = 'pending', opti
     const confirmationData = options?.confirmationData || null;
 
     try {
-        const { data: rpcData, error } = await supabase.rpc('create_pending_baptism_with_confirmation_flow', {
-            p_parish_id: targetParishId,
-            p_baptism_record: purificado,
-            p_confirmation_record: confirmationData
+        const { data: rpcData, error } = await createPendingRegistration({
+            kind: 'bautismo', parishId: targetParishId, record: purificado,
+            confirmationRecord: confirmationData, requestId: options?.creationRequestId
         });
         if (error) throw error;
 
@@ -369,7 +369,7 @@ export const saveBaptismToSource = async (data, parishId, mode = 'pending', opti
 // ============================================================================
 // PostgreSQL reserva el Nº de Registro y crea pending_confirmations dentro de
 // una sola transacción. El navegador nunca adelanta confirmaciones_params.
-export const saveConfirmationToSource = async (data, parishId, mode = 'pending') => {
+export const saveConfirmationToSource = async (data, parishId, mode = 'pending', options = {}) => {
     const targetParishId = parishId || data?.parishId || data?.parish_id || null;
     if (!targetParishId) {
         return { success: false, message: 'No se pudo determinar la parroquia del usuario. Operación cancelada por seguridad.' };
@@ -390,9 +390,9 @@ export const saveConfirmationToSource = async (data, parishId, mode = 'pending')
     };
 
     try {
-        const { data: rpcData, error } = await supabase.rpc('create_pending_confirmation', {
-            p_parish_id: targetParishId,
-            p_record: draft
+        const { data: rpcData, error } = await createPendingRegistration({
+            kind: 'confirmacion', parishId: targetParishId, record: draft,
+            requestId: options?.creationRequestId
         });
         if (error) throw error;
 

@@ -1,3 +1,4 @@
+import { generateUUID } from '@/utils/supabaseHelpers';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '@/components/DashboardLayout';
@@ -154,6 +155,8 @@ const FuneralRegistryPage = () => {
   const [syncError, setSyncError] = useState('');
   const [isRefreshing, setIsRefreshing] = useState(true);
   const seatInFlight = useRef(false);
+  const createInFlight = useRef(false);
+  const creationRequestId = useRef(null);
   const [search, setSearch] = useState('');
   const [notesRecord, setNotesRecord] = useState(null);
   const [baptismSearch, setBaptismSearch] = useState('');
@@ -371,7 +374,7 @@ const FuneralRegistryPage = () => {
   };
 
   const handlePending = async () => {
-    if (seatInFlight.current || busy || syncError || isRefreshing) return;
+    if (createInFlight.current || seatInFlight.current || busy || syncError || isRefreshing) return;
     const validation = validateCore(form);
 
     if (validation) {
@@ -383,13 +386,17 @@ const FuneralRegistryPage = () => {
       return;
     }
 
+    createInFlight.current = true;
+    creationRequestId.current ||= generateUUID();
     setBusy(true);
 
     try {
       const result = await createPendingFuneralCloud({
         parishId,
-        record: normalizeForm(form)
+        record: normalizeForm(form),
+        requestId: creationRequestId.current
       });
+      creationRequestId.current = null;
 
       setForm(emptyForm);
       setSelectedBaptism(null);
@@ -411,11 +418,12 @@ const FuneralRegistryPage = () => {
       });
     } finally {
       setBusy(false);
+      createInFlight.current = false;
     }
   };
 
   const seatPending = async (item) => {
-    if (seatInFlight.current || busy || syncError || isRefreshing) return;
+    if (createInFlight.current || seatInFlight.current || busy || syncError || isRefreshing) return;
     const data = item?.raw_data || {};
     const validation = validateCore(data);
 
@@ -468,7 +476,7 @@ const FuneralRegistryPage = () => {
   };
 
   const registerHistorical = async () => {
-    if (seatInFlight.current || busy || syncError || isRefreshing) return;
+    if (createInFlight.current || seatInFlight.current || busy || syncError || isRefreshing) return;
     const narrative = historical.historicalEntryMode === 'narrative';
     const required = narrative
       ? [historical.book_number, historical.folio, historical.number, historical.literalTranscription]

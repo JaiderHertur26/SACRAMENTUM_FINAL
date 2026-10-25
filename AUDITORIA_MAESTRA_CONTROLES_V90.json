@@ -54,9 +54,10 @@
       "criterion": "Tablas/vistas y claves",
       "status": "EN_PROGRESO",
       "evidence": [
-        "AUDITORIA_BASE_SQL_V90.md: 73 tablas, 138 FK y 95 restricciones claves inventariadas por conteo; falta detalle completo"
+        "AUDITORIA_BASE_SQL_V90.md: 73 tablas, 138 FK y 95 restricciones claves inventariadas por conteo; falta detalle completo",
+        "AUDITORIA_CREACION_IDEMPOTENTE_BOLETAS_V207_2026-10-25.md: V207_nuevas_altas_manuales_4_sacramentos_UUID_por_intento_recibo_PG_unico_5_circuitos_15_replays_4_fallos_de_recibo_con_rollback_21_escenarios_UI_y_servicios_reales_sin_Auth_E2E_ni_concurrencia_fisica"
       ],
-      "updated_at": "2026-10-21T16:06:49.411Z"
+      "updated_at": "2026-10-25T23:35:54.532Z"
     },
     {
       "id": "01.05",
@@ -66,9 +67,10 @@
       "criterion": "Funciones RPC",
       "status": "EN_PROGRESO",
       "evidence": [
-        "AUDITORIA_BASE_SQL_V90.md: 211 funciones públicas y 129 privilegiadas accesibles a authenticated; falta mapa y pruebas individuales"
+        "AUDITORIA_BASE_SQL_V90.md: 211 funciones públicas y 129 privilegiadas accesibles a authenticated; falta mapa y pruebas individuales",
+        "AUDITORIA_CREACION_IDEMPOTENTE_BOLETAS_V207_2026-10-25.md: V207_nuevas_altas_manuales_4_sacramentos_UUID_por_intento_recibo_PG_unico_5_circuitos_15_replays_4_fallos_de_recibo_con_rollback_21_escenarios_UI_y_servicios_reales_sin_Auth_E2E_ni_concurrencia_fisica"
       ],
-      "updated_at": "2026-10-21T16:06:49.508Z"
+      "updated_at": "2026-10-25T23:35:54.534Z"
     },
     {
       "id": "01.06",
@@ -497,9 +499,10 @@
       "criterion": "RLS de tablas públicas",
       "status": "APROBADO",
       "evidence": [
-        "AUDITORIA_BASE_SQL_V90.md: Consulta SQL al catálogo: las 73 tablas públicas tienen RLS y cero carecen de RLS"
+        "AUDITORIA_BASE_SQL_V90.md: Consulta SQL al catálogo: las 73 tablas públicas tienen RLS y cero carecen de RLS",
+        "AUDITORIA_CREACION_IDEMPOTENTE_BOLETAS_V207_2026-10-25.md: V207_nuevas_altas_manuales_4_sacramentos_UUID_por_intento_recibo_PG_unico_5_circuitos_15_replays_4_fallos_de_recibo_con_rollback_21_escenarios_UI_y_servicios_reales_sin_Auth_E2E_ni_concurrencia_fisica"
       ],
-      "updated_at": "2026-10-21T16:06:49.676Z"
+      "updated_at": "2026-10-25T23:35:54.534Z"
     },
     {
       "id": "06.02",
@@ -634,9 +637,10 @@
         "V179: simulated SUSPENDED Chancellor passed five definer decree/correction/nullity role guards into business validation. SQL NULL <> role bypass also exposed after first hardening; patched via IS DISTINCT FROM. Fully reversible synthetic SQL test.",
         "V180: real Postgres reproduction proved a NULL status parish profile could access a 3-contact internal Chat directory although current_app_role() was NULL; no personal values copied, fixture rolled back.",
         "V181 P0: authenticated actor WITHOUT user_profiles called set_managed_user_active and update_managed_user_profile on another fictional parish profile due NULL NOT IN manager guard. Suspended diocese actor disabled fake parish target. Full rollback.",
-        "V182 reproducible profile authorization weakness in 3 SECURITY DEFINER juridical RPCs: NULL status diocesan actor passed business guards. New fail-closed guards require is_active true and status ACTIVE."
+        "V182 reproducible profile authorization weakness in 3 SECURITY DEFINER juridical RPCs: NULL status diocesan actor passed business guards. New fail-closed guards require is_active true and status ACTIVE.",
+        "AUDITORIA_CREACION_IDEMPOTENTE_BOLETAS_V207_2026-10-25.md: V207_nuevas_altas_manuales_4_sacramentos_UUID_por_intento_recibo_PG_unico_5_circuitos_15_replays_4_fallos_de_recibo_con_rollback_21_escenarios_UI_y_servicios_reales_sin_Auth_E2E_ni_concurrencia_fisica"
       ],
-      "updated_at": "2026-10-24T01:20:50.808Z"
+      "updated_at": "2026-10-25T23:35:54.534Z"
     },
     {
       "id": "06.07",
@@ -694,9 +698,10 @@
         "V180: temporary patch of ten privileged Chat, matrimonial notification and template RPCs passed 10 ACTIVE cases and 60 denial cases (NULL_STATUS, NULL_ACTIVE, SUSPENDED, DISABLED, PENDING, BLANK_STATUS), all transactional.",
         "V181: four SQL privileged functions hardened to require explicitly ACTIVE profile, real PostgreSQL 4 legitimate actor flows and 28 negative cases PASSED in BEGIN/ROLLBACK.",
         "V182 PostgreSQL reversible QA: 5 active-role court and authorization business gates reachable, 24 invalid profile/role cases denied, no court records read or persisted.",
-        "AUDITORIA_CANCILLERIA_FALLO_IDENTIDAD_V191_2026-10-24.md: V191 confirma NULL_STATUS y NULL_ACTIVE previamente admitidos y ahora 24 negativas correctas en seis RPC de Cancilleria con rollback"
+        "AUDITORIA_CANCILLERIA_FALLO_IDENTIDAD_V191_2026-10-24.md: V191 confirma NULL_STATUS y NULL_ACTIVE previamente admitidos y ahora 24 negativas correctas en seis RPC de Cancilleria con rollback",
+        "AUDITORIA_CREACION_IDEMPOTENTE_BOLETAS_V207_2026-10-25.md: V207_nuevas_altas_manuales_4_sacramentos_UUID_por_intento_recibo_PG_unico_5_circuitos_15_replays_4_fallos_de_recibo_con_rollback_21_escenarios_UI_y_servicios_reales_sin_Auth_E2E_ni_concurrencia_fisica"
       ],
-      "updated_at": "2026-10-24T20:45:59.629Z"
+      "updated_at": "2026-10-25T23:35:54.534Z"
     },
     {
       "id": "06.08",
@@ -820,9 +825,10 @@
       "criterion": "Consecutivos de boletas",
       "status": "APROBADO",
       "evidence": [
-        "AUDITORIA_BLOQUE_FUNCIONAL_V192_2026-10-24.md: Ocho boletas ficticias por cuatro sacramentos creadas via RPC en rol authenticated con numeros estrictamente consecutivos y ROLLBACK"
+        "AUDITORIA_BLOQUE_FUNCIONAL_V192_2026-10-24.md: Ocho boletas ficticias por cuatro sacramentos creadas via RPC en rol authenticated con numeros estrictamente consecutivos y ROLLBACK",
+        "AUDITORIA_CREACION_IDEMPOTENTE_BOLETAS_V207_2026-10-25.md: V207_nuevas_altas_manuales_4_sacramentos_UUID_por_intento_recibo_PG_unico_5_circuitos_15_replays_4_fallos_de_recibo_con_rollback_21_escenarios_UI_y_servicios_reales_sin_Auth_E2E_ni_concurrencia_fisica"
       ],
-      "updated_at": "2026-10-24T21:01:33.278Z"
+      "updated_at": "2026-10-25T23:35:54.534Z"
     },
     {
       "id": "07.05",
@@ -834,9 +840,10 @@
       "evidence": [
         "AUDITORIA_RECEPCION_NULIDAD_MATRIMONIAL_V106_2026-10-21.md: V106: segunda aceptación por Parroquia devuelve processed sin duplicar nota; falta concurrencia real multi-sesión",
         "V167: para cada uno de 4 sacramentos, solicitud duplicada y reintento de ejecución después de éxito denegados; audit 3 y notificación única.",
-        "AUDITORIA_ATOMICIDAD_REINTENTOS_V201_2026-10-24.md: V201_dos_sacramentos_rechazan_segunda_peticion_obsoleta_y_reintentan_consecutivo_actualizado_falta_matriz_global"
+        "AUDITORIA_ATOMICIDAD_REINTENTOS_V201_2026-10-24.md: V201_dos_sacramentos_rechazan_segunda_peticion_obsoleta_y_reintentan_consecutivo_actualizado_falta_matriz_global",
+        "AUDITORIA_CREACION_IDEMPOTENTE_BOLETAS_V207_2026-10-25.md: V207_nuevas_altas_manuales_4_sacramentos_UUID_por_intento_recibo_PG_unico_5_circuitos_15_replays_4_fallos_de_recibo_con_rollback_21_escenarios_UI_y_servicios_reales_sin_Auth_E2E_ni_concurrencia_fisica"
       ],
-      "updated_at": "2026-10-25T03:21:11.443Z"
+      "updated_at": "2026-10-25T23:35:54.534Z"
     },
     {
       "id": "07.06",
@@ -851,9 +858,10 @@
         "AUDITORIA_INTERDIOCESANA_CIERRE_ASIENTOS_V198_2026-10-24.md: V198 problema real de boleta asentada sin partida corregido con 20 prohibiciones y dos asientos oficiales efectivos con rollback",
         "AUDITORIA_CIERRE_BOLETAS_V199_2026-10-24.md: V199_boletas_asentadas_conservadas_20_operaciones_seguras_en_sistema_sql_falta_concurrencia_real_y_e2e",
         "AUDITORIA_ATOMICIDAD_REINTENTOS_V201_2026-10-24.md: V201_dos_lotes_bautismo_y_confirmacion_segundo_registro_falla_primero_revertido_sin_avance_de_consecutivo_ni_auditoria_y_reintento_seguro_falta_matrimonio_y_exequias",
-        "AUDITORIA_ATOMICIDAD_CUATRO_SACRAMENTOS_V202_2026-10-25.md: V202_cuatro_RPCS_de_asiento_ensayadas_en_PG_con_rollback_y_cierre_coherente_de_boleta_partida_parametros_y_auditoria_matrimonio_exequias_falla_posterior_y_bautismo_confirmacion_segundo_invalido"
+        "AUDITORIA_ATOMICIDAD_CUATRO_SACRAMENTOS_V202_2026-10-25.md: V202_cuatro_RPCS_de_asiento_ensayadas_en_PG_con_rollback_y_cierre_coherente_de_boleta_partida_parametros_y_auditoria_matrimonio_exequias_falla_posterior_y_bautismo_confirmacion_segundo_invalido",
+        "AUDITORIA_CREACION_IDEMPOTENTE_BOLETAS_V207_2026-10-25.md: V207_nuevas_altas_manuales_4_sacramentos_UUID_por_intento_recibo_PG_unico_5_circuitos_15_replays_4_fallos_de_recibo_con_rollback_21_escenarios_UI_y_servicios_reales_sin_Auth_E2E_ni_concurrencia_fisica"
       ],
-      "updated_at": "2026-10-25T19:56:04.581Z"
+      "updated_at": "2026-10-25T23:35:54.534Z"
     },
     {
       "id": "07.07",
@@ -903,9 +911,10 @@
       "criterion": "Nueva boleta",
       "status": "EN_PROGRESO",
       "evidence": [
-        "AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: Boleta Bautismo permite inserción como Parroquia y deniega otros tres roles en API; falta UI y ciclo completo"
+        "AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: Boleta Bautismo permite inserción como Parroquia y deniega otros tres roles en API; falta UI y ciclo completo",
+        "AUDITORIA_CREACION_IDEMPOTENTE_BOLETAS_V207_2026-10-25.md: V207_nuevas_altas_manuales_4_sacramentos_UUID_por_intento_recibo_PG_unico_5_circuitos_15_replays_4_fallos_de_recibo_con_rollback_21_escenarios_UI_y_servicios_reales_sin_Auth_E2E_ni_concurrencia_fisica"
       ],
-      "updated_at": "2026-10-21T18:05:52.842Z"
+      "updated_at": "2026-10-25T23:35:54.534Z"
     },
     {
       "id": "08.02",
@@ -1032,9 +1041,10 @@
       "criterion": "Nueva boleta",
       "status": "EN_PROGRESO",
       "evidence": [
-        "AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: Boleta Confirmación permite inserción como Parroquia y deniega otros tres roles en API; falta UI y ciclo completo"
+        "AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: Boleta Confirmación permite inserción como Parroquia y deniega otros tres roles en API; falta UI y ciclo completo",
+        "AUDITORIA_CREACION_IDEMPOTENTE_BOLETAS_V207_2026-10-25.md: V207_nuevas_altas_manuales_4_sacramentos_UUID_por_intento_recibo_PG_unico_5_circuitos_15_replays_4_fallos_de_recibo_con_rollback_21_escenarios_UI_y_servicios_reales_sin_Auth_E2E_ni_concurrencia_fisica"
       ],
-      "updated_at": "2026-10-21T18:05:53.105Z"
+      "updated_at": "2026-10-25T23:35:54.534Z"
     },
     {
       "id": "09.02",
@@ -1164,9 +1174,11 @@
       "area": "Matrimonio",
       "priority": "P0",
       "criterion": "Expediente matrimonial",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "AUDITORIA_CREACION_IDEMPOTENTE_BOLETAS_V207_2026-10-25.md: V207_nuevas_altas_manuales_4_sacramentos_UUID_por_intento_recibo_PG_unico_5_circuitos_15_replays_4_fallos_de_recibo_con_rollback_21_escenarios_UI_y_servicios_reales_sin_Auth_E2E_ni_concurrencia_fisica"
+      ],
+      "updated_at": "2026-10-25T23:35:54.534Z"
     },
     {
       "id": "10.03",
@@ -1287,9 +1299,10 @@
       "criterion": "Inscripción",
       "status": "APROBADO",
       "evidence": [
-        "AUDITORIA_CIRCUITOS_REGISTRALES_V193_2026-10-24.md: V193 Exequias inscripcion desde borrador hasta partida y cierre con auditoria"
+        "AUDITORIA_CIRCUITOS_REGISTRALES_V193_2026-10-24.md: V193 Exequias inscripcion desde borrador hasta partida y cierre con auditoria",
+        "AUDITORIA_CREACION_IDEMPOTENTE_BOLETAS_V207_2026-10-25.md: V207_nuevas_altas_manuales_4_sacramentos_UUID_por_intento_recibo_PG_unico_5_circuitos_15_replays_4_fallos_de_recibo_con_rollback_21_escenarios_UI_y_servicios_reales_sin_Auth_E2E_ni_concurrencia_fisica"
       ],
-      "updated_at": "2026-10-24T21:11:19.431Z"
+      "updated_at": "2026-10-25T23:35:54.534Z"
     },
     {
       "id": "11.02",
@@ -1881,9 +1894,11 @@
       "area": "Boletas y pendientes",
       "priority": "P0",
       "criterion": "Alta manual y número",
-      "status": "PENDIENTE",
-      "evidence": [],
-      "updated_at": null
+      "status": "EN_PROGRESO",
+      "evidence": [
+        "AUDITORIA_CREACION_IDEMPOTENTE_BOLETAS_V207_2026-10-25.md: V207_nuevas_altas_manuales_4_sacramentos_UUID_por_intento_recibo_PG_unico_5_circuitos_15_replays_4_fallos_de_recibo_con_rollback_21_escenarios_UI_y_servicios_reales_sin_Auth_E2E_ni_concurrencia_fisica"
+      ],
+      "updated_at": "2026-10-25T23:35:54.534Z"
     },
     {
       "id": "15.02",
@@ -1955,9 +1970,10 @@
       "evidence": [
         "V167: reintentos duplicados de API rechazados por índice/estado. Prueba de doble clic del navegador todavía pendiente.",
         "AUDITORIA_RECUPERACION_MATRIMONIO_V205_2026-10-25.md: V205_pagina_React_real_Matrimonio_8_escenarios_con_servicios_simulados_recuperacion_de_lote_respuesta_perdida_lectura_fallida_y_doble_click_CI_103_archivos_de_prueba_sin_E2E_Auth_ni_concurrencia_PG",
-        "AUDITORIA_RECUPERACION_TRES_SACRAMENTOS_V206_2026-10-25.md: V206_24_escenarios_React_reales_con_servicios_simulados_Bautismo_Confirmacion_Exequias_lectura_fallida_doble_clic_respuesta_perdida_y_reintento_32_escenarios_con_Matrimonio_no_E2E_Auth_ni_concurrencia_PG"
+        "AUDITORIA_RECUPERACION_TRES_SACRAMENTOS_V206_2026-10-25.md: V206_24_escenarios_React_reales_con_servicios_simulados_Bautismo_Confirmacion_Exequias_lectura_fallida_doble_clic_respuesta_perdida_y_reintento_32_escenarios_con_Matrimonio_no_E2E_Auth_ni_concurrencia_PG",
+        "AUDITORIA_CREACION_IDEMPOTENTE_BOLETAS_V207_2026-10-25.md: V207_nuevas_altas_manuales_4_sacramentos_UUID_por_intento_recibo_PG_unico_5_circuitos_15_replays_4_fallos_de_recibo_con_rollback_21_escenarios_UI_y_servicios_reales_sin_Auth_E2E_ni_concurrencia_fisica"
       ],
-      "updated_at": "2026-10-25T23:14:20.117Z"
+      "updated_at": "2026-10-25T23:35:54.534Z"
     },
     {
       "id": "15.09",
@@ -3087,9 +3103,10 @@
       "status": "EN_PROGRESO",
       "evidence": [
         "AUDITORIA_RECUPERACION_MATRIMONIO_V205_2026-10-25.md: V205_pagina_React_real_Matrimonio_8_escenarios_con_servicios_simulados_recuperacion_de_lote_respuesta_perdida_lectura_fallida_y_doble_click_CI_103_archivos_de_prueba_sin_E2E_Auth_ni_concurrencia_PG",
-        "AUDITORIA_RECUPERACION_TRES_SACRAMENTOS_V206_2026-10-25.md: V206_24_escenarios_React_reales_con_servicios_simulados_Bautismo_Confirmacion_Exequias_lectura_fallida_doble_clic_respuesta_perdida_y_reintento_32_escenarios_con_Matrimonio_no_E2E_Auth_ni_concurrencia_PG"
+        "AUDITORIA_RECUPERACION_TRES_SACRAMENTOS_V206_2026-10-25.md: V206_24_escenarios_React_reales_con_servicios_simulados_Bautismo_Confirmacion_Exequias_lectura_fallida_doble_clic_respuesta_perdida_y_reintento_32_escenarios_con_Matrimonio_no_E2E_Auth_ni_concurrencia_PG",
+        "AUDITORIA_CREACION_IDEMPOTENTE_BOLETAS_V207_2026-10-25.md: V207_nuevas_altas_manuales_4_sacramentos_UUID_por_intento_recibo_PG_unico_5_circuitos_15_replays_4_fallos_de_recibo_con_rollback_21_escenarios_UI_y_servicios_reales_sin_Auth_E2E_ni_concurrencia_fisica"
       ],
-      "updated_at": "2026-10-25T23:14:20.117Z"
+      "updated_at": "2026-10-25T23:35:54.534Z"
     },
     {
       "id": "25.03",
@@ -3100,9 +3117,10 @@
       "status": "EN_PROGRESO",
       "evidence": [
         "AUDITORIA_RECUPERACION_MATRIMONIO_V205_2026-10-25.md: V205_pagina_React_real_Matrimonio_8_escenarios_con_servicios_simulados_recuperacion_de_lote_respuesta_perdida_lectura_fallida_y_doble_click_CI_103_archivos_de_prueba_sin_E2E_Auth_ni_concurrencia_PG",
-        "AUDITORIA_RECUPERACION_TRES_SACRAMENTOS_V206_2026-10-25.md: V206_24_escenarios_React_reales_con_servicios_simulados_Bautismo_Confirmacion_Exequias_lectura_fallida_doble_clic_respuesta_perdida_y_reintento_32_escenarios_con_Matrimonio_no_E2E_Auth_ni_concurrencia_PG"
+        "AUDITORIA_RECUPERACION_TRES_SACRAMENTOS_V206_2026-10-25.md: V206_24_escenarios_React_reales_con_servicios_simulados_Bautismo_Confirmacion_Exequias_lectura_fallida_doble_clic_respuesta_perdida_y_reintento_32_escenarios_con_Matrimonio_no_E2E_Auth_ni_concurrencia_PG",
+        "AUDITORIA_CREACION_IDEMPOTENTE_BOLETAS_V207_2026-10-25.md: V207_nuevas_altas_manuales_4_sacramentos_UUID_por_intento_recibo_PG_unico_5_circuitos_15_replays_4_fallos_de_recibo_con_rollback_21_escenarios_UI_y_servicios_reales_sin_Auth_E2E_ni_concurrencia_fisica"
       ],
-      "updated_at": "2026-10-25T23:14:20.117Z"
+      "updated_at": "2026-10-25T23:35:54.534Z"
     },
     {
       "id": "25.04",
@@ -3156,9 +3174,10 @@
       "status": "EN_PROGRESO",
       "evidence": [
         "AUDITORIA_RECUPERACION_MATRIMONIO_V205_2026-10-25.md: V205_pagina_React_real_Matrimonio_8_escenarios_con_servicios_simulados_recuperacion_de_lote_respuesta_perdida_lectura_fallida_y_doble_click_CI_103_archivos_de_prueba_sin_E2E_Auth_ni_concurrencia_PG",
-        "AUDITORIA_RECUPERACION_TRES_SACRAMENTOS_V206_2026-10-25.md: V206_24_escenarios_React_reales_con_servicios_simulados_Bautismo_Confirmacion_Exequias_lectura_fallida_doble_clic_respuesta_perdida_y_reintento_32_escenarios_con_Matrimonio_no_E2E_Auth_ni_concurrencia_PG"
+        "AUDITORIA_RECUPERACION_TRES_SACRAMENTOS_V206_2026-10-25.md: V206_24_escenarios_React_reales_con_servicios_simulados_Bautismo_Confirmacion_Exequias_lectura_fallida_doble_clic_respuesta_perdida_y_reintento_32_escenarios_con_Matrimonio_no_E2E_Auth_ni_concurrencia_PG",
+        "AUDITORIA_CREACION_IDEMPOTENTE_BOLETAS_V207_2026-10-25.md: V207_nuevas_altas_manuales_4_sacramentos_UUID_por_intento_recibo_PG_unico_5_circuitos_15_replays_4_fallos_de_recibo_con_rollback_21_escenarios_UI_y_servicios_reales_sin_Auth_E2E_ni_concurrencia_fisica"
       ],
-      "updated_at": "2026-10-25T23:14:20.117Z"
+      "updated_at": "2026-10-25T23:35:54.534Z"
     },
     {
       "id": "25.09",
@@ -4034,9 +4053,10 @@
         "V168: reintento de lote ya ejecutado rechazado; faltan pruebas físicas de doble clic con red caída y dos transacciones simultáneas.",
         "V169: 20 pruebas de comportamiento en Node sobre cinco handlers, incluyendo respuesta tardía satisfactoria, error tardío, cambio durante diálogo y ruta legítima; falta doble clic físico y redes reales.",
         "AUDITORIA_RECUPERACION_MATRIMONIO_V205_2026-10-25.md: V205_pagina_React_real_Matrimonio_8_escenarios_con_servicios_simulados_recuperacion_de_lote_respuesta_perdida_lectura_fallida_y_doble_click_CI_103_archivos_de_prueba_sin_E2E_Auth_ni_concurrencia_PG",
-        "AUDITORIA_RECUPERACION_TRES_SACRAMENTOS_V206_2026-10-25.md: V206_24_escenarios_React_reales_con_servicios_simulados_Bautismo_Confirmacion_Exequias_lectura_fallida_doble_clic_respuesta_perdida_y_reintento_32_escenarios_con_Matrimonio_no_E2E_Auth_ni_concurrencia_PG"
+        "AUDITORIA_RECUPERACION_TRES_SACRAMENTOS_V206_2026-10-25.md: V206_24_escenarios_React_reales_con_servicios_simulados_Bautismo_Confirmacion_Exequias_lectura_fallida_doble_clic_respuesta_perdida_y_reintento_32_escenarios_con_Matrimonio_no_E2E_Auth_ni_concurrencia_PG",
+        "AUDITORIA_CREACION_IDEMPOTENTE_BOLETAS_V207_2026-10-25.md: V207_nuevas_altas_manuales_4_sacramentos_UUID_por_intento_recibo_PG_unico_5_circuitos_15_replays_4_fallos_de_recibo_con_rollback_21_escenarios_UI_y_servicios_reales_sin_Auth_E2E_ni_concurrencia_fisica"
       ],
-      "updated_at": "2026-10-25T23:14:20.117Z"
+      "updated_at": "2026-10-25T23:35:54.534Z"
     },
     {
       "id": "31.09",
@@ -4346,9 +4366,10 @@
         "V167: suite SQL de pruebas y evidencia nuevas; backend y frontend sin cambios funcionales. Publicación de evidencia por CI controlado.",
         "V168: migración Supabase aplicada 20261023154826; probado de nuevo contra la función instalada y Vercel publicó tras CI de commit 32dfdbb.",
         "AUDITORIA_RECUPERACION_MATRIMONIO_V205_2026-10-25.md: V205_pagina_React_real_Matrimonio_8_escenarios_con_servicios_simulados_recuperacion_de_lote_respuesta_perdida_lectura_fallida_y_doble_click_CI_103_archivos_de_prueba_sin_E2E_Auth_ni_concurrencia_PG",
-        "AUDITORIA_RECUPERACION_TRES_SACRAMENTOS_V206_2026-10-25.md: V206_24_escenarios_React_reales_con_servicios_simulados_Bautismo_Confirmacion_Exequias_lectura_fallida_doble_clic_respuesta_perdida_y_reintento_32_escenarios_con_Matrimonio_no_E2E_Auth_ni_concurrencia_PG"
+        "AUDITORIA_RECUPERACION_TRES_SACRAMENTOS_V206_2026-10-25.md: V206_24_escenarios_React_reales_con_servicios_simulados_Bautismo_Confirmacion_Exequias_lectura_fallida_doble_clic_respuesta_perdida_y_reintento_32_escenarios_con_Matrimonio_no_E2E_Auth_ni_concurrencia_PG",
+        "AUDITORIA_CREACION_IDEMPOTENTE_BOLETAS_V207_2026-10-25.md: V207_nuevas_altas_manuales_4_sacramentos_UUID_por_intento_recibo_PG_unico_5_circuitos_15_replays_4_fallos_de_recibo_con_rollback_21_escenarios_UI_y_servicios_reales_sin_Auth_E2E_ni_concurrencia_fisica"
       ],
-      "updated_at": "2026-10-25T23:14:20.117Z"
+      "updated_at": "2026-10-25T23:35:54.534Z"
     },
     {
       "id": "32.07",
@@ -4428,9 +4449,10 @@
         "V181: baptism and confirmation physical book settings now require is_active TRUE/status ACTIVE and ownership. Anchored SQL migration preserves sequencing and existing audit. Real 4 positives/28 negatives verified.",
         "V182 targeted and anchored replacement in 3 privileged RPCs, preserving signatures/grants, with JWT-fictitious actors and BEGIN/ROLLBACK SQL proof.",
         "AUDITORIA_RECUPERACION_MATRIMONIO_V205_2026-10-25.md: V205_pagina_React_real_Matrimonio_8_escenarios_con_servicios_simulados_recuperacion_de_lote_respuesta_perdida_lectura_fallida_y_doble_click_CI_103_archivos_de_prueba_sin_E2E_Auth_ni_concurrencia_PG",
-        "AUDITORIA_RECUPERACION_TRES_SACRAMENTOS_V206_2026-10-25.md: V206_24_escenarios_React_reales_con_servicios_simulados_Bautismo_Confirmacion_Exequias_lectura_fallida_doble_clic_respuesta_perdida_y_reintento_32_escenarios_con_Matrimonio_no_E2E_Auth_ni_concurrencia_PG"
+        "AUDITORIA_RECUPERACION_TRES_SACRAMENTOS_V206_2026-10-25.md: V206_24_escenarios_React_reales_con_servicios_simulados_Bautismo_Confirmacion_Exequias_lectura_fallida_doble_clic_respuesta_perdida_y_reintento_32_escenarios_con_Matrimonio_no_E2E_Auth_ni_concurrencia_PG",
+        "AUDITORIA_CREACION_IDEMPOTENTE_BOLETAS_V207_2026-10-25.md: V207_nuevas_altas_manuales_4_sacramentos_UUID_por_intento_recibo_PG_unico_5_circuitos_15_replays_4_fallos_de_recibo_con_rollback_21_escenarios_UI_y_servicios_reales_sin_Auth_E2E_ni_concurrencia_fisica"
       ],
-      "updated_at": "2026-10-25T23:14:20.117Z"
+      "updated_at": "2026-10-25T23:35:54.534Z"
     },
     {
       "id": "32.08",

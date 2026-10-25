@@ -10,7 +10,7 @@ Regla: no introducir datos falsos permanentes; usar memoria, transacciones ROLLB
 
 Prioridad P0 bloquea la certificación. P1 debe constar resuelta o aceptada con evidencia y responsable.
 
-Avance: 325 controles totales; 29 aprobados; 129 en progreso; 167 pendientes; 0 fallidos; 0 bloqueados.
+Avance: 325 controles totales; 29 aprobados; 131 en progreso; 165 pendientes; 0 fallidos; 0 bloqueados.
 
 ## Fases y controles numerados
 
@@ -24,8 +24,10 @@ Avance: 325 controles totales; 29 aprobados; 129 en progreso; 167 pendientes; 0 
   - Evidencia: AUDITORIA_INVENTARIO_CODIGO_V90.json: Scanner identifica 79 referencias RPC y 43 operaciones directas; falta probar todas
 - [ ] 01.04 · Tablas/vistas y claves — EN_PROGRESO
   - Evidencia: AUDITORIA_BASE_SQL_V90.md: 73 tablas, 138 FK y 95 restricciones claves inventariadas por conteo; falta detalle completo
+  - Evidencia: AUDITORIA_CREACION_IDEMPOTENTE_BOLETAS_V207_2026-10-25.md: V207_nuevas_altas_manuales_4_sacramentos_UUID_por_intento_recibo_PG_unico_5_circuitos_15_replays_4_fallos_de_recibo_con_rollback_21_escenarios_UI_y_servicios_reales_sin_Auth_E2E_ni_concurrencia_fisica
 - [ ] 01.05 · Funciones RPC — EN_PROGRESO
   - Evidencia: AUDITORIA_BASE_SQL_V90.md: 211 funciones públicas y 129 privilegiadas accesibles a authenticated; falta mapa y pruebas individuales
+  - Evidencia: AUDITORIA_CREACION_IDEMPOTENTE_BOLETAS_V207_2026-10-25.md: V207_nuevas_altas_manuales_4_sacramentos_UUID_por_intento_recibo_PG_unico_5_circuitos_15_replays_4_fallos_de_recibo_con_rollback_21_escenarios_UI_y_servicios_reales_sin_Auth_E2E_ni_concurrencia_fisica
 - [ ] 01.06 · Triggers y políticas SQL — EN_PROGRESO
   - Evidencia: AUDITORIA_BASE_SQL_V90.md: 49 triggers y 124 políticas RLS inventariados por conteo; falta análisis funcional
 - [ ] 01.07 · Mapa desde botón hasta tabla — EN_PROGRESO
@@ -100,6 +102,7 @@ Avance: 325 controles totales; 29 aprobados; 129 en progreso; 167 pendientes; 0 
 
 - [x] 06.01 · RLS de tablas públicas — APROBADO
   - Evidencia: AUDITORIA_BASE_SQL_V90.md: Consulta SQL al catálogo: las 73 tablas públicas tienen RLS y cero carecen de RLS
+  - Evidencia: AUDITORIA_CREACION_IDEMPOTENTE_BOLETAS_V207_2026-10-25.md: V207_nuevas_altas_manuales_4_sacramentos_UUID_por_intento_recibo_PG_unico_5_circuitos_15_replays_4_fallos_de_recibo_con_rollback_21_escenarios_UI_y_servicios_reales_sin_Auth_E2E_ni_concurrencia_fisica
 - [x] 06.02 · RLS SELECT por actor — APROBADO
   - Evidencia: AUDITORIA_RLS_PARROQUIAL_V90.md: Ensayo con rol Parroquia autenticado: cero filas de otras parroquias en 10 entidades; falta matriz completa y operaciones de escritura
   - Evidencia: AUDITORIA_EXP_DEPENDENCIAS_Y_RLS_V91.md: Cuatro roles no pudieron leer Bautismo de segunda diócesis ficticia; falta matriz completa
@@ -187,6 +190,7 @@ Avance: 325 controles totales; 29 aprobados; 129 en progreso; 167 pendientes; 0 
   - Evidencia: V180: real Postgres reproduction proved a NULL status parish profile could access a 3-contact internal Chat directory although current_app_role() was NULL; no personal values copied, fixture rolled back.
   - Evidencia: V181 P0: authenticated actor WITHOUT user_profiles called set_managed_user_active and update_managed_user_profile on another fictional parish profile due NULL NOT IN manager guard. Suspended diocese actor disabled fake parish target. Full rollback.
   - Evidencia: V182 reproducible profile authorization weakness in 3 SECURITY DEFINER juridical RPCs: NULL status diocesan actor passed business guards. New fail-closed guards require is_active true and status ACTIVE.
+  - Evidencia: AUDITORIA_CREACION_IDEMPOTENTE_BOLETAS_V207_2026-10-25.md: V207_nuevas_altas_manuales_4_sacramentos_UUID_por_intento_recibo_PG_unico_5_circuitos_15_replays_4_fallos_de_recibo_con_rollback_21_escenarios_UI_y_servicios_reales_sin_Auth_E2E_ni_concurrencia_fisica
 - [ ] 06.07 · Todas las RPC privilegiadas denegadas a terceros (inventario dinámico) — EN_PROGRESO
   - Evidencia: AUDITORIA_BASE_SQL_V90.md: Cero vistas públicas; 129 RPC privilegiadas requieren pruebas de permisos y búsqueda de bypass
   - Evidencia: AUDITORIA_INVENTARIO_RPC_V91.json: 129 funciones catalogadas para revisión de terceros, sin afirmar autorización sin pruebas
@@ -237,6 +241,7 @@ Avance: 325 controles totales; 29 aprobados; 129 en progreso; 167 pendientes; 0 
   - Evidencia: V181: four SQL privileged functions hardened to require explicitly ACTIVE profile, real PostgreSQL 4 legitimate actor flows and 28 negative cases PASSED in BEGIN/ROLLBACK.
   - Evidencia: V182 PostgreSQL reversible QA: 5 active-role court and authorization business gates reachable, 24 invalid profile/role cases denied, no court records read or persisted.
   - Evidencia: AUDITORIA_CANCILLERIA_FALLO_IDENTIDAD_V191_2026-10-24.md: V191 confirma NULL_STATUS y NULL_ACTIVE previamente admitidos y ahora 24 negativas correctas en seis RPC de Cancilleria con rollback
+  - Evidencia: AUDITORIA_CREACION_IDEMPOTENTE_BOLETAS_V207_2026-10-25.md: V207_nuevas_altas_manuales_4_sacramentos_UUID_por_intento_recibo_PG_unico_5_circuitos_15_replays_4_fallos_de_recibo_con_rollback_21_escenarios_UI_y_servicios_reales_sin_Auth_E2E_ni_concurrencia_fisica
 - [ ] 06.08 · Search path de funciones — EN_PROGRESO
   - Evidencia: AUDITORIA_INVENTARIO_RPC_V91.json: Cribado search_path de funciones privilegiadas; falta verificación de todas sus dependencias
   - Evidencia: V124: ambas RPC destructivas preservaron search_path fijado; revisión de todas las demás sigue pendiente.
@@ -277,10 +282,12 @@ Avance: 325 controles totales; 29 aprobados; 129 en progreso; 167 pendientes; 0 
   - Evidencia: AUDITORIA_UNICIDAD_NUMERICA_V200_2026-10-24.md: V200_indices_unicos_y_bloqueos_FOR_UPDATE_corrobados_pero_dos_sesiones_JWT_realmente_solapadas_no_comprobadas
 - [x] 07.04 · Consecutivos de boletas — APROBADO
   - Evidencia: AUDITORIA_BLOQUE_FUNCIONAL_V192_2026-10-24.md: Ocho boletas ficticias por cuatro sacramentos creadas via RPC en rol authenticated con numeros estrictamente consecutivos y ROLLBACK
+  - Evidencia: AUDITORIA_CREACION_IDEMPOTENTE_BOLETAS_V207_2026-10-25.md: V207_nuevas_altas_manuales_4_sacramentos_UUID_por_intento_recibo_PG_unico_5_circuitos_15_replays_4_fallos_de_recibo_con_rollback_21_escenarios_UI_y_servicios_reales_sin_Auth_E2E_ni_concurrencia_fisica
 - [ ] 07.05 · Reintento idempotente — EN_PROGRESO
   - Evidencia: AUDITORIA_RECEPCION_NULIDAD_MATRIMONIAL_V106_2026-10-21.md: V106: segunda aceptación por Parroquia devuelve processed sin duplicar nota; falta concurrencia real multi-sesión
   - Evidencia: V167: para cada uno de 4 sacramentos, solicitud duplicada y reintento de ejecución después de éxito denegados; audit 3 y notificación única.
   - Evidencia: AUDITORIA_ATOMICIDAD_REINTENTOS_V201_2026-10-24.md: V201_dos_sacramentos_rechazan_segunda_peticion_obsoleta_y_reintentan_consecutivo_actualizado_falta_matriz_global
+  - Evidencia: AUDITORIA_CREACION_IDEMPOTENTE_BOLETAS_V207_2026-10-25.md: V207_nuevas_altas_manuales_4_sacramentos_UUID_por_intento_recibo_PG_unico_5_circuitos_15_replays_4_fallos_de_recibo_con_rollback_21_escenarios_UI_y_servicios_reales_sin_Auth_E2E_ni_concurrencia_fisica
 - [x] 07.06 · Transacción atomicidad — APROBADO
   - Evidencia: V167: 4 rutas completas de reversión y conciliación conservan atomicidad: decreto y nota reversed, case executed, audit 3 y notificación 1. BEGIN/ROLLBACK.
   - Evidencia: V168: transacción única revierte 2 notas y 1 decreto y cierra 2 expedientes, o falla sin cambios; seis auditorías de expedientes y una notificación consolidada por caso.
@@ -288,6 +295,7 @@ Avance: 325 controles totales; 29 aprobados; 129 en progreso; 167 pendientes; 0 
   - Evidencia: AUDITORIA_CIERRE_BOLETAS_V199_2026-10-24.md: V199_boletas_asentadas_conservadas_20_operaciones_seguras_en_sistema_sql_falta_concurrencia_real_y_e2e
   - Evidencia: AUDITORIA_ATOMICIDAD_REINTENTOS_V201_2026-10-24.md: V201_dos_lotes_bautismo_y_confirmacion_segundo_registro_falla_primero_revertido_sin_avance_de_consecutivo_ni_auditoria_y_reintento_seguro_falta_matrimonio_y_exequias
   - Evidencia: AUDITORIA_ATOMICIDAD_CUATRO_SACRAMENTOS_V202_2026-10-25.md: V202_cuatro_RPCS_de_asiento_ensayadas_en_PG_con_rollback_y_cierre_coherente_de_boleta_partida_parametros_y_auditoria_matrimonio_exequias_falla_posterior_y_bautismo_confirmacion_segundo_invalido
+  - Evidencia: AUDITORIA_CREACION_IDEMPOTENTE_BOLETAS_V207_2026-10-25.md: V207_nuevas_altas_manuales_4_sacramentos_UUID_por_intento_recibo_PG_unico_5_circuitos_15_replays_4_fallos_de_recibo_con_rollback_21_escenarios_UI_y_servicios_reales_sin_Auth_E2E_ni_concurrencia_fisica
 - [x] 07.07 · Llaves foráneas sin huérfanos — APROBADO
   - Evidencia: AUDITORIA_INTEGRIDAD_REFERENCIAL_V185_2026-10-24.md: QA live PostgreSQL 165 FKs validadas sin huerfanos ni triggers desactivados, BEGIN READ ONLY y ROLLBACK
 - [ ] 07.08 · Bloqueos y deadlocks — EN_PROGRESO
@@ -303,6 +311,7 @@ Avance: 325 controles totales; 29 aprobados; 129 en progreso; 167 pendientes; 0 
 
 - [ ] 08.01 · Nueva boleta — EN_PROGRESO
   - Evidencia: AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: Boleta Bautismo permite inserción como Parroquia y deniega otros tres roles en API; falta UI y ciclo completo
+  - Evidencia: AUDITORIA_CREACION_IDEMPOTENTE_BOLETAS_V207_2026-10-25.md: V207_nuevas_altas_manuales_4_sacramentos_UUID_por_intento_recibo_PG_unico_5_circuitos_15_replays_4_fallos_de_recibo_con_rollback_21_escenarios_UI_y_servicios_reales_sin_Auth_E2E_ni_concurrencia_fisica
 - [ ] 08.02 · Celebración — PENDIENTE
 - [x] 08.03 · Asiento en libro — APROBADO
   - Evidencia: AUDITORIA_CIRCUITOS_REGISTRALES_V193_2026-10-24.md: V193 circuito de Bautismo boleta a asiento con libro folio numero cierre y traza SQL ROLLBACK
@@ -328,6 +337,7 @@ Avance: 325 controles totales; 29 aprobados; 129 en progreso; 167 pendientes; 0 
 
 - [ ] 09.01 · Nueva boleta — EN_PROGRESO
   - Evidencia: AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: Boleta Confirmación permite inserción como Parroquia y deniega otros tres roles en API; falta UI y ciclo completo
+  - Evidencia: AUDITORIA_CREACION_IDEMPOTENTE_BOLETAS_V207_2026-10-25.md: V207_nuevas_altas_manuales_4_sacramentos_UUID_por_intento_recibo_PG_unico_5_circuitos_15_replays_4_fallos_de_recibo_con_rollback_21_escenarios_UI_y_servicios_reales_sin_Auth_E2E_ni_concurrencia_fisica
 - [ ] 09.02 · Fecha y hora — PENDIENTE
 - [ ] 09.03 · Celebración — PENDIENTE
 - [x] 09.04 · Asiento en libro — APROBADO
@@ -349,7 +359,8 @@ Avance: 325 controles totales; 29 aprobados; 129 en progreso; 167 pendientes; 0 
 ### 10. Matrimonio (P0) — 1/11
 
 - [ ] 10.01 · Datos de ambos contrayentes — PENDIENTE
-- [ ] 10.02 · Expediente matrimonial — PENDIENTE
+- [ ] 10.02 · Expediente matrimonial — EN_PROGRESO
+  - Evidencia: AUDITORIA_CREACION_IDEMPOTENTE_BOLETAS_V207_2026-10-25.md: V207_nuevas_altas_manuales_4_sacramentos_UUID_por_intento_recibo_PG_unico_5_circuitos_15_replays_4_fallos_de_recibo_con_rollback_21_escenarios_UI_y_servicios_reales_sin_Auth_E2E_ni_concurrencia_fisica
 - [ ] 10.03 · Notificaciones — EN_PROGRESO
   - Evidencia: AUDITORIA_RECEPCION_NULIDAD_MATRIMONIAL_V106_2026-10-21.md: V106: nulidad sin decreto no llega a nota marginal; sentencia y Bautismo se cotejan al recibir
 - [ ] 10.04 · Celebración — PENDIENTE
@@ -379,6 +390,7 @@ Avance: 325 controles totales; 29 aprobados; 129 en progreso; 167 pendientes; 0 
 
 - [x] 11.01 · Inscripción — APROBADO
   - Evidencia: AUDITORIA_CIRCUITOS_REGISTRALES_V193_2026-10-24.md: V193 Exequias inscripcion desde borrador hasta partida y cierre con auditoria
+  - Evidencia: AUDITORIA_CREACION_IDEMPOTENTE_BOLETAS_V207_2026-10-25.md: V207_nuevas_altas_manuales_4_sacramentos_UUID_por_intento_recibo_PG_unico_5_circuitos_15_replays_4_fallos_de_recibo_con_rollback_21_escenarios_UI_y_servicios_reales_sin_Auth_E2E_ni_concurrencia_fisica
 - [ ] 11.02 · Nacimiento antes de defunción — PENDIENTE
 - [ ] 11.03 · Exequias después de defunción — PENDIENTE
 - [x] 11.04 · Libro ordinario — APROBADO
@@ -584,7 +596,8 @@ Avance: 325 controles totales; 29 aprobados; 129 en progreso; 167 pendientes; 0 
 
 ### 15. Boletas y pendientes (P0) — 0/10
 
-- [ ] 15.01 · Alta manual y número — PENDIENTE
+- [ ] 15.01 · Alta manual y número — EN_PROGRESO
+  - Evidencia: AUDITORIA_CREACION_IDEMPOTENTE_BOLETAS_V207_2026-10-25.md: V207_nuevas_altas_manuales_4_sacramentos_UUID_por_intento_recibo_PG_unico_5_circuitos_15_replays_4_fallos_de_recibo_con_rollback_21_escenarios_UI_y_servicios_reales_sin_Auth_E2E_ni_concurrencia_fisica
 - [ ] 15.02 · reported verdadero — PENDIENTE
 - [ ] 15.03 · reported falso — PENDIENTE
 - [ ] 15.04 · Numeración única — PENDIENTE
@@ -595,6 +608,7 @@ Avance: 325 controles totales; 29 aprobados; 129 en progreso; 167 pendientes; 0 
   - Evidencia: V167: reintentos duplicados de API rechazados por índice/estado. Prueba de doble clic del navegador todavía pendiente.
   - Evidencia: AUDITORIA_RECUPERACION_MATRIMONIO_V205_2026-10-25.md: V205_pagina_React_real_Matrimonio_8_escenarios_con_servicios_simulados_recuperacion_de_lote_respuesta_perdida_lectura_fallida_y_doble_click_CI_103_archivos_de_prueba_sin_E2E_Auth_ni_concurrencia_PG
   - Evidencia: AUDITORIA_RECUPERACION_TRES_SACRAMENTOS_V206_2026-10-25.md: V206_24_escenarios_React_reales_con_servicios_simulados_Bautismo_Confirmacion_Exequias_lectura_fallida_doble_clic_respuesta_perdida_y_reintento_32_escenarios_con_Matrimonio_no_E2E_Auth_ni_concurrencia_PG
+  - Evidencia: AUDITORIA_CREACION_IDEMPOTENTE_BOLETAS_V207_2026-10-25.md: V207_nuevas_altas_manuales_4_sacramentos_UUID_por_intento_recibo_PG_unico_5_circuitos_15_replays_4_fallos_de_recibo_con_rollback_21_escenarios_UI_y_servicios_reales_sin_Auth_E2E_ni_concurrencia_fisica
 - [ ] 15.09 · Cierre en partida — PENDIENTE
 - [ ] 15.10 · Cruce histórico — PENDIENTE
 
@@ -836,9 +850,11 @@ Avance: 325 controles totales; 29 aprobados; 129 en progreso; 167 pendientes; 0 
 - [ ] 25.02 · Sin conexión durante RPC — EN_PROGRESO
   - Evidencia: AUDITORIA_RECUPERACION_MATRIMONIO_V205_2026-10-25.md: V205_pagina_React_real_Matrimonio_8_escenarios_con_servicios_simulados_recuperacion_de_lote_respuesta_perdida_lectura_fallida_y_doble_click_CI_103_archivos_de_prueba_sin_E2E_Auth_ni_concurrencia_PG
   - Evidencia: AUDITORIA_RECUPERACION_TRES_SACRAMENTOS_V206_2026-10-25.md: V206_24_escenarios_React_reales_con_servicios_simulados_Bautismo_Confirmacion_Exequias_lectura_fallida_doble_clic_respuesta_perdida_y_reintento_32_escenarios_con_Matrimonio_no_E2E_Auth_ni_concurrencia_PG
+  - Evidencia: AUDITORIA_CREACION_IDEMPOTENTE_BOLETAS_V207_2026-10-25.md: V207_nuevas_altas_manuales_4_sacramentos_UUID_por_intento_recibo_PG_unico_5_circuitos_15_replays_4_fallos_de_recibo_con_rollback_21_escenarios_UI_y_servicios_reales_sin_Auth_E2E_ni_concurrencia_fisica
 - [ ] 25.03 · Sin conexión después de respuesta — EN_PROGRESO
   - Evidencia: AUDITORIA_RECUPERACION_MATRIMONIO_V205_2026-10-25.md: V205_pagina_React_real_Matrimonio_8_escenarios_con_servicios_simulados_recuperacion_de_lote_respuesta_perdida_lectura_fallida_y_doble_click_CI_103_archivos_de_prueba_sin_E2E_Auth_ni_concurrencia_PG
   - Evidencia: AUDITORIA_RECUPERACION_TRES_SACRAMENTOS_V206_2026-10-25.md: V206_24_escenarios_React_reales_con_servicios_simulados_Bautismo_Confirmacion_Exequias_lectura_fallida_doble_clic_respuesta_perdida_y_reintento_32_escenarios_con_Matrimonio_no_E2E_Auth_ni_concurrencia_PG
+  - Evidencia: AUDITORIA_CREACION_IDEMPOTENTE_BOLETAS_V207_2026-10-25.md: V207_nuevas_altas_manuales_4_sacramentos_UUID_por_intento_recibo_PG_unico_5_circuitos_15_replays_4_fallos_de_recibo_con_rollback_21_escenarios_UI_y_servicios_reales_sin_Auth_E2E_ni_concurrencia_fisica
 - [ ] 25.04 · HTTP 401/403 — PENDIENTE
 - [ ] 25.05 · HTTP 409 — PENDIENTE
 - [ ] 25.06 · HTTP 500 — PENDIENTE
@@ -848,6 +864,7 @@ Avance: 325 controles totales; 29 aprobados; 129 en progreso; 167 pendientes; 0 
 - [ ] 25.08 · Retry seguro — EN_PROGRESO
   - Evidencia: AUDITORIA_RECUPERACION_MATRIMONIO_V205_2026-10-25.md: V205_pagina_React_real_Matrimonio_8_escenarios_con_servicios_simulados_recuperacion_de_lote_respuesta_perdida_lectura_fallida_y_doble_click_CI_103_archivos_de_prueba_sin_E2E_Auth_ni_concurrencia_PG
   - Evidencia: AUDITORIA_RECUPERACION_TRES_SACRAMENTOS_V206_2026-10-25.md: V206_24_escenarios_React_reales_con_servicios_simulados_Bautismo_Confirmacion_Exequias_lectura_fallida_doble_clic_respuesta_perdida_y_reintento_32_escenarios_con_Matrimonio_no_E2E_Auth_ni_concurrencia_PG
+  - Evidencia: AUDITORIA_CREACION_IDEMPOTENTE_BOLETAS_V207_2026-10-25.md: V207_nuevas_altas_manuales_4_sacramentos_UUID_por_intento_recibo_PG_unico_5_circuitos_15_replays_4_fallos_de_recibo_con_rollback_21_escenarios_UI_y_servicios_reales_sin_Auth_E2E_ni_concurrencia_fisica
 - [ ] 25.09 · Refresh en formulario — PENDIENTE
 - [ ] 25.10 · Interrupción de impresión — PENDIENTE
 - [ ] 25.11 · Error de lectura sin pérdida — EN_PROGRESO
@@ -1164,6 +1181,7 @@ Avance: 325 controles totales; 29 aprobados; 129 en progreso; 167 pendientes; 0 
   - Evidencia: V169: 20 pruebas de comportamiento en Node sobre cinco handlers, incluyendo respuesta tardía satisfactoria, error tardío, cambio durante diálogo y ruta legítima; falta doble clic físico y redes reales.
   - Evidencia: AUDITORIA_RECUPERACION_MATRIMONIO_V205_2026-10-25.md: V205_pagina_React_real_Matrimonio_8_escenarios_con_servicios_simulados_recuperacion_de_lote_respuesta_perdida_lectura_fallida_y_doble_click_CI_103_archivos_de_prueba_sin_E2E_Auth_ni_concurrencia_PG
   - Evidencia: AUDITORIA_RECUPERACION_TRES_SACRAMENTOS_V206_2026-10-25.md: V206_24_escenarios_React_reales_con_servicios_simulados_Bautismo_Confirmacion_Exequias_lectura_fallida_doble_clic_respuesta_perdida_y_reintento_32_escenarios_con_Matrimonio_no_E2E_Auth_ni_concurrencia_PG
+  - Evidencia: AUDITORIA_CREACION_IDEMPOTENTE_BOLETAS_V207_2026-10-25.md: V207_nuevas_altas_manuales_4_sacramentos_UUID_por_intento_recibo_PG_unico_5_circuitos_15_replays_4_fallos_de_recibo_con_rollback_21_escenarios_UI_y_servicios_reales_sin_Auth_E2E_ni_concurrencia_fisica
 - [ ] 31.09 · Impresión/estadística final — PENDIENTE
 - [ ] 31.10 · Destruir sandbox y demostrar cero residuos — EN_PROGRESO
   - Evidencia: V114: tras dos ensayos SQL reversibles, cero registros QA persistidos en seis entidades verificadas.
@@ -1400,6 +1418,7 @@ Avance: 325 controles totales; 29 aprobados; 129 en progreso; 167 pendientes; 0 
   - Evidencia: V168: migración Supabase aplicada 20261023154826; probado de nuevo contra la función instalada y Vercel publicó tras CI de commit 32dfdbb.
   - Evidencia: AUDITORIA_RECUPERACION_MATRIMONIO_V205_2026-10-25.md: V205_pagina_React_real_Matrimonio_8_escenarios_con_servicios_simulados_recuperacion_de_lote_respuesta_perdida_lectura_fallida_y_doble_click_CI_103_archivos_de_prueba_sin_E2E_Auth_ni_concurrencia_PG
   - Evidencia: AUDITORIA_RECUPERACION_TRES_SACRAMENTOS_V206_2026-10-25.md: V206_24_escenarios_React_reales_con_servicios_simulados_Bautismo_Confirmacion_Exequias_lectura_fallida_doble_clic_respuesta_perdida_y_reintento_32_escenarios_con_Matrimonio_no_E2E_Auth_ni_concurrencia_PG
+  - Evidencia: AUDITORIA_CREACION_IDEMPOTENTE_BOLETAS_V207_2026-10-25.md: V207_nuevas_altas_manuales_4_sacramentos_UUID_por_intento_recibo_PG_unico_5_circuitos_15_replays_4_fallos_de_recibo_con_rollback_21_escenarios_UI_y_servicios_reales_sin_Auth_E2E_ni_concurrencia_fisica
 - [ ] 32.07 · Regresión completa — EN_PROGRESO
   - Evidencia: AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md: Regresión 211 pruebas sintéticas, 23 verificadores, build OK; quedan fallas de dependencias
   - Evidencia: AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: 219 pruebas sintéticas, 23 verificadores y build aprobados; advertencias HIGH de paquetes aún abiertas
@@ -1472,6 +1491,7 @@ Avance: 325 controles totales; 29 aprobados; 129 en progreso; 167 pendientes; 0 
   - Evidencia: V182 targeted and anchored replacement in 3 privileged RPCs, preserving signatures/grants, with JWT-fictitious actors and BEGIN/ROLLBACK SQL proof.
   - Evidencia: AUDITORIA_RECUPERACION_MATRIMONIO_V205_2026-10-25.md: V205_pagina_React_real_Matrimonio_8_escenarios_con_servicios_simulados_recuperacion_de_lote_respuesta_perdida_lectura_fallida_y_doble_click_CI_103_archivos_de_prueba_sin_E2E_Auth_ni_concurrencia_PG
   - Evidencia: AUDITORIA_RECUPERACION_TRES_SACRAMENTOS_V206_2026-10-25.md: V206_24_escenarios_React_reales_con_servicios_simulados_Bautismo_Confirmacion_Exequias_lectura_fallida_doble_clic_respuesta_perdida_y_reintento_32_escenarios_con_Matrimonio_no_E2E_Auth_ni_concurrencia_PG
+  - Evidencia: AUDITORIA_CREACION_IDEMPOTENTE_BOLETAS_V207_2026-10-25.md: V207_nuevas_altas_manuales_4_sacramentos_UUID_por_intento_recibo_PG_unico_5_circuitos_15_replays_4_fallos_de_recibo_con_rollback_21_escenarios_UI_y_servicios_reales_sin_Auth_E2E_ni_concurrencia_fisica
 - [ ] 32.08 · Conteos antes/después — EN_PROGRESO
   - Evidencia: AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: Tras V95: 15 políticas, 0 bypass is_app_admin y 0 residuos en 5 catálogos
   - Evidencia: AUDITORIA_IDENTIDAD_INSTITUCIONAL_V96_2026-10-21.md: V96: mis_datos mantiene 1 fila real, 0 fixtures y 0 admin bypass en 3 políticas
