@@ -10,7 +10,7 @@ Regla: no introducir datos falsos permanentes; usar memoria, transacciones ROLLB
 
 Prioridad P0 bloquea la certificación. P1 debe constar resuelta o aceptada con evidencia y responsable.
 
-Avance: 325 controles totales; 26 aprobados; 121 en progreso; 178 pendientes; 0 fallidos; 0 bloqueados.
+Avance: 325 controles totales; 27 aprobados; 120 en progreso; 178 pendientes; 0 fallidos; 0 bloqueados.
 
 ## Fases y controles numerados
 
@@ -96,11 +96,11 @@ Avance: 325 controles totales; 26 aprobados; 121 en progreso; 178 pendientes; 0 
 - [ ] 05.08 · Catálogos eclesiales — EN_PROGRESO
   - Evidencia: AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: Catálogos parroquiales: cinco tablas revisadas con pruebas positivas y negativas; falta examinar usos y consistencia completa
 
-### 06. RLS y privilegios del backend (P0) — 3/12
+### 06. RLS y privilegios del backend (P0) — 4/12
 
 - [x] 06.01 · RLS de tablas públicas — APROBADO
   - Evidencia: AUDITORIA_BASE_SQL_V90.md: Consulta SQL al catálogo: las 73 tablas públicas tienen RLS y cero carecen de RLS
-- [ ] 06.02 · RLS SELECT por actor — EN_PROGRESO
+- [x] 06.02 · RLS SELECT por actor — APROBADO
   - Evidencia: AUDITORIA_RLS_PARROQUIAL_V90.md: Ensayo con rol Parroquia autenticado: cero filas de otras parroquias en 10 entidades; falta matriz completa y operaciones de escritura
   - Evidencia: AUDITORIA_EXP_DEPENDENCIAS_Y_RLS_V91.md: Cuatro roles no pudieron leer Bautismo de segunda diócesis ficticia; falta matriz completa
   - Evidencia: V120: dos fugas SELECT entre diócesis reproducidas y cerradas con RLS; prueba SQL con roles Chancery, Diócesis y Parroquia y referencias cruzadas. ROLLBACK.
@@ -112,6 +112,7 @@ Avance: 325 controles totales; 26 aprobados; 121 en progreso; 178 pendientes; 0 
   - Evidencia: V165: usuario activo con perfil pero sin membresía ve 0 chat_messages y 0 chat_rooms por RLS, aunque pertenece a la misma diócesis.
   - Evidencia: V166: sala scope enforced in versioned SECURITY DEFINER; actual active nonmember denied despite authenticated role.
   - Evidencia: AUDITORIA_IDENTIDAD_Y_AISLAMIENTO_V184_2026-10-24.md: Repetidas dos matrices RLS entre diocesis en SQL ROLLBACK, pendiente E2E autenticado real
+  - Evidencia: AUDITORIA_AISLAMIENTO_ROLES_V197_2026-10-24.md: RLS_SELECT_cuatro_roles_11_tablas_con_44_alcances_y_44_denegaciones_suspendidos_en_SQL_con_rollback
 - [ ] 06.03 · RLS INSERT por actor — EN_PROGRESO
   - Evidencia: AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: Inserciones RLS en dos tablas de boletas: 8/8 casos por cuatro roles, Parroquia únicamente permitida
   - Evidencia: AUDITORIA_PARAMETROS_Y_LIBROS_V94_2026-10-21.md: Parámetros/libros INSERT limitado a parroquia: dos rechazos explícitos para admin general
