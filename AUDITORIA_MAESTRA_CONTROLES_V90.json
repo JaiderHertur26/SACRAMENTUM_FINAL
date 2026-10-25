@@ -890,9 +890,10 @@
       "status": "APROBADO",
       "evidence": [
         "AUDITORIA_ATOMICIDAD_REINTENTOS_V201_2026-10-24.md: V201_no_hubo_timeout_real_ni_espera_solapada_requiere_sesiones_independientes_y_prueba_de_recovery",
-        "AUDITORIA_RECUPERACION_TIMEOUT_V203_2026-10-25.md: V203_cuatro_cancelaciones_SQLSTATE_57014_despues_de_asiento_sacramental_exitoso_en_transaccion_los_diez_controles_de_residuos_cero_y_cuatro_reintentos_PG_correctos_limite_no_incluye_reconexion_UI"
+        "AUDITORIA_RECUPERACION_TIMEOUT_V203_2026-10-25.md: V203_cuatro_cancelaciones_SQLSTATE_57014_despues_de_asiento_sacramental_exitoso_en_transaccion_los_diez_controles_de_residuos_cero_y_cuatro_reintentos_PG_correctos_limite_no_incluye_reconexion_UI",
+        "AUDITORIA_RECUPERACION_TRES_SACRAMENTOS_V206_2026-10-25.md: V206_24_escenarios_React_reales_con_servicios_simulados_Bautismo_Confirmacion_Exequias_lectura_fallida_doble_clic_respuesta_perdida_y_reintento_32_escenarios_con_Matrimonio_no_E2E_Auth_ni_concurrencia_PG"
       ],
-      "updated_at": "2026-10-25T21:50:45.029Z"
+      "updated_at": "2026-10-25T23:14:20.115Z"
     },
     {
       "id": "08.01",
@@ -924,9 +925,10 @@
       "criterion": "Asiento en libro",
       "status": "APROBADO",
       "evidence": [
-        "AUDITORIA_CIRCUITOS_REGISTRALES_V193_2026-10-24.md: V193 circuito de Bautismo boleta a asiento con libro folio numero cierre y traza SQL ROLLBACK"
+        "AUDITORIA_CIRCUITOS_REGISTRALES_V193_2026-10-24.md: V193 circuito de Bautismo boleta a asiento con libro folio numero cierre y traza SQL ROLLBACK",
+        "AUDITORIA_RECUPERACION_TRES_SACRAMENTOS_V206_2026-10-25.md: V206_24_escenarios_React_reales_con_servicios_simulados_Bautismo_Confirmacion_Exequias_lectura_fallida_doble_clic_respuesta_perdida_y_reintento_32_escenarios_con_Matrimonio_no_E2E_Auth_ni_concurrencia_PG"
       ],
-      "updated_at": "2026-10-24T21:11:19.114Z"
+      "updated_at": "2026-10-25T23:14:20.117Z"
     },
     {
       "id": "08.04",
@@ -1062,9 +1064,10 @@
       "criterion": "Asiento en libro",
       "status": "APROBADO",
       "evidence": [
-        "AUDITORIA_CIRCUITOS_REGISTRALES_V193_2026-10-24.md: V193 Confirmacion asiento real RPC status seated y boleta archivada con auditoria y reintento bloqueado"
+        "AUDITORIA_CIRCUITOS_REGISTRALES_V193_2026-10-24.md: V193 Confirmacion asiento real RPC status seated y boleta archivada con auditoria y reintento bloqueado",
+        "AUDITORIA_RECUPERACION_TRES_SACRAMENTOS_V206_2026-10-25.md: V206_24_escenarios_React_reales_con_servicios_simulados_Bautismo_Confirmacion_Exequias_lectura_fallida_doble_clic_respuesta_perdida_y_reintento_32_escenarios_con_Matrimonio_no_E2E_Auth_ni_concurrencia_PG"
       ],
-      "updated_at": "2026-10-24T21:11:19.240Z"
+      "updated_at": "2026-10-25T23:14:20.117Z"
     },
     {
       "id": "09.05",
@@ -1316,9 +1319,10 @@
       "criterion": "Libro ordinario",
       "status": "APROBADO",
       "evidence": [
-        "AUDITORIA_CIRCUITOS_REGISTRALES_V193_2026-10-24.md: V193 asiento Exequias confirmo libro ordinario con libro folio numero e id unico"
+        "AUDITORIA_CIRCUITOS_REGISTRALES_V193_2026-10-24.md: V193 asiento Exequias confirmo libro ordinario con libro folio numero e id unico",
+        "AUDITORIA_RECUPERACION_TRES_SACRAMENTOS_V206_2026-10-25.md: V206_24_escenarios_React_reales_con_servicios_simulados_Bautismo_Confirmacion_Exequias_lectura_fallida_doble_clic_respuesta_perdida_y_reintento_32_escenarios_con_Matrimonio_no_E2E_Auth_ni_concurrencia_PG"
       ],
-      "updated_at": "2026-10-24T21:11:19.547Z"
+      "updated_at": "2026-10-25T23:14:20.117Z"
     },
     {
       "id": "11.05",
@@ -1950,9 +1954,10 @@
       "status": "EN_PROGRESO",
       "evidence": [
         "V167: reintentos duplicados de API rechazados por índice/estado. Prueba de doble clic del navegador todavía pendiente.",
-        "AUDITORIA_RECUPERACION_MATRIMONIO_V205_2026-10-25.md: V205_pagina_React_real_Matrimonio_8_escenarios_con_servicios_simulados_recuperacion_de_lote_respuesta_perdida_lectura_fallida_y_doble_click_CI_103_archivos_de_prueba_sin_E2E_Auth_ni_concurrencia_PG"
+        "AUDITORIA_RECUPERACION_MATRIMONIO_V205_2026-10-25.md: V205_pagina_React_real_Matrimonio_8_escenarios_con_servicios_simulados_recuperacion_de_lote_respuesta_perdida_lectura_fallida_y_doble_click_CI_103_archivos_de_prueba_sin_E2E_Auth_ni_concurrencia_PG",
+        "AUDITORIA_RECUPERACION_TRES_SACRAMENTOS_V206_2026-10-25.md: V206_24_escenarios_React_reales_con_servicios_simulados_Bautismo_Confirmacion_Exequias_lectura_fallida_doble_clic_respuesta_perdida_y_reintento_32_escenarios_con_Matrimonio_no_E2E_Auth_ni_concurrencia_PG"
       ],
-      "updated_at": "2026-10-25T23:03:43.603Z"
+      "updated_at": "2026-10-25T23:14:20.117Z"
     },
     {
       "id": "15.09",
@@ -3022,9 +3027,10 @@
       "criterion": "Mensajes de error",
       "status": "EN_PROGRESO",
       "evidence": [
-        "AUDITORIA_RECUPERACION_MATRIMONIO_V205_2026-10-25.md: V205_pagina_React_real_Matrimonio_8_escenarios_con_servicios_simulados_recuperacion_de_lote_respuesta_perdida_lectura_fallida_y_doble_click_CI_103_archivos_de_prueba_sin_E2E_Auth_ni_concurrencia_PG"
+        "AUDITORIA_RECUPERACION_MATRIMONIO_V205_2026-10-25.md: V205_pagina_React_real_Matrimonio_8_escenarios_con_servicios_simulados_recuperacion_de_lote_respuesta_perdida_lectura_fallida_y_doble_click_CI_103_archivos_de_prueba_sin_E2E_Auth_ni_concurrencia_PG",
+        "AUDITORIA_RECUPERACION_TRES_SACRAMENTOS_V206_2026-10-25.md: V206_24_escenarios_React_reales_con_servicios_simulados_Bautismo_Confirmacion_Exequias_lectura_fallida_doble_clic_respuesta_perdida_y_reintento_32_escenarios_con_Matrimonio_no_E2E_Auth_ni_concurrencia_PG"
       ],
-      "updated_at": "2026-10-25T23:03:43.603Z"
+      "updated_at": "2026-10-25T23:14:20.117Z"
     },
     {
       "id": "24.12",
@@ -3080,9 +3086,10 @@
       "criterion": "Sin conexión durante RPC",
       "status": "EN_PROGRESO",
       "evidence": [
-        "AUDITORIA_RECUPERACION_MATRIMONIO_V205_2026-10-25.md: V205_pagina_React_real_Matrimonio_8_escenarios_con_servicios_simulados_recuperacion_de_lote_respuesta_perdida_lectura_fallida_y_doble_click_CI_103_archivos_de_prueba_sin_E2E_Auth_ni_concurrencia_PG"
+        "AUDITORIA_RECUPERACION_MATRIMONIO_V205_2026-10-25.md: V205_pagina_React_real_Matrimonio_8_escenarios_con_servicios_simulados_recuperacion_de_lote_respuesta_perdida_lectura_fallida_y_doble_click_CI_103_archivos_de_prueba_sin_E2E_Auth_ni_concurrencia_PG",
+        "AUDITORIA_RECUPERACION_TRES_SACRAMENTOS_V206_2026-10-25.md: V206_24_escenarios_React_reales_con_servicios_simulados_Bautismo_Confirmacion_Exequias_lectura_fallida_doble_clic_respuesta_perdida_y_reintento_32_escenarios_con_Matrimonio_no_E2E_Auth_ni_concurrencia_PG"
       ],
-      "updated_at": "2026-10-25T23:03:43.603Z"
+      "updated_at": "2026-10-25T23:14:20.117Z"
     },
     {
       "id": "25.03",
@@ -3092,9 +3099,10 @@
       "criterion": "Sin conexión después de respuesta",
       "status": "EN_PROGRESO",
       "evidence": [
-        "AUDITORIA_RECUPERACION_MATRIMONIO_V205_2026-10-25.md: V205_pagina_React_real_Matrimonio_8_escenarios_con_servicios_simulados_recuperacion_de_lote_respuesta_perdida_lectura_fallida_y_doble_click_CI_103_archivos_de_prueba_sin_E2E_Auth_ni_concurrencia_PG"
+        "AUDITORIA_RECUPERACION_MATRIMONIO_V205_2026-10-25.md: V205_pagina_React_real_Matrimonio_8_escenarios_con_servicios_simulados_recuperacion_de_lote_respuesta_perdida_lectura_fallida_y_doble_click_CI_103_archivos_de_prueba_sin_E2E_Auth_ni_concurrencia_PG",
+        "AUDITORIA_RECUPERACION_TRES_SACRAMENTOS_V206_2026-10-25.md: V206_24_escenarios_React_reales_con_servicios_simulados_Bautismo_Confirmacion_Exequias_lectura_fallida_doble_clic_respuesta_perdida_y_reintento_32_escenarios_con_Matrimonio_no_E2E_Auth_ni_concurrencia_PG"
       ],
-      "updated_at": "2026-10-25T23:03:43.603Z"
+      "updated_at": "2026-10-25T23:14:20.117Z"
     },
     {
       "id": "25.04",
@@ -3134,9 +3142,10 @@
       "criterion": "Timeout",
       "status": "EN_PROGRESO",
       "evidence": [
-        "AUDITORIA_RECUPERACION_MATRIMONIO_V205_2026-10-25.md: V205_pagina_React_real_Matrimonio_8_escenarios_con_servicios_simulados_recuperacion_de_lote_respuesta_perdida_lectura_fallida_y_doble_click_CI_103_archivos_de_prueba_sin_E2E_Auth_ni_concurrencia_PG"
+        "AUDITORIA_RECUPERACION_MATRIMONIO_V205_2026-10-25.md: V205_pagina_React_real_Matrimonio_8_escenarios_con_servicios_simulados_recuperacion_de_lote_respuesta_perdida_lectura_fallida_y_doble_click_CI_103_archivos_de_prueba_sin_E2E_Auth_ni_concurrencia_PG",
+        "AUDITORIA_RECUPERACION_TRES_SACRAMENTOS_V206_2026-10-25.md: V206_24_escenarios_React_reales_con_servicios_simulados_Bautismo_Confirmacion_Exequias_lectura_fallida_doble_clic_respuesta_perdida_y_reintento_32_escenarios_con_Matrimonio_no_E2E_Auth_ni_concurrencia_PG"
       ],
-      "updated_at": "2026-10-25T23:03:43.603Z"
+      "updated_at": "2026-10-25T23:14:20.117Z"
     },
     {
       "id": "25.08",
@@ -3146,9 +3155,10 @@
       "criterion": "Retry seguro",
       "status": "EN_PROGRESO",
       "evidence": [
-        "AUDITORIA_RECUPERACION_MATRIMONIO_V205_2026-10-25.md: V205_pagina_React_real_Matrimonio_8_escenarios_con_servicios_simulados_recuperacion_de_lote_respuesta_perdida_lectura_fallida_y_doble_click_CI_103_archivos_de_prueba_sin_E2E_Auth_ni_concurrencia_PG"
+        "AUDITORIA_RECUPERACION_MATRIMONIO_V205_2026-10-25.md: V205_pagina_React_real_Matrimonio_8_escenarios_con_servicios_simulados_recuperacion_de_lote_respuesta_perdida_lectura_fallida_y_doble_click_CI_103_archivos_de_prueba_sin_E2E_Auth_ni_concurrencia_PG",
+        "AUDITORIA_RECUPERACION_TRES_SACRAMENTOS_V206_2026-10-25.md: V206_24_escenarios_React_reales_con_servicios_simulados_Bautismo_Confirmacion_Exequias_lectura_fallida_doble_clic_respuesta_perdida_y_reintento_32_escenarios_con_Matrimonio_no_E2E_Auth_ni_concurrencia_PG"
       ],
-      "updated_at": "2026-10-25T23:03:43.603Z"
+      "updated_at": "2026-10-25T23:14:20.117Z"
     },
     {
       "id": "25.09",
@@ -3178,9 +3188,10 @@
       "criterion": "Error de lectura sin pérdida",
       "status": "EN_PROGRESO",
       "evidence": [
-        "AUDITORIA_RECUPERACION_MATRIMONIO_V205_2026-10-25.md: V205_pagina_React_real_Matrimonio_8_escenarios_con_servicios_simulados_recuperacion_de_lote_respuesta_perdida_lectura_fallida_y_doble_click_CI_103_archivos_de_prueba_sin_E2E_Auth_ni_concurrencia_PG"
+        "AUDITORIA_RECUPERACION_MATRIMONIO_V205_2026-10-25.md: V205_pagina_React_real_Matrimonio_8_escenarios_con_servicios_simulados_recuperacion_de_lote_respuesta_perdida_lectura_fallida_y_doble_click_CI_103_archivos_de_prueba_sin_E2E_Auth_ni_concurrencia_PG",
+        "AUDITORIA_RECUPERACION_TRES_SACRAMENTOS_V206_2026-10-25.md: V206_24_escenarios_React_reales_con_servicios_simulados_Bautismo_Confirmacion_Exequias_lectura_fallida_doble_clic_respuesta_perdida_y_reintento_32_escenarios_con_Matrimonio_no_E2E_Auth_ni_concurrencia_PG"
       ],
-      "updated_at": "2026-10-25T23:03:43.603Z"
+      "updated_at": "2026-10-25T23:14:20.117Z"
     },
     {
       "id": "26.01",
@@ -4022,9 +4033,10 @@
       "evidence": [
         "V168: reintento de lote ya ejecutado rechazado; faltan pruebas físicas de doble clic con red caída y dos transacciones simultáneas.",
         "V169: 20 pruebas de comportamiento en Node sobre cinco handlers, incluyendo respuesta tardía satisfactoria, error tardío, cambio durante diálogo y ruta legítima; falta doble clic físico y redes reales.",
-        "AUDITORIA_RECUPERACION_MATRIMONIO_V205_2026-10-25.md: V205_pagina_React_real_Matrimonio_8_escenarios_con_servicios_simulados_recuperacion_de_lote_respuesta_perdida_lectura_fallida_y_doble_click_CI_103_archivos_de_prueba_sin_E2E_Auth_ni_concurrencia_PG"
+        "AUDITORIA_RECUPERACION_MATRIMONIO_V205_2026-10-25.md: V205_pagina_React_real_Matrimonio_8_escenarios_con_servicios_simulados_recuperacion_de_lote_respuesta_perdida_lectura_fallida_y_doble_click_CI_103_archivos_de_prueba_sin_E2E_Auth_ni_concurrencia_PG",
+        "AUDITORIA_RECUPERACION_TRES_SACRAMENTOS_V206_2026-10-25.md: V206_24_escenarios_React_reales_con_servicios_simulados_Bautismo_Confirmacion_Exequias_lectura_fallida_doble_clic_respuesta_perdida_y_reintento_32_escenarios_con_Matrimonio_no_E2E_Auth_ni_concurrencia_PG"
       ],
-      "updated_at": "2026-10-25T23:03:43.603Z"
+      "updated_at": "2026-10-25T23:14:20.117Z"
     },
     {
       "id": "31.09",
@@ -4333,9 +4345,10 @@
         "V166: Supabase migration 20261023144508 applied; frontend Chat supports older pages without clearing current/received messages.",
         "V167: suite SQL de pruebas y evidencia nuevas; backend y frontend sin cambios funcionales. Publicación de evidencia por CI controlado.",
         "V168: migración Supabase aplicada 20261023154826; probado de nuevo contra la función instalada y Vercel publicó tras CI de commit 32dfdbb.",
-        "AUDITORIA_RECUPERACION_MATRIMONIO_V205_2026-10-25.md: V205_pagina_React_real_Matrimonio_8_escenarios_con_servicios_simulados_recuperacion_de_lote_respuesta_perdida_lectura_fallida_y_doble_click_CI_103_archivos_de_prueba_sin_E2E_Auth_ni_concurrencia_PG"
+        "AUDITORIA_RECUPERACION_MATRIMONIO_V205_2026-10-25.md: V205_pagina_React_real_Matrimonio_8_escenarios_con_servicios_simulados_recuperacion_de_lote_respuesta_perdida_lectura_fallida_y_doble_click_CI_103_archivos_de_prueba_sin_E2E_Auth_ni_concurrencia_PG",
+        "AUDITORIA_RECUPERACION_TRES_SACRAMENTOS_V206_2026-10-25.md: V206_24_escenarios_React_reales_con_servicios_simulados_Bautismo_Confirmacion_Exequias_lectura_fallida_doble_clic_respuesta_perdida_y_reintento_32_escenarios_con_Matrimonio_no_E2E_Auth_ni_concurrencia_PG"
       ],
-      "updated_at": "2026-10-25T23:03:43.604Z"
+      "updated_at": "2026-10-25T23:14:20.117Z"
     },
     {
       "id": "32.07",
@@ -4414,9 +4427,10 @@
         "V180: ten privileged function replacements anchored to exact preexisting predicate and signatures without broad changes to grants or records; Chat directory privacy verified with aggregate counts only.",
         "V181: baptism and confirmation physical book settings now require is_active TRUE/status ACTIVE and ownership. Anchored SQL migration preserves sequencing and existing audit. Real 4 positives/28 negatives verified.",
         "V182 targeted and anchored replacement in 3 privileged RPCs, preserving signatures/grants, with JWT-fictitious actors and BEGIN/ROLLBACK SQL proof.",
-        "AUDITORIA_RECUPERACION_MATRIMONIO_V205_2026-10-25.md: V205_pagina_React_real_Matrimonio_8_escenarios_con_servicios_simulados_recuperacion_de_lote_respuesta_perdida_lectura_fallida_y_doble_click_CI_103_archivos_de_prueba_sin_E2E_Auth_ni_concurrencia_PG"
+        "AUDITORIA_RECUPERACION_MATRIMONIO_V205_2026-10-25.md: V205_pagina_React_real_Matrimonio_8_escenarios_con_servicios_simulados_recuperacion_de_lote_respuesta_perdida_lectura_fallida_y_doble_click_CI_103_archivos_de_prueba_sin_E2E_Auth_ni_concurrencia_PG",
+        "AUDITORIA_RECUPERACION_TRES_SACRAMENTOS_V206_2026-10-25.md: V206_24_escenarios_React_reales_con_servicios_simulados_Bautismo_Confirmacion_Exequias_lectura_fallida_doble_clic_respuesta_perdida_y_reintento_32_escenarios_con_Matrimonio_no_E2E_Auth_ni_concurrencia_PG"
       ],
-      "updated_at": "2026-10-25T23:03:43.604Z"
+      "updated_at": "2026-10-25T23:14:20.117Z"
     },
     {
       "id": "32.08",
