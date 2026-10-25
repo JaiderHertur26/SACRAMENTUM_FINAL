@@ -781,9 +781,10 @@
       "criterion": "Unicidad Libro Folio Número",
       "status": "APROBADO",
       "evidence": [
-        "AUDITORIA_NUMERACION_Y_DECRETOS_V188_2026-10-24.md: PostgreSQL V187 y V188 8393 partidas sin choques, 4 inserciones identicas y 4 equivalentes normalizadas bloqueadas por indices unicos"
+        "AUDITORIA_NUMERACION_Y_DECRETOS_V188_2026-10-24.md: PostgreSQL V187 y V188 8393 partidas sin choques, 4 inserciones identicas y 4 equivalentes normalizadas bloqueadas por indices unicos",
+        "AUDITORIA_UNICIDAD_NUMERICA_V200_2026-10-24.md: V200_cuatro_indices_unicos_numericos_verificados_8393_partidas_cero_colisiones_y_cuatro_intentos_duplicados_rechazados"
       ],
-      "updated_at": "2026-10-24T18:43:23.697Z"
+      "updated_at": "2026-10-25T01:08:14.774Z"
     },
     {
       "id": "07.02",
@@ -803,12 +804,13 @@
       "area": "Integridad y concurrencia",
       "priority": "P0",
       "criterion": "Concurrencia de dos usuarios en una partida",
-      "status": "PENDIENTE",
+      "status": "EN_PROGRESO",
       "evidence": [
         "V167: ensayo de dos sesiones SQL por conector no demostró solapamiento (PID distintos, pero B adquirió lock). Concurrencia física NO certificada.",
-        "AUDITORIA_IDENTIDAD_Y_AISLAMIENTO_V184_2026-10-24.md: Intento de concurrencia no probo solapamiento y no se certifica"
+        "AUDITORIA_IDENTIDAD_Y_AISLAMIENTO_V184_2026-10-24.md: Intento de concurrencia no probo solapamiento y no se certifica",
+        "AUDITORIA_UNICIDAD_NUMERICA_V200_2026-10-24.md: V200_indices_unicos_y_bloqueos_FOR_UPDATE_corrobados_pero_dos_sesiones_JWT_realmente_solapadas_no_comprobadas"
       ],
-      "updated_at": "2026-10-24T16:41:16.062Z"
+      "updated_at": "2026-10-25T01:08:14.853Z"
     },
     {
       "id": "07.04",

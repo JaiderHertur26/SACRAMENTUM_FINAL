@@ -10,7 +10,7 @@ Regla: no introducir datos falsos permanentes; usar memoria, transacciones ROLLB
 
 Prioridad P0 bloquea la certificación. P1 debe constar resuelta o aceptada con evidencia y responsable.
 
-Avance: 325 controles totales; 27 aprobados; 120 en progreso; 178 pendientes; 0 fallidos; 0 bloqueados.
+Avance: 325 controles totales; 27 aprobados; 121 en progreso; 177 pendientes; 0 fallidos; 0 bloqueados.
 
 ## Fases y controles numerados
 
@@ -268,11 +268,13 @@ Avance: 325 controles totales; 27 aprobados; 120 en progreso; 178 pendientes; 0 
 
 - [x] 07.01 · Unicidad Libro Folio Número — APROBADO
   - Evidencia: AUDITORIA_NUMERACION_Y_DECRETOS_V188_2026-10-24.md: PostgreSQL V187 y V188 8393 partidas sin choques, 4 inserciones identicas y 4 equivalentes normalizadas bloqueadas por indices unicos
+  - Evidencia: AUDITORIA_UNICIDAD_NUMERICA_V200_2026-10-24.md: V200_cuatro_indices_unicos_numericos_verificados_8393_partidas_cero_colisiones_y_cuatro_intentos_duplicados_rechazados
 - [x] 07.02 · Colisión de número de decreto — APROBADO
   - Evidencia: AUDITORIA_NUMERACION_Y_DECRETOS_V188_2026-10-24.md: RPC documental de Cancilleria V187 bloqueo colision con diferencias de espacios y mayusculas, indice unico por diocesis y ROLLBACK
-- [ ] 07.03 · Concurrencia de dos usuarios en una partida — PENDIENTE
+- [ ] 07.03 · Concurrencia de dos usuarios en una partida — EN_PROGRESO
   - Evidencia: V167: ensayo de dos sesiones SQL por conector no demostró solapamiento (PID distintos, pero B adquirió lock). Concurrencia física NO certificada.
   - Evidencia: AUDITORIA_IDENTIDAD_Y_AISLAMIENTO_V184_2026-10-24.md: Intento de concurrencia no probo solapamiento y no se certifica
+  - Evidencia: AUDITORIA_UNICIDAD_NUMERICA_V200_2026-10-24.md: V200_indices_unicos_y_bloqueos_FOR_UPDATE_corrobados_pero_dos_sesiones_JWT_realmente_solapadas_no_comprobadas
 - [x] 07.04 · Consecutivos de boletas — APROBADO
   - Evidencia: AUDITORIA_BLOQUE_FUNCIONAL_V192_2026-10-24.md: Ocho boletas ficticias por cuatro sacramentos creadas via RPC en rol authenticated con numeros estrictamente consecutivos y ROLLBACK
 - [ ] 07.05 · Reintento idempotente — EN_PROGRESO
