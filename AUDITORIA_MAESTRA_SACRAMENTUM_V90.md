@@ -117,10 +117,12 @@ Avance: 325 controles totales; 27 aprobados; 120 en progreso; 178 pendientes; 0 
   - Evidencia: AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: Inserciones RLS en dos tablas de boletas: 8/8 casos por cuatro roles, Parroquia únicamente permitida
   - Evidencia: AUDITORIA_PARAMETROS_Y_LIBROS_V94_2026-10-21.md: Parámetros/libros INSERT limitado a parroquia: dos rechazos explícitos para admin general
   - Evidencia: AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: V95 insert: 20 llamadas 4 roles x 5 catálogos; solo Parroquia propia permitida; cinco cruces ajenos denegados
+  - Evidencia: AUDITORIA_INTERDIOCESANA_CIERRE_ASIENTOS_V198_2026-10-24.md: V198 insertos ilegales de boletas y nueva parroquia bloqueados
 - [ ] 06.04 · RLS UPDATE y WITH CHECK — EN_PROGRESO
   - Evidencia: AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: Actualizaciones RLS en dos tablas de boletas: 8/8 casos, sólo parroquia titular
   - Evidencia: AUDITORIA_PARAMETROS_Y_LIBROS_V94_2026-10-21.md: UPDATE de parámetros y libro: 8/8 pruebas por cuatro roles; parroquia propia conserva acceso
   - Evidencia: AUDITORIA_CATALOGOS_PARROQUIALES_V95_2026-10-21.md: V95 update: 20 escenarios en 5 catálogos; 15 políticas de escritura corregidas
+  - Evidencia: AUDITORIA_INTERDIOCESANA_CIERRE_ASIENTOS_V198_2026-10-24.md: V198 evita edicion clienta directa de boleta sentada y traslado entre diocesis
 - [ ] 06.05 · RLS DELETE por actor — EN_PROGRESO
   - Evidencia: AUDITORIA_RLS_BOLETAS_V93_2026-10-21.md: Eliminaciones RLS en dos tablas de boletas: 8/8 casos, sólo parroquia titular
   - Evidencia: AUDITORIA_PARAMETROS_Y_LIBROS_V94_2026-10-21.md: DELETE de libro por cuatro roles: sólo parroquia titular afecta una fila ficticia
@@ -131,6 +133,7 @@ Avance: 325 controles totales; 27 aprobados; 120 en progreso; 178 pendientes; 0 
   - Evidencia: V156: circuito de conciliación de nota manual independiente, autorizado por dos roles y ejecutado atómicamente con reversión, auditoría y aviso parroquial.
   - Evidencia: V157: se cerró estado rejected previamente declarado sin RPC, habilitando rechazo pendiente y revocación autorizada no ejecutada mediante Diócesis.
   - Evidencia: V161: un expediente de conciliación pending con 315 rejected posteriores se ocultaba por LIMIT 300. Defecto real reproducido y corregido con listado v161.
+  - Evidencia: AUDITORIA_INTERDIOCESANA_CIERRE_ASIENTOS_V198_2026-10-24.md: V198 delete foraneo denegado sobre parroquias y boletas
 - [ ] 06.06 · Todas las RPC privilegiadas autorizadas (inventario dinámico) — EN_PROGRESO
   - Evidencia: AUDITORIA_INVENTARIO_RPC_V91.json: 129 funciones privilegiadas clasificadas; faltan pruebas positivas y negativas función por función
   - Evidencia: V111/V112: se verificaron privilegios de ejecución anon=false y authenticated=true de nuevas RPC; las demás funciones privilegiadas requieren matriz completa por rol.
@@ -276,6 +279,7 @@ Avance: 325 controles totales; 27 aprobados; 120 en progreso; 178 pendientes; 0 
 - [ ] 07.06 · Transacción atomicidad — EN_PROGRESO
   - Evidencia: V167: 4 rutas completas de reversión y conciliación conservan atomicidad: decreto y nota reversed, case executed, audit 3 y notificación 1. BEGIN/ROLLBACK.
   - Evidencia: V168: transacción única revierte 2 notas y 1 decreto y cierra 2 expedientes, o falla sin cambios; seis auditorías de expedientes y una notificación consolidada por caso.
+  - Evidencia: AUDITORIA_INTERDIOCESANA_CIERRE_ASIENTOS_V198_2026-10-24.md: V198 problema real de boleta asentada sin partida corregido con 20 prohibiciones y dos asientos oficiales efectivos con rollback
 - [x] 07.07 · Llaves foráneas sin huérfanos — APROBADO
   - Evidencia: AUDITORIA_INTEGRIDAD_REFERENCIAL_V185_2026-10-24.md: QA live PostgreSQL 165 FKs validadas sin huerfanos ni triggers desactivados, BEGIN READ ONLY y ROLLBACK
 - [ ] 07.08 · Bloqueos y deadlocks — PENDIENTE
@@ -899,6 +903,7 @@ Avance: 325 controles totales; 27 aprobados; 120 en progreso; 178 pendientes; 0 
   - Evidencia: V166: RLS/SECURITY DEFINER prevents cross-room historical data from active but unrelated authenticated roles.
   - Evidencia: V167: rutas de aprobación, rechazo y ejecución verifican rol/scope institucional. Repetir operación terminal falla de modo seguro.
   - Evidencia: V168: rol Cancillería ejecuta, Diócesis sólo autoriza y no ejecuta; no se concedieron privilegios directos a anon ni tablas privadas.
+  - Evidencia: AUDITORIA_INTERDIOCESANA_CIERRE_ASIENTOS_V198_2026-10-24.md: V198 dos diocesis temporales dentro de transaccion 26 verificaciones de lectura y 12 rechazos de DML falta JWT real
 - [ ] 27.04 · RPC directa prohibida — EN_PROGRESO
   - Evidencia: AUDITORIA_SEGURIDAD_RPC_V92_2026-10-21.md: Asignador interno no ejecutable directamente (42501), con ruta institucional auditada operativa
   - Evidencia: AUDITORIA_AUTORIDAD_MIGRACION_V101_2026-10-21.md: V101: bypass por RPC create_legacy_import_batch sin scope reproducido y cerrado
@@ -938,6 +943,7 @@ Avance: 325 controles totales; 27 aprobados; 120 en progreso; 178 pendientes; 0 
   - Evidencia: V160: clicks reales sobre componente React: Diócesis autoriza/rechaza/revoca, Cancillería ejecuta. 4/4 sin errores JS y usando servicios falsos.
   - Evidencia: V161: negativos SQL para filtro phantom, límites >100, cursor incompleto, diocese ajena y actor sin perfil.
   - Evidencia: V162: no hubo cambios en contratos SQL; el aislamiento de datos por rol sigue protegido en RPC V161 y RLS.
+  - Evidencia: AUDITORIA_INTERDIOCESANA_CIERRE_ASIENTOS_V198_2026-10-24.md: V198 cerrada via triggers via directa de falsas boletas sentadas faltan otras RPC privilegiadas
 - [ ] 27.05 · SQL injection — EN_PROGRESO
   - Evidencia: V123: prohibido patrón LIKE libre en limpieza de sombras de Confirmación; parámetro fuente literal sin comodines, >=6 caracteres. Auditoría SQL injection integral aún pendiente.
   - Evidencia: V132: mitigado bypass del cotejo visual mediante RPC directa, no implica certificación judicial de origen.
