@@ -1,0 +1,101 @@
+{
+  "protocol": "V210",
+  "dateUtc": "2026-10-26",
+  "project": "REGISTRO SACRAMENTOS",
+  "scope": "Real production schema and current role authorization; temporary fictional fixtures in BEGIN/ROLLBACK transactions only",
+  "liveChecks": [
+    {
+      "source": "scripts/qa-rollback-four-sacrament-seating-v193.sql",
+      "passed": true,
+      "details": {
+        "sacraments": [
+          "bautismo",
+          "confirmacion",
+          "matrimonio",
+          "exequias"
+        ],
+        "lifecycles": 4,
+        "pendingSeated": 4,
+        "duplicatesRejected": 4,
+        "minimumJuridicalAuditsWithinTransaction": 4
+      }
+    },
+    {
+      "source": "scripts/qa-rollback-corrections-reconciliation-all-sacraments-v159.sql",
+      "passed": true,
+      "details": {
+        "sacraments": [
+          "bautismo",
+          "confirmacion",
+          "matrimonio",
+          "exequias"
+        ],
+        "correctionsAndReconciliations": 4,
+        "threeAuditEventsPerCaseRequired": true,
+        "oneParishNotificationPerCaseRequired": true,
+        "originalsRestoredAndSubstitutesReversed": true
+      },
+      "evidenceScope": "SQL completed without exception; assertions execute inside database, no row payload returned"
+    },
+    {
+      "source": "scripts/qa-rollback-documentary-decree-lifecycle-v210.sql",
+      "passed": true,
+      "details": {
+        "currentDocumentaryDecree": 1,
+        "historicalDocumentaryDecrees": 2,
+        "ownParishVisible": 2,
+        "foreignDioceseVisible": 0,
+        "forbiddenAttemptsRejected": 4,
+        "sacramentTotalsUnchanged": true
+      }
+    },
+    {
+      "source": "scripts/qa-rollback-repositions-v210.sql",
+      "passed": true,
+      "details": {
+        "sacraments": [
+          "matrimonio",
+          "exequias"
+        ],
+        "repositions": 2,
+        "legitimateReversals": 2,
+        "unauthorizedReversalsRejected": 4
+      }
+    }
+  ],
+  "verification": {
+    "before": {
+      "baptisms": 5040,
+      "confirmations": 2091,
+      "marriages": 1261,
+      "funerals": 1,
+      "decrees": 2
+    },
+    "after": {
+      "baptisms": 5040,
+      "confirmations": 2091,
+      "marriages": 1261,
+      "funerals": 1,
+      "decrees": 2,
+      "marginalNotes": 82,
+      "registryAuditEvents": 350
+    },
+    "qaDecreeResidue": 0
+  },
+  "securityReview": {
+    "sensitiveTablesInspected": 13,
+    "rlsEnabled": 13,
+    "noAnonymousSelectGrants": 13,
+    "advisoryNoPolicyTables": 4,
+    "advisoryNoPolicyTablesLackClientSelectGrants": 4,
+    "authenticatedGraphqlSchemaVisibilityWarnings": "Review needed: 64 objects reported in advisor; GraphQL schema visibility does not alone establish row disclosure when RLS applies.",
+    "reference": "https://supabase.com/docs/guides/database/database-linter?lint=0027_pg_graphql_authenticated_table_exposed"
+  },
+  "limitations": [
+    "Real browser create/edit/print end-to-end not executed in this V210 gate",
+    "Email delivery and consumed recovery link still unverified",
+    "V159 and V193 are historical reusable QA scripts and were rerun against current database; V210 new SQL files fix scope selection and add read checks",
+    "Verification of counts does not exclude concurrent changes elsewhere; the SQL fixtures expressly ended with ROLLBACK",
+    "CI runs only offline structural contract tests and the standard browser simulations; no real Supabase SQL in GitHub Actions"
+  ]
+}
