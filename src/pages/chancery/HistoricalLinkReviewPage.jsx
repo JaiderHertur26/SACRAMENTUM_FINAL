@@ -26,6 +26,8 @@ export default function HistoricalLinkReviewPage() {
   const [loadedIdentity, setLoadedIdentity] = useState('');
   const [rows, setRows] = useState([]);
   const [summary, setSummary] = useState([]);
+  const [assessmentCounts, setAssessmentCounts] = useState([]);
+  const [assessments, setAssessments] = useState({});
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -37,6 +39,8 @@ export default function HistoricalLinkReviewPage() {
   const scopeCurrent = allowed && owner === identity;
   const visibleRows = scopeCurrent && loadedIdentity === identity ? rows : [];
   const visibleSummary = scopeCurrent && loadedIdentity === identity ? summary : [];
+  const visibleAssessments = scopeCurrent && loadedIdentity === identity ? assessments : {};
+  const visibleAssessmentCounts = scopeCurrent && loadedIdentity === identity ? assessmentCounts : [];
   const totalCases = visibleSummary.reduce((count, entry) => count + Number(entry.unresolved || 0), 0);
   const visibleError = scopeCurrent ? error : '';
   const showMore = scopeCurrent && loadedIdentity === identity && hasMore;
@@ -50,20 +54,24 @@ export default function HistoricalLinkReviewPage() {
     setRows([]);
     setLoadedIdentity('');
     try {
-      const [{ data, error: rpcError }, { data: totals, error: totalsError }] = await Promise.all([
+      const [{ data, error: rpcError }, { data: totals, error: totalsError }, { data: assessmentsPage, error: assessmentError }, { data: triageCounts, error: countError }] = await Promise.all([
         supabase.rpc('list_unresolved_legacy_links_v218', { p_parish_id: null, p_limit: LIMIT, p_offset: requestedPage * LIMIT }),
-        supabase.rpc('summarize_unresolved_legacy_links_v218')
+        supabase.rpc('summarize_unresolved_legacy_links_v218'),
+        supabase.rpc('assess_unresolved_legacy_links_v219', { p_limit: LIMIT, p_offset: requestedPage * LIMIT }),
+        supabase.rpc('summarize_unresolved_legacy_candidates_v219')
       ]);
-      if (rpcError || totalsError) throw rpcError || totalsError;
+      if (rpcError || totalsError || assessmentError || countError) throw rpcError || totalsError || assessmentError || countError;
       if (currentIdentity.current !== key || seq !== version.current) return;
       setRows(Array.isArray(data) ? data : []);
       setSummary(Array.isArray(totals) ? totals : []);
+      setAssessments(Object.fromEntries((assessmentsPage || []).map(entry => [entry.link_id, entry])));
+      setAssessmentCounts(Array.isArray(triageCounts) ? triageCounts : []);
       setHasMore((data || []).length === LIMIT);
       setPage(requestedPage);
       setLoadedIdentity(key);
     } catch (e) {
       if (currentIdentity.current !== key || seq !== version.current) return;
-      setRows([]); setSummary([]); setHasMore(false); setLoadedIdentity('');
+      setRows([]); setSummary([]); setAssessments({}); setAssessmentCounts([]); setHasMore(false); setLoadedIdentity('');
       setError(e?.message || 'No se pudo consultar la revisión histórica.');
     } finally {
       if (currentIdentity.current === key && seq === version.current) setBusy(false);
@@ -76,6 +84,8 @@ export default function HistoricalLinkReviewPage() {
     setLoadedIdentity('');
     setRows([]);
     setSummary([]);
+    setAssessments({});
+    setAssessmentCounts([]);
     setSaving('');
     setBusy(false);
     setHasMore(false);
@@ -142,6 +152,13 @@ export default function HistoricalLinkReviewPage() {
               <div className="rounded-2xl border border-blue-200 bg-blue-50 p-4"><p className="text-xs font-bold text-blue-700">Total en su diócesis</p><p className="text-2xl font-black text-blue-900">{totalCases}</p></div>
               {visibleSummary.map(item=><div key={item.profile_key} className="rounded-2xl border border-slate-200 bg-white p-4"><p className="text-xs font-bold text-slate-500">{item.profile_key === 'BAUTIZOS' ? 'Bautismo' : item.profile_key === 'CONFIRMA' ? 'Confirmación' : item.profile_key}</p><p className="text-2xl font-black text-slate-900">{item.unresolved}</p><p className="text-xs text-slate-500">{item.affected_parishes} parroquia(s)</p></div>)}
             </div>}
+            {visibleAssessmentCounts.length > 0 && (
+              <div className="grid gap-3 sm:grid-cols-3" aria-label="Clasificación técnica de coincidencias">
+                {[['strong_candidate','Coincidencia integral','text-emerald-800 border-emerald-200 bg-emerald-50'],['identity_conflict','Conflicto de identidad','text-red-800 border-red-200 bg-red-50'],['not_found','Sin partida coincidente','text-slate-800 border-slate-200 bg-white']].map(([key,label,style]) => (
+                  <div key={key} className={`rounded-2xl border p-4 ${style}`}><p className="text-xs font-bold">{label}</p><p className="text-2xl font-black">{visibleAssessmentCounts.find(entry=>entry.assessment===key)?.case_count || 0}</p></div>
+                ))}
+              </div>
+            )}
             {visibleError && <p role="alert" className="rounded-xl border border-red-200 bg-red-50 p-4 text-red-700">{visibleError}</p>}
             <div className="flex items-center justify-between rounded-xl border border-slate-200 bg-white px-5 py-4">
               <div className="flex items-center gap-3"><ClipboardList className="text-blue-700" /><span className="text-sm font-bold text-slate-800">Casos de su jurisdicción</span></div>
@@ -156,7 +173,7 @@ export default function HistoricalLinkReviewPage() {
                 <article key={item.link_id} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
                   <div className="flex flex-wrap items-center justify-between gap-3">
                     <div className="flex items-center gap-2"><FileSearch className="text-blue-700" size={20} /><span className="font-bold text-slate-900">{item.profile_key === 'BAUTIZOS' ? 'Bautismo' : item.profile_key === 'CONFIRMA' ? 'Confirmación' : item.profile_key}</span></div>
-                    <span className="rounded-full bg-amber-100 px-3 py-1 text-xs font-bold text-amber-900">Destino sin localizar</span>
+                    <span className="rounded-full bg-amber-100 px-3 py-1 text-xs font-bold text-amber-900">Destino histórico sin localizar</span>
                   </div>
                   <div className="mt-4 grid gap-3 text-sm sm:grid-cols-2 lg:grid-cols-4">
                     <div><span className="block text-xs font-semibold text-slate-500">Clave histórica</span><span className="break-all font-semibold text-slate-900">{item.source_key || 'Sin clave'}</span></div>
@@ -164,6 +181,7 @@ export default function HistoricalLinkReviewPage() {
                     <div><span className="block text-xs font-semibold text-slate-500">ID parroquial</span><span className="break-all text-xs">{item.parish_id}</span></div>
                     <div><span className="block text-xs font-semibold text-slate-500">Última revisión</span><span className="font-semibold">{STATUS.find(x=>x.value===item.latest_decision)?.label || 'Sin revisión'}</span></div>
                   </div>
+                  {visibleAssessments[item.link_id] && <p className="mt-3 rounded-xl border border-slate-200 bg-slate-50 p-3 text-xs font-semibold text-slate-800">{({ strong_candidate:'Candidato coincidente: parroquia, libro, folio, número, identidad y fecha. Exige cotejo documental.', identity_conflict:'Conflicto: coinciden las coordenadas, pero no la identidad o fecha. No se propone vinculación.', not_found:'Sin coincidencia física en esta parroquia. Revisar archivo e importación.', ambiguous:'Coincidencia ambigua: múltiples partidas posibles. Requiere investigación.' })[visibleAssessments[item.link_id].assessment] || 'Clasificación no disponible'}</p>}
                   {item.evidence_reference && <p className="mt-3 text-xs text-slate-600">Última referencia documentada: <strong>{item.evidence_reference}</strong></p>}
                   <div className="mt-5 grid gap-3 border-t border-slate-100 pt-4 md:grid-cols-[1fr_2fr_auto] md:items-end">
                     <label className="text-xs font-bold text-slate-600">Estado de investigación

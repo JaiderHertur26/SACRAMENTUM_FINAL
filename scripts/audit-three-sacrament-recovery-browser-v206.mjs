@@ -77,10 +77,16 @@ try{
      check(final.calls.length===2,'cross-row lock not released or duplicate writes');
     }else{
      check(await click(label,true),'seat action unavailable');
-     first=await waitFor(s=>s.toasts?.some(t=>t.variant==='destructive')&&(s.text.includes('No fue posible verificar')||s.buttons.some(b=>!b.disabled&&(b.text.includes('Por Lote')||b.text.includes('Asentar ahora')))),'failure verification');
+     // V219: failed reads require an explicitly settled *blocked* UI state.
+     // Destructive toast and a previously enabled batch button may coexist in
+     // different React commits; accepting that interim snapshot caused CI
+     // false failures and incorrectly measured the settled safety contract.
+     const readFailure=scenario.includes('read-failure');
+     first=await waitFor(s=>s.toasts?.some(t=>t.variant==='destructive')&&
+       (readFailure?s.text.includes('No fue posible verificar'):
+       (s.text.includes('No fue posible verificar')||s.buttons.some(b=>!b.disabled&&(b.text.includes('Por Lote')||b.text.includes('Asentar ahora'))))),'failure verification');
      check(first.calls.length===1,'double click or automatic write replay');
      check(first.toasts.some(t=>t.description?.length>20),'missing error explanation');
-     const readFailure=scenario.includes('read-failure');
      if(readFailure){
       check(first.text.includes('No fue posible verificar'),'unverified state remained writable');
       check(!actionable(first)&&!first.buttons.some(b=>b.text.includes('Asentar Selecci')),'write shown with unverified snapshot');
