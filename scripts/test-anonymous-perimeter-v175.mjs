@@ -8,7 +8,7 @@ const routes=src.split(/(?=<Route\b)/).slice(1).map(c=>({
  path:c.match(/^\s*<Route\s+[\s\S]*?\bpath="([^"]+)"/)?.[1],
  guarded:/\belement\s*=\s*\{\s*<ProtectedRoute\b/.test(c.slice(0,550)),
  redirect:/\belement\s*=\s*\{\s*<Navigate\b/.test(c.slice(0,550))
-})).filter(x=>x.path&&!['/','/login','/404','*','/account-configuration-error'].includes(x.path));
+})).filter(x=>x.path&&!['/','/login','/404','*','/account-configuration-error','/reset-password'].includes(x.path));
 test('V175 finds 107 restricted or alias routes in the current router, all with guards or redirects',()=>{
  assert.equal(routes.length,107);assert.equal(new Set(routes.map(x=>x.path)).size,107);
  assert.ok(routes.every(x=>x.guarded||x.redirect));

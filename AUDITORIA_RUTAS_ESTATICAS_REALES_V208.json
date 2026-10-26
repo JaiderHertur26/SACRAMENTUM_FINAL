@@ -1,0 +1,513 @@
+{
+  "protocol": "V208",
+  "scope": "Actual complete application, genuine GoTrue login and read-only navigation of all static protected routes. Dynamic detail routes require separate fixtures; no all-buttons or full CRUD claim.",
+  "date": "2026-10-26T00:38:28.363Z",
+  "rows": [
+    {
+      "role": "parish",
+      "path": "/parish/dashboard",
+      "page": "ParishDashboard",
+      "passed": true,
+      "failures": [],
+      "durationMs": 3411,
+      "textLength": 1538
+    },
+    {
+      "role": "parish",
+      "path": "/parish/operational-control",
+      "page": "ParishOperationalControlPage",
+      "passed": true,
+      "failures": [],
+      "durationMs": 3689,
+      "textLength": 1602
+    },
+    {
+      "role": "parish",
+      "path": "/parish/notifications",
+      "page": "ParishNotificationsPage",
+      "passed": true,
+      "failures": [],
+      "durationMs": 2035,
+      "textLength": 674
+    },
+    {
+      "role": "parish",
+      "path": "/parish/sacramental-notifications",
+      "page": "SacramentalNotificationsPage",
+      "passed": true,
+      "failures": [],
+      "durationMs": 1409,
+      "textLength": 805
+    },
+    {
+      "role": "parish",
+      "path": "/parroquia/ajustes",
+      "page": "ParroquiaAjustesPage",
+      "passed": true,
+      "failures": [],
+      "durationMs": 791,
+      "textLength": 1285
+    },
+    {
+      "role": "parish",
+      "path": "/datos-auxiliares",
+      "page": "DatosAuxiliaresPage",
+      "passed": true,
+      "failures": [],
+      "durationMs": 1141,
+      "textLength": 815
+    },
+    {
+      "role": "parish",
+      "path": "/parroquia/libros",
+      "page": "SacramentalBooksPage",
+      "passed": true,
+      "failures": [],
+      "durationMs": 874,
+      "textLength": 1127
+    },
+    {
+      "role": "parish",
+      "path": "/parroquia/bautismo/nuevo",
+      "page": "BaptismNewPage",
+      "passed": true,
+      "failures": [],
+      "durationMs": 1318,
+      "textLength": 1672
+    },
+    {
+      "role": "parish",
+      "path": "/parroquia/bautismo/celebrado",
+      "page": "BaptismCelebratedPage",
+      "passed": true,
+      "failures": [],
+      "durationMs": 899,
+      "textLength": 2242
+    },
+    {
+      "role": "parish",
+      "path": "/parroquia/bautismo/sentar-registros",
+      "page": "BaptismSentarRegistrosPage",
+      "passed": true,
+      "failures": [],
+      "durationMs": 849,
+      "textLength": 604
+    },
+    {
+      "role": "parish",
+      "path": "/parroquia/bautismo/partidas",
+      "page": "BaptismPartidasPage",
+      "passed": true,
+      "failures": [],
+      "durationMs": 1114,
+      "textLength": 905
+    },
+    {
+      "role": "parish",
+      "path": "/parroquia/bautismo/parametros",
+      "page": "BaptismParametersPage",
+      "passed": true,
+      "failures": [],
+      "durationMs": 829,
+      "textLength": 1283
+    },
+    {
+      "role": "parish",
+      "path": "/parroquia/decretos",
+      "page": "ParishSacramentalDecreesCenterPage",
+      "passed": true,
+      "failures": [],
+      "durationMs": 873,
+      "textLength": 2923
+    },
+    {
+      "role": "parish",
+      "path": "/parroquia/decretos/archivo",
+      "page": "ParishSacramentalDecreeArchivePage",
+      "passed": true,
+      "failures": [],
+      "durationMs": 1020,
+      "textLength": 1852
+    },
+    {
+      "role": "parish",
+      "path": "/parroquia/confirmacion/nuevo",
+      "page": "ConfirmationNewPage",
+      "passed": true,
+      "failures": [],
+      "durationMs": 1391,
+      "textLength": 1436
+    },
+    {
+      "role": "parish",
+      "path": "/parroquia/confirmacion/celebrado",
+      "page": "ConfirmationCelebratedPage",
+      "passed": true,
+      "failures": [],
+      "durationMs": 1518,
+      "textLength": 1794
+    },
+    {
+      "role": "parish",
+      "path": "/parroquia/confirmacion/sentar-registros",
+      "page": "ConfirmationSentarRegistrosPage",
+      "passed": true,
+      "failures": [],
+      "durationMs": 1351,
+      "textLength": 621
+    },
+    {
+      "role": "parish",
+      "path": "/parroquia/confirmacion/partidas",
+      "page": "ConfirmationPartidasPage",
+      "passed": true,
+      "failures": [],
+      "durationMs": 889,
+      "textLength": 894
+    },
+    {
+      "role": "parish",
+      "path": "/parroquia/confirmacion/parametros",
+      "page": "ConfirmationParametersPage",
+      "passed": true,
+      "failures": [],
+      "durationMs": 819,
+      "textLength": 1298
+    },
+    {
+      "role": "parish",
+      "path": "/parroquia/confirmacion/notificacion",
+      "page": "ConfirmationNotificationPage",
+      "passed": true,
+      "failures": [],
+      "durationMs": 852,
+      "textLength": 1272
+    },
+    {
+      "role": "parish",
+      "path": "/parroquia/matrimonio/nuevo",
+      "page": "MatrimonioNewPage",
+      "passed": true,
+      "failures": [],
+      "durationMs": 923,
+      "textLength": 1583
+    },
+    {
+      "role": "parish",
+      "path": "/parroquia/matrimonio/celebrado",
+      "page": "MatrimonioCelebratedPage",
+      "passed": true,
+      "failures": [],
+      "durationMs": 883,
+      "textLength": 2439
+    },
+    {
+      "role": "parish",
+      "path": "/parroquia/matrimonio/sentar-registros",
+      "page": "MatrimonioSentarRegistrosPage",
+      "passed": true,
+      "failures": [],
+      "durationMs": 843,
+      "textLength": 639
+    },
+    {
+      "role": "parish",
+      "path": "/parroquia/matrimonio/partidas",
+      "page": "MatrimonioPartidasPage",
+      "passed": true,
+      "failures": [],
+      "durationMs": 866,
+      "textLength": 846
+    },
+    {
+      "role": "parish",
+      "path": "/parroquia/matrimonio/parametros",
+      "page": "MatrimonioParametersPage",
+      "passed": true,
+      "failures": [],
+      "durationMs": 806,
+      "textLength": 1753
+    },
+    {
+      "role": "parish",
+      "path": "/parroquia/matrimonio/expedientes",
+      "page": "MarriageDossierPage",
+      "passed": true,
+      "failures": [],
+      "durationMs": 866,
+      "textLength": 1188
+    },
+    {
+      "role": "parish",
+      "path": "/parroquia/exequias",
+      "page": "FuneralRegistryPage",
+      "passed": true,
+      "failures": [],
+      "durationMs": 944,
+      "textLength": 1594
+    },
+    {
+      "role": "parish",
+      "path": "/parroquia/exequias/partidas",
+      "page": "FuneralPartidasPage",
+      "passed": true,
+      "failures": [],
+      "durationMs": 832,
+      "textLength": 742
+    },
+    {
+      "role": "parish",
+      "path": "/parroquia/matrimonio/notificacion",
+      "page": "NotificacionMatrimonialPage",
+      "passed": true,
+      "failures": [],
+      "durationMs": 995,
+      "textLength": 1518
+    },
+    {
+      "role": "parish",
+      "path": "/communications",
+      "page": "CommunicationsPage",
+      "passed": true,
+      "failures": [],
+      "durationMs": 799,
+      "textLength": 821
+    },
+    {
+      "role": "parish",
+      "path": "/buscar",
+      "page": "UnifiedSearchPage",
+      "passed": true,
+      "failures": [],
+      "durationMs": 818,
+      "textLength": 894
+    },
+    {
+      "role": "parish",
+      "path": "/documentos/plantillas",
+      "page": "DocumentTemplateLibraryPage",
+      "passed": true,
+      "failures": [],
+      "durationMs": 835,
+      "textLength": 646
+    },
+    {
+      "role": "diocese",
+      "path": "/diocese/dashboard",
+      "page": "DioceseUserDashboard",
+      "passed": true,
+      "failures": [],
+      "durationMs": 800,
+      "textLength": 570
+    },
+    {
+      "role": "diocese",
+      "path": "/diocese/decretos/archivo",
+      "page": "DiocesanDecreeOversightPage",
+      "passed": true,
+      "failures": [],
+      "durationMs": 878,
+      "textLength": 1514
+    },
+    {
+      "role": "diocese",
+      "path": "/diocese/decretos/conciliaciones",
+      "page": "LaterNoteReconciliationPage",
+      "passed": true,
+      "failures": [],
+      "durationMs": 813,
+      "textLength": 1316
+    },
+    {
+      "role": "diocese",
+      "path": "/diocese/ecclesiastical",
+      "page": "DioceseEcclesiasticalPage",
+      "passed": true,
+      "failures": [],
+      "durationMs": 1135,
+      "textLength": 1201
+    },
+    {
+      "role": "diocese",
+      "path": "/diocese/migration-center",
+      "page": "LegacyMigrationCenterPage",
+      "passed": true,
+      "failures": [],
+      "durationMs": 818,
+      "textLength": 2361
+    },
+    {
+      "role": "diocese",
+      "path": "/diocese/reports",
+      "page": "DiocesanSacramentalReportsPage",
+      "passed": true,
+      "failures": [],
+      "durationMs": 782,
+      "textLength": 1515
+    },
+    {
+      "role": "chancery",
+      "path": "/chancery/dashboard",
+      "page": "ChanceryDashboard",
+      "passed": true,
+      "failures": [],
+      "durationMs": 1354,
+      "textLength": 1024
+    },
+    {
+      "role": "chancery",
+      "path": "/chancery/pending",
+      "page": "ChanceryPendingPage",
+      "passed": true,
+      "failures": [],
+      "durationMs": 1406,
+      "textLength": 739
+    },
+    {
+      "role": "chancery",
+      "path": "/chancery/decretos",
+      "page": "SacramentalDecreesCenterPage",
+      "passed": true,
+      "failures": [],
+      "durationMs": 1477,
+      "textLength": 3305
+    },
+    {
+      "role": "chancery",
+      "path": "/chancery/decretos/archivo",
+      "page": "SacramentalDecreeArchivePage",
+      "passed": true,
+      "failures": [],
+      "durationMs": 1461,
+      "textLength": 1276
+    },
+    {
+      "role": "chancery",
+      "path": "/chancery/decretos/conciliaciones",
+      "page": "LaterNoteReconciliationPage",
+      "passed": true,
+      "failures": [],
+      "durationMs": 1271,
+      "textLength": 1556
+    },
+    {
+      "role": "chancery",
+      "path": "/chancery/decretos/documental",
+      "page": "DocumentaryDecreePage",
+      "passed": true,
+      "failures": [],
+      "durationMs": 1383,
+      "textLength": 1803
+    },
+    {
+      "role": "chancery",
+      "path": "/chancery/matrimonio/decretos",
+      "page": "MarriageDecreesPage",
+      "passed": true,
+      "failures": [],
+      "durationMs": 1744,
+      "textLength": 1178
+    },
+    {
+      "role": "chancery",
+      "path": "/chancery/decree-correction/new",
+      "page": "NewDecreeCorrectionPage",
+      "passed": true,
+      "failures": [],
+      "durationMs": 1529,
+      "textLength": 1178
+    },
+    {
+      "role": "chancery",
+      "path": "/chancery/decree-correction/new-confirmation",
+      "page": "NewConfirmationCorrectionPage",
+      "passed": true,
+      "failures": [],
+      "durationMs": 2075,
+      "textLength": 1273
+    },
+    {
+      "role": "chancery",
+      "path": "/chancery/exequias/decretos",
+      "page": "FuneralDecreesPage",
+      "passed": true,
+      "failures": [],
+      "durationMs": 1711,
+      "textLength": 1178
+    },
+    {
+      "role": "chancery",
+      "path": "/chancery/decree-replacement/new",
+      "page": "NewDecreeReplacementPage",
+      "passed": true,
+      "failures": [],
+      "durationMs": 1745,
+      "textLength": 1253
+    },
+    {
+      "role": "chancery",
+      "path": "/chancery/decree-replacement/new-confirmation",
+      "page": "NewConfirmationReplacementPage",
+      "passed": true,
+      "failures": [],
+      "durationMs": 1506,
+      "textLength": 1336
+    },
+    {
+      "role": "chancery",
+      "path": "/chancery/decree-annulment",
+      "page": "ChanceryAnnulmentConceptsPage",
+      "passed": true,
+      "failures": [],
+      "durationMs": 1550,
+      "textLength": 759
+    },
+    {
+      "role": "admin_general",
+      "path": "/debug-auth",
+      "page": "DebugAuthPage",
+      "passed": true,
+      "failures": [],
+      "durationMs": 1426,
+      "textLength": 5535
+    },
+    {
+      "role": "admin_general",
+      "path": "/admin/dashboard",
+      "page": "AdminGeneralDashboard",
+      "passed": true,
+      "failures": [],
+      "durationMs": 1181,
+      "textLength": 700
+    },
+    {
+      "role": "admin_general",
+      "path": "/admin/dioceses",
+      "page": "DioceseListPage",
+      "passed": true,
+      "failures": [],
+      "durationMs": 5028,
+      "textLength": 1012
+    },
+    {
+      "role": "admin_general",
+      "path": "/admin/users",
+      "page": "UserListPage",
+      "passed": true,
+      "failures": [],
+      "durationMs": 1216,
+      "textLength": 2072
+    },
+    {
+      "role": "admin_general",
+      "path": "/admin/migration-center",
+      "page": "LegacyMigrationCenterPage",
+      "passed": true,
+      "failures": [],
+      "durationMs": 1137,
+      "textLength": 2266
+    }
+  ],
+  "exceptions": [],
+  "externalRequests": []
+}

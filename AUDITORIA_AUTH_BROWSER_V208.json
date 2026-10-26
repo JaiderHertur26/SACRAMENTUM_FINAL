@@ -1,0 +1,348 @@
+{
+  "protocol": "V208",
+  "scope": "Actual AuthProvider and SDK using genuine GoTrue sessions and QA-only accounts, real profile/RLS requests",
+  "date": "2026-10-26T00:05:39.085Z",
+  "sourceSha256": "199330c1c26ae474f9343ad2eda3ac18d5f9cce354ed9411f3834f831f95f375",
+  "rows": [
+    {
+      "kind": "diocese_b",
+      "passed": true,
+      "failures": [],
+      "login": {
+        "text": "QA V208 Auth real{\"authenticated\":false,\"userId\":null,\"role\":null,\"profileActive\":false,\"configurationError\":null,\"sessionUserId\":\"e7943731-18ba-458f-b700-337814319f49\"}",
+        "ready": true,
+        "result": {
+          "success": true,
+          "role": "diocese"
+        },
+        "state": {
+          "authenticated": true,
+          "userId": "e7943731-18ba-458f-b700-337814319f49",
+          "role": "diocese",
+          "profileActive": true,
+          "configurationError": null,
+          "sessionUserId": "e7943731-18ba-458f-b700-337814319f49"
+        },
+        "events": [
+          "INITIAL_SESSION",
+          "SIGNED_IN"
+        ]
+      },
+      "restored": {
+        "text": "QA V208 Auth real",
+        "ready": true,
+        "result": null,
+        "state": {
+          "authenticated": true,
+          "userId": "e7943731-18ba-458f-b700-337814319f49",
+          "role": "diocese",
+          "profileActive": true,
+          "configurationError": null,
+          "sessionUserId": "e7943731-18ba-458f-b700-337814319f49"
+        },
+        "events": [
+          "SIGNED_IN",
+          "INITIAL_SESSION"
+        ]
+      }
+    },
+    {
+      "kind": "chancery",
+      "passed": true,
+      "failures": [],
+      "login": {
+        "text": "QA V208 Auth real{\"authenticated\":false,\"userId\":null,\"role\":null,\"profileActive\":false,\"configurationError\":null,\"sessionUserId\":\"c8da42ca-3449-4be9-b958-21619ed84624\"}",
+        "ready": true,
+        "result": {
+          "success": true,
+          "role": "chancery"
+        },
+        "state": {
+          "authenticated": true,
+          "userId": "c8da42ca-3449-4be9-b958-21619ed84624",
+          "role": "chancery",
+          "profileActive": true,
+          "configurationError": null,
+          "sessionUserId": "c8da42ca-3449-4be9-b958-21619ed84624"
+        },
+        "events": [
+          "INITIAL_SESSION",
+          "SIGNED_IN"
+        ]
+      },
+      "restored": {
+        "text": "QA V208 Auth real",
+        "ready": true,
+        "result": null,
+        "state": {
+          "authenticated": true,
+          "userId": "c8da42ca-3449-4be9-b958-21619ed84624",
+          "role": "chancery",
+          "profileActive": true,
+          "configurationError": null,
+          "sessionUserId": "c8da42ca-3449-4be9-b958-21619ed84624"
+        },
+        "events": [
+          "SIGNED_IN",
+          "INITIAL_SESSION"
+        ]
+      }
+    },
+    {
+      "kind": "parish_a1",
+      "passed": true,
+      "failures": [],
+      "login": {
+        "text": "QA V208 Auth real{\"authenticated\":false,\"userId\":null,\"role\":null,\"profileActive\":false,\"configurationError\":null,\"sessionUserId\":\"1a119734-5583-485e-b8ca-d711901d7238\"}",
+        "ready": true,
+        "result": {
+          "success": true,
+          "role": "parish"
+        },
+        "state": {
+          "authenticated": true,
+          "userId": "1a119734-5583-485e-b8ca-d711901d7238",
+          "role": "parish",
+          "profileActive": true,
+          "configurationError": null,
+          "sessionUserId": "1a119734-5583-485e-b8ca-d711901d7238"
+        },
+        "events": [
+          "INITIAL_SESSION",
+          "SIGNED_IN"
+        ]
+      },
+      "restored": {
+        "text": "QA V208 Auth real",
+        "ready": true,
+        "result": null,
+        "state": {
+          "authenticated": true,
+          "userId": "1a119734-5583-485e-b8ca-d711901d7238",
+          "role": "parish",
+          "profileActive": true,
+          "configurationError": null,
+          "sessionUserId": "1a119734-5583-485e-b8ca-d711901d7238"
+        },
+        "events": [
+          "SIGNED_IN",
+          "INITIAL_SESSION"
+        ]
+      }
+    },
+    {
+      "kind": "parish_a2",
+      "passed": true,
+      "failures": [],
+      "login": {
+        "text": "QA V208 Auth real{\"authenticated\":false,\"userId\":null,\"role\":null,\"profileActive\":false,\"configurationError\":null,\"sessionUserId\":\"316376bd-4a46-492e-81f0-cb15b144865c\"}",
+        "ready": true,
+        "result": {
+          "success": true,
+          "role": "parish"
+        },
+        "state": {
+          "authenticated": true,
+          "userId": "316376bd-4a46-492e-81f0-cb15b144865c",
+          "role": "parish",
+          "profileActive": true,
+          "configurationError": null,
+          "sessionUserId": "316376bd-4a46-492e-81f0-cb15b144865c"
+        },
+        "events": [
+          "INITIAL_SESSION",
+          "SIGNED_IN"
+        ]
+      },
+      "restored": {
+        "text": "QA V208 Auth real",
+        "ready": true,
+        "result": null,
+        "state": {
+          "authenticated": true,
+          "userId": "316376bd-4a46-492e-81f0-cb15b144865c",
+          "role": "parish",
+          "profileActive": true,
+          "configurationError": null,
+          "sessionUserId": "316376bd-4a46-492e-81f0-cb15b144865c"
+        },
+        "events": [
+          "SIGNED_IN",
+          "INITIAL_SESSION"
+        ]
+      }
+    },
+    {
+      "kind": "parish_b",
+      "passed": true,
+      "failures": [],
+      "login": {
+        "text": "QA V208 Auth real{\"authenticated\":false,\"userId\":null,\"role\":null,\"profileActive\":false,\"configurationError\":null,\"sessionUserId\":\"019aca1b-e1f4-4ccc-8d10-57fcde956d39\"}",
+        "ready": true,
+        "result": {
+          "success": true,
+          "role": "parish"
+        },
+        "state": {
+          "authenticated": true,
+          "userId": "019aca1b-e1f4-4ccc-8d10-57fcde956d39",
+          "role": "parish",
+          "profileActive": true,
+          "configurationError": null,
+          "sessionUserId": "019aca1b-e1f4-4ccc-8d10-57fcde956d39"
+        },
+        "events": [
+          "INITIAL_SESSION",
+          "SIGNED_IN"
+        ]
+      },
+      "restored": {
+        "text": "QA V208 Auth real",
+        "ready": true,
+        "result": null,
+        "state": {
+          "authenticated": true,
+          "userId": "019aca1b-e1f4-4ccc-8d10-57fcde956d39",
+          "role": "parish",
+          "profileActive": true,
+          "configurationError": null,
+          "sessionUserId": "019aca1b-e1f4-4ccc-8d10-57fcde956d39"
+        },
+        "events": [
+          "SIGNED_IN",
+          "INITIAL_SESSION"
+        ]
+      }
+    },
+    {
+      "kind": "parish_x",
+      "passed": true,
+      "failures": [],
+      "login": {
+        "text": "QA V208 Auth real{\"authenticated\":false,\"userId\":null,\"role\":null,\"profileActive\":false,\"configurationError\":null,\"sessionUserId\":\"6929bf98-1514-4e44-814e-bcd12d257905\"}",
+        "ready": true,
+        "result": {
+          "success": true,
+          "role": "parish"
+        },
+        "state": {
+          "authenticated": true,
+          "userId": "6929bf98-1514-4e44-814e-bcd12d257905",
+          "role": "parish",
+          "profileActive": true,
+          "configurationError": null,
+          "sessionUserId": "6929bf98-1514-4e44-814e-bcd12d257905"
+        },
+        "events": [
+          "INITIAL_SESSION",
+          "SIGNED_IN"
+        ]
+      },
+      "restored": {
+        "text": "QA V208 Auth real",
+        "ready": true,
+        "result": null,
+        "state": {
+          "authenticated": true,
+          "userId": "6929bf98-1514-4e44-814e-bcd12d257905",
+          "role": "parish",
+          "profileActive": true,
+          "configurationError": null,
+          "sessionUserId": "6929bf98-1514-4e44-814e-bcd12d257905"
+        },
+        "events": [
+          "SIGNED_IN",
+          "INITIAL_SESSION"
+        ]
+      }
+    },
+    {
+      "kind": "diocese_a",
+      "passed": true,
+      "failures": [],
+      "login": {
+        "text": "QA V208 Auth real{\"authenticated\":false,\"userId\":null,\"role\":null,\"profileActive\":false,\"configurationError\":null,\"sessionUserId\":\"ad7f0928-e114-4385-9731-3b277434399a\"}",
+        "ready": true,
+        "result": {
+          "success": true,
+          "role": "diocese"
+        },
+        "state": {
+          "authenticated": true,
+          "userId": "ad7f0928-e114-4385-9731-3b277434399a",
+          "role": "diocese",
+          "profileActive": true,
+          "configurationError": null,
+          "sessionUserId": "ad7f0928-e114-4385-9731-3b277434399a"
+        },
+        "events": [
+          "INITIAL_SESSION",
+          "SIGNED_IN"
+        ]
+      },
+      "restored": {
+        "text": "QA V208 Auth real",
+        "ready": true,
+        "result": null,
+        "state": {
+          "authenticated": true,
+          "userId": "ad7f0928-e114-4385-9731-3b277434399a",
+          "role": "diocese",
+          "profileActive": true,
+          "configurationError": null,
+          "sessionUserId": "ad7f0928-e114-4385-9731-3b277434399a"
+        },
+        "events": [
+          "SIGNED_IN",
+          "INITIAL_SESSION"
+        ]
+      }
+    },
+    {
+      "kind": "admin_general",
+      "passed": true,
+      "failures": [],
+      "login": {
+        "text": "QA V208 Auth real{\"authenticated\":false,\"userId\":null,\"role\":null,\"profileActive\":false,\"configurationError\":null,\"sessionUserId\":\"794736d3-c36a-4eff-a4d9-afc345157fa4\"}",
+        "ready": true,
+        "result": {
+          "success": true,
+          "role": "admin_general"
+        },
+        "state": {
+          "authenticated": true,
+          "userId": "794736d3-c36a-4eff-a4d9-afc345157fa4",
+          "role": "admin_general",
+          "profileActive": true,
+          "configurationError": null,
+          "sessionUserId": "794736d3-c36a-4eff-a4d9-afc345157fa4"
+        },
+        "events": [
+          "INITIAL_SESSION",
+          "SIGNED_IN"
+        ]
+      },
+      "restored": {
+        "text": "QA V208 Auth real",
+        "ready": true,
+        "result": null,
+        "state": {
+          "authenticated": true,
+          "userId": "794736d3-c36a-4eff-a4d9-afc345157fa4",
+          "role": "admin_general",
+          "profileActive": true,
+          "configurationError": null,
+          "sessionUserId": "794736d3-c36a-4eff-a4d9-afc345157fa4"
+        },
+        "events": [
+          "SIGNED_IN",
+          "INITIAL_SESSION"
+        ]
+      }
+    }
+  ],
+  "passed": 8,
+  "total": 8,
+  "exceptions": [],
+  "externalRequests": []
+}

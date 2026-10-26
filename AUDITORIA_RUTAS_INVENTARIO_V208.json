@@ -1,0 +1,368 @@
+{
+  "protocol": "V208",
+  "date": "2026-10-26T00:38:28.323Z",
+  "routes": [
+    {
+      "path": "/debug-auth",
+      "role": "ADMIN_GENERAL",
+      "page": "DebugAuthPage",
+      "dynamic": false
+    },
+    {
+      "path": "/admin/dashboard",
+      "role": "ADMIN_GENERAL",
+      "page": "AdminGeneralDashboard",
+      "dynamic": false
+    },
+    {
+      "path": "/admin/dioceses",
+      "role": "ADMIN_GENERAL",
+      "page": "DioceseListPage",
+      "dynamic": false
+    },
+    {
+      "path": "/admin/users",
+      "role": "ADMIN_GENERAL",
+      "page": "UserListPage",
+      "dynamic": false
+    },
+    {
+      "path": "/admin/migration-center",
+      "role": "ADMIN_GENERAL",
+      "page": "LegacyMigrationCenterPage",
+      "dynamic": false
+    },
+    {
+      "path": "/diocese/dashboard",
+      "role": "DIOCESE",
+      "page": "DioceseUserDashboard",
+      "dynamic": false
+    },
+    {
+      "path": "/diocese/decretos/archivo",
+      "role": "DIOCESE",
+      "page": "DiocesanDecreeOversightPage",
+      "dynamic": false
+    },
+    {
+      "path": "/diocese/decretos/conciliaciones",
+      "role": "DIOCESE",
+      "page": "LaterNoteReconciliationPage",
+      "dynamic": false
+    },
+    {
+      "path": "/diocese/ecclesiastical",
+      "role": "DIOCESE",
+      "page": "DioceseEcclesiasticalPage",
+      "dynamic": false
+    },
+    {
+      "path": "/diocese/migration-center",
+      "role": "DIOCESE",
+      "page": "LegacyMigrationCenterPage",
+      "dynamic": false
+    },
+    {
+      "path": "/diocese/reports",
+      "role": "DIOCESE",
+      "page": "DiocesanSacramentalReportsPage",
+      "dynamic": false
+    },
+    {
+      "path": "/parish/dashboard",
+      "role": "PARISH",
+      "page": "ParishDashboard",
+      "dynamic": false
+    },
+    {
+      "path": "/parish/operational-control",
+      "role": "PARISH",
+      "page": "ParishOperationalControlPage",
+      "dynamic": false
+    },
+    {
+      "path": "/parish/notifications",
+      "role": "PARISH",
+      "page": "ParishNotificationsPage",
+      "dynamic": false
+    },
+    {
+      "path": "/parish/sacramental-notifications",
+      "role": "PARISH",
+      "page": "SacramentalNotificationsPage",
+      "dynamic": false
+    },
+    {
+      "path": "/parish/decrees/:decreeId",
+      "role": "PARISH",
+      "page": "ParishDecreeDetailPage",
+      "dynamic": true
+    },
+    {
+      "path": "/parroquia/ajustes",
+      "role": "PARISH",
+      "page": "ParroquiaAjustesPage",
+      "dynamic": false
+    },
+    {
+      "path": "/datos-auxiliares",
+      "role": "PARISH",
+      "page": "DatosAuxiliaresPage",
+      "dynamic": false
+    },
+    {
+      "path": "/parroquia/libros",
+      "role": "PARISH",
+      "page": "SacramentalBooksPage",
+      "dynamic": false
+    },
+    {
+      "path": "/parroquia/bautismo/nuevo",
+      "role": "PARISH",
+      "page": "BaptismNewPage",
+      "dynamic": false
+    },
+    {
+      "path": "/parroquia/bautismo/celebrado",
+      "role": "PARISH",
+      "page": "BaptismCelebratedPage",
+      "dynamic": false
+    },
+    {
+      "path": "/parroquia/bautismo/sentar-registros",
+      "role": "PARISH",
+      "page": "BaptismSentarRegistrosPage",
+      "dynamic": false
+    },
+    {
+      "path": "/parroquia/bautismo/partidas",
+      "role": "PARISH",
+      "page": "BaptismPartidasPage",
+      "dynamic": false
+    },
+    {
+      "path": "/parroquia/bautismo/parametros",
+      "role": "PARISH",
+      "page": "BaptismParametersPage",
+      "dynamic": false
+    },
+    {
+      "path": "/parroquia/bautismo/:baptismPartidaId",
+      "role": "PARISH",
+      "page": "BaptismDetailPage",
+      "dynamic": true
+    },
+    {
+      "path": "/parroquia/decretos",
+      "role": "PARISH",
+      "page": "ParishSacramentalDecreesCenterPage",
+      "dynamic": false
+    },
+    {
+      "path": "/parroquia/decretos/archivo",
+      "role": "PARISH",
+      "page": "ParishSacramentalDecreeArchivePage",
+      "dynamic": false
+    },
+    {
+      "path": "/parroquia/confirmacion/nuevo",
+      "role": "PARISH",
+      "page": "ConfirmationNewPage",
+      "dynamic": false
+    },
+    {
+      "path": "/parroquia/confirmacion/celebrado",
+      "role": "PARISH",
+      "page": "ConfirmationCelebratedPage",
+      "dynamic": false
+    },
+    {
+      "path": "/parroquia/confirmacion/sentar-registros",
+      "role": "PARISH",
+      "page": "ConfirmationSentarRegistrosPage",
+      "dynamic": false
+    },
+    {
+      "path": "/parroquia/confirmacion/partidas",
+      "role": "PARISH",
+      "page": "ConfirmationPartidasPage",
+      "dynamic": false
+    },
+    {
+      "path": "/parroquia/confirmacion/parametros",
+      "role": "PARISH",
+      "page": "ConfirmationParametersPage",
+      "dynamic": false
+    },
+    {
+      "path": "/parroquia/confirmacion/notificacion",
+      "role": "PARISH",
+      "page": "ConfirmationNotificationPage",
+      "dynamic": false
+    },
+    {
+      "path": "/parroquia/matrimonio/nuevo",
+      "role": "PARISH",
+      "page": "MatrimonioNewPage",
+      "dynamic": false
+    },
+    {
+      "path": "/parroquia/matrimonio/celebrado",
+      "role": "PARISH",
+      "page": "MatrimonioCelebratedPage",
+      "dynamic": false
+    },
+    {
+      "path": "/parroquia/matrimonio/sentar-registros",
+      "role": "PARISH",
+      "page": "MatrimonioSentarRegistrosPage",
+      "dynamic": false
+    },
+    {
+      "path": "/parroquia/matrimonio/partidas",
+      "role": "PARISH",
+      "page": "MatrimonioPartidasPage",
+      "dynamic": false
+    },
+    {
+      "path": "/parroquia/matrimonio/parametros",
+      "role": "PARISH",
+      "page": "MatrimonioParametersPage",
+      "dynamic": false
+    },
+    {
+      "path": "/parroquia/matrimonio/expedientes",
+      "role": "PARISH",
+      "page": "MarriageDossierPage",
+      "dynamic": false
+    },
+    {
+      "path": "/parroquia/exequias",
+      "role": "PARISH",
+      "page": "FuneralRegistryPage",
+      "dynamic": false
+    },
+    {
+      "path": "/parroquia/exequias/partidas",
+      "role": null,
+      "page": "FuneralPartidasPage",
+      "dynamic": false
+    },
+    {
+      "path": "/parroquia/matrimonio/notificacion",
+      "role": "PARISH",
+      "page": "NotificacionMatrimonialPage",
+      "dynamic": false
+    },
+    {
+      "path": "/chancery/dashboard",
+      "role": "CHANCERY",
+      "page": "ChanceryDashboard",
+      "dynamic": false
+    },
+    {
+      "path": "/chancery/pending",
+      "role": "CHANCERY",
+      "page": "ChanceryPendingPage",
+      "dynamic": false
+    },
+    {
+      "path": "/chancery/decretos",
+      "role": "CHANCERY",
+      "page": "SacramentalDecreesCenterPage",
+      "dynamic": false
+    },
+    {
+      "path": "/chancery/decretos/archivo",
+      "role": "CHANCERY",
+      "page": "SacramentalDecreeArchivePage",
+      "dynamic": false
+    },
+    {
+      "path": "/chancery/decretos/conciliaciones",
+      "role": "CHANCERY",
+      "page": "LaterNoteReconciliationPage",
+      "dynamic": false
+    },
+    {
+      "path": "/chancery/decretos/documental",
+      "role": "CHANCERY",
+      "page": "DocumentaryDecreePage",
+      "dynamic": false
+    },
+    {
+      "path": "/chancery/matrimonio/decretos",
+      "role": "CHANCERY",
+      "page": "MarriageDecreesPage",
+      "dynamic": false
+    },
+    {
+      "path": "/chancery/decree-correction/new",
+      "role": "CHANCERY",
+      "page": "NewDecreeCorrectionPage",
+      "dynamic": false
+    },
+    {
+      "path": "/chancery/decree-correction/new-confirmation",
+      "role": "CHANCERY",
+      "page": "NewConfirmationCorrectionPage",
+      "dynamic": false
+    },
+    {
+      "path": "/chancery/exequias/decretos",
+      "role": "CHANCERY",
+      "page": "FuneralDecreesPage",
+      "dynamic": false
+    },
+    {
+      "path": "/chancery/decree-replacement/new",
+      "role": "CHANCERY",
+      "page": "NewDecreeReplacementPage",
+      "dynamic": false
+    },
+    {
+      "path": "/chancery/decree-replacement/new-confirmation",
+      "role": "CHANCERY",
+      "page": "NewConfirmationReplacementPage",
+      "dynamic": false
+    },
+    {
+      "path": "/chancery/decree-annulment",
+      "role": "CHANCERY",
+      "page": "ChanceryAnnulmentConceptsPage",
+      "dynamic": false
+    },
+    {
+      "path": "/communications",
+      "role": null,
+      "page": "CommunicationsPage",
+      "dynamic": false
+    },
+    {
+      "path": "/buscar",
+      "role": null,
+      "page": "UnifiedSearchPage",
+      "dynamic": false
+    },
+    {
+      "path": "/documentos/plantillas",
+      "role": null,
+      "page": "DocumentTemplateLibraryPage",
+      "dynamic": false
+    }
+  ],
+  "dynamicExcluded": [
+    {
+      "path": "/parish/decrees/:decreeId",
+      "role": "PARISH",
+      "page": "ParishDecreeDetailPage",
+      "dynamic": true
+    },
+    {
+      "path": "/parroquia/bautismo/:baptismPartidaId",
+      "role": "PARISH",
+      "page": "BaptismDetailPage",
+      "dynamic": true
+    }
+  ]
+}

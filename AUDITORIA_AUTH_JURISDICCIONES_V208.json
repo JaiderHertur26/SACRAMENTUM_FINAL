@@ -1,0 +1,207 @@
+{
+  "protocol": "V208",
+  "date": "2026-10-26T00:08:29.045Z",
+  "scope": "Genuine GoTrue credentials, real protected RPCs. All attempts must be denied without any sacramental write.",
+  "rows": [
+    {
+      "actor": "parish_a1",
+      "target": "parish_b",
+      "sacrament": "bautismo",
+      "passed": true,
+      "code": "42501",
+      "message": "Solo la parroquia propietaria activa puede reservar esta boleta"
+    },
+    {
+      "actor": "parish_a1",
+      "target": "parish_b",
+      "sacrament": "confirmacion",
+      "passed": true,
+      "code": "42501",
+      "message": "Solo la parroquia propietaria activa puede reservar esta boleta"
+    },
+    {
+      "actor": "parish_a1",
+      "target": "parish_b",
+      "sacrament": "matrimonio",
+      "passed": true,
+      "code": "42501",
+      "message": "Solo la parroquia propietaria activa puede reservar esta boleta"
+    },
+    {
+      "actor": "parish_a1",
+      "target": "parish_b",
+      "sacrament": "exequias",
+      "passed": true,
+      "code": "42501",
+      "message": "Solo la parroquia propietaria activa puede reservar esta boleta"
+    },
+    {
+      "actor": "parish_a1",
+      "target": "parish_x",
+      "sacrament": "bautismo",
+      "passed": true,
+      "code": "42501",
+      "message": "Solo la parroquia propietaria activa puede reservar esta boleta"
+    },
+    {
+      "actor": "parish_a1",
+      "target": "parish_x",
+      "sacrament": "confirmacion",
+      "passed": true,
+      "code": "42501",
+      "message": "Solo la parroquia propietaria activa puede reservar esta boleta"
+    },
+    {
+      "actor": "parish_a1",
+      "target": "parish_x",
+      "sacrament": "matrimonio",
+      "passed": true,
+      "code": "42501",
+      "message": "Solo la parroquia propietaria activa puede reservar esta boleta"
+    },
+    {
+      "actor": "parish_a1",
+      "target": "parish_x",
+      "sacrament": "exequias",
+      "passed": true,
+      "code": "42501",
+      "message": "Solo la parroquia propietaria activa puede reservar esta boleta"
+    },
+    {
+      "actor": "diocese_a",
+      "target": "parish_x",
+      "sacrament": "bautismo",
+      "passed": true,
+      "code": "42501",
+      "message": "Solo la parroquia propietaria activa puede reservar esta boleta"
+    },
+    {
+      "actor": "diocese_a",
+      "target": "parish_x",
+      "sacrament": "confirmacion",
+      "passed": true,
+      "code": "42501",
+      "message": "Solo la parroquia propietaria activa puede reservar esta boleta"
+    },
+    {
+      "actor": "diocese_a",
+      "target": "parish_x",
+      "sacrament": "matrimonio",
+      "passed": true,
+      "code": "42501",
+      "message": "Solo la parroquia propietaria activa puede reservar esta boleta"
+    },
+    {
+      "actor": "diocese_a",
+      "target": "parish_x",
+      "sacrament": "exequias",
+      "passed": true,
+      "code": "42501",
+      "message": "Solo la parroquia propietaria activa puede reservar esta boleta"
+    },
+    {
+      "actor": "diocese_b",
+      "target": "parish_a1",
+      "sacrament": "bautismo",
+      "passed": true,
+      "code": "42501",
+      "message": "Solo la parroquia propietaria activa puede reservar esta boleta"
+    },
+    {
+      "actor": "diocese_b",
+      "target": "parish_a1",
+      "sacrament": "confirmacion",
+      "passed": true,
+      "code": "42501",
+      "message": "Solo la parroquia propietaria activa puede reservar esta boleta"
+    },
+    {
+      "actor": "diocese_b",
+      "target": "parish_a1",
+      "sacrament": "matrimonio",
+      "passed": true,
+      "code": "42501",
+      "message": "Solo la parroquia propietaria activa puede reservar esta boleta"
+    },
+    {
+      "actor": "diocese_b",
+      "target": "parish_a1",
+      "sacrament": "exequias",
+      "passed": true,
+      "code": "42501",
+      "message": "Solo la parroquia propietaria activa puede reservar esta boleta"
+    },
+    {
+      "actor": "chancery",
+      "target": "parish_a1",
+      "sacrament": "bautismo",
+      "passed": true,
+      "code": "42501",
+      "message": "Solo la parroquia propietaria activa puede reservar esta boleta"
+    },
+    {
+      "actor": "chancery",
+      "target": "parish_a1",
+      "sacrament": "confirmacion",
+      "passed": true,
+      "code": "42501",
+      "message": "Solo la parroquia propietaria activa puede reservar esta boleta"
+    },
+    {
+      "actor": "chancery",
+      "target": "parish_a1",
+      "sacrament": "matrimonio",
+      "passed": true,
+      "code": "42501",
+      "message": "Solo la parroquia propietaria activa puede reservar esta boleta"
+    },
+    {
+      "actor": "chancery",
+      "target": "parish_a1",
+      "sacrament": "exequias",
+      "passed": true,
+      "code": "42501",
+      "message": "Solo la parroquia propietaria activa puede reservar esta boleta"
+    },
+    {
+      "actor": "admin_general",
+      "target": "parish_a1",
+      "sacrament": "bautismo",
+      "passed": true,
+      "code": "42501",
+      "message": "Solo la parroquia propietaria activa puede reservar esta boleta"
+    },
+    {
+      "actor": "admin_general",
+      "target": "parish_a1",
+      "sacrament": "confirmacion",
+      "passed": true,
+      "code": "42501",
+      "message": "Solo la parroquia propietaria activa puede reservar esta boleta"
+    },
+    {
+      "actor": "admin_general",
+      "target": "parish_a1",
+      "sacrament": "matrimonio",
+      "passed": true,
+      "code": "42501",
+      "message": "Solo la parroquia propietaria activa puede reservar esta boleta"
+    },
+    {
+      "actor": "admin_general",
+      "target": "parish_a1",
+      "sacrament": "exequias",
+      "passed": true,
+      "code": "42501",
+      "message": "Solo la parroquia propietaria activa puede reservar esta boleta"
+    },
+    {
+      "actor": "diocese_b",
+      "target": "parish_a1",
+      "action": "cross-diocese access administration",
+      "passed": true,
+      "code": "P0001",
+      "message": "El perfil está fuera de su diócesis"
+    }
+  ]
+}

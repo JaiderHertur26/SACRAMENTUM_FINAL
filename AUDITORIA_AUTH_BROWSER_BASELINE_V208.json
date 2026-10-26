@@ -1,0 +1,37 @@
+{
+  "protocol": "V208",
+  "scope": "Actual AuthProvider and SDK using genuine GoTrue sessions and QA-only accounts, real profile/RLS requests",
+  "date": "2026-10-25T23:52:03.769Z",
+  "sourceSha256": "d45e54006b242a794ef8941717dfe99be2f50b48e21994b2032f9226496227c4",
+  "rows": [
+    {
+      "kind": "parish_a1",
+      "passed": true,
+      "failures": [],
+      "login": {
+        "text": "QA V208 Auth real{\"authenticated\":true,\"userId\":\"1a119734-5583-485e-b8ca-d711901d7238\",\"role\":\"parish\",\"profileActive\":true,\"configurationError\":null,\"sessionUserId\":\"1a119734-5583-485e-b8ca-d711901d7238\"}",
+        "ready": true,
+        "result": {
+          "success": true,
+          "role": "parish"
+        },
+        "state": {
+          "authenticated": true,
+          "userId": "1a119734-5583-485e-b8ca-d711901d7238",
+          "role": "parish",
+          "profileActive": true,
+          "configurationError": null,
+          "sessionUserId": "1a119734-5583-485e-b8ca-d711901d7238"
+        },
+        "events": [
+          "INITIAL_SESSION",
+          "SIGNED_IN"
+        ]
+      }
+    }
+  ],
+  "passed": 1,
+  "total": 1,
+  "exceptions": [],
+  "externalRequests": []
+}

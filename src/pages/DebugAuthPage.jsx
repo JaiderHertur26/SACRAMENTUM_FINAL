@@ -82,8 +82,8 @@ const DebugAuthPage = () => {
                             </div>
                             <div className="flex justify-between items-center border-b border-slate-100 pb-2">
                                 <span className="text-slate-500 text-sm">Estado de autenticación</span>
-                                <span className={`font-bold px-2 py-1 rounded text-xs ${auth.isAuthenticated() ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
-                                    {auth.isAuthenticated() ? 'AUTENTICADO' : 'NO AUTENTICADO'}
+                                <span className={`font-bold px-2 py-1 rounded text-xs ${auth.isAuthenticated ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                                    {auth.isAuthenticated ? 'AUTENTICADO' : 'NO AUTENTICADO'}
                                 </span>
                             </div>
                              <div className="flex justify-between border-b border-slate-100 pb-2">
