@@ -8,7 +8,7 @@ El importador PostgreSQL `public.apply_legacy_marginal_note_batch` permitía reu
 
 ## Corrección V216
 
-`supabase/migrations/20261026122707_guard_marginal_note_historical_parish_v216.sql` añade al importador:
+`supabase/migrations/20261026124426_guard_marginal_note_historical_parish_v216.sql` añade al importador:
 - Serialización transaccional de la clave histórica para proteger contra importaciones simultáneas.
 - Verificación de parroquia del lote de procedencia, tipo de entidad y parroquia propietaria de la nota física.
 - Verificación del sacramento y de la **partida física exacta**: UUID, parroquia propietaria, libro, folio y número; para Bautismo, Confirmación, Matrimonio y Exequias.
@@ -50,4 +50,4 @@ El componente React real superó **17/17 pruebas Chrome** con servicios ficticio
 - `scripts/qa-rollback-marginal-*.sql`
 - `scripts/test-marginal-note-scope-v216.mjs`
 
-**Límites:** no se certifica aquí la impresión física, recepción de correo de recuperación ni todos los importadores históricos ajenos a las notas; permanecerán abiertos para auditorías posteriores. Las transacciones SQL no equivalen a recorridos positivos con persistencia real en producción. La nueva migración no se publica antes de aprobar GitHub CI.
+**Límites:** no se certifica aquí la impresión física, recepción de correo de recuperación ni todos los importadores históricos ajenos a las notas; permanecerán abiertos para auditorías posteriores. Las transacciones SQL no equivalen a recorridos positivos con persistencia real en producción. La migración se **aplicó y registró en Supabase después de aprobar GitHub CI**, con la versión oficial **20261026124426**. Con el código ya instalado se repitieron las pruebas SQL reversibles de las cuatro familias y la partida equivocada; todas aprobaron. No quedaron registros ficticios.

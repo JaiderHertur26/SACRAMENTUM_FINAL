@@ -43,9 +43,9 @@
     "npmAudit": "pass"
   },
   "migration": {
-    "file": "supabase/migrations/20261026122707_guard_marginal_note_historical_parish_v216.sql",
+    "file": "supabase/migrations/20261026124426_guard_marginal_note_historical_parish_v216.sql",
     "temporaryTransactionVerified": true,
-    "permanentDeployment": "awaiting CI approval"
+    "permanentDeployment": "applied in Supabase as version 20261026124426 after GitHub CI approval; post-install rollback tests passed"
   },
   "remaining": [
     "Physical printing not certified in this V216.",

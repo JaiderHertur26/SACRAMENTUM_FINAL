@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-const migration=fs.readFileSync('supabase/migrations/20261026122707_guard_marginal_note_historical_parish_v216.sql','utf8');
+const migration=fs.readFileSync('supabase/migrations/20261026124426_guard_marginal_note_historical_parish_v216.sql','utf8');
 const ui=fs.readFileSync('src/pages/admin/LegacyMigrationCenterPage.jsx','utf8');
 const service=fs.readFileSync('src/services/legacyMigrationService.js','utf8');
 const four=fs.readFileSync('scripts/qa-rollback-marginal-four-sacraments-v216.sql','utf8');
