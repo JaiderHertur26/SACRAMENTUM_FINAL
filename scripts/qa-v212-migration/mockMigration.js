@@ -10,6 +10,7 @@ export const parseLegacyJsonFile=async file=>{
 export const sha256File=async file=>'a'.repeat(64);
 export const analyzeLegacyRows=(key,rows)=>rows.map((row,i)=>analyzeLegacyRow(key,row,i));
 export const loadParishesForMigration=async dioceseId=>all.filter(p=>!dioceseId||p.diocese_id===dioceseId);
+export const resolveLegacySourceScope=async({parishId,hash})=>parishId+'|'+hash;
 export const listLegacyBatches=async()=>[];
 export const createLegacyBatch=async data=>{const q=window.__qa212;q.created.push(data);q.batch={id:'qa-batch',profile_key:data.profileKey,parish_id:data.parishId,diocese_id:data.dioceseId,metadata:data.metadata,valid_count:2,review_count:0,error_count:0,status:'staged'};return q.batch.id};
 export const stageLegacyRows=async(id,rows,chunk,onProgress,hash)=>{window.__qa212.staged.push({id,count:rows.length,hash});onProgress?.({staged:rows.length,total:rows.length});return rows.length};

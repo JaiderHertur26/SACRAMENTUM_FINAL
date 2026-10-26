@@ -1,0 +1,66 @@
+{
+  "protocol": "V213",
+  "localeDate": "2026-10-25",
+  "database": "REGISTRO SACRAMENTOS (Supabase)",
+  "safety": "All SQL functional fixtures executed in single BEGIN/ROLLBACK transactions. No test data persisted.",
+  "observedBug": {
+    "profile": "INSBAUTI",
+    "testType": "Two operational parishes in the same diocese use exactly the same source_key",
+    "firstParishPendingImported": 1,
+    "secondParishPendingImported": 0,
+    "secondParishRowPointsToFirstParishPending": true,
+    "reproduced": true,
+    "persisted": false
+  },
+  "testedMigration": {
+    "file": "supabase/migrations/20261026035359_isolate_legacy_source_links_parish_v213.sql",
+    "status": "SQL validated with temporary in-transaction replacement only; production application pending CI approval",
+    "foreignParishKeyRejected": true,
+    "originalLinkUnchanged": true,
+    "ownParishDuplicateReused": true,
+    "advisoryTransactionLockIncluded": true,
+    "existingFunctionBusinessRulesRetained": true
+  },
+  "boletaMaterialization": {
+    "insbauti": {
+      "unreportedCreatedPending": 1,
+      "reportedUnmatchedNeedsReview": 1,
+      "celebratedCreated": 0
+    },
+    "insconfi": {
+      "unreportedCreatedPending": 1,
+      "reportedUnmatchedNeedsReview": 1,
+      "celebratedCreated": 0
+    }
+  },
+  "existingDataInventory": {
+    "linkedINSBAUTI": 68,
+    "linkedINSCONFI": 232,
+    "linkedCrossParish": 0,
+    "existingDuplicateRows": 0,
+    "existingCrossParishDuplicateRows": 0
+  },
+  "postRollback": {
+    "qa213Batches": 0,
+    "qa213LegacyLinks": 0,
+    "qa213PendingBaptisms": 0,
+    "qa213PendingConfirmations": 0
+  },
+  "frontend": {
+    "newNamespace": "<parish_id>|<SHA256>",
+    "legacySameParishReplay": "Reuses prior source_scope so existing imported historical records are not rematerialized",
+    "unexpectedScopeOrReadError": "Import blocked before createLegacyBatch"
+  },
+  "automated": {
+    "gatePassed": 30,
+    "gateTotal": 30,
+    "testsPassed": 1696,
+    "testsTotal": 1696
+  },
+  "limits": [
+    "Only INSBAUTI / INSCONFI private materializer is hardened by the SQL migration; other historical profiles need further review.",
+    "The positive reconciliation of a reported boleta with an existing celebrated record is not separately reproduced in this V213 fixture.",
+    "No real emails or physical print tests are included.",
+    "The CLI migration list returned HTTP 403; deployment requires the connected Supabase migration action with tracked migration history."
+  ]
+}
