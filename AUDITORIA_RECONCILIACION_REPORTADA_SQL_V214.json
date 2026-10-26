@@ -47,9 +47,9 @@
     "npm_audit": "pass"
   },
   "sqlMigration": {
-    "file": "supabase/migrations/20261026043402_require_reported_legacy_identity_v214.sql",
+    "file": "supabase/migrations/20261026044654_require_reported_legacy_identity_v214.sql",
     "verified_in_rollback": true,
-    "applied_to_production": false
+    "applied_to_production": true
   },
   "remaining": [
     "Real email delivery/click-through recovery remains pending",

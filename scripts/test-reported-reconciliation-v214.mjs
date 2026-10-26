@@ -1,5 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';
-const migration=fs.readFileSync('supabase/migrations/20261026043402_require_reported_legacy_identity_v214.sql','utf8');
+const migration=fs.readFileSync('supabase/migrations/20261026044654_require_reported_legacy_identity_v214.sql','utf8');
 const ui=fs.readFileSync('src/pages/admin/LegacyMigrationCenterPage.jsx','utf8');
 const sqlPositive=fs.readFileSync('scripts/qa-rollback-reported-reconciliation-v214.sql','utf8');
 const sqlRepro=fs.readFileSync('scripts/qa-rollback-reported-insufficient-identity-repro-v214.sql','utf8');

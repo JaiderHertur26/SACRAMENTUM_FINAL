@@ -37,4 +37,4 @@ Se ejecutaron **13/13** escenarios de la pantalla React real en Chrome con servi
 
 `AUDITORIA_RECONCILIACION_REPORTADA_SQL_V214.json`, `AUDITORIA_CENTRO_MIGRACION_BROWSER_V214.json`, `AUDITORIA_PUERTA_CALIDAD_V214.json`, `scripts/test-reported-reconciliation-v214.mjs`, `scripts/qa-rollback-*.sql`.
 
-La migración SQL se registra en Supabase **solo tras CI verde**. El materializador revisado corresponde a preinscripciones históricas INSBAUTI e INSCONFI: falta extender la revisión de procedencia a otros perfiles. La recuperación de contraseña con entrega de correo y la impresión física permanecen pendientes, sin suponer su éxito.
+La migración SQL quedó registrada y aplicada correctamente en Supabase después de la aprobación de CI, bajo la versión **20261026044654**. Se volvieron a superar las tres pruebas SQL reversibles después de instalarla, incluido el aislamiento V213. El materializador revisado corresponde a preinscripciones históricas INSBAUTI e INSCONFI: falta extender la revisión de procedencia a otros perfiles. La recuperación de contraseña con entrega de correo y la impresión física permanecen pendientes, sin suponer su éxito.
