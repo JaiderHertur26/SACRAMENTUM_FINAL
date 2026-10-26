@@ -1,3 +1,5 @@
+import { testDocumentPrintCss } from './testDocumentStamp.mjs';
+
 const escapeHtml = (value) =>
   String(value ?? '')
     .replaceAll('&', '&amp;')
@@ -190,7 +192,8 @@ const wrap = (title, body) => `<!doctype html>
 <head>
 <meta charset="utf-8" />
 <title>${escapeHtml(title)} · SACRAMENTUM</title>
-<style>${baseStyles}</style>
+<style>${baseStyles}
+${testDocumentPrintCss()}</style>
 </head>
 <body>
 <div class="sheet">

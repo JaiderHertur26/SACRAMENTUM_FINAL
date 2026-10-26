@@ -1,4 +1,5 @@
 import { jsPDF } from 'jspdf';
+import { stampTestPdfPages } from '../utils/testDocumentStamp.mjs';
 import { autoTable } from 'jspdf-autotable';
 
 const COLORS = {
@@ -190,6 +191,7 @@ const addFooterToAllPages = (doc, reportNumber) => {
     doc.text(String(reportNumber || ''), w / 2, h - 13.5, { align: 'center' });
     doc.text(`Página ${page} de ${pages}`, w - 15, h - 13.5, { align: 'right' });
   }
+  stampTestPdfPages(doc);
 };
 
 const valueOrDash = (value) => (value == null || value === '' ? '—' : fmtNumber(value));

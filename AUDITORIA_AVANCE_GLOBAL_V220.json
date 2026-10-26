@@ -1,0 +1,83 @@
+{
+  "protocol": "V220",
+  "date": "2026-10-26",
+  "estimatedPercent": 89,
+  "rawWeighted": 88.97999999999999,
+  "method": "Estimación subjetiva ponderada por nueve ámbitos funcionales y de certificación. No es proporción matemática de historias de usuario terminadas ni garantiza ausencia de defectos.",
+  "dataStatus": "TODOS LOS REGISTROS EXISTENTES SON DATOS DE PRUEBA; ninguno es oficial",
+  "areas": [
+    {
+      "area": "Infraestructura, CI y despliegue",
+      "weight": 10,
+      "complete": 97,
+      "remaining": "Certificación continua de respaldos y operación"
+    },
+    {
+      "area": "Roles, jerarquía y separación institucional",
+      "weight": 10,
+      "complete": 94,
+      "remaining": "Más pruebas positivas autenticadas multirrol"
+    },
+    {
+      "area": "Registros y pendientes de cuatro sacramentos",
+      "weight": 20,
+      "complete": 91,
+      "remaining": "E2E reales completos sobre los cuatro sacramentos"
+    },
+    {
+      "area": "Cancillería, decretos y trazabilidad jurídica",
+      "weight": 15,
+      "complete": 90,
+      "remaining": "Matrices de decretos, doble aprobación de reparaciones"
+    },
+    {
+      "area": "Migración histórica e integridad de procedencia",
+      "weight": 15,
+      "complete": 90,
+      "remaining": "46 candidatos para cotejo, 1 conflicto y 172 registros sin partida; catálogos globales"
+    },
+    {
+      "area": "Notas marginales y reconciliación",
+      "weight": 10,
+      "complete": 91,
+      "remaining": "Cotejo documental completo y archivo institucional"
+    },
+    {
+      "area": "Reportes, chat y notificaciones",
+      "weight": 8,
+      "complete": 80,
+      "remaining": "Ensayos funcionales reales y estrés"
+    },
+    {
+      "area": "Documentos, constancias e impresión",
+      "weight": 7,
+      "complete": 84,
+      "remaining": "Aprobación de impresión física y validación visual de cada plantilla restante"
+    },
+    {
+      "area": "Aceptación E2E y operaciones reales",
+      "weight": 5,
+      "complete": 66,
+      "remaining": "Entrega real de correos, impresión física, autorización formal para datos oficiales"
+    }
+  ],
+  "evidence": {
+    "syntheticPassed": 1907,
+    "syntheticTotal": 1907,
+    "qualityGatePassed": 30,
+    "qualityGateTotal": 30,
+    "documentSpecificPassed": 15,
+    "documentSpecificTotal": 15,
+    "sqlWrites": 0,
+    "databaseMigrations": 0,
+    "buildPassed": true
+  },
+  "notCertified": [
+    "Entrega real de correo de recuperación",
+    "Impresión física con impresoras y revisión visual de todas las plantillas",
+    "46 coincidencias documentales V219 aún sin reparación oficial",
+    "1 conflicto y 172 coincidencias ausentes de Confirmación",
+    "E2E autenticado positivo sobre todos los flujos institucionales"
+  ],
+  "attention": "El cambio de VITE_REGISTRY_DATA_MODE a 'official' solo afecta la presentación. Antes de usar libros reales se requiere autorización institucional, segregación de base de datos, migraciones verificadas, aprobación legal y validación funcional."
+}

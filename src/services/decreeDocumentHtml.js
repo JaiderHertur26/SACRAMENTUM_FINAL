@@ -1,4 +1,5 @@
 import { buildDocumentaryDecreeHtml } from './decreeDocumentaryHtml.mjs';
+import { testDocumentPrintCss } from '../utils/testDocumentStamp.mjs';
 
 const clean = (value) => String(value ?? '').trim();
 
@@ -372,6 +373,7 @@ body{font-family:"Times New Roman",Times,serif;font-size:10.2pt;line-height:1.25
 .footer strong{display:block;font-size:7.4pt;letter-spacing:.11em}
 .footer div{font-size:6.8pt;margin-top:.7mm}
 @media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}.sheet{page-break-after:avoid}}
+${testDocumentPrintCss()}
 </style>
 </head>
 <body>

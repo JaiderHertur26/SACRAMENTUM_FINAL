@@ -9,6 +9,7 @@ import { useToast } from '@/components/ui/use-toast';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/Input';
 import { listDocumentTemplates, saveDocumentTemplateVersion } from '@/services/marginalNotesV2Service';
+import { testDocumentPrintCss } from '@/utils/testDocumentStamp.mjs';
 import {
   buildDocumentValuesFromRecord,
   EXPECTED_MANUAL_TEMPLATE_FIELDS,
@@ -315,7 +316,7 @@ export default function DocumentTemplateLibraryPage() {
     const html = printRef.current?.outerHTML || '';
     const win = window.open('', '_blank', 'width=980,height=1120');
     if (!win) return;
-    win.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>${selected?.name || 'Documento eclesial'}</title><style>@page{size:letter portrait;margin:0}html,body{margin:0!important;padding:0!important;background:#fff!important}body{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}.sacramentum-document{box-shadow:none!important;margin:0 auto!important}</style></head><body>${html}</body></html>`);
+    win.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>${selected?.name || 'Documento eclesial'}</title><style>@page{size:letter portrait;margin:0}html,body{margin:0!important;padding:0!important;background:#fff!important}body{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}.sacramentum-document{box-shadow:none!important;margin:0 auto!important}${testDocumentPrintCss()}</style></head><body>${html}</body></html>`);
     win.document.close();
     win.focus();
     setTimeout(() => win.print(), 150);
