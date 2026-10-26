@@ -43,7 +43,7 @@
     "gatePassed": 30
   },
   "migration": {
-    "localPath": "supabase/migrations/20261026142033_historical_reconciliation_candidate_triage_v219.sql",
-    "installedInSupabase": false
+    "localPath": "supabase/migrations/20261026143504_historical_reconciliation_candidate_triage_v219.sql",
+    "installedInSupabase": true
   }
 }

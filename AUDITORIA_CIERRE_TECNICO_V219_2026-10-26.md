@@ -24,7 +24,7 @@ Se compararon exclusivamente registros de la **misma parroquia y tipo sacramenta
 
 ## Implementación
 
-`supabase/migrations/20261026142033_historical_reconciliation_candidate_triage_v219.sql` incorpora:
+`supabase/migrations/20261026143504_historical_reconciliation_candidate_triage_v219.sql` incorpora:
 - Diagnóstico interno y estrictamente de lectura de coordenadas e identidad.
 - `assess_unresolved_legacy_links_v219`: listado paginado por Cancillería de su propia diócesis, ligado a la autorización del V218.
 - `summarize_unresolved_legacy_candidates_v219`: recuento jurisdiccional por resultado.
@@ -39,7 +39,7 @@ La pantalla `HistoricalLinkReviewPage.jsx` añade tres contadores y etiquetas ex
 - Supabase real (SQL bajo **BEGIN/ROLLBACK**): 46 coincidencias completas, 1 conflicto, 172 sin coincidencia. Diócesis ajena: 0. Parroquia y anónimo: rechazados. Helper interno no ejecutable directamente. Cero vínculos modificados.
 - **8/8 pruebas de Chrome aislado** sobre componente real y servicios ficticios; cero errores JavaScript, cero solicitudes externas.
 - **1.892/1.892** pruebas automáticas; **30/30** verificaciones de puerta local, build y seguridad de dependencias correctos.
-- Entrega solo después de GitHub CI verde; instalar migración versionada en Supabase, repetir QA contra código permanente, reconciliar número de migración, segunda CI y merge.
+- La **migración se instaló en Supabase** tras las dos auditorías de GitHub en verde, versión oficial **20261026143504**. Se repitieron SQL reversibles sobre la función realmente instalada: 46 candidatos consistentes, 1 conflicto, 172 sin coincidencia; permisos correctos, sin alterar los 219 vínculos y sin datos de QA persistentes. El archivo y la versión del historial remoto quedaron alineados; procede una nueva aprobación CI antes de fusionar a main.
 
 ## Pendientes materiales
 
