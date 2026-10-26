@@ -115,8 +115,13 @@ export async function applyLegacyBatch(batchId, { chunkSize = 250, onProgress = 
   let totalReconciled = 0;
   let totalReviewed = 0;
   let remaining = 1;
+  let stalled = false;
+  let iterations = 0;
 
   while (remaining > 0) {
+    if (++iterations > 5000) {
+      throw new Error('La importación superó el máximo de lotes de seguridad. Revise el progreso antes de continuar.');
+    }
     const { data, error } = isPendingSacramentalProfile
       ? await supabase.rpc('materialize_pending_legacy_sacramental_records',{ p_batch_id:batchId, p_limit:chunkSize })
       : isPendingMarriageProfile
@@ -143,7 +148,10 @@ export async function applyLegacyBatch(batchId, { chunkSize = 250, onProgress = 
       remaining
     });
 
-    if (importedNow === 0 && reconciledNow === 0 && reviewedNow === 0 && remaining > 0) break;
+    if (importedNow === 0 && reconciledNow === 0 && reviewedNow === 0 && remaining > 0) {
+      stalled = true;
+      break;
+    }
   }
 
   let noteReconciliation = null;
@@ -177,6 +185,7 @@ export async function applyLegacyBatch(batchId, { chunkSize = 250, onProgress = 
     reviewed: totalReviewed,
     failed: totalFailed,
     remaining,
+    stalled,
     materialized,
     diocesesMaterialized,
     noteReconciliation
