@@ -70,6 +70,12 @@ test('V219 public login shows non-official banner by default',()=>{
  assert.match(login,/VITE_REGISTRY_DATA_MODE !== 'official'/);
  assert.match(login,/DATOS DE PRUEBA · NO OFICIALES/);
 });
+test('V219 existing V206 read-failure browser check waits for settled locked state',()=>{
+ const source=fs.readFileSync('scripts/audit-three-sacrament-recovery-browser-v206.mjs','utf8');
+ assert.match(source,/readFailure\?s\.text\.includes\('No fue posible verificar'\)/);
+ assert.match(source,/check\(!actionable\(first\)/);
+ assert.match(source,/write shown with unverified snapshot/);
+});
 test('V219 actual React Chrome test isolates all network and verifies full triage',()=>{
  assert.match(chrome,/diagnostic_classification_displays_all_219_cases/);
  assert.match(chrome,/info.strong!==46\|\|info.conflict!==1\|\|info.missing!==3/);

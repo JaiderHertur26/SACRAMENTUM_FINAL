@@ -38,6 +38,7 @@ La pantalla `HistoricalLinkReviewPage.jsx` añade tres contadores y etiquetas ex
 
 - Supabase real (SQL bajo **BEGIN/ROLLBACK**): 46 coincidencias completas, 1 conflicto, 172 sin coincidencia. Diócesis ajena: 0. Parroquia y anónimo: rechazados. Helper interno no ejecutable directamente. Cero vínculos modificados.
 - **8/8 pruebas de Chrome aislado** sobre componente real y servicios ficticios; cero errores JavaScript, cero solicitudes externas.
+- V219 corrigió un test histórico V206 que leía prematuramente un estado intermedio durante un fallo de lectura de Confirmación. Ahora espera el estado bloqueado y comprueba que ninguna escritura esté disponible. **24/24** pruebas Chrome de recuperación de Bautismo, Confirmación y Exequias aprobaron después de la corrección; una nueva regresión V219 vigila esta condición.
 - **1.892/1.892** pruebas automáticas; **30/30** verificaciones de puerta local, build y seguridad de dependencias correctos.
 - La **migración se instaló en Supabase** tras las dos auditorías de GitHub en verde, versión oficial **20261026143504**. Se repitieron SQL reversibles sobre la función realmente instalada: 46 candidatos consistentes, 1 conflicto, 172 sin coincidencia; permisos correctos, sin alterar los 219 vínculos y sin datos de QA persistentes. El archivo y la versión del historial remoto quedaron alineados; procede una nueva aprobación CI antes de fusionar a main.
 

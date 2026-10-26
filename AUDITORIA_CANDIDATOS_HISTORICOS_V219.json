@@ -39,7 +39,7 @@
   "qa": {
     "sqlRollback": true,
     "linksModified": 0,
-    "automatedPassed": 1892,
+    "automatedPassed": 1893,
     "gatePassed": 30
   },
   "migration": {
