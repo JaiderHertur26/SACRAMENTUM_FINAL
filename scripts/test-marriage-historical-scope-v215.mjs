@@ -1,5 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';
-const migration=fs.readFileSync('supabase/migrations/20261026120242_guard_pending_legacy_marriage_provenance_v215.sql','utf8');
+const migration=fs.readFileSync('supabase/migrations/20261026121511_guard_pending_legacy_marriage_provenance_v215.sql','utf8');
 const ui=fs.readFileSync('src/pages/admin/LegacyMigrationCenterPage.jsx','utf8');
 const files=['scripts/qa-rollback-marriage-scope-collision-repro-v215.sql','scripts/qa-rollback-marriage-scope-guard-v215.sql','scripts/qa-rollback-marriage-reported-no-date-repro-v215.sql','scripts/qa-rollback-marriage-reported-no-date-guard-v215.sql','scripts/qa-rollback-marriage-reported-positive-v215.sql'];
 for(const [name,pattern] of [

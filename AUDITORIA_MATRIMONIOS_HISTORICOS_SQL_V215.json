@@ -45,9 +45,9 @@
     "dependencyChecks": true
   },
   "migration": {
-    "localFile": "supabase/migrations/20261026120242_guard_pending_legacy_marriage_provenance_v215.sql",
+    "localFile": "supabase/migrations/20261026121511_guard_pending_legacy_marriage_provenance_v215.sql",
     "temporaryTransactionVerified": true,
-    "productionApplied": false
+    "productionApplied": true
   },
   "limitations": [
     "The grant and RLS authorization are unchanged; SQL protection adds checks to the existing SECURITY DEFINER materializer only.",

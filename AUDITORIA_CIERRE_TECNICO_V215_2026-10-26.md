@@ -9,7 +9,7 @@
 
 ## Protección versionada
 
-`supabase/migrations/20261026120242_guard_pending_legacy_marriage_provenance_v215.sql` mantiene íntegra la función y sus permisos, añadiendo:
+`supabase/migrations/20261026121511_guard_pending_legacy_marriage_provenance_v215.sql` mantiene íntegra la función y sus permisos, añadiendo:
 - Exclusión mutua transaccional por clave global; impide carreras simultáneas.
 - Verificación de parroquia del lote histórico original y de la parroquia de la boleta o partida física; error seguro si el vínculo pertenece a otra parroquia.
 - Para matrimoni​os reportados, nombres y apellidos completos de ambos contrayentes y fecha efectiva de celebración obligatorios antes de enlazar una partida existente.
@@ -49,4 +49,4 @@ El Centro de Migración ahora diferencia `INSMATRI`: **expedientes pendientes cr
 - `scripts/qa-rollback-marriage-*.sql`
 - `scripts/test-marriage-historical-scope-v215.mjs`
 
-**Pendientes medidos:** revisar las funciones de importación de notas marginales y otros registros legacy, según el Issue #64. No se ha completado el clic real en correo de recuperación de contraseña ni impresión física. La migración será aplicada de forma permanente solo después de aprobación de GitHub CI.
+**Pendientes medidos:** revisar las funciones de importación de notas marginales y otros registros legacy, según el Issue #64. No se ha completado el clic real en correo de recuperación de contraseña ni impresión física. La migración fue **registrada y aplicada oficialmente en Supabase** después de la aprobación de GitHub CI, bajo la versión **20261026121511**. Se repitieron las tres pruebas SQL reversibles con el código ya instalado: las tres aprobaron, sin residuos ficticios.
