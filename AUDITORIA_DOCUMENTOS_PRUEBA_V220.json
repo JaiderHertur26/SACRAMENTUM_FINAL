@@ -1,0 +1,28 @@
+{
+  "version": "V220",
+  "objective": "Mark printed/output documents as TEST / NOT OFFICIAL in the existing test environment",
+  "documentBuildersHtml": [
+    "decree of correction",
+    "decree of replacement",
+    "documentary decree",
+    "funeral sacramental record",
+    "funeral attestation",
+    "four-page marriage dossier",
+    "template library popup"
+  ],
+  "pdfBuilders": [
+    "sacramental book",
+    "sacramental alphabetical index",
+    "diocesan statistical report",
+    "Curia/parish detailed report"
+  ],
+  "spaPrint": "Main application CSS in browser print mode, including baptism/confirmation/marriage partitas and internal notifications rendered within SPA",
+  "testCases": 15,
+  "testPassed": 15,
+  "automatedSuitePassed": 1907,
+  "qualityGate": 30,
+  "violations": 0,
+  "supabaseWrites": 0,
+  "environmentFlag": "VITE_REGISTRY_DATA_MODE, default not-official unless explicitly set to official",
+  "limitation": "Test marks on key document generators and SPA printing; physical printing and other media outputs have not been comprehensively visually certified."
+}

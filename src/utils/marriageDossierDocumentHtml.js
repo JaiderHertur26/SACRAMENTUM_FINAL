@@ -1,3 +1,5 @@
+import { testDocumentPrintCss } from './testDocumentStamp.mjs';
+
 const esc=(v)=>String(v??'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'","&#039;");
 const show=(v)=>esc(v||'—');
 const row=(label,value)=>`<div class="row"><span>${esc(label)}</span><strong>${show(value)}</strong></div>`;
@@ -166,5 +168,6 @@ export function buildMarriageDossierHtml({meta={},answers={},pendingMarriage=nul
   table{width:100%;border-collapse:collapse;font-size:8.8px} th,td{border:1px solid #d6dee6;padding:5px;text-align:left} th{background:#f1f5f9;color:#475569}
   footer{position:absolute;left:.52in;right:.52in;bottom:.22in;display:flex;justify-content:space-between;border-top:1px solid #e2e8f0;padding-top:5px;font-size:8px;color:#94a3b8}
   @media print{body{background:#fff}.page{margin:0;box-shadow:none}}
+  ${testDocumentPrintCss()}
   </style></head><body>${p1}${p2}${p3}${p4}<script>window.onload=()=>window.print();</script></body></html>`;
 }

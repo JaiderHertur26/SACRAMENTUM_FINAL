@@ -1,3 +1,5 @@
+import { testDocumentPrintCss } from '../utils/testDocumentStamp.mjs';
+
 // Mismo expediente imprimible en Cancillería y Parroquia, sin convertir una
 // recuperación histórica en nueva emisión ni ordenar modificaciones de partidas.
 const e = (v) => String(v ?? '').replaceAll('&','&amp;').replaceAll('<','&lt;')
@@ -25,6 +27,7 @@ export function buildDocumentaryDecreeHtml({row={},institution={},parish={}}={})
   footer{border-top:1px solid #bdc3ce;padding-top:20px;font-size:10pt;margin-top:45px}
   .controls{text-align:right;margin:0 auto 20px}button{padding:9px 20px;background:#23314a;color:#fff;border:none;cursor:pointer}
   @media print{.controls{display:none}body{font-size:11pt}.reason{background:transparent}}
+  ${testDocumentPrintCss()}
   </style></head><body>
   <main><div class="controls"><button onclick="window.print()">Imprimir documento</button></div>
     <header class="masthead"><h2>${value(institution.dioceseName || institution.diocese || 'DIÓCESIS / ARQUIDIÓCESIS')}</h2>

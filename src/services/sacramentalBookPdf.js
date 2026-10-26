@@ -1,4 +1,5 @@
 import { jsPDF } from 'jspdf';
+import { stampTestPdfPages } from '../utils/testDocumentStamp.mjs';
 import autoTable from 'jspdf-autotable';
 
 const text=(v)=>String(v??'').trim();
@@ -137,6 +138,7 @@ const finalize=(doc,caption)=>{
     doc.text(`SACRAMENTUM · ${caption}`,13,197);
     doc.text(`Página ${i} de ${pages}`,284,197,{align:'right'});
   }
+  stampTestPdfPages(doc);
 };
 
 export function buildSacramentalBookPdf({records,sacrament,parishName,dioceseName,book,period}){
