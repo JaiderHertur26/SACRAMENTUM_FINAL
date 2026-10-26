@@ -1,0 +1,46 @@
+{
+  "protocol": "V218",
+  "scope": "Actual Chancery HistoricalLinkReviewPage in Chromium; fake JWT/diocese/RPC, zero Supabase access",
+  "date": "2026-10-26T13:53:17.554Z",
+  "rows": [
+    {
+      "label": "chancery_has_real_react_queue_and_scoped_totals",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "label": "missing_evidence_never_calls_write_rpc",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "label": "chancery_writes_document_reference_without_relinking",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "label": "pagination_covers_exactly_219_entries",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "label": "parish_session_change_erases_chancery_case_data",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "label": "second_diocese_cannot_see_previous_institution_cases",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "label": "return_to_original_chancery_restores_authorized_data",
+      "passed": true,
+      "error": ""
+    }
+  ],
+  "passed": 7,
+  "total": 7,
+  "jsExceptions": 0,
+  "blockedExternalRequests": 0
+}

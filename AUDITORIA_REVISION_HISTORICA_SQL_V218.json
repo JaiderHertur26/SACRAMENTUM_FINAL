@@ -1,0 +1,56 @@
+{
+  "protocol": "V218",
+  "scope": "Review-only ecclesiastical historic link reconciliation",
+  "realDatabase": "REGISTRO SACRAMENTOS",
+  "records": {
+    "unresolved": 219,
+    "baptism": 46,
+    "confirmation": 173,
+    "sourceBatches": 2,
+    "sourceParishes": 1,
+    "sourceDioceses": 1,
+    "existingLinkRowsIntact": true
+  },
+  "verification": {
+    "onLiveDBWithinRollback": true,
+    "scopedSummaryReturns219": true,
+    "paginatedCaseCounts": [
+      100,
+      100,
+      19
+    ],
+    "activeChanceryCanList": true,
+    "activeChanceryCanWriteTemporaryReviewEvidence": true,
+    "foreignChanceryDenied": true,
+    "parishDenied": true,
+    "anonymousReadDenied": true,
+    "anonymousWriteDenied": true,
+    "directTableSelectDenied": true,
+    "bogusReconciliationStatusDenied": true,
+    "weakEvidenceDenied": true,
+    "sacramentalRowCountsUnchanged": true,
+    "linksUnchanged": true,
+    "realUserReviewPersisted": false
+  },
+  "frontend": {
+    "actualReactComponent": true,
+    "isolatedChromium": true,
+    "scenariosPassed": 7,
+    "scenariosTotal": 7,
+    "exceptions": 0,
+    "externalRequests": 0,
+    "changeRoleClearsPreviousData": true,
+    "changeDioceseClearsPreviousData": true
+  },
+  "migration": {
+    "file": "supabase/migrations/20261026133625_chancery_historical_link_review_v218.sql",
+    "appliedPermanently": false,
+    "previewedInRollback": true
+  },
+  "preDeployQuality": {
+    "testsPassed": 1854,
+    "testsTotal": 1854,
+    "gatePassed": 30,
+    "gateTotal": 30
+  }
+}

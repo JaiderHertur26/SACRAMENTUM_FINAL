@@ -94,6 +94,7 @@ const SacramentalDecreesCenterPage = lazy(() => import('@/pages/chancery/Sacrame
 const SacramentalDecreeArchivePage = lazy(() => import('@/pages/chancery/SacramentalDecreeArchivePage'));
 const DocumentaryDecreePage = lazy(() => import('@/pages/chancery/DocumentaryDecreePage'));
 const LaterNoteReconciliationPage = lazy(() => import('@/pages/chancery/LaterNoteReconciliationPage'));
+const HistoricalLinkReviewPage = lazy(() => import('@/pages/chancery/HistoricalLinkReviewPage'));
 const MarriageDecreesPage = lazy(() => import('@/pages/chancery/marriage/MarriageDecreesPage'));
 
 const NewDecreeReplacementPage = lazy(() => import('@/pages/chancery/decree-replacement/NewDecreeReplacementPage'));
@@ -273,6 +274,7 @@ const AppContent = () => {
                 <Route path="/chancery/decretos" element={<ProtectedRoute requiredRole={ROLE_TYPES.CHANCERY}><SacramentalDecreesCenterPage /></ProtectedRoute>} />
                 <Route path="/chancery/decretos/archivo" element={<ProtectedRoute requiredRole={ROLE_TYPES.CHANCERY}><SacramentalDecreeArchivePage /></ProtectedRoute>} />
                 <Route path="/chancery/decretos/conciliaciones" element={<ProtectedRoute requiredRole={ROLE_TYPES.CHANCERY}><LaterNoteReconciliationPage /></ProtectedRoute>} />
+                <Route path="/chancery/historicos/conciliacion" element={<ProtectedRoute requiredRole={ROLE_TYPES.CHANCERY}><HistoricalLinkReviewPage /></ProtectedRoute>} />
           <Route path="/chancery/decretos/documental" element={<ProtectedRoute requiredRole={ROLE_TYPES.CHANCERY}><DocumentaryDecreePage /></ProtectedRoute>} />
                 <Route path="/chancery/matrimonio/decretos" element={<ProtectedRoute requiredRole={ROLE_TYPES.CHANCERY}><MarriageDecreesPage /></ProtectedRoute>} />
 

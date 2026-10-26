@@ -1,0 +1,84 @@
+{
+  "protocol": "V218",
+  "date": "2026-10-26",
+  "method": "Estimación ponderada por nueve ámbitos de producto y grado de certificación; subjetiva, no medidor matemático de funcionalidades completadas ni garantías de cero defectos.",
+  "estimatedPercent": 87,
+  "rawWeightedPercent": 87.2,
+  "weightsTotal": 100,
+  "areas": [
+    {
+      "area": "Infraestructura, CI y despliegue",
+      "weight": 10,
+      "complete": 97,
+      "remaining": "Vigilar integridad de despliegues y recuperación operativa"
+    },
+    {
+      "area": "Roles, jerarquía y separación institucional",
+      "weight": 10,
+      "complete": 93,
+      "remaining": "Validar todas las combinaciones de usuarios reales controlados"
+    },
+    {
+      "area": "Registros y pendientes de cuatro sacramentos",
+      "weight": 20,
+      "complete": 91,
+      "remaining": "Certificar operaciones positivas y negativas de navegador autenticado en producción"
+    },
+    {
+      "area": "Cancillería, decretos y trazabilidad jurídica",
+      "weight": 15,
+      "complete": 88,
+      "remaining": "Matrices completas de decretos y resolución aprobada de anomalías históricas"
+    },
+    {
+      "area": "Migración histórica e integridad de procedencia",
+      "weight": 15,
+      "complete": 87,
+      "remaining": "Conciliar 219 referencias sin destino, revisar catálogos globales y reimportaciones"
+    },
+    {
+      "area": "Notas marginales y reconciliación",
+      "weight": 10,
+      "complete": 91,
+      "remaining": "Pruebas documentales de recepción y archivo físico"
+    },
+    {
+      "area": "Reportes, chat y notificaciones",
+      "weight": 8,
+      "complete": 80,
+      "remaining": "E2E multiusuario y carga de datos"
+    },
+    {
+      "area": "Documentos, constancias e impresión",
+      "weight": 7,
+      "complete": 75,
+      "remaining": "Impresión física, archivos y controles externos"
+    },
+    {
+      "area": "Aceptación E2E y operaciones reales",
+      "weight": 5,
+      "complete": 60,
+      "remaining": "Entrega real de correos, pruebas de recuperación e impresión"
+    }
+  ],
+  "warning": "Esta estimación no implica que se hayan resuelto las 219 referencias; solo hay capacidad de revisión segura y constancia documental.",
+  "strongEvidence": {
+    "tests": 1854,
+    "testsPassed": 1854,
+    "gateChecks": 30,
+    "gatePassed": 30,
+    "browserScenarios": 7,
+    "browserPassed": 7,
+    "sqlCases": 219,
+    "sqlUniqueParishes": 1,
+    "sqlBatches": 2,
+    "sqlRollback": true
+  },
+  "pending": [
+    "Conciliación documental real de 219 vínculos (46 Bautismo, 173 Confirmación)",
+    "Recepción real de correo de recuperación",
+    "Impresión física de documentos",
+    "Pruebas E2E auténticas multiusuario / múltiples roles",
+    "Auditar catálogos históricos globales fuera de guardia V217"
+  ]
+}

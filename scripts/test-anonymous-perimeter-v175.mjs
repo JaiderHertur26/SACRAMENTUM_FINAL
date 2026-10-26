@@ -9,11 +9,18 @@ const routes=src.split(/(?=<Route\b)/).slice(1).map(c=>({
  guarded:/\belement\s*=\s*\{\s*<ProtectedRoute\b/.test(c.slice(0,550)),
  redirect:/\belement\s*=\s*\{\s*<Navigate\b/.test(c.slice(0,550))
 })).filter(x=>x.path&&!['/','/login','/404','*','/account-configuration-error','/reset-password'].includes(x.path));
-test('V175 finds 107 restricted or alias routes in the current router, all with guards or redirects',()=>{
- assert.equal(routes.length,107);assert.equal(new Set(routes.map(x=>x.path)).size,107);
+// V175 is a historical Chrome snapshot of 107 paths. New protected routes must
+// not invalidate the old evidence or be falsely claimed as visually certified by it.
+const auditedPaths=new Set(local.results.map(x=>x.path));
+test('V175 historical 107-route audit remains intact and new routes are protected',()=>{
+ assert.equal(auditedPaths.size,107);
+ assert.ok(routes.length>=107);
+ assert.equal(new Set(routes.map(x=>x.path)).size,routes.length);
  assert.ok(routes.every(x=>x.guarded||x.redirect));
- assert.equal(routes.filter(x=>x.guarded).length,58);
- assert.equal(routes.filter(x=>x.redirect).length,49);
+ const currentPaths=new Set(routes.map(x=>x.path));
+ for(const p of auditedPaths)assert.ok(currentPaths.has(p),'Previously audited route disappeared: '+p);
+ const newChancery=routes.find(x=>x.path==='/chancery/historicos/conciliacion');
+ assert.ok(newChancery?.guarded,'V218 route must be protected even though not in V175 Chrome report');
 });
 for(const [label,report] of [['local',local],['production',prod]]){
  test('V175 '+label+' Chrome inspected every route with no unauthorized content',()=>{
@@ -25,7 +32,9 @@ for(const [label,report] of [['local',local],['production',prod]]){
    assert.equal(r.loginVisible,true,r.path);assert.equal(r.horizontalOverflow,false,r.path);
    assert.equal(r.errors,0,r.path);
   }
-  assert.deepEqual(new Set(report.results.map(x=>x.path)),new Set(routes.map(x=>x.path)));
+  assert.deepEqual(new Set(report.results.map(x=>x.path)),auditedPaths);
+  // Only these 107 paths were visually tested in V175; never claim later routes were.
+  assert.ok(routes.length>=report.results.length);
  });
 }
 test('V175 real production HTTPS was tested rather than a mock host',()=>{
