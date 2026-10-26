@@ -198,7 +198,7 @@ const LegacyMigrationCenterPage = () => {
       const result = await applyLegacyBatch(currentBatch.id,{
         chunkSize:200,
         profileKey:currentBatch.profile_key || profileKey,
-        onProgress:(p)=>setProgress({message:`Importados ${p.imported} · errores ${p.failed} · pendientes válidos ${p.remaining}`})
+        onProgress:(p)=>setProgress({message:`Pendientes creados ${p.imported} · partidas conciliadas ${p.reconciled} · revisión manual ${p.reviewed} · por procesar ${p.remaining}`})
       });
       const fresh = await getLegacyMigrationSummary(currentBatch.id); setCurrentBatch(fresh); await refreshBatches();
       if (result.stalled || Number(result.remaining || 0) > 0) {
@@ -210,6 +210,7 @@ const LegacyMigrationCenterPage = () => {
         return;
       }
       const activeProfile = String(currentBatch.profile_key || profileKey || '').toUpperCase();
+      const isHistoricalBoletaBatch = ['INSBAUTI','INSCONFI'].includes(activeProfile);
       const auxiliaryProfiles = ['PARROCOS','IGLESIAS','CIUDADES','OBISPOS'];
       const isAuxiliaryCatalog = auxiliaryProfiles.includes(activeProfile);
       const materializedCount = Number(result.materialized?.materialized || 0);
@@ -217,7 +218,16 @@ const LegacyMigrationCenterPage = () => {
         ? ` · notas enlazadas ${result.noteReconciliation.total_matched ?? result.noteReconciliation.matched ?? 0} · pendientes ${result.noteReconciliation.total_pending ?? result.noteReconciliation.pending ?? 0} · ambiguas ${result.noteReconciliation.total_ambiguous ?? result.noteReconciliation.ambiguous ?? 0}`
         : '';
 
-      if (isAuxiliaryCatalog && materializedCount !== Number(result.imported || 0)) {
+      if (isHistoricalBoletaBatch) {
+        const totalNeedsReview = Math.max(Number(result.reviewed || 0), Number(fresh?.review_count || 0));
+        const requiresReview = totalNeedsReview > 0;
+        toast({
+          title: requiresReview ? 'Boletas procesadas · revisión pendiente' : 'Boletas históricas procesadas',
+          description:`${result.imported} pendientes creados · ${result.reconciled} boletas conciliadas con partidas existentes · ${totalNeedsReview} casos para revisión manual. No se crearon partidas celebradas.`,
+          variant: requiresReview ? 'destructive' : undefined,
+          ...(!requiresReview ? { className:'bg-green-50 text-green-900 border-green-200' } : {})
+        });
+      } else if (isAuxiliaryCatalog && materializedCount !== Number(result.imported || 0)) {
         toast({
           title:'Importación aplicada con materialización incompleta',
           description:`${result.imported} filas procesadas · ${materializedCount} publicadas en Datos Auxiliares. Revisa el lote antes de continuar.`,
