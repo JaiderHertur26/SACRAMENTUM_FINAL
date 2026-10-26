@@ -66,6 +66,16 @@ export const AuthProvider = ({ children }) => {
       };
     }
 
+    // Legacy fallbacks are lookup hints, never authority: a profile belongs only
+    // to the authenticated GoTrue identity, not to an editable/duplicated email.
+    const profileIdentity = prof.auth_user_id || prof.id;
+    if (!profileIdentity || String(profileIdentity) !== String(authUser.id)) {
+      return {
+        ok: false,
+        message: 'El perfil institucional no corresponde a la cuenta autenticada.',
+      };
+    }
+
     const scopeValidation = validateProfileScope(prof);
     if (!scopeValidation.valid) {
       return { ok: false, message: scopeValidation.message };

@@ -1,0 +1,18 @@
+{
+  "protocol": "V209",
+  "date": "2026-10-26T02:13:04.354Z",
+  "dynamicRoutes": [
+    {
+      "path": "/parish/decrees/:decreeId",
+      "role": "PARISH",
+      "page": "ParishDecreeDetailPage",
+      "dynamic": true
+    },
+    {
+      "path": "/parroquia/bautismo/:baptismPartidaId",
+      "role": "PARISH",
+      "page": "BaptismDetailPage",
+      "dynamic": true
+    }
+  ]
+}

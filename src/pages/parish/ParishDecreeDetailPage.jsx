@@ -152,23 +152,32 @@ const ParishDecreeDetailPage = () => {
   const { decreeId } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const parishId = user?.parishId || user?.parish_id || null;
+  const detailKey = `${parishId || ''}:${decreeId || ''}`;
   const { toast } = useToast();
-  const [decree, setDecree] = useState(null);
+  const [loadedDecree, setDecree] = useState(null);
+  const [loadedKey, setLoadedKey] = useState(null);
+  // Never project another route's or another parish session's previous decree.
+  const decree = loadedKey === detailKey ? loadedDecree : null;
   const [auditInfo, setAuditInfo] = useState(null);
   const [loading, setLoading] = useState(true);
+  const isPageLoading = loading || loadedKey !== detailKey;
 
   useEffect(() => {
     let active = true;
 
     const load = async () => {
-      if (!decreeId || !user?.parishId) return;
+      if (!decreeId || !parishId) {
+        if (active) { setDecree(null); setAuditInfo(null); setLoadedKey(detailKey); setLoading(false); }
+        return;
+      }
       setLoading(true);
 
       const { data, error } = await supabase
         .from('decretos')
         .select('*')
         .eq('id', decreeId)
-        .eq('parish_id', user.parishId)
+        .eq('parish_id', parishId)
         .maybeSingle();
 
       if (!active) return;
@@ -207,12 +216,13 @@ const ParishDecreeDetailPage = () => {
       if (!active) return;
       setDecree(data || null);
       setAuditInfo(trace);
+      setLoadedKey(detailKey);
       setLoading(false);
     };
 
     load();
     return () => { active = false; };
-  }, [decreeId, user?.parishId]);
+  }, [decreeId, parishId]);
 
   const payload = useMemo(() => {
     if (!decree?.payload) return {};
@@ -378,7 +388,7 @@ const ParishDecreeDetailPage = () => {
           )}
         </div>
 
-        {loading ? (
+        {isPageLoading ? (
           <div className="rounded-[2rem] border border-slate-100 bg-white py-24 text-center">
             <Loader2 className="mx-auto h-10 w-10 animate-spin text-blue-500" />
           </div>

@@ -1,0 +1,153 @@
+{
+  "protocol": "V209",
+  "scope": "Actual full application, genuine GoTrue login, 2 protected dynamic routes, 4 authenticated roles, malformed and nonexistent IDs. Read-only negative UI tests only. No existing foreign record, positive detail, email link, CRUD or full button coverage claimed.",
+  "date": "2026-10-26T02:13:04.385Z",
+  "rows": [
+    {
+      "role": "parish",
+      "path": "/parish/decrees/00000000-0000-4000-8000-000000000000",
+      "page": "ParishDecreeDetailPage",
+      "passed": true,
+      "failures": [],
+      "durationMs": 1522,
+      "textLength": 666
+    },
+    {
+      "role": "parish",
+      "path": "/parish/decrees/invalid-id-forbidden",
+      "page": "ParishDecreeDetailPage",
+      "passed": true,
+      "failures": [],
+      "durationMs": 1608,
+      "textLength": 751
+    },
+    {
+      "role": "parish",
+      "path": "/parroquia/bautismo/00000000-0000-4000-8000-000000000000",
+      "page": "BaptismDetailPage",
+      "passed": true,
+      "failures": [],
+      "durationMs": 1416,
+      "textLength": 630
+    },
+    {
+      "role": "parish",
+      "path": "/parroquia/bautismo/invalid-id-forbidden",
+      "page": "BaptismDetailPage",
+      "passed": true,
+      "failures": [],
+      "durationMs": 1396,
+      "textLength": 635
+    },
+    {
+      "role": "diocese",
+      "path": "/parish/decrees/00000000-0000-4000-8000-000000000000",
+      "page": "ParishDecreeDetailPage",
+      "passed": true,
+      "failures": [],
+      "durationMs": 1151,
+      "textLength": 570
+    },
+    {
+      "role": "diocese",
+      "path": "/parish/decrees/invalid-id-forbidden",
+      "page": "ParishDecreeDetailPage",
+      "passed": true,
+      "failures": [],
+      "durationMs": 965,
+      "textLength": 570
+    },
+    {
+      "role": "diocese",
+      "path": "/parroquia/bautismo/00000000-0000-4000-8000-000000000000",
+      "page": "BaptismDetailPage",
+      "passed": true,
+      "failures": [],
+      "durationMs": 867,
+      "textLength": 570
+    },
+    {
+      "role": "diocese",
+      "path": "/parroquia/bautismo/invalid-id-forbidden",
+      "page": "BaptismDetailPage",
+      "passed": true,
+      "failures": [],
+      "durationMs": 1058,
+      "textLength": 570
+    },
+    {
+      "role": "chancery",
+      "path": "/parish/decrees/00000000-0000-4000-8000-000000000000",
+      "page": "ParishDecreeDetailPage",
+      "passed": true,
+      "failures": [],
+      "durationMs": 1012,
+      "textLength": 1024
+    },
+    {
+      "role": "chancery",
+      "path": "/parish/decrees/invalid-id-forbidden",
+      "page": "ParishDecreeDetailPage",
+      "passed": true,
+      "failures": [],
+      "durationMs": 1015,
+      "textLength": 1024
+    },
+    {
+      "role": "chancery",
+      "path": "/parroquia/bautismo/00000000-0000-4000-8000-000000000000",
+      "page": "BaptismDetailPage",
+      "passed": true,
+      "failures": [],
+      "durationMs": 1060,
+      "textLength": 1024
+    },
+    {
+      "role": "chancery",
+      "path": "/parroquia/bautismo/invalid-id-forbidden",
+      "page": "BaptismDetailPage",
+      "passed": true,
+      "failures": [],
+      "durationMs": 931,
+      "textLength": 1024
+    },
+    {
+      "role": "admin_general",
+      "path": "/parish/decrees/00000000-0000-4000-8000-000000000000",
+      "page": "ParishDecreeDetailPage",
+      "passed": true,
+      "failures": [],
+      "durationMs": 870,
+      "textLength": 700
+    },
+    {
+      "role": "admin_general",
+      "path": "/parish/decrees/invalid-id-forbidden",
+      "page": "ParishDecreeDetailPage",
+      "passed": true,
+      "failures": [],
+      "durationMs": 865,
+      "textLength": 700
+    },
+    {
+      "role": "admin_general",
+      "path": "/parroquia/bautismo/00000000-0000-4000-8000-000000000000",
+      "page": "BaptismDetailPage",
+      "passed": true,
+      "failures": [],
+      "durationMs": 884,
+      "textLength": 700
+    },
+    {
+      "role": "admin_general",
+      "path": "/parroquia/bautismo/invalid-id-forbidden",
+      "page": "BaptismDetailPage",
+      "passed": true,
+      "failures": [],
+      "durationMs": 1567,
+      "textLength": 700
+    }
+  ],
+  "exceptions": [],
+  "externalRequests": []
+}

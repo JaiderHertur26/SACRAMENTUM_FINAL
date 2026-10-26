@@ -30,10 +30,15 @@ const BaptismDetailPage = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const parishId = user?.parish_id || user?.parishId || null;
+  const detailKey = `${parishId || ''}:${baptismPartidaId || ''}`;
 
-  const [record, setRecord] = useState(null);
+  const [loadedRecord, setRecord] = useState(null);
+  const [loadedKey, setLoadedKey] = useState(null);
+  // A prior baptism must never appear while another parish or partida loads.
+  const record = loadedKey === detailKey ? loadedRecord : null;
   const [profile, setProfile] = useState({});
   const [loading, setLoading] = useState(true);
+  const isPageLoading = loading || loadedKey !== detailKey;
   const [error, setError] = useState('');
   const [printOpen, setPrintOpen] = useState(false);
   const [marginalNotes, setMarginalNotes] = useState([]);
@@ -44,6 +49,7 @@ const BaptismDetailPage = () => {
       if (!baptismPartidaId || !parishId) {
         if (active) {
           setError('No se pudo identificar la partida o la parroquia de la sesión.');
+          setLoadedKey(detailKey);
           setLoading(false);
         }
         return;
@@ -84,7 +90,7 @@ const BaptismDetailPage = () => {
       } catch (loadError) {
         if (active) setError(loadError?.message || 'No fue posible cargar la partida.');
       } finally {
-        if (active) setLoading(false);
+        if (active) { setLoadedKey(detailKey); setLoading(false); }
       }
     };
 
@@ -92,7 +98,7 @@ const BaptismDetailPage = () => {
     return () => { active = false; };
   }, [baptismPartidaId, parishId]);
 
-  if (loading) {
+  if (isPageLoading) {
     return (
       <DashboardLayout>
         <div className="flex min-h-[60vh] items-center justify-center">
