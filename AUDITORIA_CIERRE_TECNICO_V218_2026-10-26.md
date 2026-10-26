@@ -16,7 +16,7 @@ El inventario anterior detectó 219 enlaces sin expediente actualmente localizab
 
 ### Arquitectura PostgreSQL
 
-Migración `supabase/migrations/20261026133625_chancery_historical_link_review_v218.sql`:
+Migración `supabase/migrations/20261026140324_chancery_historical_link_review_v218.sql`:
 - Tabla de eventos `legacy_link_review_events_v218` con RLS, sin permisos directos de `anon` ni de usuarios `authenticated`.
 - RPC de resumen `summarize_unresolved_legacy_links_v218()`, solo Cancillería activa.
 - RPC de casos `list_unresolved_legacy_links_v218(p_parish_id,p_limit,p_offset)`, con límites estrictos y parroquias de la diócesis activa.
@@ -44,7 +44,7 @@ Archivo: `scripts/qa-rollback-chancery-unresolved-review-v218.sql`.
 
 **1.854/1.854** ensayos sintéticos, **30/30** controles rigurosos, compilación Vite y dependencias sin vulnerabilidades detectadas. El test de perímetro histórico V175 fue corregido para preservar sin alteraciones su evidencia real de 107 rutas antiguas, y exigir que toda ruta posterior esté protegida, sin atribuir la auditoría antigua a una ruta que no existía entonces.
 
-La migración se aplicará definitivamente **solo después de GitHub CI verde**, con su versión remota sincronizada y repetición de los SQL en `ROLLBACK`.
+La migración se **aplicó y registró en Supabase** tras GitHub CI verde, con versión oficial **20261026140324**. Se repitió la prueba SQL contra la función instalada bajo `BEGIN/ROLLBACK`: autorización, 219 casos, paginación y constancia temporal superadas; sin modificar registros reales ni persistir pruebas.
 
 ## Limitaciones verificables
 

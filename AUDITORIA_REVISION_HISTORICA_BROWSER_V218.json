@@ -1,7 +1,7 @@
 {
   "protocol": "V218",
   "scope": "Actual Chancery HistoricalLinkReviewPage in Chromium; fake JWT/diocese/RPC, zero Supabase access",
-  "date": "2026-10-26T13:53:17.554Z",
+  "date": "2026-10-26T14:05:21.835Z",
   "rows": [
     {
       "label": "chancery_has_real_react_queue_and_scoped_totals",

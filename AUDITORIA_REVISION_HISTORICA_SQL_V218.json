@@ -43,8 +43,8 @@
     "changeDioceseClearsPreviousData": true
   },
   "migration": {
-    "file": "supabase/migrations/20261026133625_chancery_historical_link_review_v218.sql",
-    "appliedPermanently": false,
+    "file": "supabase/migrations/20261026140324_chancery_historical_link_review_v218.sql",
+    "appliedPermanently": true,
     "previewedInRollback": true
   },
   "preDeployQuality": {
