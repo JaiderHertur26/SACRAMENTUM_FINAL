@@ -1,0 +1,1 @@
+import React from 'react';export default function ViewBaptismPartidaModal({isOpen,partida}){return isOpen?<aside role="dialog" data-print-modal={partida?.id}>PARTIDA FICTICIA LISTA PARA IMPRIMIR</aside>:null}

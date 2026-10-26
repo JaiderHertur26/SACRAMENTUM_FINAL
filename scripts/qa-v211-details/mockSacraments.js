@@ -1,0 +1,1 @@
+export const getParishPrintProfile=async()=>({nombre:'PARROQUIA FICTICIA UNO'});export const purificarRegistroBautismo=x=>({...x,Libro:x.book_number,numero:x.number,fechaSacramento:x.celebration_date,fechaNacimiento:x.birth_date,createdAt:x.created_at,updatedAt:x.updated_at});

@@ -1,0 +1,271 @@
+{
+  "protocol": "V211",
+  "startedAt": "2026-10-26T03:12:24.517Z",
+  "completedAt": "2026-10-26T03:12:38.851Z",
+  "gitRef": "abc24a9",
+  "readOnly": true,
+  "strictDependencies": true,
+  "checks": 30,
+  "passed": 30,
+  "failed": 0,
+  "tasks": [
+    {
+      "name": "pruebas-sinteticas",
+      "exitCode": 0,
+      "ok": true,
+      "durationMs": 2544,
+      "stderrSnippet": "",
+      "stdoutSnippet": ".sql conserva partidas y constancias en fallo de auditoría (0.4582ms)\n✔ V138 qa-rollback-baptism-duplicate-exact-audit-v138.sql conserva partidas y constancias en fallo de auditoría (0.3221ms)\n✔ V138 qa-rollback-baptism-missing-exact-audit-v138.sql conserva partidas y constancias en fallo de auditoría (0.2591ms)\n✔ V138 duplicidad de UUID coincide intencionalmente y debe bloquearse (0.4296ms)\n✔ V138 pérdida de UUID impide restaurar por número (0.3981ms)\n✔ V138 escenarios de Bautismo y Confirmación siguen transitando legítimamente (1.0337ms)\nℹ tests 1645\nℹ suites 0\nℹ pass 1645\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 2422.5042\n"
+    },
+    {
+      "name": "legacy/verify-authorization-metadata-v184.mjs",
+      "exitCode": 0,
+      "ok": true,
+      "durationMs": 167,
+      "stderrSnippet": "",
+      "stdoutSnippet": "V184 CLIENT ROLE INPUTS PASS; archivos=281; referencias_editables=0\n"
+    },
+    {
+      "name": "legacy/verify-aux-ui-global-v13.mjs",
+      "exitCode": 0,
+      "ok": true,
+      "durationMs": 188,
+      "stderrSnippet": "",
+      "stdoutSnippet": "DATALIST_OR_LIST_ATTR=1\nAUX_UI_RESIDUAL src/components/chancery/NullityInstitutionalPreflightPanel.jsx\nIMPORT_UI_REFERENCES=0\n"
+    },
+    {
+      "name": "legacy/verify-auxiliary-intelligence-v12.mjs",
+      "exitCode": 0,
+      "ok": true,
+      "durationMs": 133,
+      "stderrSnippet": "",
+      "stdoutSnippet": "AUXILIARY INTELLIGENCE: OK · importaciones centralizadas + catálogos + autoridades + obispos titulares.\n"
+    },
+    {
+      "name": "legacy/verify-auxiliary-intelligence-v13.mjs",
+      "exitCode": 0,
+      "ok": true,
+      "durationMs": 150,
+      "stderrSnippet": "",
+      "stdoutSnippet": "ISSUES=0\nOK · búsquedas auxiliares y migración unificadas.\n"
+    },
+    {
+      "name": "legacy/verify-auxiliary-visibility-v18.mjs",
+      "exitCode": 0,
+      "ok": true,
+      "durationMs": 103,
+      "stderrSnippet": "",
+      "stdoutSnippet": "S: parrocos revoca anon\n✓ V18 RLS: iglesias revoca anon\n✓ V18 RLS: ciudades revoca anon\n✓ V18 RLS: obispos revoca anon\n✓ V18 RLS: diocesis revoca anon\n✓ V18 RLS: mis_datos revoca anon\n✓ Párrocos SELECT usa ámbito institucional\n✓ Párrocos WRITE limita parroquia propietaria\n✓ Ciudades usa context_id como parroquia\n✓ Mis Datos contempla parroquia y diócesis\n✓ ParrocosList usa columnas reales\n✓ ParrocosList conserva legacy_code\n✓ Código Da Fe prioriza legacy real\n✓ Servicio cachea columnas reales\n✓ Centro diferencia materialización\n✓ Centro alerta materialización incompleta\n✓ Centro informa filas visibles\n\nSACRAMENTUM V18 · OK · 17/17 controles.\n"
+    },
+    {
+      "name": "legacy/verify-baptism-closure.mjs",
+      "exitCode": 0,
+      "ok": true,
+      "durationMs": 133,
+      "stderrSnippet": "",
+      "stdoutSnippet": "SACRAMENTUM Bautismo · archivos críticos: 11\nOK · invariantes estáticos de Bautismo verificados.\n"
+    },
+    {
+      "name": "legacy/verify-birthplace-autocomplete-v12.mjs",
+      "exitCode": 0,
+      "ok": true,
+      "durationMs": 149,
+      "stderrSnippet": "",
+      "stdoutSnippet": "LUGAR DE NACIMIENTO: OK · 10 campos usan el patrón canónico de Confirmación.\n"
+    },
+    {
+      "name": "legacy/verify-boleta-parish-selector.mjs",
+      "exitCode": 0,
+      "ok": true,
+      "durationMs": 111,
+      "stderrSnippet": "",
+      "stdoutSnippet": "{\n  \"historicalBallot\": true,\n  \"selectorEnabled\": true,\n  \"requiredOwnership\": true,\n  \"allBallots\": true\n}\n"
+    },
+    {
+      "name": "legacy/verify-confirmation-closure.mjs",
+      "exitCode": 0,
+      "ok": true,
+      "durationMs": 169,
+      "stderrSnippet": "",
+      "stdoutSnippet": "SACRAMENTUM Confirmación · archivos críticos: 13\nOK · invariantes estáticos de Confirmación verificados.\n"
+    },
+    {
+      "name": "legacy/verify-confirmation-search-model-v13.mjs",
+      "exitCode": 0,
+      "ok": true,
+      "durationMs": 157,
+      "stderrSnippet": "",
+      "stdoutSnippet": "TARGET_ISSUES=1\nsrc/pages/parish/FuneralRegistryPage.jsx: list=\nGLOBAL_RESIDUAL src/pages/parish/AvisoNotificacionMatrimonialPage.jsx\nGLOBAL_RESIDUAL src/pages/parish/FuneralRegistryPage.jsx\n"
+    },
+    {
+      "name": "legacy/verify-current-priest-v19.mjs",
+      "exitCode": 0,
+      "ok": true,
+      "durationMs": 137,
+      "stderrSnippet": "",
+      "stdoutSnippet": "✓ SQL crea current_priest\n✓ SQL recálculo usa fecha_ingreso más reciente\n✓ SQL no exige fecha_salida vigente para actual\n✓ SQL último ingreso queda abierto en resolución por fecha\n✓ SQL conserva histórico por periodo\n✓ SQL recalcula todas las parroquias\n✓ Servicio getParrocoActual usa última fecha ingreso\n✓ Servicio histórico deja abierto al último ingreso\n✓ Hook currentPriest independiente de fecha_salida\n✓ Hook histórico deja abierto al último ingreso\n✓ Lista muestra estado real ACTIVO/HISTORICO\n✓ Lista Párroco Actual depende de estado canónico\n\nSACRAMENTUM V19 · OK · 12/12 controles.\n"
+    },
+    {
+      "name": "legacy/verify-ecclesial-documents-v28.mjs",
+      "exitCode": 0,
+      "ok": true,
+      "durationMs": 148,
+      "stderrSnippet": "",
+      "stdoutSnippet": "firmación: incluye firma parroquial\n✓ Partida Matrimonio: usa DocumentFrame eclesial\n✓ Partida Matrimonio: muestra Libro Folio Número\n✓ Partida Matrimonio: incluye notas marginales\n✓ Partida Matrimonio: incluye firma parroquial\n✓ Primitivas: doble borde eclesial\n✓ Primitivas: pie SACRAMENTUM\n✓ Exequias: página usa generador eclesial\n✓ Exequias: Partida y Constancia diferenciadas\n✓ Exequias: doble borde y marca eclesial\n✓ Partida Confirmación: no inventa lugar desde parroquia actual\n✓ Partida Bautismo: no inventa lugar desde parroquia actual\n✓ Partida Matrimonio: no inventa lugar desde parroquia actual\n\nSACRAMENTUM V28 · OK · 29/29 controles.\n"
+    },
+    {
+      "name": "legacy/verify-funeral-baptism-link-v7.mjs",
+      "exitCode": 0,
+      "ok": true,
+      "durationMs": 138,
+      "stderrSnippet": "",
+      "stdoutSnippet": "✓ Exequias permite buscar Bautismos\n✓ Formulario conserva baptism_record_id\n✓ Selección autocompleta identidad y padres\n✓ Bautismo se agrega a sacramentos recibidos\n✓ Servicio limita búsqueda a parroquia\n✓ Servicio excluye partidas no vigentes\n✓ Lector Bautismo expone isDeceased\n✓ Partidas muestra marca Fallecido\n✓ SQL no altera status canónico de Bautismo\n✓ SQL agrega vínculo Exequia-Bautismo\n✓ SQL marca is_deceased al asentar\n✓ SQL crea nota marginal de defunción\n✓ SQL valida misma parroquia\n✓ SQL revierte marca cuando corresponde\n\nEXEQUIAS ↔ BAUTISMO V7 · 14 invariantes OK.\n"
+    },
+    {
+      "name": "legacy/verify-import-parish-ownership-v5.mjs",
+      "exitCode": 0,
+      "ok": true,
+      "durationMs": 156,
+      "stderrSnippet": "",
+      "stdoutSnippet": "OK · 24 perfiles exigen parroquia propietaria.\n"
+    },
+    {
+      "name": "legacy/verify-latest-legacy-imports.mjs",
+      "exitCode": 0,
+      "ok": true,
+      "durationMs": 1340,
+      "stderrSnippet": "",
+      "stdoutSnippet": "PASS · Seguridad: la clave pública no puede leer lotes históricos privados.\n"
+    },
+    {
+      "name": "legacy/verify-legacy-import-relational.mjs",
+      "exitCode": 0,
+      "ok": true,
+      "durationMs": 132,
+      "stderrSnippet": "",
+      "stdoutSnippet": "SACRAMENTUM legacy relacional · perfiles verificados: 7\nOK · importación relacional, preinscripciones y catálogos verificados.\n"
+    },
+    {
+      "name": "legacy/verify-legacy-matrimonial-notes-v17.mjs",
+      "exitCode": 0,
+      "ok": true,
+      "durationMs": 145,
+      "stderrSnippet": "",
+      "stdoutSnippet": "ia matrimonial se conserva\n✓ dafe se conserva\n✓ actualizad queda como metadato\n✓ Clasificación no reemplaza texto\n✓ SQL crea cola persistente\n✓ SQL registra NTMAT001/NTMAT002\n✓ SQL enlaza por Libro Folio Número\n✓ SQL conserva pendientes sin partida\n✓ SQL detecta referencias ambiguas\n✓ SQL no inventa note_date\n✓ SQL bloquea autoimpresión histórica\n✓ SQL conciliación idempotente\n✓ Servicio usa RPC especializado NTMAT\n✓ Servicio reconcilia también después de MATRIMON\n✓ Centro muestra NTMAT\n✓ Centro explica vínculo exacto\n✓ Centro muestra notas pendientes\n✓ Panel no presenta actualizad como fecha jurídica\n\nSACRAMENTUM V17 · OK · 25/25 controles.\n"
+    },
+    {
+      "name": "legacy/verify-legacy-priest-name-split-v20.mjs",
+      "exitCode": 0,
+      "ok": true,
+      "durationMs": 116,
+      "stderrSnippet": "",
+      "stdoutSnippet": "✓ Perfil PARROCOS separa nombres\n✓ Perfil conserva priest_name completo\n✓ Perfil genera priest_given_names\n✓ Perfil genera priest_surnames\n✓ Perfil conserva honorífico\n✓ Perfil marca confianza\n✓ SQL parser central existe\n✓ SQL trigger central existe\n✓ SQL conserva legacy_full_name\n✓ SQL conserva honorífico y apellidos\n✓ SQL evita separación agresiva con partículas\n✓ SQL backfill registros existentes\n✓ Lista lee apellido real\n✓ Lista compone identidad nombre + apellido\n\nSACRAMENTUM V20 · OK · 14/14 controles.\n"
+    },
+    {
+      "name": "legacy/verify-legacy-reference-resolution-v29.mjs",
+      "exitCode": 0,
+      "ok": true,
+      "durationMs": 125,
+      "stderrSnippet": "",
+      "stdoutSnippet": "\n✓ Trigger V29 presente: pending_funerals\n✓ Cambio en Párrocos refresca referencias históricas\n✓ Backfill inicial incluido\n✓ JSON original se conserva y se agrega legacy_resolved\n✓ Nombre persistido en Supabase tiene prioridad sobre caché local\n✓ Bautismo resuelve Da Fe y ministro con prioridad canónica\n✓ Confirmación resuelve Da Fe y ministro con prioridad canónica\n✓ Matrimonio hidrata legacy_normalized\n✓ Matrimonio resuelve Da Fe\n✓ Exequias hidrata y resuelve códigos\n✓ Sentar Confirmación usa purificador canónico\n✓ Partida Bautismo prioriza valor resuelto\n✓ Partida Matrimonio usa campos normalizados\n\nSACRAMENTUM V29 · OK · 38/38 controles.\n"
+    },
+    {
+      "name": "legacy/verify-matrimonial-notifications-v16.mjs",
+      "exitCode": 0,
+      "ok": true,
+      "durationMs": 173,
+      "stderrSnippet": "",
+      "stdoutSnippet": " Libro Bautismo obligatorio\n✓ Formulario manual: fecha futura bloqueada\n✓ Página emisión: Realtime activo\n✓ Página emisión: mensaje local/remoto/mixto\n✓ Página emisión: emisor/receptor al visor\n✓ Bandeja: Realtime activo\n✓ Sidebar: badge sacramental Realtime\n✓ Archivo: estados operativos\n✓ Archivo: cancelación condicionada\n✓ Filtros: estados operativos\n✓ Confirmación: resume destino local/remoto\n✓ Documentos: usan snapshot issuerAuthority\n✓ Documentos: sin fallback estado=1\n✓ Documento archivo: fuente física/digital visible\n✓ Impresión archivo: destinatarios múltiples preservados\n\nSACRAMENTUM V16 MATRIMONIAL · OK · 40/40 controles estáticos.\n"
+    },
+    {
+      "name": "legacy/verify-matrimonial-notifications-v16c.mjs",
+      "exitCode": 0,
+      "ok": true,
+      "durationMs": 137,
+      "stderrSnippet": "",
+      "stdoutSnippet": "acceptanceMode en RNS\n✓ Buscador restringe por parroquia\n✓ Buscador bloquea localizador\n✓ Modal de vinculación usa referencia exacta\n✓ Documento recibido detecta manual no resuelta\n✓ Documento recibido ofrece vincular digital\n✓ Documento recibido ofrece certificar físico\n✓ Bandeja conecta RPC de resolución\n✓ Bandeja conecta certificación física\n✓ Bandeja exige confirmación explícita física\n✓ Bandeja usa modal de vinculación\n✓ Tabla cambia Aceptar por Resolver\n✓ Tabla muestra referencia física\n✓ RNS muestra modo de recepción\n✓ Archivo muestra seguimiento por parroquia\n✓ Smoke V16C prueba ambos caminos\n\nSACRAMENTUM V16C · OK · 29/29 controles.\n"
+    },
+    {
+      "name": "legacy/verify-notifications-v14.mjs",
+      "exitCode": 0,
+      "ok": true,
+      "durationMs": 163,
+      "stderrSnippet": "",
+      "stdoutSnippet": "SACRAMENTUM V14 · OK · Cancillería, bandeja sacramental, lectura, aceptación y acuses verificados.\n"
+    },
+    {
+      "name": "legacy/verify-notifications-v15.mjs",
+      "exitCode": 0,
+      "ok": true,
+      "durationMs": 149,
+      "stderrSnippet": "",
+      "stdoutSnippet": "SACRAMENTUM V15 · OK · nulidad interparroquial, aceptación, nota marginal, documento y acuse verificados.\n"
+    },
+    {
+      "name": "legacy/verify-parish-decree-center-v30.mjs",
+      "exitCode": 0,
+      "ok": true,
+      "durationMs": 137,
+      "stderrSnippet": "",
+      "stdoutSnippet": "bre detalle institucional\n✓ Servicio de decretos importa cliente Supabase\n✓ Servicio hidrata tipo y sacramento canónicos\n✓ Bandeja parroquial elimina lenguaje ODC\n✓ Bandeja parroquial usa Decreto de Corrección\n✓ Bandeja parroquial usa Decreto de Reposición\n✓ Bandeja parroquial muestra sacramento del decreto\n✓ Detalle parroquial humaniza sacramento\n✓ Detalle parroquial humaniza tipo de decreto\n✓ Detalle parroquial identifica decreto recibido\n✓ V30 habilita RLS en decretos\n✓ V30 crea política SELECT por jurisdicción\n✓ V30 no otorga INSERT a Parroquia\n✓ Política de emisión histórica no se modifica en V30\n\nSACRAMENTUM V30 · OK · 38/38 controles.\n"
+    },
+    {
+      "name": "build-produccion",
+      "exitCode": 0,
+      "ok": true,
+      "durationMs": 3469,
+      "stderrSnippet": "",
+      "stdoutSnippet": "41 kB\ndist/assets/Select-q3XTOU26.js                               87.05 kB │ gzip:  29.48 kB\ndist/assets/DatosAuxiliaresPage-BobNUx92.js                  90.50 kB │ gzip:  16.71 kB\ndist/assets/supabaseClient-wsXSa5vZ.js                      137.56 kB │ gzip:  36.85 kB\ndist/assets/index.es-DPYJ3O2I.js                            151.41 kB │ gzip:  48.91 kB\ndist/assets/html2canvas-muKNebnt.js                         199.40 kB │ gzip:  46.74 kB\ndist/assets/jspdf.plugin.autotable-CBsVhGCT.js              428.79 kB │ gzip: 138.86 kB\ndist/assets/index-DIkhHy8y.js                               433.96 kB │ gzip: 136.00 kB\n\n\u001b[32m✓ built in 2.15s\u001b[39m\n"
+    },
+    {
+      "name": "frontera-secretos-build-v183",
+      "exitCode": 0,
+      "ok": true,
+      "durationMs": 213,
+      "stderrSnippet": "",
+      "stdoutSnippet": "V183 SECRETS PASS; archivos=176; envs=1; hallazgos=0\n"
+    },
+    {
+      "name": "css-critico",
+      "exitCode": 0,
+      "ok": true,
+      "durationMs": 231,
+      "stderrSnippet": "",
+      "stdoutSnippet": "CSS index-Cq0sttVb.css bytes=160979 classes=1659\nUTILIDADES CRÍTICAS bg-blue-600/10:OK | bg-[#4B7BA7]/10:OK | bg-[#D4AF37]/10:OK | size-3:OK | size-3.5:OK\n"
+    },
+    {
+      "name": "dependencias-produccion",
+      "exitCode": 0,
+      "ok": true,
+      "durationMs": 1466,
+      "stderrSnippet": "",
+      "stdoutSnippet": "{\n  \"auditReportVersion\": 2,\n  \"vulnerabilities\": {},\n  \"metadata\": {\n    \"vulnerabilities\": {\n      \"info\": 0,\n      \"low\": 0,\n      \"moderate\": 0,\n      \"high\": 0,\n      \"critical\": 0,\n      \"total\": 0\n    },\n    \"dependencies\": {\n      \"prod\": 129,\n      \"dev\": 361,\n      \"optional\": 80,\n      \"peer\": 0,\n      \"peerOptional\": 0,\n      \"total\": 505\n    }\n  }\n}\n",
+      "findingCounts": {
+        "critical": 0,
+        "high": 0,
+        "moderate": 0,
+        "low": 0,
+        "info": 0,
+        "total": 0
+      },
+      "packages": []
+    },
+    {
+      "name": "dependencias-completas",
+      "exitCode": 0,
+      "ok": true,
+      "durationMs": 1748,
+      "stderrSnippet": "",
+      "stdoutSnippet": "{\n  \"auditReportVersion\": 2,\n  \"vulnerabilities\": {},\n  \"metadata\": {\n    \"vulnerabilities\": {\n      \"info\": 0,\n      \"low\": 0,\n      \"moderate\": 0,\n      \"high\": 0,\n      \"critical\": 0,\n      \"total\": 0\n    },\n    \"dependencies\": {\n      \"prod\": 129,\n      \"dev\": 361,\n      \"optional\": 80,\n      \"peer\": 0,\n      \"peerOptional\": 0,\n      \"total\": 505\n    }\n  }\n}\n",
+      "findingCounts": {
+        "critical": 0,
+        "high": 0,
+        "moderate": 0,
+        "low": 0,
+        "info": 0,
+        "total": 0
+      },
+      "packages": []
+    }
+  ]
+}
