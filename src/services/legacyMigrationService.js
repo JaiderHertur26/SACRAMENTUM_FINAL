@@ -45,6 +45,35 @@ export async function listLegacyRows(batchId, { status = null, limit = 200 } = {
   return data || [];
 }
 
+// Preserve pre-V213 import keys for existing batches in the same parish.
+// New files use a parish-scoped key, avoiding collisions when the exact same
+// historical archive is imported into more than one authorized parish.
+export async function resolveLegacySourceScope({ parishId, profileKey, hash }) {
+  if (!parishId || !profileKey || !/^[a-f0-9]{64}$/i.test(String(hash || ''))) {
+    throw new Error('El archivo, el perfil o la parroquia no tienen una procedencia válida.');
+  }
+  const { data, error } = await supabase.from('legacy_import_batches')
+    .select('id,metadata')
+    .eq('parish_id', parishId)
+    .eq('profile_key', profileKey)
+    .eq('sha256', hash)
+    .order('created_at', { ascending: false })
+    .limit(100);
+  if (error) throw error;
+  const previous = data || [];
+  // If the identical file was ever loaded under an old unscoped hash,
+  // retain that namespace. Never make a duplicate of historical records.
+  if (previous.some(b => !b.metadata?.source_scope || b.metadata.source_scope === hash)) {
+    return hash;
+  }
+  const scoped = `${parishId}|${hash}`;
+  if (previous.some(b => b.metadata?.source_scope === scoped)) return scoped;
+  if (previous.length) {
+    throw new Error('La procedencia del archivo contiene ámbitos incompatibles. Revise sus lotes históricos.');
+  }
+  return scoped;
+}
+
 export async function createLegacyBatch({ filename, profileKey, hash, sourceName, parishId = null, dioceseId = null, metadata = {} }) {
   if (!parishId) throw new Error('Toda importación histórica debe quedar ligada a una parroquia propietaria.');
   const { data, error } = await supabase.rpc('create_legacy_import_batch', {

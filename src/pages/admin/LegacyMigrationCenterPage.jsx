@@ -9,7 +9,8 @@ import {
 } from 'lucide-react';
 import {
   analyzeLegacyRows, applyLegacyBatch, createLegacyBatch, getLegacyMigrationSummary,
-  listLegacyBatches, loadParishesForMigration, parseLegacyJsonFile, sha256File, stageLegacyRows
+  listLegacyBatches, loadParishesForMigration, parseLegacyJsonFile, sha256File, stageLegacyRows,
+  resolveLegacySourceScope
 } from '@/services/legacyMigrationService';
 import { LEGACY_IMPORT_PROFILES, profileOptions } from '@/config/legacyImportProfiles';
 import { normalizeRole } from '@/lib/authz';
@@ -169,13 +170,14 @@ const LegacyMigrationCenterPage = () => {
     setBusy('staging'); setError(''); setProgress({message:'Creando lote seguro...'});
     try {
       const chosenParish = checked.parish;
+      const sourceScope = await resolveLegacySourceScope({parishId:chosenParish.id,profileKey,hash});
       const batchId = await createLegacyBatch({
         filename:file.name, profileKey, hash, sourceName:`${profileKey}.json`,
         parishId: chosenParish.id,
         dioceseId: chosenParish.diocese_id,
-        metadata:{ file_size:file.size, analyzed_client_side:true, structure_version:'fase3-relational-v3', source_scope:hash, reconciliation_mode:['INSBAUTI','INSCONFI'].includes(profileKey) ? 'historical_boleta_crossmatch' : 'standard', boleta_counts:['INSBAUTI','INSCONFI'].includes(profileKey) ? { reported:boletaCounts.reported, not_seated:boletaCounts.notSeated } : undefined }
+        metadata:{ file_size:file.size, analyzed_client_side:true, structure_version:'fase3-relational-v3', source_scope:sourceScope, source_scope_version:'parish-v213', reconciliation_mode:['INSBAUTI','INSCONFI'].includes(profileKey) ? 'historical_boleta_crossmatch' : 'standard', boleta_counts:['INSBAUTI','INSCONFI'].includes(profileKey) ? { reported:boletaCounts.reported, not_seated:boletaCounts.notSeated } : undefined }
       });
-      await stageLegacyRows(batchId,analysis,200,({staged,total})=>setProgress({message:`Guardando staging ${staged}/${total}` }),hash);
+      await stageLegacyRows(batchId,analysis,200,({staged,total})=>setProgress({message:`Guardando staging ${staged}/${total}` }),sourceScope);
       const batch = await getLegacyMigrationSummary(batchId);
       setCurrentBatch(batch);
       await refreshBatches();
