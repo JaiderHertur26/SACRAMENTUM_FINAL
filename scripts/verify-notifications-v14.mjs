@@ -34,7 +34,8 @@ expect(/Leer decreto/.test(official) && /Ver decreto/.test(official),
   'Cancillería: faltan acciones leer/ver decreto');
 
 const decreeDetail=read('src/pages/parish/ParishDecreeDetailPage.jsx');
-expect(/\.eq\('parish_id', user\.parishId\)/.test(decreeDetail),
+expect(/const parishId = user\?\.parishId \|\| user\?\.parish_id/.test(decreeDetail) &&
+  /\.eq\('parish_id', parishId\)/.test(decreeDetail),
   'Decreto directo: no valida pertenencia a la parroquia');
 expect(/Imprimir decreto/.test(decreeDetail),
   'Decreto directo: falta impresión');
