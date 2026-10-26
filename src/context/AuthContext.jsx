@@ -1,6 +1,6 @@
-import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import React, { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { Loader2 } from 'lucide-react';
-import { supabase } from '@/lib/supabaseClient';
+import { supabase, AUTH_STORAGE_KEY } from '@/lib/supabaseClient';
 import { normalizeRole, validateProfileScope } from '@/lib/authz';
 
 const AuthContext = createContext(undefined);
@@ -23,6 +23,10 @@ export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [configurationError, setConfigurationError] = useState(null);
+  const sessionEpoch = useRef(0);
+  const loginEpoch = useRef(0);
+  const mounted = useRef(true);
+  const latestAuthUserId = useRef(null);
 
   const loadProfile = async (authUser) => {
     if (!authUser) return { ok: false, message: 'No existe una sesión autenticada.' };
@@ -110,7 +114,9 @@ export const AuthProvider = ({ children }) => {
     return { ok: true, profile: { ...prof, role }, user: enrichedUser };
   };
 
-  const applySession = async (nextSession) => {
+  const applySession = async (nextSession, epoch = ++sessionEpoch.current) => {
+    if (!mounted.current || epoch !== sessionEpoch.current) return { ok: false, stale: true };
+    latestAuthUserId.current = nextSession?.user?.id || null;
     setSession(nextSession || null);
 
     if (!nextSession?.user) {
@@ -123,6 +129,7 @@ export const AuthProvider = ({ children }) => {
     }
 
     const result = await loadProfile(nextSession.user);
+    if (!mounted.current || epoch !== sessionEpoch.current) return { ok: false, stale: true };
 
     if (!result.ok) {
       setUser(null);
@@ -142,39 +149,68 @@ export const AuthProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    let isMounted = true;
+    mounted.current = true;
+    let alive = true;
+    const timers = new Set();
 
     const initialize = async () => {
+      const epoch = ++sessionEpoch.current;
       try {
         const { data, error } = await supabase.auth.getSession();
         if (error) throw error;
-        if (isMounted) await applySession(data.session);
+        if (alive) await applySession(data.session, epoch);
       } catch (error) {
-        console.error('Error inicializando la sesión:', error);
-        if (isMounted) {
+        if (alive && epoch === sessionEpoch.current) {
           setConfigurationError('No fue posible validar la sesión de forma segura.');
           clearSessionProjection();
         }
       } finally {
-        if (isMounted) setIsLoading(false);
+        if (alive && epoch === sessionEpoch.current) setIsLoading(false);
       }
     };
-
     initialize();
 
-    const { data: authListener } = supabase.auth.onAuthStateChange(async (_event, nextSession) => {
-      if (!isMounted) return;
-      await applySession(nextSession);
-      setIsLoading(false);
+    // Supabase callbacks must return before another SDK request is awaited.
+    const { data: authListener } = supabase.auth.onAuthStateChange((_event, nextSession) => {
+      if (!alive) return;
+      const epoch = ++sessionEpoch.current;
+      latestAuthUserId.current = nextSession?.user?.id || null;
+      if (!nextSession?.user) {
+        ++loginEpoch.current;
+        void applySession(null, epoch);
+        setIsLoading(false);
+        return;
+      }
+      const timer = setTimeout(() => {
+        timers.delete(timer);
+        if (!alive || epoch !== sessionEpoch.current) return;
+        applySession(nextSession, epoch).catch(error => {
+          if (alive && epoch === sessionEpoch.current) {
+            setUser(null);
+            setProfile(null);
+            setIsAuthenticated(false);
+            setConfigurationError('No fue posible validar el perfil institucional.');
+            clearSessionProjection();
+          }
+        }).finally(() => {
+          if (alive && epoch === sessionEpoch.current) setIsLoading(false);
+        });
+      }, 0);
+      timers.add(timer);
     });
 
     return () => {
-      isMounted = false;
+      alive = false;
+      mounted.current = false;
+      ++sessionEpoch.current;
+      ++loginEpoch.current;
+      for (const timer of timers) clearTimeout(timer);
       authListener?.subscription?.unsubscribe();
     };
   }, []);
 
   const login = async (email, password) => {
+    const attempt = ++loginEpoch.current;
     setConfigurationError(null);
 
     try {
@@ -185,7 +221,14 @@ export const AuthProvider = ({ children }) => {
 
       if (error) throw error;
 
+      if (!mounted.current || attempt !== loginEpoch.current
+          || latestAuthUserId.current !== data.session?.user?.id) {
+        return { success: false, stale: true, error: 'La sesión cambió durante el inicio de sesión.' };
+      }
       const result = await applySession(data.session);
+      if (result.stale) {
+        return { success: false, stale: true, error: 'La sesión cambió durante la validación del perfil.' };
+      }
       if (!result.ok) {
         return { success: false, configurationError: true, error: result.message };
       }
@@ -198,18 +241,27 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = async () => {
+    ++loginEpoch.current;
+    ++sessionEpoch.current;
+    latestAuthUserId.current = null;
+    setSession(null);
+    setUser(null);
+    setProfile(null);
+    setIsAuthenticated(false);
+    setConfigurationError(null);
+    clearSessionProjection();
     try {
-      await supabase.auth.signOut();
+      await supabase.auth.signOut({ scope: 'local' });
     } catch (error) {
       console.warn('Error cerrando sesión remota:', error);
     } finally {
-      setSession(null);
-      setUser(null);
-      setProfile(null);
-      setIsAuthenticated(false);
-      setConfigurationError(null);
-      clearSessionProjection();
-      window.location.assign('/');
+      // A later explicit login owns the screen; an old logout must not erase it.
+      if (!latestAuthUserId.current) {
+        localStorage.removeItem(AUTH_STORAGE_KEY);
+        localStorage.removeItem(AUTH_STORAGE_KEY + '-code-verifier');
+        clearSessionProjection();
+        window.location.assign('/');
+      }
     }
   };
 

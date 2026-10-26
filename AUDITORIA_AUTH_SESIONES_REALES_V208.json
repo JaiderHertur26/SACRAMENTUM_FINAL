@@ -1,0 +1,84 @@
+{
+  "protocol": "V208",
+  "scope": "Real GoTrue password grant and Auth getUser, no fabricated JWT claims",
+  "runId": "fde833eb-2f29-4435-8d0f-feb9dbd4d92f",
+  "date": "2026-10-25T23:48:50.514Z",
+  "rows": [
+    {
+      "kind": "diocese_b",
+      "login": true,
+      "genuineAuthUser": true,
+      "profileMatches": true,
+      "role": "diocese",
+      "expectedRole": "diocese",
+      "profileError": null
+    },
+    {
+      "kind": "chancery",
+      "login": true,
+      "genuineAuthUser": true,
+      "profileMatches": true,
+      "role": "chancery",
+      "expectedRole": "chancery",
+      "profileError": null
+    },
+    {
+      "kind": "parish_a1",
+      "login": true,
+      "genuineAuthUser": true,
+      "profileMatches": true,
+      "role": "parish",
+      "expectedRole": "parish",
+      "profileError": null
+    },
+    {
+      "kind": "parish_a2",
+      "login": true,
+      "genuineAuthUser": true,
+      "profileMatches": true,
+      "role": "parish",
+      "expectedRole": "parish",
+      "profileError": null
+    },
+    {
+      "kind": "parish_b",
+      "login": true,
+      "genuineAuthUser": true,
+      "profileMatches": true,
+      "role": "parish",
+      "expectedRole": "parish",
+      "profileError": null
+    },
+    {
+      "kind": "parish_x",
+      "login": true,
+      "genuineAuthUser": true,
+      "profileMatches": true,
+      "role": "parish",
+      "expectedRole": "parish",
+      "profileError": null
+    },
+    {
+      "kind": "diocese_a",
+      "login": true,
+      "genuineAuthUser": true,
+      "profileMatches": true,
+      "role": "diocese",
+      "expectedRole": "diocese",
+      "profileError": null
+    },
+    {
+      "kind": "admin_general",
+      "login": true,
+      "genuineAuthUser": true,
+      "profileMatches": true,
+      "role": "admin_general",
+      "expectedRole": "admin_general",
+      "profileError": null
+    }
+  ],
+  "passed": 8,
+  "total": 8,
+  "wrongPasswordRejected": true,
+  "wrongPasswordStatus": 400
+}

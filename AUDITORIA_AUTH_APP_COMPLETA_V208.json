@@ -1,0 +1,118 @@
+{
+  "protocol": "V208",
+  "scope": "Complete actual application and genuine login form. Four real GoTrue roles, dashboards, refresh and wrong-role redirection. Read-only dashboard operations.",
+  "date": "2026-10-26T00:07:05.843Z",
+  "sourceSha256": "199330c1c26ae474f9343ad2eda3ac18d5f9cce354ed9411f3834f831f95f375",
+  "rows": [
+    {
+      "kind": "parish_a1",
+      "passed": true,
+      "failures": [],
+      "evidence": {
+        "expected": "/parish/dashboard",
+        "logged": {
+          "path": "/parish/dashboard",
+          "textLength": 1538,
+          "fixtureVisible": true,
+          "emailInput": false
+        },
+        "restored": {
+          "path": "/parish/dashboard",
+          "textLength": 1538,
+          "fixtureVisible": true,
+          "emailInput": false
+        },
+        "forbidden": "/admin/dashboard",
+        "denied": {
+          "path": "/parish/dashboard",
+          "textLength": 12,
+          "fixtureVisible": false,
+          "emailInput": false
+        }
+      }
+    },
+    {
+      "kind": "diocese_a",
+      "passed": true,
+      "failures": [],
+      "evidence": {
+        "expected": "/diocese/dashboard",
+        "logged": {
+          "path": "/diocese/dashboard",
+          "textLength": 512,
+          "fixtureVisible": true,
+          "emailInput": false
+        },
+        "restored": {
+          "path": "/diocese/dashboard",
+          "textLength": 512,
+          "fixtureVisible": true,
+          "emailInput": false
+        },
+        "forbidden": "/parish/dashboard",
+        "denied": {
+          "path": "/diocese/dashboard",
+          "textLength": 12,
+          "fixtureVisible": false,
+          "emailInput": false
+        }
+      }
+    },
+    {
+      "kind": "chancery",
+      "passed": true,
+      "failures": [],
+      "evidence": {
+        "expected": "/chancery/dashboard",
+        "logged": {
+          "path": "/chancery/dashboard",
+          "textLength": 1024,
+          "fixtureVisible": true,
+          "emailInput": false
+        },
+        "restored": {
+          "path": "/chancery/dashboard",
+          "textLength": 1024,
+          "fixtureVisible": true,
+          "emailInput": false
+        },
+        "forbidden": "/parish/dashboard",
+        "denied": {
+          "path": "/chancery/dashboard",
+          "textLength": 12,
+          "fixtureVisible": false,
+          "emailInput": false
+        }
+      }
+    },
+    {
+      "kind": "admin_general",
+      "passed": true,
+      "failures": [],
+      "evidence": {
+        "expected": "/admin/dashboard",
+        "logged": {
+          "path": "/admin/dashboard",
+          "textLength": 700,
+          "fixtureVisible": true,
+          "emailInput": false
+        },
+        "restored": {
+          "path": "/admin/dashboard",
+          "textLength": 700,
+          "fixtureVisible": true,
+          "emailInput": false
+        },
+        "forbidden": "/parish/dashboard",
+        "denied": {
+          "path": "/admin/dashboard",
+          "textLength": 12,
+          "fixtureVisible": false,
+          "emailInput": false
+        }
+      }
+    }
+  ],
+  "exceptions": [],
+  "externalRequests": []
+}

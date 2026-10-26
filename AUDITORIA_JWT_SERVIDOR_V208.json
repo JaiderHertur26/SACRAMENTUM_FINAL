@@ -1,0 +1,28 @@
+{
+  "protocol": "V208",
+  "date": "2026-10-26T00:13:16.013Z",
+  "scope": "Real GoTrue-issued QA JWT, forged token denied by Auth and PostgREST, real self-editable metadata ignored as authorization",
+  "rows": [
+    {
+      "kind": "genuine-issued-JWT",
+      "passed": true
+    },
+    {
+      "kind": "forged-identity-and-service-role-Auth",
+      "passed": true,
+      "status": 403
+    },
+    {
+      "kind": "forged-identity-and-service-role-PostgREST",
+      "passed": true,
+      "status": 401,
+      "code": "PGRST301"
+    },
+    {
+      "kind": "self-editable-metadata-does-not-elevate-role",
+      "passed": true,
+      "profileRole": "parish",
+      "protectedRpcCode": "42501"
+    }
+  ]
+}

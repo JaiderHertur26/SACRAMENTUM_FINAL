@@ -1,0 +1,120 @@
+{
+  "protocol": "V208",
+  "scope": "Two genuine GoTrue users and overlapping physical PostgreSQL backends. Controlled QA advisory deadlock, not a claimed production incident.",
+  "date": "2026-10-26T00:01:58.070Z",
+  "actorIds": [
+    "1a119734-5583-485e-b8ca-d711901d7238",
+    "316376bd-4a46-492e-81f0-cb15b144865c"
+  ],
+  "rows": [
+    {
+      "kind": "bautismo",
+      "passed": true,
+      "faults": [],
+      "first": {
+        "pid": 443263,
+        "started": "2026-10-26T00:01:41.619224+00:00",
+        "acquired": "2026-10-26T00:01:41.636993+00:00",
+        "ended": "2026-10-26T00:01:47.643737+00:00",
+        "waitMs": 18
+      },
+      "second": {
+        "pid": 443262,
+        "started": "2026-10-26T00:01:41.828556+00:00",
+        "acquired": "2026-10-26T00:01:47.659096+00:00",
+        "ended": "2026-10-26T00:01:47.659564+00:00",
+        "waitMs": 5831
+      },
+      "parametersUnchanged": true
+    },
+    {
+      "kind": "confirmacion",
+      "passed": true,
+      "faults": [],
+      "first": {
+        "pid": 443263,
+        "started": "2026-10-26T00:01:48.314282+00:00",
+        "acquired": "2026-10-26T00:01:48.323399+00:00",
+        "ended": "2026-10-26T00:01:49.72463+00:00",
+        "waitMs": 9
+      },
+      "second": {
+        "pid": 443262,
+        "started": "2026-10-26T00:01:48.507632+00:00",
+        "acquired": "2026-10-26T00:01:49.73267+00:00",
+        "ended": "2026-10-26T00:01:49.732707+00:00",
+        "waitMs": 1225
+      },
+      "parametersUnchanged": true
+    },
+    {
+      "kind": "matrimonio",
+      "passed": true,
+      "faults": [],
+      "first": {
+        "pid": 443263,
+        "started": "2026-10-26T00:01:50.152274+00:00",
+        "acquired": "2026-10-26T00:01:50.159896+00:00",
+        "ended": "2026-10-26T00:01:51.561433+00:00",
+        "waitMs": 8
+      },
+      "second": {
+        "pid": 443262,
+        "started": "2026-10-26T00:01:50.344327+00:00",
+        "acquired": "2026-10-26T00:01:51.56791+00:00",
+        "ended": "2026-10-26T00:01:51.567945+00:00",
+        "waitMs": 1224
+      },
+      "parametersUnchanged": true
+    },
+    {
+      "kind": "exequias",
+      "passed": true,
+      "faults": [],
+      "first": {
+        "pid": 443263,
+        "started": "2026-10-26T00:01:51.992766+00:00",
+        "acquired": "2026-10-26T00:01:52.000285+00:00",
+        "ended": "2026-10-26T00:01:53.401849+00:00",
+        "waitMs": 8
+      },
+      "second": {
+        "pid": 443262,
+        "started": "2026-10-26T00:01:52.191288+00:00",
+        "acquired": "2026-10-26T00:01:53.407381+00:00",
+        "ended": "2026-10-26T00:01:53.407434+00:00",
+        "waitMs": 1216
+      },
+      "parametersUnchanged": true
+    },
+    {
+      "kind": "linked",
+      "passed": true,
+      "faults": [],
+      "first": {
+        "pid": 443263,
+        "started": "2026-10-26T00:01:53.824319+00:00",
+        "acquired": "2026-10-26T00:01:53.834304+00:00",
+        "ended": "2026-10-26T00:01:55.235858+00:00",
+        "waitMs": 10
+      },
+      "second": {
+        "pid": 443262,
+        "started": "2026-10-26T00:01:54.017756+00:00",
+        "acquired": "2026-10-26T00:01:55.246258+00:00",
+        "ended": "2026-10-26T00:01:55.246294+00:00",
+        "waitMs": 1229
+      },
+      "parametersUnchanged": true
+    }
+  ],
+  "deadlock": {
+    "codes": [
+      "40P01",
+      "P0208"
+    ],
+    "oneDeadlockVictim": true,
+    "survivorRolledBack": true,
+    "nextRequestRecovered": true
+  }
+}

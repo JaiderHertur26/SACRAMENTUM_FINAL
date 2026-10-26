@@ -9,8 +9,12 @@ if (!supabaseUrl || !supabaseAnonKey) {
   );
 }
 
+// Explicit, stable key allows a failed remote logout to clear local credentials.
+export const AUTH_STORAGE_KEY = 'sb-' + new URL(supabaseUrl).hostname.split('.')[0] + '-auth-token';
+
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
+    storageKey: AUTH_STORAGE_KEY,
     persistSession: true,
     autoRefreshToken: true,
     detectSessionInUrl: true,

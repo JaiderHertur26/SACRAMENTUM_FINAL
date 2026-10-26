@@ -1,4 +1,4 @@
-﻿/*
+/*
   ========================================================================
   APP CONFIGURATION & ROUTING STRUCTURE
   ========================================================================
@@ -12,6 +12,7 @@ import { AppDataProvider } from '@/context/AppDataContext';
 
 import ProtectedRoute from '@/components/ProtectedRoute';
 import ScrollToTop from '@/components/ScrollToTop';
+import PasswordRecoveryRedirect from '@/components/PasswordRecoveryRedirect';
 import { Toaster } from '@/components/ui/toaster';
 import InstitutionalDialogHost from '@/components/ui/InstitutionalDialogHost';
 import GlobalSyncIndicator from '@/components/GlobalSyncIndicator';
@@ -21,6 +22,7 @@ import { ROLE_TYPES } from '@/config/supabaseConfig';
 /* =========================
    PUBLIC & SHARED PAGES
 ========================= */
+const ResetPasswordPage = lazy(() => import('@/pages/ResetPasswordPage'));
 const PublicSearchPage = lazy(() => import('@/pages/PublicSearchPage'));
 const NotFoundPage = lazy(() => import('@/pages/NotFoundPage'));
 const AccountConfigurationErrorPage = lazy(() => import('@/pages/AccountConfigurationErrorPage'));
@@ -142,6 +144,7 @@ const AppContent = () => {
                 {/* -------- PUBLIC -------- */}
                 <Route path="/" element={<PublicSearchPage />} />
                 <Route path="/login" element={<PublicSearchPage />} />
+                <Route path="/reset-password" element={<ResetPasswordPage />} />
                 <Route path="/account-configuration-error" element={<AccountConfigurationErrorPage />} />
 
                 {/* -------- DEBUG -------- */}
@@ -322,6 +325,7 @@ const AppContent = () => {
 export default function App() {
     return (
         <Router>
+            <PasswordRecoveryRedirect />
             <AppDataProvider>
                 <AuthProvider>
                     <AppContent />

@@ -1,0 +1,23 @@
+{
+  "protocol": "V208",
+  "date": "2026-10-26T00:02:06.312Z",
+  "observer": "pg_stat_activity and pg_blocking_pids",
+  "rows": [
+    {
+      "pid": 443263,
+      "state": "active",
+      "wait_event_type": "Timeout",
+      "wait_event": "PgSleep",
+      "blockers": []
+    },
+    {
+      "pid": 443262,
+      "state": "active",
+      "wait_event_type": "Lock",
+      "wait_event": "advisory",
+      "blockers": [
+        443263
+      ]
+    }
+  ]
+}

@@ -1,0 +1,75 @@
+{
+  "protocol": "V208",
+  "scope": "Real AuthProvider, real GoTrue login/logout, delayed actual profile request via CDP",
+  "date": "2026-10-25T23:58:13.873Z",
+  "sourceSha256": "199330c1c26ae474f9343ad2eda3ac18d5f9cce354ed9411f3834f831f95f375",
+  "rows": [
+    {
+      "kind": "logout-during-profile",
+      "passed": true,
+      "failures": [],
+      "profileRequests": 2,
+      "heldSnapshot": {
+        "text": "QA V208 Auth real{\"authenticated\":false,\"userId\":null,\"role\":null,\"profileActive\":false,\"configurationError\":null,\"sessionUserId\":null}",
+        "ready": true,
+        "result": null,
+        "state": {
+          "authenticated": false,
+          "userId": null,
+          "role": null,
+          "profileActive": false,
+          "configurationError": null,
+          "sessionUserId": "1a119734-5583-485e-b8ca-d711901d7238"
+        },
+        "events": [
+          "INITIAL_SESSION",
+          "SIGNED_IN"
+        ]
+      },
+      "signedOutSnapshot": {
+        "text": "QA V208 Auth real{\"authenticated\":false,\"userId\":null,\"role\":null,\"profileActive\":false,\"configurationError\":null,\"sessionUserId\":\"1a119734-5583-485e-b8ca-d711901d7238\"}",
+        "ready": true,
+        "result": {
+          "signedOut": true
+        },
+        "state": {
+          "authenticated": false,
+          "userId": null,
+          "role": null,
+          "profileActive": false,
+          "configurationError": null,
+          "sessionUserId": null
+        },
+        "events": [
+          "INITIAL_SESSION",
+          "SIGNED_IN",
+          "SIGNED_OUT"
+        ]
+      },
+      "final": {
+        "text": "QA V208 Auth real{\"authenticated\":false,\"userId\":null,\"role\":null,\"profileActive\":false,\"configurationError\":null,\"sessionUserId\":\"1a119734-5583-485e-b8ca-d711901d7238\"}",
+        "ready": true,
+        "result": {
+          "success": false,
+          "stale": true,
+          "error": "La sesión cambió durante la validación del perfil."
+        },
+        "state": {
+          "authenticated": false,
+          "userId": null,
+          "role": null,
+          "profileActive": false,
+          "configurationError": null,
+          "sessionUserId": null
+        },
+        "events": [
+          "INITIAL_SESSION",
+          "SIGNED_IN",
+          "SIGNED_OUT"
+        ]
+      }
+    }
+  ],
+  "exceptions": [],
+  "externalRequests": []
+}

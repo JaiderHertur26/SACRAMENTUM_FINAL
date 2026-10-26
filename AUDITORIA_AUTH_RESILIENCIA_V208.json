@@ -1,0 +1,143 @@
+{
+  "protocol": "V208",
+  "scope": "Real AuthProvider, genuine GoTrue accounts, actual logout with failed network, institutional block/reactivation and out-of-order profile responses",
+  "date": "2026-10-26T00:04:29.365Z",
+  "sourceSha256": "199330c1c26ae474f9343ad2eda3ac18d5f9cce354ed9411f3834f831f95f375",
+  "rows": [
+    {
+      "kind": "app-logout-online",
+      "passed": true,
+      "failures": [],
+      "evidence": {
+        "offline": false,
+        "failedLogoutRequests": 0,
+        "persistedKeys": [],
+        "final": {
+          "text": "QA V208 Auth real",
+          "ready": true,
+          "result": null,
+          "state": {
+            "authenticated": false,
+            "userId": null,
+            "role": null,
+            "profileActive": false,
+            "configurationError": null,
+            "sessionUserId": null
+          },
+          "events": [
+            "INITIAL_SESSION"
+          ]
+        }
+      }
+    },
+    {
+      "kind": "app-logout-network-failure",
+      "passed": true,
+      "failures": [],
+      "evidence": {
+        "offline": true,
+        "failedLogoutRequests": 1,
+        "persistedKeys": [],
+        "final": {
+          "text": "QA V208 Auth real",
+          "ready": true,
+          "result": null,
+          "state": {
+            "authenticated": false,
+            "userId": null,
+            "role": null,
+            "profileActive": false,
+            "configurationError": null,
+            "sessionUserId": null
+          },
+          "events": [
+            "INITIAL_SESSION"
+          ]
+        }
+      }
+    },
+    {
+      "kind": "blocked-session-and-reactivation",
+      "passed": true,
+      "failures": [],
+      "evidence": {
+        "blocked": {
+          "text": "QA V208 Auth real{\"authenticated\":true,\"userId\":\"1a119734-5583-485e-b8ca-d711901d7238\",\"role\":\"parish\",\"profileActive\":true,\"configurationError\":null,\"sessionUserId\":\"1a119734-5583-485e-b8ca-d711901d7238\"}",
+          "ready": true,
+          "result": {
+            "refreshed": true
+          },
+          "state": {
+            "authenticated": false,
+            "userId": null,
+            "role": null,
+            "profileActive": false,
+            "configurationError": "La cuenta no se encuentra activa.",
+            "sessionUserId": "1a119734-5583-485e-b8ca-d711901d7238"
+          },
+          "events": [
+            "INITIAL_SESSION",
+            "SIGNED_IN",
+            "TOKEN_REFRESHED"
+          ]
+        },
+        "protectedRpcDenied": {
+          "code": "42501",
+          "message": "QA208 isolated test parish required"
+        },
+        "reactivated": {
+          "text": "QA V208 Auth real{\"authenticated\":false,\"userId\":null,\"role\":null,\"profileActive\":false,\"configurationError\":\"La cuenta no se encuentra activa.\",\"sessionUserId\":\"1a119734-5583-485e-b8ca-d711901d7238\"}",
+          "ready": true,
+          "result": {
+            "refreshed": true
+          },
+          "state": {
+            "authenticated": true,
+            "userId": "1a119734-5583-485e-b8ca-d711901d7238",
+            "role": "parish",
+            "profileActive": true,
+            "configurationError": null,
+            "sessionUserId": "1a119734-5583-485e-b8ca-d711901d7238"
+          },
+          "events": [
+            "SIGNED_IN",
+            "INITIAL_SESSION",
+            "SIGNED_IN",
+            "TOKEN_REFRESHED"
+          ]
+        }
+      }
+    },
+    {
+      "kind": "late-first-login-cannot-replace-second-user",
+      "passed": true,
+      "failures": [],
+      "evidence": {
+        "final": {
+          "text": "QA V208 Auth real{\"authenticated\":false,\"userId\":null,\"role\":null,\"profileActive\":false,\"configurationError\":null,\"sessionUserId\":\"316376bd-4a46-492e-81f0-cb15b144865c\"}",
+          "ready": true,
+          "result": {
+            "success": false,
+            "stale": true,
+            "error": "La sesión cambió durante la validación del perfil."
+          },
+          "state": {
+            "authenticated": true,
+            "userId": "316376bd-4a46-492e-81f0-cb15b144865c",
+            "role": "parish",
+            "profileActive": true,
+            "configurationError": null,
+            "sessionUserId": "316376bd-4a46-492e-81f0-cb15b144865c"
+          },
+          "events": [
+            "INITIAL_SESSION",
+            "SIGNED_IN",
+            "SIGNED_IN"
+          ]
+        }
+      }
+    }
+  ],
+  "exceptions": [],
+  "externalRequests": []
+}
