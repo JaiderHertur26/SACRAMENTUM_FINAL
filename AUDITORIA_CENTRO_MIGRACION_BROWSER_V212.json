@@ -1,0 +1,66 @@
+{
+  "protocol": "V212",
+  "scope": "Actual LegacyMigrationCenterPage in Chromium; purely fictitious JSON input, fake identity/RPC, zero Supabase access",
+  "date": "2026-10-26T03:30:20.767Z",
+  "rows": [
+    {
+      "label": "diocese_sees_only_own_parishes",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "label": "known_baptism_file_auto_analyzed",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "label": "profile_change_blocks_staging",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "label": "reanalyze_then_stage_allowed",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "label": "changing_parish_invalidates_staged_batch",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "label": "manual_profile_for_unknown_filename",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "label": "stalled_import_is_never_announced_as_success",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "label": "switching_diocesan_scope_invalidates_batch_and_options",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "label": "general_admin_can_select_another_parish",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "label": "last_selected_file_wins_async_race",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "label": "general_admin_batch_is_bound_to_selected_foreign_diocese",
+      "passed": true,
+      "error": ""
+    }
+  ],
+  "passed": 11,
+  "total": 11,
+  "jsExceptions": 0,
+  "blockedExternalRequests": 0
+}
