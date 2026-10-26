@@ -54,8 +54,8 @@
     "gateTotal": 30
   },
   "migration": {
-    "file": "supabase/migrations/20261026125750_guard_generic_legacy_registral_links_v217.sql",
-    "appliedPermanently": false
+    "file": "supabase/migrations/20261026131258_guard_generic_legacy_registral_links_v217.sql",
+    "appliedPermanently": true
   },
   "remaining": [
     "219 historical references need documented human reconciliation and review in issue #67",

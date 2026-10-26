@@ -8,7 +8,7 @@ En `legacy_record_links` las importaciones antiguas podían utilizar `ON CONFLIC
 
 ## Solución V217
 
-`supabase/migrations/20261026125750_guard_generic_legacy_registral_links_v217.sql` modifica de manera versionada el disparador común `sacramentum_guard_legacy_record_link_identity` sin reescribir filas históricas:
+`supabase/migrations/20261026131258_guard_generic_legacy_registral_links_v217.sql` modifica de manera versionada el disparador común `sacramentum_guard_legacy_record_link_identity` sin reescribir filas históricas:
 - Exclusión mutua por clave de procedencia; comprobación de lote y fila de staging del mismo sistema/perfil/clave.
 - Validación de parroquia del lote y del destino físico, incluyendo Bautismo, Confirmación, Matrimonio, Exequias, preinscripciones, notas marginales y cola histórica.
 - Prohibición de cambiar un vínculo existente a otra parroquia, otra tabla registral, otro UUID, sistema, perfil o clave histórica, incluso para escapar hacia un catálogo.
@@ -38,7 +38,7 @@ Los 219 vínculos sin `target_id` actualmente localizable no demuestran por sí 
 - Scripts SQL ficticios bajo `scripts/qa-rollback-generic-link-*.sql` finalizan con `ROLLBACK`.
 - Lecturas seguras bajo `scripts/qa-readonly-legacy-link-inventory-v217.sql`.
 
-La migración se instala oficialmente solo después de CI independiente verde. La aprobación de estos escenarios no equivale a certificar todos los recorridos de usuario final, correo de recuperación o impresión física.
+La migración se **instaló y registró en Supabase después de aprobación independiente de GitHub CI** bajo la versión oficial **20261026131258**. Se ejecutaron de nuevo las cuatro pruebas SQL reversibles con el guardia activo: todas pasaron. El primer intento de CI había sufrido un fallo transitorio de arranque Chrome (DBus), por lo que se repitió el trabajo fallido sin relajar controles, terminando verde. La aprobación de estos escenarios no equivale a certificar todos los recorridos de usuario final, correo de recuperación o impresión física.
 
 ## Porcentaje global del proyecto
 

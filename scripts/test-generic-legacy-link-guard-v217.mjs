@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-const migrationPath='supabase/migrations/20261026125750_guard_generic_legacy_registral_links_v217.sql';
+const migrationPath='supabase/migrations/20261026131258_guard_generic_legacy_registral_links_v217.sql';
 const migration=fs.readFileSync(migrationPath,'utf8');
 const repro=fs.readFileSync('scripts/qa-rollback-generic-link-cross-parish-repro-v217.sql','utf8');
 const guard=fs.readFileSync('scripts/qa-rollback-generic-link-protection-v217.sql','utf8');
