@@ -1,0 +1,55 @@
+{
+  "protocol": "V216",
+  "localDate": "2026-10-26",
+  "scope": "All four sacramental families of historical marginal notes; public.apply_legacy_marginal_note_batch",
+  "qaTransactions": "Every PostgreSQL fixture is fictitious and begins with BEGIN, ends in ROLLBACK.",
+  "reproducedDefect": {
+    "notesInOtherParishReused": true,
+    "firstNoteImported": 1,
+    "secondNoteImported": 0,
+    "secondMarkedDuplicate": true,
+    "secondNotePointsToFirst": true
+  },
+  "newProtectionTestedTemporarily": {
+    "fourSacramentFamilies": [
+      "bautismo",
+      "confirmacion",
+      "matrimonio",
+      "exequias"
+    ],
+    "createdOwnedNotes": 4,
+    "foreignParishLinksRejected": 4,
+    "sameParishIdempotentReplays": 4,
+    "wrongPartidaWithinSameParishRejected": 1,
+    "originalNotePreserved": true,
+    "transactionalAdvisoryLock": true,
+    "physicalPartidaCoordinatesVerified": true
+  },
+  "ui": {
+    "historicalNoteProfiles": 6,
+    "chromeTests": 17,
+    "chromePass": 17,
+    "jsExceptions": 0,
+    "externalRequests": 0,
+    "reviewNotFalseSuccess": true,
+    "failedImportNotFalseSuccess": true
+  },
+  "automation": {
+    "tests": 1773,
+    "passed": 1773,
+    "gate": 30,
+    "passedGate": 30,
+    "productionBuild": "pass",
+    "npmAudit": "pass"
+  },
+  "migration": {
+    "file": "supabase/migrations/20261026124426_guard_marginal_note_historical_parish_v216.sql",
+    "temporaryTransactionVerified": true,
+    "permanentDeployment": "applied in Supabase as version 20261026124426 after GitHub CI approval; post-install rollback tests passed"
+  },
+  "remaining": [
+    "Physical printing not certified in this V216.",
+    "Actual password recovery email receipt not certified.",
+    "Other historical import materializers not fully audited by V216."
+  ]
+}

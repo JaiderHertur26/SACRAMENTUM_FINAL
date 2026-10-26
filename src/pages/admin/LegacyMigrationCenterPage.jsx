@@ -212,6 +212,7 @@ const LegacyMigrationCenterPage = () => {
       const activeProfile = String(currentBatch.profile_key || profileKey || '').toUpperCase();
       const isHistoricalBoletaBatch = ['INSBAUTI','INSCONFI'].includes(activeProfile);
       const isHistoricalMarriageBatch = activeProfile === 'INSMATRI';
+      const isHistoricalNotesBatch = ['NTBAU001','NTBAU002','NTCON001','NTMAT001','NTMAT002','NTDEF001'].includes(activeProfile);
       const auxiliaryProfiles = ['PARROCOS','IGLESIAS','CIUDADES','OBISPOS'];
       const isAuxiliaryCatalog = auxiliaryProfiles.includes(activeProfile);
       const materializedCount = Number(result.materialized?.materialized || 0);
@@ -234,6 +235,20 @@ const LegacyMigrationCenterPage = () => {
           title: totalNeedsReview ? 'Matrimonios históricos · revisión pendiente' : 'Preinscripciones matrimoniales procesadas',
           description:`${result.imported} expedientes pendientes creados · ${result.reconciled} matrimonios conciliados con partidas existentes · ${totalNeedsReview} requieren revisión manual. No se crearon partidas matrimoniales celebradas.`,
           variant: totalNeedsReview ? 'destructive' : undefined
+        });
+      } else if (isHistoricalNotesBatch) {
+        const reviewCount = Math.max(Number(result.reviewed || 0), Number(fresh?.review_count || 0));
+        const failureCount = Math.max(Number(result.failed || 0), Number(fresh?.error_count || 0));
+        const needsAttention = reviewCount > 0 || failureCount > 0;
+        toast({
+          title: failureCount
+            ? 'Notas históricas · errores de importación'
+            : reviewCount
+              ? 'Notas históricas · revisión pendiente'
+              : 'Notas marginales históricas vinculadas',
+          description:`${result.imported} notas vinculadas · ${reviewCount} pendientes de revisión · ${failureCount} errores. Las notas rechazadas no se incorporaron a los libros; revise cada caso antes de continuar.`,
+          variant: needsAttention ? 'destructive' : undefined,
+          ...(!needsAttention ? {className:'bg-green-50 text-green-900 border-green-200'} : {})
         });
       } else if (isAuxiliaryCatalog && materializedCount !== Number(result.imported || 0)) {
         toast({
