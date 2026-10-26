@@ -1,0 +1,81 @@
+{
+  "protocol": "V219",
+  "date": "2026-10-26",
+  "estimatedPercent": 88,
+  "weightedRawPercent": 88.14999999999999,
+  "method": "Estimación prudencial por nueve ámbitos, ponderada y subjetiva. NO corresponde a cobertura matemática ni certificación de total ausencia de fallos.",
+  "areas": [
+    {
+      "area": "Infraestructura, CI y despliegue",
+      "weight": 10,
+      "complete": 97,
+      "remaining": "Certificación continua de operaciones y respaldos"
+    },
+    {
+      "area": "Roles, jerarquía y separación institucional",
+      "weight": 10,
+      "complete": 94,
+      "remaining": "Recorridos auténticos con más usuarios, todos los roles y permisos cruzados"
+    },
+    {
+      "area": "Registros y pendientes de cuatro sacramentos",
+      "weight": 20,
+      "complete": 91,
+      "remaining": "Pruebas E2E con cuentas reales y consistencia de certificados"
+    },
+    {
+      "area": "Cancillería, decretos y trazabilidad jurídica",
+      "weight": 15,
+      "complete": 90,
+      "remaining": "Resolver documentalmente anomalías y cerrar matrices de decretos"
+    },
+    {
+      "area": "Migración histórica e integridad de procedencia",
+      "weight": 15,
+      "complete": 90,
+      "remaining": "47 coincidencias para cotejo; 172 registros sin partida coincidente; otros catálogos globales"
+    },
+    {
+      "area": "Notas marginales y reconciliación",
+      "weight": 10,
+      "complete": 91,
+      "remaining": "Cotejo documental y recepción institucional"
+    },
+    {
+      "area": "Reportes, chat y notificaciones",
+      "weight": 8,
+      "complete": 80,
+      "remaining": "Ensayos funcionales reales y estrés"
+    },
+    {
+      "area": "Documentos, constancias e impresión",
+      "weight": 7,
+      "complete": 75,
+      "remaining": "Certificación de impresión física y marcas no oficiales en flujos de impresión dedicados"
+    },
+    {
+      "area": "Aceptación E2E y operaciones reales",
+      "weight": 5,
+      "complete": 62,
+      "remaining": "Correos de recuperación reales, aceptación multiusuario y paso explícito a datos oficiales"
+    }
+  ],
+  "dataStatus": "All currently loaded user data is TEST DATA per user's explicit clarification. None is official.",
+  "gates": {
+    "automatedTests": 1892,
+    "passedTests": 1892,
+    "gateChecks": 30,
+    "passedChecks": 30,
+    "isolatedChrome": 8,
+    "isolatedChromePassed": 8,
+    "sqlRollbackValidated": true
+  },
+  "pending": [
+    "No wholesale purge of existing test data performed",
+    "46 strong historic match candidates need documentary validation; no permanent relinking",
+    "1 conflicting record must remain blocked",
+    "172 historic links have no same-parish physical match",
+    "Actual email delivery and physical printing remain unverified",
+    "Full production authenticated UI workflows need certification"
+  ]
+}

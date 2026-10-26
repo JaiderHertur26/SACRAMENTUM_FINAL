@@ -1,0 +1,49 @@
+{
+  "protocol": "V219",
+  "date": "2026-10-26",
+  "dataAreOfficial": false,
+  "dataScope": "Existing records are test fixtures, none officially valid",
+  "analysis": {
+    "unresolved": 219,
+    "strongCandidate": 46,
+    "identityConflict": 1,
+    "noMatch": 172,
+    "ambiguous": 0,
+    "matchingFields": [
+      "parish",
+      "sacrament family",
+      "book",
+      "folio",
+      "number",
+      "names",
+      "last names",
+      "celebration date"
+    ],
+    "readOnly": true
+  },
+  "security": {
+    "chanceryJWTRequired": true,
+    "scopeToDiocese": true,
+    "parishRoleRejected": true,
+    "anonymousRejected": true,
+    "otherDioceseGetsZero": true,
+    "internalHelperNoAuthenticatedExecute": true,
+    "unsafeCandidateUUIDNotReturned": true
+  },
+  "browser": {
+    "tests": 8,
+    "passed": 8,
+    "JSExceptions": 0,
+    "externalRequests": 0
+  },
+  "qa": {
+    "sqlRollback": true,
+    "linksModified": 0,
+    "automatedPassed": 1892,
+    "gatePassed": 30
+  },
+  "migration": {
+    "localPath": "supabase/migrations/20261026142033_historical_reconciliation_candidate_triage_v219.sql",
+    "installedInSupabase": false
+  }
+}

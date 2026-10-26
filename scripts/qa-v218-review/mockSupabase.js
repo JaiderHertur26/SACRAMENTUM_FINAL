@@ -11,6 +11,12 @@ export const supabase={rpc:async(name,args={})=>{
  if(window.__qa218.user.role!=='chancery')return{data:null,error:{message:'Acceso exclusivo de Cancillería'}};
  if(name==='summarize_unresolved_legacy_links_v218')return{data:window.__qa218.user.dioceseId==='diocese-A'?[{profile_key:'BAUTIZOS',unresolved:46,affected_parishes:1},{profile_key:'CONFIRMA',unresolved:173,affected_parishes:1}]:[],error:null};
  if(name==='list_unresolved_legacy_links_v218')return{data:window.__qa218.user.dioceseId==='diocese-A'?all.slice(args.p_offset,args.p_offset+args.p_limit):[],error:null};
+ if(name==='summarize_unresolved_legacy_candidates_v219')return{data:window.__qa218.user.dioceseId==='diocese-A'?[
+   {assessment:'strong_candidate',case_count:46},{assessment:'identity_conflict',case_count:1},
+   {assessment:'not_found',case_count:172}]:[],error:null};
+ if(name==='assess_unresolved_legacy_links_v219')return{data:window.__qa218.user.dioceseId==='diocese-A'?
+   all.slice(args.p_offset,args.p_offset+args.p_limit).map((row)=>{const n=Number(row.link_id.slice(-4));const assessment=n<46?'strong_candidate':n===46?'identity_conflict':'not_found';return{
+   link_id:row.link_id,assessment,candidate_id:assessment==='strong_candidate'?'qa-candidate-'+n:null};}):[],error:null};
  if(name==='record_unresolved_legacy_link_review_v218'){
    if(window.__qa218.user.dioceseId!=='diocese-A')return{data:null,error:{message:'Parroquia fuera de jurisdicción'}};
    window.__qa218.saved.push({...args});

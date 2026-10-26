@@ -6,6 +6,8 @@ import { useAuth } from '@/context/AuthContext';
 const DashboardLayout = ({ children, entityName }) => {
   const { user, logout } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  // V219: this instance contains TEST records only; official mode requires an explicit rollout.
+  const usingTestRecords = import.meta.env.VITE_REGISTRY_DATA_MODE !== 'official';
 
   const handleLogout = async () => {
     await logout();
@@ -76,6 +78,11 @@ const DashboardLayout = ({ children, entityName }) => {
 
       {/* Main Content Area */}
       <main className="lg:pl-72 pt-16 flex-1 transition-all duration-300 bg-slate-50">
+        {usingTestRecords && (
+          <div role="status" aria-label="Datos de prueba no oficiales" className="border-b border-amber-300 bg-amber-50 px-4 py-2 text-center text-xs font-extrabold tracking-wide text-amber-950">
+            DATOS DE PRUEBA · NO OFICIALES · SACRAMENTUM EN VALIDACIÓN
+          </div>
+        )}
         <div className="p-4 lg:p-8 max-w-7xl mx-auto w-full">
           {children}
         </div>
