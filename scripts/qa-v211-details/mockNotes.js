@@ -1,0 +1,1 @@
+export const listMarginalNotesForRecord=async()=>[{content:'NOTA FICTICIA V211'}];

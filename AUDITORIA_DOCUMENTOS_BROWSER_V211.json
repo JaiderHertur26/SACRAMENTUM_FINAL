@@ -1,0 +1,81 @@
+{
+  "protocol": "V211",
+  "scope": "Real React detail components in isolated Chromium. 100% fictional in-memory RPC and tables, zero credentials, no writes to real Supabase, simulated popup HTML.",
+  "timestamp": "2026-10-26T03:11:01.534Z",
+  "total": 14,
+  "passed": 14,
+  "rows": [
+    {
+      "label": "decree_current_view",
+      "pass": true,
+      "failure": ""
+    },
+    {
+      "label": "decree_document_print",
+      "pass": true,
+      "failure": ""
+    },
+    {
+      "label": "decree_historical_view",
+      "pass": true,
+      "failure": ""
+    },
+    {
+      "label": "decree_foreign_denied",
+      "pass": true,
+      "failure": ""
+    },
+    {
+      "label": "decree_network_error_not_stuck",
+      "pass": true,
+      "failure": ""
+    },
+    {
+      "label": "decree_retry_recovers",
+      "pass": true,
+      "failure": ""
+    },
+    {
+      "label": "decree_trace_rpc_error_nonblocking",
+      "pass": true,
+      "failure": ""
+    },
+    {
+      "label": "decree_trace_rpc_never_resolves_but_document_opens",
+      "pass": true,
+      "failure": ""
+    },
+    {
+      "label": "decree_stale_response_isolation",
+      "pass": true,
+      "failure": ""
+    },
+    {
+      "label": "decree_cross_parish_scope_change",
+      "pass": true,
+      "failure": ""
+    },
+    {
+      "label": "baptism_scope_positive",
+      "pass": true,
+      "failure": ""
+    },
+    {
+      "label": "baptism_modal_preview",
+      "pass": true,
+      "failure": ""
+    },
+    {
+      "label": "baptism_foreign_denied",
+      "pass": true,
+      "failure": ""
+    },
+    {
+      "label": "baptism_stale_response_isolation",
+      "pass": true,
+      "failure": ""
+    }
+  ],
+  "jsExceptionCount": 0,
+  "externalRequestCount": 0
+}

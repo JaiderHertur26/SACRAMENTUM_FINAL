@@ -161,6 +161,8 @@ const ParishDecreeDetailPage = () => {
   const decree = loadedKey === detailKey ? loadedDecree : null;
   const [auditInfo, setAuditInfo] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState('');
+  const [retryCount, setRetryCount] = useState(0);
   const isPageLoading = loading || loadedKey !== detailKey;
 
   useEffect(() => {
@@ -168,61 +170,75 @@ const ParishDecreeDetailPage = () => {
 
     const load = async () => {
       if (!decreeId || !parishId) {
-        if (active) { setDecree(null); setAuditInfo(null); setLoadedKey(detailKey); setLoading(false); }
+        if (active) {
+          setDecree(null);
+          setAuditInfo(null);
+          setLoadError('No se identificó una parroquia válida para consultar el decreto.');
+          setLoadedKey(detailKey);
+          setLoading(false);
+        }
         return;
       }
       setLoading(true);
+      setLoadError('');
+      try {
+        const { data, error } = await supabase
+          .from('decretos')
+          .select('*')
+          .eq('id', decreeId)
+          .eq('parish_id', parishId)
+          .maybeSingle();
 
-      const { data, error } = await supabase
-        .from('decretos')
-        .select('*')
-        .eq('id', decreeId)
-        .eq('parish_id', parishId)
-        .maybeSingle();
+        if (!active) return;
+        if (error) throw error;
 
-      if (!active) return;
-
-      if (error) {
+        // Present the authorized decree immediately. The auxiliary trace must
+        // never hold the document hostage to an unavailable or slow RPC.
+        setDecree(data || null);
+        setAuditInfo(null);
+        if (data?.id) {
+          void (async () => {
+            try {
+              const { data: auditRows, error: auditError } = await supabase.rpc(
+                'get_decree_trace_v89', { p_decree_id: data.id }
+              );
+              if (!active || auditError) return;
+              const event = (auditRows || []).find((row) =>
+                ['issue','create','issued','issue_documentary_decree',
+                  'historical_documentary_recovery'].includes(String(row.action || '').toLowerCase())
+              ) || (auditRows || [])[0] || null;
+              if (event) setAuditInfo({
+                action: event.action,
+                createdAt: event.created_at,
+                actorName: event.actor_name || 'Usuario institucional',
+                actorRole: event.actor_role || ''
+              });
+            } catch {
+              // A denied/unavailable trace neither leaks internals nor blocks a valid decree.
+            }
+          })();
+        }
+      } catch {
+        if (!active) return;
+        setDecree(null);
+        setAuditInfo(null);
+        setLoadError('No se pudo consultar el decreto. Compruebe la conexión e inténtelo nuevamente.');
         toast({
           title: 'No se pudo abrir el decreto',
-          description: error.message,
+          description: 'La consulta no se completó. Puede volver a intentarlo.',
           variant: 'destructive'
         });
-      }
-
-      let trace = null;
-      if (data?.id) {
-        // registry_audit_log está correctamente cerrada por RLS. La Parroquia
-        // consulta solo la traza de SU decreto mediante una RPC jurisdiccional.
-        const { data: auditRows, error: auditError } = await supabase.rpc(
-          'get_decree_trace_v89', { p_decree_id: data.id }
-        );
-        if (auditError) {
-          console.warn('No fue posible consultar la trazabilidad del decreto:', auditError.message);
-        } else {
-          const event = (auditRows || []).find((row) =>
-            ['issue','create','issued','issue_documentary_decree',
-              'historical_documentary_recovery'].includes(String(row.action || '').toLowerCase())
-          ) || (auditRows || [])[0] || null;
-          if (event) trace = {
-            action: event.action,
-            createdAt: event.created_at,
-            actorName: event.actor_name || 'Usuario institucional',
-            actorRole: event.actor_role || ''
-          };
+      } finally {
+        if (active) {
+          setLoadedKey(detailKey);
+          setLoading(false);
         }
       }
-
-      if (!active) return;
-      setDecree(data || null);
-      setAuditInfo(trace);
-      setLoadedKey(detailKey);
-      setLoading(false);
     };
 
     load();
     return () => { active = false; };
-  }, [decreeId, parishId]);
+  }, [decreeId, parishId, retryCount]);
 
   const payload = useMemo(() => {
     if (!decree?.payload) return {};
@@ -395,9 +411,14 @@ const ParishDecreeDetailPage = () => {
         ) : !decree ? (
           <div className="rounded-[2rem] border border-red-100 bg-red-50 p-10 text-center">
             <h2 className="font-black text-red-800">Decreto no disponible</h2>
-            <p className="mt-2 text-sm text-red-600">
-              No existe o no pertenece a esta parroquia.
+            <p className="mt-2 text-sm text-red-600" role={loadError ? 'alert' : undefined}>
+              {loadError || 'No existe o no pertenece a esta parroquia.'}
             </p>
+            {loadError && parishId && decreeId && (
+              <Button type="button" variant="outline" className="mt-5" onClick={() => setRetryCount((value) => value + 1)}>
+                Volver a intentar
+              </Button>
+            )}
           </div>
         ) : (
           <article className="overflow-hidden rounded-[2.25rem] border border-slate-200 bg-white shadow-xl shadow-slate-900/5 print:rounded-none print:border-0 print:shadow-none">
