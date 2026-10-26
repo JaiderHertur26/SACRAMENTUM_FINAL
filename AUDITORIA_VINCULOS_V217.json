@@ -1,0 +1,65 @@
+{
+  "version": "V217",
+  "sqlRepro": {
+    "bug": "A global legacy record link from parish A can be overwritten by parish B when both sacramental records have identical names and dates",
+    "confirmed": true,
+    "rolledBack": true
+  },
+  "fixedInRollback": {
+    "profiles": [
+      "BAUTIZOS",
+      "CONFIRMA",
+      "MATRIMON",
+      "DIFUNTOS"
+    ],
+    "crossParishSourceOverwritesDenied": 4,
+    "foreignTargetRejected": 4,
+    "ownReplaysAllowed": 4,
+    "originalSourcesPreserved": 4
+  },
+  "inventoryReadOnly": {
+    "baptism": {
+      "total": 5084,
+      "missing": 46,
+      "foreignExisting": 0,
+      "ownedExisting": 5038
+    },
+    "confirmation": {
+      "total": 2263,
+      "missing": 173,
+      "foreignExisting": 0,
+      "ownedExisting": 2090
+    },
+    "marriage": {
+      "total": 1260,
+      "missing": 0,
+      "foreignExisting": 0,
+      "ownedExisting": 1260
+    },
+    "funeral": {
+      "total": 0,
+      "missing": 0,
+      "foreignExisting": 0,
+      "ownedExisting": 0
+    },
+    "total": 8607,
+    "missingTargets": 219,
+    "existingOwned": 8388,
+    "existingForeign": 0
+  },
+  "automated": {
+    "testsPassed": 1813,
+    "testsTotal": 1813,
+    "gatePassed": 30,
+    "gateTotal": 30
+  },
+  "migration": {
+    "file": "supabase/migrations/20261026125750_guard_generic_legacy_registral_links_v217.sql",
+    "appliedPermanently": false
+  },
+  "remaining": [
+    "219 historical references need documented human reconciliation and review in issue #67",
+    "Global legacy catalog imports intentionally out of this registral guard scope",
+    "Positive e-mail delivery and physical print certification pending"
+  ]
+}

@@ -1,0 +1,71 @@
+{
+  "protocol": "V217",
+  "date": "2026-10-26",
+  "metric": "Estimated technical completion, not a certified feature-by-feature status",
+  "estimatedPercent": 86,
+  "weightedRawPercent": 85.65,
+  "method": "Qualitative, weighted 9-domain expert rubric based on completed audits and remaining validation; not inferred from passed test count or release number.",
+  "areas": [
+    {
+      "name": "Infraestructura, CI y despliegue",
+      "weight": 10,
+      "estimatedComplete": 97,
+      "remaining": "Verificaciones operativas sostenidas"
+    },
+    {
+      "name": "Roles, jerarquía y separación institucional",
+      "weight": 10,
+      "estimatedComplete": 92,
+      "remaining": "Certificación integral multiusuario con sesiones reales"
+    },
+    {
+      "name": "Registros y pendientes de los cuatro sacramentos",
+      "weight": 20,
+      "estimatedComplete": 91,
+      "remaining": "Recorridos positivos y negativos por rol en producción controlada"
+    },
+    {
+      "name": "Cancillería, decretos y trazabilidad jurídica",
+      "weight": 15,
+      "estimatedComplete": 83,
+      "remaining": "Matrices reales completas de decretos nuevos, históricos y efectos"
+    },
+    {
+      "name": "Migración histórica e integridad de procedencia",
+      "weight": 15,
+      "estimatedComplete": 84,
+      "remaining": "Conciliar 219 referencias sin destino y verificar catálogos globales"
+    },
+    {
+      "name": "Notas marginales y reconciliación",
+      "weight": 10,
+      "estimatedComplete": 91,
+      "remaining": "Verificación documental completa y recepción institucional"
+    },
+    {
+      "name": "Reportes, chat y notificaciones",
+      "weight": 8,
+      "estimatedComplete": 80,
+      "remaining": "Ensayos funcionales cruzados en sesiones reales"
+    },
+    {
+      "name": "Documentos, constancias e impresión",
+      "weight": 7,
+      "estimatedComplete": 75,
+      "remaining": "Validación de impresión física y archivo final"
+    },
+    {
+      "name": "Aceptación E2E y operaciones reales",
+      "weight": 5,
+      "estimatedComplete": 55,
+      "remaining": "Entrega real de recuperación por email, control de lanzamiento y pruebas positivas"
+    }
+  ],
+  "limits": [
+    "No complete measured feature inventory exists",
+    "Not a guarantee of zero defects",
+    "Documented 219 historical unresolved references remain untouched",
+    "Receiving password-reset email and physical printing not certified"
+  ],
+  "source": "Evidence from V208 through V217 audit artifacts and SQL inventory in this repo"
+}
