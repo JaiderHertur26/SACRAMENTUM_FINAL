@@ -53,7 +53,7 @@ test('V213 staged source keys include the chosen verified scope for every chunk'
  assert.equal(c.rpcs[1].args.p_rows[4].source_key,parishA+'|'+hash+'|book|204');
 });
 test('V213 PostgreSQL migration blocks foreign links, locks concurrent keys and keeps own replays',()=>{
- const sql=fs.readFileSync('supabase/migrations/20261026035359_isolate_legacy_source_links_parish_v213.sql','utf8');
+ const sql=fs.readFileSync('supabase/migrations/20261026040729_isolate_legacy_source_links_parish_v213.sql','utf8');
  for(const part of ['pg_advisory_xact_lock','prior.parish_id is distinct from v_batch.parish_id','pending_baptisms','pending_confirmations','baptisms','confirmations','Clave histórica vinculada a otra parroquia','position(v_old in v_ddl)=0','EXECUTE v_ddl']) assert.ok(sql.includes(part),part);
  assert.doesNotMatch(sql,/\bDROP\s+(FUNCTION|TABLE)\b/i);
 });

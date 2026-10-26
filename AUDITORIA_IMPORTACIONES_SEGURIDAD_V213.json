@@ -13,8 +13,8 @@
     "persisted": false
   },
   "testedMigration": {
-    "file": "supabase/migrations/20261026035359_isolate_legacy_source_links_parish_v213.sql",
-    "status": "SQL validated with temporary in-transaction replacement only; production application pending CI approval",
+    "file": "supabase/migrations/20261026040729_isolate_legacy_source_links_parish_v213.sql",
+    "status": "Applied in Supabase via authorized migration connector, version 20261026040729; post-deployment SQL rollback checks passed",
     "foreignParishKeyRejected": true,
     "originalLinkUnchanged": true,
     "ownParishDuplicateReused": true,
@@ -61,6 +61,6 @@
     "Only INSBAUTI / INSCONFI private materializer is hardened by the SQL migration; other historical profiles need further review.",
     "The positive reconciliation of a reported boleta with an existing celebrated record is not separately reproduced in this V213 fixture.",
     "No real emails or physical print tests are included.",
-    "The CLI migration list returned HTTP 403; deployment requires the connected Supabase migration action with tracked migration history."
+    "The local Supabase CLI returned HTTP 403; the connected Supabase migration action successfully recorded the migration in history."
   ]
 }
