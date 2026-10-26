@@ -1,0 +1,57 @@
+{
+  "protocol": "V215",
+  "localDate": "2026-10-26",
+  "scope": "Historical INSMATRI parish ownership and reported marriage reconciliation",
+  "safety": "All SQL fixture data, both before and after migration simulation, is within BEGIN/ROLLBACK. No QA data persisted.",
+  "reproduced": {
+    "crossParishExistingKey": {
+      "firstImported": 1,
+      "secondImported": 0,
+      "foreignPendingReused": true
+    },
+    "reportedDateMissing": {
+      "nameMatchesAloneWereReconciled": true
+    }
+  },
+  "fixedUnderReversibleMigration": {
+    "foreignParishSourceDenied": true,
+    "originalSourceLinkPreserved": true,
+    "ownParishReplayIdempotent": true,
+    "insufficientNamesOrDateSentToReview": true,
+    "invalidLinksCreated": 0,
+    "wellIdentifiedReportedMarriageReconciles": true,
+    "noDuplicateCelebratedMarriage": true
+  },
+  "currentRealData": {
+    "qa215_batches": 0,
+    "qa215_links": 0,
+    "qa215_pending": 0,
+    "qa215_marriages": 0
+  },
+  "frontend": {
+    "react_real_component": true,
+    "mocks_only": true,
+    "chrome_tests_passed": 15,
+    "chrome_tests_total": 15,
+    "exceptions": 0,
+    "externalRequests": 0
+  },
+  "quality": {
+    "tests": 1743,
+    "passed": 1743,
+    "gate": 30,
+    "gatePassed": 30,
+    "productionBuild": true,
+    "dependencyChecks": true
+  },
+  "migration": {
+    "localFile": "supabase/migrations/20261026120242_guard_pending_legacy_marriage_provenance_v215.sql",
+    "temporaryTransactionVerified": true,
+    "productionApplied": false
+  },
+  "limitations": [
+    "The grant and RLS authorization are unchanged; SQL protection adds checks to the existing SECURITY DEFINER materializer only.",
+    "Other legacy importers and marginal notes remain under audit issue #64.",
+    "Actual email receipt and click-through password reset remains untested."
+  ]
+}

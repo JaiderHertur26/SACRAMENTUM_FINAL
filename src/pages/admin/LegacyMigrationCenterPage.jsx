@@ -211,6 +211,7 @@ const LegacyMigrationCenterPage = () => {
       }
       const activeProfile = String(currentBatch.profile_key || profileKey || '').toUpperCase();
       const isHistoricalBoletaBatch = ['INSBAUTI','INSCONFI'].includes(activeProfile);
+      const isHistoricalMarriageBatch = activeProfile === 'INSMATRI';
       const auxiliaryProfiles = ['PARROCOS','IGLESIAS','CIUDADES','OBISPOS'];
       const isAuxiliaryCatalog = auxiliaryProfiles.includes(activeProfile);
       const materializedCount = Number(result.materialized?.materialized || 0);
@@ -226,6 +227,13 @@ const LegacyMigrationCenterPage = () => {
           description:`${result.imported} pendientes creados · ${result.reconciled} boletas conciliadas con partidas existentes · ${totalNeedsReview} casos para revisión manual. No se crearon partidas celebradas.`,
           variant: requiresReview ? 'destructive' : undefined,
           ...(!requiresReview ? { className:'bg-green-50 text-green-900 border-green-200' } : {})
+        });
+      } else if (isHistoricalMarriageBatch) {
+        const totalNeedsReview = Math.max(Number(result.reviewed || 0), Number(fresh?.review_count || 0));
+        toast({
+          title: totalNeedsReview ? 'Matrimonios históricos · revisión pendiente' : 'Preinscripciones matrimoniales procesadas',
+          description:`${result.imported} expedientes pendientes creados · ${result.reconciled} matrimonios conciliados con partidas existentes · ${totalNeedsReview} requieren revisión manual. No se crearon partidas matrimoniales celebradas.`,
+          variant: totalNeedsReview ? 'destructive' : undefined
         });
       } else if (isAuxiliaryCatalog && materializedCount !== Number(result.imported || 0)) {
         toast({
