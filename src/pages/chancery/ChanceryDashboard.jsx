@@ -11,7 +11,7 @@ import {
     AlertCircle, FileCheck, CheckCircle, 
     FileText, Settings, Building, MapPin, Phone, 
     Info, Loader2, ShieldCheck, Search,
-    Zap, FileStack, ChevronRight, AtSign
+    Zap, FileStack, FileSearch, ChevronRight, AtSign
 } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { useNavigate } from 'react-router-dom';
@@ -247,6 +247,7 @@ const ChanceryDashboard = () => {
                             <ChanceryActionButton label="Buscador Unificado" icon={Search} color="bg-[#D4AF37]" onClick={() => navigate('/buscar')} />
                             <ChanceryActionButton label="Revisar Sacramentos Pendientes" icon={AlertCircle} color="bg-amber-500" onClick={() => navigate('/chancery/pending')} />
                             <ChanceryActionButton label="Centro de Decretos Sacramentales" icon={FileText} color="bg-slate-900" onClick={() => navigate('/chancery/decretos')} />
+                            <ChanceryActionButton label="Revisión de Vínculos Históricos" icon={FileSearch} color="bg-blue-700" onClick={() => navigate('/chancery/historicos/conciliacion')} />
                             <ChanceryActionButton label="Bandeja de Comunicaciones" icon={Mail} color="bg-slate-700" onClick={() => navigate('/communications')} />
                         </div>
                     </div>

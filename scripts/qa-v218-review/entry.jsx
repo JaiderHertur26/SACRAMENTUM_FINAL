@@ -1,0 +1,3 @@
+import React from 'react';import{createRoot}from'react-dom/client';import{BrowserRouter}from'react-router-dom';import{MockAuthProvider}from'./mockAuth.jsx';import Page from '@/pages/chancery/HistoricalLinkReviewPage';import '@/index.css';
+window.__qa218={toasts:[],calls:[],saved:[],user:{id:'qa-chancery',role:'chancery',dioceseId:'diocese-A',dioceseName:'QA FICTICIA'},delay:0};
+createRoot(document.getElementById('root')).render(<BrowserRouter><MockAuthProvider><Page/></MockAuthProvider></BrowserRouter>);
