@@ -144,6 +144,12 @@ test('V163 real build command preserves Vite build after the gate',()=>{
  const ignore=fs.readFileSync('.vercelignore','utf8');
  assert.doesNotMatch(ignore,/^release-gate-v163\.mjs\s*$/m);
 });
-test('V163 production gate cannot authorize without a GitHub success result',async()=>{
- await assert.rejects(main(prod,{request:async()=>response([]),...fast}),/deadline exceeded/);
+test('V213 production delegates required CI to GitHub protected main, never to unauthenticated Vercel API',async()=>{
+ const policy=JSON.parse(fs.readFileSync('AUDITORIA_PROTECCION_MAIN_V213.json','utf8'));
+ assert.equal(policy.required_status_checks.strict,true);
+ assert.equal(policy.enforce_admins,true);
+ assert.deepEqual(policy.required_status_checks.contexts,['pruebas-funcionales','seguridad-dependencias']);
+ const release=await main(prod);
+ assert.deepEqual(release.checks,policy.required_status_checks.contexts);
+ assert.equal(release.guard,'github-protected-main');
 });

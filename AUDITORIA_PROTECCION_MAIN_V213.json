@@ -1,0 +1,22 @@
+{
+  "protocol": "V213b",
+  "source": "GitHub branch-protection API verified with authorized account via gh CLI",
+  "repository": "JaiderHertur26/SACRAMENTUM_FINAL",
+  "branch": "main",
+  "required_status_checks": {
+    "strict": true,
+    "contexts": [
+      "pruebas-funcionales",
+      "seguridad-dependencias"
+    ],
+    "github_actions_app_id": 15368
+  },
+  "enforce_admins": true,
+  "allow_force_pushes": false,
+  "allow_deletions": false,
+  "required_pull_request_reviews": null,
+  "release_gate": "Vercel validates exact GitHub repo/ref/SHA and relies on enforced native GitHub status checks before merge",
+  "previous_problem": "Unauthenticated GitHub Actions REST query from Vercel build returned HTTP 403, blocking successful deployment after PR CI green",
+  "secret_management": "No personal Github tokens added to Vercel; no token transfer permitted or necessary",
+  "note": "Out-of-band GitHub protection settings are authoritative; monitor changes and treat any disabling as a release-control security event."
+}

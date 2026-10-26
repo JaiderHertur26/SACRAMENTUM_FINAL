@@ -8,14 +8,14 @@ Se encontró un cruce de procedencia en `private.materialize_pending_legacy_sacr
 
 ## Protección de base de datos versionada
 
-`supabase/migrations/20261026035359_isolate_legacy_source_links_parish_v213.sql` mantiene la lógica original de negocio y añade al materializador de **INSBAUTI/INSCONFI**:
+`supabase/migrations/20261026040729_isolate_legacy_source_links_parish_v213.sql` mantiene la lógica original de negocio y añade al materializador de **INSBAUTI/INSCONFI**:
 - Un bloqueo transaccional de la clave de origen compartida para evitar carreras entre importaciones paralelas.
 - Verificación de `legacy_import_batches.parish_id` contra la parroquia propietaria antes de reutilizar un vínculo.
 - Comprobación de que la partida o boleta física del vínculo existe **en esa misma parroquia**.
 - Fallo seguro con aviso de procedencia incorrecta, sin reasignar ni sobrescribir el vínculo ajeno.
 - Parche condicionado al esquema actual: si la función cambia, falla antes de hacer cambios.
 
-La migración se **probó aplicada únicamente dentro de una transacción que terminó con ROLLBACK**. La prueba nueva `qa-rollback-legacy-scope-guard-v213.sql` confirmó que el vínculo de otra parroquia es denegado, que el vínculo original se preserva y que un nuevo lote de la misma parroquia reutiliza el vínculo propio sin duplicarlo.
+La migración se **probó primero dentro de una transacción que terminó con ROLLBACK** y después se registró y aplicó en Supabase con la versión oficial `20261026040729`. Las pruebas reversibles posteriores a su instalación volvieron a pasar. La prueba nueva `qa-rollback-legacy-scope-guard-v213.sql` confirmó que el vínculo de otra parroquia es denegado, que el vínculo original se preserva y que un nuevo lote de la misma parroquia reutiliza el vínculo propio sin duplicarlo.
 
 ## Compatibilidad de la interfaz y servicio
 
@@ -45,7 +45,7 @@ La migración se **probó aplicada únicamente dentro de una transacción que te
 
 ## Despliegue y seguimiento
 
-La migración debe ejecutarse mediante el mecanismo de migraciones de Supabase **después de la aprobación de GitHub CI**, no copiando comandos SQL manuales ni ejecutando la prueba QA en producción. La CLI del equipo devolvió HTTP 403 al consultar migraciones remotas con sus credenciales actuales, por lo que se usará el conector autorizado de Supabase para registrar la migración.
+La migración ya fue registrada mediante el conector autorizado de Supabase, **después de aprobar GitHub CI**; las verificaciones QA fueron transacciones reversibles, sin residuos permanentes. La CLI del equipo devolvió HTTP 403 al consultar migraciones remotas con sus credenciales actuales, por lo que se usará el conector autorizado de Supabase para registrar la migración.
 
 **Límites de esta versión:** esta protección SQL se centra en el materializador de preinscripciones `INSBAUTI` y `INSCONFI`; otras rutas de procedencia histórica siguen requiriendo auditoría. No se ha demostrado aún el caso positivo de conciliación de boleta reportada contra una partida ficticia previamente celebrada ni la entrega del correo de recuperación. Las verificaciones ficticias no garantizan por sí solas el 100 % de operaciones de usuario final.
 
