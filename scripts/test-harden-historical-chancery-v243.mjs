@@ -38,15 +38,15 @@ test('V243 role comparisons were executed live in QA under authenticated role',(
 });
 test('V243 PostgreSQL fingerprint was independently observed and previously published V242 evidence retained',()=>{
  assert.equal(e.procedures_with_privileged_execute,152);
- assert.equal(EXPECTED_PRIVILEGED_RPC_CATALOG_MD5_V236,e.privileged_catalogue_after);
+ assert.equal(e.privileged_catalogue_after,'f1efe81bc94e1163ce611d54ba8575fb'); // historical QA V243 snapshot
  const prev=JSON.parse(fs.readFileSync('AUDITORIA_ACTIVIDAD_DOCUMENTOS_CHAT_V242.json','utf8'));
  assert.equal(prev.new_callable_catalogue_md5,e.privileged_catalogue_before);
  assert.notEqual(e.privileged_catalogue_before,e.privileged_catalogue_after);
 });
 test('V243 inventory is schema-only and historical direct data writes still blocked',()=>{
  const inv=report();
- assert.equal(inv.migrationCount,163);
- assert.equal(CLEAN_REPLAY_HISTORICAL_MIGRATIONS,163);
+ assert.equal(inv.migrationCount,164);
+ assert.equal(CLEAN_REPLAY_HISTORICAL_MIGRATIONS,164);
  assert.equal(inv.directWriteMigrationCount,14);
  assert.equal(inv.directWriteStatementCount,45);
  const entries=inv.checks.filter(x=>x.file.endsWith('harden_materialize_chancery_v243.sql'));

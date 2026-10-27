@@ -1,9 +1,9 @@
 // BUILD-SAFE constant: scripts/ and supabase/ are intentionally absent from Vercel bundle.
-// This digest is anchored to 163 reviewed migration file hashes in
+// This digest is anchored to 164 reviewed migration file hashes in
 // AUDITORIA_MIGRACIONES_DATOS_V232.json, checked against actual migration files by CI.
 // It is an accident-prevention control; it cannot replace DB restore or a signed DBA review.
-export const HISTORICAL_MIGRATION_MANIFEST_SHA256='3f3f67731ee6d246c76ab9455c654bf7e307ecd824545a7366cb0cf365422b59';
-export const CLEAN_REPLAY_HISTORICAL_MIGRATIONS=163;
+export const HISTORICAL_MIGRATION_MANIFEST_SHA256='09ce0e121350c1dc736ff68fa61f7ec04a8b1c1ddce2c43cf9f64837719d2cee';
+export const CLEAN_REPLAY_HISTORICAL_MIGRATIONS=164;
 export const CLEAN_REPLAY_MUTATIONS_TO_EXCLUDE=39;
 export const CLEAN_REPLAY_REFERENCE_CATALOGS_TO_REVIEW=6;
 

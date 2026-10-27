@@ -1,0 +1,60 @@
+{
+  "protocol": "V244",
+  "date": "2026-10-27",
+  "environment": "SUPABASE_QA_ONLY_NOT_OFFICIAL",
+  "project_ref": "foczofcmwampjvlfbsqn",
+  "routines": [
+    "apply_legacy_import_batch_v2(uuid,integer)",
+    "apply_legacy_import_batch_v3(uuid,integer)"
+  ],
+  "validated_security_weakness": "A foreign-parish QA account distinguished a real ANULACION batch from an absent batch, as SECURITY DEFINER functions inspected type before authorizing the requester.",
+  "before": {
+    "foreign_existing_anulacion_leaked_message_both_rpcs": true,
+    "foreign_actor_role": "parish",
+    "independent_other_diocese": true
+  },
+  "after": [
+    {
+      "rpc": "apply_legacy_import_batch_v3",
+      "scenario": "foreign_real_anulacion",
+      "result": "generic_not_found"
+    },
+    {
+      "rpc": "apply_legacy_import_batch_v3",
+      "scenario": "foreign_absent_batch",
+      "result": "generic_not_found"
+    },
+    {
+      "rpc": "apply_legacy_import_batch_v3",
+      "scenario": "authorized_real_anulacion",
+      "result": "purposeful_chancery_restriction"
+    },
+    {
+      "rpc": "apply_legacy_import_batch_v2",
+      "scenario": "foreign_real_anulacion",
+      "result": "generic_not_found"
+    },
+    {
+      "rpc": "apply_legacy_import_batch_v2",
+      "scenario": "foreign_absent_batch",
+      "result": "generic_not_found"
+    },
+    {
+      "rpc": "apply_legacy_import_batch_v2",
+      "scenario": "authorized_real_anulacion",
+      "result": "purposeful_chancery_restriction"
+    }
+  ],
+  "live_sql_cases": 6,
+  "live_cases_passed": 6,
+  "qa_data_changed": false,
+  "ddl_applied": true,
+  "preserved_authorized_behavior": true,
+  "catalogue_functions": 152,
+  "catalogue_md5_before": "f1efe81bc94e1163ce611d54ba8575fb",
+  "catalogue_md5_after": "d10ec9b11e3726fc8427dd983400028e",
+  "semantic_reviews_formally_signed": 0,
+  "official_operations_authorized": false,
+  "method": "Live SQL as authenticated with locally scoped fictional QA identity, BEGIN/ROLLBACK. On security denials PostgreSQL rolled back automatically; no valid mutations were executed.",
+  "limitations": "No end-to-end valid imports or transactional restore; two function preauthorization guards do not prove all 152 SECURITY DEFINER RPCs are safe."
+}

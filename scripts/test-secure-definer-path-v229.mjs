@@ -11,7 +11,7 @@ const currentMigration='supabase/migrations/20261027044045_secure_definer_pg_tem
 const safeSecurity={...rep.preflight.metrics,protocol:'V236',unused_pg_graphql_enabled:0,qa_legacy_dbf_concept_rows:0,qa_legacy_template_snapshot_rows:0,postgres_future_table_grants:0,postgres_future_sequence_grants:0,postgres_future_function_grants:0,postgres_missing_global_function_revoke:0,postgres_global_table_grants:0,postgres_global_sequence_grants:0,admin_risk_extensions_in_public:0,admin_owned_public_relations:0,admin_owned_public_functions:0,admin_owned_exposed_truncate_tables:0,privileged_rpc_without_auth_identity_path:0,privileged_rpc_using_delegated_identity:15,dangerous_default_table_grants:0,
  open_default_function_grants:0,future_user_table_grants:0,future_user_sequence_grants:0,
  future_user_function_grants:0,creators_missing_global_function_revoke:0,
- reviewed_security_definers:207,reviewed_authenticated_definers:152,manual_privileged_rpc_review:true,privileged_rpc_catalog_count:152,privileged_rpc_catalog_md5:'f1efe81bc94e1163ce611d54ba8575fb'};
+ reviewed_security_definers:207,reviewed_authenticated_definers:152,manual_privileged_rpc_review:true,privileged_rpc_catalog_count:152,privileged_rpc_catalog_md5:'d10ec9b11e3726fc8427dd983400028e'};
 const fixture={
  migration_review:syntheticCleanMigrationReviewV231,protocol:'V236',environment:'CLEAN_PRODUCTION',approved_for_official_mode:true,
  project_ref:'bbbbbbbbbbbbbbbbbbbb',verified_at:'2026-10-27T04:44:00Z',
@@ -47,6 +47,12 @@ test('V229 remote migration version is identical to the checked-in CLI-created m
     assert.equal((body.match(/IF auth[.]uid[(][)] IS NULL THEN/g)||[]).length,3,'V232 each mutator requires authenticated user');
     for(const name of ['mark_chat_room_read','send_chat_message','withdraw_chat_message'])
       assert.match(body,new RegExp('CREATE OR REPLACE FUNCTION public[.]'+name+'[(]'));
+  } else if(later==='20261027143000_authorize_legacy_batch_before_profile_v244.sql') {
+    assert.match(body,/can_manage_legacy_import/);
+    assert.match(body,/apply_legacy_import_batch_v2/);
+    assert.match(body,/apply_legacy_import_batch_v3/);
+    assert.match(body,/audited lookup drift/);
+    assert.doesNotMatch(body,/\\b(?:INSERT INTO|UPDATE\\s+public\\.|DELETE FROM|TRUNCATE\\s+TABLE|DROP TABLE)\\b/i);
   } else if(later==='20261027133000_harden_materialize_chancery_v243.sql') {
     assert.match(body,/pg_get_functiondef/);
     assert.match(body,/materialize_legacy_decrees_v68/);
