@@ -1,0 +1,68 @@
+{
+  "version": "V238",
+  "date": "2026-10-27",
+  "environment": "SUPABASE_QA_ONLY_NOT_OFFICIAL",
+  "project_ref": "foczofcmwampjvlfbsqn",
+  "authority": "Privileged PostgreSQL metadata read and role-authenticated SELECT transactions; no frontend mocks in live counters",
+  "session_method": "BEGIN READ ONLY; SET LOCAL ROLE authenticated; set_config(request.jwt.claim.sub, QA auth uid, true); SELECT authorized public helpers / COUNT(*) under RLS; ROLLBACK",
+  "qa_profiles": 12,
+  "qa_dioceses": 3,
+  "qa_parishes": 6,
+  "role_profiles": {
+    "admin_general": 2,
+    "chancery": 2,
+    "diocese": 3,
+    "parish": 5
+  },
+  "role_predicates": {
+    "principals": 12,
+    "check_dioceses_per_principal": 3,
+    "check_parishes_per_principal": 6,
+    "additional_checks_per_principal": [
+      "is_app_admin",
+      "can_manage_legacy_import(NULL,NULL)"
+    ],
+    "evaluated": 132,
+    "passed": 132,
+    "failed": 0,
+    "interpreted_contract": "Parish only owns own parish; diocese/chancery read own diocese and parishes therein; general admin cross-jurisdiction; only diocesan role can manage legacy import with unscoped parameters; all unauthorised scope false",
+    "distinct_roles_tested": [
+      "parish",
+      "diocese",
+      "chancery",
+      "admin_general"
+    ]
+  },
+  "sacramental_rls": {
+    "tables": [
+      "baptisms",
+      "confirmations",
+      "marriages",
+      "funerals"
+    ],
+    "policy_expression": "can_access_parish(parish_id)",
+    "principals": 12,
+    "checks_per_principal": 4,
+    "evaluated": 48,
+    "passed": 48,
+    "failed": 0,
+    "interpretation": "COUNT(*) visible with authenticated SQL role was compared against the privileged expected totals grouped by parish and diocese, without selecting identity/record content"
+  },
+  "total_live_checks": 180,
+  "total_passed": 180,
+  "total_failed": 0,
+  "independently_observed_no_session": {
+    "executor": "authenticated",
+    "auth_uid_null": true,
+    "current_role_null": true,
+    "can_access_parish": false,
+    "is_app_admin": false
+  },
+  "qa_data_changes": 0,
+  "qa_schema_changes": 0,
+  "negative_cases_interpretation": "A successful count comparison under RLS is specific to read access for 4 tables and 12 QA identities. It does not validate all mutations, grants, decree semantics, disabled user revocation, backup or an official production database.",
+  "semantic_rpc_approvals": 0,
+  "official_launch_authorized": false,
+  "weighted_estimated_percent": 97.41,
+  "source_sql_example": "BEGIN READ ONLY; SET LOCAL ROLE authenticated; SELECT set_config('request.jwt.claim.sub', '<existing fictional QA UUID>', true); SELECT COUNT(*) FROM public.baptisms; ROLLBACK;"
+}
