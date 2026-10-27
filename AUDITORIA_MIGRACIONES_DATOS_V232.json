@@ -1,7 +1,7 @@
 {
   "protocol": "V232",
   "environment": "OFFLINE_QA_SCHEMAS_ONLY",
-  "migrationCount": 160,
+  "migrationCount": 161,
   "directWriteMigrationCount": 14,
   "directWriteStatementCount": 45,
   "findings": [
@@ -1306,6 +1306,12 @@
     {
       "file": "supabase/migrations/20261027110500_harden_reversal_active_chancery_v240.sql",
       "sha256": "d71fc4f3993cfc76a92cc9c5bbfb0eaa109a6323a29864b3d71a92684ffeabca",
+      "directWrites": 0,
+      "statements": 1
+    },
+    {
+      "file": "supabase/migrations/20261027114000_harden_four_active_profile_rpcs_v241.sql",
+      "sha256": "75d1cd0545ebd683bea6ebc2b9e2bb425acbe0e778ed38888eb9fb285b351cfe",
       "directWrites": 0,
       "statements": 1
     },

@@ -1,0 +1,68 @@
+{
+  "protocol": "V241",
+  "date": "2026-10-27",
+  "environment": "QA_NONOFFICIAL_TEST_DATA_ONLY",
+  "project_ref": "foczofcmwampjvlfbsqn",
+  "affected_routines": [
+    "save_funeral_parameters",
+    "save_marriage_parameters",
+    "search_baptisms_for_matrimonial_notification",
+    "void_document_issuance"
+  ],
+  "fixed_guard": "is_active IS TRUE and upper(coalesce(status,''))='ACTIVE' within institutional profile resolution",
+  "qa_migration_applied": true,
+  "qa_business_rows_changed": false,
+  "four_rpc_code_guards_verified": 4,
+  "four_old_active_bypasses_remaining": 0,
+  "privileged_rpc_count": 152,
+  "catalogue_md5_before": "d68b18810533c368d26f2c43e2ea9711",
+  "catalogue_md5_after": "2271708267b8e801367bc282d146d49e",
+  "qa_live_tests": [
+    {
+      "role": "admin_general",
+      "procedure": "save_funeral_parameters",
+      "expected": "denied non-parish",
+      "observed": "denied"
+    },
+    {
+      "role": "chancery",
+      "procedure": "save_marriage_parameters",
+      "expected": "denied non-parish",
+      "observed": "denied"
+    },
+    {
+      "role": "diocese",
+      "procedure": "search_baptisms_for_matrimonial_notification",
+      "expected": "denied non-parish",
+      "observed": "denied"
+    },
+    {
+      "role": "admin_general",
+      "procedure": "search_baptisms_for_matrimonial_notification",
+      "expected": "denied non-parish",
+      "observed": "denied"
+    },
+    {
+      "role": "parish",
+      "procedure": "search_baptisms_for_matrimonial_notification",
+      "expected": "reject missing search criteria",
+      "observed": "rejected"
+    },
+    {
+      "role": "parish",
+      "procedure": "search_baptisms_for_matrimonial_notification",
+      "expected": "accept harmless nonexistent name and return zero records",
+      "observed": "zero"
+    },
+    {
+      "role": "parish",
+      "procedure": "void_document_issuance",
+      "expected": "reject nonexistent document UUID",
+      "observed": "rejected"
+    }
+  ],
+  "positive_valid_write_tests": 0,
+  "full_privileged_rpc_semantic_approvals": 0,
+  "official_launch_authorized": false,
+  "limitations": "All 7 QA behavior observations used false or invalid inputs; no full valid data write workflow was executed. SMTP, independent production, backup restore and signed print outputs are not certified."
+}

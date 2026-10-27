@@ -45,7 +45,7 @@ test('V240 live negative RPC role tests and competent Chancery invalid-decree te
 });
 test('V240 current function hash exactly matches verified live QA digest',()=>{
  assert.equal(evidence.catalogue_current_privileged_functions,152);
- assert.equal(evidence.catalogue_current_md5,EXPECTED_PRIVILEGED_RPC_CATALOG_MD5_V236);
+ assert.equal(evidence.catalogue_current_md5,'d68b18810533c368d26f2c43e2ea9711'); // frozen QA V240 evidence
  assert.notEqual(evidence.catalogue_current_md5,evidence.catalogue_previous_v236_md5);
  assert.equal(evidence.catalogue_previous_v236_md5,'4ded9ebe1d9cde435befee3f8b131222');
  const historical=JSON.parse(fs.readFileSync('AUDITORIA_HUELLAS_RPC_LIVE_V236.json','utf8'));
@@ -55,7 +55,7 @@ test('V240 release guard refuses the superseded privileged function catalogue',(
  const baseline=fs.readFileSync('scripts/test-privileged-rpc-catalog-v236.mjs','utf8');
  assert.match(baseline,/privileged_rpc_catalog_md5:EXPECTED_PRIVILEGED_RPC_CATALOG_MD5_V236/);
  const source=fs.readFileSync('release-security-guard-v224.mjs','utf8');
- assert.match(source,/d68b18810533c368d26f2c43e2ea9711/);
+ assert.match(source,/2271708267b8e801367bc282d146d49e/);
  assert.doesNotMatch(source,/4ded9ebe1d9cde435befee3f8b131222/);
 });
 test('V240 synthetic identity checks discriminate suspend, null, disabled states',()=>{

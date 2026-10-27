@@ -32,19 +32,19 @@ test('V231 SQL lexer ignores DML inside comments, strings and dollar-quoted priv
  assert.match(s[1],/^insert into public.document_templates/i);
  assert.match(s[2],/^update public.legacy_import_rows/i);
 });
-test('V231 detects all 160 versioned migrations with SHA256 fingerprints and full source coverage',()=>{
+test('V231 detects all 161 versioned migrations with SHA256 fingerprints and full source coverage',()=>{
  const scan=report();
- assert.equal(scan.migrationCount,160);
- assert.equal(inv.migrationCount,160);
+ assert.equal(scan.migrationCount,161);
+ assert.equal(inv.migrationCount,161);
  assert.deepEqual(scan.checks,inv.checks);
  assert.deepEqual(scan.findings,inv.findings);
- assert.equal(inv.checks.length,160);
- assert.equal(new Set(inv.checks.map(x=>x.file)).size,160);
+ assert.equal(inv.checks.length,161);
+ assert.equal(new Set(inv.checks.map(x=>x.file)).size,161);
  assert.ok(inv.checks.every(x=>/^[a-f0-9]{64}$/.test(x.sha256)));
 });
 test('V231 pinned history manifest digest matches the independent Vercel release guard',()=>{
  assert.equal(digest(inv.checks),HISTORICAL_MIGRATION_MANIFEST_SHA256);
- assert.equal(CLEAN_REPLAY_HISTORICAL_MIGRATIONS,160);
+ assert.equal(CLEAN_REPLAY_HISTORICAL_MIGRATIONS,161);
  assert.equal(CLEAN_REPLAY_MUTATIONS_TO_EXCLUDE,39);
  assert.equal(CLEAN_REPLAY_REFERENCE_CATALOGS_TO_REVIEW,6);
 });
@@ -169,7 +169,7 @@ test('V231 real legacy-DBF rows and missing catalog count fail the actual releas
  public_functions:244,security_definers:207,
  anonymous_definer_functions:0,authenticated_definer_functions:152,
  definer_missing_search_path:0,reviewed_security_definers:207,
- reviewed_authenticated_definers:152,manual_privileged_rpc_review:true,privileged_rpc_catalog_count:152,privileged_rpc_catalog_md5:'d68b18810533c368d26f2c43e2ea9711'
+ reviewed_authenticated_definers:152,manual_privileged_rpc_review:true,privileged_rpc_catalog_count:152,privileged_rpc_catalog_md5:'2271708267b8e801367bc282d146d49e'
  };
  assert.deepEqual(assessSecurityPreflightV224(safe),[]);
  const denied=assessSecurityPreflightV224({...safe,qa_legacy_dbf_concept_rows:qa.rows.qa_legacy_dbf_concept_rows});
