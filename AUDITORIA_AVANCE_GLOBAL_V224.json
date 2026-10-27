@@ -1,0 +1,66 @@
+{
+  "protocol": "V224",
+  "date": "2026-10-26",
+  "estimatedPercent": 92,
+  "rawWeighted": 91.98,
+  "method": "Estimación ponderada de nueve áreas heredada de V223, sin aumentar: los nuevos hallazgos de seguridad deben resolverse antes de certificar el lanzamiento.",
+  "stage": "SOLO PRUEBAS — lanzamiento oficial BLOQUEADO",
+  "qaDataStatus": "Los registros actuales son ficticios y no serán transferidos al proyecto limpio",
+  "qaInventory": {
+    "publicTables": 82,
+    "nonEmptyPublicTables": 59,
+    "publicRows": 95320,
+    "authUsers": 12,
+    "storageObjects": 0
+  },
+  "evidence": {
+    "syntheticPassed": 2005,
+    "syntheticTotal": 2005,
+    "qualityPassed": 30,
+    "qualityTotal": 30,
+    "newSecurityTestsPassed": 31,
+    "newSecurityTestsTotal": 31,
+    "releaseTestsTotal": 59,
+    "buildPassed": true,
+    "realQAReads": true,
+    "qaDatabaseWrites": 0,
+    "qaMigrations": 0,
+    "qaDeletes": 0
+  },
+  "serverSecurity": {
+    "rlsEnabledTables": 82,
+    "rlsDisabled": 0,
+    "authTruncateTables": 0,
+    "anonTruncateTables": 0,
+    "unvalidatedFKs": 0,
+    "publicFunctions": 244,
+    "securityDefiners": 207,
+    "authenticatedDefiners": 152,
+    "anonymousDefiners": 0,
+    "searchPathMissing": 0,
+    "dangerousDefaultTableGrants": 8,
+    "openDefaultFunctionGrants": 3,
+    "privilegedRPCLackingObviousAuthText": 17
+  },
+  "advisorCounts": {
+    "rlsNoPolicy": 5,
+    "graphqlVisibilityWarnings": 64,
+    "authenticatedDefinerWarnings": 152,
+    "leakedPasswordProtectionWarnings": 1
+  },
+  "newCapabilities": [
+    "SQL reproducible de preflight sobre tablas, permisos actuales y predeterminados, RLS, funciones y FKs",
+    "Puerta oficial V224 que rechaza RLS apagado, grants inseguros, funciones anónimas privilegiadas o falta de revisión de RPC",
+    "Auditoría segura de metadatos contra Supabase QA sin alterar un solo registro",
+    "31 pruebas nuevas de incumplimientos y certificados incompletos, incorporadas a CI",
+    "Inventario preciso de riesgos, controles de remediación y requisitos previos al arranque limpio"
+  ],
+  "unresolved": [
+    "8 defaults de permisos de tablas futuras y 3 defaults de ejecución requieren remediación desde rol administrador adecuado",
+    "152 SECURITY DEFINER accesibles a authenticated requieren revisión firma por firma, incluidas 17 sin comprobación textual obvia",
+    "Revisión de GraphQL y Auth leaked-password protection",
+    "No se ha creado ni certificado el proyecto nuevo sin datos de prueba",
+    "Validación física de documentación y E2E real multirrol no cerrados"
+  ],
+  "conclusion": "No certificar producción, no eliminar QA y no declarar el proyecto al 100% mientras persistan bloqueadores."
+}

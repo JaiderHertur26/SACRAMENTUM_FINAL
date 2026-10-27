@@ -31,3 +31,12 @@
 
 ## Estado V223
 Se implementaron inventario SQL de 82 tablas, evaluación de inventarios, precinto de documentos de QA y guard de compilación. **No se realizó ningún borrado en QA, ni se creó aún una base oficial, ni se transfirió un solo registro a producción.** El arranque limpio queda preparado técnicamente, pero requiere la certificación final y la puesta en marcha institucional.
+
+## Adenda obligatoria V224 — seguridad antes de cualquier estreno oficial
+**Esta adenda tiene precedencia frente a la posibilidad de publicar basándose solo en el inventario V223.** La puerta `official` exige acta **V224** y ejecución de `scripts/release-security-preflight-v224.sql` con acceso privilegiado de solo lectura en el proyecto nuevo. Debe registrar 0 tablas con RLS apagado; 0 privilegios peligrosos TRUNCATE para anon/authenticated; 0 claves foráneas no validadas; 0 grants predeterminados peligrosos de tablas; 0 grants predeterminados abiertos de EXECUTE; 0 funciones SECURITY DEFINER ejecutables por anon; 0 funciones privilegiadas sin search_path explícito; y revisión institucional de todas las funciones SECURITY DEFINER expuestas a authenticated.
+
+**Actualmente QA NO cumple la puerta V224** porque se detectaron 8 entradas de privilegios predeterminados peligrosos y 3 aperturas por defecto de ejecución. Debe remediarlas quien sea dueño autorizado del rol que crea los objetos, después de analizar todas las consecuencias. La conexión `postgres` auditada no administra los defaults de `supabase_admin`: no debe inventarse una migración no ejecutable ni hacer cambios indiscriminados a las 152 funciones.
+
+La configuración de `auth_leaked_password_protection` y avisos GraphQL también debe revisarse desde el panel Supabase con criterios de necesidad, no aplicando revocaciones globales que rompan flujos. Aun después del preflight, los conteos y el acta son controles preventivos y **no constituyen por sí solos garantía legal ni certificación formal de la seguridad**.
+
+Hasta completar estos requisitos, los datos QA permanecen intactos, marcados NO OFICIALES y destinados únicamente a pruebas.
