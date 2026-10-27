@@ -39,15 +39,15 @@ test('V242 live QA evidence includes four role/validation denials and two harmle
 });
 test('V242 catalogue hash is current and previous V241 document remains unaltered',()=>{
  assert.equal(e.new_callable_catalogue_md5,'f5f6d63ed04cb647d96f7175a054f39a'); // historical verified V242
- assert.equal(EXPECTED_PRIVILEGED_RPC_CATALOG_MD5_V236,'91f3bb1bf8a50fd85d066d86fd79da2b'); // Current guard after V244, historical QA unchanged.
+ assert.equal(EXPECTED_PRIVILEGED_RPC_CATALOG_MD5_V236,'60019131a532a623a91c6128b9ab8daa'); // Current guard after V244, historical QA unchanged.
  const prev=JSON.parse(fs.readFileSync('AUDITORIA_PERFILES_ACTIVOS_RPC_V241.json','utf8'));
  assert.equal(prev.catalogue_md5_after,e.old_callable_catalogue_md5);
  assert.equal(e.callable_security_definer_functions,152);
 });
 test('V242 schema-only migration count and digest match frozen release inventory',()=>{
  const inv=report();
- assert.equal(inv.migrationCount,165);
- assert.equal(CLEAN_REPLAY_HISTORICAL_MIGRATIONS,165);
+ assert.equal(inv.migrationCount,166);
+ assert.equal(CLEAN_REPLAY_HISTORICAL_MIGRATIONS,166);
  assert.equal(inv.directWriteMigrationCount,14);
  assert.equal(inv.directWriteStatementCount,45);
  const entry=inv.checks.filter(c=>c.file.endsWith('harden_context_chat_matrimonial_identity_v242.sql'));

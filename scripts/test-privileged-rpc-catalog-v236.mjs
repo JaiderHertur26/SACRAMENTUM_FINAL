@@ -21,9 +21,9 @@ const safe={
  dangerous_default_table_grants:8,open_default_function_grants:2,
  future_user_table_grants:16,future_user_sequence_grants:6,
  future_user_function_grants:2,creators_missing_global_function_revoke:1,
- public_functions:244,security_definers:207,authenticated_definer_functions:152,
- privileged_rpc_catalog_count:152,privileged_rpc_catalog_md5:EXPECTED_PRIVILEGED_RPC_CATALOG_MD5_V236,
- reviewed_security_definers:207,reviewed_authenticated_definers:152,
+ public_functions:244,security_definers:207,authenticated_definer_functions:151,
+ privileged_rpc_catalog_count:151,privileged_rpc_catalog_md5:EXPECTED_PRIVILEGED_RPC_CATALOG_MD5_V236,
+ reviewed_security_definers:207,reviewed_authenticated_definers:151,
  manual_privileged_rpc_review:true
 };
 const fixture={
@@ -66,7 +66,7 @@ for(const invalid of [
   assert.equal(full(s).ok,false);
  });
 }
-for(const invalid of [undefined,null,-1,0,151,153,2.5,'152']) {
+for(const invalid of [undefined,null,-1,0,152,153,2.5,'151']) {
  test('V236 missing or changed RPC count must prevent official mode ('+String(invalid)+')',()=>{
   const s={...safe,privileged_rpc_catalog_count:invalid};
   assert.ok(assessSecurityPreflightV224(s).some(x=>x.includes('número')));

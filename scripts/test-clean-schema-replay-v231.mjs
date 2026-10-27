@@ -32,19 +32,19 @@ test('V231 SQL lexer ignores DML inside comments, strings and dollar-quoted priv
  assert.match(s[1],/^insert into public.document_templates/i);
  assert.match(s[2],/^update public.legacy_import_rows/i);
 });
-test('V231 detects all 165 versioned migrations with SHA256 fingerprints and full source coverage',()=>{
+test('V231 detects all 166 versioned migrations with SHA256 fingerprints and full source coverage',()=>{
  const scan=report();
- assert.equal(scan.migrationCount,165);
- assert.equal(inv.migrationCount,165);
+ assert.equal(scan.migrationCount,166);
+ assert.equal(inv.migrationCount,166);
  assert.deepEqual(scan.checks,inv.checks);
  assert.deepEqual(scan.findings,inv.findings);
- assert.equal(inv.checks.length,165);
- assert.equal(new Set(inv.checks.map(x=>x.file)).size,165);
+ assert.equal(inv.checks.length,166);
+ assert.equal(new Set(inv.checks.map(x=>x.file)).size,166);
  assert.ok(inv.checks.every(x=>/^[a-f0-9]{64}$/.test(x.sha256)));
 });
 test('V231 pinned history manifest digest matches the independent Vercel release guard',()=>{
  assert.equal(digest(inv.checks),HISTORICAL_MIGRATION_MANIFEST_SHA256);
- assert.equal(CLEAN_REPLAY_HISTORICAL_MIGRATIONS,165);
+ assert.equal(CLEAN_REPLAY_HISTORICAL_MIGRATIONS,166);
  assert.equal(CLEAN_REPLAY_MUTATIONS_TO_EXCLUDE,39);
  assert.equal(CLEAN_REPLAY_REFERENCE_CATALOGS_TO_REVIEW,6);
 });
@@ -167,9 +167,9 @@ test('V231 real legacy-DBF rows and missing catalog count fail the actual releas
  insecure_public_only_definers:0,unused_pg_graphql_enabled:0,
  qa_legacy_dbf_concept_rows:0,qa_legacy_template_snapshot_rows:0,postgres_future_table_grants:0,postgres_future_sequence_grants:0,postgres_future_function_grants:0,postgres_missing_global_function_revoke:0,postgres_global_table_grants:0,postgres_global_sequence_grants:0,admin_risk_extensions_in_public:0,admin_owned_public_relations:0,admin_owned_public_functions:0,admin_owned_exposed_truncate_tables:0,privileged_rpc_without_auth_identity_path:0,privileged_rpc_using_delegated_identity:15,
  public_functions:244,security_definers:207,
- anonymous_definer_functions:0,authenticated_definer_functions:152,
+ anonymous_definer_functions:0,authenticated_definer_functions:151,
  definer_missing_search_path:0,reviewed_security_definers:207,
- reviewed_authenticated_definers:152,manual_privileged_rpc_review:true,privileged_rpc_catalog_count:152,privileged_rpc_catalog_md5:'91f3bb1bf8a50fd85d066d86fd79da2b'
+ reviewed_authenticated_definers:151,manual_privileged_rpc_review:true,privileged_rpc_catalog_count:151,privileged_rpc_catalog_md5:'60019131a532a623a91c6128b9ab8daa'
  };
  assert.deepEqual(assessSecurityPreflightV224(safe),[]);
  const denied=assessSecurityPreflightV224({...safe,qa_legacy_dbf_concept_rows:qa.rows.qa_legacy_dbf_concept_rows});

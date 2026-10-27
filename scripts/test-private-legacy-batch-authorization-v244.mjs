@@ -48,8 +48,8 @@ test('V244 152 privileged functions pinned to independent real QA fingerprint',(
 });
 test('V244 only adds reviewed DDL migration, preserving quarantined historical data writes',()=>{
  const inv=report();
- assert.equal(inv.migrationCount,165);
- assert.equal(CLEAN_REPLAY_HISTORICAL_MIGRATIONS,165);
+ assert.equal(inv.migrationCount,166);
+ assert.equal(CLEAN_REPLAY_HISTORICAL_MIGRATIONS,166);
  assert.equal(inv.directWriteMigrationCount,14);
  assert.equal(inv.directWriteStatementCount,45);
  const row=inv.checks.filter(x=>x.file.endsWith('authorize_legacy_batch_before_profile_v244.sql'));
