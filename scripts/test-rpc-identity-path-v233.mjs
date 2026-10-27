@@ -20,7 +20,7 @@ const safe={
  public_functions:244,security_definers:207,anonymous_definer_functions:0,
  authenticated_definer_functions:152,definer_missing_search_path:0,
  reviewed_security_definers:207,reviewed_authenticated_definers:152,
- manual_privileged_rpc_review:true,privileged_rpc_catalog_count:152,privileged_rpc_catalog_md5:'2271708267b8e801367bc282d146d49e'
+ manual_privileged_rpc_review:true,privileged_rpc_catalog_count:152,privileged_rpc_catalog_md5:'f5f6d63ed04cb647d96f7175a054f39a'
 };
 const report={
  protocol:'V236',environment:'CLEAN_PRODUCTION',approved_for_official_mode:true,

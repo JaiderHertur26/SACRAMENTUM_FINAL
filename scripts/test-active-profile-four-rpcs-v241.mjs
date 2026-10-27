@@ -28,7 +28,7 @@ test('V241 refuses unreviewed source changes rather than silently patching a dif
  assert.match(sql,/v_has_old_status/);
 });
 test('V241 safeguards old historical V240 and V236 catalogue attestations but pins current SQL',()=>{
- assert.equal(e.catalogue_md5_after,EXPECTED_PRIVILEGED_RPC_CATALOG_MD5_V236);
+ assert.equal(e.catalogue_md5_after,'2271708267b8e801367bc282d146d49e'); // historical QA V241 at time of test
  assert.equal(e.catalogue_md5_before,'d68b18810533c368d26f2c43e2ea9711');
  assert.notEqual(e.catalogue_md5_before,e.catalogue_md5_after);
  assert.equal(e.privileged_rpc_count,152);
@@ -45,8 +45,8 @@ test('V241 live QA confirms role denials, argument validation, harmless read, do
 });
 test('V241 adds one schema-only migration; old data mutation blocklist untouched',()=>{
  const inv=report();
- assert.equal(inv.migrationCount,161);
- assert.equal(CLEAN_REPLAY_HISTORICAL_MIGRATIONS,161);
+ assert.equal(inv.migrationCount,162); // Current inventory includes subsequent V242 migration.
+ assert.equal(CLEAN_REPLAY_HISTORICAL_MIGRATIONS,162);
  assert.equal(inv.directWriteMigrationCount,14);
  assert.equal(inv.directWriteStatementCount,45);
  const file=inv.checks.filter(x=>x.file.endsWith('harden_four_active_profile_rpcs_v241.sql'));

@@ -1,7 +1,7 @@
 {
   "protocol": "V232",
   "environment": "OFFLINE_QA_SCHEMAS_ONLY",
-  "migrationCount": 161,
+  "migrationCount": 162,
   "directWriteMigrationCount": 14,
   "directWriteStatementCount": 45,
   "findings": [
@@ -1320,6 +1320,12 @@
       "sha256": "b843a2dc69424251a3665316aca237f00c6c5f5e753ade794d1c2628532646fb",
       "directWrites": 0,
       "statements": 2
+    },
+    {
+      "file": "supabase/migrations/20261027121500_harden_context_chat_matrimonial_identity_v242.sql",
+      "sha256": "bf620fdff9be2f6576fca0ec6d12dc47716a0f16650e902a31952331fc5285db",
+      "directWrites": 0,
+      "statements": 1
     },
     {
       "file": "supabase/migrations/20261027125848_harden_chat_actor_guard_v232.sql",
