@@ -2,12 +2,14 @@ import React, { useState } from 'react';
 import Sidebar from '@/components/Sidebar';
 import Header from '@/components/Header';
 import { useAuth } from '@/context/AuthContext';
+import { isKnownTestRegistryProject } from '@/utils/registryDataMode.mjs';
 
 const DashboardLayout = ({ children, entityName }) => {
   const { user, logout } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   // V219: this instance contains TEST records only; official mode requires an explicit rollout.
-  const usingTestRecords = import.meta.env.VITE_REGISTRY_DATA_MODE !== 'official';
+  const usingTestRecords = import.meta.env.VITE_REGISTRY_DATA_MODE !== 'official'
+    || isKnownTestRegistryProject(import.meta.env.VITE_SUPABASE_URL);
 
   const handleLogout = async () => {
     await logout();

@@ -1,7 +1,10 @@
+import { isKnownTestRegistryProject } from './registryDataMode.mjs';
+
 // V220. A clearly visible, non-juridical watermark on every generated TEST document.
 // This describes the environment, not an authorization or a claim that records are official.
 // The flag must be explicitly set to "official" for a future authorized launch.
-export const isTestRegistryData = () => import.meta.env?.VITE_REGISTRY_DATA_MODE !== 'official';
+export const isTestRegistryData = () => import.meta.env?.VITE_REGISTRY_DATA_MODE !== 'official'
+  || isKnownTestRegistryProject(import.meta.env?.VITE_SUPABASE_URL);
 
 export const testDocumentPrintCss = () => isTestRegistryData() ? `
 /* V220: popup documents must carry their own stamp; they do not load the SPA CSS. */

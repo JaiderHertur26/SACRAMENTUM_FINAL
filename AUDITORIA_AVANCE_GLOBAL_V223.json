@@ -1,0 +1,102 @@
+{
+  "protocol": "V223",
+  "date": "2026-10-26",
+  "estimatedPercent": 92,
+  "rawWeighted": 91.97999999999999,
+  "method": "Estimación técnica ponderada de nueve áreas. No representa certificación oficial ni declaración de producción lista.",
+  "stage": "TEST ONLY — QA DATABASE NOT CLEANED — PRODUCTION DATABASE NOT CREATED",
+  "qaDataStatus": "Todo registro QA existente es ficticio y no permanecerá en el futuro proyecto de producción",
+  "qaInventory": {
+    "projectRef": "foczofcmwampjvlfbsqn",
+    "publicTables": 82,
+    "nonEmptyPublicTables": 59,
+    "publicRows": 95320,
+    "authUsers": 12,
+    "storageObjects": 0,
+    "storageBuckets": 1
+  },
+  "areas": [
+    {
+      "area": "Infraestructura, CI y despliegue",
+      "weight": 10,
+      "complete": 99,
+      "remaining": "Verificar restauración de backups, monitoreo y SMTP real"
+    },
+    {
+      "area": "Roles, jerarquía y separación institucional",
+      "weight": 10,
+      "complete": 97,
+      "remaining": "Pruebas E2E autenticadas multirrol sobre instalación limpia"
+    },
+    {
+      "area": "Registros y pendientes de cuatro sacramentos",
+      "weight": 20,
+      "complete": 91,
+      "remaining": "Pruebas de aceptación reales completas con flujos de cuatro sacramentos"
+    },
+    {
+      "area": "Cancillería, decretos y trazabilidad jurídica",
+      "weight": 15,
+      "complete": 92,
+      "remaining": "Prueba de autorización cruzada, expediente y doble control documental"
+    },
+    {
+      "area": "Migración histórica e integridad de procedencia",
+      "weight": 15,
+      "complete": 93,
+      "remaining": "Cotejo histórico de 46 candidatos; no importar QA en la producción limpia"
+    },
+    {
+      "area": "Notas marginales y reconciliación",
+      "weight": 10,
+      "complete": 91,
+      "remaining": "Cotejo institucional y prueba física de impresión completa"
+    },
+    {
+      "area": "Reportes, chat y notificaciones",
+      "weight": 8,
+      "complete": 87,
+      "remaining": "Ensayos reales con redes, buzones y escenarios de carga"
+    },
+    {
+      "area": "Documentos, constancias e impresión",
+      "weight": 7,
+      "complete": 91,
+      "remaining": "Validación física y visual de plantillas restantes"
+    },
+    {
+      "area": "Aceptación E2E y operaciones reales",
+      "weight": 5,
+      "complete": 80,
+      "remaining": "Certificación del primer arranque vacío, autorizaciones, SMTP y alta del admin sin QA"
+    }
+  ],
+  "evidence": {
+    "syntheticPassed": 1973,
+    "syntheticTotal": 1973,
+    "qualityPassed": 30,
+    "qualityTotal": 30,
+    "newReleaseUnitTestsPassed": 27,
+    "newReleaseUnitTestsTotal": 27,
+    "buildPassed": true,
+    "actualQAWrites": 0,
+    "actualQACleanup": 0,
+    "dbMigrations": 0,
+    "knownQAModePromotionBlocked": true
+  },
+  "newCapabilities": [
+    "Lectura privilegiada exacta del censo completo de 82 tablas, Auth y Storage",
+    "Manifest de tablas y auditoría de cobertura que identifica tablas faltantes o inesperadas",
+    "Evaluador determinista de inventarios para un proyecto futuro limpio sin autorizarlo automáticamente",
+    "Precinto permanente visual de QA en login, panel y documentos imprimibles, incluso con VITE_REGISTRY_DATA_MODE=official",
+    "Bloqueo de build oficial contra QA o sin acta privilegiada, reciente, vinculada al nuevo proyecto y sin filas operativas",
+    "Runbook V223: proyecto Supabase limpio independiente, sin copiar importaciones, cuentas, decretos o datos QA",
+    "Prueba real de CLI confirma rechazo de publicación oficial en QA"
+  ],
+  "remaining": [
+    "No existe todavía instalación Supabase de producción limpia; debe aprovisionarse separada",
+    "No se ha ejecutado la certificación real del entorno vacío ni la revisión manual de plantillas",
+    "Pruebas E2E reales y validación operativa SMTP, PDFs físicos y backups siguen pendientes",
+    "Procedimientos legales/institucionales y aprobación de funcionamiento formal faltantes"
+  ]
+}
