@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
+import { syntheticCleanMigrationReviewV231 } from './release-test-fixture-v231.mjs';
 import {assessOfficialBuild} from '../release-guard-core-v223.mjs';
 import {assessSecurityPreflightV224} from '../release-security-guard-v224.mjs';
 
@@ -10,13 +11,14 @@ const sql=fs.readFileSync('scripts/release-security-preflight-v226.sql','utf8');
 const postgres=fs.readFileSync('supabase/security/qa-postgres-default-privileges-v226.sql','utf8');
 const admin=fs.readFileSync('supabase/security/requires-authorized-supabase-admin-v226.sql','utf8');
 const now=Date.parse('2026-10-27T03:30:00Z');
-const fakeClean={...qa.security,protocol:'V230',
+const fakeClean={...qa.security,protocol:'V231',
  dangerous_default_table_grants:0,open_default_function_grants:0,
  future_user_table_grants:0,future_user_sequence_grants:0,
- future_user_function_grants:0,creators_missing_global_function_revoke:0,insecure_public_only_definers:0,unused_pg_graphql_enabled:0,
+ future_user_function_grants:0,creators_missing_global_function_revoke:0,insecure_public_only_definers:0,unused_pg_graphql_enabled:0,qa_legacy_dbf_concept_rows:0,qa_legacy_template_snapshot_rows:0,
  reviewed_security_definers:207,reviewed_authenticated_definers:152,
  manual_privileged_rpc_review:true};
-const act={protocol:'V230',environment:'CLEAN_PRODUCTION',
+const act={
+ migration_review:syntheticCleanMigrationReviewV231,protocol:'V231',environment:'CLEAN_PRODUCTION',
  approved_for_official_mode:true,project_ref:'bbbbbbbbbbbbbbbbbbbb',
  verified_at:'2026-10-27T03:20:00Z',
  verification_source:'privileged-read-only:synthetic-fixture-only',
