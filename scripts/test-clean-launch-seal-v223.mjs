@@ -79,14 +79,16 @@ test('V223 inventory covers declared public tables with no write statements',()=
  assert.match(executable,/auth\.users/);
  assert.match(executable,/storage\.objects/);
 });
-test('V223 source always stamps known QA even if official flag accidentally set',()=>{
+test('V250 removes visual QA banners while keeping independent draft and launch safeguards',()=>{
  const stamp=fs.readFileSync('src/utils/testDocumentStamp.mjs','utf8');
+ const guard=fs.readFileSync('release-guard-core-v223.mjs','utf8');
  const login=fs.readFileSync('src/pages/PublicSearchPage.jsx','utf8');
  const dashboard=fs.readFileSync('src/components/DashboardLayout.jsx','utf8');
- for(const source of [stamp,login,dashboard]){
-  assert.match(source,/isKnownTestRegistryProject/);
-  assert.match(source,/VITE_SUPABASE_URL/);
- }
+ assert.match(stamp,/isKnownTestRegistryProject/);
+ assert.match(stamp,/VITE_SUPABASE_URL/);
+ assert.match(guard,/KNOWN_QA_PROJECT_REFS/);
+ assert.doesNotMatch(login,/isKnownTestRegistryProject|role="status" className="mt-4/);
+ assert.doesNotMatch(dashboard,/isKnownTestRegistryProject|usingTestRecords/);
 });
 test('V223 official release guard runs before Vite build in CI and Vercel',()=>{
  const pkg=JSON.parse(fs.readFileSync('package.json','utf8'));

@@ -24,9 +24,10 @@ test('V221 cannot generate an unattached case without parish or link ID',()=>{
  assert.throws(()=>build({...base,link_id:undefined}),/jurisdicción verificable/);
  assert.throws(()=>buildHistoricalEvidenceDossierHtml(),/jurisdicción verificable/);
 });
-test('V221 permanent non-official status even if caller supplies official-like status',()=>{
+test('V221 workpaper retains preliminary status when a historical source is verified',()=>{
  const html=build({...base,latest_decision:'source_verified'});
- assert.match(html,/DATOS DE PRUEBA - NO OFICIALES/);
+ assert.match(html,/DOCUMENTO PRELIMINAR DE COTEJO/);
+ assert.match(html,/No es decreto, partida, constancia de sacramento/);
  assert.match(html,/No es decreto, partida, constancia de sacramento/);
  assert.match(html,/No se han escrito datos en el registro/);
  assert.match(html,/Ninguna coincidencia constituye validación archivística/);
@@ -63,7 +64,7 @@ test('V221 missing field values are explicit rather than falsely invented',()=>{
  assert.match(html,/No registrado/);
  assert.match(html,/No registrado \/ No registrado \/ No registrado/);
 });
-test('V221 printed workpaper does not rely on SPA styles to show non-official watermark',()=>{
+test('V221 printed workpaper includes an independent draft provenance mark',()=>{
  const html=build();
  assert.match(html,/body::before/);
  assert.match(html,/body::after/);

@@ -40,7 +40,7 @@ try{
    await evaluate("(()=>{window.__printQA={html:[],times:0};window.open=()=>({opener:null,document:{open(){},write(s){window.__printQA.html.push(s)},close(){}},focus(){},print(){window.__printQA.times++}});return true})()");
    if(!(await click('Imprimir ficha de cotejo')))throw Error('missing print button');
    const p=await evaluate("(()=>({times:window.__printQA.times,count:window.__printQA.html.length,content:window.__printQA.html[0]?.slice(0,22000)||''}))()");
-   if(p.times!==1||p.count!==1||!p.content.includes('DATOS DE PRUEBA - NO OFICIALES')||!p.content.includes('Ficha preliminar de cotejo histórico')||!p.content.includes('No se han escrito datos en el registro'))throw Error('print dossier did not carry required provenance and safeguards: '+JSON.stringify({times:p.times,count:p.count}));
+   if(p.times!==1||p.count!==1||!p.content.includes('DOCUMENTO PRELIMINAR DE COTEJO')||!p.content.includes('Ficha preliminar de cotejo histórico')||!p.content.includes('No se han escrito datos en el registro'))throw Error('print dossier did not carry required provenance and safeguards: '+JSON.stringify({times:p.times,count:p.count}));
  },s=>s.calls.every(x=>x!=='update'&&x!=='insert'));
  await test('blocked_print_popup_fails_safely_and_does_not_mutate_case',async()=>{
    await evaluate("window.open=()=>null");
