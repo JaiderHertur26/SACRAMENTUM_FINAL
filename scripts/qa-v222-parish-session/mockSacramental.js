@@ -1,0 +1,11 @@
+import {deferred,record} from './mockServiceHelper.js';
+export const listSacramentalInbox=id=>deferred('sacr',id);
+export const listSacramentalReceiptInbox=async id=>[];
+export const subscribeToSacramentalNotificationActivity=()=>()=>{};
+export const markSacramentalNotificationRead=async id=>record('read-sacr',id);
+export const markSacramentalReceiptRead=async id=>record('read-receipt',id);
+export const getSacramentalDocument=async id=>({id});
+export const getBaptismById=async id=>({id});
+export const processSacramentalRecipient=async ({recipient})=>{record('accept',recipient.id);return{};};
+export const processManualMatrimonialPhysical=async ({recipient})=>{record('physical',recipient.id);return{};};
+export const resolveManualMatrimonialRecipient=async args=>record('resolve',args);

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { BellRing, CheckCheck, FileCheck2, Inbox, Loader2, MailOpen, RefreshCcw } from 'lucide-react';
 import DashboardLayout from '@/components/DashboardLayout';
@@ -11,6 +11,7 @@ import ModalVerAviso from '@/components/ModalVerAviso';
 import ModalVerAcuseSacramental from '@/components/ModalVerAcuseSacramental';
 import ModalVincularPartidaNotificacion from '@/components/ModalVincularPartidaNotificacion';
 import { useAuth } from '@/context/AuthContext';
+import { getParishSessionScope } from '@/utils/parishSessionScope.mjs';
 import { useAppData } from '@/context/AppDataContext';
 import {
   getBaptismById,
@@ -25,8 +26,7 @@ import {
   subscribeToSacramentalNotificationActivity
 } from '@/services/matrimonialNotificationsService';
 
-const SacramentalNotificationsPage = () => {
-  const { user } = useAuth();
+const SacramentalNotificationsSession = ({ user, parishId }) => {
   const { data } = useAppData();
   const { toast } = useToast();
 
@@ -50,7 +50,6 @@ const SacramentalNotificationsPage = () => {
   const [pendingPhysicalAcceptance, setPendingPhysicalAcceptance] = useState(null);
   const [showPhysicalAccept, setShowPhysicalAccept] = useState(false);
 
-  const parishId = user?.parishId || user?.parish_id;
   const currentParishInfo = useMemo(
     () => (data.parishes || []).find((p) => p.id === parishId) || {
       id: parishId,
@@ -59,8 +58,12 @@ const SacramentalNotificationsPage = () => {
     [data.parishes, parishId, user?.parishName]
   );
 
+  const loadEpoch = useRef(0);
+  useEffect(() => () => { loadEpoch.current += 1; }, []);
+
   const loadAll = useCallback(async () => {
     if (!parishId) return;
+    const epoch = ++loadEpoch.current;
     setLoading(true);
     try {
       const [receivedRows, receiptRows] = await Promise.all([
@@ -82,6 +85,7 @@ const SacramentalNotificationsPage = () => {
         };
       });
 
+      if (epoch !== loadEpoch.current) return;
       setIncoming([...withNames].sort(
         (a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0)
       ));
@@ -89,15 +93,18 @@ const SacramentalNotificationsPage = () => {
         (a, b) => new Date(b.receiptCreatedAt || 0) - new Date(a.receiptCreatedAt || 0)
       ));
     } catch (error) {
+      if (epoch !== loadEpoch.current) return;
+      setIncoming([]);
+      setReceipts([]);
       toast({
         title: 'No se pudieron cargar las notificaciones sacramentales',
         description: error?.message,
         variant: 'destructive'
       });
     } finally {
-      setLoading(false);
+      if (epoch === loadEpoch.current) setLoading(false);
     }
-  }, [parishId, data.parishes]);
+  }, [parishId, data.parishes, toast]);
 
   useEffect(() => { loadAll(); }, [loadAll]);
 
@@ -114,9 +121,12 @@ const SacramentalNotificationsPage = () => {
   const unreadReceipts = receipts.filter((item) => !item.senderReadAt).length;
 
   const openIncoming = async (item) => {
+    if (loading || !incoming.some(row => row.id === item?.id)) return;
+    const epoch = loadEpoch.current;
     try {
       if (item.status === 'sin_leer') {
         await markSacramentalNotificationRead(item.id);
+        if (epoch !== loadEpoch.current) return;
         const readAt = new Date().toISOString();
         setIncoming((prev) => prev.map((row) =>
           row.id === item.id ? { ...row, status: 'leida', readAt } : row
@@ -127,6 +137,7 @@ const SacramentalNotificationsPage = () => {
 
       const document = item.document || await getSacramentalDocument(item.documentoId);
       const baptism = item.targetBaptismId ? await getBaptismById(item.targetBaptismId) : null;
+      if (epoch !== loadEpoch.current) return;
       setSelectedNotification(item);
       setSelectedDocument(document);
       setSelectedBaptism(baptism);
@@ -137,6 +148,7 @@ const SacramentalNotificationsPage = () => {
   };
 
   const requestAccept = (item) => {
+    if (loading || !incoming.some(row => row.id === item?.id)) return;
     if (!item?.targetBaptismId && item?.payload?.manualLocator) {
       toast({
         title: 'Resolución manual requerida',
@@ -150,12 +162,13 @@ const SacramentalNotificationsPage = () => {
   };
 
   const requestManualResolution = (item) => {
+    if (loading || !incoming.some(row => row.id === item?.id)) return;
     setManualResolutionItem(item);
     setShowManualResolution(true);
   };
 
   const resolveManualPartida = async (partida) => {
-    if (!manualResolutionItem?.id || !partida?.id) return;
+    if (!manualResolutionItem?.id || !partida?.id || loading || !incoming.some(row => row.id === manualResolutionItem.id)) return;
     try {
       await resolveManualMatrimonialRecipient({
         recipientId: manualResolutionItem.id,
@@ -177,12 +190,13 @@ const SacramentalNotificationsPage = () => {
   };
 
   const requestPhysicalAcceptance = (item) => {
+    if (loading || !incoming.some(row => row.id === item?.id)) return;
     setPendingPhysicalAcceptance(item);
     setShowPhysicalAccept(true);
   };
 
   const acceptNotification = async () => {
-    if (!pendingAcceptance) return;
+    if (!pendingAcceptance || loading || !incoming.some(row => row.id === pendingAcceptance.id)) return;
     try {
       const result = await processSacramentalRecipient({ recipient: pendingAcceptance });
       toast({
@@ -204,7 +218,7 @@ const SacramentalNotificationsPage = () => {
   };
 
   const acceptPhysicalNotification = async () => {
-    if (!pendingPhysicalAcceptance) return;
+    if (!pendingPhysicalAcceptance || loading || !incoming.some(row => row.id === pendingPhysicalAcceptance.id)) return;
     try {
       await processManualMatrimonialPhysical({ recipient: pendingPhysicalAcceptance });
       toast({
@@ -223,9 +237,12 @@ const SacramentalNotificationsPage = () => {
   };
 
   const openReceipt = async (receipt) => {
+    if (loading || !receipts.some(row => row.id === receipt?.id)) return;
+    const epoch = loadEpoch.current;
     try {
       if (!receipt.senderReadAt) {
         await markSacramentalReceiptRead(receipt.id);
+        if (epoch !== loadEpoch.current) return;
         const readAt = new Date().toISOString();
         setReceipts((prev) => prev.map((row) =>
           row.id === receipt.id ? { ...row, senderReadAt: readAt } : row
@@ -233,6 +250,7 @@ const SacramentalNotificationsPage = () => {
         receipt = { ...receipt, senderReadAt: readAt };
         window.dispatchEvent(new Event('sacramentum:notification-badge-refresh'));
       }
+      if (epoch !== loadEpoch.current) return;
       setSelectedReceipt(receipt);
       setShowReceipt(true);
     } catch (error) {
@@ -429,6 +447,16 @@ const formatDate = (value) => {
   } catch {
     return String(value);
   }
+};
+
+const SacramentalNotificationsPage = () => {
+  const { user, profile } = useAuth();
+  const scope = getParishSessionScope(user, profile);
+  if (!scope.authorized) return (
+    <DashboardLayout><p role="alert" className="mx-auto max-w-3xl rounded-2xl border border-red-200 bg-red-50 p-8 text-red-800">Esta bandeja requiere una sesión parroquial activa y verificada.</p></DashboardLayout>
+  );
+  // Unmount all notifications, dialogs and pending callbacks on a change of institution.
+  return <SacramentalNotificationsSession key={scope.key} user={user} parishId={scope.parishId} />;
 };
 
 export default SacramentalNotificationsPage;

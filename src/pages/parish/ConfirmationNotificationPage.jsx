@@ -4,15 +4,13 @@ import DashboardLayout from '@/components/DashboardLayout';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 import { useAuth } from '@/context/AuthContext';
+import { getParishSessionScope } from '@/utils/parishSessionScope.mjs';
 import { issueConfirmationNotification, loadConfirmationNotificationContext } from '@/services/confirmationNotificationService';
 
 const field=(label,content)=><div><p className="text-[9px] font-black uppercase tracking-widest text-slate-400">{label}</p><p className="mt-1 text-sm font-bold text-slate-800">{content||'—'}</p></div>;
 
-export default function ConfirmationNotificationPage(){
-  const {user}=useAuth();
+function ConfirmationNotificationSession({user,parishId,dioceseId}){
   const {toast}=useToast();
-  const parishId=user?.parishId||user?.parish_id;
-  const dioceseId=user?.dioceseId||user?.diocese_id;
   const [ctx,setCtx]=useState({confirmations:[],parishes:[]});
   const [confirmationId,setConfirmationId]=useState('');
   const [receiverParishId,setReceiverParishId]=useState('');
@@ -21,7 +19,16 @@ export default function ConfirmationNotificationPage(){
   const [busy,setBusy]=useState(false);
   const [issued,setIssued]=useState(null);
 
-  useEffect(()=>{ if(!parishId||!dioceseId)return; setBusy(true); loadConfirmationNotificationContext({parishId,dioceseId}).then(setCtx).catch(e=>toast({title:'No se pudo cargar el contexto',description:e.message,variant:'destructive'})).finally(()=>setBusy(false)); },[parishId,dioceseId]);
+  useEffect(()=>{
+    let current=true;
+    setBusy(true);
+    setCtx({confirmations:[],parishes:[]});
+    loadConfirmationNotificationContext({parishId,dioceseId})
+      .then(rows=>{if(current)setCtx(rows);})
+      .catch(e=>{if(current)toast({title:'No se pudo cargar el contexto',description:e.message,variant:'destructive'});})
+      .finally(()=>{if(current)setBusy(false);});
+    return ()=>{current=false;};
+  },[parishId,dioceseId]);
 
   const conf=useMemo(()=>ctx.confirmations.find(c=>c.id===confirmationId)||null,[ctx.confirmations,confirmationId]);
 
@@ -36,6 +43,10 @@ export default function ConfirmationNotificationPage(){
   },[confirmationId]);
 
   const send=async()=>{
+    if(busy)return;
+    if(!ctx.confirmations.some(c=>c.id===confirmationId) || !ctx.parishes.some(p=>p.id===receiverParishId && p.id!==parishId)){
+      toast({title:'Referencia de origen o destino no autorizada',description:'Actualice los registros para esta parroquia antes de emitir.',variant:'destructive'});return;
+    }
     if(!confirmationId||!receiverParishId){toast({title:'Seleccione la Confirmación y la parroquia destinataria',variant:'destructive'});return;}
     if(!locator.book||!locator.folio||!locator.number){toast({title:'Referencia bautismal incompleta',description:'Indique Libro, Folio y Número de Bautismo.',variant:'destructive'});return;}
     setBusy(true);
@@ -69,3 +80,14 @@ export default function ConfirmationNotificationPage(){
     </div>
   </DashboardLayout>;
 }
+
+const ConfirmationNotificationPage=()=>{
+  const {user,profile}=useAuth();
+  const scope=getParishSessionScope(user, profile);
+  if(!scope.authorized)return (
+    <DashboardLayout><p role="alert" className="mx-auto max-w-3xl rounded-2xl border border-red-200 bg-red-50 p-8 text-red-800">La emisión de notificaciones de Confirmación requiere una sesión parroquial activa y verificada.</p></DashboardLayout>
+  );
+  return <ConfirmationNotificationSession key={scope.key} user={user} parishId={scope.parishId} dioceseId={scope.dioceseId}/>;
+};
+
+export default ConfirmationNotificationPage;

@@ -1,0 +1,95 @@
+{
+  "protocol": "V222",
+  "date": "2026-10-26",
+  "estimatedPercent": 91,
+  "rawWeighted": 90.51999999999998,
+  "method": "Estimación orientativa ponderada de nueve áreas; no mide exhaustivamente historias terminadas, no certifica ausencia de defectos ni operación con libros oficiales.",
+  "dataStatus": "TODOS los registros cargados son exclusivamente datos de prueba NO OFICIALES.",
+  "areas": [
+    {
+      "area": "Infraestructura, CI y despliegue",
+      "weight": 10,
+      "complete": 97,
+      "remaining": "Pruebas de restauración de respaldos y continuidad operativa"
+    },
+    {
+      "area": "Roles, jerarquía y separación institucional",
+      "weight": 10,
+      "complete": 96,
+      "remaining": "Pruebas E2E autenticadas multirrol sobre base real de pruebas"
+    },
+    {
+      "area": "Registros y pendientes de cuatro sacramentos",
+      "weight": 20,
+      "complete": 91,
+      "remaining": "E2E completos con sesiones y flujos reales de los cuatro sacramentos"
+    },
+    {
+      "area": "Cancillería, decretos y trazabilidad jurídica",
+      "weight": 15,
+      "complete": 92,
+      "remaining": "Matriz documental y doble aprobación formal de reparaciones"
+    },
+    {
+      "area": "Migración histórica e integridad de procedencia",
+      "weight": 15,
+      "complete": 90,
+      "remaining": "46 candidatos por cotejar; 1 conflicto y 172 sin partida según corte V219"
+    },
+    {
+      "area": "Notas marginales y reconciliación",
+      "weight": 10,
+      "complete": 91,
+      "remaining": "Cotejo documental completo y archivo institucional"
+    },
+    {
+      "area": "Reportes, chat y notificaciones",
+      "weight": 8,
+      "complete": 87,
+      "remaining": "Ensayos de carga, pruebas de entrega institucional y canales externos reales"
+    },
+    {
+      "area": "Documentos, constancias e impresión",
+      "weight": 7,
+      "complete": 88,
+      "remaining": "Validación física y visual de todas las plantillas"
+    },
+    {
+      "area": "Aceptación E2E y operaciones reales",
+      "weight": 5,
+      "complete": 70,
+      "remaining": "Pruebas multirrol autenticadas, recuperación de correo y autorización de entorno oficial"
+    }
+  ],
+  "evidence": {
+    "syntheticPassed": 1946,
+    "syntheticTotal": 1946,
+    "qualityGatePassed": 30,
+    "qualityGateTotal": 30,
+    "newSessionTestsPassed": 25,
+    "newSessionTestsTotal": 25,
+    "isolatedChromiumPassed": 8,
+    "isolatedChromiumTotal": 8,
+    "browserJsExceptions": 0,
+    "blockedExternalRequests": 0,
+    "databaseWrites": 0,
+    "databaseMigrations": 0,
+    "buildPassed": true
+  },
+  "newCapabilities": [
+    "Sesiones estrictas mediante perfil activo y usuario JWT alineado a parroquia/diócesis",
+    "Desmontaje completo por identidad y territorio de tres pantallas parroquiales",
+    "Descartar respuestas tardías de distintas parroquias o actualizaciones anteriores",
+    "Validar pertenencia del registro/acuse en operaciones de lectura y aceptación",
+    "Origen y destinatario de Confirmación comprobados frente a contexto autorizado",
+    "Pruebas Chromium con latencias adversas y tres pantallas React reales integradas en CI"
+  ],
+  "notCertified": [
+    "E2E positivo autenticado de todas las funcionalidades y roles",
+    "Envío real de correos institucionales",
+    "Impresión física y revisión visual completa",
+    "46 candidatos, 1 conflicto y 172 referencias no localizadas del corte V219",
+    "Separación de datos de prueba y autorización oficial"
+  ],
+  "attention": "La autoridad de escritura corresponde a RLS y RPC autenticados en PostgreSQL; estas verificaciones de UI agregan protección, pero no sustituyen controles de servidor. Nunca interpretar VITE_REGISTRY_DATA_MODE como validación de registros."
+}
