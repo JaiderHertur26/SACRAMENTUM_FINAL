@@ -55,7 +55,7 @@ test('V240 release guard refuses the superseded privileged function catalogue',(
  const baseline=fs.readFileSync('scripts/test-privileged-rpc-catalog-v236.mjs','utf8');
  assert.match(baseline,/privileged_rpc_catalog_md5:EXPECTED_PRIVILEGED_RPC_CATALOG_MD5_V236/);
  const source=fs.readFileSync('release-security-guard-v224.mjs','utf8');
- assert.match(source,/f1efe81bc94e1163ce611d54ba8575fb/);
+ assert.match(source,/d10ec9b11e3726fc8427dd983400028e/);
  assert.doesNotMatch(source,/4ded9ebe1d9cde435befee3f8b131222/);
 });
 test('V240 synthetic identity checks discriminate suspend, null, disabled states',()=>{
