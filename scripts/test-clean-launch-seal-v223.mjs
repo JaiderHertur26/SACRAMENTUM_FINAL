@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { projectRefFromUrl, isKnownTestRegistryProject, resolveRegistryTestMode } from '../src/utils/registryDataMode.mjs';
-import { assessOfficialBuild } from './release-guard-core-v223.mjs';
+import { assessOfficialBuild } from '../release-guard-core-v223.mjs';
 
 const QA_REF='foczofcmwampjvlfbsqn';
 const PROD_REF='bbbbbbbbbbbbbbbbbbbb';
@@ -87,7 +87,7 @@ test('V223 source always stamps known QA even if official flag accidentally set'
 });
 test('V223 official release guard runs before Vite build in CI and Vercel',()=>{
  const pkg=JSON.parse(fs.readFileSync('package.json','utf8'));
- assert.match(pkg.scripts.build,/^node scripts\/guard-official-build-v223\.mjs && vite build$/);
+ assert.match(pkg.scripts.build,/^node guard-official-build-v223\.mjs && vite build$/);
  const ci=fs.readFileSync('.github/workflows/sacramentum-auditoria-v90.yml','utf8');
  const gate=fs.readFileSync('scripts/audit-gate-v90.mjs','utf8');
  assert.match(ci,/scripts\/test-clean-launch-seal-v223\.mjs/);
@@ -135,4 +135,15 @@ test('V223 every kind of residual test data is a release blocker',async()=>{
   try{assert.equal(evaluateEmptyLaunchInventory(incomplete,manifest).clearForNewEmptyInstallation,false);}
   catch(e){assert.match(e.message,/Dato incompleto/);}
  }
+});
+
+test('V223 production root build guard survives the Vercel QA-files ignore boundary',()=>{
+ const ignore=fs.readFileSync('.vercelignore','utf8');
+ assert.match(ignore,/^scripts\/$/m);
+ for(const guard of ['guard-official-build-v223.mjs','release-guard-core-v223.mjs']) {
+  assert.ok(fs.existsSync(guard),'missing Vercel-safe root guard: '+guard);
+  assert.doesNotMatch(ignore,new RegExp('^'+guard.replace(/\./g,'\\.')+'$','m'));
+ }
+ const pkg=JSON.parse(fs.readFileSync('package.json','utf8'));
+ assert.match(pkg.scripts.build,/^node guard-official-build-v223\.mjs && vite build$/);
 });

@@ -72,12 +72,12 @@
     }
   ],
   "evidence": {
-    "syntheticPassed": 1973,
-    "syntheticTotal": 1973,
+    "syntheticPassed": 1974,
+    "syntheticTotal": 1974,
     "qualityPassed": 30,
     "qualityTotal": 30,
-    "newReleaseUnitTestsPassed": 27,
-    "newReleaseUnitTestsTotal": 27,
+    "newReleaseUnitTestsPassed": 28,
+    "newReleaseUnitTestsTotal": 28,
     "buildPassed": true,
     "actualQAWrites": 0,
     "actualQACleanup": 0,

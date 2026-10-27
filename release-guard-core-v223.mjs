@@ -1,6 +1,6 @@
 // V223. Strict fail-closed BUILD governance, not a substitute for a privileged DBA review.
 // A JSON attestation is useful to prevent accidents, not proof against dishonest admins.
-import { KNOWN_QA_PROJECT_REFS, projectRefFromUrl } from '../src/utils/registryDataMode.mjs';
+import { KNOWN_QA_PROJECT_REFS, projectRefFromUrl } from './src/utils/registryDataMode.mjs';
 
 export const assessOfficialBuild = ({ mode, supabaseUrl, report, now = Date.now() } = {}) => {
   const problems = [];

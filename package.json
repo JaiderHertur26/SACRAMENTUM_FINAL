@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "dev": "vite",
-    "build": "node scripts/guard-official-build-v223.mjs && vite build",
+    "build": "node guard-official-build-v223.mjs && vite build",
     "preview": "vite preview",
     "audit:master": "node scripts/audit-gate-v90.mjs",
     "audit:plan": "node scripts/audit-master-plan-v90.mjs",
