@@ -163,7 +163,8 @@ exec('pruebas-sinteticas',node,['--test',
  'scripts/test-global-default-acl-v235.mjs',
  'scripts/test-privileged-rpc-catalog-v236.mjs',
  'scripts/test-priest-scoped-crud-v237.mjs',
- 'scripts/test-live-role-perimeter-evidence-v238.mjs']);
+ 'scripts/test-live-role-perimeter-evidence-v238.mjs',
+ 'scripts/test-live-chancery-rpc-guards-v239.mjs']);
 const scripts=fs.readdirSync(path.join(root,'scripts')).filter(x=>/^verify-.*\.mjs$/.test(x)).sort();
 for(const file of scripts)exec('legacy/'+file,node,['scripts/'+file]);
 const npmOnWindows=process.platform==='win32';
