@@ -152,14 +152,14 @@ test('V231 security guard refuses inherited QA concepts or shadow template snaps
  const source=fs.readFileSync('release-security-guard-v224.mjs','utf8');
  assert.match(source,/qa_legacy_dbf_concept_rows/);
  assert.match(source,/qa_legacy_template_snapshot_rows/);
- assert.match(source,/security.protocol!=='V235'/);
+ assert.match(source,/security.protocol!=='V236'/);
 });
 
 test('V231 real legacy-DBF rows and missing catalog count fail the actual release security evaluator',async()=>{
  const {assessSecurityPreflightV224}=await import('../release-security-guard-v224.mjs');
  const qa=JSON.parse(fs.readFileSync('AUDITORIA_PRELAUNCH_DATOS_QA_V231.json','utf8'));
  const safe={
- protocol:'V235',public_tables:82,rls_disabled:0,auth_truncate_tables:0,
+ protocol:'V236',public_tables:82,rls_disabled:0,auth_truncate_tables:0,
  anon_truncate_tables:0,unvalidated_foreign_keys:0,
  dangerous_default_table_grants:0,open_default_function_grants:0,
  future_user_table_grants:0,future_user_sequence_grants:0,
@@ -169,7 +169,7 @@ test('V231 real legacy-DBF rows and missing catalog count fail the actual releas
  public_functions:244,security_definers:207,
  anonymous_definer_functions:0,authenticated_definer_functions:152,
  definer_missing_search_path:0,reviewed_security_definers:207,
- reviewed_authenticated_definers:152,manual_privileged_rpc_review:true
+ reviewed_authenticated_definers:152,manual_privileged_rpc_review:true,privileged_rpc_catalog_count:152,privileged_rpc_catalog_md5:'4ded9ebe1d9cde435befee3f8b131222'
  };
  assert.deepEqual(assessSecurityPreflightV224(safe),[]);
  const denied=assessSecurityPreflightV224({...safe,qa_legacy_dbf_concept_rows:qa.rows.qa_legacy_dbf_concept_rows});

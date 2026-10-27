@@ -1,3 +1,5 @@
+// V236: privileged REST RPC catalog pinned to verified actual QA definition digest.
+export const EXPECTED_PRIVILEGED_RPC_CATALOG_MD5_V236 = '4ded9ebe1d9cde435befee3f8b131222';
 // V234: Supabase's internal supabase_admin DEFAULT ACL is immutable from postgres.
 // Supabase's official KB says to control OWN creator defaults and avoid extensions
 // owned by supabase_admin in exposed public. Raw internal grants are TELEMETRY,
@@ -24,8 +26,8 @@ const internalDefaultsTelemetry = Object.freeze([
 ]);
 export function assessSecurityPreflightV224(security,expectedTableCount=82) {
  const problems=[];
- if(!security || typeof security!=='object') return ['falta preflight de seguridad SQL V235'];
- if(security.protocol!=='V235')problems.push('protocolo de seguridad distinto de V234');
+ if(!security || typeof security!=='object') return ['falta preflight de seguridad SQL V236'];
+ if(security.protocol!=='V236')problems.push('protocolo de seguridad distinto de V236');
  for(const name of zeroRequired) {
   if(!Number.isSafeInteger(security[name]) || security[name]!==0)
    problems.push('riesgo de seguridad no resuelto o sin conteo: '+name);
@@ -63,6 +65,12 @@ export function assessSecurityPreflightV224(security,expectedTableCount=82) {
     && Number.isSafeInteger(security.authenticated_definer_functions)
     && security.privileged_rpc_using_delegated_identity>security.authenticated_definer_functions)
    problems.push('seguridad: más RPC delegadas que autenticadas');
+ if(!Number.isSafeInteger(security.privileged_rpc_catalog_count) ||
+     security.privileged_rpc_catalog_count!==152 ||
+     security.privileged_rpc_catalog_count!==security.authenticated_definer_functions)
+   problems.push('catálogo RPC privilegiadas: número de funciones distinto o ausente');
+ if(security.privileged_rpc_catalog_md5!==EXPECTED_PRIVILEGED_RPC_CATALOG_MD5_V236)
+   problems.push('catálogo RPC privilegiadas: definición alterada, huella ausente o no revisada');
  if(security.reviewed_security_definers!==security.security_definers ||
     security.reviewed_authenticated_definers!==security.authenticated_definer_functions ||
     security.manual_privileged_rpc_review!==true)
