@@ -1,0 +1,39 @@
+{
+  "protocol": "V240",
+  "date": "2026-10-27",
+  "environment": "QA_NONOFFICIAL_TEST_DATA_ONLY",
+  "project_ref": "foczofcmwampjvlfbsqn",
+  "reason": "two high-risk marriage/funeral decree reversal RPCs previously had coalesce(up.is_active,true)=true and coalesce(up.status,'active') not in (blocked,disabled,inactive), permitting noncanonical/suspended/null statuses through that guard",
+  "changed_rpcs": [
+    "reverse_marriage_decree(uuid,text)",
+    "reverse_funeral_decree(uuid,text)"
+  ],
+  "new_guards": [
+    "up.is_active IS TRUE",
+    "upper(coalesce(up.status,''))='ACTIVE'",
+    "verified chancelleries join on chancery and diocese ids",
+    "v_role IS DISTINCT FROM 'chancery'"
+  ],
+  "qa_active_chancery_profiles": 2,
+  "qa_active_chancery_verified_membership": 2,
+  "migration_applied_to_qa": true,
+  "catalogue_current_privileged_functions": 152,
+  "catalogue_current_md5": "d68b18810533c368d26f2c43e2ea9711",
+  "catalogue_previous_v236_md5": "4ded9ebe1d9cde435befee3f8b131222",
+  "sql_live_semantic_security_checks": {
+    "function_definitions_strict_positive": 2,
+    "function_definitions_left_with_old_bypass": 0,
+    "non_chancery_roles_attempts": 6,
+    "non_chancery_denied": 6,
+    "chancery_nonexistent_decree_attempts": 2,
+    "chancery_missing_decree_denied": 2,
+    "read_only_caveat": "read-only transactions prohibit FOR UPDATE even on nonexistent decree; the two Chancery positive-role/missing-decree cases used BEGIN...ROLLBACK with an impossible UUID; errors forced rollback; no writes occurred"
+  },
+  "qa_data_changed": false,
+  "qa_schema_changed": true,
+  "rpc_signature_count_changed": false,
+  "rpc_privileges_changed": false,
+  "semantic_full_rpc_approvals": 0,
+  "official_mode_authorized": false,
+  "limitations": "Guard-order tests on two RPCs and SQL definition inspection are not proof of full valid-decree mutation semantics, concurrency, institutional acceptance, SMTP, independent clean database, or restored backup."
+}
