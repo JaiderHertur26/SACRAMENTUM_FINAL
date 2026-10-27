@@ -6,9 +6,9 @@ import {assessOfficialBuild} from '../release-guard-core-v223.mjs';
 import {syntheticCleanMigrationReviewV231} from './release-test-fixture-v231.mjs';
 
 const live=JSON.parse(fs.readFileSync('AUDITORIA_ACL_SUPABASE_RESERVADA_LIVE_V234.json','utf8'));
-const sql=fs.readFileSync('scripts/release-security-preflight-v234.sql','utf8');
+const sql=fs.readFileSync('scripts/release-security-preflight-v235.sql','utf8');
 const security={
- protocol:'V234',public_tables:82,rls_disabled:0,auth_truncate_tables:0,
+ protocol:'V235',public_tables:82,rls_disabled:0,auth_truncate_tables:0,
  anon_truncate_tables:0,unvalidated_foreign_keys:0,
  // These 6 original aggregate counts intentionally mirror immutable
  // reserved supabase_admin ACLs, not insecure app-created objects:
@@ -17,7 +17,7 @@ const security={
  future_user_function_grants:2,creators_missing_global_function_revoke:1,
  // Actual enforceable measures must all remain zero.
  postgres_future_table_grants:0,postgres_future_sequence_grants:0,
- postgres_future_function_grants:0,postgres_missing_global_function_revoke:0,
+ postgres_future_function_grants:0,postgres_missing_global_function_revoke:0,postgres_global_table_grants:0,postgres_global_sequence_grants:0,
  admin_risk_extensions_in_public:0,admin_owned_public_relations:0,
  admin_owned_public_functions:0,admin_owned_exposed_truncate_tables:0,
  insecure_public_only_definers:0,unused_pg_graphql_enabled:0,
@@ -30,7 +30,7 @@ const security={
  reviewed_authenticated_definers:152,manual_privileged_rpc_review:true
 };
 const report={
- protocol:'V234',environment:'CLEAN_PRODUCTION',
+ protocol:'V235',environment:'CLEAN_PRODUCTION',
  approved_for_official_mode:true,project_ref:'bbbbbbbbbbbbbbbbbbbb',
  verified_at:'2026-10-27T14:05:00Z',
  verification_source:'privileged-read-only:synthetic-only',
@@ -77,6 +77,7 @@ test('V234 unchanged internal ACL telemetry is permitted only in a synthetic oth
 for(const field of [
  'postgres_future_table_grants','postgres_future_sequence_grants',
  'postgres_future_function_grants','postgres_missing_global_function_revoke',
+ 'postgres_global_table_grants','postgres_global_sequence_grants',
  'admin_risk_extensions_in_public','admin_owned_public_relations',
  'admin_owned_public_functions','admin_owned_exposed_truncate_tables'
 ]){
@@ -141,7 +142,8 @@ test('V234 SQL is pure read-only and scans actual exposure, own defaults and res
  for(const name of [
   'postgres_future_table_grants','postgres_future_sequence_grants',
   'postgres_future_function_grants','postgres_missing_global_function_revoke',
-  'admin_risk_extensions_in_public','admin_owned_public_relations',
+  'postgres_global_table_grants','postgres_global_sequence_grants',
+ 'admin_risk_extensions_in_public','admin_owned_public_relations',
   'admin_owned_public_functions','admin_owned_exposed_truncate_tables',
   'future_user_table_grants','creators_missing_global_function_revoke'
  ])assert.ok(sql.includes('AS '+name),name);

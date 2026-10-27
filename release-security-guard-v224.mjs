@@ -11,6 +11,7 @@ const zeroRequired = Object.freeze([
  'qa_legacy_template_snapshot_rows','privileged_rpc_without_auth_identity_path',
  'postgres_future_table_grants','postgres_future_sequence_grants',
  'postgres_future_function_grants','postgres_missing_global_function_revoke',
+ 'postgres_global_table_grants','postgres_global_sequence_grants',
  'admin_risk_extensions_in_public','admin_owned_public_relations',
  'admin_owned_public_functions','admin_owned_exposed_truncate_tables'
 ]);
@@ -23,8 +24,8 @@ const internalDefaultsTelemetry = Object.freeze([
 ]);
 export function assessSecurityPreflightV224(security,expectedTableCount=82) {
  const problems=[];
- if(!security || typeof security!=='object') return ['falta preflight de seguridad SQL V234'];
- if(security.protocol!=='V234')problems.push('protocolo de seguridad distinto de V234');
+ if(!security || typeof security!=='object') return ['falta preflight de seguridad SQL V235'];
+ if(security.protocol!=='V235')problems.push('protocolo de seguridad distinto de V234');
  for(const name of zeroRequired) {
   if(!Number.isSafeInteger(security[name]) || security[name]!==0)
    problems.push('riesgo de seguridad no resuelto o sin conteo: '+name);
