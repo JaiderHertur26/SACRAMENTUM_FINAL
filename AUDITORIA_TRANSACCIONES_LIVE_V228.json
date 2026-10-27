@@ -1,0 +1,224 @@
+{
+  "protocol": "V228",
+  "project_ref": "foczofcmwampjvlfbsqn",
+  "environment": "TEST_QA_NOT_OFFICIAL",
+  "verifiedAt": "2026-10-27T04:22:58.199Z",
+  "source": "Supabase MCP execute_sql with privileged QA role: 14 individual BEGIN/ROLLBACK scenarios; separate read-only count queries before/after",
+  "successfulTransactions": 14,
+  "transactionChecks": 14,
+  "allRollback": true,
+  "countsBefore": {
+    "baptisms": 5040,
+    "confirmations": 2091,
+    "marriages": 1261,
+    "funerals": 1,
+    "pending_baptisms": 69,
+    "pending_confirmations": 233,
+    "pending_marriages": 1,
+    "pending_funerals": 1,
+    "decretos": 2,
+    "marginal_notes": 82,
+    "print_events": 8,
+    "audit_entries": 353,
+    "auth_accounts": 12
+  },
+  "countsAfter": {
+    "baptisms": 5040,
+    "confirmations": 2091,
+    "marriages": 1261,
+    "funerals": 1,
+    "pending_baptisms": 69,
+    "pending_confirmations": 233,
+    "pending_marriages": 1,
+    "pending_funerals": 1,
+    "decretos": 2,
+    "marginal_notes": 82,
+    "print_events": 8,
+    "audit_entries": 353,
+    "auth_accounts": 12
+  },
+  "archivalSamplesOrCredentialsSaved": false,
+  "recordsTransferredToOfficial": 0,
+  "claimsNotCovered": [
+    "Not independently cryptographically signed or automatically rerun by GitHub CI",
+    "No SMTP delivery, physical print, full productive legal authorization, or clean new project was tested",
+    "Older print scripts v140/v141 fail by design under v194 guard; newer v194 verification passed"
+  ],
+  "scripts": [
+    {
+      "file": "scripts/qa-rollback-documentary-decree-lifecycle-v210.sql",
+      "passed": true,
+      "tx_rolled_back": true,
+      "metrics": [
+        {
+          "result": {
+            "rolled_back": true,
+            "new_documentary": 1,
+            "cross_diocese_visible": 0,
+            "parish_positive_reads": 2,
+            "historical_documentary": 2,
+            "role_and_validation_denials": 4,
+            "sacramental_counts_unchanged": true
+          }
+        }
+      ],
+      "sql_sha256": "49fd0fb29c9ee067bb6fa0e7ed77f687a0c3c006bfdbb0c0d83f1ca3e5e5022f"
+    },
+    {
+      "file": "scripts/qa-rollback-four-pending-authorization-v177.sql",
+      "passed": true,
+      "tx_rolled_back": true,
+      "metrics": [],
+      "sql_sha256": "ca87e3a626e05f83586f54a4e62e359a16ef78f8f9816b427df9041ba3d4be81"
+    },
+    {
+      "file": "scripts/qa-rollback-marginal-four-sacraments-v216.sql",
+      "passed": true,
+      "tx_rolled_back": true,
+      "metrics": [
+        {
+          "result": {
+            "rollback": true,
+            "sacraments_passed": 4,
+            "owned_notes_created": 4,
+            "foreign_source_rejected": 4,
+            "same_parish_replays_idempotent": 4
+          }
+        }
+      ],
+      "sql_sha256": "deb7aa9e753d79caf1f11f32652259297a941b4e5c58080cb867e6269c096501"
+    },
+    {
+      "file": "scripts/qa-rollback-historical-four-workflows-v173.sql",
+      "passed": true,
+      "tx_rolled_back": true,
+      "metrics": [],
+      "sql_sha256": "5f255a256dfc76d6f4c7617e89ade6cb38ee71fbdf8f64ca96b3ea65af086a03"
+    },
+    {
+      "file": "scripts/qa-rollback-reconciliation-all-sacraments-v159.sql",
+      "passed": true,
+      "tx_rolled_back": true,
+      "metrics": [],
+      "sql_sha256": "0dd25c1e60b0b4a0ca988f09b127f5e701e74f594798b327524662b496d8c060"
+    },
+    {
+      "file": "scripts/qa-rollback-four-sacrament-seating-v193.sql",
+      "passed": true,
+      "tx_rolled_back": true,
+      "metrics": [
+        {
+          "results": {
+            "rollback": true,
+            "pendings_closed": 4,
+            "sacramental_lifecycles": 4,
+            "duplicate_seating_rejected": 4
+          },
+          "min_seat_audit_entries": 4
+        }
+      ],
+      "sql_sha256": "eacbc7f8448740546ef5f85a5ee8bc6b4d3289b8c01d745bc9f80e260f90c326"
+    },
+    {
+      "file": "scripts/qa-rollback-marriage-funeral-sequential-v202.sql",
+      "passed": true,
+      "tx_rolled_back": true,
+      "metrics": [
+        {
+          "results": {
+            "rollback": true,
+            "correct_next_folio": true,
+            "duplicate_retries_denied": 4,
+            "unique_sequential_seatings": 4
+          }
+        }
+      ],
+      "sql_sha256": "4ce1f23518215ca3331357db0973dd33f2e044ae12bce77cd5d0fb3c311217b1"
+    },
+    {
+      "file": "scripts/qa-rollback-pending-receipt-atomicity-v207.sql",
+      "passed": true,
+      "tx_rolled_back": true,
+      "metrics": [
+        {
+          "forced_receipt_failures": 4,
+          "recovered_with_same_request_ids": 4,
+          "receipts_after_recovery": 4
+        }
+      ],
+      "sql_sha256": "c1be780bfcf59e812a4f8f7fc021a1697cdcc267f62b7ab08efd2e75ee825e52"
+    },
+    {
+      "file": "scripts/qa-rollback-print-integrity-v194.sql",
+      "passed": true,
+      "tx_rolled_back": true,
+      "metrics": [
+        {
+          "qa_result": {
+            "rollback": true,
+            "verified_receipts": 4,
+            "sacraments_covered": 4,
+            "required_notes_preserved": 4,
+            "rejected_invalid_requests": 20
+          }
+        }
+      ],
+      "sql_sha256": "60747ea8269b4faae1c4a1daff3fcc9df48fb579fcb20c2cc8fa7d0180f19936"
+    },
+    {
+      "file": "scripts/qa-rollback-idempotent-pending-creation-v207.sql",
+      "passed": true,
+      "tx_rolled_back": true,
+      "metrics": [
+        {
+          "result": {
+            "circuits": 5,
+            "same_receipt_replays": 15,
+            "unauthorized_rejected": 2,
+            "changed_payload_rejected": 5,
+            "direct_ledger_read_denied": true
+          }
+        }
+      ],
+      "sql_sha256": "1db862e52429c8c2b328f9e73a9f5d1383977b705746eada2c38bc0e65cf7418"
+    },
+    {
+      "file": "scripts/qa-rollback-notification-archive-active-profile-v171.sql",
+      "passed": true,
+      "tx_rolled_back": true,
+      "metrics": [],
+      "sql_sha256": "b30a11224c4de6e4cba15137864d1108949f65dc34b29671a0ca4c545f1ae130"
+    },
+    {
+      "file": "scripts/qa-rollback-chancery-decree-scope-v179.sql",
+      "passed": true,
+      "tx_rolled_back": true,
+      "metrics": [],
+      "sql_sha256": "3638b18bcebf733174bcd6d79a31ba36e0c391935f045d4cd4c04459c2682b50"
+    },
+    {
+      "file": "scripts/qa-rollback-decree-status-v189.sql",
+      "passed": true,
+      "tx_rolled_back": true,
+      "metrics": [
+        {
+          "qa_result": {
+            "rollback_required": true,
+            "fictitious_decrees": 1,
+            "invalid_status_denied": 1,
+            "invalid_sacrament_denied": 1,
+            "original_record_unchanged": true
+          }
+        }
+      ],
+      "sql_sha256": "1a4662b9894cc18321c8ead4cdfda1d4476a9e7b6812a9b0f4849a03ba08c031"
+    },
+    {
+      "file": "scripts/qa-rollback-physical-provenance-legitimate-v121.sql",
+      "passed": true,
+      "tx_rolled_back": true,
+      "metrics": [],
+      "sql_sha256": "18e63a9ca9b527837bf871be8f863bada9afcbbfb252ca9e9afab95b8fc5a6f5"
+    }
+  ]
+}
