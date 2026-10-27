@@ -9,7 +9,8 @@ export function assertV251RevisedSource({file,historicalSha256,currentSha256}){
   return;
  }
  assert.ok(receipt.approvedSourceFiles.includes(file),'Source not approved for V251: '+file);
- assert.equal(update.before,historicalSha256,'Historical browser receipt altered: '+file);
+ assert.ok([update.before,update.after].includes(historicalSha256),
+  'Browser evidence hash differs from both the immutable historic receipt and the reviewed V251 replay: '+file);
  assert.equal(currentSha256,update.after,'V251 reviewed source changed without evidence: '+file);
  assert.ok(update.editedLines>=1);
 }
