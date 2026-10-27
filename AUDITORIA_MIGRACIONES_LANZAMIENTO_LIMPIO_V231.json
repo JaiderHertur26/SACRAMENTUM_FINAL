@@ -1,0 +1,391 @@
+{
+  "protocol": "V231",
+  "scope": "158 historical QA migrations; offline structural-data inventory ONLY",
+  "source": "SQL code lexer excludes PLpgSQL dollar-quoted bodies, comments, string literals and classifies top-level direct DML by hand-reviewed destination allowlist",
+  "fullyCertifiedForCleanProductionReplay": false,
+  "canCopyExistingQaDatabase": false,
+  "approvedForOfficialMode": false,
+  "summary": {
+    "allMigrations": 158,
+    "migrationsWithDirectDataStatements": 14,
+    "directDataStatements": 45,
+    "referenceTemplateCandidates": 6,
+    "blockedDataStatements": 39,
+    "explicitQaAnchoredConcepts": 1,
+    "hiddenMigrationSideEffectsNotStaticallyCertified": true
+  },
+  "bannedQaSourcePatterns": [
+    "CPTOANULA.DBF external legacy catalog references and UUID-specific original diocese seeds",
+    "legacy_marginal_template_snapshots copied from QA parish parameters",
+    "registry_audit_log backfills and cleanup of known QA-only territory UUIDs"
+  ],
+  "note": "Six allowed candidates are NOT automatically approved: schema-compatible default templates must be manually vetted. Other migrations can contain DO blocks, triggers, and function-call side effects not covered by the static lexer. All 158 SQL files require a clean empty-project rehearsal before any certification.",
+  "releaseBlockingRequirements": [
+    "Build new clean schema baseline without replaying historical mutation statements into real data",
+    "Do NOT transplant auth users, old QA business records, legacy data, decree/audit history, or source snapshots",
+    "Verify clean project has zero registry user, audit and imported historical rows after schema provisioning",
+    "Resolve supabase_admin future default ACLs, 152 privileged RPC reviews, SMTP and backup restoration before real entries"
+  ],
+  "entries": [
+    {
+      "file": "supabase/migrations/20260904000100_001_registry_core.sql",
+      "sha256": "9fdb51dafc76e2c8072331a33a284b572aa3d8ca732a6a165e993a44f7872e22",
+      "statementIndex": 4,
+      "kind": "UPDATE",
+      "destination": null,
+      "launchPolicy": "HISTORICAL_DATA_MUTATION_MUST_EXCLUDE"
+    },
+    {
+      "file": "supabase/migrations/20260904000100_001_registry_core.sql",
+      "sha256": "9fdb51dafc76e2c8072331a33a284b572aa3d8ca732a6a165e993a44f7872e22",
+      "statementIndex": 5,
+      "kind": "UPDATE",
+      "destination": null,
+      "launchPolicy": "HISTORICAL_DATA_MUTATION_MUST_EXCLUDE"
+    },
+    {
+      "file": "supabase/migrations/20260904000100_001_registry_core.sql",
+      "sha256": "9fdb51dafc76e2c8072331a33a284b572aa3d8ca732a6a165e993a44f7872e22",
+      "statementIndex": 6,
+      "kind": "UPDATE",
+      "destination": null,
+      "launchPolicy": "HISTORICAL_DATA_MUTATION_MUST_EXCLUDE"
+    },
+    {
+      "file": "supabase/migrations/20260904000100_001_registry_core.sql",
+      "sha256": "9fdb51dafc76e2c8072331a33a284b572aa3d8ca732a6a165e993a44f7872e22",
+      "statementIndex": 7,
+      "kind": "UPDATE",
+      "destination": null,
+      "launchPolicy": "HISTORICAL_DATA_MUTATION_MUST_EXCLUDE"
+    },
+    {
+      "file": "supabase/migrations/20260904000100_001_registry_core.sql",
+      "sha256": "9fdb51dafc76e2c8072331a33a284b572aa3d8ca732a6a165e993a44f7872e22",
+      "statementIndex": 8,
+      "kind": "UPDATE",
+      "destination": null,
+      "launchPolicy": "HISTORICAL_DATA_MUTATION_MUST_EXCLUDE"
+    },
+    {
+      "file": "supabase/migrations/20260904000100_001_registry_core.sql",
+      "sha256": "9fdb51dafc76e2c8072331a33a284b572aa3d8ca732a6a165e993a44f7872e22",
+      "statementIndex": 9,
+      "kind": "UPDATE",
+      "destination": null,
+      "launchPolicy": "HISTORICAL_DATA_MUTATION_MUST_EXCLUDE"
+    },
+    {
+      "file": "supabase/migrations/20260904001400_014_marginal_note_templates.sql",
+      "sha256": "6c4e228cb20b3e72f188a11ac8e4ecc48247affa869994c06ff729212aee202f",
+      "statementIndex": 3,
+      "kind": "UPDATE",
+      "destination": null,
+      "launchPolicy": "HISTORICAL_DATA_MUTATION_MUST_EXCLUDE"
+    },
+    {
+      "file": "supabase/migrations/20260905001700_017_legacy_migration_foundation.sql",
+      "sha256": "d7b00aa11710a13b7c8762608438bf555de1f4d99d2db3ab5843ea976178d203",
+      "statementIndex": 27,
+      "kind": "INSERT INTO",
+      "destination": "public.legacy_import_profiles",
+      "launchPolicy": "REFERENCE_TEMPLATE_CANDIDATE_REQUIRES_REVIEW"
+    },
+    {
+      "file": "supabase/migrations/20260905001800_018_marginal_notes_v2.sql",
+      "sha256": "fa45c5fe4c34440b393d7ef804433b8fe68c2bf472a4f7256bce769b867e5157",
+      "statementIndex": 10,
+      "kind": "UPDATE",
+      "destination": null,
+      "launchPolicy": "HISTORICAL_DATA_MUTATION_MUST_EXCLUDE"
+    },
+    {
+      "file": "supabase/migrations/20260905001800_018_marginal_notes_v2.sql",
+      "sha256": "fa45c5fe4c34440b393d7ef804433b8fe68c2bf472a4f7256bce769b867e5157",
+      "statementIndex": 11,
+      "kind": "INSERT INTO",
+      "destination": "public.marginal_note_templates",
+      "launchPolicy": "REFERENCE_TEMPLATE_CANDIDATE_REQUIRES_REVIEW"
+    },
+    {
+      "file": "supabase/migrations/20260905001800_018_marginal_notes_v2.sql",
+      "sha256": "fa45c5fe4c34440b393d7ef804433b8fe68c2bf472a4f7256bce769b867e5157",
+      "statementIndex": 12,
+      "kind": "INSERT INTO",
+      "destination": "public.marginal_note_template_clauses",
+      "launchPolicy": "REFERENCE_TEMPLATE_CANDIDATE_REQUIRES_REVIEW"
+    },
+    {
+      "file": "supabase/migrations/20260905001800_018_marginal_notes_v2.sql",
+      "sha256": "fa45c5fe4c34440b393d7ef804433b8fe68c2bf472a4f7256bce769b867e5157",
+      "statementIndex": 13,
+      "kind": "INSERT INTO",
+      "destination": "public.marginal_note_template_clauses",
+      "launchPolicy": "REFERENCE_TEMPLATE_CANDIDATE_REQUIRES_REVIEW"
+    },
+    {
+      "file": "supabase/migrations/20260905002100_021_print_audit_and_legacy_template_archive.sql",
+      "sha256": "9c862f3f13cb21c71d1f4296ab94e9a16c3f82b3253a8b1f8658ac8af28cf777",
+      "statementIndex": 3,
+      "kind": "INSERT INTO",
+      "destination": "public.legacy_marginal_template_snapshots",
+      "launchPolicy": "DATA_COPY_FROM_QA_TABLE_MUST_EXCLUDE"
+    },
+    {
+      "file": "supabase/migrations/20260925153625_remove_first_communion_v21.sql",
+      "sha256": "0fb83252eabe6c7603cebecc4e76d138788d2d4f5c629fb1891dec00c75ccc5a",
+      "statementIndex": 3,
+      "kind": "UPDATE",
+      "destination": null,
+      "launchPolicy": "HISTORICAL_DATA_MUTATION_MUST_EXCLUDE"
+    },
+    {
+      "file": "supabase/migrations/20260925153625_remove_first_communion_v21.sql",
+      "sha256": "0fb83252eabe6c7603cebecc4e76d138788d2d4f5c629fb1891dec00c75ccc5a",
+      "statementIndex": 4,
+      "kind": "DELETE FROM",
+      "destination": null,
+      "launchPolicy": "HISTORICAL_DATA_MUTATION_MUST_EXCLUDE"
+    },
+    {
+      "file": "supabase/migrations/20260925153625_remove_first_communion_v21.sql",
+      "sha256": "0fb83252eabe6c7603cebecc4e76d138788d2d4f5c629fb1891dec00c75ccc5a",
+      "statementIndex": 5,
+      "kind": "DELETE FROM",
+      "destination": null,
+      "launchPolicy": "HISTORICAL_DATA_MUTATION_MUST_EXCLUDE"
+    },
+    {
+      "file": "supabase/migrations/20260925153625_remove_first_communion_v21.sql",
+      "sha256": "0fb83252eabe6c7603cebecc4e76d138788d2d4f5c629fb1891dec00c75ccc5a",
+      "statementIndex": 6,
+      "kind": "DELETE FROM",
+      "destination": null,
+      "launchPolicy": "HISTORICAL_DATA_MUTATION_MUST_EXCLUDE"
+    },
+    {
+      "file": "supabase/migrations/20260927184852_direct_legacy_sacramental_notes_v68.sql",
+      "sha256": "8fc53bbd2b166b28764d4effa22b4221396c155e81158cadad103753aca274dd",
+      "statementIndex": 1,
+      "kind": "UPDATE",
+      "destination": null,
+      "launchPolicy": "HISTORICAL_DATA_MUTATION_MUST_EXCLUDE"
+    },
+    {
+      "file": "supabase/migrations/20260927185524_fix_direct_legacy_note_uuid_match_v69.sql",
+      "sha256": "681a64b8d796da058f3f7f5400277832c4c24a4c25adfd0760c19c3a9b262dbd",
+      "statementIndex": 1,
+      "kind": "UPDATE",
+      "destination": null,
+      "launchPolicy": "HISTORICAL_DATA_MUTATION_MUST_EXCLUDE"
+    },
+    {
+      "file": "supabase/migrations/20260927190420_canonical_registry_print_coordinates_v71.sql",
+      "sha256": "df5f9f138b1b950fbeb43aab25a13ec46435aa91a1675c079fc9570b4c3b621a",
+      "statementIndex": 6,
+      "kind": "UPDATE",
+      "destination": null,
+      "launchPolicy": "HISTORICAL_DATA_MUTATION_MUST_EXCLUDE"
+    },
+    {
+      "file": "supabase/migrations/20260927190420_canonical_registry_print_coordinates_v71.sql",
+      "sha256": "df5f9f138b1b950fbeb43aab25a13ec46435aa91a1675c079fc9570b4c3b621a",
+      "statementIndex": 7,
+      "kind": "UPDATE",
+      "destination": null,
+      "launchPolicy": "HISTORICAL_DATA_MUTATION_MUST_EXCLUDE"
+    },
+    {
+      "file": "supabase/migrations/20260927190420_canonical_registry_print_coordinates_v71.sql",
+      "sha256": "df5f9f138b1b950fbeb43aab25a13ec46435aa91a1675c079fc9570b4c3b621a",
+      "statementIndex": 8,
+      "kind": "UPDATE",
+      "destination": null,
+      "launchPolicy": "HISTORICAL_DATA_MUTATION_MUST_EXCLUDE"
+    },
+    {
+      "file": "supabase/migrations/20260927190420_canonical_registry_print_coordinates_v71.sql",
+      "sha256": "df5f9f138b1b950fbeb43aab25a13ec46435aa91a1675c079fc9570b4c3b621a",
+      "statementIndex": 9,
+      "kind": "UPDATE",
+      "destination": null,
+      "launchPolicy": "HISTORICAL_DATA_MUTATION_MUST_EXCLUDE"
+    },
+    {
+      "file": "supabase/migrations/20260927190642_backfill_orphan_print_coordinates_from_audit_v72.sql",
+      "sha256": "5b4fff741c23984897c92e5586929f035ec15e4ee6b5646eff33198e17eda0e9",
+      "statementIndex": 1,
+      "kind": "WITH",
+      "destination": null,
+      "launchPolicy": "HISTORICAL_DATA_MUTATION_MUST_EXCLUDE"
+    },
+    {
+      "file": "supabase/migrations/20260927200534_bind_document_templates_to_sacramental_sources_v73.sql",
+      "sha256": "43cd5a5e5c19c52ad845804067574d69270f69400993c48c6497bc660a42ab23",
+      "statementIndex": 1,
+      "kind": "UPDATE",
+      "destination": null,
+      "launchPolicy": "HISTORICAL_DATA_MUTATION_MUST_EXCLUDE"
+    },
+    {
+      "file": "supabase/migrations/20260927200534_bind_document_templates_to_sacramental_sources_v73.sql",
+      "sha256": "43cd5a5e5c19c52ad845804067574d69270f69400993c48c6497bc660a42ab23",
+      "statementIndex": 2,
+      "kind": "UPDATE",
+      "destination": null,
+      "launchPolicy": "HISTORICAL_DATA_MUTATION_MUST_EXCLUDE"
+    },
+    {
+      "file": "supabase/migrations/20260927200534_bind_document_templates_to_sacramental_sources_v73.sql",
+      "sha256": "43cd5a5e5c19c52ad845804067574d69270f69400993c48c6497bc660a42ab23",
+      "statementIndex": 3,
+      "kind": "UPDATE",
+      "destination": null,
+      "launchPolicy": "HISTORICAL_DATA_MUTATION_MUST_EXCLUDE"
+    },
+    {
+      "file": "supabase/migrations/20260927200534_bind_document_templates_to_sacramental_sources_v73.sql",
+      "sha256": "43cd5a5e5c19c52ad845804067574d69270f69400993c48c6497bc660a42ab23",
+      "statementIndex": 4,
+      "kind": "UPDATE",
+      "destination": null,
+      "launchPolicy": "HISTORICAL_DATA_MUTATION_MUST_EXCLUDE"
+    },
+    {
+      "file": "supabase/migrations/20260927200534_bind_document_templates_to_sacramental_sources_v73.sql",
+      "sha256": "43cd5a5e5c19c52ad845804067574d69270f69400993c48c6497bc660a42ab23",
+      "statementIndex": 5,
+      "kind": "UPDATE",
+      "destination": null,
+      "launchPolicy": "HISTORICAL_DATA_MUTATION_MUST_EXCLUDE"
+    },
+    {
+      "file": "supabase/migrations/20260927200534_bind_document_templates_to_sacramental_sources_v73.sql",
+      "sha256": "43cd5a5e5c19c52ad845804067574d69270f69400993c48c6497bc660a42ab23",
+      "statementIndex": 6,
+      "kind": "UPDATE",
+      "destination": null,
+      "launchPolicy": "HISTORICAL_DATA_MUTATION_MUST_EXCLUDE"
+    },
+    {
+      "file": "supabase/migrations/20260927200534_bind_document_templates_to_sacramental_sources_v73.sql",
+      "sha256": "43cd5a5e5c19c52ad845804067574d69270f69400993c48c6497bc660a42ab23",
+      "statementIndex": 7,
+      "kind": "UPDATE",
+      "destination": null,
+      "launchPolicy": "HISTORICAL_DATA_MUTATION_MUST_EXCLUDE"
+    },
+    {
+      "file": "supabase/migrations/20260927200534_bind_document_templates_to_sacramental_sources_v73.sql",
+      "sha256": "43cd5a5e5c19c52ad845804067574d69270f69400993c48c6497bc660a42ab23",
+      "statementIndex": 8,
+      "kind": "UPDATE",
+      "destination": null,
+      "launchPolicy": "HISTORICAL_DATA_MUTATION_MUST_EXCLUDE"
+    },
+    {
+      "file": "supabase/migrations/20260927200534_bind_document_templates_to_sacramental_sources_v73.sql",
+      "sha256": "43cd5a5e5c19c52ad845804067574d69270f69400993c48c6497bc660a42ab23",
+      "statementIndex": 9,
+      "kind": "UPDATE",
+      "destination": null,
+      "launchPolicy": "HISTORICAL_DATA_MUTATION_MUST_EXCLUDE"
+    },
+    {
+      "file": "supabase/migrations/20260927202826_professional_ecclesial_document_templates_v74.sql",
+      "sha256": "bd6f122945335acd3ade777aff4ff9811e9bdb11ccfa3d9b4cc22cb5fc1dcd2d",
+      "statementIndex": 2,
+      "kind": "INSERT INTO",
+      "destination": "_v74_document_rewrites",
+      "launchPolicy": "REFERENCE_TEMPLATE_CANDIDATE_REQUIRES_REVIEW"
+    },
+    {
+      "file": "supabase/migrations/20260927202826_professional_ecclesial_document_templates_v74.sql",
+      "sha256": "bd6f122945335acd3ade777aff4ff9811e9bdb11ccfa3d9b4cc22cb5fc1dcd2d",
+      "statementIndex": 3,
+      "kind": "INSERT INTO",
+      "destination": "public.document_templates",
+      "launchPolicy": "REFERENCE_TEMPLATE_CANDIDATE_REQUIRES_REVIEW"
+    },
+    {
+      "file": "supabase/migrations/20260927202826_professional_ecclesial_document_templates_v74.sql",
+      "sha256": "bd6f122945335acd3ade777aff4ff9811e9bdb11ccfa3d9b4cc22cb5fc1dcd2d",
+      "statementIndex": 4,
+      "kind": "UPDATE",
+      "destination": null,
+      "launchPolicy": "HISTORICAL_DATA_MUTATION_MUST_EXCLUDE"
+    },
+    {
+      "file": "supabase/migrations/20260927214822_chancery_vice_chancellor_and_mis_datos_authorities.sql",
+      "sha256": "b295f220677236a25168f1c88ec10fcf3b3796924f815a7d6d07915adc4b7696",
+      "statementIndex": 25,
+      "kind": "UPDATE",
+      "destination": null,
+      "launchPolicy": "HISTORICAL_DATA_MUTATION_MUST_EXCLUDE"
+    },
+    {
+      "file": "supabase/migrations/20260927233000_v83_decree_concepts_and_legacy_archive_scope.sql",
+      "sha256": "5172b864568803d13618eca329b033067204c16d405c502afe6eb2a5e743c724",
+      "statementIndex": 2,
+      "kind": "UPDATE",
+      "destination": null,
+      "launchPolicy": "HISTORICAL_DATA_MUTATION_MUST_EXCLUDE"
+    },
+    {
+      "file": "supabase/migrations/20260927233000_v83_decree_concepts_and_legacy_archive_scope.sql",
+      "sha256": "5172b864568803d13618eca329b033067204c16d405c502afe6eb2a5e743c724",
+      "statementIndex": 6,
+      "kind": "UPDATE",
+      "destination": null,
+      "launchPolicy": "HISTORICAL_DATA_MUTATION_MUST_EXCLUDE"
+    },
+    {
+      "file": "supabase/migrations/20260927233000_v83_decree_concepts_and_legacy_archive_scope.sql",
+      "sha256": "5172b864568803d13618eca329b033067204c16d405c502afe6eb2a5e743c724",
+      "statementIndex": 7,
+      "kind": "DELETE FROM",
+      "destination": null,
+      "launchPolicy": "HISTORICAL_DATA_MUTATION_MUST_EXCLUDE"
+    },
+    {
+      "file": "supabase/migrations/20260927233000_v83_decree_concepts_and_legacy_archive_scope.sql",
+      "sha256": "5172b864568803d13618eca329b033067204c16d405c502afe6eb2a5e743c724",
+      "statementIndex": 8,
+      "kind": "DELETE FROM",
+      "destination": null,
+      "launchPolicy": "HISTORICAL_DATA_MUTATION_MUST_EXCLUDE"
+    },
+    {
+      "file": "supabase/migrations/20260927233000_v83_decree_concepts_and_legacy_archive_scope.sql",
+      "sha256": "5172b864568803d13618eca329b033067204c16d405c502afe6eb2a5e743c724",
+      "statementIndex": 20,
+      "kind": "UPDATE",
+      "destination": null,
+      "launchPolicy": "HISTORICAL_DATA_MUTATION_MUST_EXCLUDE"
+    },
+    {
+      "file": "supabase/migrations/20260927233000_v83_decree_concepts_and_legacy_archive_scope.sql",
+      "sha256": "5172b864568803d13618eca329b033067204c16d405c502afe6eb2a5e743c724",
+      "statementIndex": 28,
+      "kind": "INSERT INTO",
+      "destination": "public.conceptos_anulacion",
+      "launchPolicy": "QA_LEGACY_CATALOG_DIocese_ANCHOR_MUST_EXCLUDE"
+    },
+    {
+      "file": "supabase/migrations/20260927233000_v83_decree_concepts_and_legacy_archive_scope.sql",
+      "sha256": "5172b864568803d13618eca329b033067204c16d405c502afe6eb2a5e743c724",
+      "statementIndex": 38,
+      "kind": "UPDATE",
+      "destination": null,
+      "launchPolicy": "HISTORICAL_DATA_MUTATION_MUST_EXCLUDE"
+    },
+    {
+      "file": "supabase/migrations/20260927233000_v83_decree_concepts_and_legacy_archive_scope.sql",
+      "sha256": "5172b864568803d13618eca329b033067204c16d405c502afe6eb2a5e743c724",
+      "statementIndex": 39,
+      "kind": "INSERT INTO",
+      "destination": "public.registry_audit_log",
+      "launchPolicy": "HISTORICAL_DATA_MUTATION_MUST_EXCLUDE"
+    }
+  ]
+}

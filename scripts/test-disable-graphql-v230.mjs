@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
+import { syntheticCleanMigrationReviewV231 } from './release-test-fixture-v231.mjs';
 import {assessOfficialBuild} from '../release-guard-core-v223.mjs';
 import {assessSecurityPreflightV224} from '../release-security-guard-v224.mjs';
 
@@ -8,14 +9,15 @@ const report=JSON.parse(fs.readFileSync('AUDITORIA_GRAPHQL_SUPERFICIE_LIVE_V230.
 const migration='supabase/migrations/20261027115104_disable_unused_pg_graphql_v230.sql';
 const preflight='scripts/release-security-preflight-v230.sql';
 const qa=JSON.parse(fs.readFileSync('AUDITORIA_SEGURIDAD_RPC_LIVE_V229.json','utf8'));
-const goodSecurity={...qa.preflight.metrics, protocol:'V230',
- unused_pg_graphql_enabled:0,dangerous_default_table_grants:0,
+const goodSecurity={...qa.preflight.metrics, protocol:'V231',
+ unused_pg_graphql_enabled:0,qa_legacy_dbf_concept_rows:0,qa_legacy_template_snapshot_rows:0,dangerous_default_table_grants:0,
  open_default_function_grants:0,future_user_table_grants:0,
  future_user_sequence_grants:0,future_user_function_grants:0,
  creators_missing_global_function_revoke:0,
  reviewed_security_definers:207,reviewed_authenticated_definers:152,
  manual_privileged_rpc_review:true};
-const fixture={protocol:'V230',environment:'CLEAN_PRODUCTION',
+const fixture={
+ migration_review:syntheticCleanMigrationReviewV231,protocol:'V231',environment:'CLEAN_PRODUCTION',
  approved_for_official_mode:true,project_ref:'bbbbbbbbbbbbbbbbbbbb',
  verified_at:'2026-10-27T11:50:00Z',
  verification_source:'privileged-read-only:synthetic-test-only',

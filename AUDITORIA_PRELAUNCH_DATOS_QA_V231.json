@@ -1,0 +1,31 @@
+{
+  "protocol": "V231",
+  "project_ref": "foczofcmwampjvlfbsqn",
+  "environment": "QA_ONLY_NOT_OFFICIAL",
+  "source": "Supabase MCP SQL SELECT-only privileged query with release-security-preflight-v231.sql",
+  "evidenceDate": "2026-10-27",
+  "safeForOfficialLaunch": false,
+  "rows": {
+    "qa_legacy_dbf_concept_rows": 4,
+    "qa_legacy_template_snapshot_rows": 0
+  },
+  "security": {
+    "public_tables": 82,
+    "rls_disabled": 0,
+    "authenticatedSecurityDefiners": 152,
+    "dangerousDefaultTableGrants": 8,
+    "authenticatedFutureTableGrants": 16,
+    "authenticatedFutureSequenceGrants": 6,
+    "authenticatedFutureFunctionGrants": 2,
+    "ownerWithoutGlobalFunctionRevoke": 1,
+    "unusedGraphqlEnabled": 0
+  },
+  "qaOnlyPopulationUnchanged": {
+    "baptisms": 5040,
+    "confirmations": 2091,
+    "marriages": 1261,
+    "funerals": 1,
+    "authUsers": 12
+  },
+  "limitations": "These are QA-only snapshot counts, not a clean production replay test, a database backup, or a formal review of 152 privileged RPCs."
+}

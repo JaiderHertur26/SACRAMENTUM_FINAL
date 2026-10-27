@@ -13,16 +13,16 @@ if (reportPath) {
    const resolved=path.resolve(reportPath);
    report=JSON.parse(fs.readFileSync(resolved,'utf8'));
  } catch {
-   console.error('V230: No fue posible leer el acta de publicación autorizada.');
+   console.error('V231: No fue posible leer el acta de publicación autorizada.');
    process.exit(1);
  }
 }
 const check=assessOfficialBuild({mode,supabaseUrl,report});
 if (!check.ok) {
- console.error('V230 BLOQUEO DE PUBLICACIÓN OFICIAL:');
+ console.error('V231 BLOQUEO DE PUBLICACIÓN OFICIAL:');
  for (const reason of check.problems) console.error(' - '+reason);
  process.exit(1);
 }
 console.log(check.mode==='test'
- ? 'V230: publicación en modo de datos de PRUEBA; no se autoriza validez oficial.'
- : 'V230: puerta documental de publicación oficial satisfecha; exige verificación independiente de base.');
+ ? 'V231: publicación en modo de datos de PRUEBA; no se autoriza validez oficial.'
+ : 'V231: puerta documental de publicación oficial satisfecha; exige verificación independiente de base.');

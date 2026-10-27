@@ -1,0 +1,139 @@
+{
+  "protocol": "V231",
+  "date": "2026-10-27",
+  "estimatedPercent": 97,
+  "rawWeighted": 97.1,
+  "method": "Estimación de madurez técnica ponderada. V231 fortalece la puesta en marcha limpia con inventario de 158 migraciones, 45 DML directos, 39 tratamientos obligatorios, 4 conceptos DBF QA detectados y puerta oficial más estricta; sin prueba de restauración ni base nueva. No autoriza registros oficiales.",
+  "stage": "QA ONLY — ALL CURRENT RECORDS FICTITIOUS — V231 OFFICIAL BUILD FAIL-CLOSED",
+  "areas": [
+    {
+      "area": "Infraestructura, CI y despliegue",
+      "weight": 10,
+      "complete": 99,
+      "remaining": "Restauración real de respaldos, correo, monitoreo y puesta en producción"
+    },
+    {
+      "area": "Roles, jerarquía y separación institucional",
+      "weight": 10,
+      "complete": 100,
+      "remaining": "Revisión formal de privilegios y validación institucional final"
+    },
+    {
+      "area": "Registros y pendientes de cuatro sacramentos",
+      "weight": 20,
+      "complete": 98,
+      "remaining": "Falta aceptación positiva final con expediente documental auténtico y aplicación UI completa"
+    },
+    {
+      "area": "Cancillería, decretos y trazabilidad jurídica",
+      "weight": 15,
+      "complete": 97,
+      "remaining": "Falta revisión formal de 152 funciones privilegiadas y ciclo jurídico institucional"
+    },
+    {
+      "area": "Migración histórica e integridad de procedencia",
+      "weight": 15,
+      "complete": 99,
+      "remaining": "Instalador de base completamente nueva, revisión de DO/funciones con efectos indirectos y cotejo de seis plantillas"
+    },
+    {
+      "area": "Notas marginales y reconciliación",
+      "weight": 10,
+      "complete": 93,
+      "remaining": "Falta inspección física y asentamiento final del documento institucional"
+    },
+    {
+      "area": "Reportes, chat y notificaciones",
+      "weight": 8,
+      "complete": 93,
+      "remaining": "Entrega SMTP y aceptación de informes y mensajería en instalación independiente"
+    },
+    {
+      "area": "Documentos, constancias e impresión",
+      "weight": 7,
+      "complete": 93,
+      "remaining": "Impresión física, firma y validación eclesial, no solo auditoría SQL de constancias"
+    },
+    {
+      "area": "Aceptación E2E y operaciones reales",
+      "weight": 5,
+      "complete": 99,
+      "remaining": "Restauración probada, SMTP real, corte oficial con nuevo Supabase totalmente vacío y acta institucional"
+    }
+  ],
+  "evidence": {
+    "newLiveSqlTransactions": 14,
+    "newLiveSqlTransactionsPassed": 14,
+    "signedSqlSourceHashesVerified": 14,
+    "regressionAssertionsNew": 28,
+    "databaseBeforeAfterCountFields": 13,
+    "unchangedCountFields": 13,
+    "actualValidRegistryPrintReceipts": 4,
+    "invalidPrintRequestsRejected": 20,
+    "ownedMarginalNotesReversed": 4,
+    "foreignMarginalSourceDenied": 4,
+    "seatFourSacramentsRollback": true,
+    "fourSacramentCreationGrantedUnderTestRole": true,
+    "approvedAndHistoricalDocumentaryDecreeRollback": true,
+    "historicalAndCrossDioceseValidated": true,
+    "deadlockRealQaFromV227": true,
+    "authenticatedProfilesFromV227": 8,
+    "newOfficialDatabaseCreated": false,
+    "recordsTransferredToOfficial": 0,
+    "supabaseAdminDefaultPrivilegesRemediated": false,
+    "securityDefinerFunctionsFormallyReviewed": 0,
+    "securityDefinerFunctionsPending": 152,
+    "qaCountsAfter": {
+      "baptisms": 5040,
+      "confirmations": 2091,
+      "marriages": 1261,
+      "funerals": 1,
+      "auth_accounts": 12
+    },
+    "securityDefinerPathsHardened": 131,
+    "authenticatedDefinerPathsHardened": 88,
+    "remainingPublicOnlyDefinerPaths": 0,
+    "realTransactionsRetestedAfterHardening": 14,
+    "realSupabaseGoTrueLoginsRetested": 8,
+    "realAuthorizationDenialsRetested": 24,
+    "cleanOfficialSupabaseProjectCreated": false,
+    "qaCountsStillUnchanged": true,
+    "releaseGuardProtocol": "V231",
+    "remoteMigrationVersion": "20261027044045",
+    "newSyntheticRegressionCases": 11,
+    "installedGraphqlExtensionsAfter": 0,
+    "graphQlWarningsBefore": 64,
+    "graphQlWarningsAfter": 0,
+    "officialSupabaseQaAccountsPreserved": 12,
+    "postGraphqlRealGoTrueLoginsPassed": 8,
+    "postGraphqlForbiddenForeignSacramentWritesRejected": 24,
+    "postGraphqlRollbackTransactionsPassed": 14,
+    "userDataDeleted": 0,
+    "dataTransferredToOfficial": 0,
+    "qaBusinessCountFieldsUnchanged": 13,
+    "newTestCountV230": 17,
+    "postGraphqlSecurityDefinerWarningsStillOpen": 152,
+    "securityAdvisorsLeakedPasswordWarningStillOpen": 1,
+    "preflightProtocol": "V230",
+    "historyMigrationsScanned": 158,
+    "historyMigrationsWithDirectDml": 14,
+    "topLevelDataMutationStatements": 45,
+    "historicalDataMutationStatementsBlockCleanReplay": 39,
+    "catalogTemplateCandidatesRequireReview": 6,
+    "legacyDbfConceptRowsInQa": 4,
+    "legacyTemplateSnapshotRowsInQa": 0,
+    "sourceSchemaMigrationInventorySha256": "f02439a331f95bfb81c2fb8c091341043a185f95c4b6cba7b24851b5736cfb24",
+    "newProductionSchemaReplayed": false,
+    "dedicatedCleanNewDatabaseProvisioned": false,
+    "backupRestoredAndValidated": false,
+    "qbDataRecordsChangedOrDeleted": 0,
+    "qaUsersChangedOrDeleted": 0,
+    "hardDenialOfOldProtocol": true
+  },
+  "remainingBeforeOfficial": [
+    "Revisión semántica firma por firma de las 152 funciones privilegiadas y corrección de permisos futuros supabase_admin",
+    "Reproducción efectiva de un baseline libre de datos sobre un proyecto nuevo, examen de DO/funciones, plantillas y cuentas",
+    "Backup/restauración real en ambiente separado, SMTP y aceptación física de documentos",
+    "Acta institucional definitiva sin migrar las 95.320 filas públicas de QA ni las doce cuentas de ensayo"
+  ]
+}
