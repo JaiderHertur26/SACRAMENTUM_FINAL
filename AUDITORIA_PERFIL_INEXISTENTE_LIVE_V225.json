@@ -1,0 +1,25 @@
+{
+  "protocol": "V225",
+  "situation": "authenticated DB role, non-existent fictional user id, no active institutional profile",
+  "totalTables": 13,
+  "allZero": true,
+  "scopeRole": null,
+  "parishAccess": false,
+  "tableCounts": {
+    "baptisms": 0,
+    "confirmations": 0,
+    "marriages": 0,
+    "funerals": 0,
+    "pending_baptisms": 0,
+    "pending_confirmations": 0,
+    "pending_marriages": 0,
+    "pending_funerals": 0,
+    "decretos": 0,
+    "marginal_notes": 0,
+    "official_notifications": 0,
+    "legacy_archive_records": 0,
+    "document_issuances": 0
+  },
+  "qaOnly": true,
+  "writeOperations": 0
+}

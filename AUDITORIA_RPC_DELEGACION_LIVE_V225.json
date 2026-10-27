@@ -1,0 +1,131 @@
+{
+  "protocol": "V225",
+  "scope": "17 SECURITY DEFINER RPCs with no direct auth.uid or is_active token; source-level delegation inspection",
+  "method": "pg_get_functiondef metadata and source MD5; match downstream guard names. Does not prove guards are correct nor replace review of all 152 RPCs.",
+  "qaProjectRef": "foczofcmwampjvlfbsqn",
+  "reviewedRpcHints": 17,
+  "securityDefinersExposedToAuthenticated": 152,
+  "snapshots": [
+    {
+      "rpc": "apply_baptism_correction",
+      "arguments": "p_parish_id uuid, p_original_baptism_id uuid, p_decree_number text, p_decree_date date, p_concept_id uuid, p_corrected_data jsonb, p_decree_payload jsonb, p_annulled_note text, p_replacement_note text, p_expected_book integer, p_expected_folio integer, p_expected_number integer",
+      "definitionMd5": "6d10ed3bcfd4ae8bb5966de0f395a594",
+      "delegatedCheck": "sacramentum_assert_chancery_for_parish",
+      "delegationPresent": true
+    },
+    {
+      "rpc": "apply_baptism_replacement",
+      "arguments": "p_parish_id uuid, p_decree_number text, p_decree_date date, p_concept_id uuid, p_new_data jsonb, p_decree_payload jsonb, p_replacement_note text, p_expected_book integer, p_expected_folio integer, p_expected_number integer",
+      "definitionMd5": "37a3c27dbcb8abfd6e041fc38c21e0fb",
+      "delegatedCheck": "sacramentum_assert_chancery_for_parish",
+      "delegationPresent": true
+    },
+    {
+      "rpc": "apply_confirmation_correction",
+      "arguments": "p_parish_id uuid, p_original_confirmation_id uuid, p_decree_number text, p_decree_date date, p_concept_id uuid, p_corrected_data jsonb, p_decree_payload jsonb, p_annulled_note text, p_replacement_note text, p_expected_book integer, p_expected_folio integer, p_expected_number integer",
+      "definitionMd5": "770d1e7a1cfa7919c3106c1322ea14f6",
+      "delegatedCheck": "sacramentum_assert_chancery_for_parish",
+      "delegationPresent": true
+    },
+    {
+      "rpc": "apply_confirmation_replacement",
+      "arguments": "p_parish_id uuid, p_decree_number text, p_decree_date date, p_concept_id uuid, p_new_data jsonb, p_decree_payload jsonb, p_replacement_note text, p_expected_book integer, p_expected_folio integer, p_expected_number integer",
+      "definitionMd5": "1f83546cc32bf8bd3537e3e30f6a6a82",
+      "delegatedCheck": "sacramentum_assert_chancery_for_parish",
+      "delegationPresent": true
+    },
+    {
+      "rpc": "assess_unresolved_legacy_links_v219",
+      "arguments": "p_limit integer, p_offset integer",
+      "definitionMd5": "71018ce7def7369db549c20bb75c3be8",
+      "delegatedCheck": "list_unresolved_legacy_links_v218",
+      "delegationPresent": true
+    },
+    {
+      "rpc": "can_access_diocese",
+      "arguments": "target_diocese_id uuid",
+      "definitionMd5": "636128a11e2b251f202da25463e2f888",
+      "delegatedCheck": "current_app_role",
+      "delegationPresent": true
+    },
+    {
+      "rpc": "can_read_matrimonial_notification",
+      "arguments": "p_notification_id uuid",
+      "definitionMd5": "1826711fbc70392261b3e3e5612bc80c",
+      "delegatedCheck": "current_app_role",
+      "delegationPresent": true
+    },
+    {
+      "rpc": "can_read_matrimonial_recipient",
+      "arguments": "p_recipient_id uuid",
+      "definitionMd5": "92c930219b0855368c050aa3fe962041",
+      "delegatedCheck": "current_app_role",
+      "delegationPresent": true
+    },
+    {
+      "rpc": "get_chat_room_messages",
+      "arguments": "p_room_id uuid, p_limit integer, p_before timestamp with time zone",
+      "definitionMd5": "43a73da135876ea247daba2b8aa141f5",
+      "delegatedCheck": "can_access_chat_room",
+      "delegationPresent": true
+    },
+    {
+      "rpc": "get_chat_room_messages_v166",
+      "arguments": "p_room_id uuid, p_limit integer, p_before_created_at timestamp with time zone, p_before_id uuid",
+      "definitionMd5": "f6f68eed14aea093c30b59e3839dd06f",
+      "delegatedCheck": "can_access_chat_room",
+      "delegationPresent": true
+    },
+    {
+      "rpc": "is_app_admin",
+      "arguments": "",
+      "definitionMd5": "e5df6527c554db4a6b506e658b9c2661",
+      "delegatedCheck": "current_app_role",
+      "delegationPresent": true
+    },
+    {
+      "rpc": "mark_chat_room_read",
+      "arguments": "p_room_id uuid",
+      "definitionMd5": "9b1ee4246d0353831b0d15ad7abd89fd",
+      "delegatedCheck": "can_access_chat_room",
+      "delegationPresent": true
+    },
+    {
+      "rpc": "register_historical_baptism",
+      "arguments": "p_parish_id uuid, p_record jsonb",
+      "definitionMd5": "2623b2bfefa7ad5c38e07332cdc816ac",
+      "delegatedCheck": "register_historical_baptism_internal",
+      "delegationPresent": true
+    },
+    {
+      "rpc": "reverse_correction_decree_with_reason",
+      "arguments": "p_decree_id uuid, p_reason text",
+      "definitionMd5": "201bd37d151c15f52162f003ce637e0b",
+      "delegatedCheck": "sacramentum_assert_chancery_for_parish",
+      "delegationPresent": true
+    },
+    {
+      "rpc": "reverse_replacement_decree_with_reason",
+      "arguments": "p_decree_id uuid, p_reason text",
+      "definitionMd5": "e702dc8fa613bf29f9d515e299bdf97b",
+      "delegatedCheck": "sacramentum_assert_chancery_for_parish",
+      "delegationPresent": true
+    },
+    {
+      "rpc": "send_chat_message",
+      "arguments": "p_room_id uuid, p_body text, p_reply_to_id uuid",
+      "definitionMd5": "e7af6561cc61ad0145772fcf5362bf05",
+      "delegatedCheck": "can_access_chat_room",
+      "delegationPresent": true
+    },
+    {
+      "rpc": "withdraw_chat_message",
+      "arguments": "p_message_id uuid",
+      "definitionMd5": "714988b9bda39ae0438aee1016067a33",
+      "delegatedCheck": "can_access_chat_room",
+      "delegationPresent": true
+    }
+  ],
+  "downstreamGuardVerified": "register_historical_baptism_internal is EXECUTE revoked from authenticated and checks auth.uid, active parish, ownership and diocese.",
+  "remaining": "Formal semantic review and least-privilege grants for all 152 RPCs are required before official authorization; this is a preliminary static delegated-check inventory."
+}

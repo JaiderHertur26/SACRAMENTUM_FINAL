@@ -1,0 +1,174 @@
+{
+  "protocol": "V225",
+  "source": "Supabase QA PostgreSQL, BEGIN READ ONLY + SET LOCAL ROLE authenticated + transaction rollback",
+  "projectRef": "foczofcmwampjvlfbsqn",
+  "scenarios": 12,
+  "columnsTested": [
+    "baptisms",
+    "confirmations",
+    "marriages",
+    "funerals",
+    "pending_baptisms",
+    "pending_confirmations",
+    "pending_marriages",
+    "pending_funerals",
+    "decretos",
+    "marginal_notes",
+    "official_notifications",
+    "legacy_archive_records",
+    "document_issuances"
+  ],
+  "matrixQueries": 156,
+  "countsVerified": 12,
+  "inconsistent": [],
+  "scenariosByRole": [
+    {
+      "principal": 1,
+      "role": "admin_general",
+      "jwtBound": true,
+      "appRole": "admin_general",
+      "ownDioceseParish": true,
+      "otherDioceseParish": true,
+      "otherDioceseAccess": true,
+      "mismatch": {}
+    },
+    {
+      "principal": 2,
+      "role": "admin_general",
+      "jwtBound": true,
+      "appRole": "admin_general",
+      "ownDioceseParish": true,
+      "otherDioceseParish": true,
+      "otherDioceseAccess": true,
+      "mismatch": {}
+    },
+    {
+      "principal": 3,
+      "role": "chancery",
+      "jwtBound": true,
+      "appRole": "chancery",
+      "ownDioceseParish": true,
+      "otherDioceseParish": false,
+      "otherDioceseAccess": false,
+      "mismatch": {},
+      "allowedDiocesanUnassignedArchiveRows": 1552
+    },
+    {
+      "principal": 4,
+      "role": "chancery",
+      "jwtBound": true,
+      "appRole": "chancery",
+      "ownDioceseParish": true,
+      "otherDioceseParish": false,
+      "otherDioceseAccess": false,
+      "mismatch": {}
+    },
+    {
+      "principal": 5,
+      "role": "diocese",
+      "jwtBound": true,
+      "appRole": "diocese",
+      "ownDioceseParish": true,
+      "otherDioceseParish": false,
+      "otherDioceseAccess": false,
+      "mismatch": {}
+    },
+    {
+      "principal": 6,
+      "role": "diocese",
+      "jwtBound": true,
+      "appRole": "diocese",
+      "ownDioceseParish": true,
+      "otherDioceseParish": false,
+      "otherDioceseAccess": false,
+      "mismatch": {},
+      "allowedDiocesanUnassignedArchiveRows": 1552
+    },
+    {
+      "principal": 7,
+      "role": "diocese",
+      "jwtBound": true,
+      "appRole": "diocese",
+      "ownDioceseParish": true,
+      "otherDioceseParish": false,
+      "otherDioceseAccess": false,
+      "mismatch": {}
+    },
+    {
+      "principal": 8,
+      "role": "parish",
+      "jwtBound": true,
+      "appRole": "parish",
+      "ownDioceseParish": true,
+      "otherDioceseParish": false,
+      "otherDioceseAccess": false,
+      "mismatch": {}
+    },
+    {
+      "principal": 9,
+      "role": "parish",
+      "jwtBound": true,
+      "appRole": "parish",
+      "ownDioceseParish": true,
+      "otherDioceseParish": false,
+      "otherDioceseAccess": false,
+      "mismatch": {}
+    },
+    {
+      "principal": 10,
+      "role": "parish",
+      "jwtBound": true,
+      "appRole": "parish",
+      "ownDioceseParish": false,
+      "otherDioceseParish": false,
+      "otherDioceseAccess": false,
+      "mismatch": {}
+    },
+    {
+      "principal": 11,
+      "role": "parish",
+      "jwtBound": true,
+      "appRole": "parish",
+      "ownDioceseParish": true,
+      "otherDioceseParish": false,
+      "otherDioceseAccess": false,
+      "mismatch": {}
+    },
+    {
+      "principal": 12,
+      "role": "parish",
+      "jwtBound": true,
+      "appRole": "parish",
+      "ownDioceseParish": true,
+      "otherDioceseParish": false,
+      "otherDioceseAccess": false,
+      "mismatch": {}
+    }
+  ],
+  "totalCounts": {
+    "baptisms": 5040,
+    "confirmations": 2091,
+    "marriages": 1261,
+    "funerals": 1,
+    "pending_baptisms": 69,
+    "pending_confirmations": 233,
+    "pending_marriages": 1,
+    "pending_funerals": 1,
+    "decretos": 2,
+    "marginal_notes": 82,
+    "official_notifications": 2,
+    "legacy_archive_records": 21676,
+    "document_issuances": 0
+  },
+  "explicitGrants": {
+    "registry_audit_log": "authenticated SELECT denied: expected security boundary, excluded from RLS row-count tests"
+  },
+  "note": "Role context is simulated under authenticated + fictitious JWT. Tests RLS execution but not actual sign-in/password, email, or physical output. Never official data.",
+  "ruleForDiocesanArchive": "1,552 archived entries have no parish but have the same diocese as these two authorized diocesan/chancery users. Count verified separately via privileged grouped SELECT; same-diocese unassigned archives are allowed.",
+  "policyNotes": [
+    "Authenticated SELECT to public.registry_audit_log is denied, as intended",
+    "Parish can_access_parish restricts even sibling parishes of own diocese",
+    "No identity UUIDs or sacramental names have been retained in this evidence"
+  ],
+  "productionReady": false
+}

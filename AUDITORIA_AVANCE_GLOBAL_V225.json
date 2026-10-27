@@ -1,0 +1,100 @@
+{
+  "protocol": "V225",
+  "date": "2026-10-26",
+  "estimatedPercent": 93,
+  "rawWeighted": 92.88,
+  "method": "Estimación orientativa por nueve áreas, con incremento solo por evidencia de RLS y controles reales de PostgreSQL. No certifica aún pruebas E2E de login y no autoriza producción.",
+  "stage": "QA — DATOS FICTICIOS NO OFICIALES; nueva base limpia aún no instalada",
+  "areas": [
+    {
+      "area": "Infraestructura, CI y despliegue",
+      "weight": 10,
+      "complete": 99,
+      "remaining": "Restauración de backups, continuidad y correo real"
+    },
+    {
+      "area": "Roles, jerarquía y separación institucional",
+      "weight": 10,
+      "complete": 99,
+      "remaining": "Autenticación real de usuario/contraseña, sesión y flujos completos multirrol"
+    },
+    {
+      "area": "Registros y pendientes de cuatro sacramentos",
+      "weight": 20,
+      "complete": 91,
+      "remaining": "Aceptación E2E autenticada con transacciones ficticias reversibles y expediente documental"
+    },
+    {
+      "area": "Cancillería, decretos y trazabilidad jurídica",
+      "weight": 15,
+      "complete": 92,
+      "remaining": "Pruebas integradas con cuentas reales de prueba y revisión de funciones privilegiadas"
+    },
+    {
+      "area": "Migración histórica e integridad de procedencia",
+      "weight": 15,
+      "complete": 95,
+      "remaining": "Cotejo documental de referencias y revisión de registros sin parroquia"
+    },
+    {
+      "area": "Notas marginales y reconciliación",
+      "weight": 10,
+      "complete": 91,
+      "remaining": "Certificación documental e impresión física"
+    },
+    {
+      "area": "Reportes, chat y notificaciones",
+      "weight": 8,
+      "complete": 87,
+      "remaining": "Correo, concurrencia, carga y mensajería integrada en entorno autorizado"
+    },
+    {
+      "area": "Documentos, constancias e impresión",
+      "weight": 7,
+      "complete": 91,
+      "remaining": "Validación física de todas las plantillas"
+    },
+    {
+      "area": "Aceptación E2E y operaciones reales",
+      "weight": 5,
+      "complete": 88,
+      "remaining": "Sesiones reales, recuperación de correo, respaldo/restauración y estreno de base nueva limpia"
+    }
+  ],
+  "evidence": {
+    "syntheticPassed": 2023,
+    "syntheticTotal": 2023,
+    "qualityPassed": 30,
+    "qualityTotal": 30,
+    "newAutomatedTestsPassed": 18,
+    "newAutomatedTestsTotal": 18,
+    "privilegedReadonlyIdentities": 12,
+    "rlsTablesPerIdentity": 13,
+    "rlsQueriesVerified": 156,
+    "nonexistentProfileTablesDenied": 13,
+    "delegatedRpcHintSnapshotCount": 17,
+    "privilegedRpcsStillRequireFormalReview": 152,
+    "rollbackReadOnlyTransactions": true,
+    "userDataWrites": 0,
+    "serverMigrations": 0,
+    "realUserLoginsPerformed": 0,
+    "productionCleanInstalled": false
+  },
+  "positiveVerification": [
+    "Parroquia con datos ve 48 bautismos, 5 confirmaciones, 1 matrimonio y 1 exequia; cero sacramentos de otra parroquia",
+    "12 identidades ficticias verificadas bajo rol PostgreSQL authenticated y JWT ficticio, sin contraseña",
+    "Administrador General con alcance total; Diocesis y Cancillería dentro de su diocesana; Parroquia dentro de su parroquia",
+    "Archivo legacy: 20.124 filas ligadas a parroquias de la diócesis y 1.552 archivos adscritos solo a la diócesis, correctamente visibles a sus autoridades",
+    "Identidad autenticada inexistente sin perfil: 0 filas en las 13 tablas probadas y ningún acceso parroquial",
+    "La bitácora registry_audit_log deniega SELECT directo a authenticated",
+    "17 funciones de las 152 sin búsqueda simple de auth.uid enlazan a validadores delegados; esto es solo triage, no la auditoría final."
+  ],
+  "blockedBeforeOfficial": [
+    "Remediación de 8 grants predeterminados peligrosos y 3 grants EXECUTE abiertos en rol administrador adecuado",
+    "Revisión de firmas, lógica y jurisdicción de las 152 funciones privilegiadas a authenticated",
+    "Prueba E2E real con sesiones iniciadas de todos los roles y cuatro sacramentos",
+    "SMTP/recuperación, pruebas de impresión física y restauración de respaldo",
+    "Proyecto Supabase nuevo con 0 datos de prueba, inventario y acta institucional",
+    "Revisión de política de contraseñas filtradas, GraphQL y warning Supabase"
+  ]
+}
