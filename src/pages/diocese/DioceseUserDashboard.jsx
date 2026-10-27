@@ -61,22 +61,23 @@ const DioceseUserDashboard = () => {
   }, [user]);
 
   const statCards = [
-    { label: 'Total Parroquias', value: stats.parishes, icon: Church, color: 'bg-[#4B7BA7]/10', text: 'text-[#4B7BA7]' },
-    { label: 'Total Vicarías', value: stats.vicaries, icon: Network, color: 'bg-slate-800/10', text: 'text-slate-800' },
-    { label: 'Total Decanatos', value: stats.deaneries, icon: LayoutGrid, color: 'bg-[#D4AF37]/10', text: 'text-amber-700' },
+    { label: 'Parroquias', value: stats.parishes, icon: Church, color: 'bg-[#f5e8db]', text: 'text-[#743549]' },
+    { label: 'Vicarías', value: stats.vicaries, icon: Network, color: 'bg-[#eaf0e9]', text: 'text-[#335449]' },
+    { label: 'Decanatos', value: stats.deaneries, icon: LayoutGrid, color: 'bg-[#f7eddb]', text: 'text-[#947039]' },
   ];
 
   return (
     <DashboardLayout entityName={realDioceseName}>
-      <div className="mb-10">
-        <h1 className="text-3xl font-black text-slate-950 tracking-tight">Panel de Gestión Diocesana</h1>
-        <p className="text-slate-500 mt-2 font-black uppercase tracking-[0.2em] text-[10px]">{realDioceseName}</p>
+      <div className="ecclesial-scope-hero mb-8">
+        <p className="ecclesial-scope-eyebrow mb-3">Gobierno pastoral · Jurisdicción eclesiástica</p>
+        <h1>Vida y organización diocesana</h1>
+        <p className="ecclesial-scope-description mt-3">{realDioceseName} · Parroquias, vicarías y decanatos al servicio de la evangelización.</p>
       </div>
 
       {loading ? (
          <div className="flex flex-col items-center justify-center py-20 bg-white rounded-3xl shadow-sm border border-slate-100">
             <Loader2 className="w-10 h-10 text-[#D4AF37] animate-spin mb-4" />
-            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Sincronizando Bóveda...</p>
+            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Consultando la organización diocesana…</p>
          </div>
       ) : (
          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">

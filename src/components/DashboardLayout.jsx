@@ -2,10 +2,13 @@ import React, { useState } from 'react';
 import Sidebar from '@/components/Sidebar';
 import Header from '@/components/Header';
 import { useAuth } from '@/context/AuthContext';
+import { Church } from 'lucide-react';
+import { ROLE_TYPES } from '@/config/supabaseConfig';
+import '@/styles/ecclesial-workspace.css';
 import { isKnownTestRegistryProject } from '@/utils/registryDataMode.mjs';
 
 const DashboardLayout = ({ children, entityName }) => {
-  const { user, logout } = useAuth();
+  const { user, profile, logout } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   // V219: this instance contains TEST records only; official mode requires an explicit rollout.
   const usingTestRecords = import.meta.env.VITE_REGISTRY_DATA_MODE !== 'official'
@@ -60,9 +63,19 @@ const DashboardLayout = ({ children, entityName }) => {
   };
 
   const safeEntityName = getSafeEntityName(entityName);
+  const roleForPresentation = typeof profile?.role === 'string' ? profile.role : getSafeRole(user);
+  const isEcclesialWorkspace = [
+    ROLE_TYPES.DIOCESE, ROLE_TYPES.CHANCERY, ROLE_TYPES.PARISH
+  ].includes(roleForPresentation);
+  const ecclesialArea = roleForPresentation === ROLE_TYPES.DIOCESE
+    ? 'Gobierno diocesano' : roleForPresentation === ROLE_TYPES.CHANCERY
+      ? 'Cancillería eclesiástica' : 'Archivo parroquial';
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col">
+    <div
+      className={isEcclesialWorkspace ? "ecclesial-workspace min-h-screen flex flex-col" : "min-h-screen bg-slate-50 flex flex-col"}
+      data-ecclesial-role={isEcclesialWorkspace ? roleForPresentation : undefined}
+    >
       <Sidebar 
         isOpen={sidebarOpen} 
         onClose={() => setSidebarOpen(false)} 
@@ -79,13 +92,26 @@ const DashboardLayout = ({ children, entityName }) => {
       />
 
       {/* Main Content Area */}
-      <main className="lg:pl-72 pt-16 flex-1 transition-all duration-300 bg-slate-50">
+      <main className={isEcclesialWorkspace
+        ? "ecclesial-main lg:pl-72 pt-16 flex-1 transition-all duration-300"
+        : "lg:pl-72 pt-16 flex-1 transition-all duration-300 bg-slate-50"}>
         {usingTestRecords && (
           <div role="status" aria-label="Datos de prueba no oficiales" className="border-b border-amber-300 bg-amber-50 px-4 py-2 text-center text-xs font-extrabold tracking-wide text-amber-950">
             DATOS DE PRUEBA · NO OFICIALES · SACRAMENTUM EN VALIDACIÓN
           </div>
         )}
-        <div className="p-4 lg:p-8 max-w-7xl mx-auto w-full">
+        <div className={isEcclesialWorkspace
+          ? "ecclesial-content p-4 lg:p-8 max-w-7xl mx-auto w-full"
+          : "p-4 lg:p-8 max-w-7xl mx-auto w-full"}>
+          {isEcclesialWorkspace && (
+            <div className="ecclesial-context" aria-label="Identidad del área eclesial">
+              <div className="ecclesial-context-heading">
+                <span className="ecclesial-context-icon"><Church size={17} aria-hidden="true" /></span>
+                <span>{ecclesialArea}</span>
+              </div>
+              <span className="ecclesial-context-note">Al servicio de la memoria y la misión de la Iglesia</span>
+            </div>
+          )}
           {children}
         </div>
       </main>

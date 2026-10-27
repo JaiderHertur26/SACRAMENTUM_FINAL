@@ -202,14 +202,14 @@ const ChanceryDashboard = () => {
         <DashboardLayout entityName={`Cancillería • ${user?.dioceseName}`}>
             <div className="max-w-7xl mx-auto pb-20">
                 
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
+                <div className="ecclesial-scope-hero flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-9">
                     <div>
-                        <div className="flex items-center gap-3 mb-2 text-[#4B7BA7]">
+                        <div className="flex items-center gap-3 mb-2 text-[#966f3b]">
                             <ShieldCheck className="w-5 h-5" />
-                            <span className="text-[10px] font-black uppercase tracking-[0.3em]">Mando Superior Diocesano</span>
+                            <span className="text-[10px] font-black uppercase tracking-[0.3em]">Curia diocesana · Servicio de Cancillería</span>
                         </div>
-                        <h1 className="text-4xl font-black text-slate-900 tracking-tight font-serif">Panel de Cancillería</h1>
-                        <p className="text-slate-500 font-bold uppercase text-[11px] tracking-widest mt-2">Fiscalización y Emisión de Decretos</p>
+                        <h1 className="text-4xl font-black text-slate-900 tracking-tight font-serif">Cancillería eclesiástica</h1>
+                        <p className="text-slate-500 font-bold uppercase text-[11px] tracking-widest mt-2">Custodia de documentos, decretos y memoria sacramental</p>
                     </div>
                     <div className="flex gap-3">
                         <Button variant="outline" onClick={() => setIsSettingsOpen(true)} className="h-14 px-8 rounded-2xl border-slate-200 hover:bg-white hover:shadow-lg transition-all">
@@ -241,7 +241,7 @@ const ChanceryDashboard = () => {
                     <div className="bg-white rounded-3xl p-10 border border-slate-100 shadow-sm space-y-8">
                         <div className="flex items-center gap-3">
                             <div className="bg-blue-600 p-2 rounded-xl text-white shadow-lg shadow-blue-900/10"><Zap className="w-5 h-5"/></div>
-                            <h2 className="text-sm font-black text-slate-900 uppercase tracking-widest">Protocolos de Actuación</h2>
+                            <h2 className="text-sm font-black text-slate-900 uppercase tracking-widest">Servicios y trámites de Cancillería</h2>
                         </div>
                         <div className="grid grid-cols-1 gap-4">
                             <ChanceryActionButton label="Buscador Unificado" icon={Search} color="bg-[#D4AF37]" onClick={() => navigate('/buscar')} />

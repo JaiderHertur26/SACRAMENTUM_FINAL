@@ -1,0 +1,85 @@
+{
+  "protocol": "V249",
+  "method": "AST of real protected React routes; visual style applies only to authenticated three-role shared DashboardLayout, not a proof of a login or individual page content inspection",
+  "role_paths": {
+    "diocese": [
+      "/diocese/dashboard",
+      "/diocese/decretos/archivo",
+      "/diocese/decretos/conciliaciones",
+      "/diocese/ecclesiastical",
+      "/diocese/migration-center",
+      "/diocese/reports",
+      "/communications"
+    ],
+    "chancery": [
+      "/chancery/dashboard",
+      "/chancery/pending",
+      "/chancery/decretos",
+      "/chancery/decretos/archivo",
+      "/chancery/decretos/conciliaciones",
+      "/chancery/historicos/conciliacion",
+      "/chancery/decretos/documental",
+      "/chancery/matrimonio/decretos",
+      "/chancery/decree-correction/new",
+      "/chancery/decree-correction/new-confirmation",
+      "/chancery/exequias/decretos",
+      "/chancery/decree-replacement/new",
+      "/chancery/decree-replacement/new-confirmation",
+      "/chancery/decree-annulment",
+      "/communications"
+    ],
+    "parish": [
+      "/parish/dashboard",
+      "/parish/operational-control",
+      "/parish/notifications",
+      "/parish/sacramental-notifications",
+      "/parish/decrees/:decreeId",
+      "/parroquia/ajustes",
+      "/datos-auxiliares",
+      "/parroquia/libros",
+      "/parroquia/bautismo/nuevo",
+      "/parroquia/bautismo/celebrado",
+      "/parroquia/bautismo/sentar-registros",
+      "/parroquia/bautismo/partidas",
+      "/parroquia/bautismo/parametros",
+      "/parroquia/bautismo/:baptismPartidaId",
+      "/parroquia/decretos",
+      "/parroquia/decretos/archivo",
+      "/parroquia/confirmacion/nuevo",
+      "/parroquia/confirmacion/celebrado",
+      "/parroquia/confirmacion/sentar-registros",
+      "/parroquia/confirmacion/partidas",
+      "/parroquia/confirmacion/parametros",
+      "/parroquia/confirmacion/notificacion",
+      "/parroquia/matrimonio/nuevo",
+      "/parroquia/matrimonio/celebrado",
+      "/parroquia/matrimonio/sentar-registros",
+      "/parroquia/matrimonio/partidas",
+      "/parroquia/matrimonio/parametros",
+      "/parroquia/matrimonio/expedientes",
+      "/parroquia/exequias",
+      "/parroquia/exequias/partidas",
+      "/parroquia/matrimonio/notificacion",
+      "/communications"
+    ],
+    "admin_general": [
+      "/debug-auth",
+      "/admin/dashboard",
+      "/admin/dioceses",
+      "/admin/users",
+      "/admin/migration-center"
+    ],
+    "shared": [
+      "/communications"
+    ]
+  },
+  "counts": {
+    "diocese": 7,
+    "chancery": 15,
+    "parish": 32,
+    "admin_general": 5,
+    "shared": 1
+  },
+  "total_unique_protected_paths": 57,
+  "admin_design_excluded": true
+}

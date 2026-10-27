@@ -172,7 +172,8 @@ exec('pruebas-sinteticas',node,['--test',
  'scripts/test-private-legacy-batch-authorization-v244.mjs',
  'scripts/test-original-legacy-batch-isolation-v245.mjs',
  'scripts/test-postgres-restore-drill-v247.mjs',
- 'scripts/test-quarantined-document-void-v248.mjs']);
+ 'scripts/test-quarantined-document-void-v248.mjs',
+ 'scripts/test-ecclesial-role-design-v249.mjs']);
 const scripts=fs.readdirSync(path.join(root,'scripts')).filter(x=>/^verify-.*\.mjs$/.test(x)).sort();
 for(const file of scripts)exec('legacy/'+file,node,['scripts/'+file]);
 const npmOnWindows=process.platform==='win32';
