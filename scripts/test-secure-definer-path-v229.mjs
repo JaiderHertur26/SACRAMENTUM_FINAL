@@ -7,11 +7,11 @@ import {assessOfficialBuild} from '../release-guard-core-v223.mjs';
 const rep=JSON.parse(fs.readFileSync('AUDITORIA_SEGURIDAD_RPC_LIVE_V229.json','utf8'));
 const sha=f=>createHash('sha256').update(fs.readFileSync(f,'utf8').replace(/\r\n/g,'\n')).digest('hex');
 const currentMigration='supabase/migrations/20261027044045_secure_definer_pg_temp_last_v229.sql';
-const safeSecurity={...rep.preflight.metrics,protocol:'V229',dangerous_default_table_grants:0,
+const safeSecurity={...rep.preflight.metrics,protocol:'V230',unused_pg_graphql_enabled:0,dangerous_default_table_grants:0,
  open_default_function_grants:0,future_user_table_grants:0,future_user_sequence_grants:0,
  future_user_function_grants:0,creators_missing_global_function_revoke:0,
  reviewed_security_definers:207,reviewed_authenticated_definers:152,manual_privileged_rpc_review:true};
-const fixture={protocol:'V229',environment:'CLEAN_PRODUCTION',approved_for_official_mode:true,
+const fixture={protocol:'V230',environment:'CLEAN_PRODUCTION',approved_for_official_mode:true,
  project_ref:'bbbbbbbbbbbbbbbbbbbb',verified_at:'2026-10-27T04:44:00Z',
  verification_source:'privileged-read-only:synthetic-only',
  counts:{business_rows:0,auth_users:0,storage_objects:0,unexpected_public_tables:0,missing_public_tables:0,
@@ -38,7 +38,10 @@ test('V229 remote migration version is identical to the checked-in CLI-created m
  assert.equal(rep.migration.sha256,sha(currentMigration));
  assert.match(currentMigration,/^supabase\/migrations\/20261027044045_/);
  const all=fs.readdirSync('supabase/migrations').filter(x=>x.endsWith('.sql')).sort();
- assert.equal('supabase/migrations/'+all.at(-1),currentMigration,'newer migrations require renewed testing of security-definer paths');
+ for(const later of all.filter(x=>('supabase/migrations/'+x)>currentMigration)) {
+  const body=fs.readFileSync('supabase/migrations/'+later,'utf8');
+  assert.doesNotMatch(body,/\b(?:ALTER|CREATE|DROP)\s+(?:(?:OR\s+REPLACE)\s+)?FUNCTION\b|\bSET\s+search_path\b/i,'later migration must not alter privileged functions without new certification: '+later);
+ }
 });
 test('V229 migration is idempotent, targets only postgres-owned public SECURITY DEFINERs and never touches data',()=>{
  const sql=fs.readFileSync(currentMigration,'utf8');

@@ -7,13 +7,13 @@ const zeroRequired = Object.freeze([
  'open_default_function_grants','anonymous_definer_functions',
  'definer_missing_search_path','future_user_table_grants',
  'future_user_sequence_grants','future_user_function_grants',
- 'creators_missing_global_function_revoke','insecure_public_only_definers'
+ 'creators_missing_global_function_revoke','insecure_public_only_definers','unused_pg_graphql_enabled'
 ]);
 
 export function assessSecurityPreflightV224(security,expectedTableCount=82) {
  const problems=[];
  if(!security || typeof security!=='object') return ['falta preflight de seguridad SQL V224'];
- if(security.protocol!=='V229')problems.push('protocolo de seguridad distinto de V229');
+ if(security.protocol!=='V230')problems.push('protocolo de seguridad distinto de V229');
  for(const name of zeroRequired) {
   if(!Number.isSafeInteger(security[name]) || security[name]!==0) {
    problems.push('riesgo de seguridad no resuelto o sin conteo: '+name);
