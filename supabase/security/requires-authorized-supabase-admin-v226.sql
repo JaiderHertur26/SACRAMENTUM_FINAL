@@ -1,21 +1,14 @@
--- V226 / NOT EXECUTED on existing QA: postgres lacks authority for supabase_admin.
--- Run only with an authorized supabase_admin role or member after independent approval,
--- and verify new-object RLS and explicit GRANTs in a NON-PRODUCTION rehearsal.
--- This changes FUTURE OBJECT DEFAULTS ONLY, not existing rows/tables/functions.
-DO $$
+-- OBSOLETE V226 — superseded by security preflight V234.
+-- Supabase official guidance: the reserved supabase_admin DEFAULT ACLs cannot
+-- be changed by project postgres, and membership cannot be granted by the user.
+-- The correct mitigation is postgres-controlled defaults (already locked down)
+-- plus forbidding extensions/objects owned by supabase_admin in public.
+-- SEE: https://supabase.com/kb/troubleshooting/cant-change-the-default-privileges-of-supabase_admin-in-the-public-schema
+-- THIS FILE MUST NEVER CHANGE DEFAULT PRIVILEGES. It deliberately fails closed.
+DO $obsolete_v226$
 BEGIN
-  IF NOT pg_has_role(current_user, 'supabase_admin', 'MEMBER') THEN
-    RAISE EXCEPTION 'Se requiere autorización efectiva del rol supabase_admin';
-  END IF;
-END $$;
-BEGIN;
-ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA public
-  REVOKE SELECT, INSERT, UPDATE, DELETE, TRUNCATE, REFERENCES, TRIGGER, MAINTAIN
-  ON TABLES FROM anon, authenticated, service_role;
-ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA public
-  REVOKE USAGE, SELECT, UPDATE ON SEQUENCES FROM anon, authenticated, service_role;
-ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA public
-  REVOKE EXECUTE ON FUNCTIONS FROM anon, authenticated, service_role;
-ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin
-  REVOKE EXECUTE ON FUNCTIONS FROM PUBLIC;
-COMMIT;
+  RAISE EXCEPTION
+    'V226 supabase_admin default ACL remediation is unsupported. Use V234 preflight and keep extensions outside exposed public.'
+    USING ERRCODE='0A000';
+END
+$obsolete_v226$;

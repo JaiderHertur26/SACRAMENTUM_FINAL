@@ -1,0 +1,49 @@
+{
+  "protocol": "V234",
+  "verified_at_date": "2026-10-27",
+  "environment": "QA_TEST_ONLY_NOT_OFFICIAL",
+  "project_ref": "foczofcmwampjvlfbsqn",
+  "reference": "https://supabase.com/kb/troubleshooting/cant-change-the-default-privileges-of-supabase_admin-in-the-public-schema",
+  "source": "Privileged SELECT-only PostgreSQL pg_default_acl, pg_extension, pg_namespace, pg_class, pg_proc; Supabase official Knowledge Base",
+  "postgres_owner_defaults": {
+    "future_user_table_grants": 0,
+    "future_user_sequence_grants": 0,
+    "future_user_function_grants": 0,
+    "missing_global_function_revoke": 0
+  },
+  "supabase_admin_reserved_defaults": {
+    "dangerous_table_grants": 8,
+    "open_function_grants": 2,
+    "future_user_table_grants": 16,
+    "future_user_sequence_grants": 6,
+    "future_user_function_grants": 2,
+    "global_execute_default_not_revoked": 1,
+    "this_is_internal_and_not_user_reconfigurable": true
+  },
+  "exposure": {
+    "extensions_in_public": 0,
+    "public_relations_owned_by_supabase_admin": 0,
+    "public_functions_owned_by_supabase_admin": 0,
+    "admin_owned_tables_with_authenticated_truncate": 0,
+    "all_current_user_auth_truncate_tables": 0,
+    "all_current_anon_truncate_tables": 0,
+    "rls_disabled_tables": 0
+  },
+  "still_blocked": {
+    "legacy_qa_dbf_concepts": 4,
+    "qa_fictitious_business_records_present": true,
+    "independent_official_project_created": false,
+    "actual_restored_backup_tested": false,
+    "formal_security_definer_review_complete": false,
+    "email_smtp_validated": false
+  },
+  "result": "Release readiness check changed from impossible internal-default-ACL zero to enforceable: own creator defaults clean AND admin-owned exposure/extension absent. Remains QA-only; this is not a production authorization.",
+  "no_data_changes": true,
+  "no_ddl_executed": true,
+  "risk_limits": [
+    "The absence of admin-owned objects today does not guarantee future upgrades never add them. Rerun V234 before every release and monitor Postgres extension schema.",
+    "The original combined raw ACL values are mandatory telemetry and may be positive; no actual TRUNCATE allowed for anon/authenticated.",
+    "An independent clean project and a verified backup restoration are still required before official records.",
+    "Lexical identity-path checks do not prove per-scope RPC authorization."
+  ]
+}

@@ -11,11 +11,11 @@ const url=id=>`https://${id}.supabase.co`;
 const now=Date.parse('2026-10-27T01:40:00.000Z');
 const cleanReport={
  migration_review:syntheticCleanMigrationReviewV231,
- protocol:'V233',environment:'CLEAN_PRODUCTION',approved_for_official_mode:true,
+ protocol:'V234',environment:'CLEAN_PRODUCTION',approved_for_official_mode:true,
  project_ref:PROD_REF,verified_at:'2026-10-27T01:35:00.000Z',
  verification_source:'privileged-read-only:manual-sql-editor',
  counts:{business_rows:0,auth_users:0,storage_objects:0,unexpected_public_tables:0,missing_public_tables:0,tracked_public_tables:82,current_public_tables:82},
- security:{protocol:'V233',public_tables:82,rls_disabled:0,auth_truncate_tables:0,anon_truncate_tables:0,unvalidated_foreign_keys:0,dangerous_default_table_grants:0,open_default_function_grants:0,future_user_table_grants:0,future_user_sequence_grants:0,future_user_function_grants:0,creators_missing_global_function_revoke:0,insecure_public_only_definers:0,unused_pg_graphql_enabled:0,qa_legacy_dbf_concept_rows:0,qa_legacy_template_snapshot_rows:0,privileged_rpc_without_auth_identity_path:0,privileged_rpc_using_delegated_identity:15,public_functions:244,security_definers:207,anonymous_definer_functions:0,authenticated_definer_functions:152,definer_missing_search_path:0,reviewed_security_definers:207,reviewed_authenticated_definers:152,manual_privileged_rpc_review:true}
+ security:{protocol:'V234',public_tables:82,rls_disabled:0,auth_truncate_tables:0,anon_truncate_tables:0,unvalidated_foreign_keys:0,dangerous_default_table_grants:0,open_default_function_grants:0,future_user_table_grants:0,future_user_sequence_grants:0,future_user_function_grants:0,creators_missing_global_function_revoke:0,insecure_public_only_definers:0,unused_pg_graphql_enabled:0,qa_legacy_dbf_concept_rows:0,qa_legacy_template_snapshot_rows:0,postgres_future_table_grants:0,postgres_future_sequence_grants:0,postgres_future_function_grants:0,postgres_missing_global_function_revoke:0,admin_risk_extensions_in_public:0,admin_owned_public_relations:0,admin_owned_public_functions:0,admin_owned_exposed_truncate_tables:0,privileged_rpc_without_auth_identity_path:0,privileged_rpc_using_delegated_identity:15,public_functions:244,security_definers:207,anonymous_definer_functions:0,authenticated_definer_functions:152,definer_missing_search_path:0,reviewed_security_definers:207,reviewed_authenticated_definers:152,manual_privileged_rpc_review:true}
 };
 const check=(config={})=>assessOfficialBuild({mode:'official',supabaseUrl:url(PROD_REF),report:cleanReport,now,...config});
 

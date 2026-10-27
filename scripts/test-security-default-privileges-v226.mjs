@@ -11,14 +11,14 @@ const sql=fs.readFileSync('scripts/release-security-preflight-v226.sql','utf8');
 const postgres=fs.readFileSync('supabase/security/qa-postgres-default-privileges-v226.sql','utf8');
 const admin=fs.readFileSync('supabase/security/requires-authorized-supabase-admin-v226.sql','utf8');
 const now=Date.parse('2026-10-27T03:30:00Z');
-const fakeClean={...qa.security,protocol:'V233',
+const fakeClean={...qa.security,protocol:'V234',
  dangerous_default_table_grants:0,open_default_function_grants:0,
  future_user_table_grants:0,future_user_sequence_grants:0,
- future_user_function_grants:0,creators_missing_global_function_revoke:0,insecure_public_only_definers:0,unused_pg_graphql_enabled:0,qa_legacy_dbf_concept_rows:0,qa_legacy_template_snapshot_rows:0,privileged_rpc_without_auth_identity_path:0,privileged_rpc_using_delegated_identity:15,
+ future_user_function_grants:0,creators_missing_global_function_revoke:0,insecure_public_only_definers:0,unused_pg_graphql_enabled:0,qa_legacy_dbf_concept_rows:0,qa_legacy_template_snapshot_rows:0,postgres_future_table_grants:0,postgres_future_sequence_grants:0,postgres_future_function_grants:0,postgres_missing_global_function_revoke:0,admin_risk_extensions_in_public:0,admin_owned_public_relations:0,admin_owned_public_functions:0,admin_owned_exposed_truncate_tables:0,privileged_rpc_without_auth_identity_path:0,privileged_rpc_using_delegated_identity:15,
  reviewed_security_definers:207,reviewed_authenticated_definers:152,
  manual_privileged_rpc_review:true};
 const act={
- migration_review:syntheticCleanMigrationReviewV231,protocol:'V233',environment:'CLEAN_PRODUCTION',
+ migration_review:syntheticCleanMigrationReviewV231,protocol:'V234',environment:'CLEAN_PRODUCTION',
  approved_for_official_mode:true,project_ref:'bbbbbbbbbbbbbbbbbbbb',
  verified_at:'2026-10-27T03:20:00Z',
  verification_source:'privileged-read-only:synthetic-fixture-only',
@@ -55,7 +55,7 @@ test('V226 clean fictional attestation remains possible but is not evidence of o
  assert.equal(attempt({security:qa.security}).ok,false);
  assert.equal(attempt({protocol:'V224'}).ok,false);
 });
-for(const field of ['future_user_table_grants','future_user_sequence_grants','future_user_function_grants','creators_missing_global_function_revoke']){
+for(const field of ['postgres_future_table_grants','postgres_future_sequence_grants','postgres_future_function_grants','postgres_missing_global_function_revoke']){
  test('V226 release fails closed when '+field+' is nonzero',()=>{
   const out=attempt({security:{...fakeClean,[field]:1}});
   assert.equal(out.ok,false);
@@ -82,11 +82,11 @@ test('V226 owner-specific fix revokes global PUBLIC execution and leaves existin
  assert.match(postgres,/COMMIT;/);
  assert.doesNotMatch(postgres,/(?:DELETE FROM|TRUNCATE TABLE|DROP TABLE|ALTER TABLE public[.])/i);
 });
-test('V226 supabase_admin script requires real privileged administrator, never default execution in CI',()=>{
- assert.match(admin,/pg_has_role\(current_user, 'supabase_admin', 'MEMBER'\)/);
+test('V234 supersedes unsafe V226 attempt to alter Supabase internal admin defaults',()=>{
  assert.match(admin,/RAISE EXCEPTION/);
- assert.match(admin,/ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin/);
- assert.match(admin,/REVOKE EXECUTE ON FUNCTIONS FROM PUBLIC/);
+ assert.match(admin,/supabase_admin default ACL remediation is unsupported/);
+ assert.doesNotMatch(admin,/ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin/);
+ assert.doesNotMatch(admin,/\bGRANT\s+supabase_admin\b/i);
  assert.doesNotMatch(fs.readFileSync('.github/workflows/sacramentum-auditoria-v90.yml','utf8'),/run:.*requires-authorized-supabase-admin-v226\.sql/);
 });
 test('V226 real catalogue lists all 152 privileged callable RPCs with stable signatures and no bodies',()=>{
