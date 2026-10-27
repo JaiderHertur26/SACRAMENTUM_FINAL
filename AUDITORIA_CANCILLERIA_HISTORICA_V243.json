@@ -1,0 +1,46 @@
+{
+  "protocol": "V243",
+  "date": "2026-10-27",
+  "project_ref": "foczofcmwampjvlfbsqn",
+  "environment": "QA_NONOFFICIAL_FICTITIOUS_ONLY",
+  "routine": "materialize_legacy_decrees_v68(uuid,integer)",
+  "qa_applied": true,
+  "pre_original_role_guard_hits": 1,
+  "pre_original_active_guard_hits": 1,
+  "pre_original_lookup_block_hits": 1,
+  "post_strict_role": true,
+  "post_strict_active": true,
+  "post_strict_status": true,
+  "post_verified_chancery_same_diocese": true,
+  "post_null_chancery_denied": true,
+  "post_old_active_bypass_remaining": false,
+  "role_tests": [
+    {
+      "role": "admin_general",
+      "expected": "chancery_only",
+      "actual": "denied"
+    },
+    {
+      "role": "chancery",
+      "expected": "origin_required",
+      "actual": "missing_origin_rejected"
+    },
+    {
+      "role": "diocese",
+      "expected": "chancery_only",
+      "actual": "denied"
+    },
+    {
+      "role": "parish",
+      "expected": "chancery_only",
+      "actual": "denied"
+    }
+  ],
+  "qa_mutations": 0,
+  "procedures_with_privileged_execute": 152,
+  "privileged_catalogue_before": "f5f6d63ed04cb647d96f7175a054f39a",
+  "privileged_catalogue_after": "f1efe81bc94e1163ce611d54ba8575fb",
+  "semantically_certified_152_functions": 0,
+  "official_launch_authorized": false,
+  "scope_limit": "QA read-only invalid-origin negative tests and function-source verification do not certify successful document or registry mutations, delivery or official production."
+}
