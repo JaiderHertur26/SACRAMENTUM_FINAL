@@ -166,7 +166,8 @@ exec('pruebas-sinteticas',node,['--test',
  'scripts/test-live-role-perimeter-evidence-v238.mjs',
  'scripts/test-live-chancery-rpc-guards-v239.mjs',
  'scripts/test-strict-chancery-reversal-v240.mjs',
- 'scripts/test-active-profile-four-rpcs-v241.mjs']);
+ 'scripts/test-active-profile-four-rpcs-v241.mjs',
+ 'scripts/test-canonical-profile-chat-document-v242.mjs']);
 const scripts=fs.readdirSync(path.join(root,'scripts')).filter(x=>/^verify-.*\.mjs$/.test(x)).sort();
 for(const file of scripts)exec('legacy/'+file,node,['scripts/'+file]);
 const npmOnWindows=process.platform==='win32';

@@ -15,7 +15,7 @@ const goodSecurity={...qa.preflight.metrics, protocol:'V236',
  future_user_sequence_grants:0,future_user_function_grants:0,
  creators_missing_global_function_revoke:0,
  reviewed_security_definers:207,reviewed_authenticated_definers:152,
- manual_privileged_rpc_review:true,privileged_rpc_catalog_count:152,privileged_rpc_catalog_md5:'2271708267b8e801367bc282d146d49e'};
+ manual_privileged_rpc_review:true,privileged_rpc_catalog_count:152,privileged_rpc_catalog_md5:'f5f6d63ed04cb647d96f7175a054f39a'};
 const fixture={
  migration_review:syntheticCleanMigrationReviewV231,protocol:'V236',environment:'CLEAN_PRODUCTION',
  approved_for_official_mode:true,project_ref:'bbbbbbbbbbbbbbbbbbbb',
@@ -47,7 +47,8 @@ test('V230 migration is the exact applied database version, safe if already disa
  const later=fs.readdirSync('supabase/migrations').filter(x=>x.endsWith('.sql')).sort();
  assert.ok(later.includes(migration.split('/').at(-1)),'V230 migration must remain versioned');
  assert.deepEqual(later.filter(x=>('supabase/migrations/'+x)>migration),
-  ['20261027125848_harden_chat_actor_guard_v232.sql'],'Only reviewed V232 may follow GraphQL hardening');
+  ['20261027121500_harden_context_chat_matrimonial_identity_v242.sql',
+   '20261027125848_harden_chat_actor_guard_v232.sql'],'Only reviewed V242 and V232 may follow GraphQL hardening');
 });
 test('V230 before/after SQL verification confirms GraphQL extension disappeared and placeholder returns disabled',()=>{
  assert.equal(report.migration.installedPgGraphqlBefore,1);

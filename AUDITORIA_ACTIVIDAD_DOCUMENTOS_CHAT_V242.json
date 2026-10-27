@@ -1,0 +1,72 @@
+{
+  "protocol": "V242",
+  "date": "2026-10-27",
+  "project_ref": "foczofcmwampjvlfbsqn",
+  "environment": "QA_NONOFFICIAL_TEST_DATA_ONLY",
+  "routines": [
+    "search_document_context",
+    "start_direct_chat",
+    "resolve_manual_matrimonial_notification_recipient"
+  ],
+  "pre_migration_exact_clause_occurrences": [
+    {
+      "routine": "search_document_context",
+      "activity": 1,
+      "status": 1
+    },
+    {
+      "routine": "start_direct_chat",
+      "activity": 2,
+      "status": 2
+    },
+    {
+      "routine": "resolve_manual_matrimonial_notification_recipient",
+      "activity": 1,
+      "status": 1
+    }
+  ],
+  "migration_applied_qa": true,
+  "all_three_strict_active": true,
+  "all_three_strict_status": true,
+  "document_search_null_role_rejected": true,
+  "legacy_is_active_coalesce_remaining_in_three": false,
+  "live_qa_negatives_and_harmless_reads": [
+    {
+      "role": "admin_general",
+      "rpc": "start_direct_chat",
+      "result": "denied invalid chat profile"
+    },
+    {
+      "role": "parish",
+      "rpc": "start_direct_chat",
+      "result": "denied missing recipient"
+    },
+    {
+      "role": "diocese",
+      "rpc": "search_document_context",
+      "result": "zero matches for nonexistent token"
+    },
+    {
+      "role": "parish",
+      "rpc": "search_document_context",
+      "result": "zero matches for nonexistent token"
+    },
+    {
+      "role": "parish",
+      "rpc": "resolve_manual_matrimonial_notification_recipient",
+      "result": "nonexistent notification rejected"
+    },
+    {
+      "role": "chancery",
+      "rpc": "resolve_manual_matrimonial_notification_recipient",
+      "result": "non-parish role rejected"
+    }
+  ],
+  "qa_actual_data_mutations": 0,
+  "callable_security_definer_functions": 152,
+  "old_callable_catalogue_md5": "2271708267b8e801367bc282d146d49e",
+  "new_callable_catalogue_md5": "f5f6d63ed04cb647d96f7175a054f39a",
+  "semantic_approved_rpc_count": 0,
+  "official_launch_allowed": false,
+  "limit": "Demonstrated source guard hardening, invalid/no-data RPC flows; not full writing transactions, not ongoing live CI, not official approval."
+}
