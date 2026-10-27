@@ -1,0 +1,69 @@
+{
+  "protocol": "V245",
+  "date": "2026-10-27",
+  "environment": "SUPABASE_QA_ONLY_NOT_OFFICIAL",
+  "project_ref": "foczofcmwampjvlfbsqn",
+  "routines": [
+    "apply_legacy_import_batch(uuid,integer)",
+    "reconcile_legacy_anulacion_batch(uuid,integer)"
+  ],
+  "verified_security_issue": "The original legacy importer and historical ANULACION reconciler exposed a real cross-diocese batch's type through early errors before ownership authorization.",
+  "before": {
+    "foreign_existing_batch_leaked_anulacion_in_both": true,
+    "foreign_uuid_missing_different_error": true
+  },
+  "after": [
+    {
+      "rpc": "apply_legacy_import_batch",
+      "scenario": "foreign-existing",
+      "expected": "Lote no encontrado",
+      "passed": true
+    },
+    {
+      "rpc": "apply_legacy_import_batch",
+      "scenario": "foreign-missing",
+      "expected": "Lote no encontrado",
+      "passed": true
+    },
+    {
+      "rpc": "apply_legacy_import_batch",
+      "scenario": "authorized-anulacion",
+      "expected": "ANULACION denied via Chancery route",
+      "passed": true
+    },
+    {
+      "rpc": "reconcile_legacy_anulacion_batch",
+      "scenario": "foreign-existing",
+      "expected": "Lote no encontrado",
+      "passed": true
+    },
+    {
+      "rpc": "reconcile_legacy_anulacion_batch",
+      "scenario": "foreign-missing",
+      "expected": "Lote no encontrado",
+      "passed": true
+    },
+    {
+      "rpc": "reconcile_legacy_anulacion_batch",
+      "scenario": "authorized-anulacion",
+      "expected": "ANULACION denied via Chancery route",
+      "passed": true
+    }
+  ],
+  "qa_live_regression_cases": 6,
+  "qa_live_regression_passed": 6,
+  "schema_migration_applied": true,
+  "qa_business_rows_mutated": false,
+  "count_privileged_rpcs": 152,
+  "catalogue_hash_before": "d10ec9b11e3726fc8427dd983400028e",
+  "catalogue_hash_after": "91f3bb1bf8a50fd85d066d86fd79da2b",
+  "canonical_legacy_import_paths_now_guarded": [
+    "apply_legacy_import_batch",
+    "apply_legacy_import_batch_v2",
+    "apply_legacy_import_batch_v3",
+    "reconcile_legacy_anulacion_batch"
+  ],
+  "semantic_certs": 0,
+  "official_mode_authorized": false,
+  "limitations": "Live negative/invalid QA calls confirm batch enumeration fix; do not certify positive record imports, complete security reviews, backup restores, clean production, SMTP or paper documents."
+}
