@@ -306,7 +306,7 @@ const BaptismNewPage = () => {
                     title: res.confirmation ? "Bautismo y Confirmación creados" : "Guardado Exitoso",
                     description: res.confirmation
                         ? `Bautismo Nº ${res.numeroRegistro || 'asignado'} y Confirmación Nº ${res.confirmation.numeroRegistro || 'asignado'} quedaron por celebrar.`
-                        : `Borrador reservado en la nube con Nº de Registro ${res.numeroRegistro || 'asignado'}.`,
+                        : `Pre-registro guardado con Nº de Registro ${res.numeroRegistro || 'asignado'}.`,
                     className: "bg-green-50 text-green-900 border-green-200"
                 });
                 setTimeout(() => window.print(), 500);
@@ -327,7 +327,7 @@ const BaptismNewPage = () => {
                 <div className="print:hidden max-w-xl mx-auto bg-white p-12 rounded-[3rem] shadow-xl border border-slate-100 text-center mt-12 animate-in fade-in duration-500">
                     <div className="w-24 h-24 bg-green-50 rounded-[2rem] flex items-center justify-center mx-auto mb-8 border border-green-100"><CheckCircle2 className="w-12 h-12 text-green-500" /></div>
                     <h2 className="text-3xl font-black text-slate-900 mb-3 tracking-tighter uppercase">
-                        {linkedConfirmationData ? 'Registros creados' : 'Borrador Creado'}
+                        {linkedConfirmationData ? 'Registros creados' : 'Pre-registro creado'}
                     </h2>
                     <p className="text-slate-500 mb-4 text-sm font-medium leading-relaxed">
                         {linkedConfirmationData
@@ -596,7 +596,7 @@ const BaptismNewPage = () => {
                             <div className="flex justify-end gap-4 pt-8 border-t border-slate-100">
                                 <Button type="button" variant="ghost" onClick={() => navigate(-1)} className="px-10 py-8 rounded-2xl text-slate-400 font-black uppercase text-[10px] tracking-widest hover:bg-slate-50 transition-all">Cancelar</Button>
                                 <Button type="submit" disabled={isSubmitting} className="px-12 py-8 rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-xl shadow-amber-900/10 transition-all transform active:scale-95">
-                                    {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin mr-2" /> : <Save className="w-5 h-5 mr-2" />} Generar Borrador
+                                    {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin mr-2" /> : <Save className="w-5 h-5 mr-2" />} Guardar pre-registro
                                 </Button>
                             </div>
                         </div>

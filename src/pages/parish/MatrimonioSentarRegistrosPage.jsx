@@ -134,7 +134,7 @@ const MatrimonioSentarRegistrosPage = () => {
         resolveParish();
     }, [user]);
 
-    // 2. CARGA DE BORRADORES + HISTORIAL DE BOLETAS
+    // 2. CARGA DE PRE-REGISTROS + HISTORIAL DE BOLETAS
     const loadData = async () => {
         if (!resolvedParishId) return null;
         setIsLoading(true);

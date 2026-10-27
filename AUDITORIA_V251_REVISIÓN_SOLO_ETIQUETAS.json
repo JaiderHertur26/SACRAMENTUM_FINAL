@@ -1,0 +1,80 @@
+{
+  "protocol": "V251",
+  "revision": "2026-10-27",
+  "reason": "UI-only replacement of BORRADOR with accurate pre-registration or review-copy labels, without changing data status or validity",
+  "reviewedSourceSha256": {
+    "src/index.css": {
+      "before": "69cb0517eae05ea431cdbc49f288dd35106309c90da3f148281e4110744b8afd",
+      "after": "8507a7ea4abd545c362827ab334d200760c6333d959d1fd74748c437b75a5109",
+      "editedLines": 2
+    },
+    "src/pages/parish/BaptismNewPage.jsx": {
+      "before": "70286f320b3ec7766f50a05f41014ef72529abca1247293197f7a20ab10923d5",
+      "after": "89860bf363fdc6cd6037fbe0a955bb65b0d99d60ea463d5a63aceeedd59cde4a",
+      "editedLines": 3
+    },
+    "src/pages/parish/BaptismSentarRegistrosPage.jsx": {
+      "before": "7ba9fc5cd86872bdca02f0c5e11c87f9d8d14628d48cba9e18cd7c47bf59799b",
+      "after": "a810b8421e3db3279834ff0cf13c04fe0aaca53bf6b436306950f5cf0a82e7b7",
+      "editedLines": 4
+    },
+    "src/pages/parish/ConfirmationNewPage.jsx": {
+      "before": "7921d643339a60857b522df1361adb688e56125c9ab2f1df504a7f386fe7bd4b",
+      "after": "db4bf3845b7e8f52a9d822a08627a1b60800e0226c805fe88b40afa4894fdfa9",
+      "editedLines": 3
+    },
+    "src/pages/parish/ConfirmationSentarRegistrosPage.jsx": {
+      "before": "8b4afb4e08ead47518db59d6e8136c2a2dd8e4dd84e615e1c3c10de53a74b275",
+      "after": "2d63bc1bcd5dfca9ef2268554f4ea99b9c8ed1e6a7900464604cf589b10e1ac9",
+      "editedLines": 2
+    },
+    "src/pages/parish/MarriageDossierPage.jsx": {
+      "before": "5ef85e21d8968e9d20ccb2955191cbda24471e20cbaddcd5196f6e180fe80ada",
+      "after": "1e05747ae79cda161e37303a65c1ebf782b8284b00b40fda98070a9ee1f06e9b",
+      "editedLines": 1
+    },
+    "src/pages/parish/MatrimonioSentarRegistrosPage.jsx": {
+      "before": "54c14fefe6635e53f2cacbe88195c47ab8d8353b1b76a38aeb3da41d39d44df1",
+      "after": "c3cd0d533f945852b7333e1da245e9804bf654c9ab94b2b58d618376ffc8e162",
+      "editedLines": 1
+    },
+    "src/pages/parish/ParishDashboard.jsx": {
+      "before": "49ddc250c4f42041797b7b762d3312b69c3a2af0f74249ffe7c348d7b42adf0e",
+      "after": "b96daab5cb8c6724daff0d6570a4fc71cbd933d977c292c6f059c1fbb95498bb",
+      "editedLines": 3
+    },
+    "src/services/sacramentalBooksService.js": {
+      "before": "73681cad78a910793cc2c553a070fd7ae4e1880696880a968e55cded5d385481",
+      "after": "70728820980233b9541f9de5a3efd783470f4267aff9fba5eb91f2fb0b4afa81",
+      "editedLines": 1
+    },
+    "src/services/sacramentsService.js": {
+      "before": "22c54d9932574d90ed3185ce4a564cc742922067beb0f1fa102fa4a385f1a2e6",
+      "after": "2e5434aec0393f839abb78f5105c1dc9bbf7b1c26299846da71ddee90224faa7",
+      "editedLines": 7
+    },
+    "src/utils/testDocumentStamp.mjs": {
+      "before": "1bebec0a2537b2541e0a4b906ee7eadf3da82614c83fa94fdf3a1a33b8b095cc",
+      "after": "548d0c095e0f11e40a89fffa6d4bf774b383c0489c907852ee5b1cdd3be97dcc",
+      "editedLines": 3
+    }
+  },
+  "preservedHistoricalReceipts": [
+    "AUDITORIA_RECUPERACION_UI_V205.json",
+    "AUDITORIA_RECUPERACION_TRES_SACRAMENTOS_V206.json",
+    "AUDITORIA_CREACION_BOLETAS_NAVEGADOR_V207.json"
+  ],
+  "approvedSourceFiles": [
+    "src/index.css",
+    "src/pages/parish/BaptismNewPage.jsx",
+    "src/pages/parish/BaptismSentarRegistrosPage.jsx",
+    "src/pages/parish/ConfirmationNewPage.jsx",
+    "src/pages/parish/ConfirmationSentarRegistrosPage.jsx",
+    "src/pages/parish/MarriageDossierPage.jsx",
+    "src/pages/parish/MatrimonioSentarRegistrosPage.jsx",
+    "src/pages/parish/ParishDashboard.jsx",
+    "src/services/sacramentalBooksService.js",
+    "src/services/sacramentsService.js",
+    "src/utils/testDocumentStamp.mjs"
+  ]
+}
