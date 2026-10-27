@@ -1,0 +1,85 @@
+{
+  "protocol": "V230",
+  "project_ref": "foczofcmwampjvlfbsqn",
+  "testOnly": true,
+  "officialAllowed": false,
+  "verificationDate": "2026-10-27",
+  "source": "Supabase MCP apply_migration, privileged execute_sql, security advisors, genuine QA GoTrue user sessions and 14 individual rollback SQL scenarios",
+  "migration": {
+    "name": "disable_unused_pg_graphql_v230",
+    "version": "20261027115104",
+    "file": "supabase/migrations/20261027115104_disable_unused_pg_graphql_v230.sql",
+    "appliedToQa": true,
+    "usesIfExists": true,
+    "usesRestrict": true,
+    "removedBusinessRows": 0,
+    "installedPgGraphqlBefore": 1,
+    "installedPgGraphqlAfter": 0,
+    "graphqlPlaceholderMessage": "pg_graphql extension is not enabled.",
+    "liveReactSourceGraphqlReferences": 0
+  },
+  "adviser": {
+    "priorGraphqlAuthenticatedVisibilityWarnings": 64,
+    "postGraphqlAuthenticatedVisibilityWarnings": 0,
+    "postAuthenticatedSecurityDefinerWarnings": 152,
+    "postLeakedPasswordProtectionWarnings": 1,
+    "postRlsNoPolicyInfo": 5
+  },
+  "testEvidence": {
+    "genuineQaGoTrueLoginsPassed": 8,
+    "genuineQaGoTrueLoginsTotal": 8,
+    "liveDeniedForeignSacramentCreation": 24,
+    "liveDeniedForeignSacramentCreationTotal": 24,
+    "rollbackDbScenariosPassed": 14,
+    "rollbackDbScenariosTotal": 14,
+    "qaCountFieldsUnchanged": 13
+  },
+  "qaCountsBefore": {
+    "baptisms": 5040,
+    "confirmations": 2091,
+    "marriages": 1261,
+    "funerals": 1,
+    "pending_baptisms": 69,
+    "pending_confirmations": 233,
+    "pending_marriages": 1,
+    "pending_funerals": 1,
+    "decretos": 2,
+    "marginal_notes": 82,
+    "print_events": 8,
+    "audit_entries": 353,
+    "auth_accounts": 12
+  },
+  "qaCountsAfter": {
+    "baptisms": 5040,
+    "confirmations": 2091,
+    "marriages": 1261,
+    "funerals": 1,
+    "pending_baptisms": 69,
+    "pending_confirmations": 233,
+    "pending_marriages": 1,
+    "pending_funerals": 1,
+    "decretos": 2,
+    "marginal_notes": 82,
+    "print_events": 8,
+    "audit_entries": 353,
+    "auth_accounts": 12
+  },
+  "preflight": {
+    "protocol": "V230",
+    "sqlFile": "scripts/release-security-preflight-v230.sql",
+    "graphqlExtensionEnabled": 0,
+    "publicTables": 82,
+    "authenticatedSecurityDefiners": 152,
+    "remainingSupabaseAdminFutureTableGrants": 16,
+    "remainingSupabaseAdminFutureSequenceGrants": 6,
+    "remainingSupabaseAdminFutureFunctionGrants": 2,
+    "creatorsWithoutGlobalPublicExecuteRevoke": 1
+  },
+  "boundaries": [
+    "Extensión eliminada solamente del entorno QA; se conserva endpoint marcador que devuelve error de extension deshabilitada.",
+    "Los 64 avisos de visibilidad GraphQL desaparecieron del asesor; esto no demuestra ausencia de vulnerabilidades REST ni revisión de las 152 RPC.",
+    "La eliminación de la extensión no borra datos ni reemplaza las políticas RLS existentes.",
+    "Faltan controles administrativos supabase_admin, auditoría semántica de RPC, restauración de respaldos, SMTP e instancia oficial nueva y completamente limpia.",
+    "Los informes CI verifican evidencia guardada; NO ejecutan nuevamente transacciones con permisos elevados sobre QA."
+  ]
+}

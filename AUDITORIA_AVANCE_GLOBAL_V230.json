@@ -1,0 +1,125 @@
+{
+  "protocol": "V230",
+  "date": "2026-10-27",
+  "estimatedPercent": 97,
+  "rawWeighted": 96.9,
+  "method": "Madurez técnica estimada por nueve áreas. Se reconocen las 64 advertencias GraphQL eliminadas, 8 autenticaciones reales y 14 escenarios PostgreSQL reversibles tras quitar pg_graphql. El resto de seguridad y corte oficial permanece pendiente. No confundir porcentaje técnico con certificación.",
+  "stage": "QA_ONLY_ALL_RECORDS_FICTITIOUS; NO_OFFICIAL_ENTRIES",
+  "areas": [
+    {
+      "area": "Infraestructura, CI y despliegue",
+      "weight": 10,
+      "complete": 99,
+      "remaining": "Restauración real de respaldos, correo, monitoreo y puesta en producción"
+    },
+    {
+      "area": "Roles, jerarquía y separación institucional",
+      "weight": 10,
+      "complete": 100,
+      "remaining": "Revisión formal de privilegios y validación institucional final"
+    },
+    {
+      "area": "Registros y pendientes de cuatro sacramentos",
+      "weight": 20,
+      "complete": 98,
+      "remaining": "Falta aceptación positiva final con expediente documental auténtico y aplicación UI completa"
+    },
+    {
+      "area": "Cancillería, decretos y trazabilidad jurídica",
+      "weight": 15,
+      "complete": 97,
+      "remaining": "Falta revisión formal de 152 funciones privilegiadas y ciclo jurídico institucional"
+    },
+    {
+      "area": "Migración histórica e integridad de procedencia",
+      "weight": 15,
+      "complete": 98,
+      "remaining": "Cotejo documental de discrepancias y preparación de migración sin datos ficticios"
+    },
+    {
+      "area": "Notas marginales y reconciliación",
+      "weight": 10,
+      "complete": 93,
+      "remaining": "Falta inspección física y asentamiento final del documento institucional"
+    },
+    {
+      "area": "Reportes, chat y notificaciones",
+      "weight": 8,
+      "complete": 93,
+      "remaining": "Entrega SMTP y aceptación de informes y mensajería en instalación independiente"
+    },
+    {
+      "area": "Documentos, constancias e impresión",
+      "weight": 7,
+      "complete": 93,
+      "remaining": "Impresión física, firma y validación eclesial, no solo auditoría SQL de constancias"
+    },
+    {
+      "area": "Aceptación E2E y operaciones reales",
+      "weight": 5,
+      "complete": 98,
+      "remaining": "Puesta en servicio limpia, respaldo/restauración, correo y validación final con usuarios oficiales nuevos"
+    }
+  ],
+  "evidence": {
+    "newLiveSqlTransactions": 14,
+    "newLiveSqlTransactionsPassed": 14,
+    "signedSqlSourceHashesVerified": 14,
+    "regressionAssertionsNew": 28,
+    "databaseBeforeAfterCountFields": 13,
+    "unchangedCountFields": 13,
+    "actualValidRegistryPrintReceipts": 4,
+    "invalidPrintRequestsRejected": 20,
+    "ownedMarginalNotesReversed": 4,
+    "foreignMarginalSourceDenied": 4,
+    "seatFourSacramentsRollback": true,
+    "fourSacramentCreationGrantedUnderTestRole": true,
+    "approvedAndHistoricalDocumentaryDecreeRollback": true,
+    "historicalAndCrossDioceseValidated": true,
+    "deadlockRealQaFromV227": true,
+    "authenticatedProfilesFromV227": 8,
+    "newOfficialDatabaseCreated": false,
+    "recordsTransferredToOfficial": 0,
+    "supabaseAdminDefaultPrivilegesRemediated": false,
+    "securityDefinerFunctionsFormallyReviewed": 0,
+    "securityDefinerFunctionsPending": 152,
+    "qaCountsAfter": {
+      "baptisms": 5040,
+      "confirmations": 2091,
+      "marriages": 1261,
+      "funerals": 1,
+      "auth_accounts": 12
+    },
+    "securityDefinerPathsHardened": 131,
+    "authenticatedDefinerPathsHardened": 88,
+    "remainingPublicOnlyDefinerPaths": 0,
+    "realTransactionsRetestedAfterHardening": 14,
+    "realSupabaseGoTrueLoginsRetested": 8,
+    "realAuthorizationDenialsRetested": 24,
+    "cleanOfficialSupabaseProjectCreated": false,
+    "qaCountsStillUnchanged": true,
+    "releaseGuardProtocol": "V229",
+    "remoteMigrationVersion": "20261027044045",
+    "newSyntheticRegressionCases": 11,
+    "installedGraphqlExtensionsAfter": 0,
+    "graphQlWarningsBefore": 64,
+    "graphQlWarningsAfter": 0,
+    "officialSupabaseQaAccountsPreserved": 12,
+    "postGraphqlRealGoTrueLoginsPassed": 8,
+    "postGraphqlForbiddenForeignSacramentWritesRejected": 24,
+    "postGraphqlRollbackTransactionsPassed": 14,
+    "userDataDeleted": 0,
+    "dataTransferredToOfficial": 0,
+    "qaBusinessCountFieldsUnchanged": 13,
+    "newTestCountV230": 17,
+    "postGraphqlSecurityDefinerWarningsStillOpen": 152,
+    "securityAdvisorsLeakedPasswordWarningStillOpen": 1,
+    "preflightProtocol": "V230"
+  },
+  "remainingBeforeOfficial": [
+    "RLS no es equivalente a revisión semántica de las 152 funciones privilegiadas REST; exige análisis firma por firma",
+    "Permisos predeterminados de supabase_admin sin cerrar, requiere un operador efectivamente autorizado",
+    "Respaldos/restauración real, SMTP y documentos físicos pendientes",
+    "Nuevo proyecto Supabase vacío, acreditación de cero registros y cuentas de QA, con acta de apertura"
+  ]
+}
