@@ -1,0 +1,66 @@
+{
+  "protocol": "V221",
+  "scope": "Actual Chancery HistoricalLinkReviewPage in Chromium; fake JWT/diocese/RPC, zero Supabase access",
+  "date": "2026-10-27T00:43:55.695Z",
+  "rows": [
+    {
+      "label": "chancery_has_real_react_queue_and_scoped_totals",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "label": "diagnostic_classification_displays_all_219_cases",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "label": "printed_workpaper_isolated_to_visible_case_and_non_official",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "label": "blocked_print_popup_fails_safely_and_does_not_mutate_case",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "label": "missing_evidence_never_calls_write_rpc",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "label": "chancery_writes_document_reference_without_relinking",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "label": "pagination_covers_exactly_219_entries",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "label": "parish_session_change_erases_chancery_case_data",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "label": "non_chancery_role_has_no_case_print_action",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "label": "second_diocese_cannot_see_previous_institution_cases",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "label": "return_to_original_chancery_restores_authorized_data",
+      "passed": true,
+      "error": ""
+    }
+  ],
+  "passed": 11,
+  "total": 11,
+  "jsExceptions": 0,
+  "blockedExternalRequests": 0
+}

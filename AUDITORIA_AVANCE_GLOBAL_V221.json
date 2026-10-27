@@ -1,0 +1,95 @@
+{
+  "protocol": "V221",
+  "date": "2026-10-26",
+  "estimatedPercent": 90,
+  "rawWeighted": 89.60999999999999,
+  "method": "Estimación orientativa ponderada de nueve áreas; no mide historias terminadas ni constituye certificación de operación real.",
+  "dataStatus": "TODOS los registros actuales son pruebas; no hay información oficial autorizada",
+  "areas": [
+    {
+      "area": "Infraestructura, CI y despliegue",
+      "weight": 10,
+      "complete": 97,
+      "remaining": "Certificación continua de respaldos y operación"
+    },
+    {
+      "area": "Roles, jerarquía y separación institucional",
+      "weight": 10,
+      "complete": 94,
+      "remaining": "Más pruebas positivas autenticadas multirrol"
+    },
+    {
+      "area": "Registros y pendientes de cuatro sacramentos",
+      "weight": 20,
+      "complete": 91,
+      "remaining": "E2E reales completos sobre los cuatro sacramentos"
+    },
+    {
+      "area": "Cancillería, decretos y trazabilidad jurídica",
+      "weight": 15,
+      "complete": 92,
+      "remaining": "Matriz documental de decretos y doble aprobación de reparaciones históricas"
+    },
+    {
+      "area": "Migración histórica e integridad de procedencia",
+      "weight": 15,
+      "complete": 90,
+      "remaining": "46 candidatos para cotejo; 1 conflicto y 172 sin partida según V219; sin cambios oficiales"
+    },
+    {
+      "area": "Notas marginales y reconciliación",
+      "weight": 10,
+      "complete": 91,
+      "remaining": "Cotejo documental completo y archivo institucional"
+    },
+    {
+      "area": "Reportes, chat y notificaciones",
+      "weight": 8,
+      "complete": 80,
+      "remaining": "Ensayos funcionales reales y estrés"
+    },
+    {
+      "area": "Documentos, constancias e impresión",
+      "weight": 7,
+      "complete": 88,
+      "remaining": "Validación visual y física de todas las plantillas restantes"
+    },
+    {
+      "area": "Aceptación E2E y operaciones reales",
+      "weight": 5,
+      "complete": 67,
+      "remaining": "Entrega real de correos, impresión física y autorización formal de datos oficiales"
+    }
+  ],
+  "evidence": {
+    "syntheticPassed": 1921,
+    "syntheticTotal": 1921,
+    "qualityGatePassed": 30,
+    "qualityGateTotal": 30,
+    "documentPreviousPassed": 15,
+    "documentPreviousTotal": 15,
+    "newDossierTestsPassed": 13,
+    "newDossierTestsTotal": 13,
+    "chromiumIsolatedPassed": 11,
+    "chromiumIsolatedTotal": 11,
+    "chromiumJsExceptions": 0,
+    "sqlWrites": 0,
+    "databaseMigrations": 0,
+    "buildPassed": true
+  },
+  "newCapabilities": [
+    "Ficha de cotejo histórico imprimible en Cancillería por caso y parroquia",
+    "Escapado HTML de todos los campos recibidos del servidor (prevención de XSS)",
+    "Advertencia obligatoria de expediente de prueba sin validez oficial",
+    "Botón bloqueado por identidad, ámbito y caso visible; sin mutaciones al imprimir",
+    "Pruebas de navegador Chromium con RPC simulado y bloqueo de solicitudes externas; automatización en CI"
+  ],
+  "notCertified": [
+    "Impresión física y revisión visual integral de plantillas",
+    "Entrega real del correo de recuperación",
+    "46 coincidencias históricas propuestas para cotejo; 1 conflicto y 172 ausentes según V219",
+    "E2E real autenticado de todos los flujos institucionales",
+    "Separación y aprobación formal de datos oficiales"
+  ],
+  "attention": "La ficha es solo preliminar. No acredita una partida ni autoriza a vincular documentos. Activar VITE_REGISTRY_DATA_MODE='official' solo cambia presentación, no valida datos."
+}
