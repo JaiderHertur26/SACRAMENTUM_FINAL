@@ -1,10 +1,11 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { AlertTriangle, ArrowLeft, ClipboardList, FileSearch, Loader2, RefreshCw, ShieldCheck } from 'lucide-react';
+import { AlertTriangle, ArrowLeft, ClipboardList, FileSearch, Loader2, Printer, RefreshCw, ShieldCheck } from 'lucide-react';
 import DashboardLayout from '@/components/DashboardLayout';
 import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/lib/supabaseClient';
+import { buildHistoricalEvidenceDossierHtml } from '@/utils/historicalEvidenceDossier.mjs';
 
 const LIMIT = 50;
 const STATUS = [
@@ -124,6 +125,27 @@ export default function HistoricalLinkReviewPage() {
     }
   };
 
+  const printEvidence = (item) => {
+    // Only the currently loaded jurisdiction and this page's case may be printed.
+    if (!scopeCurrent || loadedIdentity !== identity || busy || saving || !visibleRows.some(row => row.link_id === item.link_id)) return;
+    const html = buildHistoricalEvidenceDossierHtml({
+      record: item,
+      assessment: visibleAssessments[item.link_id],
+      dioceseName: user?.dioceseName || 'Diócesis por verificar'
+    });
+    const popup = window.open('', '_blank', 'width=950,height=1150');
+    if (!popup) {
+      toast({ title: 'Ventana de impresión bloqueada', description: 'Habilite las ventanas emergentes e intente nuevamente.', variant: 'destructive' });
+      return;
+    }
+    popup.opener = null;
+    popup.document.open();
+    popup.document.write(html);
+    popup.document.close();
+    popup.focus();
+    popup.print();
+  };
+
   return (
     <DashboardLayout entityName={`Cancillería • ${user?.dioceseName || 'Revisión histórica'}`}>
       <section className="mx-auto max-w-6xl space-y-6 pb-16">
@@ -192,9 +214,14 @@ export default function HistoricalLinkReviewPage() {
                     <label className="text-xs font-bold text-slate-600">Referencia documental (obligatoria)
                       <input className={`mt-1 ${inputClass}`} maxLength={180} placeholder="Ej.: Archivo parroquial, libro 3, acta 21" value={forms[item.link_id]?.evidence || ''} onChange={e => setForms(f=>({...f,[item.link_id]:{...f[item.link_id],evidence:e.target.value}}))} />
                     </label>
+                    <div className="flex flex-col gap-2">
+                      <button type="button" disabled={Boolean(saving) || busy || !scopeCurrent || loadedIdentity !== identity} onClick={()=>printEvidence(item)} className="inline-flex items-center justify-center gap-2 rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm font-bold text-blue-900 disabled:opacity-50" title="Ficha preliminar sin validez oficial">
+                        <Printer size={16} /> Imprimir ficha de cotejo
+                      </button>
                     <button type="button" disabled={Boolean(saving) || busy} onClick={()=>submitEvidence(item)} className="rounded-xl bg-slate-900 px-4 py-3 text-sm font-bold text-white disabled:opacity-50">
                       {saving===item.link_id ? 'Registrando…' : 'Guardar constancia'}
                     </button>
+                    </div>
                   </div>
                 </article>
               ))}
