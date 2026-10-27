@@ -25,9 +25,9 @@ const security={
  privileged_rpc_without_auth_identity_path:0,
  privileged_rpc_using_delegated_identity:15,
  public_functions:244,security_definers:207,
- anonymous_definer_functions:0,authenticated_definer_functions:152,
+ anonymous_definer_functions:0,authenticated_definer_functions:151,
  definer_missing_search_path:0,reviewed_security_definers:207,
- reviewed_authenticated_definers:152,manual_privileged_rpc_review:true,privileged_rpc_catalog_count:152,privileged_rpc_catalog_md5:'91f3bb1bf8a50fd85d066d86fd79da2b'
+ reviewed_authenticated_definers:151,manual_privileged_rpc_review:true,privileged_rpc_catalog_count:151,privileged_rpc_catalog_md5:'60019131a532a623a91c6128b9ab8daa'
 };
 const report={
  protocol:'V236',environment:'CLEAN_PRODUCTION',

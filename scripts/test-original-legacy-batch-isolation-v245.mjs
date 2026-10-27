@@ -54,15 +54,15 @@ test('V245 evidence proves four known import paths now share early scoped lookup
 });
 test('V245 current live PostgreSQL fingerprint remains exact in release guard, old evidence preserved',()=>{
  assert.equal(e.count_privileged_rpcs,152);
- assert.equal(e.catalogue_hash_after,EXPECTED_PRIVILEGED_RPC_CATALOG_MD5_V236);
+ assert.equal(e.catalogue_hash_after,'91f3bb1bf8a50fd85d066d86fd79da2b'); // immutable prior V245 evidence
  assert.equal(e.catalogue_hash_after,'91f3bb1bf8a50fd85d066d86fd79da2b');
  const prior=JSON.parse(fs.readFileSync('AUDITORIA_ACL_IMPORTACIONES_LIVE_V244.json','utf8'));
  assert.equal(e.catalogue_hash_before,prior.catalogue_md5_after);
 });
 test('V245 only adds a schema-function patch; 45 historical data mutations stay forbidden',()=>{
  const inv=report();
- assert.equal(inv.migrationCount,165);
- assert.equal(CLEAN_REPLAY_HISTORICAL_MIGRATIONS,165);
+ assert.equal(inv.migrationCount,166);
+ assert.equal(CLEAN_REPLAY_HISTORICAL_MIGRATIONS,166);
  assert.equal(inv.directWriteMigrationCount,14);
  assert.equal(inv.directWriteStatementCount,45);
  const row=inv.checks.filter(x=>x.file.endsWith('close_original_legacy_batch_enumeration_v245.sql'));

@@ -1,7 +1,7 @@
 {
   "protocol": "V232",
   "environment": "OFFLINE_QA_SCHEMAS_ONLY",
-  "migrationCount": 165,
+  "migrationCount": 166,
   "directWriteMigrationCount": 14,
   "directWriteStatementCount": 45,
   "findings": [
@@ -1348,6 +1348,12 @@
     {
       "file": "supabase/migrations/20261027152000_close_original_legacy_batch_enumeration_v245.sql",
       "sha256": "7f7733dfcb582d32f72b6b3b73b9ab6f45fd4b9f49be1d1d8b0e822f5d58a30f",
+      "directWrites": 0,
+      "statements": 1
+    },
+    {
+      "file": "supabase/migrations/20261027170500_contain_document_void_exposure_v248.sql",
+      "sha256": "2f2c1b25a378bc3f817770637553c3514287a62d1483c4a4362b24ff0e155360",
       "directWrites": 0,
       "statements": 1
     }

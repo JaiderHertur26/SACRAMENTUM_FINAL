@@ -19,10 +19,10 @@ const baseline={
  dangerous_default_table_grants:8,open_default_function_grants:2,
  future_user_table_grants:16,future_user_sequence_grants:6,
  future_user_function_grants:2,creators_missing_global_function_revoke:1,
- public_functions:244,security_definers:207,authenticated_definer_functions:152,
+ public_functions:244,security_definers:207,authenticated_definer_functions:151,
  privileged_rpc_using_delegated_identity:15,
- reviewed_security_definers:207,reviewed_authenticated_definers:152,
- manual_privileged_rpc_review:true,privileged_rpc_catalog_count:152,privileged_rpc_catalog_md5:'91f3bb1bf8a50fd85d066d86fd79da2b'
+ reviewed_security_definers:207,reviewed_authenticated_definers:151,
+ manual_privileged_rpc_review:true,privileged_rpc_catalog_count:151,privileged_rpc_catalog_md5:'60019131a532a623a91c6128b9ab8daa'
 };
 const attestation={
  protocol:'V236',environment:'CLEAN_PRODUCTION',approved_for_official_mode:true,

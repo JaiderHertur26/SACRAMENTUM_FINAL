@@ -13,9 +13,9 @@ const goodSecurity={
  dangerous_default_table_grants:0,open_default_function_grants:0,
  future_user_table_grants:0,future_user_sequence_grants:0,future_user_function_grants:0,creators_missing_global_function_revoke:0,insecure_public_only_definers:0,unused_pg_graphql_enabled:0,qa_legacy_dbf_concept_rows:0,qa_legacy_template_snapshot_rows:0,postgres_future_table_grants:0,postgres_future_sequence_grants:0,postgres_future_function_grants:0,postgres_missing_global_function_revoke:0,postgres_global_table_grants:0,postgres_global_sequence_grants:0,admin_risk_extensions_in_public:0,admin_owned_public_relations:0,admin_owned_public_functions:0,admin_owned_exposed_truncate_tables:0,privileged_rpc_without_auth_identity_path:0,privileged_rpc_using_delegated_identity:15,
  public_functions:244,security_definers:207,anonymous_definer_functions:0,
- authenticated_definer_functions:152,definer_missing_search_path:0,
- reviewed_security_definers:207,reviewed_authenticated_definers:152,
- manual_privileged_rpc_review:true,privileged_rpc_catalog_count:152,privileged_rpc_catalog_md5:'91f3bb1bf8a50fd85d066d86fd79da2b'
+ authenticated_definer_functions:151,definer_missing_search_path:0,
+ reviewed_security_definers:207,reviewed_authenticated_definers:151,
+ manual_privileged_rpc_review:true,privileged_rpc_catalog_count:151,privileged_rpc_catalog_md5:'60019131a532a623a91c6128b9ab8daa'
 };
 const goodAct={
  migration_review:syntheticCleanMigrationReviewV231,
@@ -62,7 +62,7 @@ for(const [name,change] of [
  ['old V223 release protocol',{...goodSecurity,protocol:'V223'}],
  ['missing review attestation',{...goodSecurity,manual_privileged_rpc_review:false}],
  ['not all security definers reviewed',{...goodSecurity,reviewed_security_definers:206}],
- ['not all callable definer functions reviewed',{...goodSecurity,reviewed_authenticated_definers:151}],
+ ['not all callable definer functions reviewed',{...goodSecurity,reviewed_authenticated_definers:150}],
  ['untrusted function count',{...goodSecurity,public_functions:-1}],
  ['inconsistent definer counts',{...goodSecurity,public_functions:10}],
  ['auth definer count larger than all definer',{...goodSecurity,authenticated_definer_functions:220}],

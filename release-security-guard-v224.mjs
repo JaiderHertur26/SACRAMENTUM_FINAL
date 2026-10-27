@@ -1,5 +1,5 @@
-// V236: privileged REST RPC catalog pinned to verified actual QA definition digest.
-export const EXPECTED_PRIVILEGED_RPC_CATALOG_MD5_V236 = '91f3bb1bf8a50fd85d066d86fd79da2b';
+// V248: privileged REST RPC catalog pinned (151 authenticated functions; document-void RPC quarantined) to verified actual QA definition digest.
+export const EXPECTED_PRIVILEGED_RPC_CATALOG_MD5_V236 = '60019131a532a623a91c6128b9ab8daa';
 // V234: Supabase's internal supabase_admin DEFAULT ACL is immutable from postgres.
 // Supabase's official KB says to control OWN creator defaults and avoid extensions
 // owned by supabase_admin in exposed public. Raw internal grants are TELEMETRY,
@@ -66,7 +66,7 @@ export function assessSecurityPreflightV224(security,expectedTableCount=82) {
     && security.privileged_rpc_using_delegated_identity>security.authenticated_definer_functions)
    problems.push('seguridad: más RPC delegadas que autenticadas');
  if(!Number.isSafeInteger(security.privileged_rpc_catalog_count) ||
-     security.privileged_rpc_catalog_count!==152 ||
+     security.privileged_rpc_catalog_count!==151 ||
      security.privileged_rpc_catalog_count!==security.authenticated_definer_functions)
    problems.push('catálogo RPC privilegiadas: número de funciones distinto o ausente');
  if(security.privileged_rpc_catalog_md5!==EXPECTED_PRIVILEGED_RPC_CATALOG_MD5_V236)
