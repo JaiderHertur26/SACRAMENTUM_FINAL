@@ -1,0 +1,126 @@
+{
+  "protocol": "V233",
+  "environment": "QA_NONOFFICIAL",
+  "project_ref": "foczofcmwampjvlfbsqn",
+  "source": "Actual privileged read-only PostgreSQL pg_proc recursive call graph, no sacraments or user data read",
+  "verified_at_date": "2026-10-27",
+  "exposed_security_definers": 152,
+  "direct_auth_uid_references": 137,
+  "delegated_functions": 15,
+  "delegated_reaching_auth_uid": 15,
+  "privileged_rpc_without_auth_identity_path": 0,
+  "semantically_approved_functions": 0,
+  "important_limitation": "Regex based static chain proves only reference to auth.uid() at <=6 hops, NOT actual authorization, tenant scope, signature review or lack of SQL injection. Function names may be overloaded. Do not use this as proof the system is legally or operationally ready.",
+  "chains": [
+    {
+      "function": "apply_baptism_correction",
+      "signature": "p_parish_id uuid, p_original_baptism_id uuid, p_decree_number text, p_decree_date date, p_concept_id uuid, p_corrected_data jsonb, p_decree_payload jsonb, p_annulled_note text, p_replacement_note text, p_expected_book integer, p_expected_folio integer, p_expected_number integer",
+      "hops_to_auth_uid": 1,
+      "immediate_guards": "{apply_baptism_correction_internal,sacramentum_assert_chancery_for_parish}",
+      "reachable_nodes": 3
+    },
+    {
+      "function": "apply_baptism_replacement",
+      "signature": "p_parish_id uuid, p_decree_number text, p_decree_date date, p_concept_id uuid, p_new_data jsonb, p_decree_payload jsonb, p_replacement_note text, p_expected_book integer, p_expected_folio integer, p_expected_number integer",
+      "hops_to_auth_uid": 1,
+      "immediate_guards": "{apply_baptism_replacement_internal,sacramentum_assert_chancery_for_parish}",
+      "reachable_nodes": 3
+    },
+    {
+      "function": "apply_confirmation_correction",
+      "signature": "p_parish_id uuid, p_original_confirmation_id uuid, p_decree_number text, p_decree_date date, p_concept_id uuid, p_corrected_data jsonb, p_decree_payload jsonb, p_annulled_note text, p_replacement_note text, p_expected_book integer, p_expected_folio integer, p_expected_number integer",
+      "hops_to_auth_uid": 1,
+      "immediate_guards": "{apply_confirmation_correction_internal,sacramentum_assert_chancery_for_parish}",
+      "reachable_nodes": 3
+    },
+    {
+      "function": "apply_confirmation_replacement",
+      "signature": "p_parish_id uuid, p_decree_number text, p_decree_date date, p_concept_id uuid, p_new_data jsonb, p_decree_payload jsonb, p_replacement_note text, p_expected_book integer, p_expected_folio integer, p_expected_number integer",
+      "hops_to_auth_uid": 1,
+      "immediate_guards": "{apply_confirmation_replacement_internal,sacramentum_assert_chancery_for_parish}",
+      "reachable_nodes": 3
+    },
+    {
+      "function": "assess_unresolved_legacy_links_v219",
+      "signature": "p_limit integer, p_offset integer",
+      "hops_to_auth_uid": 1,
+      "immediate_guards": "{list_unresolved_legacy_links_v218}",
+      "reachable_nodes": 3
+    },
+    {
+      "function": "can_access_diocese",
+      "signature": "target_diocese_id uuid",
+      "hops_to_auth_uid": 1,
+      "immediate_guards": "{current_app_diocese_id,current_app_role}",
+      "reachable_nodes": 4
+    },
+    {
+      "function": "can_read_matrimonial_notification",
+      "signature": "p_notification_id uuid",
+      "hops_to_auth_uid": 1,
+      "immediate_guards": "{can_access_parish,current_app_parish_id,current_app_role}",
+      "reachable_nodes": 6
+    },
+    {
+      "function": "can_read_matrimonial_recipient",
+      "signature": "p_recipient_id uuid",
+      "hops_to_auth_uid": 1,
+      "immediate_guards": "{can_access_parish,current_app_parish_id,current_app_role}",
+      "reachable_nodes": 6
+    },
+    {
+      "function": "count_unread_chat_messages",
+      "signature": "",
+      "hops_to_auth_uid": 1,
+      "immediate_guards": "{current_chat_profile_id}",
+      "reachable_nodes": 2
+    },
+    {
+      "function": "get_chat_room_messages",
+      "signature": "p_room_id uuid, p_limit integer, p_before timestamp with time zone",
+      "hops_to_auth_uid": 1,
+      "immediate_guards": "{can_access_chat_room}",
+      "reachable_nodes": 2
+    },
+    {
+      "function": "get_chat_room_messages_v166",
+      "signature": "p_room_id uuid, p_limit integer, p_before_created_at timestamp with time zone, p_before_id uuid",
+      "hops_to_auth_uid": 1,
+      "immediate_guards": "{can_access_chat_room}",
+      "reachable_nodes": 2
+    },
+    {
+      "function": "is_app_admin",
+      "signature": "",
+      "hops_to_auth_uid": 1,
+      "immediate_guards": "{current_app_role}",
+      "reachable_nodes": 2
+    },
+    {
+      "function": "register_historical_baptism",
+      "signature": "p_parish_id uuid, p_record jsonb",
+      "hops_to_auth_uid": 1,
+      "immediate_guards": "{register_historical_baptism_internal}",
+      "reachable_nodes": 3
+    },
+    {
+      "function": "reverse_correction_decree_with_reason",
+      "signature": "p_decree_id uuid, p_reason text",
+      "hops_to_auth_uid": 1,
+      "immediate_guards": "{reverse_correction_decree_with_reason_internal,sacramentum_assert_chancery_for_parish}",
+      "reachable_nodes": 4
+    },
+    {
+      "function": "reverse_replacement_decree_with_reason",
+      "signature": "p_decree_id uuid, p_reason text",
+      "hops_to_auth_uid": 1,
+      "immediate_guards": "{reverse_replacement_decree_with_reason_internal,sacramentum_assert_chancery_for_parish}",
+      "reachable_nodes": 4
+    }
+  ],
+  "remaining_issues": [
+    "15 indirect callers still require semantic per-signature audit.",
+    "supabase_admin future default grants and PUBLIC EXECUTE defaults cannot be altered by role postgres.",
+    "No new independent clean official project, SMTP delivery nor backup restore has been certified."
+  ]
+}

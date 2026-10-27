@@ -8,12 +8,12 @@ import {assessOfficialBuild} from '../release-guard-core-v223.mjs';
 const rep=JSON.parse(fs.readFileSync('AUDITORIA_SEGURIDAD_RPC_LIVE_V229.json','utf8'));
 const sha=f=>createHash('sha256').update(fs.readFileSync(f,'utf8').replace(/\r\n/g,'\n')).digest('hex');
 const currentMigration='supabase/migrations/20261027044045_secure_definer_pg_temp_last_v229.sql';
-const safeSecurity={...rep.preflight.metrics,protocol:'V231',unused_pg_graphql_enabled:0,qa_legacy_dbf_concept_rows:0,qa_legacy_template_snapshot_rows:0,dangerous_default_table_grants:0,
+const safeSecurity={...rep.preflight.metrics,protocol:'V233',unused_pg_graphql_enabled:0,qa_legacy_dbf_concept_rows:0,qa_legacy_template_snapshot_rows:0,privileged_rpc_without_auth_identity_path:0,privileged_rpc_using_delegated_identity:15,dangerous_default_table_grants:0,
  open_default_function_grants:0,future_user_table_grants:0,future_user_sequence_grants:0,
  future_user_function_grants:0,creators_missing_global_function_revoke:0,
  reviewed_security_definers:207,reviewed_authenticated_definers:152,manual_privileged_rpc_review:true};
 const fixture={
- migration_review:syntheticCleanMigrationReviewV231,protocol:'V231',environment:'CLEAN_PRODUCTION',approved_for_official_mode:true,
+ migration_review:syntheticCleanMigrationReviewV231,protocol:'V233',environment:'CLEAN_PRODUCTION',approved_for_official_mode:true,
  project_ref:'bbbbbbbbbbbbbbbbbbbb',verified_at:'2026-10-27T04:44:00Z',
  verification_source:'privileged-read-only:synthetic-only',
  counts:{business_rows:0,auth_users:0,storage_objects:0,unexpected_public_tables:0,missing_public_tables:0,

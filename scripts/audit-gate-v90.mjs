@@ -157,7 +157,8 @@ exec('pruebas-sinteticas',node,['--test',
  'scripts/test-secure-definer-path-v229.mjs',
  'scripts/test-disable-graphql-v230.mjs',
  'scripts/test-clean-schema-replay-v231.mjs',
- 'scripts/test-rpc-chat-authorization-v232.mjs']);
+ 'scripts/test-rpc-chat-authorization-v232.mjs',
+ 'scripts/test-rpc-identity-path-v233.mjs']);
 const scripts=fs.readdirSync(path.join(root,'scripts')).filter(x=>/^verify-.*\.mjs$/.test(x)).sort();
 for(const file of scripts)exec('legacy/'+file,node,['scripts/'+file]);
 const npmOnWindows=process.platform==='win32';
