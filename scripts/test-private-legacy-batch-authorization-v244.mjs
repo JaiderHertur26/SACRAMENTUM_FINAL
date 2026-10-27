@@ -41,16 +41,15 @@ test('V244 demonstrates foreign existing and foreign missing are indistinguishab
 });
 test('V244 152 privileged functions pinned to independent real QA fingerprint',()=>{
  assert.equal(e.catalogue_functions,152);
- assert.equal(e.catalogue_md5_after,EXPECTED_PRIVILEGED_RPC_CATALOG_MD5_V236);
- assert.equal(e.catalogue_md5_after,'d10ec9b11e3726fc8427dd983400028e');
+ assert.equal(e.catalogue_md5_after,'d10ec9b11e3726fc8427dd983400028e'); // historical verified QA V244
  const historic=JSON.parse(fs.readFileSync('AUDITORIA_CANCILLERIA_HISTORICA_V243.json','utf8'));
  assert.equal(historic.privileged_catalogue_after,e.catalogue_md5_before);
  assert.notEqual(e.catalogue_md5_before,e.catalogue_md5_after);
 });
 test('V244 only adds reviewed DDL migration, preserving quarantined historical data writes',()=>{
  const inv=report();
- assert.equal(inv.migrationCount,164);
- assert.equal(CLEAN_REPLAY_HISTORICAL_MIGRATIONS,164);
+ assert.equal(inv.migrationCount,165);
+ assert.equal(CLEAN_REPLAY_HISTORICAL_MIGRATIONS,165);
  assert.equal(inv.directWriteMigrationCount,14);
  assert.equal(inv.directWriteStatementCount,45);
  const row=inv.checks.filter(x=>x.file.endsWith('authorize_legacy_batch_before_profile_v244.sql'));
