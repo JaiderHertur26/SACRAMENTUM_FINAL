@@ -35,3 +35,6 @@ La documentación oficial de Supabase explica que sus ACL predeterminados de `su
 
 ## Adenda V235 - ACL globales de postgres
 Ademas del esquema public, ejecutar scripts/release-security-preflight-v235.sql sobre la base objetivo: postgres_global_table_grants=0 y postgres_global_sequence_grants=0 (alcance global defaclnamespace=0); ausencia de medicion o valor positivo bloquea el lanzamiento. QA devolvio 0/0 el 27/10/2026. Certificados V234 ya no son suficientes. Operacion oficial exige base nueva independiente, sin datos ni cuentas QA, revision RPC, SMTP, respaldo restaurado y acta institucional.
+
+## Adenda V236 — Huella del catálogo de funciones privilegiadas
+Se exige preflight `scripts/release-security-preflight-v236.sql` con `privileged_rpc_catalog_count=152` y `privileged_rpc_catalog_md5=4ded9ebe1d9cde435befee3f8b131222`, además de todas las métricas V235. Son metadatos reales de QA obtenidos por `SELECT` el 27/10/2026. Un cambio no revisado de la firma, definición o cantidad de RPC bloquea la solicitud de modo oficial. Un digest coincidente no equivale a aprobación semántica: siguen faltando las 152 revisiones IDOR/BOLA por jurisdicción, una base independiente limpia, backup restaurado, SMTP y el acta institucional. Certificados V235 o anteriores ya no habilitan modo oficial.

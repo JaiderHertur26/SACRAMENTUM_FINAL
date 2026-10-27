@@ -6,7 +6,7 @@ import { assessOfficialBuild } from '../release-guard-core-v223.mjs';
 import { syntheticCleanMigrationReviewV231 } from './release-test-fixture-v231.mjs';
 
 const baseline={
- protocol:'V235',public_tables:82,rls_disabled:0,auth_truncate_tables:0,
+ protocol:'V236',public_tables:82,rls_disabled:0,auth_truncate_tables:0,
  anon_truncate_tables:0,unvalidated_foreign_keys:0,anonymous_definer_functions:0,
  definer_missing_search_path:0,insecure_public_only_definers:0,
  unused_pg_graphql_enabled:0,qa_legacy_dbf_concept_rows:0,
@@ -22,10 +22,10 @@ const baseline={
  public_functions:244,security_definers:207,authenticated_definer_functions:152,
  privileged_rpc_using_delegated_identity:15,
  reviewed_security_definers:207,reviewed_authenticated_definers:152,
- manual_privileged_rpc_review:true
+ manual_privileged_rpc_review:true,privileged_rpc_catalog_count:152,privileged_rpc_catalog_md5:'4ded9ebe1d9cde435befee3f8b131222'
 };
 const attestation={
- protocol:'V235',environment:'CLEAN_PRODUCTION',approved_for_official_mode:true,
+ protocol:'V236',environment:'CLEAN_PRODUCTION',approved_for_official_mode:true,
  project_ref:'bbbbbbbbbbbbbbbbbbbb',
  verified_at:'2026-10-27T14:10:00Z',
  verification_source:'privileged-read-only:synthetic-security-unit-test',
@@ -70,7 +70,7 @@ test('V235 previous V234 security and inventory protocols fail closed',()=>{
  }).ok,false);
 });
 test('V235 security preflight counts global ACLs without touching data',()=>{
- const sql=fs.readFileSync('scripts/release-security-preflight-v235.sql','utf8');
+ const sql=fs.readFileSync('scripts/release-security-preflight-v236.sql','utf8');
  for(const metric of ['postgres_global_table_grants','postgres_global_sequence_grants'])
   assert.ok(sql.includes('AS '+metric));
  assert.match(sql,/defaclnamespace=0 AND a.defaclobjtype='r'/);

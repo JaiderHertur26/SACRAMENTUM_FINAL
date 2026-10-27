@@ -1,0 +1,16 @@
+{
+  "protocol": "V236",
+  "verified_at_date": "2026-10-27",
+  "environment": "QA_TEST_ONLY_NOT_OFFICIAL",
+  "project_ref": "foczofcmwampjvlfbsqn",
+  "source": "Supabase PostgreSQL pg_proc + pg_get_function_identity_arguments + pg_get_functiondef; SELECT-only read of hash metrics",
+  "catalog_count": 152,
+  "privileged_rpc_catalog_md5": "4ded9ebe1d9cde435befee3f8b131222",
+  "dynamic_sql_text_hits": 0,
+  "hash_method": "MD5 of newline-separated, function-name-and-exact-args sorted entries of function-name(signature):MD5(pg_get_functiondef) for SECURITY DEFINER routines executable by authenticated in public",
+  "read_only": true,
+  "qa_data_changed": false,
+  "manual_semantic_rpc_reviews_approved": 0,
+  "official_database_created": false,
+  "limitation": "MD5 is a deterministic change detector, not tamper-proof signed attestation or proof of per-role/per-parish authorization. Unreviewed changes intentionally block release; human-authorized repeat audit required after changes."
+}

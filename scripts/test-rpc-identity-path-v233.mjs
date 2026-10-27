@@ -10,7 +10,7 @@ const sql=fs.readFileSync('scripts/release-security-preflight-v233.sql','utf8');
 const qa=JSON.parse(fs.readFileSync('AUDITORIA_PRELAUNCH_DATOS_QA_V231.json','utf8'));
 const sourceV232=JSON.parse(fs.readFileSync('AUDITORIA_RPC_152_POST_LIVE_V232.json','utf8'));
 const safe={
- protocol:'V235',public_tables:82,rls_disabled:0,auth_truncate_tables:0,
+ protocol:'V236',public_tables:82,rls_disabled:0,auth_truncate_tables:0,
  anon_truncate_tables:0,unvalidated_foreign_keys:0,dangerous_default_table_grants:0,
  open_default_function_grants:0,future_user_table_grants:0,future_user_sequence_grants:0,
  future_user_function_grants:0,creators_missing_global_function_revoke:0,
@@ -20,10 +20,10 @@ const safe={
  public_functions:244,security_definers:207,anonymous_definer_functions:0,
  authenticated_definer_functions:152,definer_missing_search_path:0,
  reviewed_security_definers:207,reviewed_authenticated_definers:152,
- manual_privileged_rpc_review:true
+ manual_privileged_rpc_review:true,privileged_rpc_catalog_count:152,privileged_rpc_catalog_md5:'4ded9ebe1d9cde435befee3f8b131222'
 };
 const report={
- protocol:'V235',environment:'CLEAN_PRODUCTION',approved_for_official_mode:true,
+ protocol:'V236',environment:'CLEAN_PRODUCTION',approved_for_official_mode:true,
  project_ref:'bbbbbbbbbbbbbbbbbbbb',verification_source:'privileged-read-only:synthetic-fixture',
  verified_at:'2026-10-27T16:00:00Z',
  counts:{business_rows:0,auth_users:0,storage_objects:0,

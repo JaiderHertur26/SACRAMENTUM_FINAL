@@ -6,9 +6,9 @@ import {assessOfficialBuild} from '../release-guard-core-v223.mjs';
 import {syntheticCleanMigrationReviewV231} from './release-test-fixture-v231.mjs';
 
 const live=JSON.parse(fs.readFileSync('AUDITORIA_ACL_SUPABASE_RESERVADA_LIVE_V234.json','utf8'));
-const sql=fs.readFileSync('scripts/release-security-preflight-v235.sql','utf8');
+const sql=fs.readFileSync('scripts/release-security-preflight-v236.sql','utf8');
 const security={
- protocol:'V235',public_tables:82,rls_disabled:0,auth_truncate_tables:0,
+ protocol:'V236',public_tables:82,rls_disabled:0,auth_truncate_tables:0,
  anon_truncate_tables:0,unvalidated_foreign_keys:0,
  // These 6 original aggregate counts intentionally mirror immutable
  // reserved supabase_admin ACLs, not insecure app-created objects:
@@ -27,10 +27,10 @@ const security={
  public_functions:244,security_definers:207,
  anonymous_definer_functions:0,authenticated_definer_functions:152,
  definer_missing_search_path:0,reviewed_security_definers:207,
- reviewed_authenticated_definers:152,manual_privileged_rpc_review:true
+ reviewed_authenticated_definers:152,manual_privileged_rpc_review:true,privileged_rpc_catalog_count:152,privileged_rpc_catalog_md5:'4ded9ebe1d9cde435befee3f8b131222'
 };
 const report={
- protocol:'V235',environment:'CLEAN_PRODUCTION',
+ protocol:'V236',environment:'CLEAN_PRODUCTION',
  approved_for_official_mode:true,project_ref:'bbbbbbbbbbbbbbbbbbbb',
  verified_at:'2026-10-27T14:05:00Z',
  verification_source:'privileged-read-only:synthetic-only',
