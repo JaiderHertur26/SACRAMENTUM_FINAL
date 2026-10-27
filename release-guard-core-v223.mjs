@@ -1,6 +1,7 @@
 // V223. Strict fail-closed BUILD governance, not a substitute for a privileged DBA review.
 // A JSON attestation is useful to prevent accidents, not proof against dishonest admins.
 import { KNOWN_QA_PROJECT_REFS, projectRefFromUrl } from './src/utils/registryDataMode.mjs';
+import { assessSecurityPreflightV224 } from './release-security-guard-v224.mjs';
 
 export const assessOfficialBuild = ({ mode, supabaseUrl, report, now = Date.now() } = {}) => {
   const problems = [];
@@ -10,7 +11,7 @@ export const assessOfficialBuild = ({ mode, supabaseUrl, report, now = Date.now(
   if (KNOWN_QA_PROJECT_REFS.includes(projectRef)) problems.push('proyecto de pruebas: nunca admite modo oficial');
   if (!report || typeof report !== 'object') problems.push('falta acta de inventario certificada');
   else {
-    if (report.protocol !== 'V223') problems.push('protocolo de inventario no compatible');
+    if (report.protocol !== 'V224') problems.push('protocolo de inventario no compatible');
     if (report.environment !== 'CLEAN_PRODUCTION') problems.push('entorno no acreditado como producción limpia');
     if (report.approved_for_official_mode !== true) problems.push('aprobación oficial no documentada');
     if (!projectRef || report.project_ref !== projectRef) problems.push('proyecto certificado distinto de Vercel');
@@ -24,6 +25,7 @@ export const assessOfficialBuild = ({ mode, supabaseUrl, report, now = Date.now(
     if (counts.tracked_public_tables !== 82 || counts.current_public_tables !== 82) {
       problems.push('cobertura del inventario incompleta: tablas públicas');
     }
+    problems.push(...assessSecurityPreflightV224(report.security, counts.tracked_public_tables));
     const verifiedAt = Date.parse(report.verified_at);
     if (!Number.isFinite(verifiedAt) || verifiedAt > now || now-verifiedAt > 24*60*60*1000) {
       problems.push('acta de inventario inválida o anterior a 24 horas');

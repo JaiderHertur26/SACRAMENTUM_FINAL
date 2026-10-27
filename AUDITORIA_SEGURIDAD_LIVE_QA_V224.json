@@ -1,0 +1,61 @@
+{
+  "protocol": "V224",
+  "qa_environment": "EXISTING_QA_TEST_ONLY",
+  "project_ref": "foczofcmwampjvlfbsqn",
+  "verification_source": "privileged-read-only:Supabase MCP execute_sql + security advisors",
+  "approved_for_official_mode": false,
+  "security": {
+    "protocol": "V224",
+    "public_tables": 82,
+    "rls_disabled": 0,
+    "auth_truncate_tables": 0,
+    "anon_truncate_tables": 0,
+    "unvalidated_foreign_keys": 0,
+    "dangerous_default_table_grants": 8,
+    "open_default_function_grants": 3,
+    "public_functions": 244,
+    "security_definers": 207,
+    "anonymous_definer_functions": 0,
+    "authenticated_definer_functions": 152,
+    "definer_missing_search_path": 0,
+    "reviewed_security_definers": 0,
+    "reviewed_authenticated_definers": 0,
+    "manual_privileged_rpc_review": false
+  },
+  "advisors": [
+    {
+      "code": "rls_enabled_no_policy",
+      "severity": "INFO",
+      "findings": 5,
+      "url": "https://supabase.com/docs/guides/database/database-linter?lint=0008_rls_enabled_no_policy"
+    },
+    {
+      "code": "pg_graphql_authenticated_table_exposed",
+      "severity": "WARN",
+      "findings": 64,
+      "url": "https://supabase.com/docs/guides/database/database-linter?lint=0027_pg_graphql_authenticated_table_exposed"
+    },
+    {
+      "code": "authenticated_security_definer_function_executable",
+      "severity": "WARN",
+      "findings": 152,
+      "url": "https://supabase.com/docs/guides/database/database-linter?lint=0029_authenticated_security_definer_function_executable"
+    },
+    {
+      "code": "auth_leaked_password_protection",
+      "severity": "WARN",
+      "findings": 1,
+      "url": "https://supabase.com/docs/guides/auth/password-security#password-strength-and-leaked-password-protection"
+    }
+  ],
+  "decisions": [
+    "NO limpiar ni modificar registros de la base QA.",
+    "NO declarar producción oficial sin resolver defaults de privilegios ni revisar 152 SECURITY DEFINER accesibles desde authenticated.",
+    "NO revocar funciones indiscriminadamente: auditoría por firma, legitimidad y rutas institucionales antes de cambiar grants.",
+    "Proyecto nuevo limpio es obligatorio; el proyecto QA debe permanecer como laboratorio."
+  ],
+  "flags": [
+    "El usuario postgres no es miembro del rol supabase_admin, por lo que no puede gestionar sus ACL por defecto desde esta conexión.",
+    "El reporte es de lectura; no contiene nombres, IDs de partidas, secretos ni claves."
+  ]
+}
