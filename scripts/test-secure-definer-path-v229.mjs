@@ -42,7 +42,15 @@ test('V229 remote migration version is identical to the checked-in CLI-created m
  const all=fs.readdirSync('supabase/migrations').filter(x=>x.endsWith('.sql')).sort();
  for(const later of all.filter(x=>('supabase/migrations/'+x)>currentMigration)) {
   const body=fs.readFileSync('supabase/migrations/'+later,'utf8');
-  assert.doesNotMatch(body,/\b(?:ALTER|CREATE|DROP)\s+(?:(?:OR\s+REPLACE)\s+)?FUNCTION\b|\bSET\s+search_path\b/i,'later migration must not alter privileged functions without new certification: '+later);
+  if(later==='20261027125848_harden_chat_actor_guard_v232.sql') {
+    assert.equal((body.match(/CREATE OR REPLACE FUNCTION public[.]/g)||[]).length,3,'V232 only three reviewed functions');
+    assert.equal((body.match(/IF auth[.]uid[(][)] IS NULL THEN/g)||[]).length,3,'V232 each mutator requires authenticated user');
+    for(const name of ['mark_chat_room_read','send_chat_message','withdraw_chat_message'])
+      assert.match(body,new RegExp('CREATE OR REPLACE FUNCTION public[.]'+name+'[(]'));
+  } else {
+    assert.doesNotMatch(body,/\b(?:ALTER|CREATE|DROP)\s+(?:(?:OR\s+REPLACE)\s+)?FUNCTION\b|\bSET\s+search_path\b/i,
+      'later migration must not alter privileged functions without new certification: '+later);
+  }
  }
 });
 test('V229 migration is idempotent, targets only postgres-owned public SECURITY DEFINERs and never touches data',()=>{

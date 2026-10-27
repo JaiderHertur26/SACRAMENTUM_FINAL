@@ -9,8 +9,8 @@ import {assessCleanReplayEvidenceV231,HISTORICAL_MIGRATION_MANIFEST_SHA256,
 import {syntheticCleanMigrationReviewV231} from './release-test-fixture-v231.mjs';
 import {assessOfficialBuild} from '../release-guard-core-v223.mjs';
 
-const inv=JSON.parse(fs.readFileSync('AUDITORIA_MIGRACIONES_DATOS_V231.json','utf8'));
-const policy=JSON.parse(fs.readFileSync('AUDITORIA_MIGRACIONES_LANZAMIENTO_LIMPIO_V231.json','utf8'));
+const inv=JSON.parse(fs.readFileSync('AUDITORIA_MIGRACIONES_DATOS_V232.json','utf8'));
+const policy=JSON.parse(fs.readFileSync('AUDITORIA_MIGRACIONES_LANZAMIENTO_LIMPIO_V232.json','utf8'));
 const digest=v=>crypto.createHash('sha256').update(JSON.stringify(v)).digest('hex');
 
 test('V231 SQL lexer ignores DML inside comments, strings and dollar-quoted privileged code',()=>{
@@ -32,19 +32,19 @@ test('V231 SQL lexer ignores DML inside comments, strings and dollar-quoted priv
  assert.match(s[1],/^insert into public.document_templates/i);
  assert.match(s[2],/^update public.legacy_import_rows/i);
 });
-test('V231 detects all 158 versioned migrations with SHA256 fingerprints and full source coverage',()=>{
+test('V231 detects all 159 versioned migrations with SHA256 fingerprints and full source coverage',()=>{
  const scan=report();
- assert.equal(scan.migrationCount,158);
- assert.equal(inv.migrationCount,158);
+ assert.equal(scan.migrationCount,159);
+ assert.equal(inv.migrationCount,159);
  assert.deepEqual(scan.checks,inv.checks);
  assert.deepEqual(scan.findings,inv.findings);
- assert.equal(inv.checks.length,158);
- assert.equal(new Set(inv.checks.map(x=>x.file)).size,158);
+ assert.equal(inv.checks.length,159);
+ assert.equal(new Set(inv.checks.map(x=>x.file)).size,159);
  assert.ok(inv.checks.every(x=>/^[a-f0-9]{64}$/.test(x.sha256)));
 });
 test('V231 pinned history manifest digest matches the independent Vercel release guard',()=>{
  assert.equal(digest(inv.checks),HISTORICAL_MIGRATION_MANIFEST_SHA256);
- assert.equal(CLEAN_REPLAY_HISTORICAL_MIGRATIONS,158);
+ assert.equal(CLEAN_REPLAY_HISTORICAL_MIGRATIONS,159);
  assert.equal(CLEAN_REPLAY_MUTATIONS_TO_EXCLUDE,39);
  assert.equal(CLEAN_REPLAY_REFERENCE_CATALOGS_TO_REVIEW,6);
 });

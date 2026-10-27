@@ -2,8 +2,8 @@
 // This digest is anchored to 158 reviewed migration file hashes in
 // AUDITORIA_MIGRACIONES_DATOS_V231.json, checked against actual migration files by CI.
 // It is an accident-prevention control; it cannot replace DB restore or a signed DBA review.
-export const HISTORICAL_MIGRATION_MANIFEST_SHA256='f02439a331f95bfb81c2fb8c091341043a185f95c4b6cba7b24851b5736cfb24';
-export const CLEAN_REPLAY_HISTORICAL_MIGRATIONS=158;
+export const HISTORICAL_MIGRATION_MANIFEST_SHA256='dacb5e74026bebb8d92ae7ba10f6a9c5de609da248f366ea7a8d735e4065ace5';
+export const CLEAN_REPLAY_HISTORICAL_MIGRATIONS=159;
 export const CLEAN_REPLAY_MUTATIONS_TO_EXCLUDE=39;
 export const CLEAN_REPLAY_REFERENCE_CATALOGS_TO_REVIEW=6;
 

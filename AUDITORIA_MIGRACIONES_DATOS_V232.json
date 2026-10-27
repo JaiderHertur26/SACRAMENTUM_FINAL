@@ -1,0 +1,1319 @@
+{
+  "protocol": "V232",
+  "environment": "OFFLINE_QA_SCHEMAS_ONLY",
+  "migrationCount": 159,
+  "directWriteMigrationCount": 14,
+  "directWriteStatementCount": 45,
+  "findings": [
+    {
+      "file": "supabase/migrations/20260904000100_001_registry_core.sql",
+      "sha256": "9fdb51dafc76e2c8072331a33a284b572aa3d8ca732a6a165e993a44f7872e22",
+      "actions": [
+        {
+          "statementIndex": 4,
+          "kind": "UPDATE",
+          "head": "update public.decretos set sacrament_type = case when lower(coalesce(payload->> ? , payload->> ? , payload->> ? , ? )) like ? then ? when lower(coalesce(payload->> ? , payload",
+          "sourceSha256": "9fdb51dafc76e2c8072331a33a284b572aa3d8ca732a6a165e993a44f7872e22"
+        },
+        {
+          "statementIndex": 5,
+          "kind": "UPDATE",
+          "head": "update public.decretos set decree_number = coalesce( nullif(payload->> ? , ? ), nullif(payload->> ? , ? ), nullif(payload->> ? , ? ) ) where decree_number is null",
+          "sourceSha256": "9fdb51dafc76e2c8072331a33a284b572aa3d8ca732a6a165e993a44f7872e22"
+        },
+        {
+          "statementIndex": 6,
+          "kind": "UPDATE",
+          "head": "update public.decretos set decree_date = coalesce( case when coalesce(payload->> ? , ? ) ~ ? then (payload->> ? )::date end, case when coalesce(payload->> ? , ? ) ~ ? then (pa",
+          "sourceSha256": "9fdb51dafc76e2c8072331a33a284b572aa3d8ca732a6a165e993a44f7872e22"
+        },
+        {
+          "statementIndex": 7,
+          "kind": "UPDATE",
+          "head": "update public.decretos set original_record_id = coalesce( case when coalesce(payload->> ? , ? ) ~* ? then (payload->> ? )::uuid end, case when coalesce(payload->> ? , ? ) ~* ?",
+          "sourceSha256": "9fdb51dafc76e2c8072331a33a284b572aa3d8ca732a6a165e993a44f7872e22"
+        },
+        {
+          "statementIndex": 8,
+          "kind": "UPDATE",
+          "head": "update public.decretos set replacement_record_id = coalesce( case when coalesce(payload->> ? , ? ) ~* ? then (payload->> ? )::uuid end, case when coalesce(payload->> ? , ? ) ~",
+          "sourceSha256": "9fdb51dafc76e2c8072331a33a284b572aa3d8ca732a6a165e993a44f7872e22"
+        },
+        {
+          "statementIndex": 9,
+          "kind": "UPDATE",
+          "head": "update public.decretos d set diocese_id = p.diocese_id from public.parishes p where d.diocese_id is null and d.parish_id = p.id",
+          "sourceSha256": "9fdb51dafc76e2c8072331a33a284b572aa3d8ca732a6a165e993a44f7872e22"
+        }
+      ]
+    },
+    {
+      "file": "supabase/migrations/20260904001400_014_marginal_note_templates.sql",
+      "sha256": "6c4e228cb20b3e72f188a11ac8e4ecc48247affa869994c06ff729212aee202f",
+      "actions": [
+        {
+          "statementIndex": 3,
+          "kind": "UPDATE",
+          "head": "update public.parish_parameters set marginal_notes_templates = coalesce(bautizos_params-> ? , ? ::jsonb) where marginal_notes_templates = ? ::jsonb and jsonb_typeof(bautizos_p",
+          "sourceSha256": "6c4e228cb20b3e72f188a11ac8e4ecc48247affa869994c06ff729212aee202f"
+        }
+      ]
+    },
+    {
+      "file": "supabase/migrations/20260905001700_017_legacy_migration_foundation.sql",
+      "sha256": "d7b00aa11710a13b7c8762608438bf555de1f4d99d2db3ab5843ea976178d203",
+      "actions": [
+        {
+          "statementIndex": 27,
+          "kind": "INSERT INTO",
+          "head": "insert into public.legacy_import_profiles(profile_key,display_name,target_entity,import_mode,requires_parish,mapping,validation_rules) values ( ? , ? , ? , ? ,true, ? ::jsonb,",
+          "sourceSha256": "d7b00aa11710a13b7c8762608438bf555de1f4d99d2db3ab5843ea976178d203"
+        }
+      ]
+    },
+    {
+      "file": "supabase/migrations/20260905001800_018_marginal_notes_v2.sql",
+      "sha256": "fa45c5fe4c34440b393d7ef804433b8fe68c2bf472a4f7256bce769b867e5157",
+      "actions": [
+        {
+          "statementIndex": 10,
+          "kind": "UPDATE",
+          "head": "update public.marginal_notes set print_policy = case when lower(coalesce(source_type, ? )) in ( ? , ? , ? ) or decree_id is not null then ? else coalesce(nullif(print_policy, ",
+          "sourceSha256": "fa45c5fe4c34440b393d7ef804433b8fe68c2bf472a4f7256bce769b867e5157"
+        },
+        {
+          "statementIndex": 11,
+          "kind": "INSERT INTO",
+          "head": "insert into public.marginal_note_templates( code,name,sacrament_type,event_type,scope_type,base_text,print_policy,print_default,is_fixed,allows_clauses,version,metadata ) valu",
+          "sourceSha256": "fa45c5fe4c34440b393d7ef804433b8fe68c2bf472a4f7256bce769b867e5157"
+        },
+        {
+          "statementIndex": 12,
+          "kind": "INSERT INTO",
+          "head": "insert into public.marginal_note_template_clauses(template_id,code,label,clause_text,placement,is_required,enabled_by_default,sort_order) select t.id, ? , ? , ? , ? ,false,tru",
+          "sourceSha256": "fa45c5fe4c34440b393d7ef804433b8fe68c2bf472a4f7256bce769b867e5157"
+        },
+        {
+          "statementIndex": 13,
+          "kind": "INSERT INTO",
+          "head": "insert into public.marginal_note_template_clauses(template_id,code,label,clause_text,placement,is_required,enabled_by_default,sort_order) select t.id, ? , ? , ? , ? ,false,fal",
+          "sourceSha256": "fa45c5fe4c34440b393d7ef804433b8fe68c2bf472a4f7256bce769b867e5157"
+        }
+      ]
+    },
+    {
+      "file": "supabase/migrations/20260905002100_021_print_audit_and_legacy_template_archive.sql",
+      "sha256": "9c862f3f13cb21c71d1f4296ab94e9a16c3f82b3253a8b1f8658ac8af28cf777",
+      "actions": [
+        {
+          "statementIndex": 3,
+          "kind": "INSERT INTO",
+          "head": "insert into public.legacy_marginal_template_snapshots(parish_id,source,templates,metadata) select parish_id, ? ,marginal_notes_templates, jsonb_build_object( ? , ? ) from publ",
+          "sourceSha256": "9c862f3f13cb21c71d1f4296ab94e9a16c3f82b3253a8b1f8658ac8af28cf777"
+        }
+      ]
+    },
+    {
+      "file": "supabase/migrations/20260925153625_remove_first_communion_v21.sql",
+      "sha256": "0fb83252eabe6c7603cebecc4e76d138788d2d4f5c629fb1891dec00c75ccc5a",
+      "actions": [
+        {
+          "statementIndex": 3,
+          "kind": "UPDATE",
+          "head": "update public.marriages set raw_data = coalesce(raw_data, ? ::jsonb) - ? - ? - ? - ? where coalesce(raw_data, ? ::jsonb) ?| array[ ? , ? , ? , ? ]",
+          "sourceSha256": "0fb83252eabe6c7603cebecc4e76d138788d2d4f5c629fb1891dec00c75ccc5a"
+        },
+        {
+          "statementIndex": 4,
+          "kind": "DELETE FROM",
+          "head": "delete from public.legacy_import_profiles where profile_key in ( ? , ? ) or target_entity in ( ? , ? )",
+          "sourceSha256": "0fb83252eabe6c7603cebecc4e76d138788d2d4f5c629fb1891dec00c75ccc5a"
+        },
+        {
+          "statementIndex": 5,
+          "kind": "DELETE FROM",
+          "head": "delete from public.marginal_note_template_clauses where template_id in ( select id from public.marginal_note_templates where lower(coalesce(sacrament_type, ? )) in ( ? , ? ) )",
+          "sourceSha256": "0fb83252eabe6c7603cebecc4e76d138788d2d4f5c629fb1891dec00c75ccc5a"
+        },
+        {
+          "statementIndex": 6,
+          "kind": "DELETE FROM",
+          "head": "delete from public.marginal_note_templates where lower(coalesce(sacrament_type, ? )) in ( ? , ? )",
+          "sourceSha256": "0fb83252eabe6c7603cebecc4e76d138788d2d4f5c629fb1891dec00c75ccc5a"
+        }
+      ]
+    },
+    {
+      "file": "supabase/migrations/20260927184852_direct_legacy_sacramental_notes_v68.sql",
+      "sha256": "8fc53bbd2b166b28764d4effa22b4221396c155e81158cadad103753aca274dd",
+      "actions": [
+        {
+          "statementIndex": 1,
+          "kind": "UPDATE",
+          "head": "update public.legacy_import_profiles set target_entity= ? , import_mode= ? , display_name=case profile_key when ? then ? when ? then ? when ? then ? when ? then ? when ? then ",
+          "sourceSha256": "8fc53bbd2b166b28764d4effa22b4221396c155e81158cadad103753aca274dd"
+        }
+      ]
+    },
+    {
+      "file": "supabase/migrations/20260927185524_fix_direct_legacy_note_uuid_match_v69.sql",
+      "sha256": "681a64b8d796da058f3f7f5400277832c4c24a4c25adfd0760c19c3a9b262dbd",
+      "actions": [
+        {
+          "statementIndex": 1,
+          "kind": "UPDATE",
+          "head": "update public.legacy_import_profiles set target_entity= ? , import_mode= ? , display_name=case profile_key when ? then ? when ? then ? when ? then ? when ? then ? when ? then ",
+          "sourceSha256": "681a64b8d796da058f3f7f5400277832c4c24a4c25adfd0760c19c3a9b262dbd"
+        }
+      ]
+    },
+    {
+      "file": "supabase/migrations/20260927190420_canonical_registry_print_coordinates_v71.sql",
+      "sha256": "df5f9f138b1b950fbeb43aab25a13ec46435aa91a1675c079fc9570b4c3b621a",
+      "actions": [
+        {
+          "statementIndex": 6,
+          "kind": "UPDATE",
+          "head": "update public.registry_print_events e set metadata=coalesce(e.metadata, ? ::jsonb) || jsonb_build_object( ? ,coalesce(b.book_number, ? ), ? ,coalesce(b.folio, ? ), ? ,coalesce",
+          "sourceSha256": "df5f9f138b1b950fbeb43aab25a13ec46435aa91a1675c079fc9570b4c3b621a"
+        },
+        {
+          "statementIndex": 7,
+          "kind": "UPDATE",
+          "head": "update public.registry_print_events e set metadata=coalesce(e.metadata, ? ::jsonb) || jsonb_build_object( ? ,coalesce(c.book_number, ? ), ? ,coalesce(c.folio, ? ), ? ,coalesce",
+          "sourceSha256": "df5f9f138b1b950fbeb43aab25a13ec46435aa91a1675c079fc9570b4c3b621a"
+        },
+        {
+          "statementIndex": 8,
+          "kind": "UPDATE",
+          "head": "update public.registry_print_events e set metadata=coalesce(e.metadata, ? ::jsonb) || jsonb_build_object( ? ,coalesce(m.book_number, ? ), ? ,coalesce(m.folio, ? ), ? ,coalesce",
+          "sourceSha256": "df5f9f138b1b950fbeb43aab25a13ec46435aa91a1675c079fc9570b4c3b621a"
+        },
+        {
+          "statementIndex": 9,
+          "kind": "UPDATE",
+          "head": "update public.registry_print_events e set metadata=coalesce(e.metadata, ? ::jsonb) || jsonb_build_object( ? ,coalesce(f.book_number, ? ), ? ,coalesce(f.folio, ? ), ? ,coalesce",
+          "sourceSha256": "df5f9f138b1b950fbeb43aab25a13ec46435aa91a1675c079fc9570b4c3b621a"
+        }
+      ]
+    },
+    {
+      "file": "supabase/migrations/20260927190642_backfill_orphan_print_coordinates_from_audit_v72.sql",
+      "sha256": "5b4fff741c23984897c92e5586929f035ec15e4ee6b5646eff33198e17eda0e9",
+      "actions": [
+        {
+          "statementIndex": 1,
+          "kind": "WITH",
+          "head": "with candidates as ( select e.id as print_event_id, a.id as audit_id, coalesce( nullif(a.after_data->> ? , ? ), nullif(a.after_data->> ? , ? ), nullif(a.metadata->> ? , ? ) ) ",
+          "sourceSha256": "5b4fff741c23984897c92e5586929f035ec15e4ee6b5646eff33198e17eda0e9"
+        }
+      ]
+    },
+    {
+      "file": "supabase/migrations/20260927200534_bind_document_templates_to_sacramental_sources_v73.sql",
+      "sha256": "43cd5a5e5c19c52ad845804067574d69270f69400993c48c6497bc660a42ab23",
+      "actions": [
+        {
+          "statementIndex": 1,
+          "kind": "UPDATE",
+          "head": "update public.document_templates set metadata = coalesce(metadata, ? ::jsonb) || jsonb_build_object( ? , ? , ? , ? , ? ,1 ) where is_active=true and upper(code) in ( ? , ? , ?",
+          "sourceSha256": "43cd5a5e5c19c52ad845804067574d69270f69400993c48c6497bc660a42ab23"
+        },
+        {
+          "statementIndex": 2,
+          "kind": "UPDATE",
+          "head": "update public.document_templates set metadata = coalesce(metadata, ? ::jsonb) || jsonb_build_object( ? , ? , ? , ? , ? ,1 ) where is_active=true and upper(code) in ( ? , ? , ?",
+          "sourceSha256": "43cd5a5e5c19c52ad845804067574d69270f69400993c48c6497bc660a42ab23"
+        },
+        {
+          "statementIndex": 3,
+          "kind": "UPDATE",
+          "head": "update public.document_templates set metadata = coalesce(metadata, ? ::jsonb) || jsonb_build_object( ? , ? , ? , ? , ? ,1 ) where is_active=true and upper(code) in ( ? , ? )",
+          "sourceSha256": "43cd5a5e5c19c52ad845804067574d69270f69400993c48c6497bc660a42ab23"
+        },
+        {
+          "statementIndex": 4,
+          "kind": "UPDATE",
+          "head": "update public.document_templates set metadata = coalesce(metadata, ? ::jsonb) || jsonb_build_object( ? , ? , ? , ? , ? ,1 ) where is_active=true and upper(code)= ?",
+          "sourceSha256": "43cd5a5e5c19c52ad845804067574d69270f69400993c48c6497bc660a42ab23"
+        },
+        {
+          "statementIndex": 5,
+          "kind": "UPDATE",
+          "head": "update public.document_templates set metadata = coalesce(metadata, ? ::jsonb) || jsonb_build_object( ? , ? , ? , ? , ? ,1 ) where is_active=true and upper(code) in ( ? , ? )",
+          "sourceSha256": "43cd5a5e5c19c52ad845804067574d69270f69400993c48c6497bc660a42ab23"
+        },
+        {
+          "statementIndex": 6,
+          "kind": "UPDATE",
+          "head": "update public.document_templates set metadata = coalesce(metadata, ? ::jsonb) || jsonb_build_object( ? , ? , ? , ? , ? ,1 ) where is_active=true and upper(code) in ( ? , ? , ?",
+          "sourceSha256": "43cd5a5e5c19c52ad845804067574d69270f69400993c48c6497bc660a42ab23"
+        },
+        {
+          "statementIndex": 7,
+          "kind": "UPDATE",
+          "head": "update public.document_templates set metadata = coalesce(metadata, ? ::jsonb) || jsonb_build_object( ? , ? , ? , ? , ? ,1 ) where is_active=true and upper(code)= ?",
+          "sourceSha256": "43cd5a5e5c19c52ad845804067574d69270f69400993c48c6497bc660a42ab23"
+        },
+        {
+          "statementIndex": 8,
+          "kind": "UPDATE",
+          "head": "update public.document_templates set metadata = coalesce(metadata, ? ::jsonb) || jsonb_build_object( ? , ? , ? , ? , ? ,1, ? ,jsonb_build_array( ? , ? , ? , ? ) ) where is_act",
+          "sourceSha256": "43cd5a5e5c19c52ad845804067574d69270f69400993c48c6497bc660a42ab23"
+        },
+        {
+          "statementIndex": 9,
+          "kind": "UPDATE",
+          "head": "update public.document_templates set metadata = coalesce(metadata, ? ::jsonb) || jsonb_build_object( ? , ? , ? , ? , ? ,1 ) where is_active=true and upper(code) in ( ? , ? )",
+          "sourceSha256": "43cd5a5e5c19c52ad845804067574d69270f69400993c48c6497bc660a42ab23"
+        }
+      ]
+    },
+    {
+      "file": "supabase/migrations/20260927202826_professional_ecclesial_document_templates_v74.sql",
+      "sha256": "bd6f122945335acd3ade777aff4ff9811e9bdb11ccfa3d9b4cc22cb5fc1dcd2d",
+      "actions": [
+        {
+          "statementIndex": 2,
+          "kind": "INSERT INTO",
+          "head": "insert into _v74_document_rewrites(code,name,template_text) values ( ? , ? , $quoted_body$ ), ( ? , ? , $quoted_body$ ), ( ? , ? , $quoted_body$ ), ( ? , ? , $quoted_body$ ), ",
+          "sourceSha256": "bd6f122945335acd3ade777aff4ff9811e9bdb11ccfa3d9b4cc22cb5fc1dcd2d"
+        },
+        {
+          "statementIndex": 3,
+          "kind": "INSERT INTO",
+          "head": "insert into public.document_templates( legacy_code,code,name,category,template_text,variables, scope_type,diocese_id,parish_id,version,is_active,is_legacy, metadata,created_by",
+          "sourceSha256": "bd6f122945335acd3ade777aff4ff9811e9bdb11ccfa3d9b4cc22cb5fc1dcd2d"
+        },
+        {
+          "statementIndex": 4,
+          "kind": "UPDATE",
+          "head": "update public.document_templates old set is_active=false, updated_at=now() where old.is_active=true and old.scope_type= ? and exists(select 1 from _v74_document_rewrites r whe",
+          "sourceSha256": "bd6f122945335acd3ade777aff4ff9811e9bdb11ccfa3d9b4cc22cb5fc1dcd2d"
+        }
+      ]
+    },
+    {
+      "file": "supabase/migrations/20260927214822_chancery_vice_chancellor_and_mis_datos_authorities.sql",
+      "sha256": "b295f220677236a25168f1c88ec10fcf3b3796924f815a7d6d07915adc4b7696",
+      "actions": [
+        {
+          "statementIndex": 25,
+          "kind": "UPDATE",
+          "head": "update public.chancelleries c set chancellor_name = x.display_name from ( select distinct on (up.chancery_id) up.chancery_id, coalesce( nullif(btrim(up.full_name), ? ), nullif",
+          "sourceSha256": "b295f220677236a25168f1c88ec10fcf3b3796924f815a7d6d07915adc4b7696"
+        }
+      ]
+    },
+    {
+      "file": "supabase/migrations/20260927233000_v83_decree_concepts_and_legacy_archive_scope.sql",
+      "sha256": "5172b864568803d13618eca329b033067204c16d405c502afe6eb2a5e743c724",
+      "actions": [
+        {
+          "statementIndex": 2,
+          "kind": "UPDATE",
+          "head": "update public.parishes set is_operational = true where is_operational is null",
+          "sourceSha256": "5172b864568803d13618eca329b033067204c16d405c502afe6eb2a5e743c724"
+        },
+        {
+          "statementIndex": 6,
+          "kind": "UPDATE",
+          "head": "update public.parishes set is_operational = false, vicary_id = null, decanate_id = null, deanery_id = null, legacy_territory_pending = false, updated_at = now() where id in ( ",
+          "sourceSha256": "5172b864568803d13618eca329b033067204c16d405c502afe6eb2a5e743c724"
+        },
+        {
+          "statementIndex": 7,
+          "kind": "DELETE FROM",
+          "head": "delete from public.decanatos where id = ? ::uuid",
+          "sourceSha256": "5172b864568803d13618eca329b033067204c16d405c502afe6eb2a5e743c724"
+        },
+        {
+          "statementIndex": 8,
+          "kind": "DELETE FROM",
+          "head": "delete from public.vicarias where id = ? ::uuid",
+          "sourceSha256": "5172b864568803d13618eca329b033067204c16d405c502afe6eb2a5e743c724"
+        },
+        {
+          "statementIndex": 20,
+          "kind": "UPDATE",
+          "head": "update public.conceptos_anulacion set sacrament_type = coalesce(nullif(lower(trim(sacrament_type)), ? ), ? ), source_kind = coalesce(nullif(trim(source_kind), ? ), ? ) where s",
+          "sourceSha256": "5172b864568803d13618eca329b033067204c16d405c502afe6eb2a5e743c724"
+        },
+        {
+          "statementIndex": 28,
+          "kind": "INSERT INTO",
+          "head": "insert into public.conceptos_anulacion( diocese_id,codigo,concepto,expide,tipo,seinscribe,gennota,gendocum,enlibro, sacrament_type,source_kind,source_reference,is_active ) val",
+          "sourceSha256": "5172b864568803d13618eca329b033067204c16d405c502afe6eb2a5e743c724"
+        },
+        {
+          "statementIndex": 38,
+          "kind": "UPDATE",
+          "head": "update public.decretos d set status = ? , payload = coalesce(d.payload, ? ::jsonb) || jsonb_build_object( ? ,true, ? , ? , ? , ? , ? ,c.id ), updated_at = now() from public.co",
+          "sourceSha256": "5172b864568803d13618eca329b033067204c16d405c502afe6eb2a5e743c724"
+        },
+        {
+          "statementIndex": 39,
+          "kind": "INSERT INTO",
+          "head": "insert into public.registry_audit_log( actor_user_id,diocese_id,entity_type,entity_id,action,before_data,after_data,metadata ) select null, p.diocese_id, ? , p.id, ? , jsonb_b",
+          "sourceSha256": "5172b864568803d13618eca329b033067204c16d405c502afe6eb2a5e743c724"
+        }
+      ]
+    }
+  ],
+  "checks": [
+    {
+      "file": "supabase/migrations/20260904000100_001_registry_core.sql",
+      "sha256": "9fdb51dafc76e2c8072331a33a284b572aa3d8ca732a6a165e993a44f7872e22",
+      "directWrites": 6,
+      "statements": 71
+    },
+    {
+      "file": "supabase/migrations/20260904000200_002_registry_rls.sql",
+      "sha256": "7fe14285d35b1e7cee62ceba817b8bad59d8f9992959ae2931ce6bfb5ea70490",
+      "directWrites": 0,
+      "statements": 52
+    },
+    {
+      "file": "supabase/migrations/20260904000300_003_atomic_registry_workflows.sql",
+      "sha256": "33b380b0a3f47d81a90140cd947382d5855f0e821b595c7496cb15fae53e75f5",
+      "directWrites": 0,
+      "statements": 12
+    },
+    {
+      "file": "supabase/migrations/20260904000400_004_baptism_atomic_and_reversal.sql",
+      "sha256": "6dfc570b5c310d8e957ea69ff08c0dcfd50240083c36efb3393a055a7097351a",
+      "directWrites": 0,
+      "statements": 8
+    },
+    {
+      "file": "supabase/migrations/20260904000500_005_matrimonial_manual_resolution.sql",
+      "sha256": "007a5f9478880be0f985f169f4e11747514f13385404402dead97e71241305dd",
+      "directWrites": 0,
+      "statements": 3
+    },
+    {
+      "file": "supabase/migrations/20260904000600_006_baptism_replacement_atomic.sql",
+      "sha256": "f6f0ce6f594923ab41fb5e03f7fc3ffb6d8b8c8cf225e06aeaa40e61bfca7c1b",
+      "directWrites": 0,
+      "statements": 4
+    },
+    {
+      "file": "supabase/migrations/20260904000700_007_atomic_baptism_confirmation_seating.sql",
+      "sha256": "5f3a79b5bbf9616cdca8081d26d005e4daa8a480aa9683de5a8adb400738188a",
+      "directWrites": 0,
+      "statements": 6
+    },
+    {
+      "file": "supabase/migrations/20260904000800_008_replacement_reversal.sql",
+      "sha256": "48a264d5e4cb45bc83f338c12f2baeb584c2e1fff074c66009d75ade92f0cf16",
+      "directWrites": 0,
+      "statements": 3
+    },
+    {
+      "file": "supabase/migrations/20260904000900_009_historical_registry_imports.sql",
+      "sha256": "617fa7be6a755d5f345e723681b96e3c96752f5b99b14ecdb6347295a68153e1",
+      "directWrites": 0,
+      "statements": 13
+    },
+    {
+      "file": "supabase/migrations/20260904001000_010_governance_and_concepts.sql",
+      "sha256": "434acf0be431b4ac36088a009a68bc9c55d49dad54401948b2e28d696f5960f3",
+      "directWrites": 0,
+      "statements": 41
+    },
+    {
+      "file": "supabase/migrations/20260904001100_011_notification_and_audit_lockdown.sql",
+      "sha256": "09415ec8f91394deed505a5c94a873e8ab20884f4bba588fb4e56f326c75606c",
+      "directWrites": 0,
+      "statements": 11
+    },
+    {
+      "file": "supabase/migrations/20260904001200_012_confirmation_replacement_and_marriage_nullity.sql",
+      "sha256": "595acb0ff478605bb4ea8f73c2728796f01ad3869abadc07f545b3364b04b5ad",
+      "directWrites": 0,
+      "statements": 9
+    },
+    {
+      "file": "supabase/migrations/20260904001300_013_historical_funeral_registry.sql",
+      "sha256": "c70cfab25b93e7d53c53750053c7fac6ec359eb84e19edd3739843c08f7b9a32",
+      "directWrites": 0,
+      "statements": 4
+    },
+    {
+      "file": "supabase/migrations/20260904001400_014_marginal_note_templates.sql",
+      "sha256": "6c4e228cb20b3e72f188a11ac8e4ecc48247affa869994c06ff729212aee202f",
+      "directWrites": 1,
+      "statements": 3
+    },
+    {
+      "file": "supabase/migrations/20260904001500_015_integrity_constraints.sql",
+      "sha256": "43a36112c32b448f48a847ef33a18bc5b39ca144b4b89d67ee748f6886701b08",
+      "directWrites": 0,
+      "statements": 6
+    },
+    {
+      "file": "supabase/migrations/20260904001600_016_identity_governance.sql",
+      "sha256": "414b69908ce433df5db5d7fa28106555632265cac260931ab2fc55b3726789b4",
+      "directWrites": 0,
+      "statements": 11
+    },
+    {
+      "file": "supabase/migrations/20260905001700_017_legacy_migration_foundation.sql",
+      "sha256": "d7b00aa11710a13b7c8762608438bf555de1f4d99d2db3ab5843ea976178d203",
+      "directWrites": 1,
+      "statements": 32
+    },
+    {
+      "file": "supabase/migrations/20260905001800_018_marginal_notes_v2.sql",
+      "sha256": "fa45c5fe4c34440b393d7ef804433b8fe68c2bf472a4f7256bce769b867e5157",
+      "directWrites": 4,
+      "statements": 19
+    },
+    {
+      "file": "supabase/migrations/20260905001900_019_legacy_import_workflows.sql",
+      "sha256": "f58580dfef52fbb23eba1a80d9e6a50af85fb198a6600c5ce02a3bbe7d56f873",
+      "directWrites": 0,
+      "statements": 37
+    },
+    {
+      "file": "supabase/migrations/20260905002000_020_templates_first_communion_governance.sql",
+      "sha256": "7abad75c13d0e32df158a2c6a5e4c1c9d2b0ea4c1bc9e94eaf1b7fd2655fa20e",
+      "directWrites": 0,
+      "statements": 19
+    },
+    {
+      "file": "supabase/migrations/20260905002100_021_print_audit_and_legacy_template_archive.sql",
+      "sha256": "9c862f3f13cb21c71d1f4296ab94e9a16c3f82b3253a8b1f8658ac8af28cf777",
+      "directWrites": 1,
+      "statements": 16
+    },
+    {
+      "file": "supabase/migrations/20260905002200_022_document_template_governance.sql",
+      "sha256": "73e6052cc9a0d2f771199588768a42be6b5805d68d7c8edf4b0e91f19ee36130",
+      "directWrites": 0,
+      "statements": 4
+    },
+    {
+      "file": "supabase/migrations/20260905002300_023_diocesan_sacramental_reports.sql",
+      "sha256": "b47ef4840393557d1fcac2d2f580a95676729b9148224def01c368233b60aa22",
+      "directWrites": 0,
+      "statements": 13
+    },
+    {
+      "file": "supabase/migrations/20260905002400_024_diocesan_chat.sql",
+      "sha256": "5b01b6ed2349e68bf9a0615c8966a1fe477531674f66d23260626b68cca00519",
+      "directWrites": 0,
+      "statements": 62
+    },
+    {
+      "file": "supabase/migrations/20260905002500_025_territorial_integrity_and_activation_hardening.sql",
+      "sha256": "718bc40503b4493c720a33cb2efcf2a1c11c8427fbac89bb14b02f120b4b03fc",
+      "directWrites": 0,
+      "statements": 51
+    },
+    {
+      "file": "supabase/migrations/20260925153625_remove_first_communion_v21.sql",
+      "sha256": "0fb83252eabe6c7603cebecc4e76d138788d2d4f5c629fb1891dec00c75ccc5a",
+      "directWrites": 4,
+      "statements": 22
+    },
+    {
+      "file": "supabase/migrations/20260925160843_security_hardening_v22.sql",
+      "sha256": "1094444e5a104c8409ef108caf22cf545ec5f1f69ab99637f1c1413057a20950",
+      "directWrites": 0,
+      "statements": 58
+    },
+    {
+      "file": "supabase/migrations/20260925161214_close_public_function_execution_v23.sql",
+      "sha256": "aae0633fa3e71d0154406c9d048ab71c84b143f4a8eba0319278506fb1f8acb9",
+      "directWrites": 0,
+      "statements": 5
+    },
+    {
+      "file": "supabase/migrations/20260925161432_rls_performance_v24.sql",
+      "sha256": "a8cef692aeaeb9e751455d141699529afb68ab36aa1de2d41f5fba7f76b10061",
+      "directWrites": 0,
+      "statements": 94
+    },
+    {
+      "file": "supabase/migrations/20260925162224_privileged_rpc_hardening_v25.sql",
+      "sha256": "c437d343130d954a5eedffb1a2321f1819795f431f59921db573cbb91835552d",
+      "directWrites": 0,
+      "statements": 36
+    },
+    {
+      "file": "supabase/migrations/20260925183731_legacy_reference_resolution_v29.sql",
+      "sha256": "586baf08e7cfe34fb43a52015c100646d00482522e880e17277103d1c8957895",
+      "directWrites": 0,
+      "statements": 36
+    },
+    {
+      "file": "supabase/migrations/20260925183931_legacy_reference_resolution_v29_hardening.sql",
+      "sha256": "e389bd0fbc8147f760069c3d0d64cb9ce5e40c51f6949314b45e612c56a7ebb3",
+      "directWrites": 0,
+      "statements": 8
+    },
+    {
+      "file": "supabase/migrations/20260925184038_legacy_reference_resolution_v29_lockdown.sql",
+      "sha256": "27baae9f654e6fd6d71e79f9fc14aac5b41f0cbc32a1f73d2432919ba02cd9d9",
+      "directWrites": 0,
+      "statements": 11
+    },
+    {
+      "file": "supabase/migrations/20260925184206_legacy_reference_resolution_v29_final_hardening.sql",
+      "sha256": "bdde07ed68c3b3d296eba29db2e39a37ee2087069f13fdc99d9315c7546f729b",
+      "directWrites": 0,
+      "statements": 8
+    },
+    {
+      "file": "supabase/migrations/20260925191903_parish_decree_center_v30.sql",
+      "sha256": "046a9939836feb7bb9e5368e7e0ac81016d67bbdec5911d2e78d9ce435d3f716",
+      "directWrites": 0,
+      "statements": 8
+    },
+    {
+      "file": "supabase/migrations/20260926003035_narrative_historical_entries_v31.sql",
+      "sha256": "705f811e640d51463c69a368ec38b5fa5976c3b56d2cd6c4438a5233022dd4dc",
+      "directWrites": 0,
+      "statements": 28
+    },
+    {
+      "file": "supabase/migrations/20260926025821_custom_age_ranges_reports_v35.sql",
+      "sha256": "820ade9e8e31c60362cfea14f52b92df2cd36b70e65c02d7de8a99398d9f9a33",
+      "directWrites": 0,
+      "statements": 5
+    },
+    {
+      "file": "supabase/migrations/20260926034046_parish_curia_report_breakdown_v38.sql",
+      "sha256": "1187912d9be4e486cd3c0e059723d317f730c490890f000043f2019518bfd28a",
+      "directWrites": 0,
+      "statements": 5
+    },
+    {
+      "file": "supabase/migrations/20260926034727_persist_parish_curia_report_snapshot_v39.sql",
+      "sha256": "c0a08f5845ceee283f0e5860f90e146432c88ff3447343ad6ff1d9699f638e04",
+      "directWrites": 0,
+      "statements": 5
+    },
+    {
+      "file": "supabase/migrations/20260926040255_unified_curia_report_all_scopes_v40.sql",
+      "sha256": "47eb4a378ee30ad6f0a0f3736a7487d53538f0b7f4cf69ce02b0a5cfd570ef68",
+      "directWrites": 0,
+      "statements": 6
+    },
+    {
+      "file": "supabase/migrations/20260926044842_sacramental_reporting_fields_v41.sql",
+      "sha256": "d57271d9ddce2d8ebca112dad047c5f69e539d18786865cfd4a270456aad964d",
+      "directWrites": 0,
+      "statements": 6
+    },
+    {
+      "file": "supabase/migrations/20260926114054_baptism_over8_confirmation_flow_v42.sql",
+      "sha256": "23fdd23316df9203cc59da481e4588d606fa6fb8f60bd3d9a8e8dcbe0f9295ba",
+      "directWrites": 0,
+      "statements": 17
+    },
+    {
+      "file": "supabase/migrations/20260927013508_functional_ecclesial_workflows_after_v41.sql",
+      "sha256": "387810cfbf97246681b6b0a182b13652aa3789dfe862e8fc354e7e19b3c90e6c",
+      "directWrites": 0,
+      "statements": 23
+    },
+    {
+      "file": "supabase/migrations/20260927023233_attach_decree_concept_policy.sql",
+      "sha256": "97b89fcee72783214970bd418b328309aa9b5be21fe672a4f473c7f2e0ded83a",
+      "directWrites": 0,
+      "statements": 5
+    },
+    {
+      "file": "supabase/migrations/20260927023836_harden_decree_concept_policy_rpc.sql",
+      "sha256": "43b9737bb77b56f02c573822d66db023b692a134a8388856bc9691b9318c24f6",
+      "directWrites": 0,
+      "statements": 14
+    },
+    {
+      "file": "supabase/migrations/20260927030500_marriage_baptism_marginal_link_v53.sql",
+      "sha256": "f12d15bebefd2b4560e73e7ab620ec1bc4d29be53ce324ad06a22517a81c8e85",
+      "directWrites": 0,
+      "statements": 8
+    },
+    {
+      "file": "supabase/migrations/20260927031500_diocese_institutional_identity.sql",
+      "sha256": "b001af86f06c648af210cd22fde19e6cafa5afb86d2828be1a1b9ef4b7c1fbf4",
+      "directWrites": 0,
+      "statements": 7
+    },
+    {
+      "file": "supabase/migrations/20260927051525_complete_exequias_baptism_link_v55.sql",
+      "sha256": "024dc35c6e3fd042ba3ea736ef764cc3639277f29c84cbe6a40bd8fee0ab1789",
+      "directWrites": 0,
+      "statements": 8
+    },
+    {
+      "file": "supabase/migrations/20260927134313_materialize_pending_legacy_sacramental_records.sql",
+      "sha256": "c7f834e12740ecfe511aa926bd5b64999e82cfb39428a8c8502d7ee0a1baef14",
+      "directWrites": 0,
+      "statements": 11
+    },
+    {
+      "file": "supabase/migrations/20260927135230_materialize_pending_legacy_marriages.sql",
+      "sha256": "7d193d72afeacc9e08506396f9381674ec5849b7a4222ae3673c05fd1690704d",
+      "directWrites": 0,
+      "statements": 9
+    },
+    {
+      "file": "supabase/migrations/20260927175713_fix_pending_legacy_marriages_json_blocks.sql",
+      "sha256": "7d193d72afeacc9e08506396f9381674ec5849b7a4222ae3673c05fd1690704d",
+      "directWrites": 0,
+      "statements": 9
+    },
+    {
+      "file": "supabase/migrations/20260927182756_extend_physical_sacramental_receipts_to_confirmation.sql",
+      "sha256": "4db2290e87dcd3965fd52bf9898148144897cad8f691a117f8ccd04dbcc63373",
+      "directWrites": 0,
+      "statements": 5
+    },
+    {
+      "file": "supabase/migrations/20260927184852_direct_legacy_sacramental_notes_v68.sql",
+      "sha256": "8fc53bbd2b166b28764d4effa22b4221396c155e81158cadad103753aca274dd",
+      "directWrites": 1,
+      "statements": 5
+    },
+    {
+      "file": "supabase/migrations/20260927185524_fix_direct_legacy_note_uuid_match_v69.sql",
+      "sha256": "681a64b8d796da058f3f7f5400277832c4c24a4c25adfd0760c19c3a9b262dbd",
+      "directWrites": 1,
+      "statements": 5
+    },
+    {
+      "file": "supabase/migrations/20260927190420_canonical_registry_print_coordinates_v71.sql",
+      "sha256": "df5f9f138b1b950fbeb43aab25a13ec46435aa91a1675c079fc9570b4c3b621a",
+      "directWrites": 4,
+      "statements": 9
+    },
+    {
+      "file": "supabase/migrations/20260927190642_backfill_orphan_print_coordinates_from_audit_v72.sql",
+      "sha256": "5b4fff741c23984897c92e5586929f035ec15e4ee6b5646eff33198e17eda0e9",
+      "directWrites": 1,
+      "statements": 2
+    },
+    {
+      "file": "supabase/migrations/20260927200534_bind_document_templates_to_sacramental_sources_v73.sql",
+      "sha256": "43cd5a5e5c19c52ad845804067574d69270f69400993c48c6497bc660a42ab23",
+      "directWrites": 9,
+      "statements": 10
+    },
+    {
+      "file": "supabase/migrations/20260927202826_professional_ecclesial_document_templates_v74.sql",
+      "sha256": "bd6f122945335acd3ade777aff4ff9811e9bdb11ccfa3d9b4cc22cb5fc1dcd2d",
+      "directWrites": 3,
+      "statements": 5
+    },
+    {
+      "file": "supabase/migrations/20260927214822_chancery_vice_chancellor_and_mis_datos_authorities.sql",
+      "sha256": "b295f220677236a25168f1c88ec10fcf3b3796924f815a7d6d07915adc4b7696",
+      "directWrites": 1,
+      "statements": 25
+    },
+    {
+      "file": "supabase/migrations/20260927233000_v83_decree_concepts_and_legacy_archive_scope.sql",
+      "sha256": "5172b864568803d13618eca329b033067204c16d405c502afe6eb2a5e743c724",
+      "directWrites": 8,
+      "statements": 40
+    },
+    {
+      "file": "supabase/migrations/20260928012616_reconcile_anulacion_as_decree_execution.sql",
+      "sha256": "56578935ee30362edc818a4f42fc9780675c50289fdee55c77ca47ce80b1bc7f",
+      "directWrites": 0,
+      "statements": 8
+    },
+    {
+      "file": "supabase/migrations/20261021000100_chancery_documentary_decrees_v88.sql",
+      "sha256": "5ae30a1b787072bf5d9db698a940d1b8fcb210c6aee087af0aef4bd0d4711b56",
+      "directWrites": 0,
+      "statements": 4
+    },
+    {
+      "file": "supabase/migrations/20261021000200_guard_historical_decree_identity_v88.sql",
+      "sha256": "03f34e258a495d9fe15efb7ad0bd0dcf8aa46ae7d262483badf43831eb4c735f",
+      "directWrites": 0,
+      "statements": 5
+    },
+    {
+      "file": "supabase/migrations/20261021151121_lock_direct_decree_writes_v89.sql",
+      "sha256": "7dab58ed51e3a71bb08dc753267d47303a788c342b0a7fcc4e97dd7fcf0348c3",
+      "directWrites": 0,
+      "statements": 4
+    },
+    {
+      "file": "supabase/migrations/20261021152552_decree_trace_scoped_v89.sql",
+      "sha256": "2af6c107599668099c560d1ac4cd81d4e8a28adf7f1ba271acc603a5241c9af1",
+      "directWrites": 0,
+      "statements": 6
+    },
+    {
+      "file": "supabase/migrations/20261021153810_guard_decree_concept_mutation_v89.sql",
+      "sha256": "a8053797bb099f9cf0d3ee49f40f2ead48335776b3f758ab5609acf2a7db73d8",
+      "directWrites": 0,
+      "statements": 5
+    },
+    {
+      "file": "supabase/migrations/20261021174920_block_direct_document_sequence_v92.sql",
+      "sha256": "d336561a61b55288a27f0b993ad41bf7ffe221eaa4b350e62c9399105a4551b8",
+      "directWrites": 0,
+      "statements": 2
+    },
+    {
+      "file": "supabase/migrations/20261021180054_restrict_pending_sacrament_writes_to_parish_v93.sql",
+      "sha256": "f2c745e6e6d7fc9d654762292926ddfcdddaee35991ea9e64748ddbedea9bf6f",
+      "directWrites": 0,
+      "statements": 6
+    },
+    {
+      "file": "supabase/migrations/20261021180904_guard_parish_parameters_and_books_v94.sql",
+      "sha256": "79d5b16b14915b1b237ce74e11391cfea7d37cf298e95d9990a71e8cb6e270ce",
+      "directWrites": 0,
+      "statements": 6
+    },
+    {
+      "file": "supabase/migrations/20261021194014_restrict_parish_auxiliary_catalogs_v95.sql",
+      "sha256": "9296a2db6133a4ea1cd18ed15f8133ecc74477890c6ba23274436a1cbb18aab4",
+      "directWrites": 0,
+      "statements": 15
+    },
+    {
+      "file": "supabase/migrations/20261021195010_protect_institutional_identity_from_admin_v96.sql",
+      "sha256": "a771a1c54e95fddff3ebdb94a61f9b68734a3b8e2d33bb5a3b3d49ca94715c81",
+      "directWrites": 0,
+      "statements": 3
+    },
+    {
+      "file": "supabase/migrations/20261021200248_reserve_decree_concepts_to_chancery_v97.sql",
+      "sha256": "0a4d46353a17d965549d9db1c907fe0dd23d2ece03d23018c166e845b4318f2f",
+      "directWrites": 0,
+      "statements": 2
+    },
+    {
+      "file": "supabase/migrations/20261021200915_lock_legacy_concept_provenance_v98.sql",
+      "sha256": "eec16d3a9eeaa2cbfa9d9e2a44e6b9e12963ffd41f820097e4c39d0009363502",
+      "directWrites": 0,
+      "statements": 4
+    },
+    {
+      "file": "supabase/migrations/20261021202136_preserve_legacy_import_concept_source_v99.sql",
+      "sha256": "ed42d790af8799825d0a899833ded79a184866eeaede6909c547f036527eb5cc",
+      "directWrites": 0,
+      "statements": 1
+    },
+    {
+      "file": "supabase/migrations/20261021203322_scope_legacy_migration_roles_v100.sql",
+      "sha256": "b53cc786e6336383315dbfd30f9b742f04348f35abc68be4049f77f646a2318e",
+      "directWrites": 0,
+      "statements": 4
+    },
+    {
+      "file": "supabase/migrations/20261021212613_block_unscoped_admin_legacy_batch_v101.sql",
+      "sha256": "6518f6b693dcf481f6801ee324ec68aac49baca80e9583ac6e895458265c59c9",
+      "directWrites": 0,
+      "statements": 1
+    },
+    {
+      "file": "supabase/migrations/20261021214213_institutional_document_authority_v102.sql",
+      "sha256": "8884ce8bfeb030fc9e4b05c921f2bb9ad02f51bd028c07169dd1d8923ef6a644",
+      "directWrites": 0,
+      "statements": 1
+    },
+    {
+      "file": "supabase/migrations/20261021215313_reserve_historical_reconciliation_to_service_v103.sql",
+      "sha256": "e9f5370f75d2e9e22ba7da6e168d4d5d8d9284dec2e819a0d3e3b6bb58cd3897",
+      "directWrites": 0,
+      "statements": 4
+    },
+    {
+      "file": "supabase/migrations/20261022000352_reserve_marriage_funeral_decrees_to_chancery_v104.sql",
+      "sha256": "ea743dc336e37d3a3c934a2e2182a300b1ad7f70b15ce0a345329721ea10961c",
+      "directWrites": 0,
+      "statements": 1
+    },
+    {
+      "file": "supabase/migrations/20261022002722_verify_nullity_baptism_identity_v105.sql",
+      "sha256": "96a1f527954a5ab19fccd88c050310b33f754cde211b2d49cef8b0b27c66cab8",
+      "directWrites": 0,
+      "statements": 7
+    },
+    {
+      "file": "supabase/migrations/20261022004255_require_valid_nullity_notice_before_receipt_v106.sql",
+      "sha256": "43d77df074e905dc779106f6a8621a2afd036168173a4e003a2548a813f5b65e",
+      "directWrites": 0,
+      "statements": 1
+    },
+    {
+      "file": "supabase/migrations/20261022005935_nullity_judicial_review_intake_v107.sql",
+      "sha256": "752a6bcddeaab633283b14a52c700e7c503739ad44983b32c9777fa7118f549d",
+      "directWrites": 0,
+      "statements": 12
+    },
+    {
+      "file": "supabase/migrations/20261022012910_track_nullity_court_correspondence_v108.sql",
+      "sha256": "76dbe1dbdc30bf0ddade97100eb7d61aac71830ab18889ee446004ec8ec6ecb8",
+      "directWrites": 0,
+      "statements": 11
+    },
+    {
+      "file": "supabase/migrations/20261022014929_court_decision_receipt_unverified_v109.sql",
+      "sha256": "f4c69faabffcd068d81219478411a73e5c7bcbf6837620e91c15637d439333b1",
+      "directWrites": 0,
+      "statements": 11
+    },
+    {
+      "file": "supabase/migrations/20261022020721_dual_control_court_receipt_review_v110.sql",
+      "sha256": "7df930253023185a15cbd9f8113312612f05e10af21149103bc89d275f3ce148",
+      "directWrites": 0,
+      "statements": 11
+    },
+    {
+      "file": "supabase/migrations/20261022023010_court_receipt_dual_control_assessment_v111.sql",
+      "sha256": "28913717fcd2ac2c5b0a5550a8ef4475539f0c9dad970508cc71c28029da6f34",
+      "directWrites": 0,
+      "statements": 3
+    },
+    {
+      "file": "supabase/migrations/20261022023434_court_clarification_workflow_v112.sql",
+      "sha256": "a1a9b88a3a3cc3b207580248d7f2ea0498a0f73a1e7d20d83cf53086470a6d8c",
+      "directWrites": 0,
+      "statements": 8
+    },
+    {
+      "file": "supabase/migrations/20261022030239_scoped_court_clarification_read_v113.sql",
+      "sha256": "0da4de641b9cde5fd0e548511574cc744841cfaf7c69248f3df86a8121fa4f59",
+      "directWrites": 0,
+      "statements": 3
+    },
+    {
+      "file": "supabase/migrations/20261022033641_disambiguate_supplementary_notifications_v115.sql",
+      "sha256": "bbfd634289c27ce0bda760eaa3e75ee1e879c3f96153e7b9e7773e2e067cfb75",
+      "directWrites": 0,
+      "statements": 1
+    },
+    {
+      "file": "supabase/migrations/20261022033737_qualify_confirmation_supplementary_coordinate_v116.sql",
+      "sha256": "80ca12b132732fb74db498969efd6445f3ed6fde2f309b0b393ebf92299c1c4c",
+      "directWrites": 0,
+      "statements": 1
+    },
+    {
+      "file": "supabase/migrations/20261022034716_reversal_marginal_notes_baptism_confirmation_v117.sql",
+      "sha256": "b8b02fd3e1d99df861717e537e3bd52b17a054f1cad672740a74b683c6c1a14d",
+      "directWrites": 0,
+      "statements": 2
+    },
+    {
+      "file": "supabase/migrations/20261022040505_scope_and_archive_historical_decrees_v118.sql",
+      "sha256": "fb9dc0f9ab97607af70b0f9c5bded5e8a1c07d0671cec8169463ad715035fa16",
+      "directWrites": 0,
+      "statements": 1
+    },
+    {
+      "file": "supabase/migrations/20261022130415_isolate_historical_origins_by_diocese_v120.sql",
+      "sha256": "6b5dae0534d345cc945a8444f5806c83149e60af22569e14146ca1e942ac553a",
+      "directWrites": 0,
+      "statements": 2
+    },
+    {
+      "file": "supabase/migrations/20261022131752_isolate_physical_legacy_provenance_v121.sql",
+      "sha256": "8d41a98298eb457e55fd2fc5af840c47f402f721d85c41690451da7d82c18940",
+      "directWrites": 0,
+      "statements": 4
+    },
+    {
+      "file": "supabase/migrations/20261022133020_revoke_destructive_client_grants_v122.sql",
+      "sha256": "148d24ded334d28cbb67340aa8dcd19a15172e36e88d44c976a56147f74c5f2c",
+      "directWrites": 0,
+      "statements": 2
+    },
+    {
+      "file": "supabase/migrations/20261022133354_guard_confirmation_shadow_deletion_v123.sql",
+      "sha256": "efd7336e1ea59e76fe03cb40057487a78b04ec73e2495237e0443586911648af",
+      "directWrites": 0,
+      "statements": 1
+    },
+    {
+      "file": "supabase/migrations/20261022134101_diocese_only_shadow_cleanup_v124.sql",
+      "sha256": "f780435459b3345af6845fec0a591f50b83f4eaac390c7daeabb2c5e70617288",
+      "directWrites": 0,
+      "statements": 2
+    },
+    {
+      "file": "supabase/migrations/20261022140436_scope_matrimonial_note_reconciliation_v125.sql",
+      "sha256": "a1e76b92b2c2b1d2323e6ce7dd25fd65a473cad5789a6af2d1a23c7215ec1e0a",
+      "directWrites": 0,
+      "statements": 1
+    },
+    {
+      "file": "supabase/migrations/20261022140953_disable_legacy_anulacion_execution_v126.sql",
+      "sha256": "8fb186ff46ea3fa7b48112a87f79df9aa618e3869af28fe2f6db2b7b8097b2d5",
+      "directWrites": 0,
+      "statements": 4
+    },
+    {
+      "file": "supabase/migrations/20261022150317_pre_execution_nullity_institutional_review_v128.sql",
+      "sha256": "3bdc13e15899f55042fffe37f6381a76818ba22181dab2b0101b5a315de93cfc",
+      "directWrites": 0,
+      "statements": 12
+    },
+    {
+      "file": "supabase/migrations/20261022150555_fix_nullity_preflight_audit_concatenation_v129.sql",
+      "sha256": "80153f8663dc269f7be23c6af80d18c9468c0e7ead772679f5f0a90d50a63fe2",
+      "directWrites": 0,
+      "statements": 1
+    },
+    {
+      "file": "supabase/migrations/20261022150728_scoped_nullity_preflight_list_v130.sql",
+      "sha256": "f9d892cadb1bbb5c387d7a54ce67d4f470dfe42f329d1a41ae1421e20039c6cb",
+      "directWrites": 0,
+      "statements": 3
+    },
+    {
+      "file": "supabase/migrations/20261022153516_require_verified_document_hash_for_nullity_v132.sql",
+      "sha256": "73d59288c6d10fbba7caa2a364ce51d254f2507361c069fd83c87e254da951cf",
+      "directWrites": 0,
+      "statements": 5
+    },
+    {
+      "file": "supabase/migrations/20261022155208_separate_marginal_note_and_notification_receipt_authority_v133.sql",
+      "sha256": "9f63b4896164ed51f9b91b1b85f8a63972b653582e0705154383c09540db54d8",
+      "directWrites": 0,
+      "statements": 3
+    },
+    {
+      "file": "supabase/migrations/20261022160304_guard_cancelled_physical_notifications_v134.sql",
+      "sha256": "f341792191473b6437272f679bb83c7f7492c1e8888048ff8f4fcd18fbfa7c7c",
+      "directWrites": 0,
+      "statements": 1
+    },
+    {
+      "file": "supabase/migrations/20261022161842_guard_stale_marriage_funeral_reversals_v135.sql",
+      "sha256": "bc75931369fe0edb57391f233e08a75cd1cd3fd3577372f3e89812fbb975ff8c",
+      "directWrites": 0,
+      "statements": 2
+    },
+    {
+      "file": "supabase/migrations/20261022162909_guard_stale_baptism_confirmation_reversals_v136.sql",
+      "sha256": "3f9d8a11f339c41ceed049fd2e0cc724f6ad64238859bc9c6fb81d237c6a8d23",
+      "directWrites": 0,
+      "statements": 2
+    },
+    {
+      "file": "supabase/migrations/20261022164859_bind_confirmation_audit_to_decree_uuid_v138.sql",
+      "sha256": "5c53d9cfd5e5bb699be097ce2fc4849e98d2eb52a77e43e26fae03191616c84f",
+      "directWrites": 0,
+      "statements": 2
+    },
+    {
+      "file": "supabase/migrations/20261022170342_guard_official_notification_terminal_states_v139.sql",
+      "sha256": "4fc10cb10e6cf771e1947d369d79a966f6328f6dc962f04f0ab63f98ddfe1f70",
+      "directWrites": 0,
+      "statements": 2
+    },
+    {
+      "file": "supabase/migrations/20261022172147_validate_registry_print_notes_server_v140.sql",
+      "sha256": "f6e134e25be443640bbb9faa8668b75d9c0804e53997024c5d186d5f2b0c9b25",
+      "directWrites": 0,
+      "statements": 1
+    },
+    {
+      "file": "supabase/migrations/20261022173154_preserve_audited_civil_link_helpers_v141.sql",
+      "sha256": "59524d5d1d9814fa07e199fb36830d49f6ed7b80203c2db73353f27c4f0f795d",
+      "directWrites": 0,
+      "statements": 1
+    },
+    {
+      "file": "supabase/migrations/20261022180645_guard_stale_registry_print_document_v143.sql",
+      "sha256": "b33735081918f5fd71690b1c5c75c4ce0b74f01f816b5ee629b4e41e3dc80133",
+      "directWrites": 0,
+      "statements": 1
+    },
+    {
+      "file": "supabase/migrations/20261022182523_lock_registry_print_and_track_request_lineage_v144.sql",
+      "sha256": "d0132c3d704dceb2f9aaf92cf7116b1d0c4c0127bcb1b86db5ff1091f9d87a8c",
+      "directWrites": 0,
+      "statements": 1
+    },
+    {
+      "file": "supabase/migrations/20261022182724_sort_print_request_lineage_by_sequence_v145.sql",
+      "sha256": "e7d7c657fe1975420884dec341d4b3aaf62cc4ef72793b923bfd1215219d80ba",
+      "directWrites": 0,
+      "statements": 1
+    },
+    {
+      "file": "supabase/migrations/20261022183433_guard_malformed_legacy_print_sequence_v146.sql",
+      "sha256": "875a7b94d6bf32eacb0adfc74ab6a59a9524a6a5164e7e60c352b4645ec00094",
+      "directWrites": 0,
+      "statements": 1
+    },
+    {
+      "file": "supabase/migrations/20261022185717_monotonic_sacramental_record_version_v148.sql",
+      "sha256": "9cebeeaf1f4a6160817d825cbb0aee8e13c31b9607d228095e3f2664c0a6fd71",
+      "directWrites": 0,
+      "statements": 10
+    },
+    {
+      "file": "supabase/migrations/20261022194003_fail_closed_can_access_parish_v150.sql",
+      "sha256": "086d22ba8292b07e5c8be7415c78d1acc4211cb770f8d9675cfb6ad35d1b8ca0",
+      "directWrites": 0,
+      "statements": 1
+    },
+    {
+      "file": "supabase/migrations/20261022200026_enforce_legacy_materializer_authorization_v151.sql",
+      "sha256": "ee57c257412d33cab05a7824ae175d3019f8ad85721545672a21d78aa453d427",
+      "directWrites": 0,
+      "statements": 1
+    },
+    {
+      "file": "supabase/migrations/20261023012458_guard_independent_marginal_notes_before_decree_reversal_v154.sql",
+      "sha256": "03bad128381ec8bba1f4794bccbd2ef58cd7fa4578a17062d8306b4692158563",
+      "directWrites": 0,
+      "statements": 1
+    },
+    {
+      "file": "supabase/migrations/20261023012719_fix_confirmation_manual_note_lock_v154b.sql",
+      "sha256": "c85a1230bb957a63c0f9d3bb2a71e4fd3301121bb1fe27eaaa29d7d78b70fb19",
+      "directWrites": 0,
+      "statements": 1
+    },
+    {
+      "file": "supabase/migrations/20261023023443_guard_marriage_funeral_independent_notes_v155.sql",
+      "sha256": "94b64eb3d0daa3f16b1343bfcca6204731768aa94f3fed91f7450fbb82c991b0",
+      "directWrites": 0,
+      "statements": 1
+    },
+    {
+      "file": "supabase/migrations/20261023030534_later_note_institutional_reconciliation_v156.sql",
+      "sha256": "aa8335b44b520e53d25bfe3375d39a76e8b7cbb0ed6bb42fb4ab97fdb3f7a71f",
+      "directWrites": 0,
+      "statements": 17
+    },
+    {
+      "file": "supabase/migrations/20261023032715_later_note_rejection_and_revocation_v157.sql",
+      "sha256": "7222df1a625d2f17f313dacaa716f03622a9d1368e2e0b68865ee52a178afca0",
+      "directWrites": 0,
+      "statements": 7
+    },
+    {
+      "file": "supabase/migrations/20261023052453_reconciliation_keyset_pagination_v161.sql",
+      "sha256": "5b3845bfb7d66d339c0dc510c422f78d21ac23bb7907cbcd1da90d9485eaf66e",
+      "directWrites": 0,
+      "statements": 8
+    },
+    {
+      "file": "supabase/migrations/20261023142209_chat_message_order_consistency_v165.sql",
+      "sha256": "e14f253d14b425cd4a630d8497b5dd868c2600b40357c7efdd9cd09664937138",
+      "directWrites": 0,
+      "statements": 5
+    },
+    {
+      "file": "supabase/migrations/20261023144508_chat_history_keyset_v166.sql",
+      "sha256": "036ca907f0ec61d47fcc04876a2d674fad864f0fd7fc82cfdeeec8c0ee39610b",
+      "directWrites": 0,
+      "statements": 4
+    },
+    {
+      "file": "supabase/migrations/20261023154826_batch_later_note_reconciliation_v168.sql",
+      "sha256": "3da5248027d95901c644ad9ceb225d7d647b13ff2a80911be974ebd9558f97be",
+      "directWrites": 0,
+      "statements": 3
+    },
+    {
+      "file": "supabase/migrations/20261023180236_archive_notification_active_profile_v171.sql",
+      "sha256": "d031fed3e63d86f708d81744f4935b2bb4e2b1ae911621a4944df490eea19e79",
+      "directWrites": 0,
+      "statements": 1
+    },
+    {
+      "file": "supabase/migrations/20261023190421_isolate_bishop_tenures_by_diocese_v172.sql",
+      "sha256": "f7266e15de4ad8c4b66204690d0d9e3bf7e1fe188dcc839daf6e64d2dd99139f",
+      "directWrites": 0,
+      "statements": 9
+    },
+    {
+      "file": "supabase/migrations/20261023194004_guard_historical_baptism_active_parish_v173.sql",
+      "sha256": "37a96ed92bd76e85b983acb63b35ab1993b8889db8086de29b4223b03fb9bdcf",
+      "directWrites": 0,
+      "statements": 1
+    },
+    {
+      "file": "supabase/migrations/20261023203903_fail_closed_institutional_identity_v176.sql",
+      "sha256": "d51a820a87bf5d1fe2a3b38784e3147e86ce950204fbeb09950e21b59b8bbf5a",
+      "directWrites": 0,
+      "statements": 1
+    },
+    {
+      "file": "supabase/migrations/20261023205542_pending_sacraments_active_parish_v177.sql",
+      "sha256": "2d07a329a5c65b6de83aa5ddf100b2916eddc6ab4fb7fc45e82f7b867e0d4044",
+      "directWrites": 0,
+      "statements": 1
+    },
+    {
+      "file": "supabase/migrations/20261023215121_seat_sacraments_scope_v178.sql",
+      "sha256": "4eeda01217296f8d609c65b9949aab4d5695d42ec6e981eab92efd918aae6fe3",
+      "directWrites": 0,
+      "statements": 1
+    },
+    {
+      "file": "supabase/migrations/20261023221315_chancery_decree_fail_closed_v179.sql",
+      "sha256": "b4536da880b2f23dce366b455d3324d4553916846a3df666af07476a2565c94e",
+      "directWrites": 0,
+      "statements": 1
+    },
+    {
+      "file": "supabase/migrations/20261023223718_strict_chat_notification_profile_v180.sql",
+      "sha256": "2e545f5148035a2680c00520378ce4aaa56162bd4fbf2dc7a6e2785cad9a5d6a",
+      "directWrites": 0,
+      "statements": 1
+    },
+    {
+      "file": "supabase/migrations/20261024010301_fail_closed_management_and_sacrament_params_v181.sql",
+      "sha256": "7b5fb6032e5a0efc78979775fd86358f7b0fa169cb203e2f5df293c79b24f976",
+      "directWrites": 0,
+      "statements": 1
+    },
+    {
+      "file": "supabase/migrations/20261024012204_juridical_reconciliation_identity_v182.sql",
+      "sha256": "34bb57051d33c67d79f0155f6b00e68c5a9f66a071141610cd3bf0f77489cdc5",
+      "directWrites": 0,
+      "statements": 1
+    },
+    {
+      "file": "supabase/migrations/20261024183828_registry_normalized_uniqueness_v188.sql",
+      "sha256": "0189b11760c7b2ea18a52fe30005c62d7631d0806a281853af6c004971a3bf46",
+      "directWrites": 0,
+      "statements": 6
+    },
+    {
+      "file": "supabase/migrations/20261024201212_validate_decree_check_constraints_v189.sql",
+      "sha256": "f39a6b9503f3fde13e951e7c4ad01205b6227bad0799e782f499223010d36e85",
+      "directWrites": 0,
+      "statements": 4
+    },
+    {
+      "file": "supabase/migrations/20261024202424_harden_privileged_rpc_search_path_v190.sql",
+      "sha256": "e68ac457458f8b39a9d61dab5e1cd2db7f88622fb84131b947e77208ef600066",
+      "directWrites": 0,
+      "statements": 3
+    },
+    {
+      "file": "supabase/migrations/20261024203848_chancery_delegated_auth_fail_closed_v191.sql",
+      "sha256": "23b9c038ccf658b6d69a5f6417602060668f6c558d5dc5c5dc9501a77961d1f9",
+      "directWrites": 0,
+      "statements": 1
+    },
+    {
+      "file": "supabase/migrations/20261024205559_chancery_active_uniqueness_replacement_v192.sql",
+      "sha256": "24a755e3378f3c122b96de5fe6263719869c857034bab72bf320ef404bf07f81",
+      "directWrites": 0,
+      "statements": 5
+    },
+    {
+      "file": "supabase/migrations/20261024212500_guard_print_integrity_v194.sql",
+      "sha256": "2929d93370c663dcf2719615b157baf88d841c16ffbdc395f303ca37566be49e",
+      "directWrites": 0,
+      "statements": 4
+    },
+    {
+      "file": "supabase/migrations/20261025002200_guard_pending_seated_direct_write_v198.sql",
+      "sha256": "3a8a076f2b07b9d6cb35f96ebeb2ab91a3a87c861a258a14c64e9cc2920f0ab2",
+      "directWrites": 0,
+      "statements": 6
+    },
+    {
+      "file": "supabase/migrations/20261025004900_guard_seated_pending_delete_v199.sql",
+      "sha256": "51b4b23d58678cff8afb335398cd557e1371d4eb12fa16f79648316fb09f1f30",
+      "directWrites": 0,
+      "statements": 6
+    },
+    {
+      "file": "supabase/migrations/20261025005500_guard_reported_downgrade_v199.sql",
+      "sha256": "7559036918a4000eebf705e151066f0034fea9e72af04c6d7bf8c0f2daf0a44c",
+      "directWrites": 0,
+      "statements": 6
+    },
+    {
+      "file": "supabase/migrations/20261025012000_registry_numeric_location_unique_v200.sql",
+      "sha256": "6d879e77618a5a2dbe2fb27d54670f8496a78dafda9e5f202a4b03ece912c9f8",
+      "directWrites": 0,
+      "statements": 4
+    },
+    {
+      "file": "supabase/migrations/20261025221000_uniform_parish_seat_lock_order_v204.sql",
+      "sha256": "c937d0a7acc7c2d209bf90feef882c4ef1244498ae8003abcb04ece368251bf2",
+      "directWrites": 0,
+      "statements": 2
+    },
+    {
+      "file": "supabase/migrations/20261025232301_idempotent_pending_creation_v207.sql",
+      "sha256": "767b195ef9b1e6e5bf6ef7b3596e9b0cd1efee7d55e0ce6a2dbbedd485bd73ac",
+      "directWrites": 0,
+      "statements": 7
+    },
+    {
+      "file": "supabase/migrations/20261026040729_isolate_legacy_source_links_parish_v213.sql",
+      "sha256": "f6e98e488a532a30466bb98b9972021b501ee1873e65ac2f39c5a513e7faedbf",
+      "directWrites": 0,
+      "statements": 1
+    },
+    {
+      "file": "supabase/migrations/20261026044654_require_reported_legacy_identity_v214.sql",
+      "sha256": "5a9b36ab797701322e9a934de7486f724171985fa85d3f8e73c1f4bc7fea4e9a",
+      "directWrites": 0,
+      "statements": 1
+    },
+    {
+      "file": "supabase/migrations/20261026121511_guard_pending_legacy_marriage_provenance_v215.sql",
+      "sha256": "8a85443bea85e35ee043e5b75916cd6c88d33f47a1d6cf185e07cad1e8aca654",
+      "directWrites": 0,
+      "statements": 1
+    },
+    {
+      "file": "supabase/migrations/20261026124426_guard_marginal_note_historical_parish_v216.sql",
+      "sha256": "c932332d0d5b19252e0a5a063973ce25f62e77f424db3198c361337a1210aa73",
+      "directWrites": 0,
+      "statements": 1
+    },
+    {
+      "file": "supabase/migrations/20261026131258_guard_generic_legacy_registral_links_v217.sql",
+      "sha256": "11158fc6945899a2f6b2f975ecac3761d374b4b412c0a85fac9a63b97642c816",
+      "directWrites": 0,
+      "statements": 1
+    },
+    {
+      "file": "supabase/migrations/20261026140324_chancery_historical_link_review_v218.sql",
+      "sha256": "4ce7646c5c2926cda9cc683a5ab797f7a9b8cea4e02ca03ff8ba86cad493ccec",
+      "directWrites": 0,
+      "statements": 13
+    },
+    {
+      "file": "supabase/migrations/20261026143504_historical_reconciliation_candidate_triage_v219.sql",
+      "sha256": "347f45b7e8706b61a2f518294d10520bbbaa1791e892b37d9360a5f7c47fbd7d",
+      "directWrites": 0,
+      "statements": 8
+    },
+    {
+      "file": "supabase/migrations/20261027044045_secure_definer_pg_temp_last_v229.sql",
+      "sha256": "64472ee6a9a8e32278ffa2973d3fe2ad035991f9f783994f738ef093d38afb5b",
+      "directWrites": 0,
+      "statements": 1
+    },
+    {
+      "file": "supabase/migrations/20261027115104_disable_unused_pg_graphql_v230.sql",
+      "sha256": "b843a2dc69424251a3665316aca237f00c6c5f5e753ade794d1c2628532646fb",
+      "directWrites": 0,
+      "statements": 2
+    },
+    {
+      "file": "supabase/migrations/20261027125848_harden_chat_actor_guard_v232.sql",
+      "sha256": "df1150a18179005f2613e93f0d761ccbcd27c8f4484959cf13bdd141ba037a65",
+      "directWrites": 0,
+      "statements": 3
+    }
+  ]
+}

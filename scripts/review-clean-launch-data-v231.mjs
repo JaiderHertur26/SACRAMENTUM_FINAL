@@ -33,12 +33,12 @@ const summary={
  explicitQaAnchoredConcepts:writeStatements.filter(x=>x.launchPolicy.includes('QA_LEGACY_CATALOG')).length,
  hiddenMigrationSideEffectsNotStaticallyCertified:true
 };
-if(summary.allMigrations!==158||summary.directDataStatements!==45||
+if(summary.allMigrations!==159||summary.directDataStatements!==45||
  summary.referenceTemplateCandidates!==6||summary.blockedDataStatements!==39||
  summary.explicitQaAnchoredConcepts!==1)
  throw Error('Unexpected historical migration contents; audit each change before clean launch');
 const result={
- protocol:'V231',scope:'158 historical QA migrations; offline structural-data inventory ONLY',
+ protocol:'V232',scope:'158 historical QA migrations; offline structural-data inventory ONLY',
  source:'SQL code lexer excludes PLpgSQL dollar-quoted bodies, comments, string literals and classifies top-level direct DML by hand-reviewed destination allowlist',
  fullyCertifiedForCleanProductionReplay:false,
  canCopyExistingQaDatabase:false,
@@ -49,7 +49,7 @@ const result={
   'legacy_marginal_template_snapshots copied from QA parish parameters',
   'registry_audit_log backfills and cleanup of known QA-only territory UUIDs'
  ],
- note:'Six allowed candidates are NOT automatically approved: schema-compatible default templates must be manually vetted. Other migrations can contain DO blocks, triggers, and function-call side effects not covered by the static lexer. All 158 SQL files require a clean empty-project rehearsal before any certification.',
+ note:'Six allowed candidates are NOT automatically approved: schema-compatible default templates must be manually vetted. Other migrations can contain DO blocks, triggers, and function-call side effects not covered by the static lexer. All 159 SQL files require a clean empty-project rehearsal before any certification.',
  releaseBlockingRequirements:[
   'Build new clean schema baseline without replaying historical mutation statements into real data',
   'Do NOT transplant auth users, old QA business records, legacy data, decree/audit history, or source snapshots',
@@ -58,5 +58,5 @@ const result={
  ],
  entries:writeStatements
 };
-fs.writeFileSync('AUDITORIA_MIGRACIONES_LANZAMIENTO_LIMPIO_V231.json',JSON.stringify(result,null,2)+'\n');
+fs.writeFileSync('AUDITORIA_MIGRACIONES_LANZAMIENTO_LIMPIO_V232.json',JSON.stringify(result,null,2)+'\n');
 console.log(JSON.stringify(summary));

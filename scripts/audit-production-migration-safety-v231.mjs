@@ -75,11 +75,11 @@ function report() {
 }
 const snapshot=report();
 if(process.argv.includes('--inventory')){
- fs.writeFileSync('AUDITORIA_MIGRACIONES_DATOS_V231.json',JSON.stringify({protocol:'V231',environment:'OFFLINE_QA_SCHEMAS_ONLY',...snapshot},null,2)+'\n');
+ fs.writeFileSync('AUDITORIA_MIGRACIONES_DATOS_V232.json',JSON.stringify({protocol:'V232',environment:'OFFLINE_QA_SCHEMAS_ONLY',...snapshot},null,2)+'\n');
  console.log(JSON.stringify({migrationCount:snapshot.migrationCount,directWriteMigrationCount:snapshot.directWriteMigrationCount,directWriteStatementCount:snapshot.directWriteStatementCount,writeMigrations:snapshot.findings},null,2));
 }else{
- const official=JSON.parse(fs.readFileSync('AUDITORIA_MIGRACIONES_DATOS_V231.json','utf8'));
- if(official.protocol!=='V231'||official.migrationCount!==snapshot.migrationCount||
+ const official=JSON.parse(fs.readFileSync('AUDITORIA_MIGRACIONES_DATOS_V232.json','utf8'));
+ if(official.protocol!=='V232'||official.migrationCount!==snapshot.migrationCount||
  official.directWriteMigrationCount!==snapshot.directWriteMigrationCount||
  JSON.stringify(official.checks)!==JSON.stringify(snapshot.checks)||
  JSON.stringify(official.findings)!==JSON.stringify(snapshot.findings))

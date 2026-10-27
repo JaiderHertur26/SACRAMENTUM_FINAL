@@ -1,0 +1,57 @@
+{
+  "protocol": "V232",
+  "projectRef": "foczofcmwampjvlfbsqn",
+  "environment": "QA_FICTITIOUS_NEVER_OFFICIAL",
+  "source": "Supabase MCP apply_migration and read-only pg_proc queries; authenticated-role cross-diocese chat operations inside BEGIN/ROLLBACK",
+  "remoteMigration": {
+    "version": "20261027125848",
+    "name": "harden_chat_actor_guard_v232",
+    "applied": true,
+    "file": "supabase/migrations/20261027125848_harden_chat_actor_guard_v232.sql"
+  },
+  "sourceSnapshot": {
+    "before": "AUDITORIA_RPC_152_FUENTE_LIVE_V232.json",
+    "after": "AUDITORIA_RPC_152_POST_LIVE_V232.json",
+    "privilegedExposedBefore": 152,
+    "privilegedExposedAfter": 152,
+    "explicitUidBefore": 134,
+    "explicitUidAfter": 137,
+    "missingDirectOrKnownDelegateBefore": 14,
+    "missingDirectOrKnownDelegateAfter": 11,
+    "functionsChanged": [
+      "mark_chat_room_read",
+      "send_chat_message",
+      "withdraw_chat_message"
+    ],
+    "otherSourceBodiesChanged": 0
+  },
+  "accessTests": {
+    "crossDioceseForeignRoomCandidates": 12,
+    "foreignRoomSendRejected": true,
+    "foreignRoomReadMarkerRejected": true,
+    "foreignMessageWithdrawalRejected": true,
+    "operationsWithinTransaction": true,
+    "transactionRolledBack": true,
+    "noMessageRowsAdded": true,
+    "noReadMarkersChanged": true,
+    "noForeignWithdrawalsCommitted": true,
+    "explicitMissingSessionSqlstate": "42501"
+  },
+  "qaBeforeAfter": {
+    "baptisms": 5040,
+    "confirmations": 2091,
+    "marriages": 1261,
+    "funerals": 1,
+    "chat_messages": 1,
+    "chat_rooms": 4,
+    "chat_room_members": 16,
+    "auth_users": 12
+  },
+  "rolePrinciple": "Existing delegated profile, membership, diocese and message ownership checks remain in effect; explicit auth.uid() guard introduced in three mutating functions.",
+  "mustNotClaim": [
+    "Three explicit checks do not constitute review of all 152 SECURITY DEFINER routines.",
+    "14 other functions may delegate checks through their call graph; string matching alone is not proof of vulnerability.",
+    "No real SMTP, backup restore or clean independent production project was certified.",
+    "Security gateway must remain in QA mode until all privileged-routine reviews and owner ACLs are proven."
+  ]
+}
