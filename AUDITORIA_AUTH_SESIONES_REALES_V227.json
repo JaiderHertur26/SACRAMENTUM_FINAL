@@ -1,0 +1,64 @@
+{
+  "protocol": "V227",
+  "environment": "EXISTING_QA_FICTITIOUS_ONLY",
+  "project_ref": "foczofcmwampjvlfbsqn",
+  "source": "Actual Supabase GoTrue login/password, browser React AuthProvider, live protected RPCs and PostgreSQL concurrency; source reports held locally and NOT committed",
+  "qaRecordsAreNotOfficial": true,
+  "mayAuthorizeProduction": false,
+  "verified_at": "2026-10-27T03:54:29.965Z",
+  "coverage": {
+    "authenticatedAccounts": 8,
+    "authenticatedAccountsPassed": 8,
+    "wrongPasswordRejected": true,
+    "protectedRpcCrossJurisdictionAttempts": 25,
+    "protectedRpcDenials": 25,
+    "fourSacramentDenials": 24,
+    "actualReactRoleDashboards": 4,
+    "actualReactRoleDashboardsPassed": 4,
+    "realAppBrowserExceptions": 0,
+    "realAppForbiddenExternalRequests": 0,
+    "twoActualUsersConcurrentModes": 5,
+    "concurrencyModesPassed": 5,
+    "deadlockDetected": true,
+    "deadlockRecovered": true,
+    "rollbackParametersUnchanged": true,
+    "logoutBlockRaceScenarios": 4,
+    "logoutBlockRaceScenariosPassed": 4,
+    "realQaPasswordResetPassed": true,
+    "oldPasswordRejected": true,
+    "changedPasswordAccepted": true,
+    "duplicatePasswordSubmitBlocked": true,
+    "outgoingEmailDeliveryVerified": false,
+    "officialCleanDatabaseCreated": false
+  },
+  "qaDbPostTestCounts": {
+    "baptisms": 5040,
+    "confirmations": 2091,
+    "marriages": 1261,
+    "funerals": 1,
+    "pending_baptisms": 69,
+    "pending_confirmations": 233,
+    "pending_marriages": 1,
+    "pending_funerals": 1,
+    "auth_accounts": 12,
+    "qa208_active_profiles": 8
+  },
+  "sourceSha256": {
+    "src/context/AuthContext.jsx": "26a7d69e4c0fa262c06a32d1dbc9825c63b714b4577ebfb3b9d5a6a0ba6550d2",
+    "src/App.jsx": "bc20de1f8a688255e970ffde88640e8c76f8220b2b8d69854501783c48919f70",
+    "src/pages/ResetPasswordPage.jsx": "857f1b4c24dfb6b39837963bbb1c6337616bc379191366056744b090b89b9ba3",
+    "src/components/PasswordRecoveryRedirect.jsx": "6c5abcb36f5cee6c1e09a842e37d3634aedc009d6010026503329d0a7a6bebc1",
+    "src/services/passwordRecoveryService.js": "151747955efd46f5a8b631b9d647d0d403244d95ed288fedd72e3af10806f595"
+  },
+  "semanticLimits": [
+    "Scope and role tests were real GoTrue JWT calls; they do not provide an institutionally signed certificate.",
+    "Concurrent sacramental test operations rolled back deliberately; final legal issuance and full positive parish workflow still require validation.",
+    "Password update worked for a QA account; recovery email delivery and SMTP were NOT tested.",
+    "All data remain fictitious. Production still requires an entirely separate empty project and outstanding security reviews."
+  ],
+  "releaseBlockingIssues": [
+    "remaining supabase_admin future default privileges",
+    "152 authenticated SECURITY DEFINER routines need formal scope review",
+    "independent clean production installation and real restore/SMTP/physical PDF acceptance"
+  ]
+}

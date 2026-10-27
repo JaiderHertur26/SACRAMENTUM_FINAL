@@ -1,0 +1,98 @@
+{
+  "protocol": "V227",
+  "date": "2026-10-26",
+  "estimatedPercent": 95,
+  "rawWeighted": 94.9,
+  "method": "Estimación de madurez técnica ponderada en nueve áreas. Se ajusta por pruebas REALES GoTrue, navegador React y concurrencia segura, no por lanzamiento oficial. No equivale a certificación jurídica ni operativa.",
+  "stage": "ONLY QA: EVERY EXISTING SACRAMENTAL RECORD IS FICTITIOUS AND NONE WILL BE MIGRATED TO OFFICIAL",
+  "areas": [
+    {
+      "area": "Infraestructura, CI y despliegue",
+      "weight": 10,
+      "complete": 99,
+      "remaining": "Restauración real de backups, correo operativo y control del inicio oficial"
+    },
+    {
+      "area": "Roles, jerarquía y separación institucional",
+      "weight": 10,
+      "complete": 100,
+      "remaining": "Permisos de jurisdicción comprobados; falta formalizar la certificación institucional de acceso"
+    },
+    {
+      "area": "Registros y pendientes de cuatro sacramentos",
+      "weight": 20,
+      "complete": 94,
+      "remaining": "Aún falta aceptación positiva con expedientes auténticos y flujos completos de emisión y cierre"
+    },
+    {
+      "area": "Cancillería, decretos y trazabilidad jurídica",
+      "weight": 15,
+      "complete": 95,
+      "remaining": "Revisión de seguridad de 152 funciones privilegiadas y aprobación completa de decretos con sesiones reales"
+    },
+    {
+      "area": "Migración histórica e integridad de procedencia",
+      "weight": 15,
+      "complete": 96,
+      "remaining": "Cotejo histórico de candidatos, resolución de conflictos y segregación de fuentes de producción"
+    },
+    {
+      "area": "Notas marginales y reconciliación",
+      "weight": 10,
+      "complete": 91,
+      "remaining": "Validación documental completa con nota física y asiento oficial en entorno nuevo"
+    },
+    {
+      "area": "Reportes, chat y notificaciones",
+      "weight": 8,
+      "complete": 91,
+      "remaining": "Entrega SMTP real, permisos de notificaciones y pruebas de carga y concurrencia adicionales"
+    },
+    {
+      "area": "Documentos, constancias e impresión",
+      "weight": 7,
+      "complete": 91,
+      "remaining": "Inspección física de documentos y autenticación/firmas"
+    },
+    {
+      "area": "Aceptación E2E y operaciones reales",
+      "weight": 5,
+      "complete": 96,
+      "remaining": "Validación del arranque limpio, respaldos/restauración y certificación del primer registro oficial"
+    }
+  ],
+  "evidence": {
+    "realAccountsLoggedIn": 8,
+    "realAccountPasses": 8,
+    "realWrongPasswordRejected": true,
+    "realCrossJurisdictionDenials": 25,
+    "realFourSacramentWriteDenials": 24,
+    "realRoleDashboardBrowserPasses": 4,
+    "realRoleDashboardBrowserTotal": 4,
+    "trueConcurrencyPostgresModesPassed": 5,
+    "realDeadlockRecovered": true,
+    "realBusinessCountersUnchanged": true,
+    "realAuthResilienceScenariosPassed": 4,
+    "realPasswordUpdatesVerified": 1,
+    "newSyntheticEvidenceTests": 12,
+    "liveServerTestRecordsDeleted": 0,
+    "liveBusinessTestRecordsCreated": 0,
+    "qaPasswordRotatedForOneFictitiousAccount": true,
+    "qaActiveTestProfilesAfterRun": 8,
+    "qaAuthAccountsAfterRun": 12,
+    "qaBaptismsAfterRun": 5040,
+    "qaConfirmationsAfterRun": 2091,
+    "qaMarriagesAfterRun": 1261,
+    "qaFuneralsAfterRun": 1,
+    "cleanOfficialSupabaseProjectExists": false,
+    "smtpDeliveryProven": false,
+    "allRecordsRemainFictitious": true
+  },
+  "blockingBeforeOfficial": [
+    "Las ACL predeterminadas del propietario supabase_admin siguen permitiendo acceso automático futuro; requiere operación autorizada",
+    "152 funciones SECURITY DEFINER autenticadas requieren análisis formal y pruebas de autorización semántica",
+    "Probar el ciclo positivo institucional completo de cada sacramento y decreto, incluidos efectos y PDFs físicos",
+    "Validar entrega externa SMTP, respaldo y restauración; probar flujos reales de cierre del sistema",
+    "Crear y acreditar una instancia Supabase limpia independiente, con cero registros de prueba, cero cuentas falsas y acta de apertura"
+  ]
+}
