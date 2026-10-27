@@ -1,0 +1,18 @@
+{
+  "protocol": "V223",
+  "environment": "EXISTING_QA_TEST_ONLY",
+  "project_ref": "foczofcmwampjvlfbsqn",
+  "verified_at": "2026-10-27T01:38:59.225Z",
+  "verification_source": "privileged-read-only:Supabase MCP execute_sql",
+  "counts": {
+    "tracked_public_tables": 82,
+    "non_empty_public_tables": 59,
+    "public_rows": 95320,
+    "auth_users": 12,
+    "storage_objects": 0,
+    "storage_buckets": 1,
+    "unexpected_public_tables": 0
+  },
+  "approved_for_official_mode": false,
+  "note": "All records in the existing database are tests; this QA report never qualifies for official mode. No mutations."
+}
