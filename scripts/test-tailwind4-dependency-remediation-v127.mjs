@@ -31,7 +31,8 @@ test('No existe braces vulnerable ni micromatch/chokidar de Tailwind 3 en el loc
 });
 test('Paneles de Diócesis y Admin General usan transparencias Tailwind 4 sin clase obsoleta',()=>{
  assert.match(admin,/bg-blue-600\/10/);
- assert.match(diocese,/bg-\[#4B7BA7\]\/10/);
+ assert.match(diocese,/bg-\[#f5e8db\]/);
+ assert.match(diocese,/ecclesial-scope-hero/);
  assert.doesNotMatch(admin,/bg-opacity-10/);
  assert.doesNotMatch(diocese,/bg-opacity-10/);
 });
@@ -46,5 +47,6 @@ test('Puerta local completa no acepta vulnerabilidades ni ausencia de auditoría
 });
 test('La verificación de utilidades CSS usa paquete directo declarado',()=>{
  assert.ok(pkg.devDependencies['postcss-selector-parser']);
- assert.match(read('scripts/check-critical-css-v91.mjs'),/bg-blue-600\/10/);
+ assert.match(read('scripts/check-critical-css-v91.mjs'),/ecclesial-workspace/);
+ assert.match(read('scripts/check-critical-css-v91.mjs'),/postcss-selector-parser/);
 });

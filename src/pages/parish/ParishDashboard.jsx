@@ -500,7 +500,7 @@ const ParishDashboard = () => {
         <div className="pointer-events-none absolute -top-14 right-0 h-80 w-80 rounded-full bg-blue-100/35 blur-3xl" />
         <div className="pointer-events-none absolute top-44 left-1/4 h-64 w-64 rounded-full bg-amber-100/25 blur-3xl" />
 
-        <section className="relative overflow-hidden rounded-[2.25rem] border border-slate-200/70 bg-gradient-to-br from-white via-[#F8FBFF] to-[#F2F7FC] shadow-[0_28px_80px_-46px_rgba(15,23,42,0.38)]">
+        <section className="ecclesial-parish-hero relative overflow-hidden rounded-[2.25rem] border border-[#e3d5be] bg-gradient-to-br from-[#fffdf8] via-[#fcf5e9] to-[#f4ebdd] shadow-[0_28px_80px_-46px_rgba(90,45,54,0.25)]">
           <div className="absolute inset-y-0 right-0 w-[46%] bg-gradient-to-l from-[#DCEBFA]/55 via-[#EDF5FC]/35 to-transparent" />
           <div className="absolute -right-10 -top-12 opacity-[0.055]">
             <Church className="h-64 w-64 text-[#1F4F7A]" />
@@ -513,12 +513,12 @@ const ParishDashboard = () => {
                   <Landmark className="h-4 w-4" />
                 </div>
                 <span className="text-[10px] font-black uppercase tracking-[0.32em]">
-                  Consola de Administración
+                  Despacho y archivo sacramental
                 </span>
               </div>
 
               <h1 className="font-serif text-4xl font-black tracking-tight text-slate-950 md:text-5xl">
-                Panel Parroquial
+                Vida parroquial y sacramentos
               </h1>
 
               <div className="mt-4 flex flex-wrap items-center gap-3">
@@ -642,7 +642,7 @@ const ParishDashboard = () => {
                 </h2>
               </div>
               <p className="mt-2 text-xs text-slate-400">
-                Gestión rápida del archivo parroquial.
+                Accesos al archivo y a la vida sacramental de la parroquia.
               </p>
             </div>
 

@@ -24,6 +24,8 @@ const Header = ({ username, role, entityName, onLogout, onToggleSidebar }) => {
   const rawRole = typeof role === 'object' && role !== null ? (role.role || role.name || '') : role;
   const safeRoleStr = typeof rawRole === 'object' ? '' : String(rawRole);
 
+  const isEcclesialHeader = [ROLE_TYPES.DIOCESE, ROLE_TYPES.CHANCERY, ROLE_TYPES.PARISH]
+    .includes(safeRoleStr);
   const getRoleLabel = (r) => {
     const roleStr = String(r);
     switch(roleStr) {
@@ -36,7 +38,7 @@ const Header = ({ username, role, entityName, onLogout, onToggleSidebar }) => {
   };
 
   return (
-    <header className="h-16 bg-white border-b border-slate-200 fixed top-0 right-0 left-0 z-30 lg:left-72 transition-all duration-300">
+    <header className={"h-16 bg-white border-b border-slate-200 fixed top-0 right-0 left-0 z-30 lg:left-72 transition-all duration-300" + (isEcclesialHeader ? " ecclesial-header" : "")}>
       <div className="h-full px-4 lg:px-6 flex items-center justify-between">
         <div className="flex items-center gap-4 flex-1">
           <button 
@@ -46,8 +48,18 @@ const Header = ({ username, role, entityName, onLogout, onToggleSidebar }) => {
             <Menu className="w-5 h-5" />
           </button>
           
+          {isEcclesialHeader && (
+            <div className="ecclesial-mobile-brand md:hidden" aria-label="Sistema eclesial SACRAMENTUM">
+              <span className="ecclesial-mobile-symbol" aria-hidden="true">✝</span>
+              <div>
+                <strong>SACRAMENTUM</strong>
+                <small>{getRoleLabel(safeRoleStr)}</small>
+              </div>
+            </div>
+          )}
           <div className="hidden md:block flex-1">
-            <h2 className="text-lg font-bold text-[#111111] whitespace-normal">
+            {isEcclesialHeader && <span className="ecclesial-header-overline">{getRoleLabel(safeRoleStr)} · SACRAMENTUM</span>}
+            <h2 className={isEcclesialHeader ? "ecclesial-header-title whitespace-normal" : "text-lg font-bold text-[#111111] whitespace-normal"}>
               {displayEntityName}
             </h2>
           </div>
@@ -57,9 +69,11 @@ const Header = ({ username, role, entityName, onLogout, onToggleSidebar }) => {
           <div className="relative">
             <button 
               onClick={() => setShowUserMenu(!showUserMenu)}
-              className="flex items-center gap-3 p-1.5 rounded-lg hover:bg-slate-100 transition-colors border border-transparent hover:border-slate-200"
+              className={"flex items-center gap-3 p-1.5 rounded-lg hover:bg-slate-100 transition-colors border border-transparent hover:border-slate-200" + (isEcclesialHeader ? " ecclesial-user-trigger" : "")}
+              aria-expanded={showUserMenu}
+              aria-label="Menú del usuario"
             >
-              <div className="w-8 h-8 bg-[#D4AF37]/20 rounded-full flex items-center justify-center text-[#D4AF37] border border-[#D4AF37]/30">
+              <div className={"w-8 h-8 bg-[#D4AF37]/20 rounded-full flex items-center justify-center text-[#D4AF37] border border-[#D4AF37]/30" + (isEcclesialHeader ? " ecclesial-user-mark" : "")}>
                 <User className="w-4 h-4" />
               </div>
               <div className="hidden md:block text-left">

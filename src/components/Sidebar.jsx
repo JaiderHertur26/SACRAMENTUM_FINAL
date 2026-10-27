@@ -23,7 +23,7 @@ import { countUnreadChatMessages, subscribeToChatActivity } from '@/services/cha
 // =========================================================================
 // 🧩 COMPONENTE: ITEM INDIVIDUAL
 // =========================================================================
-const SidebarItem = ({ item, isActive, isChild = false, badgeCount }) => {
+const SidebarItem = ({ item, isActive, isChild = false, badgeCount, ecclesial = false, onNavigate }) => {
   const [isOpen, setIsOpen] = useState(false);
   const hasChildren = item.children && item.children.length > 0;
   const location = useLocation();
@@ -50,8 +50,11 @@ const SidebarItem = ({ item, isActive, isChild = false, badgeCount }) => {
       <div className="mb-2">
         <button
           onClick={() => setIsOpen(!isOpen)}
+          aria-expanded={isOpen}
           className={cn(
             "w-full flex items-center justify-between px-4 py-3 rounded-2xl transition-all duration-300 group",
+            ecclesial && "ecclesial-sidebar-group",
+            ecclesial && isOpen && "ecclesial-sidebar-group-open",
             isOpen ? "bg-slate-50" : "hover:bg-slate-50"
           )}
         >
@@ -98,6 +101,8 @@ const SidebarItem = ({ item, isActive, isChild = false, badgeCount }) => {
                       isActive={isChildActive}
                       isChild={true}
                       badgeCount={child.badgeCount}
+                      ecclesial={ecclesial}
+                      onNavigate={onNavigate}
                     />
                   );
                 })}
@@ -119,9 +124,12 @@ const SidebarItem = ({ item, isActive, isChild = false, badgeCount }) => {
           if (item.onClick) {
               item.onClick(e);
           }
+          if (ecclesial && onNavigate) onNavigate();
       }}
+      aria-current={isActive ? 'page' : undefined}
       className={cn(
         "flex items-center justify-between py-3 px-4 mb-2 rounded-2xl transition-all duration-300 group",
+        ecclesial && isActive && "ecclesial-nav-current",
         isActive 
           ? "bg-[#4B7BA7] text-white shadow-xl shadow-blue-900/20" 
           : isChild ? "hover:bg-slate-100 text-slate-500 hover:text-slate-900" : "text-slate-500 hover:bg-slate-50 hover:text-slate-900"
@@ -164,6 +172,7 @@ const Sidebar = ({ isOpen, onClose, onLogout, role, menuItems: externalMenuItems
 
   const rawRole = profile?.role || user?.role || (typeof role === 'object' && role !== null ? (role.role || role.name) : role);
   const safeRole = normalizeRole(rawRole);
+  const isEcclesial = [ROLE_TYPES.DIOCESE, ROLE_TYPES.CHANCERY, ROLE_TYPES.PARISH].includes(safeRole);
   const showBarranquillaIdentity = isBarranquillaInstitutionalUser(user);
 
   useEffect(() => {
@@ -370,24 +379,25 @@ const Sidebar = ({ isOpen, onClose, onLogout, role, menuItems: externalMenuItems
 
       <div className={cn(
         "fixed inset-y-0 left-0 z-50 w-72 bg-white border-r border-slate-100 transform transition-transform duration-500 ease-in-out lg:translate-x-0 shadow-2xl lg:shadow-none",
+        isEcclesial && "ecclesial-sidebar",
         isOpen ? "translate-x-0" : "-translate-x-full"
       )}>
         <div className="flex flex-col h-full">
           
-          <div className="h-24 flex items-center px-8 border-b border-slate-50 bg-white shrink-0">
-            <div className="w-10 h-10 bg-[#4B7BA7] rounded-2xl flex items-center justify-center mr-4 shadow-lg shadow-blue-900/20 rotate-3 transition-transform hover:rotate-0">
-              <Landmark className="w-6 h-6 text-white -rotate-3 transition-transform hover:rotate-0" />
+          <div className={cn("h-24 flex items-center px-8 border-b border-slate-50 bg-white shrink-0", isEcclesial && "ecclesial-sidebar-brand")}>
+            <div className={cn("w-10 h-10 bg-[#4B7BA7] rounded-2xl flex items-center justify-center mr-4 shadow-lg shadow-blue-900/20 rotate-3 transition-transform hover:rotate-0", isEcclesial && "ecclesial-brand-mark")}>
+              {isEcclesial ? <Church className="w-6 h-6 text-white" aria-hidden="true" /> : <Landmark className="w-6 h-6 text-white -rotate-3 transition-transform hover:rotate-0" />}
             </div>
             <div>
-                <span className="block font-black text-xl text-slate-900 tracking-tighter leading-none">{SACRAMENTUM_BRAND.name}</span>
-                <span className="text-[9px] font-black text-[#D4AF37] uppercase tracking-[0.22em]">{SACRAMENTUM_BRAND.shortDescriptor}</span>
+                <span className={cn("block font-black text-xl text-slate-900 tracking-tighter leading-none", isEcclesial && "ecclesial-brand-name")}>{SACRAMENTUM_BRAND.name}</span>
+                <span className={cn("text-[9px] font-black text-[#D4AF37] uppercase tracking-[0.22em]", isEcclesial && "ecclesial-brand-subtitle")}>{SACRAMENTUM_BRAND.shortDescriptor}</span>
             </div>
             <button onClick={onClose} className="ml-auto lg:hidden p-2 rounded-xl hover:bg-slate-100 text-slate-400">
               <ChevronRight className="w-5 h-5 rotate-180" />
             </button>
           </div>
 
-          <div className="flex-1 overflow-y-auto py-6 px-5 custom-scrollbar bg-white">
+          <div className={cn("flex-1 overflow-y-auto py-6 px-5 custom-scrollbar bg-white", isEcclesial && "ecclesial-sidebar-scroll")}>
             {showBarranquillaIdentity && (
               <section aria-label="Identidad institucional" className="relative mb-7 overflow-hidden rounded-[1.25rem] border border-[#d9b967]/40 bg-gradient-to-br from-[#20364b] via-[#1a2f42] to-[#122435] px-4 py-4 text-center shadow-md shadow-slate-900/10">
                 <div className="pointer-events-none absolute -left-8 -top-14 h-32 w-32 rounded-full border border-[#d5af55]/15" aria-hidden="true" />
@@ -396,7 +406,7 @@ const Sidebar = ({ isOpen, onClose, onLogout, role, menuItems: externalMenuItems
                 <div className="relative mx-auto mt-3 h-px w-16 bg-gradient-to-r from-transparent via-[#d6b35a] to-transparent" aria-hidden="true" />
               </section>
             )}
-            <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.3em] mb-6 px-4">Centro de Operaciones</p>
+            <p className={cn("text-[9px] font-black text-slate-400 uppercase tracking-[0.3em] mb-6 px-4", isEcclesial && "ecclesial-sidebar-nav-label")}>{isEcclesial ? 'Áreas de servicio eclesial' : 'Centro de Operaciones'}</p>
             {finalMenuItems.map((item, idx) => {
               const isActive = location.pathname === item.path || 
                                (item.children && item.children.some(c => location.pathname.startsWith(c.path))) ||
@@ -408,15 +418,17 @@ const Sidebar = ({ isOpen, onClose, onLogout, role, menuItems: externalMenuItems
                   item={item} 
                   isActive={isActive}
                   badgeCount={item.badgeCount}
+                  ecclesial={isEcclesial}
+                  onNavigate={isEcclesial ? onClose : undefined}
                 />
               );
             })}
           </div>
 
-          <div className="p-6 bg-slate-50/50 border-t border-slate-100 shrink-0">
-            <div className="bg-white p-4 rounded-[1.5rem] border border-slate-100 shadow-sm mb-4">
+          <div className={cn("p-6 bg-slate-50/50 border-t border-slate-100 shrink-0", isEcclesial && "ecclesial-sidebar-footer")}>
+            <div className={cn("bg-white p-4 rounded-[1.5rem] border border-slate-100 shadow-sm mb-4", isEcclesial && "ecclesial-sidebar-user")}>
                 <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-blue-100 rounded-2xl flex items-center justify-center text-blue-600 font-black text-xs uppercase">
+                    <div className={cn("w-10 h-10 bg-blue-100 rounded-2xl flex items-center justify-center text-blue-600 font-black text-xs uppercase", isEcclesial && "ecclesial-sidebar-initials")}>
                         {(user?.full_name || user?.username || user?.email || 'PA').substring(0, 2)}
                     </div>
                     <div className="flex flex-col overflow-hidden">
@@ -434,7 +446,7 @@ const Sidebar = ({ isOpen, onClose, onLogout, role, menuItems: externalMenuItems
             </div>
             <button 
               onClick={handleLogoutClick}
-              className="flex items-center justify-center gap-3 w-full px-4 py-4 text-[10px] font-black uppercase tracking-widest text-red-500 bg-red-50 hover:bg-red-100 rounded-2xl transition-all active:scale-95 border border-red-100/50 shadow-sm shadow-red-900/5"
+              className={cn("flex items-center justify-center gap-3 w-full px-4 py-4 text-[10px] font-black uppercase tracking-widest text-red-500 bg-red-50 hover:bg-red-100 rounded-2xl transition-all active:scale-95 border border-red-100/50 shadow-sm shadow-red-900/5", isEcclesial && "ecclesial-sidebar-logout")}
             >
               <LogOut className="w-4 h-4" />
               <span>Cerrar Sesión Segura</span>
