@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
+import { getParishSessionScope } from '@/utils/parishSessionScope.mjs';
 import DashboardLayout from '@/components/DashboardLayout';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
@@ -82,8 +83,7 @@ const NotificationCard = ({ notification, onView }) => {
 };
 
 // --- COMPONENTE PRINCIPAL ---
-const ParishNotificationsPage = () => {
-    const { user } = useAuth();
+const ParishNotificationsSession = ({ user, parishId }) => {
     const navigate = useNavigate();
     const { toast } = useToast();
 
@@ -93,10 +93,10 @@ const ParishNotificationsPage = () => {
     useEffect(() => {
         let active = true;
         const load = async () => {
-            if (!user?.parishId) return;
+            if (!parishId) return;
             setIsLoading(true);
             try {
-                const rows = await listOfficialNotifications(user.parishId);
+                const rows = await listOfficialNotifications(parishId);
                 if (!active) return;
                 // Regla institucional: la comunicación más reciente siempre queda arriba,
                 // independientemente de si ya fue leída.
@@ -110,9 +110,10 @@ const ParishNotificationsPage = () => {
         };
         load();
         return () => { active = false; };
-    }, [user?.parishId]);
+    }, [parishId]);
 
     const handleViewDecree = async (notification) => {
+        if (isLoading || !notifications.some(item => item.id === notification?.id)) return;
         if (notification.status === 'pending' || notification.status === 'unread') {
             try {
                 await markOfficialNotificationRead(notification.id);
@@ -182,6 +183,15 @@ const ParishNotificationsPage = () => {
             </div>
         </DashboardLayout>
     );
+};
+
+const ParishNotificationsPage = () => {
+    const { user, profile } = useAuth();
+    const scope = getParishSessionScope(user, profile);
+    if (!scope.authorized) return (
+        <DashboardLayout><p role="alert" className="mx-auto max-w-3xl rounded-2xl border border-red-200 bg-red-50 p-8 text-red-800">Las comunicaciones de decretos requieren una sesión parroquial activa y verificada.</p></DashboardLayout>
+    );
+    return <ParishNotificationsSession key={scope.key} user={user} parishId={scope.parishId} />;
 };
 
 export default ParishNotificationsPage;

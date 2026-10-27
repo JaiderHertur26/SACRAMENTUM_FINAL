@@ -1,0 +1,51 @@
+{
+  "protocol": "V222",
+  "scope": "Three actual React parish correspondence pages in isolated Chromium; delayed mocks; zero Supabase access",
+  "date": "2026-10-27T01:04:02.240Z",
+  "rows": [
+    {
+      "label": "sacramental_request_A_pending",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "label": "switch_B_and_late_A_never_leaks_into_sacramental_inbox",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "label": "sacramental_modal_is_destroyed_when_user_changes",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "label": "unauthorized_profile_denied_without_notification_reads",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "label": "official_inbox_late_A_response_isolation",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "label": "confirmation_context_late_A_response_isolation",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "label": "confirmation_send_requires_current_visible_source_and_destination",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "label": "no_external_network_or_JS_exceptions",
+      "passed": true,
+      "error": ""
+    }
+  ],
+  "passed": 8,
+  "total": 8,
+  "exceptions": [],
+  "externalRequests": []
+}
