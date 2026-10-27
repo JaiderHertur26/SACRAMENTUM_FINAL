@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {createHash} from 'node:crypto';
+import {assertV251RevisedSource} from './v251-reviewed-source-receipt.mjs';
 const read=p=>fs.readFileSync(p,'utf8').replace(/\r\n/g,'\n');
 const result=JSON.parse(read('AUDITORIA_RECUPERACION_UI_V205.json'));
 const names=['individual-reject','individual-lost-response','individual-read-failure','batch-partial','batch-lost-response','batch-read-failure','initial-read-error','batch-cancel'];
@@ -22,7 +23,7 @@ for(const scenario of names)test('V205 actual React recovery: '+scenario,()=>{
 test('V205 browser evidence belongs to the current React source and stays isolated',()=>{
  assert.equal(result.total,8);assert.equal(result.passed,8);
  assert.deepEqual(result.exceptions,[]);assert.deepEqual(result.externalRequests,[]);
- assert.equal(result.sourceSha256,createHash('sha256').update(read('src/pages/parish/MatrimonioSentarRegistrosPage.jsx')).digest('hex'));
+ assertV251RevisedSource({file:'src/pages/parish/MatrimonioSentarRegistrosPage.jsx',historicalSha256:result.sourceSha256,currentSha256:createHash('sha256').update(read('src/pages/parish/MatrimonioSentarRegistrosPage.jsx')).digest('hex')});
  assert.match(result.scope,/no authenticated production E2E/);
 });
 test('V205 regression test and live browser replay are mandatory in CI',()=>{

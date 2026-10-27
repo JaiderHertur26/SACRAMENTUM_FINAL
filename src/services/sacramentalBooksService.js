@@ -10,7 +10,7 @@ const CONFIG = {
 const PAGE_SIZE=1000;
 // El libro sacramental es archivo, no una lista de "vigentes". Una partida
 // anulada/corregida debe conservar su ubicación histórica y mostrarse con su
-// estado. Solo se excluyen borradores que nunca debieron formar parte del libro.
+// estado. Solo se excluyen pre-registros que nunca debieron formar parte del libro.
 const nonBookStatus=new Set(['pending','draft']);
 
 const applyFilters=(query,{parishId,cfg,book,yearFrom,yearTo})=>{

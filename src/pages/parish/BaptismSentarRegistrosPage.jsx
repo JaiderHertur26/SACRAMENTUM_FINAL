@@ -138,7 +138,7 @@ const BaptismSentarRegistrosPage = () => {
             return true;
         } catch (error) {
             console.error('Error cargando datos:', error);
-            const message = error?.message || 'No fue posible consultar los borradores de Bautismo en Supabase.';
+            const message = error?.message || 'No fue posible consultar los pre-registros de Bautismo en Supabase.';
             setLoadError(message);
             toast({ title: 'Error de sincronización', description: message, variant: 'destructive' });
             return false;
@@ -182,7 +182,7 @@ const BaptismSentarRegistrosPage = () => {
 
             toast({
                 title: "Éxito",
-                description: "Bautismo asentado permanentemente desde el borrador oficial de Supabase.",
+                description: "Bautismo asentado permanentemente desde el pre-registro validado en Supabase.",
                 className: "bg-green-50 text-green-900 border-green-200"
             });
 
@@ -358,7 +358,7 @@ const BaptismSentarRegistrosPage = () => {
                 </div>
 
                 {mode === 'individual' && (
-                    pendingBaptisms.length === 0 ? <EmptyState message="No hay borradores pendientes en la nube." /> :
+                    pendingBaptisms.length === 0 ? <EmptyState message="No hay pre-registros pendientes en la nube." /> :
                     <div className="animate-in fade-in duration-500 space-y-6">
                         <div className="bg-white p-4 rounded-t-[2rem] border shadow-sm flex items-center justify-between border-b-0">
                             <Button variant="outline" onClick={() => setCurrentIndex(prev => Math.max(0, prev - 1))} disabled={currentIndex === 0}><ChevronLeft /></Button>
@@ -434,7 +434,7 @@ const BaptismSentarRegistrosPage = () => {
                 )}
 
                 {mode === 'batch' && (
-                    pendingBaptisms.length === 0 ? <EmptyState message="No hay borradores pendientes en la nube para procesar por lote." /> :
+                    pendingBaptisms.length === 0 ? <EmptyState message="No hay pre-registros pendientes en la nube para procesar por lote." /> :
                     <div className="animate-in fade-in duration-500 bg-white rounded-[2.5rem] border shadow-sm overflow-hidden">
                         <table className="w-full text-left">
                             <thead className="bg-slate-50 border-b font-black text-[10px] text-slate-400 uppercase">

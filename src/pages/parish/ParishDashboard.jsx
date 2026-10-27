@@ -535,7 +535,7 @@ const ParishDashboard = () => {
                     className="inline-flex items-center gap-2 rounded-full border border-amber-200 bg-amber-50 px-3.5 py-1.5 text-[9px] font-black uppercase tracking-wider text-amber-700 shadow-sm transition hover:bg-amber-100"
                   >
                     <AlertCircle className="h-3.5 w-3.5 animate-pulse" />
-                    Existen borradores pendientes
+                    Existen registros pendientes de asiento
                   </motion.button>
                 )}
               </div>
@@ -709,7 +709,7 @@ const ParishDashboard = () => {
                   onClick={() => navigate(pendingTarget)}
                   className="h-9 rounded-xl px-4 text-[9px] font-black uppercase tracking-widest text-[#316B9B] hover:bg-blue-50"
                 >
-                  Sentar Borradores
+                  Asentar registros pendientes
                   <ChevronRight className="ml-1.5 h-3.5 w-3.5" />
                 </Button>
               )}
@@ -870,7 +870,7 @@ const StatusBadge = ({ pending, status, source }) => {
   if (pending) {
     return (
       <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-[8px] font-black uppercase tracking-[0.12em] text-amber-700">
-        <Clock className="h-3 w-3" /> Borrador
+        <Clock className="h-3 w-3" /> Pendiente de asiento
       </span>
     );
   }

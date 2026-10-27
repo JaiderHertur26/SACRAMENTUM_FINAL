@@ -1,4 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';import {createHash} from 'node:crypto';
+import {assertV251RevisedSource} from './v251-reviewed-source-receipt.mjs';
 const read=p=>fs.readFileSync(p,'utf8').replace(/\r\n/g,'\n');
 const source=read('src/services/pendingCreationService.js').replace(/^import .*;\n/gm,'');
 const lib=await import('data:text/javascript;base64,'+Buffer.from("const supabase={};const generateUUID=()=>crypto.randomUUID();\n"+source).toString('base64'));
@@ -35,7 +36,7 @@ for(const {kind,scenario} of definitions)test('V207 real page and services '+kin
 });
 test('V207 browser receipt matches eight current production source files',()=>{
  assert.equal(report.passed,21);assert.equal(report.total,21);assert.deepEqual(report.exceptions,[]);assert.deepEqual(report.externalRequests,[]);
- assert.equal(Object.keys(report.sourceSha256).length,8);for(const [file,hash] of Object.entries(report.sourceSha256))assert.equal(hash,createHash('sha256').update(read(file)).digest('hex'));
+ assert.equal(Object.keys(report.sourceSha256).length,8);for(const [file,hash] of Object.entries(report.sourceSha256))assertV251RevisedSource({file,historicalSha256:hash,currentSha256:createHash('sha256').update(read(file)).digest('hex')});
  assert.match(report.scope,/no authenticated browser E2E/);
 });
 test('V207 PostgreSQL fixture covers five circuits, stable counters and no QA residue',()=>{

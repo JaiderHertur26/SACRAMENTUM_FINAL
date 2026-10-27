@@ -34,11 +34,11 @@ test('V250 login and all dashboards no longer mount QA alert ribbons',()=>{
 });
 test('V250 generated samples remain conspicuously drafts, never falsely certified',()=>{
  assert.equal(isTestRegistryData(),true);
- assert.match(testDocumentPrintCss(),/BORRADOR/);
+ assert.match(testDocumentPrintCss(),/COPIA DE REVISIÓN/);
  const doc=new jsPDF();
  stampTestPdfPages(doc);
  const content=doc.internal.pages.slice(1).join('\n');
- assert.match(content,/BORRADOR/);
+ assert.match(content,/COPIA DE REVISIÓN/);
  assert.match(content,/NO APTO PARA EXPEDICIÓN/);
 });
 test('V250 QA database protection remains independent from presentation',()=>{

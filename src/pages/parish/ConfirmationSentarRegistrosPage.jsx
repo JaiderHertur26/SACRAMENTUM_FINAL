@@ -489,7 +489,7 @@ const ConfirmationSentarRegistrosPage = () => {
                 </div>
 
                 {mode === 'individual' && (
-                    pendingConfirmations.length === 0 ? <EmptyState message="No hay borradores pendientes de confirmación en la nube." /> :
+                    pendingConfirmations.length === 0 ? <EmptyState message="No hay pre-registros pendientes de confirmación en la nube." /> :
                     <div className="animate-in fade-in duration-500 space-y-6">
                         <div className="bg-white p-4 rounded-t-[2rem] border shadow-sm flex items-center justify-between border-b-0">
                             <Button variant="outline" onClick={() => setCurrentIndex(prev => Math.max(0, prev - 1))} disabled={currentIndex === 0}><ChevronLeft className="w-4 h-4 text-slate-600" /></Button>
@@ -563,7 +563,7 @@ const ConfirmationSentarRegistrosPage = () => {
                 )}
 
                 {mode === 'batch' && (
-                    pendingConfirmations.length === 0 ? <EmptyState message="No hay borradores pendientes en la nube para procesar por lote." /> :
+                    pendingConfirmations.length === 0 ? <EmptyState message="No hay pre-registros pendientes en la nube para procesar por lote." /> :
                     <div className="animate-in fade-in duration-500 bg-white rounded-[2.5rem] border shadow-sm overflow-hidden">
                         <table className="w-full text-left">
                             <thead className="bg-slate-50 border-b font-black text-[10px] text-slate-400 uppercase">

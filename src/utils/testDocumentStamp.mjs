@@ -9,7 +9,7 @@ export const isTestRegistryData = () => import.meta.env?.VITE_REGISTRY_DATA_MODE
 export const testDocumentPrintCss = () => isTestRegistryData() ? `
 /* V220: popup documents must carry their own stamp; they do not load the SPA CSS. */
 body::before {
-  content:"BORRADOR · COPIA DE REVISIÓN";
+  content:"COPIA DE REVISIÓN · CONTROL DOCUMENTAL";
   position:fixed; top:3mm; left:0; right:0;
   text-align:center; font:900 10pt Arial, sans-serif;
   letter-spacing:.08em; color:#943b0e; z-index:2147483645;
@@ -17,7 +17,7 @@ body::before {
 }
 @media print {
   body::after {
-    content:"BORRADOR";
+    content:"COPIA DE REVISIÓN";
     position:fixed; top:50%; left:50%;
     transform:translate(-50%,-50%) rotate(-28deg);
     font:900 25pt Arial, sans-serif; color:rgba(125,70,45,.20);
@@ -38,7 +38,7 @@ export function stampTestPdfPages(doc) {
     doc.setFont('helvetica','bold');
     doc.setFontSize(23);
     doc.setTextColor(205,196,187);
-    doc.text('BORRADOR',w/2,h/2,{
+    doc.text('COPIA DE REVISIÓN',w/2,h/2,{
       align:'center',angle:25,maxWidth:w-32
     });
     doc.setFontSize(7);

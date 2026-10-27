@@ -240,7 +240,7 @@ export const purificarRegistroBautismo = (raw) => {
     return purificado;
 };
 
-// ☁️ BORRADOR CLOUD-NATIVE: PostgreSQL reserva el Nº de Registro y crea el
+// ☁️ PRE-REGISTRO CLOUD-NATIVE: PostgreSQL reserva el Nº de Registro y crea el
 // pendiente dentro de una sola transacción. El navegador nunca adelanta el
 // contador oficial por su cuenta.
 export const saveBaptismToSource = async (data, parishId, mode = 'pending', options = {}) => {
@@ -284,7 +284,7 @@ export const saveBaptismToSource = async (data, parishId, mode = 'pending', opti
             .eq('parish_id', targetParishId)
             .maybeSingle();
         if (verifyError || !persistedPending) {
-            throw new Error(verifyError?.message || 'Supabase no confirmó la persistencia del borrador de Bautismo.');
+            throw new Error(verifyError?.message || 'Supabase no confirmó la persistencia del pre-registro de Bautismo.');
         }
 
         const cloudDraft = {
@@ -300,7 +300,7 @@ export const saveBaptismToSource = async (data, parishId, mode = 'pending', opti
         let confirmationDraft = null;
         if (purificado.willReceiveConfirmation === true) {
             if (!confirmationPendingId) {
-                throw new Error('Supabase no devolvió el borrador de Confirmación vinculado.');
+                throw new Error('Supabase no devolvió el pre-registro de Confirmación vinculado.');
             }
 
             const { data: persistedConfirmation, error: confirmationVerifyError } = await supabase
@@ -355,7 +355,7 @@ export const saveBaptismToSource = async (data, parishId, mode = 'pending', opti
         };
     } catch (e) {
         console.error('Supabase create_pending_baptism error:', e);
-        const rawMessage = String(e?.message || 'No fue posible crear el borrador de Bautismo.');
+        const rawMessage = String(e?.message || 'No fue posible crear el pre-registro de Bautismo.');
         const message = rawMessage.includes('create_pending_baptism_with_confirmation_flow') || rawMessage.includes('schema cache')
             ? 'Falta aplicar la migración V42 del flujo Bautismo + Confirmación en Supabase.'
             : rawMessage;
@@ -365,7 +365,7 @@ export const saveBaptismToSource = async (data, parishId, mode = 'pending', opti
 
 
 // ============================================================================
-// 🔴 CONFIRMACIONES · BORRADOR CLOUD-NATIVE
+// 🔴 CONFIRMACIONES · PRE-REGISTRO CLOUD-NATIVE
 // ============================================================================
 // PostgreSQL reserva el Nº de Registro y crea pending_confirmations dentro de
 // una sola transacción. El navegador nunca adelanta confirmaciones_params.
@@ -407,7 +407,7 @@ export const saveConfirmationToSource = async (data, parishId, mode = 'pending',
             .eq('parish_id', targetParishId)
             .maybeSingle();
         if (verifyError || !persistedPending) {
-            throw new Error(verifyError?.message || 'Supabase no confirmó la persistencia del borrador de Confirmación.');
+            throw new Error(verifyError?.message || 'Supabase no confirmó la persistencia del pre-registro de Confirmación.');
         }
 
         const cloudDraft = {
@@ -432,7 +432,7 @@ export const saveConfirmationToSource = async (data, parishId, mode = 'pending',
         return { success: true, id: pendingId, numeroRegistro, record: cloudDraft };
     } catch (e) {
         console.error('Supabase create_pending_confirmation error:', e);
-        const rawMessage = String(e?.message || 'No fue posible crear el borrador de Confirmación.');
+        const rawMessage = String(e?.message || 'No fue posible crear el pre-registro de Confirmación.');
         const message = rawMessage.includes('create_pending_confirmation') || rawMessage.includes('schema cache')
             ? 'Falta aplicar la migración de Confirmación Cloud-Native (Fase 5B) en Supabase.'
             : rawMessage;

@@ -208,13 +208,13 @@
 /* Browser-printed drafts retain a non-certifying provenance marker without UI banners. */
 @media print {
   html[data-registry-data-mode="test"] body::before {
-    content:"BORRADOR · COPIA DE REVISIÓN";
+    content:"COPIA DE REVISIÓN · CONTROL DOCUMENTAL";
     position:fixed;top:2mm;left:0;right:0;
     color:#92400e;font:900 10pt Arial,sans-serif;
     letter-spacing:.08em;text-align:center;z-index:2147483645;pointer-events:none;
   }
   html[data-registry-data-mode="test"] body::after {
-    content:"BORRADOR";
+    content:"COPIA DE REVISIÓN";
     position:fixed;top:50%;left:50%;
     transform:translate(-50%,-50%) rotate(-28deg);
     color:rgba(125,70,45,.20);font:900 25pt Arial,sans-serif;

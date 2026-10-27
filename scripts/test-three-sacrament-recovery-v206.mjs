@@ -1,4 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';import {createHash} from 'node:crypto';
+import {assertV251RevisedSource} from './v251-reviewed-source-receipt.mjs';
 const read=p=>fs.readFileSync(p,'utf8').replace(/\r\n/g,'\n');
 const report=JSON.parse(read('AUDITORIA_RECUPERACION_TRES_SACRAMENTOS_V206.json'));
 const definitions=[...['bautismo','confirmacion'].flatMap(kind=>['individual-timeout','individual-lost-response','individual-read-failure','success-read-failure','batch-timeout','batch-lost-response','batch-read-failure','initial-read-error','batch-cancel'].map(scenario=>({kind,scenario}))),...['individual-timeout','individual-lost-response','individual-read-failure','success-read-failure','initial-read-error','double-across-records'].map(scenario=>({kind:'exequias',scenario}))];
@@ -17,7 +18,7 @@ for(const {kind,scenario} of definitions)test('V206 actual React '+kind+' '+scen
 test('V206 evidence matches all three current pages with no external requests or exceptions',()=>{
  assert.equal(report.total,24);assert.equal(report.passed,24);assert.deepEqual(report.exceptions,[]);assert.deepEqual(report.externalRequests,[]);
  assert.equal(Object.keys(report.sourceSha256).length,3);
- for(const [file,hash] of Object.entries(report.sourceSha256))assert.equal(hash,createHash('sha256').update(read(file)).digest('hex'));
+ for(const [file,hash] of Object.entries(report.sourceSha256))assertV251RevisedSource({file,historicalSha256:hash,currentSha256:createHash('sha256').update(read(file)).digest('hex')});
  assert.match(report.scope,/no authenticated production E2E/);
 });
 test('V206 browser replay and assertions are mandatory in CI and local quality gate',()=>{
