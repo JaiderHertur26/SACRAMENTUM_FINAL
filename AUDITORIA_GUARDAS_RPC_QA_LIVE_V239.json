@@ -1,0 +1,59 @@
+{
+  "version": "V239",
+  "verified_at_date": "2026-10-27",
+  "environment": "QA_ONLY_FICTITIOUS",
+  "project_ref": "foczofcmwampjvlfbsqn",
+  "test_engine": "Live PostgreSQL through Supabase privileged SQL executor, request.jwt.claim.sub from QA principals and SET LOCAL ROLE authenticated",
+  "transaction_safety": "BEGIN READ ONLY + ROLLBACK; all RPC calls intentionally invalid and no insert/update/delete made",
+  "functions": [
+    "apply_baptism_correction",
+    "apply_baptism_replacement",
+    "apply_confirmation_correction",
+    "apply_confirmation_replacement"
+  ],
+  "stages": [
+    {
+      "name": "parish_diocese_admin_denial",
+      "actor_roles": [
+        "parish",
+        "diocese",
+        "admin_general"
+      ],
+      "functions_per_actor": 4,
+      "executed": 12,
+      "passed": 12,
+      "expected": "Sólo Cancillería activa puede emitir o revertir decretos sacramentales"
+    },
+    {
+      "name": "chancery_own_diocese_first_guard",
+      "actor_roles": [
+        "chancery"
+      ],
+      "scope": "one real QA parish in same diocese",
+      "functions": 4,
+      "executed": 4,
+      "passed": 4,
+      "expected": "El concepto del decreto de corrección/reposición es obligatorio (guard passed, then input validation raised)"
+    },
+    {
+      "name": "chancery_foreign_diocese_denial",
+      "actor_roles": [
+        "chancery"
+      ],
+      "scope": "real QA parish from a different diocese",
+      "functions": 4,
+      "executed": 4,
+      "passed": 4,
+      "expected": "La parroquia está fuera de la jurisdicción de Cancillería"
+    }
+  ],
+  "total_live_checks": 20,
+  "passed": 20,
+  "failed": 0,
+  "mutating_calls_succeeded": 0,
+  "qa_data_mutations": 0,
+  "source_rpc_sql_changed": false,
+  "institutional_semantic_approvals": 0,
+  "limitations": "Negative cases and invalid-input guard-order tests demonstrate only the role and parish preconditions of four exposed SECURITY DEFINER functions. They do not exercise valid decrees, transitions, rollbacks after partial writes, concurrent mutations, or all 152 privileged RPCs. CI will validate this dated evidence offline, not replay live SQL.",
+  "official_mode_authorized": false
+}
