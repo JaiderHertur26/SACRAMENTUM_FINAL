@@ -117,7 +117,7 @@ const ParrocosList = () => {
         setLoading(true);
         const result = await addParroco(data, parishId);
         if (result.success) {
-            toast({ title: 'Éxito', description: 'Párroco registrado en la nube.', className: "bg-green-50 text-green-900 border-green-200" });
+            toast(result.requiresAttention ? { title: 'Revisión requerida', description: result.message, variant: 'destructive' } : { title: 'Éxito', description: 'Párroco registrado en la nube.', className: "bg-green-50 text-green-900 border-green-200" });
             setModals(m => ({ ...m, create: false }));
             await loadData();
         } else {
@@ -131,7 +131,7 @@ const ParrocosList = () => {
         setLoading(true);
         const result = await updateParroco(id, data, parishId);
         if (result.success) {
-            toast({ title: 'Actualizado', description: 'Información sincronizada.', className: "bg-green-50 text-green-900 border-green-200" });
+            toast(result.requiresAttention ? { title: 'Revisión requerida', description: result.message, variant: 'destructive' } : { title: 'Actualizado', description: 'Información sincronizada.', className: "bg-green-50 text-green-900 border-green-200" });
             setModals(m => ({ ...m, edit: false }));
             setSelectedParroco(null);
             await loadData();
@@ -146,7 +146,7 @@ const ParrocosList = () => {
         setLoading(true);
         const result = await deleteParroco(id, parishId);
         if (result.success) {
-            toast({ title: 'Eliminado', description: 'Registro removido.', className: "bg-green-50 text-green-900 border-green-200" });
+            toast(result.requiresAttention ? { title: 'Revisión requerida', description: result.message, variant: 'destructive' } : { title: 'Eliminado', description: 'Registro removido.', className: "bg-green-50 text-green-900 border-green-200" });
             setModals(m => ({ ...m, delete: false }));
             setSelectedParroco(null);
             await loadData();

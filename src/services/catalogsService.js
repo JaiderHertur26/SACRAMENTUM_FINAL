@@ -94,7 +94,7 @@ const parseDateSafe = (dateStr) => {
 
 // MOTOR CANÓNICO DEL PÁRROCO ACTUAL · no fabrica fechas históricas
 export const actualizarParrocoActual = async (parishId) => {
-    if (!parishId) return;
+    if (!parishId) throw new Error('Parroquia requerida para recalcular el párroco actual.');
     try {
         const { error: rpcError } = await supabase.rpc('sacramentum_recalculate_current_priest', {
             p_parish_id: parishId
@@ -125,12 +125,13 @@ export const actualizarParrocoActual = async (parishId) => {
         return normalized;
     } catch (e) {
         console.error('Error recalculando Párroco actual:',e);
-        return [];
+        throw e;
     }
 };
 
-export const addParroco = async (item, parishId) => { 
+export const addParroco = async (item, parishId) => {
     try {
+        if (!parishId) throw new Error('Parroquia requerida para registrar un párroco.');
         const newItem = { ...item, id: generateUUID(), createdAt: new Date().toISOString() };
         
         const dbRecord = {
@@ -149,18 +150,27 @@ export const addParroco = async (item, parishId) => {
         const { error } = await supabase.from('parrocos').insert([dbRecord]);
         if (error) throw error;
 
-        // El motor acomodará todo
-        await actualizarParrocoActual(parishId); 
+        // La inserción ya se confirmó en PostgreSQL; no fingir que fue revertida
+        // si la sincronización posterior falló: un reintento crearía duplicados.
+        try {
+            await actualizarParrocoActual(parishId);
+        } catch (syncError) {
+            return { success: true, requiresAttention: true, data: newItem,
+                message: 'Párroco guardado; falló la actualización del estado actual. Revise la sincronización antes de emitir documentos.' };
+        }
         return { success: true, data: newItem }; 
     } catch (e) {
         return { success: false, message: "Error al guardar: " + e.message };
     }
 };
 
-export const updateParroco = async (id, item, parishId) => { 
+export const updateParroco = async (id, item, parishId) => {
     try {
+        if (!parishId || !id) throw new Error('Párroco y parroquia requeridos para actualizar.');
         const current = getAuxData('parrocos', parishId);
-        const updatedItem = { ...current.find(p => p.id === id), ...item, updatedAt: new Date().toISOString() };
+        const original = current.find(p => p.id === id);
+        if (!original) throw new Error('Párroco no encontrado en el catálogo de esta parroquia. Recargue la lista.');
+        const updatedItem = { ...original, ...item, id, updatedAt: new Date().toISOString() };
         
         const dbRecord = {
             nombre: updatedItem.nombre || null,
@@ -173,11 +183,18 @@ export const updateParroco = async (id, item, parishId) => {
             payload: updatedItem
         };
 
-        const { error } = await supabase.from('parrocos').update(dbRecord).eq('id', id);
+        const { data: updated, error } = await supabase.from('parrocos')
+            .update(dbRecord).eq('id', id).eq('parish_id', parishId)
+            .select('id').maybeSingle();
         if (error) throw error;
+        if (!updated) throw new Error('No se actualizó ningún párroco de esta parroquia; verifique la jurisdicción.');
 
-        // El motor acomodará todo
-        await actualizarParrocoActual(parishId); 
+        try {
+            await actualizarParrocoActual(parishId);
+        } catch (syncError) {
+            return { success: true, requiresAttention: true,
+                message: 'El cambio fue guardado, pero falló la sincronización del párroco actual. Revise antes de emitir documentos.' };
+        }
         return { success: true }; 
     } catch (e) {
         return { success: false, message: "Error al actualizar: " + e.message };
@@ -186,11 +203,20 @@ export const updateParroco = async (id, item, parishId) => {
 
 export const deleteParroco = async (id, parishId) => {
     try {
-        const { error } = await supabase.from('parrocos').delete().eq('id', id);
+        if (!parishId || !id) throw new Error('Párroco y parroquia requeridos para eliminar.');
+        const { data: removed, error } = await supabase.from('parrocos')
+            .delete().eq('id', id).eq('parish_id', parishId)
+            .select('id').maybeSingle();
         if (error) throw error;
-        // El motor reacomodará las fechas del que quedó activo
-        await actualizarParrocoActual(parishId);
-        return { success: true, message: "Párroco eliminado correctamente." };
+        if (!removed) throw new Error('No se eliminó ningún párroco de esta parroquia; verifique la jurisdicción.');
+
+        try {
+            await actualizarParrocoActual(parishId);
+        } catch (syncError) {
+            return { success: true, requiresAttention: true,
+                message: 'El registro fue eliminado, pero falló la sincronización del párroco actual. Revise antes de emitir documentos.' };
+        }
+        return { success: true, message: 'Párroco eliminado correctamente.' };
     } catch (error) {
         return { success: false, message: "Error al eliminar: " + error.message };
     }
@@ -228,7 +254,12 @@ export const importParrocos = async (payload, parishId, append = false) => {
         }
 
         // El motor organizará las fechas y estados de los 100 párrocos inyectados
-        await actualizarParrocoActual(parishId);
+        try {
+            await actualizarParrocoActual(parishId);
+        } catch (syncError) {
+            return { success: true, requiresAttention: true, count: newItems.length,
+                message: 'Importación guardada; falló la sincronización del párroco actual. Revise antes de emitir documentos.' };
+        }
         return { success: true, count: newItems.length };
     } catch (e) {
         return { success: false, message: "Error en importación masiva: " + e.message };
