@@ -1,7 +1,7 @@
 {
   "protocol": "V232",
   "environment": "OFFLINE_QA_SCHEMAS_ONLY",
-  "migrationCount": 162,
+  "migrationCount": 163,
   "directWriteMigrationCount": 14,
   "directWriteStatementCount": 45,
   "findings": [
@@ -1332,6 +1332,12 @@
       "sha256": "df1150a18179005f2613e93f0d761ccbcd27c8f4484959cf13bdd141ba037a65",
       "directWrites": 0,
       "statements": 3
+    },
+    {
+      "file": "supabase/migrations/20261027133000_harden_materialize_chancery_v243.sql",
+      "sha256": "1985cadca8248def8e7f6d596f7eeebbc2db5a83028f50b4e10455cbe210a174",
+      "directWrites": 0,
+      "statements": 1
     }
   ]
 }
