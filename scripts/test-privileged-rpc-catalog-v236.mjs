@@ -43,7 +43,7 @@ test('V236 actual QA PostgreSQL catalog had 152 privileged RPC and a determinist
  assert.equal(evidence.environment,'QA_TEST_ONLY_NOT_OFFICIAL');
  assert.equal(evidence.project_ref,'foczofcmwampjvlfbsqn');
  assert.equal(evidence.catalog_count,152);
- assert.equal(evidence.privileged_rpc_catalog_md5,EXPECTED_PRIVILEGED_RPC_CATALOG_MD5_V236);
+ assert.equal(evidence.privileged_rpc_catalog_md5,'4ded9ebe1d9cde435befee3f8b131222'); // Preserved historical V236 fingerprint
  assert.equal(evidence.dynamic_sql_text_hits,0);
  assert.equal(evidence.read_only,true);
  assert.equal(evidence.qa_data_changed,false);

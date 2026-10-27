@@ -1,7 +1,7 @@
 {
   "protocol": "V232",
   "environment": "OFFLINE_QA_SCHEMAS_ONLY",
-  "migrationCount": 159,
+  "migrationCount": 160,
   "directWriteMigrationCount": 14,
   "directWriteStatementCount": 45,
   "findings": [
@@ -1300,6 +1300,12 @@
     {
       "file": "supabase/migrations/20261027044045_secure_definer_pg_temp_last_v229.sql",
       "sha256": "64472ee6a9a8e32278ffa2973d3fe2ad035991f9f783994f738ef093d38afb5b",
+      "directWrites": 0,
+      "statements": 1
+    },
+    {
+      "file": "supabase/migrations/20261027110500_harden_reversal_active_chancery_v240.sql",
+      "sha256": "d71fc4f3993cfc76a92cc9c5bbfb0eaa109a6323a29864b3d71a92684ffeabca",
       "directWrites": 0,
       "statements": 1
     },

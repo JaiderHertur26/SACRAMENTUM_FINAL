@@ -1,5 +1,5 @@
 // V236: privileged REST RPC catalog pinned to verified actual QA definition digest.
-export const EXPECTED_PRIVILEGED_RPC_CATALOG_MD5_V236 = '4ded9ebe1d9cde435befee3f8b131222';
+export const EXPECTED_PRIVILEGED_RPC_CATALOG_MD5_V236 = 'd68b18810533c368d26f2c43e2ea9711';
 // V234: Supabase's internal supabase_admin DEFAULT ACL is immutable from postgres.
 // Supabase's official KB says to control OWN creator defaults and avoid extensions
 // owned by supabase_admin in exposed public. Raw internal grants are TELEMETRY,
