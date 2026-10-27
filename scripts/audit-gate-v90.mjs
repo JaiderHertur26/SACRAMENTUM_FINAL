@@ -153,7 +153,8 @@ exec('pruebas-sinteticas',node,['--test',
  'scripts/test-live-rls-evidence-v225.mjs',
  'scripts/test-security-default-privileges-v226.mjs',
  'scripts/test-real-auth-evidence-v227.mjs',
- 'scripts/test-live-transaction-matrix-v228.mjs']);
+ 'scripts/test-live-transaction-matrix-v228.mjs',
+ 'scripts/test-secure-definer-path-v229.mjs']);
 const scripts=fs.readdirSync(path.join(root,'scripts')).filter(x=>/^verify-.*\.mjs$/.test(x)).sort();
 for(const file of scripts)exec('legacy/'+file,node,['scripts/'+file]);
 const npmOnWindows=process.platform==='win32';
