@@ -1,0 +1,12 @@
+{
+  "protocol": "V235",
+  "date": "2026-10-27",
+  "environment": "QA_TEST_ONLY_NOT_OFFICIAL",
+  "project_ref": "foczofcmwampjvlfbsqn",
+  "query_scope": "pg_default_acl postgres owner global schema 0; user grantees PUBLIC, anon, authenticated; types r, S, f",
+  "global_user_grants": [],
+  "read_only": true,
+  "qa_data_changed": false,
+  "official_database_created": false,
+  "meaning": "No default global postgres privileges for public Data API roles observed in QA. Fresh production must be separately tested."
+}
