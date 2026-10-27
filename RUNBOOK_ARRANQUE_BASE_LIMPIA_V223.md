@@ -40,3 +40,6 @@ Se implementaron inventario SQL de 82 tablas, evaluación de inventarios, precin
 La configuración de `auth_leaked_password_protection` y avisos GraphQL también debe revisarse desde el panel Supabase con criterios de necesidad, no aplicando revocaciones globales que rompan flujos. Aun después del preflight, los conteos y el acta son controles preventivos y **no constituyen por sí solos garantía legal ni certificación formal de la seguridad**.
 
 Hasta completar estos requisitos, los datos QA permanecen intactos, marcados NO OFICIALES y destinados únicamente a pruebas.
+
+## Adenda V226 — mantener el entorno de pruebas separado del futuro registro oficial
+Se endurecieron efectivamente las concesiones predeterminadas de objetos `public` creados por `postgres` en QA, sin cambiar datos. Los procedimientos y evidencias constan en `RUNBOOK_SEGURIDAD_PERMISOS_V226.md`, `supabase/security/` y `AUDITORIA_PRIVILEGIOS_PREDETERMINADOS_LIVE_V226.json`. El guard de compilación en modo oficial ahora exige acta **V226** y censo de permisos futuros con protección **global** de `PUBLIC EXECUTE`. Ninguna acta V223/V224 basta. **supabase_admin sigue pendiente** de una intervención administrativa autorizada; no se debe intentar una limpieza o migración de datos QA hacia el futuro sistema oficial.

@@ -1,0 +1,95 @@
+{
+  "protocol": "V226",
+  "date": "2026-10-26",
+  "estimatedPercent": 94,
+  "rawWeighted": 93.53,
+  "method": "Estimación técnica ponderada en nueve áreas. No implica aval jurídico o lanzamiento oficial. Se contabiliza una remediación de ACL futura aplicada y verificaciones reales QA, sin equivalencia con E2E de inicio de sesión.",
+  "stage": "QA ONLY — TODOS LOS DATOS SON PRUEBAS — AÚN NO PRODUCCIÓN OFICIAL",
+  "areas": [
+    {
+      "area": "Infraestructura, CI y despliegue",
+      "weight": 10,
+      "complete": 99,
+      "remaining": "Respaldos/restitución reales, monitoreo de lanzamiento y SMTP"
+    },
+    {
+      "area": "Roles, jerarquía y separación institucional",
+      "weight": 10,
+      "complete": 100,
+      "remaining": "Roles RLS verificados, pero faltan sesiones completas de usuario reales"
+    },
+    {
+      "area": "Registros y pendientes de cuatro sacramentos",
+      "weight": 20,
+      "complete": 91,
+      "remaining": "Aceptación E2E autenticada con transacciones ficticias reversibles y expediente documental"
+    },
+    {
+      "area": "Cancillería, decretos y trazabilidad jurídica",
+      "weight": 15,
+      "complete": 94,
+      "remaining": "Validar 152 RPC privilegiadas por lógica/jurisdicción y transición completa de decretos con sesiones reales"
+    },
+    {
+      "area": "Migración histórica e integridad de procedencia",
+      "weight": 15,
+      "complete": 96,
+      "remaining": "ACL futuras endurecidas para postgres; ajustar supabase_admin y completar cotejo documental"
+    },
+    {
+      "area": "Notas marginales y reconciliación",
+      "weight": 10,
+      "complete": 91,
+      "remaining": "Certificación documental e impresión física"
+    },
+    {
+      "area": "Reportes, chat y notificaciones",
+      "weight": 8,
+      "complete": 87,
+      "remaining": "Correo, concurrencia, carga y mensajería integrada en entorno autorizado"
+    },
+    {
+      "area": "Documentos, constancias e impresión",
+      "weight": 7,
+      "complete": 91,
+      "remaining": "Validación física de todas las plantillas"
+    },
+    {
+      "area": "Aceptación E2E y operaciones reales",
+      "weight": 5,
+      "complete": 90,
+      "remaining": "Crear instancia limpia, certificar privilegios, probar E2E autenticado/SMTP y restauración"
+    }
+  ],
+  "qaDataStatus": "No se ha borrado ni convertido a oficial ningún registro ficticio.",
+  "evidence": {
+    "syntheticPassed": 2040,
+    "syntheticTotal": 2040,
+    "qualityPassed": 30,
+    "qualityTotal": 30,
+    "newTestsV226": 17,
+    "defaultPrivilegesPostgresHardenedInQa": true,
+    "futureObjectProbeUnauthenticatedDenied": true,
+    "futureObjectProbeRolledBack": true,
+    "existingTestRecordsDeleted": 0,
+    "existingTestRecordsUpdated": 0,
+    "baptismFictitiousRecordsRetained": 5040,
+    "securityDefinerFunctionsCatalogued": 152,
+    "securityDefinerFormallyReviewed": 0,
+    "highRiskDefaultTableGrantsRemaining": 8,
+    "userFacingFutureTableGrantsRemaining": 16,
+    "userFacingFutureSequenceGrantsRemaining": 6,
+    "userFacingFutureFunctionGrantsRemaining": 2,
+    "creatorsMissingGlobalFunctionRevoke": 1,
+    "nextReleaseGuardProtocol": "V226",
+    "githubActionsRunnerVersions": "checkout v5, setup-node v5, node22 package"
+  },
+  "remaining": [
+    "Supabase_admin DEFAULT PRIVILEGES need authorized, independently verified remediation; postgres cannot safely alter them",
+    "Full formal review and negative authorization testing for 152 callable SECURITY DEFINER routines",
+    "Authenticated UI E2E across all roles and four sacraments, legal decrees, notices, historical migration",
+    "Physical print and document quality, email/SMTP, backup and restoration",
+    "Brand new blank Supabase production project with independent credentials/config and explicit official start act"
+  ],
+  "conclusion": "Never declare QA official, never migrate its test records into the new clean production project."
+}

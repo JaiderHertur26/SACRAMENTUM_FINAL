@@ -1,17 +1,19 @@
-// V224: second gate for a prospective clean production project.
+// V226: security preflight includes future-object defaults AND implicit global PUBLIC execute grants.
 // The auditor must run scripts/release-security-preflight-v224.sql with privileged READ ONLY access.
 // Attestation is procedural evidence, not a cryptographic signature or a substitute for an RLS review.
 const zeroRequired = Object.freeze([
  'rls_disabled','auth_truncate_tables','anon_truncate_tables',
  'unvalidated_foreign_keys','dangerous_default_table_grants',
  'open_default_function_grants','anonymous_definer_functions',
- 'definer_missing_search_path'
+ 'definer_missing_search_path','future_user_table_grants',
+ 'future_user_sequence_grants','future_user_function_grants',
+ 'creators_missing_global_function_revoke'
 ]);
 
 export function assessSecurityPreflightV224(security,expectedTableCount=82) {
  const problems=[];
  if(!security || typeof security!=='object') return ['falta preflight de seguridad SQL V224'];
- if(security.protocol!=='V224')problems.push('protocolo de seguridad distinto de V224');
+ if(security.protocol!=='V226')problems.push('protocolo de seguridad distinto de V226');
  for(const name of zeroRequired) {
   if(!Number.isSafeInteger(security[name]) || security[name]!==0) {
    problems.push('riesgo de seguridad no resuelto o sin conteo: '+name);
