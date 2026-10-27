@@ -11,7 +11,6 @@ import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/lib/supabaseClient';
 import { getDashboardPathForRole } from '@/lib/authz';
 import { BARRANQUILLA_CREST, BARRANQUILLA_NAME } from '@/lib/institutionalBranding';
-import { isKnownTestRegistryProject } from '@/utils/registryDataMode.mjs';
 
 const PublicSearchPage = () => {
   const { login } = useAuth();
@@ -219,9 +218,6 @@ const PublicSearchPage = () => {
                 </div>
                 <h2 className="text-3xl font-black text-slate-900 tracking-tighter">Sacramentum</h2>
                 <p className="text-[10px] font-extrabold text-[#527ea6] uppercase tracking-[0.25em] mt-2 italic">Sistema Eclesial de Registro Sacramental</p>
-                {(import.meta.env.VITE_REGISTRY_DATA_MODE !== 'official' || isKnownTestRegistryProject(import.meta.env.VITE_SUPABASE_URL)) && (
-                  <p role="status" className="mt-4 rounded-lg border border-amber-300 bg-amber-50 px-3 py-2 text-xs font-extrabold text-amber-950">DATOS DE PRUEBA · NO OFICIALES</p>
-                )}
                 <div className="mt-6 flex items-center justify-center gap-2" aria-hidden="true"><span className="h-px w-20 bg-[#d4af37]/70"/><span className="h-2 w-2 rotate-45 border border-[#d4af37]"/><span className="h-px w-20 bg-[#d4af37]/70"/></div>
             </div>
             <AnimatePresence mode="wait">

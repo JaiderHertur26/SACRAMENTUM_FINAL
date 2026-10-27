@@ -5,15 +5,10 @@ import { useAuth } from '@/context/AuthContext';
 import { Church } from 'lucide-react';
 import { ROLE_TYPES } from '@/config/supabaseConfig';
 import '@/styles/ecclesial-workspace.css';
-import { isKnownTestRegistryProject } from '@/utils/registryDataMode.mjs';
 
 const DashboardLayout = ({ children, entityName }) => {
   const { user, profile, logout } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  // V219: this instance contains TEST records only; official mode requires an explicit rollout.
-  const usingTestRecords = import.meta.env.VITE_REGISTRY_DATA_MODE !== 'official'
-    || isKnownTestRegistryProject(import.meta.env.VITE_SUPABASE_URL);
-
   const handleLogout = async () => {
     await logout();
   };
@@ -95,11 +90,6 @@ const DashboardLayout = ({ children, entityName }) => {
       <main className={isEcclesialWorkspace
         ? "ecclesial-main lg:pl-72 pt-16 flex-1 transition-all duration-300"
         : "lg:pl-72 pt-16 flex-1 transition-all duration-300 bg-slate-50"}>
-        {usingTestRecords && (
-          <div role="status" aria-label="Datos de prueba no oficiales" className="border-b border-amber-300 bg-amber-50 px-4 py-2 text-center text-xs font-extrabold tracking-wide text-amber-950">
-            DATOS DE PRUEBA · NO OFICIALES · SACRAMENTUM EN VALIDACIÓN
-          </div>
-        )}
         <div className={isEcclesialWorkspace
           ? "ecclesial-content p-4 lg:p-8 max-w-7xl mx-auto w-full"
           : "p-4 lg:p-8 max-w-7xl mx-auto w-full"}>

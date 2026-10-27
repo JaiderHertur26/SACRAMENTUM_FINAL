@@ -20,10 +20,10 @@ const documentBuilders=[
  ['expediente matrimonial 4 hojas',()=>buildMarriageDossierHtml({meta:{dossierNumber:'QA-V220-4'}})]
 ];
 const docText = doc => doc.internal.pages.slice(1).map(page=>page.join('\n'));
-test('V220 test mode is enabled by default and has a visible non-official banner',()=>{
+test('V250 preserves draft provenance without the former banner text',()=>{
  assert.equal(isTestRegistryData(),true);
- assert.match(testDocumentPrintCss(),/DATOS DE PRUEBA/);
- assert.match(testDocumentPrintCss(),/NO OFICIALES/);
+ assert.match(testDocumentPrintCss(),/BORRADOR/);
+ assert.match(testDocumentPrintCss(),/COPIA DE REVISIÓN/);
  assert.match(testDocumentPrintCss(),/body::after/);
 });
 test('V220 PDF stamps EVERY page and retains previous selected page',()=>{
@@ -37,16 +37,16 @@ test('V220 PDF stamps EVERY page and retains previous selected page',()=>{
  assert.ok(doc.output('arraybuffer').byteLength>1000);
  const pages=docText(doc);
  for(const [i,p] of pages.entries()){
-  assert.match(p,/DATOS DE PRUEBA - NO OFICIALES/, 'page '+(i+1));
-  assert.match(p,/SIN VALIDEZ OFICIAL/, 'page '+(i+1));
+  assert.match(p,/BORRADOR/, 'page '+(i+1));
+  assert.match(p,/NO APTO PARA EXPEDICIÓN/, 'page '+(i+1));
  }
 });
 for(const [title,builder] of documentBuilders){
  test('V220 independent printable HTML marks '+title,()=>{
   const html=builder();
   assert.ok(html.startsWith('<!doctype html>')||html.startsWith('<!DOCTYPE html>'));
-  assert.match(html,/DATOS DE PRUEBA/);
-  assert.match(html,/NO OFICIALES/);
+  assert.match(html,/BORRADOR/);
+  assert.match(html,/COPIA DE REVISIÓN/);
   assert.match(html,/body::after/);
  });
 }
@@ -62,7 +62,7 @@ for(const [label,builder] of [
    assert.ok(pages.length>0);
    assert.ok(pdf.output('arraybuffer').byteLength>1000);
    for(const [i,content] of pages.entries()){
-      assert.match(content,/DATOS DE PRUEBA - NO OFICIALES/,label+' page '+i);
+      assert.match(content,/BORRADOR/,label+' page '+i);
    }
  });
 }
@@ -70,7 +70,7 @@ test('V220 ordinary SPA printing always stamps the test-mode HTML root',()=>{
  const css=fs.readFileSync('src/index.css','utf8');
  const entry=fs.readFileSync('src/main.jsx','utf8');
  assert.match(css,/html\[data-registry-data-mode="test"\] body::after/);
- assert.match(css,/DATOS DE PRUEBA/);
+ assert.match(css,/BORRADOR/);
  assert.match(entry,/document.documentElement.dataset.registryDataMode/);
  assert.match(entry,/isTestRegistryData\(\)/);
 });
@@ -79,7 +79,7 @@ test('V220 future official mode is explicit and never silently inferred from old
  assert.match(source,/VITE_REGISTRY_DATA_MODE !== 'official'/);
  assert.doesNotMatch(source,/window\.location|document\.cookie|localStorage/);
 });
-test('V220 independent document-template popup carries the same printed non-official watermark',()=>{
+test('V250 independent document-template popup uses the same draft watermark',()=>{
  const source=fs.readFileSync('src/pages/DocumentTemplateLibraryPage.jsx','utf8');
  assert.match(source,/testDocumentPrintCss/);
  assert.match(source,/win\.document\.write/);

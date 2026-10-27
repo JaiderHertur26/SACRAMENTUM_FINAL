@@ -61,14 +61,13 @@ test('V219 UI shows three classifications without automatic relinking',()=>{
  assert.match(page,/No se propone vinculación/);
  assert.doesNotMatch(page,/\.from\(['"]legacy_record_links['"]\)\.update/);
 });
-test('V219 all authenticated dashboards show non-official test banner by default',()=>{
- assert.match(main,/VITE_REGISTRY_DATA_MODE !== 'official'/);
- assert.match(main,/DATOS DE PRUEBA · NO OFICIALES/);
- assert.match(main,/role="status"/);
+test('V250 dashboards have no distracting QA notice and preserve role-gated interface',()=>{
+ assert.doesNotMatch(main,/usingTestRecords|border-b border-amber-300 bg-amber-50/);
+ assert.match(main,/ecclesial-workspace/);
 });
-test('V219 public login shows non-official banner by default',()=>{
- assert.match(login,/VITE_REGISTRY_DATA_MODE !== 'official'/);
- assert.match(login,/DATOS DE PRUEBA · NO OFICIALES/);
+test('V250 public login has no QA notice without changing authentication guards',()=>{
+ assert.doesNotMatch(login,/isKnownTestRegistryProject|role="status" className="mt-4 rounded-lg border border-amber-300/);
+ assert.match(login,/const handleLogin/);
 });
 test('V219 existing V206 read-failure browser check waits for settled locked state',()=>{
  const source=fs.readFileSync('scripts/audit-three-sacrament-recovery-browser-v206.mjs','utf8');

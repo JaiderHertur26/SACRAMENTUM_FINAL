@@ -28,7 +28,7 @@ export function buildHistoricalEvidenceDossierHtml({ record, assessment, diocese
   const classification = classifications[assessment?.assessment] || 'Evaluación técnica no disponible';
   const sacrament = ({ BAUTIZOS: 'Bautismo', CONFIRMA: 'Confirmación' })[record.profile_key] || 'Sacramento por verificar';
   return `<!doctype html><html lang="es"><head><meta charset="utf-8">
-<title>Ficha de cotejo histórico - NO OFICIAL</title>
+<title>Ficha preliminar de cotejo histórico</title>
 <style>
   @page {size:A4;margin:20mm 16mm}
   * {box-sizing:border-box}
@@ -48,7 +48,7 @@ export function buildHistoricalEvidenceDossierHtml({ record, assessment, diocese
 <div class="eyebrow">Cancillería · Registro sacramental · Revisión documental</div>
 <h1>Ficha preliminar de cotejo histórico</h1>
 <p>Jurisdicción: <strong>${display(dioceseName)}</strong></p>
-<div class="notice">DATOS DE PRUEBA - NO OFICIALES. DOCUMENTO DE TRABAJO. No es decreto, partida, constancia de sacramento ni autorización para alterar un registro.</div>
+<div class="notice">DOCUMENTO PRELIMINAR DE COTEJO. No es decreto, partida, constancia de sacramento ni autorización para alterar un registro.</div>
 <h2>1. Trazabilidad de origen</h2>
 <div class="grid">
   <div class="field"><label>Sacramento</label>${display(sacrament)}</div>
@@ -67,6 +67,6 @@ export function buildHistoricalEvidenceDossierHtml({ record, assessment, diocese
 </div>
 <h2>4. Verificaciones exigidas</h2>
 <p>Confrontar el documento fuente, parroquia de origen, libro, folio, número, identidad, fechas, notas marginales y decretos aplicables. Registrar la decisión por el procedimiento autorizado; no vincular ni reconstruir una partida con base exclusiva en este diagnóstico.</p>
-<p class="foot">Ficha generada desde una sesión autorizada de Cancillería. No se han escrito datos en el registro, ni se ha resuelto automáticamente el caso. Cualquier impresión o archivo derivado mantiene carácter no oficial.</p>
+<p class="foot">Ficha generada desde una sesión autorizada de Cancillería. No se han escrito datos en el registro, ni se ha resuelto automáticamente el caso. Cualquier impresión o archivo derivado mantiene carácter preliminar.</p>
 </body></html>`;
 }
