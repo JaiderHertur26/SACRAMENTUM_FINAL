@@ -10,13 +10,13 @@ const sql=fs.readFileSync('scripts/release-security-preflight-v226.sql','utf8');
 const postgres=fs.readFileSync('supabase/security/qa-postgres-default-privileges-v226.sql','utf8');
 const admin=fs.readFileSync('supabase/security/requires-authorized-supabase-admin-v226.sql','utf8');
 const now=Date.parse('2026-10-27T03:30:00Z');
-const fakeClean={...qa.security,protocol:'V226',
+const fakeClean={...qa.security,protocol:'V229',
  dangerous_default_table_grants:0,open_default_function_grants:0,
  future_user_table_grants:0,future_user_sequence_grants:0,
- future_user_function_grants:0,creators_missing_global_function_revoke:0,
+ future_user_function_grants:0,creators_missing_global_function_revoke:0,insecure_public_only_definers:0,
  reviewed_security_definers:207,reviewed_authenticated_definers:152,
  manual_privileged_rpc_review:true};
-const act={protocol:'V226',environment:'CLEAN_PRODUCTION',
+const act={protocol:'V229',environment:'CLEAN_PRODUCTION',
  approved_for_official_mode:true,project_ref:'bbbbbbbbbbbbbbbbbbbb',
  verified_at:'2026-10-27T03:20:00Z',
  verification_source:'privileged-read-only:synthetic-fixture-only',

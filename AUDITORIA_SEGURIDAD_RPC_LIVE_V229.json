@@ -1,0 +1,237 @@
+{
+  "protocol": "V229",
+  "project_ref": "foczofcmwampjvlfbsqn",
+  "environment": "QA_ONLY_ALL_RECORDS_FICTITIOUS",
+  "approvedForOfficialMode": false,
+  "migration": {
+    "remoteVersion": "20261027044045",
+    "name": "secure_definer_pg_temp_last_v229",
+    "localFile": "supabase/migrations/20261027044045_secure_definer_pg_temp_last_v229.sql",
+    "sha256": "64472ee6a9a8e32278ffa2973d3fe2ad035991f9f783994f738ef093d38afb5b",
+    "applied": true,
+    "databaseRowsChanged": 0,
+    "priorInsecurePublicOnlyDefinerPaths": 131,
+    "priorExposedAuthDefinerPaths": 88,
+    "afterInsecurePublicOnlyDefinerPaths": 0,
+    "afterTempLastDefinerPaths": 131,
+    "afterTempLastAuthCallable": 88,
+    "additionalSecurityDefinersWithOtherSearchPath": 76
+  },
+  "preflight": {
+    "file": "scripts/release-security-preflight-v229.sql",
+    "sha256": "8e253e740a3fa5d65fc9241c597ce30d13bd3ee3a5fd2d519231937df4cd1b71",
+    "metrics": {
+      "public_tables": 82,
+      "rls_disabled": 0,
+      "auth_truncate_tables": 0,
+      "anon_truncate_tables": 0,
+      "unvalidated_foreign_keys": 0,
+      "dangerous_default_table_grants": 8,
+      "open_default_function_grants": 2,
+      "future_user_table_grants": 16,
+      "future_user_sequence_grants": 6,
+      "future_user_function_grants": 2,
+      "creators_missing_global_function_revoke": 1,
+      "insecure_public_only_definers": 0,
+      "public_functions": 244,
+      "security_definers": 207,
+      "anonymous_definer_functions": 0,
+      "authenticated_definer_functions": 152,
+      "definer_missing_search_path": 0
+    }
+  },
+  "transactionalRevalidation": {
+    "total": 14,
+    "passed": 14,
+    "sourceSnapshot": "AUDITORIA_TRANSACCIONES_LIVE_V228.json",
+    "rollbackRequired": true,
+    "allRollbackResults": true,
+    "scenarios": [
+      {
+        "script": "scripts/qa-rollback-documentary-decree-lifecycle-v210.sql",
+        "passed": true,
+        "metrics": [
+          {
+            "result": {
+              "rolled_back": true,
+              "new_documentary": 1,
+              "cross_diocese_visible": 0,
+              "parish_positive_reads": 2,
+              "historical_documentary": 2,
+              "role_and_validation_denials": 4,
+              "sacramental_counts_unchanged": true
+            }
+          }
+        ]
+      },
+      {
+        "script": "scripts/qa-rollback-four-pending-authorization-v177.sql",
+        "passed": true,
+        "metrics": []
+      },
+      {
+        "script": "scripts/qa-rollback-marginal-four-sacraments-v216.sql",
+        "passed": true,
+        "metrics": [
+          {
+            "result": {
+              "rollback": true,
+              "sacraments_passed": 4,
+              "owned_notes_created": 4,
+              "foreign_source_rejected": 4,
+              "same_parish_replays_idempotent": 4
+            }
+          }
+        ]
+      },
+      {
+        "script": "scripts/qa-rollback-historical-four-workflows-v173.sql",
+        "passed": true,
+        "metrics": []
+      },
+      {
+        "script": "scripts/qa-rollback-reconciliation-all-sacraments-v159.sql",
+        "passed": true,
+        "metrics": []
+      },
+      {
+        "script": "scripts/qa-rollback-four-sacrament-seating-v193.sql",
+        "passed": true,
+        "metrics": [
+          {
+            "results": {
+              "rollback": true,
+              "pendings_closed": 4,
+              "sacramental_lifecycles": 4,
+              "duplicate_seating_rejected": 4
+            },
+            "min_seat_audit_entries": 4
+          }
+        ]
+      },
+      {
+        "script": "scripts/qa-rollback-marriage-funeral-sequential-v202.sql",
+        "passed": true,
+        "metrics": [
+          {
+            "results": {
+              "rollback": true,
+              "correct_next_folio": true,
+              "duplicate_retries_denied": 4,
+              "unique_sequential_seatings": 4
+            }
+          }
+        ]
+      },
+      {
+        "script": "scripts/qa-rollback-pending-receipt-atomicity-v207.sql",
+        "passed": true,
+        "metrics": [
+          {
+            "forced_receipt_failures": 4,
+            "recovered_with_same_request_ids": 4,
+            "receipts_after_recovery": 4
+          }
+        ]
+      },
+      {
+        "script": "scripts/qa-rollback-print-integrity-v194.sql",
+        "passed": true,
+        "metrics": [
+          {
+            "qa_result": {
+              "rollback": true,
+              "verified_receipts": 4,
+              "sacraments_covered": 4,
+              "required_notes_preserved": 4,
+              "rejected_invalid_requests": 20
+            }
+          }
+        ]
+      },
+      {
+        "script": "scripts/qa-rollback-idempotent-pending-creation-v207.sql",
+        "passed": true,
+        "metrics": [
+          {
+            "result": {
+              "circuits": 5,
+              "same_receipt_replays": 15,
+              "unauthorized_rejected": 2,
+              "changed_payload_rejected": 5,
+              "direct_ledger_read_denied": true
+            }
+          }
+        ]
+      },
+      {
+        "script": "scripts/qa-rollback-notification-archive-active-profile-v171.sql",
+        "passed": true,
+        "metrics": []
+      },
+      {
+        "script": "scripts/qa-rollback-chancery-decree-scope-v179.sql",
+        "passed": true,
+        "metrics": []
+      },
+      {
+        "script": "scripts/qa-rollback-decree-status-v189.sql",
+        "passed": true,
+        "metrics": [
+          {
+            "qa_result": {
+              "rollback_required": true,
+              "fictitious_decrees": 1,
+              "invalid_status_denied": 1,
+              "invalid_sacrament_denied": 1,
+              "original_record_unchanged": true
+            }
+          }
+        ]
+      },
+      {
+        "script": "scripts/qa-rollback-physical-provenance-legitimate-v121.sql",
+        "passed": true,
+        "metrics": []
+      }
+    ]
+  },
+  "qaCountsBefore": {
+    "baptisms": 5040,
+    "confirmations": 2091,
+    "marriages": 1261,
+    "funerals": 1,
+    "pending_baptisms": 69,
+    "pending_confirmations": 233,
+    "pending_marriages": 1,
+    "pending_funerals": 1,
+    "decretos": 2,
+    "marginal_notes": 82,
+    "print_events": 8,
+    "audit_entries": 353,
+    "auth_accounts": 12
+  },
+  "qaCountsAfter": {
+    "baptisms": 5040,
+    "confirmations": 2091,
+    "marriages": 1261,
+    "funerals": 1,
+    "pending_baptisms": 69,
+    "pending_confirmations": 233,
+    "pending_marriages": 1,
+    "pending_funerals": 1,
+    "decretos": 2,
+    "marginal_notes": 82,
+    "print_events": 8,
+    "audit_entries": 353,
+    "auth_accounts": 12
+  },
+  "dataTransferredToOfficial": 0,
+  "qaUsersMigratedToOfficial": 0,
+  "method": "Privileged Supabase MCP execute_sql and apply_migration, followed by fourteen separate real SQL BEGIN/ROLLBACK tests and two readonly count checks; compiler is offline",
+  "limitations": [
+    "Not a penetration test; 76 other SECURITY DEFINER functions use a different search_path including empty and require code review.",
+    "152 authenticated SECURITY DEFINER RPCs still require formal per-signature authority and attack-surface review.",
+    "Default grants belonging to supabase_admin remain open; SMTP, restored backup and clean independent official DB not certified."
+  ]
+}
