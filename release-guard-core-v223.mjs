@@ -11,7 +11,7 @@ export const assessOfficialBuild = ({ mode, supabaseUrl, report, now = Date.now(
   if (KNOWN_QA_PROJECT_REFS.includes(projectRef)) problems.push('proyecto de pruebas: nunca admite modo oficial');
   if (!report || typeof report !== 'object') problems.push('falta acta de inventario certificada');
   else {
-    if (report.protocol !== 'V224') problems.push('protocolo de inventario no compatible');
+    if (report.protocol !== 'V226') problems.push('protocolo de inventario no compatible');
     if (report.environment !== 'CLEAN_PRODUCTION') problems.push('entorno no acreditado como producción limpia');
     if (report.approved_for_official_mode !== true) problems.push('aprobación oficial no documentada');
     if (!projectRef || report.project_ref !== projectRef) problems.push('proyecto certificado distinto de Vercel');

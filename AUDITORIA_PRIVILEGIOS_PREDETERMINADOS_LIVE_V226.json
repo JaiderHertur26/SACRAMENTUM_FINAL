@@ -1,0 +1,62 @@
+{
+  "protocol": "V226",
+  "projectRef": "foczofcmwampjvlfbsqn",
+  "environment": "QA_TEST_ONLY",
+  "approvedForOfficialMode": false,
+  "source": "Supabase MCP execute_sql, privileged metadata; direct ALTER DEFAULT PRIVILEGES owner postgres and BEGIN/ROLLBACK probe",
+  "change": {
+    "owner": "postgres",
+    "operation": "REVOKE privileges on future public tables, sequences and functions, including global PUBLIC EXECUTE",
+    "appliedToQa": true,
+    "dataModified": false,
+    "existingGrantsModified": false,
+    "unapprovedOtherOwnerAltered": false,
+    "futureObjectProbe": {
+      "anonCanSelectNewTable": false,
+      "authenticatedCanSelectNewTable": false,
+      "anonCanExecuteNewFunction": false,
+      "authenticatedCanExecuteNewFunction": false,
+      "rolledBack": true
+    },
+    "baptismsUnchanged": 5040
+  },
+  "security": {
+    "public_tables": 82,
+    "rls_disabled": 0,
+    "auth_truncate_tables": 0,
+    "anon_truncate_tables": 0,
+    "unvalidated_foreign_keys": 0,
+    "dangerous_default_table_grants": 8,
+    "open_default_function_grants": 2,
+    "future_user_table_grants": 16,
+    "future_user_sequence_grants": 6,
+    "future_user_function_grants": 2,
+    "creators_missing_global_function_revoke": 1,
+    "public_functions": 244,
+    "security_definers": 207,
+    "anonymous_definer_functions": 0,
+    "authenticated_definer_functions": 152,
+    "definer_missing_search_path": 0
+  },
+  "rpcInventory": {
+    "total": 152,
+    "directUidReference": 134,
+    "delegatedGuardReference": 83,
+    "withoutEitherToken": 0,
+    "writeLikeBodies": 101,
+    "dynamicSqlRegexFlags": 0,
+    "pathUnsecured": 0,
+    "automatedPatternScanOnly": true,
+    "formallyReviewed": 0
+  },
+  "blockers": [
+    "Supabase-admin-owned defaults remain permissive; postgres is not member of that role and cannot safely change them",
+    "One default function-creator owner lacks explicit global revoke of PUBLIC EXECUTE",
+    "152 authenticated SECURITY DEFINER functions need formal authorization callgraph review and integration tests",
+    "Clean production database not provisioned/attested; all QA records are test records"
+  ],
+  "docUrls": [
+    "https://supabase.com/docs/guides/api/securing-your-api"
+  ],
+  "notes": "All counters for remaining privilege hazards include supabase_admin defaults only. Privilege counts represent ACL entries, not affected table instances. No cleanup or release approval."
+}
