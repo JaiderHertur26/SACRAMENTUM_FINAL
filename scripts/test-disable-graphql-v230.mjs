@@ -15,7 +15,7 @@ const goodSecurity={...qa.preflight.metrics, protocol:'V236',
  future_user_sequence_grants:0,future_user_function_grants:0,
  creators_missing_global_function_revoke:0,
  reviewed_security_definers:207,reviewed_authenticated_definers:152,
- manual_privileged_rpc_review:true,privileged_rpc_catalog_count:152,privileged_rpc_catalog_md5:'d68b18810533c368d26f2c43e2ea9711'};
+ manual_privileged_rpc_review:true,privileged_rpc_catalog_count:152,privileged_rpc_catalog_md5:'2271708267b8e801367bc282d146d49e'};
 const fixture={
  migration_review:syntheticCleanMigrationReviewV231,protocol:'V236',environment:'CLEAN_PRODUCTION',
  approved_for_official_mode:true,project_ref:'bbbbbbbbbbbbbbbbbbbb',

@@ -22,7 +22,7 @@ const baseline={
  public_functions:244,security_definers:207,authenticated_definer_functions:152,
  privileged_rpc_using_delegated_identity:15,
  reviewed_security_definers:207,reviewed_authenticated_definers:152,
- manual_privileged_rpc_review:true,privileged_rpc_catalog_count:152,privileged_rpc_catalog_md5:'d68b18810533c368d26f2c43e2ea9711'
+ manual_privileged_rpc_review:true,privileged_rpc_catalog_count:152,privileged_rpc_catalog_md5:'2271708267b8e801367bc282d146d49e'
 };
 const attestation={
  protocol:'V236',environment:'CLEAN_PRODUCTION',approved_for_official_mode:true,
