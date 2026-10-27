@@ -44,7 +44,10 @@ test('V230 migration is the exact applied database version, safe if already disa
  const src=fs.readFileSync(migration,'utf8');
  assert.match(src,/DROP EXTENSION IF EXISTS pg_graphql RESTRICT;/);
  assert.doesNotMatch(src,/\bCASCADE\b|\b(?:TRUNCATE|DELETE FROM|INSERT INTO|DROP TABLE|DROP SCHEMA)\b/i);
- assert.equal('supabase/migrations/'+fs.readdirSync('supabase/migrations').filter(x=>x.endsWith('.sql')).sort().at(-1),migration);
+ const later=fs.readdirSync('supabase/migrations').filter(x=>x.endsWith('.sql')).sort();
+ assert.ok(later.includes(migration.split('/').at(-1)),'V230 migration must remain versioned');
+ assert.deepEqual(later.filter(x=>('supabase/migrations/'+x)>migration),
+  ['20261027125848_harden_chat_actor_guard_v232.sql'],'Only reviewed V232 may follow GraphQL hardening');
 });
 test('V230 before/after SQL verification confirms GraphQL extension disappeared and placeholder returns disabled',()=>{
  assert.equal(report.migration.installedPgGraphqlBefore,1);
