@@ -11,7 +11,7 @@ const temp=fs.mkdtempSync(path.join(os.tmpdir(),'sacramentum-v249-browser-'));
 const dir=path.resolve('AUDITORIA_EVIDENCIA_VISUAL_V249');fs.mkdirSync(dir,{recursive:true});
 const vite=spawn(process.execPath,['node_modules/vite/bin/vite.js','--config','scripts/qa-v249-visual/vite.config.mjs'],{stdio:'ignore',windowsHide:true});
 const flags=process.platform==='linux'?['--no-sandbox','--disable-dev-shm-usage']:[];
-const chrome=spawn(exe,[...flags,'--headless=new','--disable-gpu','--disable-extensions','--no-first-run','--disable-background-networking','--remote-debugging-port=0','--user-data-dir='+temp,'about:blank'],{stdio:'ignore'});
+let chrome,chromeError='';
 let socket,seq=0;const pending=new Map(),rows=[],errors=[];
 try{
  let ready=false;
@@ -21,8 +21,10 @@ try{
    await sleep(100);
  }
  if(!ready)throw Error('V249 isolated Vite visual fixture unavailable');
- const portfile=path.join(temp,'DevToolsActivePort');for(let i=0;i<100&&!fs.existsSync(portfile);i++)await sleep(100);
- if(!fs.existsSync(portfile))throw Error('Chrome CDP startup failed');
+ chrome=spawn(exe,[...flags,'--headless=new','--disable-gpu','--disable-extensions','--no-first-run','--disable-background-networking','--remote-debugging-port=0','--user-data-dir='+temp,'about:blank'],{stdio:['ignore','ignore','pipe']});
+ chrome.stderr?.on('data',chunk=>{chromeError=(chromeError+String(chunk)).slice(-1600)});
+ const portfile=path.join(temp,'DevToolsActivePort');for(let i=0;i<180&&!fs.existsSync(portfile)&&chrome.exitCode===null;i++)await sleep(100);
+ if(!fs.existsSync(portfile))throw Error('Chrome CDP startup failed. Exit='+chrome.exitCode+' stderr='+chromeError.slice(-1200));
  const [port]=fs.readFileSync(portfile,'utf8').split(/\r?\n/);
  const target=(await(await fetch('http://127.0.0.1:'+port+'/json/list')).json()).find(x=>x.type==='page');
  socket=new WebSocket(target.webSocketDebuggerUrl);
@@ -74,7 +76,7 @@ try{
    console.log('ROLE '+role+'/'+viewport.name+' passed '+rows.filter(x=>x.role===role&&x.viewport===viewport.name&&x.passed).length+'/'+paths.length);
   }
  }
-}finally{try{socket?.close()}catch{}try{chrome.kill()}catch{}try{vite.kill()}catch{}try{fs.rmSync(temp,{recursive:true,force:true})}catch{}}
+}finally{try{socket?.close()}catch{}try{chrome?.kill()}catch{}try{vite.kill()}catch{}try{fs.rmSync(temp,{recursive:true,force:true})}catch{}}
 const passed=rows.filter(x=>x.passed).length,approved=passed===rows.length&&errors.length===0;
 const report={protocol:'V249',method:'Chrome real sobre DashboardLayout, Sidebar y Header reales; identidad y contenido aislados por mocks; sin iniciar sesión real',approved,checked:rows.length,passed,failed:rows.length-passed,exceptions:errors.length,rows};
 fs.writeFileSync('AUDITORIA_VISUAL_TRES_ROLES_V249.json',JSON.stringify(report,null,2)+'\n');
