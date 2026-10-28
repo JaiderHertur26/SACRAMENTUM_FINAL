@@ -81,26 +81,8 @@ export async function getFuneralParameters(parishId) {
   return data?.exequias_params || { libro: 1, folio: 1, numero: 1, partidasPorFolio: 2, reiniciarNumeroEnFolio: false };
 }
 
-export async function updateFuneralParameters(parishId, exequiasParams) {
-  const { data: existing, error: readError } = await supabase
-    .from(TABLE_NAMES.PARISH_PARAMETERS)
-    .select('id')
-    .eq('parish_id', parishId)
-    .maybeSingle();
-  if (readError) throw readError;
-  if (existing) {
-    const { error } = await supabase.from(TABLE_NAMES.PARISH_PARAMETERS).update({ exequias_params: exequiasParams }).eq('parish_id', parishId);
-    if (error) throw error;
-    return;
-  }
-  const { error } = await supabase.from(TABLE_NAMES.PARISH_PARAMETERS).insert({
-    parish_id: parishId,
-    bautizos_params: {},
-    confirmaciones_params: {},
-    matrimonios_params: {},
-    exequias_params: exequiasParams
-  });
-  if (error) throw error;
+export async function updateFuneralParameters() {
+  throw new Error('La sección Parámetros es de consulta. No se permite guardar Libro, Folio, Número ni configuración desde esta ruta.');
 }
 
 const rpcFirstRow = (data) => (Array.isArray(data) ? (data[0] || null) : data);

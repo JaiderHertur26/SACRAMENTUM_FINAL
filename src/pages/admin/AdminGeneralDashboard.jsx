@@ -15,6 +15,7 @@ import { useAuth } from '@/context/AuthContext';
 import { supabase } from '@/lib/supabaseClient';
 import { ROLE_TYPES } from '@/config/supabaseConfig';
 import { institutionalConfirm } from '@/lib/institutionalDialog';
+import InstitutionalReadinessV274 from '@/components/InstitutionalReadinessV274';
 
 const AdminGeneralDashboard = () => {
   const { user } = useAuth();
@@ -185,6 +186,8 @@ const AdminGeneralDashboard = () => {
             <SettingsIcon className="w-4 h-4 text-blue-600" /> Seguridad y respaldos
           </Button>
         </div>
+
+        <InstitutionalReadinessV274 />
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
           {stats.map((stat) => (

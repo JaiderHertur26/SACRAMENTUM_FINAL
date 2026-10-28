@@ -1,0 +1,103 @@
+{
+  "protocol": "V268",
+  "fkCount": 169,
+  "publicTableCount": 82,
+  "preservedReferencingToBeRemoved": [
+    {
+      "child_schema": "public",
+      "child_table": "parishes",
+      "parent_schema": "public",
+      "parent_table": "legacy_source_origins",
+      "delete_mode": "n",
+      "conname": "parishes_legacy_origin_id_fkey"
+    }
+  ],
+  "transactionalTruncate": [
+    "baptisms",
+    "chat_messages",
+    "chat_room_members",
+    "chat_rooms",
+    "confirmations",
+    "decretos",
+    "diocesan_report_runs",
+    "document_issuances",
+    "document_sequences",
+    "funerals",
+    "later_note_reconciliations_v156",
+    "legacy_archive_records",
+    "legacy_import_batches",
+    "legacy_import_ownership",
+    "legacy_import_profiles",
+    "legacy_import_rows",
+    "legacy_link_review_events_v218",
+    "legacy_marginal_note_queue",
+    "legacy_marginal_template_snapshots",
+    "legacy_marriage_children",
+    "legacy_parameter_snapshots",
+    "legacy_physical_source_artifacts",
+    "legacy_physical_source_rows",
+    "legacy_pre_sacrament_registrations",
+    "legacy_print_events",
+    "legacy_record_links",
+    "legacy_report_definitions",
+    "legacy_source_files",
+    "legacy_source_origin_hashes",
+    "legacy_source_parishes",
+    "marginal_notes",
+    "marriage_dossiers",
+    "marriages",
+    "matrimonial_notification_recipients",
+    "matrimonial_notifications",
+    "nullity_court_clarifications_v112",
+    "nullity_court_decision_receipts",
+    "nullity_court_receipt_checks",
+    "nullity_execution_authorizations_v128",
+    "nullity_judicial_review_cases",
+    "nullity_judicial_review_events",
+    "official_notifications",
+    "parishioners",
+    "pending_baptisms",
+    "pending_confirmations",
+    "pending_creation_requests",
+    "pending_funerals",
+    "pending_marriages",
+    "pending_tokens",
+    "registry_audit_log",
+    "registry_print_events",
+    "registry_test_artifact_archive",
+    "sacrament_books",
+    "sacramentum_test_record_archive"
+  ],
+  "transactionalDelete": [
+    "legacy_source_installations",
+    "legacy_source_origins"
+  ],
+  "crossReferences": [
+    {
+      "child_schema": "public",
+      "child_table": "legacy_source_origins",
+      "parent_schema": "public",
+      "parent_table": "legacy_source_installations",
+      "delete_mode": "c",
+      "conname": "legacy_source_origins_source_installation_id_fkey"
+    },
+    {
+      "child_schema": "public",
+      "child_table": "legacy_source_origins",
+      "parent_schema": "public",
+      "parent_table": "legacy_source_origins",
+      "delete_mode": "n",
+      "conname": "legacy_source_origins_parent_origin_id_fkey"
+    }
+  ],
+  "nonPublic": [
+    {
+      "child_schema": "public",
+      "child_table": "user_profiles",
+      "parent_schema": "auth",
+      "parent_table": "users",
+      "delete_mode": "n",
+      "conname": "user_profiles_auth_user_id_fkey"
+    }
+  ]
+}

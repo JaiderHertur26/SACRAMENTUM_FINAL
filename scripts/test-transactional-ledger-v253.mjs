@@ -1,0 +1,63 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+const sql=fs.readFileSync('scripts/qa-v253-ledger-transactions.sql','utf8');
+const base=fs.readFileSync('scripts/qa-v252-ledger-memory-schema.sql','utf8');
+const ci=fs.readFileSync('scripts/ci-ledger-transactions-v253.sh','utf8');
+const flow=fs.readFileSync('.github/workflows/sacramentum-auditoria-v90.yml','utf8');
+const doc=fs.readFileSync('AUDITORIA_CONCILIACION_LIBROS_V253_2026-10-28.json','utf8');
+test('V253 batch transaction is private, never a public RPC and is not installed in live Supabase',()=>{
+ assert.match(sql,/SECURITY INVOKER/g);
+ assert.match(sql,/qa_append_batch_v253/);
+ assert.match(sql,/qa_reverse_tail_v253/);
+ assert.match(sql,/REVOKE ALL ON FUNCTION sacramentum_ledger\.qa_append_batch_v253/);
+ assert.match(sql,/REVOKE ALL ON FUNCTION sacramentum_ledger\.qa_reverse_tail_v253/);
+ assert.doesNotMatch(sql,/CREATE(?: OR REPLACE)? FUNCTION public\./i);
+ assert.match(base,/legacy_reconciled boolean NOT NULL DEFAULT false/);
+ assert.match(sql,/m\.legacy_reconciled IS DISTINCT FROM TRUE/);
+});
+test('V253 append is serialized with the book-row lock, checks exact version and atomic idempotency',()=>{
+ assert.match(sql,/WHERE id=p_book_id FOR UPDATE/);
+ assert.match(sql,/m\.version<>p_expected_version/);
+ assert.match(sql,/CREATE TABLE sacramentum_ledger\.seat_operations/);
+ assert.match(sql,/fingerprint/);
+ assert.match(sql,/RETURN existing\.response/);
+ assert.match(sql,/current_date/);
+ assert.match(sql,/ORDER BY\s+\(value->>'celebration_date'\)::date,\s+\(value->>'registration_number'\)::numeric/s);
+ assert.match(sql,/INSERT INTO sacramentum_ledger\.active_seats/);
+ assert.match(sql,/INSERT INTO sacramentum_ledger\.seat_events/);
+ assert.match(sql,/UPDATE sacramentum_ledger\.book_memories SET/);
+});
+test('V253 reversal uses server-owned references and refuses intermediate seats or dependencies',()=>{
+ assert.match(sql,/CREATE TABLE sacramentum_ledger\.seat_dependencies/);
+ assert.match(sql,/REFERENCES sacramentum_ledger\.active_seats\(id\) ON DELETE RESTRICT/);
+ assert.match(sql,/IF seat\.ordinal<>m\.active_count-1-i/);
+ assert.match(sql,/EXISTS \(SELECT 1 FROM sacramentum_ledger\.seat_dependencies/);
+ assert.match(sql,/nullif\(btrim\(p_reason\),''\) IS NULL/);
+ assert.match(sql,/nullif\(btrim\(p_authorization\),''\) IS NULL/);
+ assert.match(sql,/RETURN prior\.response/);
+ assert.doesNotMatch(sql,/hasActiveDependencies\s*boolean|p_has_dependencies\s+boolean/);
+});
+test('V253 CI exercises PostgreSQL commit, replay, rollback, dependencies and real multi-session contention',()=>{
+ assert.match(flow,/bash scripts\/ci-ledger-transactions-v253\.sh/);
+ assert.match(ci,/unreconciled book may not seat/);
+ assert.match(ci,/wrong initial partida/);
+ assert.match(ci,/duplicate registration number/);
+ assert.match(ci,/Non-idempotent replay/);
+ assert.match(ci,/dependent certificate must block reversal/);
+ assert.match(ci,/nonterminal reversal/);
+ assert.match(ci,/pid1=\$!/);
+ assert.match(ci,/pid2=\$!/);
+ assert.ok(ci.includes('winners=$((winners+1))'));
+ assert.doesNotMatch(ci,/SUPABASE_|service_role|https:/);
+});
+test('V253 read-only reconciliation report flags actual historical cohorts needing review',()=>{
+ const x=JSON.parse(doc);
+ assert.equal(x.environment,'Supabase QA, read-only inspection');
+ assert.equal(x.overall.totalRecords,8393);
+ assert.equal(x.overall.bookScopes,22);
+ assert.equal(x.overall.scopesRequiringNumberReview,11);
+ assert.equal(x.overall.contiguousNumberScopes,11);
+ assert.equal(x.migrated,false);
+ assert.equal(x.anyRecordModified,false);
+});

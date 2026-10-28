@@ -9,6 +9,7 @@ import DecreeCenterHeader, {
 } from '@/components/chancery/DecreeCenterHeader';
 import { ArrowRight, FileText, History } from 'lucide-react';
 import HistoricalDecreeReconciliationPanel from '@/components/chancery/HistoricalDecreeReconciliationPanel';
+import NewSupplementaryDecreePanelV271 from '@/components/chancery/NewSupplementaryDecreePanelV271';
 import NullityInstitutionalPreflightPanel from '@/components/chancery/NullityInstitutionalPreflightPanel';
 
 const SacramentalDecreesCenterPage = () => {
@@ -35,6 +36,7 @@ const SacramentalDecreesCenterPage = () => {
           </button>
         </section>
 
+        <NewSupplementaryDecreePanelV271 mode="issue" />
         <NullityInstitutionalPreflightPanel />
 
         <HistoricalDecreeReconciliationPanel />

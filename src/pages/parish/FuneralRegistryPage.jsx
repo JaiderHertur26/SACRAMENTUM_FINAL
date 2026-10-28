@@ -2,6 +2,8 @@ import { generateUUID } from '@/utils/supabaseHelpers';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '@/components/DashboardLayout';
+import LedgerSeatPanelV264 from '@/components/LedgerSeatPanelV264';
+import {ledgerV264Enabled} from '@/domain/ledgerSeatV264.mjs';
 import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/components/ui/use-toast';
 import { Button } from '@/components/ui/button';
@@ -423,6 +425,7 @@ const FuneralRegistryPage = () => {
   };
 
   const seatPending = async (item) => {
+    if (ledgerV264Enabled) return;
     if (createInFlight.current || seatInFlight.current || busy || syncError || isRefreshing) return;
     const data = item?.raw_data || {};
     const validation = validateCore(data);
@@ -1036,7 +1039,7 @@ const FuneralRegistryPage = () => {
                         )}
                       </div>
 
-                      <div className="bg-slate-50 rounded-2xl p-4">
+                      <div style={ledgerV264Enabled ? {display:'none'} : undefined} className="bg-slate-50 rounded-2xl p-4">
                         <p className="text-[9px] uppercase tracking-widest text-slate-400 font-black">
                           Destino previsto
                         </p>
@@ -1050,11 +1053,19 @@ const FuneralRegistryPage = () => {
 
                       <Button
                         disabled={!allowed || Boolean(seatingId) || busy || isRefreshing || Boolean(syncError)}
+                        style={ledgerV264Enabled ? {display:'none'} : undefined}
                         onClick={() => seatPending(item)}
                         className="bg-slate-900 text-white"
                       >
                         {seatingId === item.id ? 'Asentando...' : 'Asentar ahora'}
                       </Button>
+                      {ledgerV264Enabled && allowed && (
+                        <div className="lg:col-span-3">
+                          <LedgerSeatPanelV264 parishId={parishId} sacrament="exequias"
+                            pendingIds={[item.id]}
+                            onCompleted={async()=>{if(await refresh())setActiveTab('libro');}} />
+                        </div>
+                      )}
                     </div>
                   );
                 })

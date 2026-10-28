@@ -1,0 +1,32 @@
+{
+  "protocol": "V264",
+  "date": "2026-10-28",
+  "premise": "New public RPCs remain REVOKED and ledger UI mode is OFF by default; this receipt only pins the 4 changed pages.",
+  "originalEvidencePreserved": [
+    "AUDITORIA_CREACION_BOLETAS_NAVEGADOR_V207.json",
+    "AUDITORIA_V251_REVISIÓN_SOLO_ETIQUETAS.json"
+  ],
+  "reviewedSourceSha256": {
+    "src/pages/parish/BaptismSentarRegistrosPage.jsx": {
+      "previousSourceSha256": "a810b8421e3db3279834ff0cf13c04fe0aaca53bf6b436306950f5cf0a82e7b7",
+      "after": "723435ca6ead3c7c4333ae6e693f632cbf9ebf7f91c3f59e174ce0aa69ea1c4f",
+      "evidence": "V264 explicit manual book/folio/partida with guarded previous seat path"
+    },
+    "src/pages/parish/ConfirmationSentarRegistrosPage.jsx": {
+      "previousSourceSha256": "2d63bc1bcd5dfca9ef2268554f4ea99b9c8ed1e6a7900464604cf589b10e1ac9",
+      "after": "a78a105ba3b33d2d95962b3a320e8de0e668167ee064af048df10f1a82de18a4",
+      "evidence": "V264 explicit manual book/folio/partida with guarded previous seat path"
+    },
+    "src/pages/parish/MatrimonioSentarRegistrosPage.jsx": {
+      "previousSourceSha256": "c3cd0d533f945852b7333e1da245e9804bf654c9ab94b2b58d618376ffc8e162",
+      "after": "84c0112f5766a701a930a9e8d2c501e78754426092048f162f28184257dd1845",
+      "evidence": "V264 explicit manual book/folio/partida with guarded previous seat path"
+    },
+    "src/pages/parish/FuneralRegistryPage.jsx": {
+      "historicalSha256": "cc79390d03718b1354477cd849d4acc56a679bb98a5d5b2c7b44c17065f84630",
+      "previousSourceSha256": "cc79390d03718b1354477cd849d4acc56a679bb98a5d5b2c7b44c17065f84630",
+      "after": "881c82376d94306517dce1f4883199beab817801d478a4987e73ec28d75c32a7",
+      "evidence": "V264 explicit manual book/folio/partida with guarded previous seat path"
+    }
+  }
+}

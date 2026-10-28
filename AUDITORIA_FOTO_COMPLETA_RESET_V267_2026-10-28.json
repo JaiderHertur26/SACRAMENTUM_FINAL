@@ -1,0 +1,233 @@
+{
+  "protocol": "V267",
+  "asOf": "2026-10-28",
+  "basedOn": "SELECT exact count only",
+  "entries": 56,
+  "nonzero": 39,
+  "rows": [
+    {
+      "table_name": "baptisms",
+      "records": 5040
+    },
+    {
+      "table_name": "chat_messages",
+      "records": 1
+    },
+    {
+      "table_name": "chat_room_members",
+      "records": 18
+    },
+    {
+      "table_name": "chat_rooms",
+      "records": 5
+    },
+    {
+      "table_name": "confirmations",
+      "records": 2091
+    },
+    {
+      "table_name": "decretos",
+      "records": 2
+    },
+    {
+      "table_name": "diocesan_report_runs",
+      "records": 10
+    },
+    {
+      "table_name": "document_issuances",
+      "records": 0
+    },
+    {
+      "table_name": "document_sequences",
+      "records": 1
+    },
+    {
+      "table_name": "funerals",
+      "records": 1
+    },
+    {
+      "table_name": "later_note_reconciliations_v156",
+      "records": 0
+    },
+    {
+      "table_name": "legacy_archive_records",
+      "records": 21676
+    },
+    {
+      "table_name": "legacy_import_batches",
+      "records": 42
+    },
+    {
+      "table_name": "legacy_import_ownership",
+      "records": 11734
+    },
+    {
+      "table_name": "legacy_import_profiles",
+      "records": 31
+    },
+    {
+      "table_name": "legacy_import_rows",
+      "records": 16331
+    },
+    {
+      "table_name": "legacy_link_review_events_v218",
+      "records": 0
+    },
+    {
+      "table_name": "legacy_marginal_note_queue",
+      "records": 76
+    },
+    {
+      "table_name": "legacy_marginal_template_snapshots",
+      "records": 0
+    },
+    {
+      "table_name": "legacy_marriage_children",
+      "records": 14
+    },
+    {
+      "table_name": "legacy_parameter_snapshots",
+      "records": 25
+    },
+    {
+      "table_name": "legacy_physical_source_artifacts",
+      "records": 107
+    },
+    {
+      "table_name": "legacy_physical_source_rows",
+      "records": 16561
+    },
+    {
+      "table_name": "legacy_pre_sacrament_registrations",
+      "records": 300
+    },
+    {
+      "table_name": "legacy_print_events",
+      "records": 1622
+    },
+    {
+      "table_name": "legacy_record_links",
+      "records": 11734
+    },
+    {
+      "table_name": "legacy_report_definitions",
+      "records": 183
+    },
+    {
+      "table_name": "legacy_source_files",
+      "records": 56
+    },
+    {
+      "table_name": "legacy_source_installations",
+      "records": 1
+    },
+    {
+      "table_name": "legacy_source_origin_hashes",
+      "records": 17
+    },
+    {
+      "table_name": "legacy_source_origins",
+      "records": 9
+    },
+    {
+      "table_name": "legacy_source_parishes",
+      "records": 4
+    },
+    {
+      "table_name": "marginal_notes",
+      "records": 82
+    },
+    {
+      "table_name": "marriage_dossiers",
+      "records": 0
+    },
+    {
+      "table_name": "marriages",
+      "records": 1261
+    },
+    {
+      "table_name": "matrimonial_notification_recipients",
+      "records": 0
+    },
+    {
+      "table_name": "matrimonial_notifications",
+      "records": 0
+    },
+    {
+      "table_name": "nullity_court_clarifications_v112",
+      "records": 0
+    },
+    {
+      "table_name": "nullity_court_decision_receipts",
+      "records": 0
+    },
+    {
+      "table_name": "nullity_court_receipt_checks",
+      "records": 0
+    },
+    {
+      "table_name": "nullity_execution_authorizations_v128",
+      "records": 0
+    },
+    {
+      "table_name": "nullity_judicial_review_cases",
+      "records": 0
+    },
+    {
+      "table_name": "nullity_judicial_review_events",
+      "records": 0
+    },
+    {
+      "table_name": "official_notifications",
+      "records": 2
+    },
+    {
+      "table_name": "parishioners",
+      "records": 0
+    },
+    {
+      "table_name": "pending_baptisms",
+      "records": 69
+    },
+    {
+      "table_name": "pending_confirmations",
+      "records": 233
+    },
+    {
+      "table_name": "pending_creation_requests",
+      "records": 0
+    },
+    {
+      "table_name": "pending_funerals",
+      "records": 1
+    },
+    {
+      "table_name": "pending_marriages",
+      "records": 1
+    },
+    {
+      "table_name": "pending_tokens",
+      "records": 0
+    },
+    {
+      "table_name": "registry_audit_log",
+      "records": 354
+    },
+    {
+      "table_name": "registry_print_events",
+      "records": 9
+    },
+    {
+      "table_name": "registry_test_artifact_archive",
+      "records": 2
+    },
+    {
+      "table_name": "sacrament_books",
+      "records": 0
+    },
+    {
+      "table_name": "sacramentum_test_record_archive",
+      "records": 8
+    }
+  ]
+}

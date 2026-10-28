@@ -20,7 +20,13 @@ export function classifyHistoricalCase(row = {}) {
     location: [original.libro, original.folio, original.numero].filter((v) => v !== null && v !== undefined && v !== '').join(' / '),
     replacementLocation: [original.newlib, original.newfol, original.newnum].filter((v) => v !== null && v !== undefined && v !== '').join(' / '),
     sourceHash: row.source_sha256 || '',
-    linkedDecreeId: row.metadata?.decree_id || null
+    linkedDecreeId: row.metadata?.decree_id || null,
+    linkedOriginalRecordId: row.metadata?.original_record_id || null,
+    linkedReplacementRecordId: row.metadata?.replacement_record_id || null,
+    linkVerified: state === 'materialized_decree'
+      && Boolean(row.metadata?.decree_id && row.metadata?.original_record_id),
+    requiresLinkReview: state === 'materialized_decree'
+      && !(row.metadata?.decree_id && row.metadata?.original_record_id)
   };
 }
 

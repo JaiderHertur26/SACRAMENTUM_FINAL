@@ -1,0 +1,25 @@
+SELECT 'baptisms' source,count(*) n FROM public.baptisms
+UNION ALL SELECT 'confirmations',count(*) FROM public.confirmations
+UNION ALL SELECT 'marriages',count(*) FROM public.marriages
+UNION ALL SELECT 'funerals',count(*) FROM public.funerals
+UNION ALL SELECT 'pending_baptisms',count(*) FROM public.pending_baptisms
+UNION ALL SELECT 'pending_confirmations',count(*) FROM public.pending_confirmations
+UNION ALL SELECT 'pending_marriages',count(*) FROM public.pending_marriages
+UNION ALL SELECT 'pending_funerals',count(*) FROM public.pending_funerals
+UNION ALL SELECT 'legacy_archive_records',count(*) FROM public.legacy_archive_records
+UNION ALL SELECT 'legacy_import_batches',count(*) FROM public.legacy_import_batches
+UNION ALL SELECT 'legacy_marginal_note_queue',count(*) FROM public.legacy_marginal_note_queue
+UNION ALL SELECT 'marginal_notes',count(*) FROM public.marginal_notes
+UNION ALL SELECT 'decretos',count(*) FROM public.decretos
+UNION ALL SELECT 'registry_audit_log',count(*) FROM public.registry_audit_log
+UNION ALL SELECT 'registry_print_events',count(*) FROM public.registry_print_events
+UNION ALL SELECT 'official_notifications',count(*) FROM public.official_notifications
+UNION ALL SELECT 'document_issuances',count(*) FROM public.document_issuances
+UNION ALL SELECT 'marriage_dossiers',count(*) FROM public.marriage_dossiers
+UNION ALL SELECT 'matrimonial_notifications',count(*) FROM public.matrimonial_notifications
+UNION ALL SELECT 'nullity_judicial_review_cases',count(*) FROM public.nullity_judicial_review_cases
+UNION ALL SELECT 'nullity_execution_authorizations_v128',count(*) FROM public.nullity_execution_authorizations_v128
+UNION ALL SELECT 'parishioners',count(*) FROM public.parishioners
+UNION ALL SELECT 'sacrament_books',count(*) FROM public.sacrament_books
+UNION ALL SELECT 'pending_creation_requests',count(*) FROM public.pending_creation_requests
+ORDER BY source;

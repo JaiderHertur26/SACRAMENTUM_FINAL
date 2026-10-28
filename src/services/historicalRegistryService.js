@@ -1,4 +1,5 @@
 import { supabase } from '@/lib/supabaseClient';
+import { historicalCoordinates } from '@/domain/registryJourneyPolicy.mjs';
 
 const unwrap = (data) => Array.isArray(data) ? data[0] : data;
 const rpcError = (error, name) => {
@@ -18,6 +19,7 @@ const isNarrativeRecord = (record) => (
 
 export async function registerHistoricalNarrative({ parishId, sacramentType, record }) {
   if (!parishId) throw new Error('No se pudo identificar la parroquia.');
+  historicalCoordinates(record); // El histórico aporta Libro/Folio/Número existentes; nunca reserva un consecutivo.
   if (!String(record?.literalTranscription || record?.literal_transcription || '').trim()) {
     throw new Error('La Transcripción literal del asiento original es obligatoria.');
   }
@@ -46,6 +48,7 @@ export async function registerHistoricalBaptism({ parishId, formData }) {
   }
 
   if (!parishId) throw new Error('No se pudo identificar la parroquia.');
+  historicalCoordinates(formData);
   const { data, error } = await supabase.rpc('register_historical_baptism', {
     p_parish_id: parishId,
     p_record: formData
@@ -68,6 +71,7 @@ export async function registerHistoricalConfirmation({ parishId, formData, cross
   }
 
   if (!parishId) throw new Error('No se pudo identificar la parroquia.');
+  historicalCoordinates(formData);
   const { data, error } = await supabase.rpc('register_historical_confirmation', {
     p_parish_id: parishId,
     p_record: formData,
@@ -92,6 +96,7 @@ export async function registerHistoricalMarriage({ parishId, record }) {
   }
 
   if (!parishId) throw new Error('No se pudo identificar la parroquia.');
+  historicalCoordinates(record);
   const { data, error } = await supabase.rpc('register_historical_marriage', {
     p_parish_id: parishId,
     p_record: record

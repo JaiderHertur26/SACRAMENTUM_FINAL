@@ -1,0 +1,104 @@
+{
+  "protocol": "V267",
+  "asOf": "2026-10-28",
+  "source": "Supabase read-only exact COUNT(*)",
+  "purpose": "NOT a deletion approval; inventory for future empty reset",
+  "rows": [
+    {
+      "source": "baptisms",
+      "n": 5040
+    },
+    {
+      "source": "confirmations",
+      "n": 2091
+    },
+    {
+      "source": "decretos",
+      "n": 2
+    },
+    {
+      "source": "document_issuances",
+      "n": 0
+    },
+    {
+      "source": "funerals",
+      "n": 1
+    },
+    {
+      "source": "legacy_archive_records",
+      "n": 21676
+    },
+    {
+      "source": "legacy_import_batches",
+      "n": 42
+    },
+    {
+      "source": "legacy_marginal_note_queue",
+      "n": 76
+    },
+    {
+      "source": "marginal_notes",
+      "n": 82
+    },
+    {
+      "source": "marriage_dossiers",
+      "n": 0
+    },
+    {
+      "source": "marriages",
+      "n": 1261
+    },
+    {
+      "source": "matrimonial_notifications",
+      "n": 0
+    },
+    {
+      "source": "nullity_execution_authorizations_v128",
+      "n": 0
+    },
+    {
+      "source": "nullity_judicial_review_cases",
+      "n": 0
+    },
+    {
+      "source": "official_notifications",
+      "n": 2
+    },
+    {
+      "source": "parishioners",
+      "n": 0
+    },
+    {
+      "source": "pending_baptisms",
+      "n": 69
+    },
+    {
+      "source": "pending_confirmations",
+      "n": 233
+    },
+    {
+      "source": "pending_creation_requests",
+      "n": 0
+    },
+    {
+      "source": "pending_funerals",
+      "n": 1
+    },
+    {
+      "source": "pending_marriages",
+      "n": 1
+    },
+    {
+      "source": "registry_audit_log",
+      "n": 354
+    },
+    {
+      "source": "registry_print_events",
+      "n": 9
+    },
+    {
+      "source": "sacrament_books",
+      "n": 0
+    }
+  ]
+}
