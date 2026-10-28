@@ -23,7 +23,7 @@ sql.push("CREATE UNIQUE INDEX uq_v260_funeral_physical_coordinates ON public.fun
 sql.push("CREATE SCHEMA IF NOT EXISTS sacramentum_ledger;");
 sql.push("INSERT INTO public.parishes(id,diocese_id) VALUES ('00000000-0000-0000-0000-000000000001','00000000-0000-0000-0000-000000000010');");
 sql.push("INSERT INTO public.user_profiles(auth_user_id,parish_id,diocese_id,role,is_active,status) VALUES ('00000000-0000-0000-0000-000000000030','00000000-0000-0000-0000-000000000001','00000000-0000-0000-0000-000000000010','parish',true,'ACTIVE'),('00000000-0000-0000-0000-000000000031',null,'00000000-0000-0000-0000-000000000010','chancery',true,'ACTIVE');");
-sql.push("INSERT INTO public.parish_parameters(parish_id,bautizos_params,confirmaciones_params,matrimonios_params,exequias_params) VALUES('00000000-0000-0000-0000-000000000001','{\\\"numeroRegistroActual\\\":\\\"000053\\\",\\\"partidasPorFolio\\\":2}','{\\\"numeroRegistroActual\\\":\\\"000023\\\"}','{\\\"numeroRegistroActual\\\":\\\"0012\\\"}','{\\\"numeroRegistroActual\\\":\\\"0002\\\"}');");
+sql.push("INSERT INTO public.parish_parameters(parish_id,bautizos_params,confirmaciones_params,matrimonios_params,exequias_params) VALUES('00000000-0000-0000-0000-000000000001',jsonb_build_object('numeroRegistroActual','000053','partidasPorFolio',2),jsonb_build_object('numeroRegistroActual','000023'),jsonb_build_object('numeroRegistroActual','0012'),jsonb_build_object('numeroRegistroActual','0002'));");
 for(const old of [
  'seat_baptism_records(uuid,jsonb,integer,integer,integer)',
  'seat_confirmation_records(uuid,jsonb,integer,integer,integer)',
