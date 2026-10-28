@@ -57,7 +57,7 @@ pg psql -X -q -v ON_ERROR_STOP=1 -U postgres -d "$db" -f - < scripts/staged-v265
 eq "$(run "SELECT has_function_privilege('anon',
  'public.attest_new_celebration_v265(uuid,text,uuid,text)','EXECUTE')")" f
 eq "$(run "SELECT has_function_privilege('authenticated',
- 'public.attest_new_celebration_v265(uuid,text,uuid,text)','EXECUTE')")" t
+ 'public.attest_new_celebration_v265(uuid,text,uuid,text)','EXECUTE')")" f
 run "INSERT INTO public.pending_baptisms(id,parish_id,raw_data) VALUES
  ('$BAPT','$P','{\"fechaSacramento\":\"2026-01-01\"}'),
  ('$LEGACY','$P','{\"fechaSacramento\":\"2026-01-01\",\"source\":\"historical_import\"}'),
