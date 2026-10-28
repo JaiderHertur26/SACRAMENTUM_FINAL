@@ -18,6 +18,8 @@ import { getMatrimonioParameters } from '@/services/sacramentParametersService';
 import MatrimonioTicket from '@/components/MatrimonioTicket';
 import { getParishPrintProfile } from '@/services/sacramentsService';
 import { institutionalConfirm } from '@/lib/institutionalDialog';
+import LedgerSeatPanelV264 from '@/components/LedgerSeatPanelV264';
+import {ledgerV264Enabled} from '@/domain/ledgerSeatV264.mjs';
 import { getCanonicalMarriageCategoryLabel } from '@/utils/marriageCanonicalStatus';
 
 
@@ -186,6 +188,7 @@ const MatrimonioSentarRegistrosPage = () => {
     const currentIsFuture = currentMarriage ? isDateInFuture(currentMarriageDateValue) : false;
 
     const handleRegisterIndividual = async () => {
+        if (ledgerV264Enabled) return;
         if (!currentMarriage || isSaving || seatInFlight.current || loadError || currentIsFuture) return;
         seatInFlight.current = true;
         setIsSaving(true);
@@ -227,6 +230,7 @@ const MatrimonioSentarRegistrosPage = () => {
     };
 
     const handleBatchConfirm = async () => {
+        if (ledgerV264Enabled) return;
         if (selectedIds.length === 0 || isSaving || seatInFlight.current || loadError) return;
         // Acquire before opening the asynchronous confirmation to reject duplicate clicks.
         seatInFlight.current = true;
@@ -353,6 +357,20 @@ const MatrimonioSentarRegistrosPage = () => {
                     </div>
                 </div>
 
+
+                {ledgerV264Enabled && mode !== 'reported' && resolvedParishId && (
+                  <div className="mb-6">
+                    <LedgerSeatPanelV264
+                      key={mode === 'individual' ? currentMarriage?.id : selectedIds.join(',')}
+                      parishId={resolvedParishId} sacrament="matrimonio"
+                      pendingIds={mode === 'individual'
+                        ? (currentMarriage && !(currentIsFuture) ? [currentMarriage.id] : [])
+                        : selectedIds}
+                      onCompleted={async () => { if (await loadData()) setMode('reported'); }}
+                    />
+                  </div>
+                )}
+
                 {mode === 'individual' && (
                     <div className="animate-in fade-in duration-500 space-y-6">
                         <div className="bg-white p-4 rounded-t-[2rem] border shadow-sm flex items-center justify-between border-b-0">
@@ -362,7 +380,7 @@ const MatrimonioSentarRegistrosPage = () => {
                         </div>
 
                         <div className="bg-white p-10 rounded-b-[2rem] border shadow-sm space-y-8">
-                            <div className="grid grid-cols-3 gap-6 p-6 bg-slate-50 border rounded-2xl text-center">
+                            <div style={ledgerV264Enabled ? {display:'none'} : undefined} className="grid grid-cols-3 gap-6 p-6 bg-slate-50 border rounded-2xl text-center">
                                 <div><label className="text-[10px] font-black text-slate-400 uppercase">Libro Destino</label><div className="text-2xl font-black text-[#4B7BA7]">{destinationNumbers.book}</div></div>
                                 <div><label className="text-[10px] font-black text-slate-400 uppercase">Folio Destino</label><div className="text-2xl font-black text-[#4B7BA7]">{destinationNumbers.page}</div></div>
                                 <div><label className="text-[10px] font-black text-slate-400 uppercase">Acta Nº</label><div className="text-2xl font-black text-[#D4AF37]">{destinationNumbers.entry}</div></div>
@@ -415,6 +433,7 @@ const MatrimonioSentarRegistrosPage = () => {
                                     <Printer className="w-4 h-4 mr-2" /> Re-imprimir Boleta
                                 </Button>
                                 <Button 
+                                    style={ledgerV264Enabled ? {display:'none'} : undefined}
                                     onClick={handleRegisterIndividual} 
                                     disabled={isSaving || currentIsFuture} 
                                     className={cn(
@@ -500,7 +519,7 @@ const MatrimonioSentarRegistrosPage = () => {
                                 <span className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Seleccionados: {selectedIds.length}</span>
                                 {selectedIds.length > 0 && <span className="text-[9px] font-bold text-green-600 uppercase">Actas listas para firma</span>}
                             </div>
-                            <Button onClick={handleBatchConfirm} disabled={selectedIds.length === 0 || isSaving} className="px-10 py-7 rounded-2xl font-black uppercase text-[10px] shadow-lg">
+                            <Button style={ledgerV264Enabled ? {display:'none'} : undefined} onClick={handleBatchConfirm} disabled={selectedIds.length === 0 || isSaving} className="px-10 py-7 rounded-2xl font-black uppercase text-[10px] shadow-lg">
                                 {isSaving ? <Loader2 className="animate-spin mr-2" /> : <CheckCircle2 className="mr-2" />} Asentar Selección
                             </Button>
                         </div>

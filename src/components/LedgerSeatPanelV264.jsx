@@ -1,0 +1,117 @@
+import React, {useEffect,useRef,useState} from 'react';
+import {Button} from '@/components/ui/button';
+import {institutionalConfirm} from '@/lib/institutionalDialog';
+import {getLedgerSeatContextV264,seatWithLedgerV264} from '@/services/ledgerSeatV264';
+import {prepareLedgerSeatRequestV264} from '@/domain/ledgerSeatV264.mjs';
+
+// V264: explicit manual book/folio/number. Never generate evidence in browser.
+// A failed/ambiguous request locks the action until the user reloads server
+// state, preventing accidental replays with new operation UUIDs.
+export default function LedgerSeatPanelV264({parishId,sacrament,pendingIds=[],onCompleted}) {
+  const idsKey=pendingIds.join(',');
+  const [ctx,setCtx]=useState(null);
+  const [error,setError]=useState('');
+  const [message,setMessage]=useState('');
+  const [bookId,setBookId]=useState('');
+  const [bookCode,setBookCode]=useState('');
+  const [folio,setFolio]=useState('');
+  const [partida,setPartida]=useState('');
+  const [loading,setLoading]=useState(true);
+  const [submitting,setSubmitting]=useState(false);
+  const [locked,setLocked]=useState(false);
+  const inFlight=useRef(false);
+  const reload=async()=>{
+    setLoading(true);setError('');setMessage('');setLocked(true);
+    try {
+      const state=await getLedgerSeatContextV264({parishId,sacrament,pendingIds:idsKey?idsKey.split(','):[]});
+      setCtx(state);setBookId('');setBookCode('');setFolio('');setPartida('');
+      setLocked(false);
+    }catch(e){setCtx(null);setError(e?.message||'No se pudo consultar la memoria.');}
+    finally{setLoading(false);}
+  };
+  useEffect(()=>{
+    let active=true;
+    setLoading(true);setLocked(true);setCtx(null);
+    getLedgerSeatContextV264({parishId,sacrament,pendingIds:idsKey?idsKey.split(','):[]})
+      .then(data=>{if(active){setCtx(data);setBookId('');setBookCode('');setFolio('');setPartida('');setError('');setLocked(false);}})
+      .catch(e=>{if(active){setCtx(null);setError(e?.message||'No se pudo verificar el libro.');}})
+      .finally(()=>{if(active)setLoading(false);});
+    return ()=>{active=false;};
+  },[parishId,sacrament,idsKey]);
+  const rows=ctx?.boletas||[];
+  const pending=pendingIds.length>0;
+  const allVerified=pending && rows.length===pendingIds.length && rows.every(r=>r.pending&&r.verified&&r.evidenceRef&&r.bookType);
+  const type=allVerified?rows[0].bookType:'';
+  const matching=allVerified&&rows.every(r=>r.bookType===type);
+  const books=(ctx?.books||[]).filter(b=>b.type===type);
+  const chosen=books.find(b=>b.id===bookId);
+  const click=async()=>{
+    if(inFlight.current||locked||submitting||loading)return;
+    const operationId=crypto.randomUUID();
+    const inputs={context:ctx,sacrament,parishId,pendingIds,bookId,
+      manualBookCode:bookCode,manualFolio:folio,manualNumber:partida,operationId};
+    try {prepareLedgerSeatRequestV264(inputs);}
+    catch(e){setError(e.message);return;}
+    inFlight.current=true;setSubmitting(true);setError('');
+    try {
+      const approved=await institutionalConfirm({
+        title:'Confirmar asiento sacramental',
+        message:`Se asentarán ${pendingIds.length} boleta(s) en Libro ${bookCode}, Folio ${folio}, Número inicial ${partida}. Esta acción modifica el libro físico y se registra en auditoría.`,
+        confirmText:'Sí, asentar en libro',tone:'warning'
+      });
+      if(!approved)return;
+      setLocked(true);
+      const result=await seatWithLedgerV264(inputs);
+      setMessage(`Asiento registrado. Operación ${result.operation_id} · ${result.seats.length} partida(s).`);
+      if(onCompleted)await onCompleted(result);
+      // A committed seat cannot be repeated from the same selection.
+    }catch(e){
+      setLocked(true);
+      setError('Asiento sin confirmar. Consulte nuevamente el libro y las boletas antes de continuar. '+(e?.message||''));
+    }finally{setSubmitting(false);inFlight.current=false;}
+  };
+  return (
+    <section aria-label="Asiento en libro físico V264" className="rounded-2xl border border-blue-200 bg-white p-5 shadow-sm space-y-4">
+      <div>
+        <h3 className="font-black text-slate-900">Asiento institucional · Libro físico</h3>
+        <p className="text-xs text-slate-500">Seleccione el libro y escriba su Libro, Folio y Número inicial. El servidor comprueba la constancia de celebración y la secuencia; no toma los datos de Parámetros.</p>
+      </div>
+      {loading&&<p className="text-sm text-slate-500">Verificando memoria y celebraciones...</p>}
+      {!loading&&!ctx&&<p className="text-sm text-amber-700">No se ha habilitado o no se puede consultar el servicio institucional de libros.</p>}
+      {!loading&&ctx&&!allVerified&&<p className="text-sm text-amber-700">No se puede asentar: falta una constancia institucional de celebración o alguna boleta ya fue procesada.</p>}
+      {!loading&&ctx&&allVerified&&!matching&&<p className="text-sm text-amber-700">Separe los registros ordinarios y supletorios antes del asiento.</p>}
+      {!loading&&ctx&&allVerified&&matching&&books.length===0&&<p className="text-sm text-amber-700">No existe un libro conciliado y habilitado para este tipo de registro.</p>}
+      {!loading&&ctx&&allVerified&&matching&&books.length>0&&<>
+        <label className="block text-xs font-bold text-slate-600">Libro físico conciliado
+          <select aria-label="Seleccionar libro físico" value={bookId} onChange={e=>{setBookId(e.target.value);setBookCode('');setFolio('');setPartida('');setError('');}}
+            className="mt-1 w-full rounded-lg border border-slate-300 p-3 text-sm">
+            <option value="">Seleccione un libro...</option>
+            {books.map(b=><option key={b.id} value={b.id}>{b.code} · {b.type}</option>)}
+          </select>
+        </label>
+        {chosen&&<p className="text-xs text-slate-600">Memoria de cotejo: folio {chosen.nextFolio}, número {chosen.nextNumber}. Verifique estos datos con el libro físico. La numeración no se asigna automáticamente desde esta pantalla.</p>}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <label className="text-xs font-bold text-slate-600">Confirme el Libro
+            <input aria-label="Confirmación manual del libro" value={bookCode} onChange={e=>setBookCode(e.target.value.toUpperCase())}
+              autoComplete="off" placeholder="Ej. 0001A" className="mt-1 w-full rounded-lg border border-slate-300 p-3"/>
+          </label>
+          <label className="text-xs font-bold text-slate-600">Folio inicial
+            <input aria-label="Folio inicial manual" inputMode="numeric" value={folio} onChange={e=>setFolio(e.target.value)}
+              autoComplete="off" placeholder="Folio" className="mt-1 w-full rounded-lg border border-slate-300 p-3"/>
+          </label>
+          <label className="text-xs font-bold text-slate-600">Número inicial
+            <input aria-label="Número inicial manual" inputMode="numeric" value={partida} onChange={e=>setPartida(e.target.value)}
+              autoComplete="off" placeholder="Número" className="mt-1 w-full rounded-lg border border-slate-300 p-3"/>
+          </label>
+        </div>
+      </>}
+      {error&&<p role="alert" className="text-sm text-red-700">{error}</p>}
+      {message&&<p role="status" className="text-sm text-green-700">{message}</p>}
+      <div className="flex flex-wrap gap-3">
+        <Button type="button" variant="outline" disabled={loading||submitting||inFlight.current} onClick={reload}>Volver a consultar memoria</Button>
+        <Button type="button" disabled={!pending||!matching||books.length===0||!bookId||locked||loading||submitting}
+          onClick={click}>{submitting?'Asentando...':`Asentar ${pendingIds.length} registro(s)`}</Button>
+      </div>
+    </section>
+  );
+}

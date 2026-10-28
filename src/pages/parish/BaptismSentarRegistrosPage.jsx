@@ -17,6 +17,8 @@ import { supabase } from '@/lib/supabaseClient';
 import { calculateNextConsecutive, getBaptismParameters } from '@/services/sacramentParametersService';
 import { getParishPrintProfile, purificarRegistroBautismo } from '@/services/sacramentsService';
 import { institutionalConfirm } from '@/lib/institutionalDialog';
+import LedgerSeatPanelV264 from '@/components/LedgerSeatPanelV264';
+import {ledgerV264Enabled} from '@/domain/ledgerSeatV264.mjs';
 
 const BaptismSentarRegistrosPage = () => {
     const { user } = useAuth();
@@ -161,6 +163,7 @@ const BaptismSentarRegistrosPage = () => {
     };
 
     const handleRegisterIndividual = async () => {
+        if (ledgerV264Enabled) return;
         if (!currentBaptism || isSaving || seatInFlight.current || loadError || currentIsFuture) return;
 
         seatInFlight.current = true;
@@ -216,6 +219,7 @@ const BaptismSentarRegistrosPage = () => {
     };
 
     const handleBatchConfirm = async () => {
+        if (ledgerV264Enabled) return;
         if (selectedIds.length === 0 || isSaving || seatInFlight.current || loadError) return;
         seatInFlight.current = true;
         setIsSaving(true);
@@ -357,6 +361,20 @@ const BaptismSentarRegistrosPage = () => {
                     </div>
                 </div>
 
+
+                {ledgerV264Enabled && mode !== 'reported' && resolvedParishId && (
+                  <div className="mb-6">
+                    <LedgerSeatPanelV264
+                      key={mode === 'individual' ? currentBaptism?.id : selectedIds.join(',')}
+                      parishId={resolvedParishId} sacrament="bautismo"
+                      pendingIds={mode === 'individual'
+                        ? (currentBaptism && !(currentIsFuture) ? [currentBaptism.id] : [])
+                        : selectedIds}
+                      onCompleted={async () => { await loadData(); }}
+                    />
+                  </div>
+                )}
+
                 {mode === 'individual' && (
                     pendingBaptisms.length === 0 ? <EmptyState message="No hay pre-registros pendientes en la nube." /> :
                     <div className="animate-in fade-in duration-500 space-y-6">
@@ -367,7 +385,7 @@ const BaptismSentarRegistrosPage = () => {
                         </div>
 
                         <div className="bg-white p-10 rounded-b-[2rem] border shadow-sm space-y-8">
-                            <div className="grid grid-cols-3 gap-6 p-6 bg-slate-50 border rounded-2xl text-center">
+                            <div style={ledgerV264Enabled ? {display:'none'} : undefined} className="grid grid-cols-3 gap-6 p-6 bg-slate-50 border rounded-2xl text-center">
                                 <div><label className="text-[10px] font-black text-slate-400 uppercase">Libro Destino</label><div className="text-2xl font-black text-[#4B7BA7]">{nextNumbers.book}</div></div>
                                 <div><label className="text-[10px] font-black text-slate-400 uppercase">Folio Destino</label><div className="text-2xl font-black text-[#4B7BA7]">{nextNumbers.page}</div></div>
                                 <div><label className="text-[10px] font-black text-slate-400 uppercase">Acta Nº</label><div className="text-2xl font-black text-[#D4AF37]">{nextNumbers.entry}</div></div>
@@ -418,6 +436,7 @@ const BaptismSentarRegistrosPage = () => {
                             <div className="flex justify-between items-center pt-8 border-t">
                                 <Button variant="outline" onClick={handleReprint} className="rounded-xl"><Printer className="mr-2 w-4 h-4" /> Imprimir Boleta Previa</Button>
                                 <Button 
+                                    style={ledgerV264Enabled ? {display:'none'} : undefined}
                                     onClick={handleRegisterIndividual} 
                                     disabled={isSaving || currentIsFuture} 
                                     className={cn(
@@ -489,7 +508,7 @@ const BaptismSentarRegistrosPage = () => {
                                 <span className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Seleccionados: {selectedIds.length}</span>
                                 {selectedIds.length > 0 && <span className="text-[9px] font-bold text-green-600 uppercase">Registros aptos para firma</span>}
                             </div>
-                            <Button onClick={handleBatchConfirm} disabled={selectedIds.length === 0 || isSaving} className="px-10 py-7 rounded-2xl font-black uppercase text-[10px] shadow-lg">
+                            <Button style={ledgerV264Enabled ? {display:'none'} : undefined} onClick={handleBatchConfirm} disabled={selectedIds.length === 0 || isSaving} className="px-10 py-7 rounded-2xl font-black uppercase text-[10px] shadow-lg">
                                 {isSaving ? <Loader2 className="animate-spin mr-2" /> : <CheckCircle2 className="mr-2" />} Asentar Selección
                             </Button>
                         </div>
