@@ -61,13 +61,37 @@ run "CREATE FUNCTION public.approve_supplementary_concept_v272(uuid,text)
 rejectCutover "missing V268 cleanup receipt"
 run "CREATE TABLE sacramentum_ledger.purge_receipts_v268(
  id boolean PRIMARY KEY,restore_verified boolean,discarded_table_count integer,
- preserved_table_count integer,discarded_rows bigint,backup_sha256 text);
- INSERT INTO sacramentum_ledger.purge_receipts_v268 VALUES(
- true,true,56,26,9,repeat('a',64));" >/dev/null
+ preserved_table_count integer,discarded_rows bigint,backup_sha256 text,
+ retained_counts jsonb);
+ INSERT INTO sacramentum_ledger.purge_receipts_v268(
+ id,restore_verified,discarded_table_count,preserved_table_count,discarded_rows,backup_sha256)
+ VALUES(true,true,56,26,9,repeat('a',64));" >/dev/null
+# V273 fail-closed official readiness; fixture signers are clearly synthetic
+# and exist ONLY in this disposable database, never live.
+rejectCutover "no 26-table institutional review"
+pg psql -X -q -v ON_ERROR_STOP=1 -U postgres -d "$db" -f - < scripts/staged-v273-institutional-master-review.sql >/dev/null
+rejectCutover "26 approvals not yet established"
+node scripts/fixture-master-review-v273.mjs | pg psql -X -q -v ON_ERROR_STOP=1 -U postgres -d "$db" >/dev/null
+eq "$(run "SELECT count(*) FROM sacramentum_ledger.master_review_v273")" 26
+rejectCutover "auth.users prerequisite absent"
+run "CREATE TABLE auth.users(id uuid PRIMARY KEY);
+ INSERT INTO auth.users VALUES
+ ('00000000-0000-0000-0000-000000000030');
+ CREATE TABLE sacramentum_ledger.supplementary_concept_approvals_v272(
+ concept_id uuid PRIMARY KEY);" >/dev/null
+rejectCutover "an ACTIVE user without an actual auth identity"
+run "INSERT INTO auth.users VALUES ('00000000-0000-0000-0000-000000000031');" >/dev/null
+run "INSERT INTO public.chancelleries(parish_id) VALUES(NULL);" >/dev/null
+rejectCutover "institutional master changed after verification"
+run "DELETE FROM public.chancelleries;" >/dev/null
 OLD='public.seat_baptism_records(uuid,jsonb,integer,integer,integer)'
 NEW='public.seat_baptism_ledger_v263(uuid,uuid,bigint,integer,integer,uuid,jsonb)'
 eq "$(run "SELECT has_function_privilege('authenticated','$OLD','EXECUTE')")" t
 eq "$(run "SELECT has_function_privilege('authenticated','$NEW','EXECUTE')")" f
+eq "$(run "SELECT has_function_privilege('authenticated',
+ 'public.get_parish_ledger_seat_context_v264(uuid,text,jsonb)','EXECUTE')")" f
+eq "$(run "SELECT has_function_privilege('authenticated',
+ 'public.attest_new_celebration_v265(uuid,text,uuid,text)','EXECUTE')")" f
 eq "$(run "SELECT count(*) FROM pg_tables WHERE schemaname='public'")" 82
 eq "$(run "SELECT count(*) FROM public.parish_parameters")" 1
 eq "$(run "SELECT bautizos_params->>'numeroRegistroActual' FROM public.parish_parameters")" 000053
@@ -77,6 +101,10 @@ run "INSERT INTO public.legacy_archive_records(parish_id) VALUES
 rejectCutover "hidden legacy imported test rows must prevent go-live"
 eq "$(run "SELECT has_function_privilege('authenticated','$OLD','EXECUTE')")" t
 eq "$(run "SELECT has_function_privilege('authenticated','$NEW','EXECUTE')")" f
+eq "$(run "SELECT has_function_privilege('authenticated',
+ 'public.get_parish_ledger_seat_context_v264(uuid,text,jsonb)','EXECUTE')")" f
+eq "$(run "SELECT has_function_privilege('authenticated',
+ 'public.attest_new_celebration_v265(uuid,text,uuid,text)','EXECUTE')")" f
 eq "$(run "SELECT bautizos_params->>'numeroRegistroActual' FROM public.parish_parameters")" 000053
 eq "$(run "SELECT to_regclass('sacramentum_ledger.go_live_receipt_v267') IS NULL")" t
 run "DELETE FROM public.legacy_archive_records;" >/dev/null
@@ -91,6 +119,10 @@ eq "$(run "SELECT count(*) FROM sacramentum_ledger.go_live_receipt_v267
     AND institutional_tables_preserved=26")" 1
 eq "$(run "SELECT has_function_privilege('authenticated','$OLD','EXECUTE')")" f
 eq "$(run "SELECT has_function_privilege('authenticated','$NEW','EXECUTE')")" t
+eq "$(run "SELECT has_function_privilege('authenticated',
+ 'public.get_parish_ledger_seat_context_v264(uuid,text,jsonb)','EXECUTE')")" t
+eq "$(run "SELECT has_function_privilege('authenticated',
+ 'public.attest_new_celebration_v265(uuid,text,uuid,text)','EXECUTE')")" t
 eq "$(run "SELECT has_function_privilege('anon','$NEW','EXECUTE')")" f
 eq "$(run "SELECT has_function_privilege('authenticated',
  'public.open_first_official_book_v267(uuid,text,uuid,text,integer,integer,integer,boolean)','EXECUTE')")" t

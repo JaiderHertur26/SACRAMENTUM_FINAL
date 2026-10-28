@@ -1,3 +1,4 @@
+BEGIN;
 -- SACRAMENTUM V265 · CANDIDATE institutional celebration attestation.
 -- STAGED ONLY: do not install before V252/V263 and coordinated cutover.
 -- Verified new origins MUST originate from the already-private V207 creation
@@ -121,6 +122,6 @@ BEGIN
     'verified_at',v_issued,'already_verified',false);
 END $fn$;
 REVOKE ALL ON FUNCTION public.attest_new_celebration_v265(uuid,text,uuid,text)
- FROM PUBLIC,anon;
-GRANT EXECUTE ON FUNCTION public.attest_new_celebration_v265(uuid,text,uuid,text)
- TO authenticated;
+ FROM PUBLIC,anon,authenticated;
+-- No authenticated GRANT before the audited fresh-start V267 cutover.
+COMMIT;

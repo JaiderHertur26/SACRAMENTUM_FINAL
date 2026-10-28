@@ -18,7 +18,8 @@ test('V265 prevents silent replacement and journals one authorized attestation',
  assert.match(sql,/INSERT INTO public\.registry_audit_log/);
  assert.match(sql,/celebration_attested/);
  assert.match(sql,/REVOKE ALL ON FUNCTION public\.attest_new_celebration_v265/);
- assert.match(sql,/TO authenticated/);
+ assert.doesNotMatch(sql,/GRANT EXECUTE ON FUNCTION public.attest_new_celebration_v265/);
+ assert.match(read('scripts/staged-v267-fresh-zero-rpc-cutover.sql'),/GRANT EXECUTE ON FUNCTION public.attest_new_celebration_v265/);
  assert.doesNotMatch(sql,/UPDATE public\.parish_parameters|INSERT INTO public\.baptisms|UPDATE public\.baptisms/);
 });
 test('V265 provides a manual recorded celebration attestation flow on four shared screens',()=>{

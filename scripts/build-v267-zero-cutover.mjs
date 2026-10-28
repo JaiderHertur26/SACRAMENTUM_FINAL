@@ -13,7 +13,9 @@ BEGIN;
 SET LOCAL lock_timeout='5s';
 SET LOCAL statement_timeout='180s';
 SELECT pg_advisory_xact_lock(hashtextextended('SACRAMENTUM_V267_FRESH_OFFICIAL_CUTOVER',267));
-LOCK TABLE ${zeros.map(x=>'public."'+x+'"').join(',')} IN SHARE ROW EXCLUSIVE MODE;
+-- The master fingerprints are part of the SAME cutover transaction: lock all
+-- 82 classified relations to prevent post-review drift before the ACL flip.
+LOCK TABLE ${[...zeros,...keep].sort().map(x=>'public."'+x+'"').join(',')} IN SHARE ROW EXCLUSIVE MODE;
 -- Receipt lives OUTSIDE public transactional tables and is committed with
 -- the ACL flip, never representing an uncommitted or failed release.
 CREATE TABLE IF NOT EXISTS sacramentum_ledger.go_live_receipt_v267(
@@ -55,6 +57,62 @@ BEGIN
     AND backup_sha256~'^[0-9a-f]{64}$') THEN
   RAISE EXCEPTION 'V267: la limpieza V268 no tiene respaldo y restauración verificados';
  END IF;
+ -- The V268 transaction protects structural preservation, NOT institutional
+ -- authenticity. No master table can be retained without two named reviewers
+ -- and a current match against the independently backed-up V268 receipt.
+ IF to_regclass('sacramentum_ledger.master_review_v273') IS NULL THEN
+   RAISE EXCEPTION 'V273: falta control independiente de las 26 tablas institucionales';
+ END IF;
+ IF (SELECT count(*) FROM sacramentum_ledger.master_review_v273)<>26 THEN
+   RAISE EXCEPTION 'V273: deben revisarse exactamente las 26 tablas institucionales';
+ END IF;
+ -- All active user profiles MUST point to a real authenticated identity.
+ -- Inactive placeholders may remain only if their institutional role is vetted.
+ IF to_regclass('auth.users') IS NULL THEN
+   RAISE EXCEPTION 'V273: no existe la tabla de autenticación';
+ END IF;
+ IF EXISTS (
+   SELECT 1 FROM public.user_profiles up
+   LEFT JOIN auth.users au ON au.id=up.auth_user_id
+   WHERE up.is_active IS TRUE AND upper(coalesce(up.status,''))='ACTIVE'
+     AND (up.auth_user_id IS NULL OR au.id IS NULL)
+ ) THEN
+   RAISE EXCEPTION 'V273: usuarios ACTIVOS sin cuenta autenticada: revisar antes de operar';
+ END IF;
+ -- No test-era new-book authorizations or unpublished seat events survive
+ -- the launch. Signoffs themselves are intentionally retained as evidence.
+ IF to_regclass('sacramentum_ledger.supplementary_concept_approvals_v272') IS NULL THEN
+   RAISE EXCEPTION 'V273: infraestructura privada de autorizaciones V272 ausente';
+ END IF;
+ IF EXISTS(SELECT 1 FROM sacramentum_ledger.supplementary_concept_approvals_v272) THEN
+   RAISE EXCEPTION 'V273: autorizaciones de conceptos de pruebas no pueden sobrevivir';
+ END IF;
+ -- All master hashes are recalculated AFTER the purge and before ACL flip.
+ FOR t IN SELECT unnest(v_master_tables) LOOP
+   IF NOT EXISTS (
+     SELECT 1 FROM sacramentum_ledger.master_review_v273 r
+     JOIN sacramentum_ledger.purge_receipts_v268 p ON p.id=true
+     WHERE r.table_name=t
+       AND r.expected_rows=(p.retained_counts->t->>'rows')::bigint
+       AND r.expected_md5=p.retained_counts->t->>'hash'
+       AND r.signed_at<=clock_timestamp()
+   ) THEN
+     RAISE EXCEPTION 'V273: falta doble revisión coincidente con respaldo para %',t;
+   END IF;
+   EXECUTE format(
+     'SELECT count(*),md5(coalesce(string_agg((%s)::text,''|''
+       ORDER BY (%s)::text),'''')) FROM public.%I v',
+     CASE WHEN t='parishes' THEN 'to_jsonb(v)-''legacy_origin_id'''
+       ELSE 'to_jsonb(v)' END,
+     CASE WHEN t='parishes' THEN 'to_jsonb(v)-''legacy_origin_id'''
+       ELSE 'to_jsonb(v)' END,
+     t
+   ) INTO cnt,v_index;
+   IF NOT EXISTS(SELECT 1 FROM sacramentum_ledger.master_review_v273 r
+      WHERE r.table_name=t AND r.expected_rows=cnt AND r.expected_md5=v_index) THEN
+     RAISE EXCEPTION 'V273: tabla institucional modificada tras su aprobación %',t;
+   END IF;
+ END LOOP;
  -- Unexpected new public tables block release until categorized.
  SELECT count(*) INTO v_all_tables FROM pg_tables WHERE schemaname='public';
  IF v_all_tables<>82 THEN
@@ -167,6 +225,10 @@ GRANT EXECUTE ON FUNCTION public.seat_marriage_ledger_v263(uuid,uuid,bigint,inte
  TO authenticated;
 GRANT EXECUTE ON FUNCTION public.seat_funeral_ledger_v263(uuid,uuid,bigint,integer,integer,uuid,jsonb)
  TO authenticated;
+GRANT EXECUTE ON FUNCTION public.get_parish_ledger_seat_context_v264(uuid,text,jsonb)
+ TO authenticated;
+GRANT EXECUTE ON FUNCTION public.attest_new_celebration_v265(uuid,text,uuid,text)
+ TO authenticated;
 GRANT EXECUTE ON FUNCTION public.open_first_official_book_v267(
  uuid,text,uuid,text,integer,integer,integer,boolean) TO authenticated;
 GRANT EXECUTE ON FUNCTION public.open_next_official_book_v270(
@@ -199,6 +261,8 @@ BEGIN
   'public.seat_confirmation_ledger_v263(uuid,uuid,bigint,integer,integer,uuid,jsonb)',
   'public.seat_marriage_ledger_v263(uuid,uuid,bigint,integer,integer,uuid,jsonb)',
   'public.seat_funeral_ledger_v263(uuid,uuid,bigint,integer,integer,uuid,jsonb)',
+  'public.get_parish_ledger_seat_context_v264(uuid,text,jsonb)',
+  'public.attest_new_celebration_v265(uuid,text,uuid,text)',
   'public.open_first_official_book_v267(uuid,text,uuid,text,integer,integer,integer,boolean)',
   'public.open_next_official_book_v270(uuid,text,uuid,bigint,uuid,text,integer,integer,integer,boolean,text)',
   'public.issue_new_supplementary_decree_v271(uuid,text,uuid,uuid,text,date,text,text,text)',

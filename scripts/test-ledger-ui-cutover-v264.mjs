@@ -66,7 +66,8 @@ test('V264 context SQL never grants a seat and restricts anonymous read',()=>{
  assert.match(s,/b.legacy_reconciled=true/);
  assert.match(s,/SELECT a.origin,a.evidence_ref,a.verified_at/);
  assert.match(s,/REVOKE ALL ON FUNCTION public.get_parish_ledger_seat_context_v264/);
- assert.match(s,/TO authenticated/);
+ assert.doesNotMatch(s,/GRANT EXECUTE ON FUNCTION public.get_parish_ledger_seat_context_v264/);
+ assert.match(read('scripts/staged-v267-fresh-zero-rpc-cutover.sql'),/GRANT EXECUTE ON FUNCTION public.get_parish_ledger_seat_context_v264/);
  assert.doesNotMatch(s,/GRANT EXECUTE ON FUNCTION public.seat_/);
  const ci=read('scripts/ci-parish-ledger-context-v264.sh');
  assert.match(ci,/missing evidence/i);

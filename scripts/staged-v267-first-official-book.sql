@@ -1,3 +1,4 @@
+BEGIN;
 -- SACRAMENTUM V267 · STAGED FIRST-BOOK OPENING FROM A CLEAN OFFICIAL REGISTRY.
 -- This is not an instruction to erase test data. No historical book is imported.
 -- Its first real Book / Folio / Partida are typed by the parish from the actual
@@ -119,3 +120,4 @@ END $fn$;
 REVOKE ALL ON FUNCTION public.open_first_official_book_v267(
  uuid,text,uuid,text,integer,integer,integer,boolean) FROM PUBLIC,anon,authenticated;
 -- Grant only during the final coordinated cutover, not independently.
+COMMIT;

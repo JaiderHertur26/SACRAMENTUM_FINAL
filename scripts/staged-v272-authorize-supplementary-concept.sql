@@ -1,3 +1,4 @@
+BEGIN;
 -- V272 · Permanent, independent diocesan authorization of a NEW supplementary
 -- REPOSITION concept in the EXISTING public.conceptos_anulacion catalog.
 -- The parish cannot authorize concepts. No new catalog, no automatic concept.
@@ -77,3 +78,4 @@ BEGIN
 END $fn$;
 REVOKE ALL ON FUNCTION public.approve_supplementary_concept_v272(uuid,text)
  FROM PUBLIC,anon,authenticated;
+COMMIT;

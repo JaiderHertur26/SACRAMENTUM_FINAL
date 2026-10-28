@@ -1,3 +1,4 @@
+BEGIN;
 -- V271: NEW decree, not historical import and not documentary-only.
 -- Staged: Cancilleria issues a pending supplement decree for a V207-origin
 -- pending new sacramental record. Diocese approves independently, only then
@@ -256,3 +257,4 @@ REVOKE ALL ON FUNCTION public.issue_new_supplementary_decree_v271(
 REVOKE ALL ON FUNCTION public.approve_new_supplementary_decree_v271(
  uuid,text) FROM PUBLIC,anon,authenticated;
 -- Permission is granted by V267 cutover ONLY after safe reset.
+COMMIT;

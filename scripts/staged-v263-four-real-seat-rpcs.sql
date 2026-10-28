@@ -1,3 +1,4 @@
+BEGIN;
 -- SACRAMENTUM V263 STAGED · FOUR REAL-TABLE SEAT RPC CANDIDATES.
 -- DO NOT RUN AGAINST SUPABASE until reviewed cutover, source reconciliation,
 -- attestations workflow, full fixture coverage and replacement of old RPCs.
@@ -377,3 +378,4 @@ REVOKE ALL ON FUNCTION public.seat_marriage_ledger_v263(uuid,uuid,bigint,integer
  FROM PUBLIC,anon,authenticated;
 REVOKE ALL ON FUNCTION public.seat_funeral_ledger_v263(uuid,uuid,bigint,integer,integer,uuid,jsonb)
  FROM PUBLIC,anon,authenticated;
+COMMIT;

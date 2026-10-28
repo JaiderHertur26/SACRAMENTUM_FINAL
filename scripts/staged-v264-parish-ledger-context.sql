@@ -1,3 +1,4 @@
+BEGIN;
 -- V264 STAGED: read-only parish ledger context, for FOUR client screens.
 -- Depends on V252 book_memories and V263 private attestation table.
 -- Not deployed until coordinated migration. Only authenticated can inspect
@@ -92,6 +93,6 @@ BEGIN
    'books',v_books,'boletas',v_evidence,'ready',jsonb_array_length(v_books)>0);
 END $fn$;
 REVOKE ALL ON FUNCTION public.get_parish_ledger_seat_context_v264(uuid,text,jsonb)
- FROM PUBLIC,anon;
-GRANT EXECUTE ON FUNCTION public.get_parish_ledger_seat_context_v264(uuid,text,jsonb)
- TO authenticated;
+ FROM PUBLIC,anon,authenticated;
+-- No authenticated GRANT before the audited fresh-start V267 cutover.
+COMMIT;

@@ -1,3 +1,4 @@
+BEGIN;
 -- V266 STAGED · Physical-book reconciliation with two independent institutional signatures.
 -- NOT installed in Supabase. Physical evidence is mandatory; never auto-approve
 -- a regular-looking digital sequence or use MAX(folio/number) as the next seat.
@@ -191,3 +192,4 @@ REVOKE ALL ON FUNCTION public.review_physical_book_v266(
  uuid,text,text,text,text,text,text,integer,integer,integer,boolean)
  FROM PUBLIC,anon,authenticated;
 -- No grants until legal review of authority and the deployment migration.
+COMMIT;

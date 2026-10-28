@@ -1,3 +1,4 @@
+BEGIN;
 -- V272: one atomic transition from a seated, still-open ordinary book to
 -- a manually confirmed successor; never guesses the next book code.
 -- STAGED ONLY. Requires V252 schema with V272 closure columns, V263 attestations.
@@ -191,3 +192,4 @@ REVOKE ALL ON FUNCTION public.open_next_supplementary_book_v272(
  uuid,text,uuid,bigint,uuid,text,integer,integer,integer,boolean,text)
  FROM PUBLIC,anon,authenticated;
 -- GRANT only inside the coordinated V267 permission cutover after zero-reset.
+COMMIT;

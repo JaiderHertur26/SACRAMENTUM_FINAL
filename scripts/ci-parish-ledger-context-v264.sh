@@ -37,7 +37,7 @@ pg psql -X -q -v ON_ERROR_STOP=1 -U postgres -d "$db" -c "
  evidence_ref text,verified_at timestamptz,decree_effect text);" >/dev/null
 pg psql -X -q -v ON_ERROR_STOP=1 -U postgres -d "$db" -f - < scripts/staged-v264-parish-ledger-context.sql >/dev/null
 eq "$(run "SELECT has_function_privilege('authenticated',
- 'public.get_parish_ledger_seat_context_v264(uuid,text,jsonb)','EXECUTE')")" t
+ 'public.get_parish_ledger_seat_context_v264(uuid,text,jsonb)','EXECUTE')")" f
 eq "$(run "SELECT has_function_privilege('anon',
  'public.get_parish_ledger_seat_context_v264(uuid,text,jsonb)','EXECUTE')")" f
 run "INSERT INTO sacramentum_ledger.book_memories(

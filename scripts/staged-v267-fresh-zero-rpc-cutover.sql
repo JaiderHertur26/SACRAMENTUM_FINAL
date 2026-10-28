@@ -7,7 +7,9 @@ BEGIN;
 SET LOCAL lock_timeout='5s';
 SET LOCAL statement_timeout='180s';
 SELECT pg_advisory_xact_lock(hashtextextended('SACRAMENTUM_V267_FRESH_OFFICIAL_CUTOVER',267));
-LOCK TABLE public."baptisms",public."chat_messages",public."chat_room_members",public."chat_rooms",public."confirmations",public."decretos",public."diocesan_report_runs",public."document_issuances",public."document_sequences",public."funerals",public."later_note_reconciliations_v156",public."legacy_archive_records",public."legacy_import_batches",public."legacy_import_ownership",public."legacy_import_profiles",public."legacy_import_rows",public."legacy_link_review_events_v218",public."legacy_marginal_note_queue",public."legacy_marginal_template_snapshots",public."legacy_marriage_children",public."legacy_parameter_snapshots",public."legacy_physical_source_artifacts",public."legacy_physical_source_rows",public."legacy_pre_sacrament_registrations",public."legacy_print_events",public."legacy_record_links",public."legacy_report_definitions",public."legacy_source_files",public."legacy_source_installations",public."legacy_source_origin_hashes",public."legacy_source_origins",public."legacy_source_parishes",public."marginal_notes",public."marriage_dossiers",public."marriages",public."matrimonial_notification_recipients",public."matrimonial_notifications",public."nullity_court_clarifications_v112",public."nullity_court_decision_receipts",public."nullity_court_receipt_checks",public."nullity_execution_authorizations_v128",public."nullity_judicial_review_cases",public."nullity_judicial_review_events",public."official_notifications",public."parishioners",public."pending_baptisms",public."pending_confirmations",public."pending_creation_requests",public."pending_funerals",public."pending_marriages",public."pending_tokens",public."registry_audit_log",public."registry_print_events",public."registry_test_artifact_archive",public."sacrament_books",public."sacramentum_test_record_archive" IN SHARE ROW EXCLUSIVE MODE;
+-- The master fingerprints are part of the SAME cutover transaction: lock all
+-- 82 classified relations to prevent post-review drift before the ACL flip.
+LOCK TABLE public."archdioceses",public."baptisms",public."bishop_tenures",public."chancelleries",public."chat_messages",public."chat_room_members",public."chat_rooms",public."ciudades",public."conceptos_anulacion",public."confirmations",public."deaneries",public."decanatos",public."decretos",public."diocesan_report_runs",public."dioceses",public."diocesis",public."directory_churches",public."directory_dioceses",public."document_issuances",public."document_sequences",public."document_templates",public."funerals",public."iglesias",public."later_note_reconciliations_v156",public."legacy_archive_records",public."legacy_import_batches",public."legacy_import_ownership",public."legacy_import_profiles",public."legacy_import_rows",public."legacy_link_review_events_v218",public."legacy_marginal_note_queue",public."legacy_marginal_template_snapshots",public."legacy_marriage_children",public."legacy_parameter_snapshots",public."legacy_physical_source_artifacts",public."legacy_physical_source_rows",public."legacy_pre_sacrament_registrations",public."legacy_priest_directory",public."legacy_print_events",public."legacy_record_links",public."legacy_reference_catalog",public."legacy_report_definitions",public."legacy_source_files",public."legacy_source_installations",public."legacy_source_origin_hashes",public."legacy_source_origins",public."legacy_source_parishes",public."location_dictionary",public."marginal_note_template_clauses",public."marginal_note_templates",public."marginal_notes",public."marriage_dossiers",public."marriages",public."matrimonial_notification_recipients",public."matrimonial_notifications",public."mis_datos",public."nullity_court_clarifications_v112",public."nullity_court_decision_receipts",public."nullity_court_receipt_checks",public."nullity_execution_authorizations_v128",public."nullity_judicial_review_cases",public."nullity_judicial_review_events",public."obispos",public."official_notifications",public."parish_parameters",public."parishes",public."parishioners",public."parrocos",public."pending_baptisms",public."pending_confirmations",public."pending_creation_requests",public."pending_funerals",public."pending_marriages",public."pending_tokens",public."registry_audit_log",public."registry_print_events",public."registry_test_artifact_archive",public."sacrament_books",public."sacramentum_test_record_archive",public."user_profiles",public."vicarias",public."vicariates" IN SHARE ROW EXCLUSIVE MODE;
 -- Receipt lives OUTSIDE public transactional tables and is committed with
 -- the ACL flip, never representing an uncommitted or failed release.
 CREATE TABLE IF NOT EXISTS sacramentum_ledger.go_live_receipt_v267(
@@ -49,6 +51,62 @@ BEGIN
     AND backup_sha256~'^[0-9a-f]{64}$') THEN
   RAISE EXCEPTION 'V267: la limpieza V268 no tiene respaldo y restauración verificados';
  END IF;
+ -- The V268 transaction protects structural preservation, NOT institutional
+ -- authenticity. No master table can be retained without two named reviewers
+ -- and a current match against the independently backed-up V268 receipt.
+ IF to_regclass('sacramentum_ledger.master_review_v273') IS NULL THEN
+   RAISE EXCEPTION 'V273: falta control independiente de las 26 tablas institucionales';
+ END IF;
+ IF (SELECT count(*) FROM sacramentum_ledger.master_review_v273)<>26 THEN
+   RAISE EXCEPTION 'V273: deben revisarse exactamente las 26 tablas institucionales';
+ END IF;
+ -- All active user profiles MUST point to a real authenticated identity.
+ -- Inactive placeholders may remain only if their institutional role is vetted.
+ IF to_regclass('auth.users') IS NULL THEN
+   RAISE EXCEPTION 'V273: no existe la tabla de autenticación';
+ END IF;
+ IF EXISTS (
+   SELECT 1 FROM public.user_profiles up
+   LEFT JOIN auth.users au ON au.id=up.auth_user_id
+   WHERE up.is_active IS TRUE AND upper(coalesce(up.status,''))='ACTIVE'
+     AND (up.auth_user_id IS NULL OR au.id IS NULL)
+ ) THEN
+   RAISE EXCEPTION 'V273: usuarios ACTIVOS sin cuenta autenticada: revisar antes de operar';
+ END IF;
+ -- No test-era new-book authorizations or unpublished seat events survive
+ -- the launch. Signoffs themselves are intentionally retained as evidence.
+ IF to_regclass('sacramentum_ledger.supplementary_concept_approvals_v272') IS NULL THEN
+   RAISE EXCEPTION 'V273: infraestructura privada de autorizaciones V272 ausente';
+ END IF;
+ IF EXISTS(SELECT 1 FROM sacramentum_ledger.supplementary_concept_approvals_v272) THEN
+   RAISE EXCEPTION 'V273: autorizaciones de conceptos de pruebas no pueden sobrevivir';
+ END IF;
+ -- All master hashes are recalculated AFTER the purge and before ACL flip.
+ FOR t IN SELECT unnest(v_master_tables) LOOP
+   IF NOT EXISTS (
+     SELECT 1 FROM sacramentum_ledger.master_review_v273 r
+     JOIN sacramentum_ledger.purge_receipts_v268 p ON p.id=true
+     WHERE r.table_name=t
+       AND r.expected_rows=(p.retained_counts->t->>'rows')::bigint
+       AND r.expected_md5=p.retained_counts->t->>'hash'
+       AND r.signed_at<=clock_timestamp()
+   ) THEN
+     RAISE EXCEPTION 'V273: falta doble revisión coincidente con respaldo para %',t;
+   END IF;
+   EXECUTE format(
+     'SELECT count(*),md5(coalesce(string_agg((%s)::text,''|''
+       ORDER BY (%s)::text),'''')) FROM public.%I v',
+     CASE WHEN t='parishes' THEN 'to_jsonb(v)-''legacy_origin_id'''
+       ELSE 'to_jsonb(v)' END,
+     CASE WHEN t='parishes' THEN 'to_jsonb(v)-''legacy_origin_id'''
+       ELSE 'to_jsonb(v)' END,
+     t
+   ) INTO cnt,v_index;
+   IF NOT EXISTS(SELECT 1 FROM sacramentum_ledger.master_review_v273 r
+      WHERE r.table_name=t AND r.expected_rows=cnt AND r.expected_md5=v_index) THEN
+     RAISE EXCEPTION 'V273: tabla institucional modificada tras su aprobación %',t;
+   END IF;
+ END LOOP;
  -- Unexpected new public tables block release until categorized.
  SELECT count(*) INTO v_all_tables FROM pg_tables WHERE schemaname='public';
  IF v_all_tables<>82 THEN
@@ -161,6 +219,10 @@ GRANT EXECUTE ON FUNCTION public.seat_marriage_ledger_v263(uuid,uuid,bigint,inte
  TO authenticated;
 GRANT EXECUTE ON FUNCTION public.seat_funeral_ledger_v263(uuid,uuid,bigint,integer,integer,uuid,jsonb)
  TO authenticated;
+GRANT EXECUTE ON FUNCTION public.get_parish_ledger_seat_context_v264(uuid,text,jsonb)
+ TO authenticated;
+GRANT EXECUTE ON FUNCTION public.attest_new_celebration_v265(uuid,text,uuid,text)
+ TO authenticated;
 GRANT EXECUTE ON FUNCTION public.open_first_official_book_v267(
  uuid,text,uuid,text,integer,integer,integer,boolean) TO authenticated;
 GRANT EXECUTE ON FUNCTION public.open_next_official_book_v270(
@@ -193,6 +255,8 @@ BEGIN
   'public.seat_confirmation_ledger_v263(uuid,uuid,bigint,integer,integer,uuid,jsonb)',
   'public.seat_marriage_ledger_v263(uuid,uuid,bigint,integer,integer,uuid,jsonb)',
   'public.seat_funeral_ledger_v263(uuid,uuid,bigint,integer,integer,uuid,jsonb)',
+  'public.get_parish_ledger_seat_context_v264(uuid,text,jsonb)',
+  'public.attest_new_celebration_v265(uuid,text,uuid,text)',
   'public.open_first_official_book_v267(uuid,text,uuid,text,integer,integer,integer,boolean)',
   'public.open_next_official_book_v270(uuid,text,uuid,bigint,uuid,text,integer,integer,integer,boolean,text)',
   'public.issue_new_supplementary_decree_v271(uuid,text,uuid,uuid,text,date,text,text,text)',

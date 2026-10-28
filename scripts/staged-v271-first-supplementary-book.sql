@@ -1,3 +1,4 @@
+BEGIN;
 -- V271 initial supplementary book is opened only after two-role decree approval.
 -- It has no overlap with first ordinary book V267 or successor V270.
 CREATE FUNCTION public.open_first_supplementary_book_v271(
@@ -114,3 +115,4 @@ REVOKE ALL ON FUNCTION public.open_first_supplementary_book_v271(
  uuid,text,uuid,text,integer,integer,integer,boolean)
  FROM PUBLIC,anon,authenticated;
 -- GRANT only at coordinated go-live.
+COMMIT;
