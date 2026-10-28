@@ -45,11 +45,13 @@ BEGIN
    FROM sacramentum_ledger.book_memories b
    WHERE b.parish_id=p_parish_id AND b.sacrament=p_sacrament
      AND b.legacy_reconciled=true AND b.retired_at IS NULL
+     AND b.closed_at IS NULL
    ORDER BY b.book_type,b.book_code
  LOOP
    v_books:=v_books||jsonb_build_array(jsonb_build_object(
      'id',v_book.id,'code',v_book.book_code,
      'type',v_book.book_type,'version',v_book.version,
+     'activeCount',v_book.active_count,
      'nextFolio',v_book.first_folio+
        v_book.active_count/v_book.partidas_per_folio,
      'nextNumber',CASE WHEN v_book.restart_partida_each_folio

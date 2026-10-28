@@ -73,3 +73,37 @@ export async function openFirstOfficialBookV267({
     throw Error('El servidor no confirmó una apertura coincidente. Consulte antes de repetir.');
   return data;
 }
+
+export async function openNextOfficialBookV270({
+ parishId,sacrament,previousBookId,expectedVersion,pendingId,
+ bookCode,firstFolio,firstNumber,capacity,restartNumberEachFolio,closeEvidenceRef
+}) {
+ if(!ledgerV264Enabled) throw Error('La sucesión oficial aún no está activada.');
+ const code=String(bookCode||'').trim(),evidence=String(closeEvidenceRef||'').trim();
+ const positive=x=>{const s=String(x??'').trim();
+   if(!/^[0-9]{1,10}$/.test(s)||Number(s)<1||Number(s)>2147483647)
+     throw Error('Los números de Libro deben ser enteros positivos.');
+   return Number(s);
+ };
+ if(!parishId||!previousBookId||!pendingId||
+  !['bautismo','confirmacion','matrimonio','exequias'].includes(sacrament)||
+  !/^[A-Za-z0-9]{1,32}$/.test(code)||
+  !Number.isSafeInteger(Number(expectedVersion))||Number(expectedVersion)<0||
+  ![true,false].includes(restartNumberEachFolio)||
+  evidence.length<8||evidence.length>120)
+  throw Error('Debe identificar el libro anterior y aportar constancia de cierre.');
+ const folio=positive(firstFolio),number=positive(firstNumber),perFolio=positive(capacity);
+ if(perFolio>200)throw Error('La capacidad máxima permitida es 200 partidas por folio.');
+ const {data,error}=await supabase.rpc('open_next_official_book_v270',{
+  p_parish_id:parishId,p_sacrament:sacrament,
+  p_previous_book_id:previousBookId,p_expected_version:Number(expectedVersion),
+  p_pending_id:pendingId,p_new_book_code:code,p_first_folio:folio,
+  p_first_partida:number,p_partidas_per_folio:perFolio,
+  p_restart_number_each_folio:restartNumberEachFolio,p_close_evidence_ref:evidence
+ });
+ if(error)throw error;
+ if(!data?.bookId||data.bookCode!==code||data.previousBookId!==previousBookId||
+  Number(data.nextFolio)!==folio||Number(data.nextNumber)!==number)
+  throw Error('El servidor no confirmó la sucesión exacta. Consulte antes de repetir.');
+ return data;
+}

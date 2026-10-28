@@ -4,6 +4,7 @@ import {institutionalConfirm} from '@/lib/institutionalDialog';
 import {getLedgerSeatContextV264,seatWithLedgerV264,attestNewCelebrationV265} from '@/services/ledgerSeatV264';
 import {prepareLedgerSeatRequestV264} from '@/domain/ledgerSeatV264.mjs';
 import FirstOfficialBookV267 from '@/components/FirstOfficialBookV267';
+import NextOfficialBookV270 from '@/components/NextOfficialBookV270';
 
 // V264: explicit manual book/folio/number. Never generate evidence in browser.
 // A failed/ambiguous request locks the action until the user reloads server
@@ -137,6 +138,9 @@ export default function LedgerSeatPanelV264({parishId,sacrament,pendingIds=[],on
           </select>
         </label>
         {chosen&&<p className="text-xs text-slate-600">Memoria de cotejo: folio {chosen.nextFolio}, número {chosen.nextNumber}. Verifique estos datos con el libro físico. La numeración no se asigna automáticamente desde esta pantalla.</p>}
+        {chosen&&matching&&type==='ordinario'&&Number(chosen.activeCount)>0&&<NextOfficialBookV270
+          key={chosen.id} parishId={parishId} sacrament={sacrament} previousBook={chosen}
+          pendingId={pendingIds[0]} onOpened={reload}/>}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <label className="text-xs font-bold text-slate-600">Confirme el Libro
             <input aria-label="Confirmación manual del libro" value={bookCode} onChange={e=>setBookCode(e.target.value.toUpperCase())}

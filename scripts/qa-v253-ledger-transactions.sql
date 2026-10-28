@@ -62,7 +62,8 @@ BEGIN
   END IF;
   RETURN existing.response;
  END IF;
- IF m.retired_at IS NOT NULL OR m.legacy_reconciled IS DISTINCT FROM TRUE THEN
+ IF m.retired_at IS NOT NULL OR m.closed_at IS NOT NULL
+    OR m.legacy_reconciled IS DISTINCT FROM TRUE THEN
   RAISE EXCEPTION 'Libro no conciliado o retirado: no se permite asentar';
  END IF;
  IF m.version<>p_expected_version THEN

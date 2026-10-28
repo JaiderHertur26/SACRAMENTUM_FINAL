@@ -17,6 +17,14 @@ node scripts/fixture-fresh-zero-v267.mjs | pg psql -X -q -v ON_ERROR_STOP=1 -U p
 pg psql -X -q -v ON_ERROR_STOP=1 -U postgres -d "$db" -f - < scripts/qa-v252-ledger-memory-schema.sql >/dev/null
 pg psql -X -q -v ON_ERROR_STOP=1 -U postgres -d "$db" -f - < scripts/qa-v253-ledger-transactions.sql >/dev/null
 pg psql -X -q -v ON_ERROR_STOP=1 -U postgres -d "$db" -f - < scripts/staged-v267-first-official-book.sql >/dev/null
+# The V270 successor RPC has a separate real-PG16 CI; this fixture stubs
+# only the signature to verify atomic grant and zero-reset prerequisites.
+run "CREATE FUNCTION public.open_next_official_book_v270(
+ uuid,text,uuid,bigint,uuid,text,integer,integer,integer,boolean,text)
+ RETURNS jsonb LANGUAGE sql AS \$\$ SELECT '{}'::jsonb \$\$;
+ REVOKE ALL ON FUNCTION public.open_next_official_book_v270(
+ uuid,text,uuid,bigint,uuid,text,integer,integer,integer,boolean,text)
+ FROM PUBLIC,anon,authenticated;" >/dev/null
 
 # A documented V268 cleanup is mandatory before GoLive, even when the
 # sandbox is empty. Simulated provenance receipt exists ONLY in this fixture.

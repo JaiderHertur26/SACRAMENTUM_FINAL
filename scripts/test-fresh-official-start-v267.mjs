@@ -51,7 +51,7 @@ test('V267 initial official book is typed by human, after verifiable new celebra
   'p_first_partida','p_partidas_per_folio',
   'p_restart_number_each_folio','origin<>\'new_sacrament\'',
   'celebration_attestations_v263','FOR UPDATE',
-  'count(*) FROM public.%I','active_count=0',
+  'count(*) FROM public.%I',"m.book_type='ordinario'",
   'INSERT INTO sacramentum_ledger.book_memories',
   'legacy_reconciled','first_official_book_opened',
   'INSERT INTO public.registry_audit_log','REVOKE ALL ON FUNCTION'

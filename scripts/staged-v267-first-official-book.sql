@@ -92,8 +92,7 @@ BEGIN
  END IF;
  IF EXISTS(SELECT 1 FROM sacramentum_ledger.book_memories m
     WHERE m.parish_id=p_parish_id AND m.sacrament=p_sacrament
-     AND m.book_type='ordinario' AND m.retired_at IS NULL
-     AND m.active_count=0) THEN
+     AND m.book_type='ordinario') THEN
   RAISE EXCEPTION 'V267: ya existe un libro sin usar para este sacramento';
  END IF;
  INSERT INTO sacramentum_ledger.book_memories(

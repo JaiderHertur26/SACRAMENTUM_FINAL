@@ -66,6 +66,8 @@ run "CREATE TABLE public.marginal_notes(
  action text,after_data jsonb,metadata jsonb);" >/dev/null
 pg psql -X -q -v ON_ERROR_STOP=1 -U postgres -d "$db" -f - < scripts/qa-v269-linked-baptism-confirmation-triggers.sql >/dev/null
 pg psql -X -q -v ON_ERROR_STOP=1 -U postgres -d "$db" -f - < scripts/staged-v263-four-real-seat-rpcs.sql >/dev/null
+pg psql -X -q -v ON_ERROR_STOP=1 -U postgres -d "$db" -f - < scripts/staged-v267-first-official-book.sql >/dev/null
+pg psql -X -q -v ON_ERROR_STOP=1 -U postgres -d "$db" -f - < scripts/staged-v270-next-official-book.sql >/dev/null
 eq "$(run "SELECT count(*) FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace
  WHERE n.nspname='public' AND p.proname LIKE 'seat_%_ledger_v263'")" 4
 eq "$(run "SELECT count(*) FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace
@@ -214,6 +216,50 @@ eq "$(run "SELECT count(*) FROM public.confirmations WHERE nombres='DOS' AND
 eq "$(run "SELECT count(*) FROM public.marginal_notes WHERE sacrament_id='$NEW_BAPTISM'
  AND source_type='confirmation'")" 1
 eq "$(run "SELECT count(*) FROM sacramentum_ledger.active_seats")" 6
+
+# V270: atomic close of a used ordinary book + opening the NEXT book.
+# The original physical rows must remain seated, with immutable closed pointer.
+PN=88888888-0000-0000-0000-000000000001
+run "INSERT INTO public.pending_baptisms(id,parish_id,raw_data) VALUES
+ ('$PN','$P','{\"fechaSacramento\":\"2026-06-01\",\"numeroRegistro\":\"8\"}'::jsonb);
+ INSERT INTO sacramentum_ledger.celebration_attestations_v263(
+ pending_id,parish_id,sacrament,origin,verified_at,verified_by,evidence_ref)
+ VALUES('$PN','$P','bautismo','new_sacrament',clock_timestamp(),
+ '$A','ACTA-TERCER-BAUTISMO');" >/dev/null
+nextCall(){ echo "SELECT public.open_next_official_book_v270(
+ '$P','bautismo','$B1',2,'$PN','0005E',1,1,2,false,'ACTA-CIERRE-B-001');"; }
+reject "$(nextCall)" "no session cannot close book"
+reject "SET qa.actor='$BAD'; $(nextCall)" "foreign parish cannot close"
+reject "SET qa.actor='$A'; SELECT public.open_next_official_book_v270(
+ '$P','bautismo','$B1',1,'$PN','0005E',1,1,2,false,
+ 'ACTA-CIERRE-B-001');" "stale CAS denies closure"
+reject "SET qa.actor='$A'; SELECT public.open_next_official_book_v270(
+ '$P','bautismo','$B1',2,'$PN','0005E',1,1,2,false,
+ 'BAD');" "closure evidence too short"
+eq "$(run "SELECT closed_at IS NULL FROM sacramentum_ledger.book_memories WHERE id='$B1'")" t
+next="$(run "SET qa.actor='$A'; $(nextCall)")"
+[[ "$next" == *'"existing": false'* ]] || { echo "V270 first successor missing $next"; exit 1; }
+NBOOK="$(run "SELECT id FROM sacramentum_ledger.book_memories WHERE predecessor_book_id='$B1'")"
+[[ -n "$NBOOK" ]] || exit 1
+eq "$(run "SELECT closed_at IS NOT NULL FROM sacramentum_ledger.book_memories WHERE id='$B1'")" t
+eq "$(run "SELECT active_count FROM sacramentum_ledger.book_memories WHERE id='$B1'")" 2
+eq "$(run "SELECT count(*) FROM public.baptisms WHERE book_number='0001A'")" 3
+eq "$(run "SELECT count(*) FROM sacramentum_ledger.book_memories WHERE predecessor_book_id='$B1'")" 1
+eq "$(run "SELECT count(*) FROM public.registry_audit_log WHERE action LIKE '%v270'")" 2
+next="$(run "SET qa.actor='$A'; $(nextCall)")"
+[[ "$next" == *'"existing": true'* ]] || { echo "V270 idempotence failed $next"; exit 1; }
+reject "SET qa.actor='$A'; SELECT public.seat_baptism_ledger_v263(
+ '$P','$B1',2,2,3,'99999999-0000-0000-0000-000000000001',
+ jsonb_build_array('$PN'));" "old book closed: writer rejected"
+reject "SET qa.actor='$A'; SELECT public.open_first_official_book_v267(
+ '$P','bautismo','$PN','0006F',1,1,2,false);" "first-book RPC must not open later book"
+run "SET qa.actor='$A'; SELECT public.seat_baptism_ledger_v263(
+ '$P','$NBOOK',0,1,1,'99999999-0000-0000-0000-000000000002',
+ jsonb_build_array('$PN'));" >/dev/null
+eq "$(run "SELECT count(*) FROM public.baptisms WHERE book_number='0005E' AND folio='0001' AND number='0001'")" 1
+eq "$(run "SELECT active_count FROM sacramentum_ledger.book_memories WHERE id='$NBOOK'")" 1
+reject "SET qa.actor='$A'; $(nextCall)" "cannot replay successor once it contains a seat"
+eq "$(run "SELECT count(*) FROM public.registry_audit_log WHERE action LIKE '%v270'")" 2
 
 # No API execution while V263 is staged; separate cutting over grants is mandatory.
 eq "$(run "SELECT count(*) FROM pg_proc p JOIN pg_namespace n ON p.pronamespace=n.oid

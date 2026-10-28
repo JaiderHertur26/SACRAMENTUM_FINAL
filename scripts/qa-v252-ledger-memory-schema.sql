@@ -24,6 +24,14 @@ CREATE TABLE sacramentum_ledger.book_memories (
  created_at timestamptz NOT NULL DEFAULT clock_timestamp(),
  updated_at timestamptz NOT NULL DEFAULT clock_timestamp(),
  retired_at timestamptz,
+ closed_at timestamptz,
+ closed_by_auth uuid,
+ close_evidence_ref text,
+ predecessor_book_id uuid REFERENCES sacramentum_ledger.book_memories(id) ON DELETE RESTRICT,
+ CONSTRAINT ck_v270_close_evidence CHECK (
+   (closed_at IS NULL AND closed_by_auth IS NULL AND close_evidence_ref IS NULL)
+   OR (closed_at IS NOT NULL AND closed_by_auth IS NOT NULL
+       AND length(btrim(close_evidence_ref)) BETWEEN 8 AND 120)),
  CONSTRAINT ck_v252_retired_empty CHECK (retired_at IS NULL OR active_count=0),
  CONSTRAINT ck_v252_cursor_safe CHECK (
     first_partida::bigint+active_count::bigint<=2147483647
@@ -35,9 +43,17 @@ CREATE TABLE sacramentum_ledger.book_memories (
 -- Retiring an empty book keeps its full historical version and permits a new reviewed configuration.
 CREATE UNIQUE INDEX uq_v252_active_book_scope ON sacramentum_ledger.book_memories
  (parish_id,sacrament,book_type,canonical_code) WHERE retired_at IS NULL;
+CREATE UNIQUE INDEX uq_v270_one_successor ON sacramentum_ledger.book_memories
+ (predecessor_book_id) WHERE predecessor_book_id IS NOT NULL;
 CREATE FUNCTION sacramentum_ledger.protect_seated_book_configuration()
 RETURNS trigger LANGUAGE plpgsql SET search_path='' AS $$
 BEGIN
+ IF OLD.closed_at IS NOT NULL AND
+    (NEW.closed_at IS DISTINCT FROM OLD.closed_at
+    OR NEW.closed_by_auth IS DISTINCT FROM OLD.closed_by_auth
+    OR NEW.close_evidence_ref IS DISTINCT FROM OLD.close_evidence_ref) THEN
+   RAISE EXCEPTION 'Un cierre de libro oficial es inmutable' USING ERRCODE='23514';
+ END IF;
  IF OLD.first_seated_at IS NOT NULL AND
    (NEW.book_code IS DISTINCT FROM OLD.book_code
     OR NEW.first_folio IS DISTINCT FROM OLD.first_folio

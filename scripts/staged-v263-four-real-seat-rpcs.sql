@@ -87,6 +87,7 @@ BEGIN
   WHERE id=p_book_id FOR UPDATE;
  IF NOT FOUND OR m.parish_id<>p_parish_id OR m.sacrament<>p_sacrament
    OR NOT m.legacy_reconciled OR m.retired_at IS NOT NULL
+   OR m.closed_at IS NOT NULL
    OR m.version IS DISTINCT FROM p_expected_version
    OR m.first_folio+m.active_count/m.partidas_per_folio<>p_expected_folio
    OR (CASE WHEN m.restart_partida_each_folio AND m.active_count>=m.partidas_per_folio
