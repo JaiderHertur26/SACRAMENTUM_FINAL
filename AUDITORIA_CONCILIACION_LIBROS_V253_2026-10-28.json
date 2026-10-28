@@ -1,0 +1,66 @@
+{
+  "protocol": "V253",
+  "checkedAt": "2026-10-28",
+  "environment": "Supabase QA, read-only inspection",
+  "sourceTables": [
+    "baptisms",
+    "confirmations",
+    "marriages",
+    "funerals"
+  ],
+  "scope": [
+    "parish_id",
+    "sacrament",
+    "book_type",
+    "book_number"
+  ],
+  "overall": {
+    "totalRecords": 8393,
+    "bookScopes": 22,
+    "scopesRequiringNumberReview": 11,
+    "contiguousNumberScopes": 11
+  },
+  "bySacrament": [
+    {
+      "type": "bautismo",
+      "records": 5040,
+      "bookScopes": 12,
+      "repeatedNumberScopes": 2,
+      "nonconsecutiveNumberScopes": 7,
+      "contiguousNumberScopes": 5
+    },
+    {
+      "type": "confirmacion",
+      "records": 2091,
+      "bookScopes": 4,
+      "repeatedNumberScopes": 2,
+      "nonconsecutiveNumberScopes": 2,
+      "contiguousNumberScopes": 2
+    },
+    {
+      "type": "matrimonio",
+      "records": 1261,
+      "bookScopes": 5,
+      "repeatedNumberScopes": 2,
+      "nonconsecutiveNumberScopes": 2,
+      "contiguousNumberScopes": 3
+    },
+    {
+      "type": "exequias",
+      "records": 1,
+      "bookScopes": 1,
+      "repeatedNumberScopes": 0,
+      "nonconsecutiveNumberScopes": 0,
+      "contiguousNumberScopes": 1
+    }
+  ],
+  "limitations": [
+    "A numeric sequence may be contiguous but folio distribution and source documents still require review.",
+    "Repeated numbers can represent legacy folio resets; never auto-renumber or merge.",
+    "Data are fictional and not approved for official parish operations.",
+    "Existing active RPC functions continue using legacy parameters until migrated."
+  ],
+  "migrationGate": "fail closed: all 22 book scopes pending individual reconciliation for source links, legal provenance, and folio capacity",
+  "migrated": false,
+  "anyRecordModified": false
+}

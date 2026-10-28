@@ -14,7 +14,7 @@ run "INSERT INTO sacramentum_ledger.book_memories(id,parish_id,sacrament,book_ty
  ('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb','00000000-0000-0000-0000-000000000001','bautismo','ordinario','0001',1,1,3)" >/dev/null
 reject "INSERT INTO sacramentum_ledger.book_memories(parish_id,sacrament,book_type,book_code,first_folio,first_partida,partidas_per_folio) VALUES('00000000-0000-0000-0000-000000000001','bautismo','ordinario','1',1,1,3)" "normalized duplicate book 0001 vs 1"
 [[ "$(run "SELECT book_code||':'||canonical_code FROM sacramentum_ledger.book_memories WHERE id='aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa'")" == "0001A:0001A" ]]
-run "UPDATE sacramentum_ledger.book_memories SET first_seated_at=clock_timestamp(),active_count=1,version=1 WHERE id='aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa'" >/dev/null
+run "UPDATE sacramentum_ledger.book_memories SET legacy_reconciled=true,first_seated_at=clock_timestamp(),active_count=1,version=1 WHERE id='aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa'" >/dev/null
 reject "UPDATE sacramentum_ledger.book_memories SET partidas_per_folio=2 WHERE id='aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa'" "locked book configuration"
 reject "UPDATE sacramentum_ledger.book_memories SET retired_at=clock_timestamp() WHERE id='aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa'" "retire nonempty book"
 run "INSERT INTO sacramentum_ledger.active_seats(book_id,ordinal,pending_id,sacramental_record_id,folio,partida,created_by_auth) VALUES

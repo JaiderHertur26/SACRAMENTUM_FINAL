@@ -17,6 +17,7 @@ CREATE TABLE sacramentum_ledger.book_memories (
  first_partida integer NOT NULL CHECK (first_partida>0),
  partidas_per_folio integer NOT NULL CHECK (partidas_per_folio>0),
  active_count integer NOT NULL DEFAULT 0 CHECK (active_count>=0),
+ legacy_reconciled boolean NOT NULL DEFAULT false,
  version bigint NOT NULL DEFAULT 0 CHECK (version>=0),
  first_seated_at timestamptz,
  created_at timestamptz NOT NULL DEFAULT clock_timestamp(),
@@ -27,7 +28,7 @@ CREATE TABLE sacramentum_ledger.book_memories (
     first_partida::bigint+active_count::bigint<=2147483647
     AND first_folio::bigint+(active_count::bigint/partidas_per_folio::bigint)<=2147483647
  ),
- CONSTRAINT ck_v252_lock_after_first CHECK (active_count=0 OR first_seated_at IS NOT NULL)
+ CONSTRAINT ck_v252_lock_after_first CHECK (active_count=0 OR (first_seated_at IS NOT NULL AND legacy_reconciled IS TRUE))
 );
 
 -- Retiring an empty book keeps its full historical version and permits a new reviewed configuration.

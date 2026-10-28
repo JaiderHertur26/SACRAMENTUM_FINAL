@@ -178,7 +178,8 @@ exec('pruebas-sinteticas',node,['--test',
  'scripts/test-institutional-copy-v251.mjs',
  'scripts/test-ledger-memory-v252.mjs',
  'scripts/test-decree-chronology-v252.mjs',
- 'scripts/test-postgres-book-ledger-schema-v252.mjs']);
+ 'scripts/test-postgres-book-ledger-schema-v252.mjs',
+ 'scripts/test-transactional-ledger-v253.mjs']);
 const scripts=fs.readdirSync(path.join(root,'scripts')).filter(x=>/^verify-.*\.mjs$/.test(x)).sort();
 for(const file of scripts)exec('legacy/'+file,node,['scripts/'+file]);
 const npmOnWindows=process.platform==='win32';
