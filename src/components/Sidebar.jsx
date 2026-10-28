@@ -279,6 +279,7 @@ const Sidebar = ({ isOpen, onClose, onLogout, role, menuItems: externalMenuItems
             { label: 'Control Operativo', path: '/parish/operational-control', icon: BarChart3 },
             { label: 'Notificaciones Cancillería', path: '/parish/notifications', icon: Bell, badgeCount: notificationCount },
             { label: 'Notificaciones Sacramentales', path: '/parish/sacramental-notifications', icon: Mail, badgeCount: sacramentalCount },
+            { label: 'Emitir y seguir Matrimonio / Confirmación', path: '/parroquia/matrimonio/notificacion?v277=1', icon: FileCheck2 },
             {
                 label: 'Bautismo',
                 icon: Church,

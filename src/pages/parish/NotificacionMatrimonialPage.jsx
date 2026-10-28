@@ -20,6 +20,7 @@ import ConfirmacionNotificacion from '@/components/ConfirmacionNotificacion';
 import FiltrosRespaldos from '@/components/FiltrosRespaldos';
 import TablaRespaldos from '@/components/TablaRespaldos';
 import ModalVerDocumento from '@/components/ModalVerDocumento';
+import SacramentalCaseWizardV277 from '@/pages/parish/SacramentalCaseWizardV277';
 
 import { filtrarDocumentos } from '@/utils/matrimonialNotificationDocumentHelpers';
 import {
@@ -282,4 +283,9 @@ const NotificacionMatrimonialPage = () => {
     );
 };
 
-export default NotificacionMatrimonialPage;
+const MatrimonialCorrespondenceRoute = () => (
+    new URLSearchParams(window.location.search).get('v277') === '1'
+        ? <SacramentalCaseWizardV277 initialSacrament="matrimonio" />
+        : <NotificacionMatrimonialPage />
+);
+export default MatrimonialCorrespondenceRoute;

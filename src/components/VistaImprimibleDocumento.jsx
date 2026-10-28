@@ -29,6 +29,8 @@ const VistaImprimibleDocumento = forwardRef(({ aviso, documento, partida, emisor
     const receptor = receptorInfo || {};
     const notificationType = String(doc.notificationType || aviso?.document?.notificationType || 'matrimonio').toLowerCase();
     const isNullity = notificationType === 'nulidad_matrimonial';
+    const isConfirmation = notificationType === 'confirmacion';
+    const isV277 = doc.caseVersion === 'V277';
     const emisorName = resolveValue(emisor.name || emisor.nombre || 'PARROQUIA');
     const emisorCity = resolveValue(emisor.city || emisor.ciudad || 'CIUDAD');
     const receptorName = resolveValue(receptor.name || receptor.nombre || doc.receiverParishName || 'LA PARROQUIA DE DESTINO');
@@ -97,7 +99,7 @@ const VistaImprimibleDocumento = forwardRef(({ aviso, documento, partida, emisor
                     {isNullity ? 'CANCILLERÍA DIOCESANA / TRIBUNAL ECLESIÁSTICO' : emisorName}
                 </h2>
                 <p className="text-[10px] font-bold text-slate-400 mt-2 tracking-[0.3em]">
-                    {isNullity ? 'NOTIFICACIÓN SACRAMENTAL · NULIDAD MATRIMONIAL' : 'NOTIFICACIÓN DE MATRIMONIO CANÓNICO'}
+                    {isNullity ? 'NOTIFICACIÓN SACRAMENTAL · NULIDAD MATRIMONIAL' : isConfirmation ? 'NOTIFICACIÓN DE CONFIRMACIÓN' : 'NOTIFICACIÓN DE MATRIMONIO CANÓNICO'}
                 </p>
                 
                 <div className="flex justify-between mt-6 px-4">
@@ -129,6 +131,8 @@ const VistaImprimibleDocumento = forwardRef(({ aviso, documento, partida, emisor
                             fue declarado nulo mediante sentencia/decreto eclesiástico. Se solicita verificar la partida de Bautismo y,
                             una vez aceptada esta notificación en SACRAMENTUM, asentar la correspondiente <strong>NOTA MARGINAL</strong>.
                         </>
+                    ) : isConfirmation ? (
+                        <>Se comunica que la persona identificada recibió el sacramento de la Confirmación en esta parroquia. Se solicita verificar su partida de Bautismo y asentar la correspondiente <strong>NOTA MARGINAL</strong>.</>
                     ) : (
                         <>
                             Por medio de la presente, tengo el honor de comunicarle que en los libros de esta parroquia se ha registrado el
@@ -156,7 +160,7 @@ const VistaImprimibleDocumento = forwardRef(({ aviso, documento, partida, emisor
                 {/* BLOQUE II: ACTO QUE ORIGINA LA NOTIFICACIÓN */}
                 <section className="border-2 border-black p-6 relative">
                     <div className="absolute -top-3 left-6 bg-white px-3 text-[10px] font-black tracking-widest border border-black uppercase">
-                        {isNullity ? 'II. Sentencia / Decreto de Nulidad' : 'II. Datos de la Celebración Matrimonial'}
+                        {isNullity ? 'II. Sentencia / Decreto de Nulidad' : isConfirmation ? 'II. Datos de la Confirmación' : 'II. Datos de la Celebración Matrimonial'}
                     </div>
                     {isNullity ? (
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6">
@@ -172,6 +176,14 @@ const VistaImprimibleDocumento = forwardRef(({ aviso, documento, partida, emisor
                             <div className="md:col-span-2">
                                 {renderDataBox("Motivo / Fundamento", resolveValue(doc.reason))}
                             </div>
+                        </div>
+                    ) : isConfirmation ? (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6">
+                            {renderDataBox('Fecha de Confirmación', doc.confirmationDate || doc.sourceDate)}
+                            {renderDataBox('Parroquia de Confirmación', emisorName)}
+                            {renderDataBox('Libro Confirmación', doc.confirmationBook || doc.sourceBook)}
+                            {renderDataBox('Folio', doc.confirmationFolio || doc.sourceFolio)}
+                            {renderDataBox('Número', doc.confirmationNumber || doc.sourceNumber)}
                         </div>
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6">
