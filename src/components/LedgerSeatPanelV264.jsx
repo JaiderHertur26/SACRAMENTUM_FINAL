@@ -3,6 +3,7 @@ import {Button} from '@/components/ui/button';
 import {institutionalConfirm} from '@/lib/institutionalDialog';
 import {getLedgerSeatContextV264,seatWithLedgerV264,attestNewCelebrationV265} from '@/services/ledgerSeatV264';
 import {prepareLedgerSeatRequestV264} from '@/domain/ledgerSeatV264.mjs';
+import FirstOfficialBookV267 from '@/components/FirstOfficialBookV267';
 
 // V264: explicit manual book/folio/number. Never generate evidence in browser.
 // A failed/ambiguous request locks the action until the user reloads server
@@ -122,7 +123,11 @@ export default function LedgerSeatPanelV264({parishId,sacrament,pendingIds=[],on
         </div>
       )}
       {!loading&&ctx&&allVerified&&!matching&&<p className="text-sm text-amber-700">Separe los registros ordinarios y supletorios antes del asiento.</p>}
-      {!loading&&ctx&&allVerified&&matching&&books.length===0&&<p className="text-sm text-amber-700">No existe un libro conciliado y habilitado para este tipo de registro.</p>}
+      {!loading&&ctx&&allVerified&&matching&&books.length===0&&type==='ordinario'&&
+        <FirstOfficialBookV267 parishId={parishId} sacrament={sacrament}
+          pendingId={pendingIds[0]} onOpened={reload}/>}
+      {!loading&&ctx&&allVerified&&matching&&books.length===0&&type==='suplementario'&&
+        <p className="text-sm text-amber-700">El libro supletorio exige autorización institucional de decreto. Esta apertura inicial ordinaria no es válida.</p>}
       {!loading&&ctx&&allVerified&&matching&&books.length>0&&<>
         <label className="block text-xs font-bold text-slate-600">Libro físico conciliado
           <select aria-label="Seleccionar libro físico" value={bookId} onChange={e=>{setBookId(e.target.value);setBookCode('');setFolio('');setPartida('');setError('');}}
