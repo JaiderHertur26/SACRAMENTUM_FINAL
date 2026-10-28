@@ -135,84 +135,15 @@ const getParameterSet = async (parishId, column) => {
     return cached ? { ...defaults, ...cached } : defaults;
 };
 
-const saveParameterSet = async (parishId, column, params) => {
-    if (!parishId) return { success: false, message: 'Falta ID de parroquia' };
-    const normalized = { ...defaultsByColumn[column](), ...params };
-
-    try {
-        const { data: existing, error: readError } = await supabase
-            .from(TABLE_NAMES.PARISH_PARAMETERS)
-            .select('id')
-            .eq('parish_id', parishId)
-            .maybeSingle();
-        if (readError) throw readError;
-
-        if (existing?.id) {
-            const { error } = await supabase
-                .from(TABLE_NAMES.PARISH_PARAMETERS)
-                .update({ [column]: normalized, updated_at: new Date().toISOString() })
-                .eq('parish_id', parishId);
-            if (error) throw error;
-        } else {
-            const { error } = await supabase
-                .from(TABLE_NAMES.PARISH_PARAMETERS)
-                .insert({
-                    parish_id: parishId,
-                    bautizos_params: column === 'bautizos_params' ? normalized : getDefaultBaptismParameters(),
-                    confirmaciones_params: column === 'confirmaciones_params' ? normalized : getDefaultConfirmationParameters(),
-                    matrimonios_params: column === 'matrimonios_params' ? normalized : getDefaultMatrimonioParameters(),
-                    exequias_params: column === 'exequias_params' ? normalized : getDefaultFuneralParameters(),
-                    updated_at: new Date().toISOString()
-                });
-            if (error) throw error;
-        }
-
-        // localStorage es sólo caché offline. Nunca se actualiza antes de confirmar Supabase.
-        writeCache(column, parishId, normalized);
-        return { success: true, message: 'Parámetros actualizados en Supabase.' };
-    } catch (error) {
-        return { success: false, message: error.message || 'No fue posible guardar los parámetros.' };
-    }
-};
+// V258: Never write parish_parameters from an application/browser-side helper.
+const rejectPhysicalParameterWrite = () => ({ success: false, message: 'La sección Parámetros es de consulta. No se permite guardar Libro, Folio, Número ni configuración desde esta ruta.' });
 
 // ============================================================================
 // 🕊️ BAUTISMOS
 // ============================================================================
 export const getBaptismParameters = (parishId) => getParameterSet(parishId, 'bautizos_params');
 
-export const saveBaptismParameters = async (params, parishId, expectedParams = null) => {
-    if (!parishId) return { success: false, message: 'Falta ID de parroquia' };
-    const normalized = { ...getDefaultBaptismParameters(), ...params };
-    const expected = expectedParams || params || {};
-
-    try {
-        const rpcParams = {
-            ...normalized,
-            _expectedSuplementarioLibro: Number(expected.suplementarioLibro || 1),
-            _expectedSuplementarioFolio: Number(expected.suplementarioFolio || 1),
-            _expectedSuplementarioNumero: Number(expected.suplementarioNumero || 1)
-        };
-
-        const { data, error } = await supabase.rpc('save_baptism_parameters', {
-            p_parish_id: parishId,
-            p_params: rpcParams,
-            p_expected_book: Number(expected.ordinarioLibro || 1),
-            p_expected_folio: Number(expected.ordinarioFolio || 1),
-            p_expected_number: Number(expected.ordinarioNumero || 1)
-        });
-        if (error) throw error;
-
-        const saved = data || normalized;
-        writeCache('bautizos_params', parishId, saved);
-        return { success: true, message: 'Parámetros de Bautismo actualizados en Supabase.', data: saved };
-    } catch (error) {
-        const rawMessage = String(error?.message || 'No fue posible guardar los parámetros de Bautismo.');
-        const message = rawMessage.includes('save_baptism_parameters') || rawMessage.includes('schema cache')
-            ? 'Falta aplicar la migración de Bautismo Cloud-Native (Fase 5A) en Supabase.'
-            : rawMessage;
-        return { success: false, message };
-    }
-};
+export const saveBaptismParameters = async () => rejectPhysicalParameterWrite();
 
 export const getNextBaptismNumbers = async (parishId) => {
     const params = await getBaptismParameters(parishId);
@@ -233,32 +164,7 @@ export const getNextBaptismRegistrationPreview = async (parishId) => {
 // ============================================================================
 export const getConfirmationParameters = (parishId) => getParameterSet(parishId, 'confirmaciones_params');
 
-export const saveConfirmationParameters = async (params, parishId, expectedParams = null) => {
-    if (!parishId) return { success: false, message: 'Falta ID de parroquia' };
-    const normalized = { ...getDefaultConfirmationParameters(), ...params };
-    const expected = expectedParams || params || {};
-
-    try {
-        const { data, error } = await supabase.rpc('save_confirmation_parameters', {
-            p_parish_id: parishId,
-            p_params: normalized,
-            p_expected_book: Number(expected.ordinarioLibro || 1),
-            p_expected_folio: Number(expected.ordinarioFolio || 1),
-            p_expected_number: Number(expected.ordinarioNumero || 1)
-        });
-        if (error) throw error;
-
-        const saved = data || normalized;
-        writeCache('confirmaciones_params', parishId, saved);
-        return { success: true, message: 'Parámetros de Confirmación actualizados en Supabase.', data: saved };
-    } catch (error) {
-        const rawMessage = String(error?.message || 'No fue posible guardar los parámetros de Confirmación.');
-        const message = rawMessage.includes('save_confirmation_parameters') || rawMessage.includes('schema cache')
-            ? 'Falta aplicar la migración de Confirmación Cloud-Native (Fase 5B) en Supabase.'
-            : rawMessage;
-        return { success: false, message };
-    }
-};
+export const saveConfirmationParameters = async () => rejectPhysicalParameterWrite();
 
 export const updateConfirmationParameters = async (parishId, params, expectedParams = null) =>
     saveConfirmationParameters(params, parishId, expectedParams);
@@ -287,39 +193,7 @@ export const getNextConfirmationRegistrationPreview = async (parishId) => {
 // ============================================================================
 export const getMatrimonioParameters = (parishId) => getParameterSet(parishId, 'matrimonios_params');
 
-export const saveMatrimonioParameters = async (params, parishId, expectedParams = null) => {
-    if (!parishId) return { success: false, message: 'Falta ID de parroquia' };
-    const normalized = { ...getDefaultMatrimonioParameters(), ...params };
-    const expected = expectedParams || params || {};
-
-    try {
-        const rpcParams = {
-            ...normalized,
-            _expectedSuplementarioLibro: Number(expected.suplementarioLibro || 1),
-            _expectedSuplementarioFolio: Number(expected.suplementarioFolio || 1),
-            _expectedSuplementarioNumero: Number(expected.suplementarioNumero || 1)
-        };
-
-        const { data, error } = await supabase.rpc('save_marriage_parameters', {
-            p_parish_id: parishId,
-            p_params: rpcParams,
-            p_expected_book: Number(expected.ordinarioLibro || 1),
-            p_expected_folio: Number(expected.ordinarioFolio || 1),
-            p_expected_number: Number(expected.ordinarioNumero || 1)
-        });
-        if (error) throw error;
-
-        const saved = data || normalized;
-        writeCache('matrimonios_params', parishId, saved);
-        return { success: true, message: 'Parámetros de Matrimonio actualizados en Supabase.', data: saved };
-    } catch (error) {
-        const rawMessage = String(error?.message || 'No fue posible guardar los parámetros de Matrimonio.');
-        const message = rawMessage.includes('save_marriage_parameters') || rawMessage.includes('schema cache')
-            ? 'Falta aplicar las migraciones 028 y 028A de Matrimonio Cloud-Native en Supabase.'
-            : rawMessage;
-        return { success: false, message };
-    }
-};
+export const saveMatrimonioParameters = async () => rejectPhysicalParameterWrite();
 
 export const updateMatrimonioParameters = async (parishId, params, expectedParams = null) =>
     saveMatrimonioParameters(params, parishId, expectedParams);
@@ -346,10 +220,7 @@ export const getNextMatrimonioRegistrationPreview = async (parishId) => {
 // ✝️ EXEQUIAS
 // ============================================================================
 export const getExequiasParameters = (parishId) => getParameterSet(parishId, 'exequias_params');
-export const updateExequiasParameters = async (parishId, params) => {
-    const current = await getExequiasParameters(parishId);
-    return saveParameterSet(parishId, 'exequias_params', { ...current, ...params });
-};
+export const updateExequiasParameters = async () => rejectPhysicalParameterWrite();
 
 // ============================================================================
 // 🔢 CÁLCULO DE CONSECUTIVOS · SÓLO AVANCE
