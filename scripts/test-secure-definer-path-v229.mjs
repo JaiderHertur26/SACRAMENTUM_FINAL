@@ -8,6 +8,24 @@ import {assessOfficialBuild} from '../release-guard-core-v223.mjs';
 const rep=JSON.parse(fs.readFileSync('AUDITORIA_SEGURIDAD_RPC_LIVE_V229.json','utf8'));
 const sha=f=>createHash('sha256').update(fs.readFileSync(f,'utf8').replace(/\r\n/g,'\n')).digest('hex');
 const currentMigration='supabase/migrations/20261027044045_secure_definer_pg_temp_last_v229.sql';
+// V276: exact-byte certification of the 14 INSTALL-ONLY migrations already applied to Supabase.
+// Every newly deployed public RPC remains REVOKED until separately audited official cutover.
+const approvedV276StagedLedger=new Map([
+ ['20261028203353_sacramentum_v252_private_book_ledger_staged.sql','24023b8ceb3904df98574141004e8d19428886a0b4f9192ec5c43468910c5a51'],
+ ['20261028203407_sacramentum_v253_private_operations_and_dependencies_staged.sql','f0d4282904af1ed013c9cfbb94cb03e23d4bbb45f9229c3d54e63b18238655a1'],
+ ['20261028203436_sacramentum_v263_four_sacrament_rpcs_private_staged.sql','1fa78cab679af64bda49f07cb47324b090787e2e50a174047f1bc6c5b972d1ec'],
+ ['20261028203453_sacramentum_v264_parish_ledger_context_staged.sql','5d522db9445f5121ce918713c4be414b712f5c5a1cd4f8de680580751d3d9e37'],
+ ['20261028203456_sacramentum_v265_new_celebration_attestation_staged.sql','191bb20ea81bd3f0e25d038674a9daefa1e2e6e649a13257736f9c18b596d400'],
+ ['20261028203458_sacramentum_v266_two_signatures_physical_review_staged.sql','9f3ea0d8099f412c543229ad03336fb445e831f84189ad7372b188ba1a166fd3'],
+ ['20261028203526_sacramentum_v267_open_first_official_book_staged.sql','206656a7cc76bce10385c544f372d078b4be596286669613b34218dcb2f41ca0'],
+ ['20261028203530_sacramentum_v270_open_next_official_book_staged.sql','b35d1ffbb92dc7ca0e2bd2aab009b44f805c14abea1999cdc71b1cad41eba9d9'],
+ ['20261028203532_sacramentum_v271_open_first_supplementary_book_staged.sql','1689bb89cd6b74ad043cdc5cd078853e09c07e1baaa539ba8a43d1f4d8b7c6f2'],
+ ['20261028203535_sacramentum_v272_approve_supplementary_concept_staged.sql','a15b3472af81948252d60db16aa06e6e166fae7b98248a761815b70a404c5ba4'],
+ ['20261028203538_sacramentum_v272_open_next_supplementary_book_staged.sql','a08b93a879ab204b8523ba45a0ed0eb7544a19c419e74907e0ffbf7d52fd9e7d'],
+ ['20261028203541_sacramentum_v273_institutional_master_review_staged.sql','50d81ca1b60a855c8b7fbbdda33141e882374faafbb82cabcd1afc39f7e89c0b'],
+ ['20261028203648_sacramentum_v271_new_supplement_decrees_staged.sql','11a57ba092ad1c7aa8bab0334b84552e8d860af4d9f82c0efd570c74ebdb3883'],
+ ['20261028203711_sacramentum_v256_boleta_counter_staged_without_client_grant.sql','7f3b3ffa0537874352a6c9f0553206523b755784ebc70b3ff76e0dead7d87481'],
+]);
 const safeSecurity={...rep.preflight.metrics,protocol:'V236',unused_pg_graphql_enabled:0,qa_legacy_dbf_concept_rows:0,qa_legacy_template_snapshot_rows:0,postgres_future_table_grants:0,postgres_future_sequence_grants:0,postgres_future_function_grants:0,postgres_missing_global_function_revoke:0,postgres_global_table_grants:0,postgres_global_sequence_grants:0,admin_risk_extensions_in_public:0,admin_owned_public_relations:0,admin_owned_public_functions:0,admin_owned_exposed_truncate_tables:0,privileged_rpc_without_auth_identity_path:0,privileged_rpc_using_delegated_identity:15,dangerous_default_table_grants:0,
  open_default_function_grants:0,future_user_table_grants:0,future_user_sequence_grants:0,
  future_user_function_grants:0,creators_missing_global_function_revoke:0,
@@ -40,6 +58,8 @@ test('V229 remote migration version is identical to the checked-in CLI-created m
  assert.equal(rep.migration.sha256,sha(currentMigration));
  assert.match(currentMigration,/^supabase\/migrations\/20261027044045_/);
  const all=fs.readdirSync('supabase/migrations').filter(x=>x.endsWith('.sql')).sort();
+ assert.equal(approvedV276StagedLedger.size,14);
+ for(const f of approvedV276StagedLedger.keys())assert.ok(all.includes(f),'certified migration missing: '+f);
  for(const later of all.filter(x=>('supabase/migrations/'+x)>currentMigration)) {
   const body=fs.readFileSync('supabase/migrations/'+later,'utf8');
   if(later==='20261027125848_harden_chat_actor_guard_v232.sql') {
@@ -67,6 +87,15 @@ test('V229 remote migration version is identical to the checked-in CLI-created m
     assert.match(body,/materialize_legacy_decrees_v68/);
     assert.match(body,/v_chancery IS NULL/);
     assert.doesNotMatch(body,/\\b(?:INSERT INTO|UPDATE\\s+public\\.|DELETE FROM|TRUNCATE\\s+TABLE|DROP TABLE)\\b/i);
+  } else if (approvedV276StagedLedger.has(later)) {
+    assert.equal(sha('supabase/migrations/'+later),approvedV276StagedLedger.get(later),
+      'new staged migration content changed without re-certification: '+later);
+    assert.doesNotMatch(body,/^\s*GRANT\s+EXECUTE\b/mi,
+      'V276 cannot expose an installed but not activated RPC');
+    assert.match(body,/\bREVOKE\s+ALL\b/i,
+      'V276 must explicitly revoke privileged access');
+    assert.doesNotMatch(body,/^\s*TRUNCATE\s+TABLE\b/mi,
+      'V276 installation must not purge historical test data');
   } else {
     assert.doesNotMatch(body,/\b(?:ALTER|CREATE|DROP)\s+(?:(?:OR\s+REPLACE)\s+)?FUNCTION\b|\bSET\s+search_path\b/i,
       'later migration must not alter privileged functions without new certification: '+later);

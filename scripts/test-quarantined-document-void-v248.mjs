@@ -38,16 +38,16 @@ test('V248 block list prevents accidental reauthorization by normal authenticate
  const sample=fs.readFileSync('scripts/test-privileged-rpc-catalog-v236.mjs','utf8');
  assert.match(sample,/privileged_rpc_catalog_count:151/);
 });
-test('V248 166 migrations remain fully enumerated without legacy data changes',()=>{
+test('V248 180 migrations remain fully enumerated without legacy data changes',()=>{
  const inv=report();
- assert.equal(inv.migrationCount,166);
+ assert.equal(inv.migrationCount,180);
  assert.equal(CLEAN_REPLAY_HISTORICAL_MIGRATIONS,166);
  assert.equal(inv.directWriteMigrationCount,14);
  assert.equal(inv.directWriteStatementCount,45);
  const rows=inv.checks.filter(x=>x.file.endsWith('contain_document_void_exposure_v248.sql'));
  assert.equal(rows.length,1);
  assert.equal(rows[0].directWrites,0);
- assert.equal(crypto.createHash('sha256').update(JSON.stringify(inv.checks)).digest('hex'),HISTORICAL_MIGRATION_MANIFEST_SHA256);
+ assert.equal(crypto.createHash('sha256').update(JSON.stringify(inv.checks.slice(0,CLEAN_REPLAY_HISTORICAL_MIGRATIONS))).digest('hex'),HISTORICAL_MIGRATION_MANIFEST_SHA256);
 });
 test('V248 is temporary containment, not SQL fix, not validation of documents and not official release',()=>{
  assert.equal(e.previous_source_change_v246_status,'BLOCKED_UNAPPLIED_DRAFT_PR_97');

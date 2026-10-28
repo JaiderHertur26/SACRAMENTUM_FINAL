@@ -32,18 +32,18 @@ test('V231 SQL lexer ignores DML inside comments, strings and dollar-quoted priv
  assert.match(s[1],/^insert into public.document_templates/i);
  assert.match(s[2],/^update public.legacy_import_rows/i);
 });
-test('V231 detects all 166 versioned migrations with SHA256 fingerprints and full source coverage',()=>{
+test('V231 detects all 180 versioned migrations with SHA256 fingerprints and full source coverage',()=>{
  const scan=report();
- assert.equal(scan.migrationCount,166);
- assert.equal(inv.migrationCount,166);
+ assert.equal(scan.migrationCount,180);
+ assert.equal(inv.migrationCount,180);
  assert.deepEqual(scan.checks,inv.checks);
  assert.deepEqual(scan.findings,inv.findings);
- assert.equal(inv.checks.length,166);
- assert.equal(new Set(inv.checks.map(x=>x.file)).size,166);
+ assert.equal(inv.checks.length,180);
+ assert.equal(new Set(inv.checks.map(x=>x.file)).size,180);
  assert.ok(inv.checks.every(x=>/^[a-f0-9]{64}$/.test(x.sha256)));
 });
 test('V231 pinned history manifest digest matches the independent Vercel release guard',()=>{
- assert.equal(digest(inv.checks),HISTORICAL_MIGRATION_MANIFEST_SHA256);
+ assert.equal(digest(inv.checks.slice(0,CLEAN_REPLAY_HISTORICAL_MIGRATIONS)),HISTORICAL_MIGRATION_MANIFEST_SHA256);
  assert.equal(CLEAN_REPLAY_HISTORICAL_MIGRATIONS,166);
  assert.equal(CLEAN_REPLAY_MUTATIONS_TO_EXCLUDE,39);
  assert.equal(CLEAN_REPLAY_REFERENCE_CATALOGS_TO_REVIEW,6);
