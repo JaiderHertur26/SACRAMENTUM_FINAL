@@ -34,6 +34,8 @@ test('V267 GoLive fails closed on ANY old test table, unclassified table or priv
  assert.match(s,/v_master_tables text\[\]/);
  assert.match(s,/EXISTS\(SELECT 1 FROM sacramentum_ledger\.seat_events\)/);
  assert.match(s,/go_live_receipt_v267/);
+ assert.match(s,/purge_receipts_v268/);
+ assert.match(s,/restore_verified=true/);
  assert.match(s,/mode='FRESH_FROM_ZERO'/);
  assert.equal((s.match(/REVOKE EXECUTE ON FUNCTION public\.seat_/g)||[]).length,4);
  assert.equal((s.match(/GRANT EXECUTE ON FUNCTION public\.seat_/g)||[]).length,4);

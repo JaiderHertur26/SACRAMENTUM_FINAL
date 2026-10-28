@@ -18,6 +18,14 @@ pg psql -X -q -v ON_ERROR_STOP=1 -U postgres -d "$db" -f - < scripts/qa-v252-led
 pg psql -X -q -v ON_ERROR_STOP=1 -U postgres -d "$db" -f - < scripts/qa-v253-ledger-transactions.sql >/dev/null
 pg psql -X -q -v ON_ERROR_STOP=1 -U postgres -d "$db" -f - < scripts/staged-v267-first-official-book.sql >/dev/null
 
+# A documented V268 cleanup is mandatory before GoLive, even when the
+# sandbox is empty. Simulated provenance receipt exists ONLY in this fixture.
+rejectCutover "missing V268 cleanup receipt"
+run "CREATE TABLE sacramentum_ledger.purge_receipts_v268(
+ id boolean PRIMARY KEY,restore_verified boolean,discarded_table_count integer,
+ preserved_table_count integer,discarded_rows bigint,backup_sha256 text);
+ INSERT INTO sacramentum_ledger.purge_receipts_v268 VALUES(
+ true,true,56,26,9,repeat('a',64));" >/dev/null
 OLD='public.seat_baptism_records(uuid,jsonb,integer,integer,integer)'
 NEW='public.seat_baptism_ledger_v263(uuid,uuid,bigint,integer,integer,uuid,jsonb)'
 eq "$(run "SELECT has_function_privilege('authenticated','$OLD','EXECUTE')")" t

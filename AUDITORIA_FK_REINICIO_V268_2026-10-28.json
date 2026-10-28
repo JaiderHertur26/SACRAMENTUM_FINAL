@@ -1,0 +1,1193 @@
+{
+  "protocol": "V268",
+  "asOf": "2026-10-28",
+  "publicFkEdges": 168,
+  "zeroToZero": 76,
+  "preservedReferencingTransactional": [
+    {
+      "child_table": "parishes",
+      "parent_schema": "public",
+      "parent_table": "legacy_source_origins",
+      "delete_mode": "n",
+      "constraint_name": "parishes_legacy_origin_id_fkey"
+    }
+  ],
+  "edges": [
+    {
+      "child_table": "dioceses",
+      "parent_schema": "public",
+      "parent_table": "archdioceses",
+      "delete_mode": "n",
+      "constraint_name": "dioceses_archdiocese_id_fkey"
+    },
+    {
+      "child_table": "funerals",
+      "parent_schema": "public",
+      "parent_table": "baptisms",
+      "delete_mode": "n",
+      "constraint_name": "funerals_baptism_id_fkey"
+    },
+    {
+      "child_table": "matrimonial_notification_recipients",
+      "parent_schema": "public",
+      "parent_table": "baptisms",
+      "delete_mode": "n",
+      "constraint_name": "matrimonial_notification_recipients_target_baptism_id_fkey"
+    },
+    {
+      "child_table": "matrimonial_notifications",
+      "parent_schema": "public",
+      "parent_table": "baptisms",
+      "delete_mode": "n",
+      "constraint_name": "matrimonial_notifications_source_baptism_id_fkey"
+    },
+    {
+      "child_table": "matrimonial_notifications",
+      "parent_schema": "public",
+      "parent_table": "baptisms",
+      "delete_mode": "n",
+      "constraint_name": "matrimonial_notifications_spouse_baptism_id_fkey"
+    },
+    {
+      "child_table": "pending_funerals",
+      "parent_schema": "public",
+      "parent_table": "baptisms",
+      "delete_mode": "n",
+      "constraint_name": "pending_funerals_baptism_id_fkey"
+    },
+    {
+      "child_table": "official_notifications",
+      "parent_schema": "public",
+      "parent_table": "chancelleries",
+      "delete_mode": "n",
+      "constraint_name": "official_notifications_sender_chancery_id_fkey"
+    },
+    {
+      "child_table": "user_profiles",
+      "parent_schema": "public",
+      "parent_table": "chancelleries",
+      "delete_mode": "n",
+      "constraint_name": "user_profiles_chancery_id_fkey"
+    },
+    {
+      "child_table": "chat_messages",
+      "parent_schema": "public",
+      "parent_table": "chat_messages",
+      "delete_mode": "n",
+      "constraint_name": "chat_messages_reply_to_id_fkey"
+    },
+    {
+      "child_table": "chat_room_members",
+      "parent_schema": "public",
+      "parent_table": "chat_messages",
+      "delete_mode": "n",
+      "constraint_name": "chat_room_members_last_read_message_id_fkey"
+    },
+    {
+      "child_table": "chat_messages",
+      "parent_schema": "public",
+      "parent_table": "chat_rooms",
+      "delete_mode": "c",
+      "constraint_name": "chat_messages_room_id_fkey"
+    },
+    {
+      "child_table": "chat_room_members",
+      "parent_schema": "public",
+      "parent_table": "chat_rooms",
+      "delete_mode": "c",
+      "constraint_name": "chat_room_members_room_id_fkey"
+    },
+    {
+      "child_table": "parishes",
+      "parent_schema": "public",
+      "parent_table": "deaneries",
+      "delete_mode": "n",
+      "constraint_name": "parishes_deanery_id_fkey"
+    },
+    {
+      "child_table": "parishes",
+      "parent_schema": "public",
+      "parent_table": "decanatos",
+      "delete_mode": "n",
+      "constraint_name": "parishes_decanate_id_fkey"
+    },
+    {
+      "child_table": "later_note_reconciliations_v156",
+      "parent_schema": "public",
+      "parent_table": "decretos",
+      "delete_mode": "a",
+      "constraint_name": "later_note_reconciliations_v156_decree_id_fkey"
+    },
+    {
+      "child_table": "marginal_notes",
+      "parent_schema": "public",
+      "parent_table": "decretos",
+      "delete_mode": "n",
+      "constraint_name": "marginal_notes_decree_id_fkey"
+    },
+    {
+      "child_table": "nullity_court_decision_receipts",
+      "parent_schema": "public",
+      "parent_table": "decretos",
+      "delete_mode": "r",
+      "constraint_name": "nullity_court_decision_receipts_nullity_decree_id_fkey"
+    },
+    {
+      "child_table": "nullity_execution_authorizations_v128",
+      "parent_schema": "public",
+      "parent_table": "decretos",
+      "delete_mode": "a",
+      "constraint_name": "nullity_execution_authorizations_v128_decree_id_fkey"
+    },
+    {
+      "child_table": "nullity_judicial_review_cases",
+      "parent_schema": "public",
+      "parent_table": "decretos",
+      "delete_mode": "r",
+      "constraint_name": "nullity_judicial_review_cases_nullity_decree_id_fkey"
+    },
+    {
+      "child_table": "nullity_judicial_review_events",
+      "parent_schema": "public",
+      "parent_table": "decretos",
+      "delete_mode": "r",
+      "constraint_name": "nullity_judicial_review_events_nullity_decree_id_fkey"
+    },
+    {
+      "child_table": "official_notifications",
+      "parent_schema": "public",
+      "parent_table": "decretos",
+      "delete_mode": "c",
+      "constraint_name": "official_notifications_decree_id_fkey"
+    },
+    {
+      "child_table": "chancelleries",
+      "parent_schema": "public",
+      "parent_table": "dioceses",
+      "delete_mode": "c",
+      "constraint_name": "chancelleries_diocese_id_fkey"
+    },
+    {
+      "child_table": "chat_rooms",
+      "parent_schema": "public",
+      "parent_table": "dioceses",
+      "delete_mode": "c",
+      "constraint_name": "chat_rooms_diocese_id_fkey"
+    },
+    {
+      "child_table": "conceptos_anulacion",
+      "parent_schema": "public",
+      "parent_table": "dioceses",
+      "delete_mode": "c",
+      "constraint_name": "conceptos_anulacion_diocese_id_fkey"
+    },
+    {
+      "child_table": "decanatos",
+      "parent_schema": "public",
+      "parent_table": "dioceses",
+      "delete_mode": "c",
+      "constraint_name": "decanatos_diocese_id_fkey"
+    },
+    {
+      "child_table": "diocesan_report_runs",
+      "parent_schema": "public",
+      "parent_table": "dioceses",
+      "delete_mode": "r",
+      "constraint_name": "diocesan_report_runs_diocese_id_fkey"
+    },
+    {
+      "child_table": "document_templates",
+      "parent_schema": "public",
+      "parent_table": "dioceses",
+      "delete_mode": "c",
+      "constraint_name": "document_templates_diocese_id_fkey"
+    },
+    {
+      "child_table": "later_note_reconciliations_v156",
+      "parent_schema": "public",
+      "parent_table": "dioceses",
+      "delete_mode": "a",
+      "constraint_name": "later_note_reconciliations_v156_diocese_id_fkey"
+    },
+    {
+      "child_table": "legacy_archive_records",
+      "parent_schema": "public",
+      "parent_table": "dioceses",
+      "delete_mode": "n",
+      "constraint_name": "legacy_archive_records_diocese_id_fkey"
+    },
+    {
+      "child_table": "legacy_import_batches",
+      "parent_schema": "public",
+      "parent_table": "dioceses",
+      "delete_mode": "n",
+      "constraint_name": "legacy_import_batches_diocese_id_fkey"
+    },
+    {
+      "child_table": "legacy_link_review_events_v218",
+      "parent_schema": "public",
+      "parent_table": "dioceses",
+      "delete_mode": "r",
+      "constraint_name": "legacy_link_review_events_v218_diocese_id_fkey"
+    },
+    {
+      "child_table": "legacy_marginal_note_queue",
+      "parent_schema": "public",
+      "parent_table": "dioceses",
+      "delete_mode": "n",
+      "constraint_name": "legacy_marginal_note_queue_diocese_id_fkey"
+    },
+    {
+      "child_table": "legacy_source_installations",
+      "parent_schema": "public",
+      "parent_table": "dioceses",
+      "delete_mode": "n",
+      "constraint_name": "legacy_source_installations_owner_diocese_id_fkey"
+    },
+    {
+      "child_table": "marginal_note_templates",
+      "parent_schema": "public",
+      "parent_table": "dioceses",
+      "delete_mode": "c",
+      "constraint_name": "marginal_note_templates_diocese_id_fkey"
+    },
+    {
+      "child_table": "matrimonial_notifications",
+      "parent_schema": "public",
+      "parent_table": "dioceses",
+      "delete_mode": "n",
+      "constraint_name": "matrimonial_notifications_marriage_diocese_id_fkey"
+    },
+    {
+      "child_table": "matrimonial_notifications",
+      "parent_schema": "public",
+      "parent_table": "dioceses",
+      "delete_mode": "n",
+      "constraint_name": "matrimonial_notifications_diocese_id_fkey"
+    },
+    {
+      "child_table": "nullity_court_clarifications_v112",
+      "parent_schema": "public",
+      "parent_table": "dioceses",
+      "delete_mode": "a",
+      "constraint_name": "nullity_court_clarifications_v112_diocese_id_fkey"
+    },
+    {
+      "child_table": "nullity_court_decision_receipts",
+      "parent_schema": "public",
+      "parent_table": "dioceses",
+      "delete_mode": "r",
+      "constraint_name": "nullity_court_decision_receipts_diocese_id_fkey"
+    },
+    {
+      "child_table": "nullity_court_receipt_checks",
+      "parent_schema": "public",
+      "parent_table": "dioceses",
+      "delete_mode": "r",
+      "constraint_name": "nullity_court_receipt_checks_diocese_id_fkey"
+    },
+    {
+      "child_table": "nullity_execution_authorizations_v128",
+      "parent_schema": "public",
+      "parent_table": "dioceses",
+      "delete_mode": "a",
+      "constraint_name": "nullity_execution_authorizations_v128_diocese_id_fkey"
+    },
+    {
+      "child_table": "nullity_judicial_review_cases",
+      "parent_schema": "public",
+      "parent_table": "dioceses",
+      "delete_mode": "r",
+      "constraint_name": "nullity_judicial_review_cases_diocese_id_fkey"
+    },
+    {
+      "child_table": "nullity_judicial_review_events",
+      "parent_schema": "public",
+      "parent_table": "dioceses",
+      "delete_mode": "r",
+      "constraint_name": "nullity_judicial_review_events_diocese_id_fkey"
+    },
+    {
+      "child_table": "official_notifications",
+      "parent_schema": "public",
+      "parent_table": "dioceses",
+      "delete_mode": "r",
+      "constraint_name": "official_notifications_diocese_id_fkey"
+    },
+    {
+      "child_table": "parishes",
+      "parent_schema": "public",
+      "parent_table": "dioceses",
+      "delete_mode": "r",
+      "constraint_name": "parishes_diocese_id_fkey"
+    },
+    {
+      "child_table": "registry_audit_log",
+      "parent_schema": "public",
+      "parent_table": "dioceses",
+      "delete_mode": "n",
+      "constraint_name": "registry_audit_log_diocese_id_fkey"
+    },
+    {
+      "child_table": "user_profiles",
+      "parent_schema": "public",
+      "parent_table": "dioceses",
+      "delete_mode": "n",
+      "constraint_name": "user_profiles_diocese_id_fkey"
+    },
+    {
+      "child_table": "vicarias",
+      "parent_schema": "public",
+      "parent_table": "dioceses",
+      "delete_mode": "c",
+      "constraint_name": "vicarias_diocese_id_fkey"
+    },
+    {
+      "child_table": "vicariates",
+      "parent_schema": "public",
+      "parent_table": "dioceses",
+      "delete_mode": "c",
+      "constraint_name": "vicariates_diocese_id_fkey"
+    },
+    {
+      "child_table": "directory_churches",
+      "parent_schema": "public",
+      "parent_table": "directory_dioceses",
+      "delete_mode": "n",
+      "constraint_name": "directory_churches_directory_diocese_id_fkey"
+    },
+    {
+      "child_table": "document_issuances",
+      "parent_schema": "public",
+      "parent_table": "document_templates",
+      "delete_mode": "a",
+      "constraint_name": "document_issuances_template_id_fkey"
+    },
+    {
+      "child_table": "baptisms",
+      "parent_schema": "public",
+      "parent_table": "funerals",
+      "delete_mode": "n",
+      "constraint_name": "baptisms_linked_funeral_id_fkey"
+    },
+    {
+      "child_table": "legacy_marriage_children",
+      "parent_schema": "public",
+      "parent_table": "legacy_archive_records",
+      "delete_mode": "r",
+      "constraint_name": "legacy_marriage_children_legacy_archive_record_id_fkey"
+    },
+    {
+      "child_table": "legacy_parameter_snapshots",
+      "parent_schema": "public",
+      "parent_table": "legacy_archive_records",
+      "delete_mode": "r",
+      "constraint_name": "legacy_parameter_snapshots_legacy_archive_record_id_fkey"
+    },
+    {
+      "child_table": "legacy_physical_source_rows",
+      "parent_schema": "public",
+      "parent_table": "legacy_archive_records",
+      "delete_mode": "n",
+      "constraint_name": "legacy_physical_source_rows_archive_record_id_fkey"
+    },
+    {
+      "child_table": "legacy_print_events",
+      "parent_schema": "public",
+      "parent_table": "legacy_archive_records",
+      "delete_mode": "r",
+      "constraint_name": "legacy_print_events_legacy_archive_record_id_fkey"
+    },
+    {
+      "child_table": "legacy_archive_records",
+      "parent_schema": "public",
+      "parent_table": "legacy_import_batches",
+      "delete_mode": "n",
+      "constraint_name": "legacy_archive_records_batch_id_fkey"
+    },
+    {
+      "child_table": "legacy_import_ownership",
+      "parent_schema": "public",
+      "parent_table": "legacy_import_batches",
+      "delete_mode": "c",
+      "constraint_name": "legacy_import_ownership_batch_id_fkey"
+    },
+    {
+      "child_table": "legacy_import_rows",
+      "parent_schema": "public",
+      "parent_table": "legacy_import_batches",
+      "delete_mode": "c",
+      "constraint_name": "legacy_import_rows_batch_id_fkey"
+    },
+    {
+      "child_table": "legacy_marginal_note_queue",
+      "parent_schema": "public",
+      "parent_table": "legacy_import_batches",
+      "delete_mode": "n",
+      "constraint_name": "legacy_marginal_note_queue_batch_id_fkey"
+    },
+    {
+      "child_table": "legacy_pre_sacrament_registrations",
+      "parent_schema": "public",
+      "parent_table": "legacy_import_batches",
+      "delete_mode": "n",
+      "constraint_name": "legacy_pre_sacrament_registrations_batch_id_fkey"
+    },
+    {
+      "child_table": "legacy_record_links",
+      "parent_schema": "public",
+      "parent_table": "legacy_import_batches",
+      "delete_mode": "n",
+      "constraint_name": "legacy_record_links_batch_id_fkey"
+    },
+    {
+      "child_table": "legacy_source_files",
+      "parent_schema": "public",
+      "parent_table": "legacy_import_batches",
+      "delete_mode": "n",
+      "constraint_name": "legacy_source_files_batch_id_fkey"
+    },
+    {
+      "child_table": "legacy_import_batches",
+      "parent_schema": "public",
+      "parent_table": "legacy_import_profiles",
+      "delete_mode": "a",
+      "constraint_name": "legacy_import_batches_profile_key_fkey"
+    },
+    {
+      "child_table": "legacy_archive_records",
+      "parent_schema": "public",
+      "parent_table": "legacy_import_rows",
+      "delete_mode": "n",
+      "constraint_name": "legacy_archive_records_row_id_fkey"
+    },
+    {
+      "child_table": "legacy_import_ownership",
+      "parent_schema": "public",
+      "parent_table": "legacy_import_rows",
+      "delete_mode": "c",
+      "constraint_name": "legacy_import_ownership_row_id_fkey"
+    },
+    {
+      "child_table": "legacy_marginal_note_queue",
+      "parent_schema": "public",
+      "parent_table": "legacy_import_rows",
+      "delete_mode": "n",
+      "constraint_name": "legacy_marginal_note_queue_row_id_fkey"
+    },
+    {
+      "child_table": "legacy_pre_sacrament_registrations",
+      "parent_schema": "public",
+      "parent_table": "legacy_import_rows",
+      "delete_mode": "n",
+      "constraint_name": "legacy_pre_sacrament_registrations_row_id_fkey"
+    },
+    {
+      "child_table": "legacy_record_links",
+      "parent_schema": "public",
+      "parent_table": "legacy_import_rows",
+      "delete_mode": "n",
+      "constraint_name": "legacy_record_links_row_id_fkey"
+    },
+    {
+      "child_table": "legacy_physical_source_rows",
+      "parent_schema": "public",
+      "parent_table": "legacy_physical_source_artifacts",
+      "delete_mode": "c",
+      "constraint_name": "legacy_physical_source_rows_artifact_id_fkey"
+    },
+    {
+      "child_table": "marriage_dossiers",
+      "parent_schema": "public",
+      "parent_table": "legacy_pre_sacrament_registrations",
+      "delete_mode": "n",
+      "constraint_name": "marriage_dossiers_legacy_pre_registration_id_fkey"
+    },
+    {
+      "child_table": "legacy_link_review_events_v218",
+      "parent_schema": "public",
+      "parent_table": "legacy_record_links",
+      "delete_mode": "r",
+      "constraint_name": "legacy_link_review_events_v218_link_id_fkey"
+    },
+    {
+      "child_table": "legacy_archive_records",
+      "parent_schema": "public",
+      "parent_table": "legacy_source_installations",
+      "delete_mode": "n",
+      "constraint_name": "legacy_archive_records_source_installation_id_fkey"
+    },
+    {
+      "child_table": "legacy_import_batches",
+      "parent_schema": "public",
+      "parent_table": "legacy_source_installations",
+      "delete_mode": "n",
+      "constraint_name": "legacy_import_batches_source_installation_id_fkey"
+    },
+    {
+      "child_table": "legacy_physical_source_artifacts",
+      "parent_schema": "public",
+      "parent_table": "legacy_source_installations",
+      "delete_mode": "c",
+      "constraint_name": "legacy_physical_source_artifacts_source_installation_id_fkey"
+    },
+    {
+      "child_table": "legacy_source_files",
+      "parent_schema": "public",
+      "parent_table": "legacy_source_installations",
+      "delete_mode": "c",
+      "constraint_name": "legacy_source_files_source_installation_id_fkey"
+    },
+    {
+      "child_table": "legacy_source_origins",
+      "parent_schema": "public",
+      "parent_table": "legacy_source_installations",
+      "delete_mode": "c",
+      "constraint_name": "legacy_source_origins_source_installation_id_fkey"
+    },
+    {
+      "child_table": "legacy_archive_records",
+      "parent_schema": "public",
+      "parent_table": "legacy_source_origins",
+      "delete_mode": "n",
+      "constraint_name": "legacy_archive_records_source_origin_id_fkey"
+    },
+    {
+      "child_table": "legacy_import_batches",
+      "parent_schema": "public",
+      "parent_table": "legacy_source_origins",
+      "delete_mode": "n",
+      "constraint_name": "legacy_import_batches_source_origin_id_fkey"
+    },
+    {
+      "child_table": "legacy_marriage_children",
+      "parent_schema": "public",
+      "parent_table": "legacy_source_origins",
+      "delete_mode": "n",
+      "constraint_name": "legacy_marriage_children_source_origin_id_fkey"
+    },
+    {
+      "child_table": "legacy_parameter_snapshots",
+      "parent_schema": "public",
+      "parent_table": "legacy_source_origins",
+      "delete_mode": "n",
+      "constraint_name": "legacy_parameter_snapshots_source_origin_id_fkey"
+    },
+    {
+      "child_table": "legacy_physical_source_artifacts",
+      "parent_schema": "public",
+      "parent_table": "legacy_source_origins",
+      "delete_mode": "c",
+      "constraint_name": "legacy_physical_source_artifacts_source_origin_id_fkey"
+    },
+    {
+      "child_table": "legacy_print_events",
+      "parent_schema": "public",
+      "parent_table": "legacy_source_origins",
+      "delete_mode": "n",
+      "constraint_name": "legacy_print_events_source_origin_id_fkey"
+    },
+    {
+      "child_table": "legacy_source_files",
+      "parent_schema": "public",
+      "parent_table": "legacy_source_origins",
+      "delete_mode": "n",
+      "constraint_name": "legacy_source_files_source_origin_id_fkey"
+    },
+    {
+      "child_table": "legacy_source_origin_hashes",
+      "parent_schema": "public",
+      "parent_table": "legacy_source_origins",
+      "delete_mode": "c",
+      "constraint_name": "legacy_source_origin_hashes_origin_id_fkey"
+    },
+    {
+      "child_table": "legacy_source_origins",
+      "parent_schema": "public",
+      "parent_table": "legacy_source_origins",
+      "delete_mode": "n",
+      "constraint_name": "legacy_source_origins_parent_origin_id_fkey"
+    },
+    {
+      "child_table": "parishes",
+      "parent_schema": "public",
+      "parent_table": "legacy_source_origins",
+      "delete_mode": "n",
+      "constraint_name": "parishes_legacy_origin_id_fkey"
+    },
+    {
+      "child_table": "marginal_note_template_clauses",
+      "parent_schema": "public",
+      "parent_table": "marginal_note_templates",
+      "delete_mode": "c",
+      "constraint_name": "marginal_note_template_clauses_template_id_fkey"
+    },
+    {
+      "child_table": "marginal_notes",
+      "parent_schema": "public",
+      "parent_table": "marginal_note_templates",
+      "delete_mode": "n",
+      "constraint_name": "marginal_notes_template_id_fkey"
+    },
+    {
+      "child_table": "later_note_reconciliations_v156",
+      "parent_schema": "public",
+      "parent_table": "marginal_notes",
+      "delete_mode": "a",
+      "constraint_name": "later_note_reconciliations_v156_note_id_fkey"
+    },
+    {
+      "child_table": "legacy_marginal_note_queue",
+      "parent_schema": "public",
+      "parent_table": "marginal_notes",
+      "delete_mode": "n",
+      "constraint_name": "legacy_marginal_note_queue_marginal_note_id_fkey"
+    },
+    {
+      "child_table": "legacy_marriage_children",
+      "parent_schema": "public",
+      "parent_table": "marriage_dossiers",
+      "delete_mode": "n",
+      "constraint_name": "legacy_marriage_children_marriage_dossier_id_fkey"
+    },
+    {
+      "child_table": "legacy_marginal_note_queue",
+      "parent_schema": "public",
+      "parent_table": "marriages",
+      "delete_mode": "n",
+      "constraint_name": "legacy_marginal_note_queue_matched_record_id_fkey"
+    },
+    {
+      "child_table": "legacy_marriage_children",
+      "parent_schema": "public",
+      "parent_table": "marriages",
+      "delete_mode": "n",
+      "constraint_name": "legacy_marriage_children_marriage_id_fkey"
+    },
+    {
+      "child_table": "marriage_dossiers",
+      "parent_schema": "public",
+      "parent_table": "marriages",
+      "delete_mode": "n",
+      "constraint_name": "marriage_dossiers_marriage_id_fkey"
+    },
+    {
+      "child_table": "matrimonial_notifications",
+      "parent_schema": "public",
+      "parent_table": "marriages",
+      "delete_mode": "n",
+      "constraint_name": "matrimonial_notifications_marriage_id_fkey"
+    },
+    {
+      "child_table": "nullity_execution_authorizations_v128",
+      "parent_schema": "public",
+      "parent_table": "marriages",
+      "delete_mode": "a",
+      "constraint_name": "nullity_execution_authorizations_v128_marriage_id_fkey"
+    },
+    {
+      "child_table": "nullity_judicial_review_cases",
+      "parent_schema": "public",
+      "parent_table": "marriages",
+      "delete_mode": "r",
+      "constraint_name": "nullity_judicial_review_cases_marriage_id_fkey"
+    },
+    {
+      "child_table": "matrimonial_notification_recipients",
+      "parent_schema": "public",
+      "parent_table": "matrimonial_notifications",
+      "delete_mode": "c",
+      "constraint_name": "matrimonial_notification_recipients_notification_id_fkey"
+    },
+    {
+      "child_table": "nullity_court_clarifications_v112",
+      "parent_schema": "public",
+      "parent_table": "nullity_court_decision_receipts",
+      "delete_mode": "a",
+      "constraint_name": "nullity_court_clarifications_v112_receipt_id_fkey"
+    },
+    {
+      "child_table": "nullity_court_receipt_checks",
+      "parent_schema": "public",
+      "parent_table": "nullity_court_decision_receipts",
+      "delete_mode": "r",
+      "constraint_name": "nullity_court_receipt_checks_receipt_id_fkey"
+    },
+    {
+      "child_table": "nullity_court_decision_receipts",
+      "parent_schema": "public",
+      "parent_table": "nullity_judicial_review_cases",
+      "delete_mode": "r",
+      "constraint_name": "nullity_court_decision_receipts_review_case_id_fkey"
+    },
+    {
+      "child_table": "nullity_court_receipt_checks",
+      "parent_schema": "public",
+      "parent_table": "nullity_judicial_review_cases",
+      "delete_mode": "r",
+      "constraint_name": "nullity_court_receipt_checks_review_case_id_fkey"
+    },
+    {
+      "child_table": "nullity_judicial_review_events",
+      "parent_schema": "public",
+      "parent_table": "nullity_judicial_review_cases",
+      "delete_mode": "r",
+      "constraint_name": "nullity_judicial_review_events_review_case_id_fkey"
+    },
+    {
+      "child_table": "bishop_tenures",
+      "parent_schema": "public",
+      "parent_table": "obispos",
+      "delete_mode": "n",
+      "constraint_name": "bishop_tenures_bishop_id_fkey"
+    },
+    {
+      "child_table": "baptisms",
+      "parent_schema": "public",
+      "parent_table": "parishes",
+      "delete_mode": "r",
+      "constraint_name": "baptisms_parish_id_fkey"
+    },
+    {
+      "child_table": "bishop_tenures",
+      "parent_schema": "public",
+      "parent_table": "parishes",
+      "delete_mode": "c",
+      "constraint_name": "bishop_tenures_parish_id_fkey"
+    },
+    {
+      "child_table": "confirmations",
+      "parent_schema": "public",
+      "parent_table": "parishes",
+      "delete_mode": "r",
+      "constraint_name": "confirmations_parish_id_fkey"
+    },
+    {
+      "child_table": "decretos",
+      "parent_schema": "public",
+      "parent_table": "parishes",
+      "delete_mode": "n",
+      "constraint_name": "decretos_parish_id_fkey"
+    },
+    {
+      "child_table": "diocesis",
+      "parent_schema": "public",
+      "parent_table": "parishes",
+      "delete_mode": "c",
+      "constraint_name": "diocesis_parish_id_fkey"
+    },
+    {
+      "child_table": "document_templates",
+      "parent_schema": "public",
+      "parent_table": "parishes",
+      "delete_mode": "c",
+      "constraint_name": "document_templates_parish_id_fkey"
+    },
+    {
+      "child_table": "funerals",
+      "parent_schema": "public",
+      "parent_table": "parishes",
+      "delete_mode": "r",
+      "constraint_name": "funerals_parish_id_fkey"
+    },
+    {
+      "child_table": "iglesias",
+      "parent_schema": "public",
+      "parent_table": "parishes",
+      "delete_mode": "c",
+      "constraint_name": "iglesias_parish_id_fkey"
+    },
+    {
+      "child_table": "later_note_reconciliations_v156",
+      "parent_schema": "public",
+      "parent_table": "parishes",
+      "delete_mode": "a",
+      "constraint_name": "later_note_reconciliations_v156_parish_id_fkey"
+    },
+    {
+      "child_table": "legacy_archive_records",
+      "parent_schema": "public",
+      "parent_table": "parishes",
+      "delete_mode": "n",
+      "constraint_name": "legacy_archive_records_parish_id_fkey"
+    },
+    {
+      "child_table": "legacy_import_batches",
+      "parent_schema": "public",
+      "parent_table": "parishes",
+      "delete_mode": "n",
+      "constraint_name": "legacy_import_batches_parish_id_fkey"
+    },
+    {
+      "child_table": "legacy_import_ownership",
+      "parent_schema": "public",
+      "parent_table": "parishes",
+      "delete_mode": "r",
+      "constraint_name": "legacy_import_ownership_owner_parish_id_fkey"
+    },
+    {
+      "child_table": "legacy_link_review_events_v218",
+      "parent_schema": "public",
+      "parent_table": "parishes",
+      "delete_mode": "r",
+      "constraint_name": "legacy_link_review_events_v218_parish_id_fkey"
+    },
+    {
+      "child_table": "legacy_marginal_note_queue",
+      "parent_schema": "public",
+      "parent_table": "parishes",
+      "delete_mode": "c",
+      "constraint_name": "legacy_marginal_note_queue_parish_id_fkey"
+    },
+    {
+      "child_table": "legacy_marginal_template_snapshots",
+      "parent_schema": "public",
+      "parent_table": "parishes",
+      "delete_mode": "c",
+      "constraint_name": "legacy_marginal_template_snapshots_parish_id_fkey"
+    },
+    {
+      "child_table": "legacy_marriage_children",
+      "parent_schema": "public",
+      "parent_table": "parishes",
+      "delete_mode": "r",
+      "constraint_name": "legacy_marriage_children_parish_id_fkey"
+    },
+    {
+      "child_table": "legacy_parameter_snapshots",
+      "parent_schema": "public",
+      "parent_table": "parishes",
+      "delete_mode": "r",
+      "constraint_name": "legacy_parameter_snapshots_parish_id_fkey"
+    },
+    {
+      "child_table": "legacy_pre_sacrament_registrations",
+      "parent_schema": "public",
+      "parent_table": "parishes",
+      "delete_mode": "r",
+      "constraint_name": "legacy_pre_sacrament_registrations_owner_parish_id_fkey"
+    },
+    {
+      "child_table": "legacy_priest_directory",
+      "parent_schema": "public",
+      "parent_table": "parishes",
+      "delete_mode": "r",
+      "constraint_name": "legacy_priest_directory_mapped_parish_id_fkey"
+    },
+    {
+      "child_table": "legacy_print_events",
+      "parent_schema": "public",
+      "parent_table": "parishes",
+      "delete_mode": "r",
+      "constraint_name": "legacy_print_events_parish_id_fkey"
+    },
+    {
+      "child_table": "legacy_source_installations",
+      "parent_schema": "public",
+      "parent_table": "parishes",
+      "delete_mode": "n",
+      "constraint_name": "legacy_source_installations_mapped_parish_id_fkey"
+    },
+    {
+      "child_table": "legacy_source_origins",
+      "parent_schema": "public",
+      "parent_table": "parishes",
+      "delete_mode": "n",
+      "constraint_name": "legacy_source_origins_mapped_parish_id_fkey"
+    },
+    {
+      "child_table": "legacy_source_parishes",
+      "parent_schema": "public",
+      "parent_table": "parishes",
+      "delete_mode": "r",
+      "constraint_name": "legacy_source_parishes_mapped_parish_id_fkey"
+    },
+    {
+      "child_table": "marginal_note_templates",
+      "parent_schema": "public",
+      "parent_table": "parishes",
+      "delete_mode": "c",
+      "constraint_name": "marginal_note_templates_parish_id_fkey"
+    },
+    {
+      "child_table": "marginal_notes",
+      "parent_schema": "public",
+      "parent_table": "parishes",
+      "delete_mode": "n",
+      "constraint_name": "marginal_notes_parish_id_fkey"
+    },
+    {
+      "child_table": "marriage_dossiers",
+      "parent_schema": "public",
+      "parent_table": "parishes",
+      "delete_mode": "r",
+      "constraint_name": "marriage_dossiers_parish_id_fkey"
+    },
+    {
+      "child_table": "marriages",
+      "parent_schema": "public",
+      "parent_table": "parishes",
+      "delete_mode": "r",
+      "constraint_name": "marriages_parish_id_fkey"
+    },
+    {
+      "child_table": "matrimonial_notification_recipients",
+      "parent_schema": "public",
+      "parent_table": "parishes",
+      "delete_mode": "c",
+      "constraint_name": "matrimonial_notification_recipients_receiver_parish_id_fkey"
+    },
+    {
+      "child_table": "matrimonial_notifications",
+      "parent_schema": "public",
+      "parent_table": "parishes",
+      "delete_mode": "r",
+      "constraint_name": "matrimonial_notifications_sender_parish_id_fkey"
+    },
+    {
+      "child_table": "matrimonial_notifications",
+      "parent_schema": "public",
+      "parent_table": "parishes",
+      "delete_mode": "n",
+      "constraint_name": "matrimonial_notifications_marriage_parish_id_fkey"
+    },
+    {
+      "child_table": "nullity_court_clarifications_v112",
+      "parent_schema": "public",
+      "parent_table": "parishes",
+      "delete_mode": "a",
+      "constraint_name": "nullity_court_clarifications_v112_parish_id_fkey"
+    },
+    {
+      "child_table": "nullity_court_decision_receipts",
+      "parent_schema": "public",
+      "parent_table": "parishes",
+      "delete_mode": "r",
+      "constraint_name": "nullity_court_decision_receipts_parish_id_fkey"
+    },
+    {
+      "child_table": "nullity_court_receipt_checks",
+      "parent_schema": "public",
+      "parent_table": "parishes",
+      "delete_mode": "r",
+      "constraint_name": "nullity_court_receipt_checks_parish_id_fkey"
+    },
+    {
+      "child_table": "nullity_execution_authorizations_v128",
+      "parent_schema": "public",
+      "parent_table": "parishes",
+      "delete_mode": "a",
+      "constraint_name": "nullity_execution_authorizations_v128_parish_id_fkey"
+    },
+    {
+      "child_table": "nullity_judicial_review_cases",
+      "parent_schema": "public",
+      "parent_table": "parishes",
+      "delete_mode": "r",
+      "constraint_name": "nullity_judicial_review_cases_parish_id_fkey"
+    },
+    {
+      "child_table": "nullity_judicial_review_events",
+      "parent_schema": "public",
+      "parent_table": "parishes",
+      "delete_mode": "r",
+      "constraint_name": "nullity_judicial_review_events_parish_id_fkey"
+    },
+    {
+      "child_table": "obispos",
+      "parent_schema": "public",
+      "parent_table": "parishes",
+      "delete_mode": "c",
+      "constraint_name": "obispos_parish_id_fkey"
+    },
+    {
+      "child_table": "official_notifications",
+      "parent_schema": "public",
+      "parent_table": "parishes",
+      "delete_mode": "c",
+      "constraint_name": "official_notifications_receiver_parish_id_fkey"
+    },
+    {
+      "child_table": "parish_parameters",
+      "parent_schema": "public",
+      "parent_table": "parishes",
+      "delete_mode": "c",
+      "constraint_name": "parish_parameters_parish_id_fkey"
+    },
+    {
+      "child_table": "parrocos",
+      "parent_schema": "public",
+      "parent_table": "parishes",
+      "delete_mode": "c",
+      "constraint_name": "parrocos_parish_id_fkey"
+    },
+    {
+      "child_table": "pending_baptisms",
+      "parent_schema": "public",
+      "parent_table": "parishes",
+      "delete_mode": "c",
+      "constraint_name": "pending_baptisms_parish_id_fkey"
+    },
+    {
+      "child_table": "pending_confirmations",
+      "parent_schema": "public",
+      "parent_table": "parishes",
+      "delete_mode": "c",
+      "constraint_name": "pending_confirmations_parish_id_fkey"
+    },
+    {
+      "child_table": "pending_creation_requests",
+      "parent_schema": "public",
+      "parent_table": "parishes",
+      "delete_mode": "a",
+      "constraint_name": "pending_creation_requests_parish_id_fkey"
+    },
+    {
+      "child_table": "pending_funerals",
+      "parent_schema": "public",
+      "parent_table": "parishes",
+      "delete_mode": "c",
+      "constraint_name": "pending_funerals_parish_id_fkey"
+    },
+    {
+      "child_table": "pending_marriages",
+      "parent_schema": "public",
+      "parent_table": "parishes",
+      "delete_mode": "c",
+      "constraint_name": "pending_marriages_parish_id_fkey"
+    },
+    {
+      "child_table": "registry_audit_log",
+      "parent_schema": "public",
+      "parent_table": "parishes",
+      "delete_mode": "n",
+      "constraint_name": "registry_audit_log_parish_id_fkey"
+    },
+    {
+      "child_table": "registry_print_events",
+      "parent_schema": "public",
+      "parent_table": "parishes",
+      "delete_mode": "r",
+      "constraint_name": "registry_print_events_parish_id_fkey"
+    },
+    {
+      "child_table": "sacrament_books",
+      "parent_schema": "public",
+      "parent_table": "parishes",
+      "delete_mode": "c",
+      "constraint_name": "sacrament_books_parish_id_fkey"
+    },
+    {
+      "child_table": "user_profiles",
+      "parent_schema": "public",
+      "parent_table": "parishes",
+      "delete_mode": "n",
+      "constraint_name": "user_profiles_parish_id_fkey"
+    },
+    {
+      "child_table": "baptisms",
+      "parent_schema": "public",
+      "parent_table": "parishioners",
+      "delete_mode": "n",
+      "constraint_name": "baptisms_parishioner_id_fkey"
+    },
+    {
+      "child_table": "confirmations",
+      "parent_schema": "public",
+      "parent_table": "parishioners",
+      "delete_mode": "n",
+      "constraint_name": "confirmations_parishioner_id_fkey"
+    },
+    {
+      "child_table": "funerals",
+      "parent_schema": "public",
+      "parent_table": "parishioners",
+      "delete_mode": "n",
+      "constraint_name": "funerals_parishioner_id_fkey"
+    },
+    {
+      "child_table": "marriages",
+      "parent_schema": "public",
+      "parent_table": "parishioners",
+      "delete_mode": "n",
+      "constraint_name": "marriages_wife_id_fkey"
+    },
+    {
+      "child_table": "marriages",
+      "parent_schema": "public",
+      "parent_table": "parishioners",
+      "delete_mode": "n",
+      "constraint_name": "marriages_husband_id_fkey"
+    },
+    {
+      "child_table": "marriage_dossiers",
+      "parent_schema": "public",
+      "parent_table": "pending_marriages",
+      "delete_mode": "n",
+      "constraint_name": "marriage_dossiers_pending_marriage_id_fkey"
+    },
+    {
+      "child_table": "baptisms",
+      "parent_schema": "public",
+      "parent_table": "sacrament_books",
+      "delete_mode": "n",
+      "constraint_name": "baptisms_book_id_fkey"
+    },
+    {
+      "child_table": "confirmations",
+      "parent_schema": "public",
+      "parent_table": "sacrament_books",
+      "delete_mode": "n",
+      "constraint_name": "confirmations_book_id_fkey"
+    },
+    {
+      "child_table": "funerals",
+      "parent_schema": "public",
+      "parent_table": "sacrament_books",
+      "delete_mode": "n",
+      "constraint_name": "funerals_book_id_fkey"
+    },
+    {
+      "child_table": "marriages",
+      "parent_schema": "public",
+      "parent_table": "sacrament_books",
+      "delete_mode": "n",
+      "constraint_name": "marriages_book_id_fkey"
+    },
+    {
+      "child_table": "chat_messages",
+      "parent_schema": "public",
+      "parent_table": "user_profiles",
+      "delete_mode": "r",
+      "constraint_name": "chat_messages_sender_profile_id_fkey"
+    },
+    {
+      "child_table": "chat_room_members",
+      "parent_schema": "public",
+      "parent_table": "user_profiles",
+      "delete_mode": "c",
+      "constraint_name": "chat_room_members_profile_id_fkey"
+    },
+    {
+      "child_table": "decanatos",
+      "parent_schema": "public",
+      "parent_table": "vicarias",
+      "delete_mode": "n",
+      "constraint_name": "decanatos_vicaria_id_fkey"
+    },
+    {
+      "child_table": "parishes",
+      "parent_schema": "public",
+      "parent_table": "vicarias",
+      "delete_mode": "n",
+      "constraint_name": "parishes_vicary_id_fkey"
+    },
+    {
+      "child_table": "deaneries",
+      "parent_schema": "public",
+      "parent_table": "vicariates",
+      "delete_mode": "c",
+      "constraint_name": "deaneries_vicariate_id_fkey"
+    }
+  ]
+}

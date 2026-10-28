@@ -44,6 +44,17 @@ BEGIN
  IF EXISTS(SELECT 1 FROM sacramentum_ledger.go_live_receipt_v267) THEN
   RAISE EXCEPTION 'V267: la apertura oficial ya fue registrada';
  END IF;
+ -- V268 test-data cleanup MUST be backed up, restore-verified and recorded
+ -- before any official RPC cutover. Never allow an undocumented empty reset.
+ IF to_regclass('sacramentum_ledger.purge_receipts_v268') IS NULL THEN
+  RAISE EXCEPTION 'V267: falta constancia V268 de eliminación de datos ficticios';
+ END IF;
+ IF NOT EXISTS(SELECT 1 FROM sacramentum_ledger.purge_receipts_v268
+  WHERE id=true AND restore_verified=true AND discarded_table_count=56
+    AND preserved_table_count=26 AND discarded_rows>0
+    AND backup_sha256~'^[0-9a-f]{64}$') THEN
+  RAISE EXCEPTION 'V267: la limpieza V268 no tiene respaldo y restauración verificados';
+ END IF;
  -- Unexpected new public tables block release until categorized.
  SELECT count(*) INTO v_all_tables FROM pg_tables WHERE schemaname='public';
  IF v_all_tables<>82 THEN
