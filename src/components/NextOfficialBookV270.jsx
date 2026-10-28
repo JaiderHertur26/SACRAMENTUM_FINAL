@@ -1,12 +1,12 @@
 import React,{useRef,useState} from 'react';
 import {Button} from '@/components/ui/button';
 import {institutionalConfirm} from '@/lib/institutionalDialog';
-import {openNextOfficialBookV270} from '@/services/ledgerSeatV264';
+import {openNextOfficialBookV270,openNextSupplementaryBookV272} from '@/services/ledgerSeatV264';
 
 // Explicitly closes an already seated book and opens the next one in ONE
 // database transaction. Never auto-advances or takes coordinates from Params.
 export default function NextOfficialBookV270({
- parishId,sacrament,previousBook,pendingId,onOpened
+ parishId,sacrament,previousBook,pendingId,onOpened,bookType='ordinario'
 }){
  const [expanded,setExpanded]=useState(false);
  const [code,setCode]=useState('');
@@ -34,7 +34,8 @@ export default function NextOfficialBookV270({
      });
      if(!approved)return;
      setLocked(true);
-     await openNextOfficialBookV270(params);
+     if(bookType==='suplementario')await openNextSupplementaryBookV272(params);
+     else await openNextOfficialBookV270(params);
      if(onOpened)await onOpened();
    }catch(e){
      setLocked(true);
@@ -45,7 +46,7 @@ export default function NextOfficialBookV270({
  return <section className="rounded-xl border border-amber-200 bg-amber-50 p-4 space-y-3"
    aria-label="Cierre y sucesión del libro oficial">
    <div>
-     <h4 className="font-bold text-amber-950">Libro completo · Abrir el siguiente</h4>
+     <h4 className="font-bold text-amber-950">{bookType==='suplementario'?'Libro supletorio completo · Abrir sucesor':'Libro completo · Abrir el siguiente'}</h4>
      <p className="text-xs text-amber-900">El Libro {previousBook.code} contiene {previousBook.activeCount} partida(s). Utilice esta acción solo cuando el tomo físico ya terminó. Los asientos anteriores permanecerán inalterados.</p>
    </div>
    {!expanded&&<Button type="button" variant="outline" onClick={()=>setExpanded(true)}

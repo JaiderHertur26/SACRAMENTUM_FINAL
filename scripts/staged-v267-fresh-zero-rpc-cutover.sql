@@ -113,7 +113,9 @@ BEGIN
   'public.open_next_official_book_v270(uuid,text,uuid,bigint,uuid,text,integer,integer,integer,boolean,text)',
   'public.issue_new_supplementary_decree_v271(uuid,text,uuid,uuid,text,date,text,text,text)',
   'public.approve_new_supplementary_decree_v271(uuid,text)',
-  'public.open_first_supplementary_book_v271(uuid,text,uuid,text,integer,integer,integer,boolean)'
+  'public.open_first_supplementary_book_v271(uuid,text,uuid,text,integer,integer,integer,boolean)',
+  'public.approve_supplementary_concept_v272(uuid,text)',
+  'public.open_next_supplementary_book_v272(uuid,text,uuid,bigint,uuid,text,integer,integer,integer,boolean,text)'
  ] LOOP
   IF to_regprocedure(v_fn) IS NULL THEN
     RAISE EXCEPTION 'V267: servicio indispensable ausente %',v_fn;
@@ -169,6 +171,10 @@ GRANT EXECUTE ON FUNCTION public.approve_new_supplementary_decree_v271(
  uuid,text) TO authenticated;
 GRANT EXECUTE ON FUNCTION public.open_first_supplementary_book_v271(
  uuid,text,uuid,text,integer,integer,integer,boolean) TO authenticated;
+GRANT EXECUTE ON FUNCTION public.approve_supplementary_concept_v272(
+ uuid,text) TO authenticated;
+GRANT EXECUTE ON FUNCTION public.open_next_supplementary_book_v272(
+ uuid,text,uuid,bigint,uuid,text,integer,integer,integer,boolean,text) TO authenticated;
 
 DO $verify$
 DECLARE s text;
@@ -191,7 +197,9 @@ BEGIN
   'public.open_next_official_book_v270(uuid,text,uuid,bigint,uuid,text,integer,integer,integer,boolean,text)',
   'public.issue_new_supplementary_decree_v271(uuid,text,uuid,uuid,text,date,text,text,text)',
   'public.approve_new_supplementary_decree_v271(uuid,text)',
-  'public.open_first_supplementary_book_v271(uuid,text,uuid,text,integer,integer,integer,boolean)'
+  'public.open_first_supplementary_book_v271(uuid,text,uuid,text,integer,integer,integer,boolean)',
+  'public.approve_supplementary_concept_v272(uuid,text)',
+  'public.open_next_supplementary_book_v272(uuid,text,uuid,bigint,uuid,text,integer,integer,integer,boolean,text)'
  ] LOOP
   IF has_function_privilege('anon',s,'EXECUTE')
    OR NOT has_function_privilege('authenticated',s,'EXECUTE') THEN

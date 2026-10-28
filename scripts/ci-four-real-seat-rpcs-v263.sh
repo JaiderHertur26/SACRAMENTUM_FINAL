@@ -275,11 +275,16 @@ run "ALTER TABLE public.parishes ADD COLUMN is_operational boolean DEFAULT true;
  ('$DIO',NULL,'$D','diocese',true,'ACTIVE',NULL);
  CREATE TABLE public.chancelleries(id uuid PRIMARY KEY,diocese_id uuid);
  INSERT INTO public.chancelleries VALUES('$CHID','$D');
+ CREATE TABLE public.dioceses(id uuid PRIMARY KEY);
+ INSERT INTO public.dioceses VALUES('$D');
  CREATE TABLE public.conceptos_anulacion(
  id uuid PRIMARY KEY,diocese_id uuid,is_active boolean,seinscribe boolean,
- enlibro integer,tipo text,sacrament_type text);
+ enlibro integer,tipo text,sacrament_type text,codigo text,concepto text,
+ gennota boolean,gendocum boolean,expide text,source_kind text,source_reference text);
  INSERT INTO public.conceptos_anulacion VALUES
- ('$CON','$D',true,true,2,'porReposicion','matrimonio');
+ ('$CON','$D',true,true,2,'porReposicion','matrimonio',
+ 'CON-REP-2026','REPOSICION MATRIMONIAL',true,true,
+ 'CANCILLERIA','manual','CONCEPTO-REVISADO');
  CREATE TABLE public.pending_creation_requests(
  parish_id uuid,sacrament_type text,response jsonb);
  CREATE TABLE public.decretos(
@@ -301,7 +306,9 @@ run "INSERT INTO public.pending_marriages(id,parish_id,celebration_date,raw_data
  'fechaSacramento','2026-02-04','novioNombres','NOVIO','noviaNombres','NOVIA'));
  INSERT INTO public.pending_creation_requests VALUES('$P','matrimonio',
  jsonb_build_object('pending_id','$PMS'));" >/dev/null
+pg psql -X -q -v ON_ERROR_STOP=1 -U postgres -d "$db" -f - < scripts/staged-v272-authorize-supplementary-concept.sql >/dev/null
 pg psql -X -q -v ON_ERROR_STOP=1 -U postgres -d "$db" -f - < scripts/staged-v271-two-role-new-supplement-decrees.sql >/dev/null
+pg psql -X -q -v ON_ERROR_STOP=1 -U postgres -d "$db" -f - < scripts/staged-v272-next-supplementary-book.sql >/dev/null
 pg psql -X -q -v ON_ERROR_STOP=1 -U postgres -d "$db" -f - < scripts/staged-v271-first-supplementary-book.sql >/dev/null
 issue(){ echo "SELECT public.issue_new_supplementary_decree_v271(
  '$P','matrimonio','$PMS','$CON','DEC-TEST-V271-001','2026-02-05',
@@ -310,6 +317,17 @@ issue(){ echo "SELECT public.issue_new_supplementary_decree_v271(
 reject "$(issue)" "not authenticated for decree"
 reject "SET qa.actor='$A'; $(issue)" "parish cannot issue decree"
 reject "SET qa.actor='$DIO'; $(issue)" "diocese cannot issue as chancery"
+reject "SET qa.actor='$CH'; $(issue)" "chancery cannot issue without approved policy"
+authorize(){ echo "SELECT public.approve_supplementary_concept_v272(
+ '$CON','ACTA-DIOCESANA-CONCEPTO-2026');"; }
+reject "SET qa.actor='$A'; $(authorize)" "parish cannot authorize concept"
+reject "SET qa.actor='$CH'; $(authorize)" "chancery cannot authorize concept"
+authResult="$(run "SET qa.actor='$DIO'; $(authorize)")"
+[[ "$authResult" == *'"existing": false'* ]] || { echo "Concept authorization failed $authResult"; exit 1; }
+authResult="$(run "SET qa.actor='$DIO'; $(authorize)")"
+[[ "$authResult" == *'"existing": true'* ]] || { echo "Concept authorization idempotency failed"; exit 1; }
+reject "SET qa.actor='$DIO'; SELECT public.approve_supplementary_concept_v272(
+ '$CON','DIFFERENT-AUTH-REF-2026');" "cannot rewrite approval proof"
 # Even with a fabricated V207 receipt, historical/imported boletas are denied.
 PML=88888888-0000-0000-0000-000000000003
 run "INSERT INTO public.pending_marriages(id,parish_id,celebration_date,raw_data)
@@ -368,6 +386,67 @@ eq "$(run "SELECT (raw_data->>'numeroRegistro')||':'||(raw_data->>'numero')
 eq "$(run "SELECT count(*) FROM public.registry_audit_log WHERE action='approve_new_supplementary_decree_v271'")" 1
 reject "SET qa.actor='$A'; $(openSupplement)" "cannot open duplicate after seat"
 eq "$(run "SELECT count(*) FROM public.decretos WHERE status='pending_diocesan_review'")" 0
+
+# V272: supplementary book succession must require a SECOND new approved
+# supplementary decree, same parish and sacrament, with an active physical seat.
+PMS2=88888888-0000-0000-0000-000000000004
+run "INSERT INTO public.pending_marriages(id,parish_id,celebration_date,raw_data)
+ VALUES('$PMS2','$P','2026-02-06',jsonb_build_object(
+ 'numero','00000009','numeroRegistro','00000009',
+ 'fechaSacramento','2026-02-06'));
+ INSERT INTO public.pending_creation_requests VALUES('$P','matrimonio',
+ jsonb_build_object('pending_id','$PMS2'));" >/dev/null
+nextSup(){ echo "SELECT public.open_next_supplementary_book_v272(
+ '$P','matrimonio','$SUPBOOK',1,'$PMS2','SUP0002',1,1,2,false,
+ 'ACTA-CIERRE-SUPLETORIO-001');"; }
+reject "SET qa.actor='$A'; $(nextSup)" "no second decree cannot move supplementary book"
+issue2(){ echo "SELECT public.issue_new_supplementary_decree_v271(
+ '$P','matrimonio','$PMS2','$CON','DEC-TEST-V272-002','2026-02-07',
+ 'OTRO MATRIMONIO','Reposición de otro Matrimonio celebrado y no asentado',
+ 'ACTA-CELEBRACION-MATRIMONIO-002');"; }
+run "SET qa.actor='$CH'; $(issue2)" >/dev/null
+DEC2="$(run "SELECT id FROM public.decretos WHERE decree_number='DEC-TEST-V272-002'")"
+reject "SET qa.actor='$A'; $(nextSup)" "issued but unapproved decree cannot close book"
+run "SET qa.actor='$DIO'; SELECT public.approve_new_supplementary_decree_v271(
+ '$DEC2','REV-DIOCESANA-2026-002');" >/dev/null
+reject "SET qa.actor='$CH'; $(nextSup)" "chancery cannot close a parish book"
+reject "SET qa.actor='$DIO'; $(nextSup)" "diocese cannot close a parish book"
+reject "SET qa.actor='$A'; SELECT public.open_next_supplementary_book_v272(
+ '$P','matrimonio','$SUPBOOK',0,'$PMS2','SUP0002',1,1,2,false,
+ 'ACTA-CIERRE-SUPLETORIO-001');" "stale expected version rejects successor"
+nextOpened="$(run "SET qa.actor='$A'; $(nextSup)")"
+[[ "$nextOpened" == *'"existing": false'* ]] || { echo "V272 successor did not open $nextOpened"; exit 1; }
+SUPBOOK2="$(run "SELECT id FROM sacramentum_ledger.book_memories
+ WHERE predecessor_book_id='$SUPBOOK'")"
+[[ -n "$SUPBOOK2" ]] || { echo 'No supplementary successor memory' >&2; exit 1; }
+eq "$(run "SELECT closed_at IS NOT NULL FROM sacramentum_ledger.book_memories WHERE id='$SUPBOOK'")" t
+eq "$(run "SELECT count(*) FROM public.marriages WHERE book_number='SUP0001' AND number='0001'")" 1
+eq "$(run "SELECT count(*) FROM public.registry_audit_log WHERE action LIKE '%v272'")" 2
+nextOpened="$(run "SET qa.actor='$A'; $(nextSup)")"
+[[ "$nextOpened" == *'"existing": true'* ]] || { echo "V272 retry did not return same unseated successor"; exit 1; }
+reject "SET qa.actor='$A'; SELECT public.seat_marriage_ledger_v263(
+ '$P','$SUPBOOK',1,1,2,'99999999-0000-0000-0000-000000000004',
+ jsonb_build_array('$PMS2'));" "closed supplementary book must reject seat"
+run "SET qa.actor='$A'; SELECT public.seat_marriage_ledger_v263(
+ '$P','$SUPBOOK2',0,1,1,'99999999-0000-0000-0000-000000000005',
+ jsonb_build_array('$PMS2'));" >/dev/null
+eq "$(run "SELECT count(*) FROM public.marriages WHERE book_number='SUP0002'
+ AND number='0001' AND book_type='suplementario'")" 1
+reject "SET qa.actor='$A'; $(nextSup)" "used successor cannot be reopened"
+# A once-approved concept that changed policy must be rejected for NEW decrees.
+run "UPDATE public.conceptos_anulacion SET concepto='REPOSICION MODIFICADA' WHERE id='$CON';" >/dev/null
+PMS3=88888888-0000-0000-0000-000000000005
+run "INSERT INTO public.pending_marriages(id,parish_id,celebration_date,raw_data)
+ VALUES('$PMS3','$P','2026-02-09',
+ jsonb_build_object('numero','00000010','numeroRegistro','00000010',
+ 'fechaSacramento','2026-02-09'));
+ INSERT INTO public.pending_creation_requests VALUES('$P','matrimonio',
+ jsonb_build_object('pending_id','$PMS3'));" >/dev/null
+reject "SET qa.actor='$CH'; SELECT public.issue_new_supplementary_decree_v271(
+ '$P','matrimonio','$PMS3','$CON','DEC-POLICY-DRIFT-003','2026-02-10',
+ 'MATRIMONIO DE PRUEBA','Una reposición que debe bloquearse tras cambiar política',
+ 'ACTA-CELEBRACION-MATRIMONIO-003');" "concept authorization fingerprint drift"
+echo "V272 PG16 PASS: real documentary proof, separate diocesan concept authorization, 2nd active decree, independent 3-role controls, atomic supplementary succession, closed book protected, successor seat and stale policy rejected."
 
 # No API execution while V263 is staged; separate cutting over grants is mandatory.
 eq "$(run "SELECT count(*) FROM pg_proc p JOIN pg_namespace n ON p.pronamespace=n.oid

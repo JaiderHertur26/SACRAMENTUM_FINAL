@@ -59,13 +59,28 @@ BEGIN
   RAISE EXCEPTION 'V271: Cancillería sin adscripción diocesana válida'; END IF;
  SELECT * INTO v_concept FROM public.conceptos_anulacion c
   WHERE c.id=p_concept_id AND c.diocese_id=v_diocese
-   AND c.is_active IS TRUE;
+   AND c.is_active IS TRUE FOR SHARE;
  IF NOT FOUND OR v_concept.seinscribe IS DISTINCT FROM TRUE
   OR v_concept.enlibro IS DISTINCT FROM 2
   OR lower(coalesce(v_concept.tipo,'')) NOT IN ('porreposicion','reposicion')
   OR lower(coalesce(v_concept.sacrament_type,'')) NOT IN ('general',p_sacrament) THEN
    RAISE EXCEPTION 'V271: concepto de reposición en libro supletorio no habilitado por esta diócesis';
  END IF;
+ -- A *separate diocesan approval* of this exact concept and its policy is
+ -- required; merely adding a record to the shared concept catalog is not enough.
+ IF NOT EXISTS(SELECT 1
+  FROM sacramentum_ledger.supplementary_concept_approvals_v272 a
+  WHERE a.concept_id=v_concept.id AND a.diocese_id=v_diocese
+    AND a.approved_by IS NOT NULL
+    AND a.policy_snapshot=jsonb_build_object(
+      'codigo',v_concept.codigo,'concepto',v_concept.concepto,
+      'tipo',v_concept.tipo,'sacrament_type',v_concept.sacrament_type,
+      'enlibro',v_concept.enlibro,'seinscribe',v_concept.seinscribe,
+      'gennota',v_concept.gennota,'gendocum',v_concept.gendocum,
+      'expide',v_concept.expide,'source_kind',v_concept.source_kind,
+      'source_reference',v_concept.source_reference,'is_active',v_concept.is_active)
+ ) THEN
+    RAISE EXCEPTION 'V272: el concepto no tiene autorización diocesana vigente'; END IF;
  v_table:=CASE p_sacrament WHEN 'bautismo' THEN 'pending_baptisms'
  WHEN 'confirmacion' THEN 'pending_confirmations' WHEN 'matrimonio' THEN 'pending_marriages'
  ELSE 'pending_funerals' END;

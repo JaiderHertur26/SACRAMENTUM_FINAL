@@ -43,6 +43,18 @@ run "CREATE FUNCTION public.issue_new_supplementary_decree_v271(
  REVOKE ALL ON FUNCTION public.open_first_supplementary_book_v271(
  uuid,text,uuid,text,integer,integer,integer,boolean)
  FROM PUBLIC,anon,authenticated;" >/dev/null
+# Only signature/ACL stubs in THIS disposable go-live fixture. The complete
+# V272 RPCs run on real shaped tables in the separate PG16 drill.
+run "CREATE FUNCTION public.approve_supplementary_concept_v272(uuid,text)
+ RETURNS jsonb LANGUAGE sql AS \$\$ SELECT '{}'::jsonb \$\$;
+ CREATE FUNCTION public.open_next_supplementary_book_v272(
+ uuid,text,uuid,bigint,uuid,text,integer,integer,integer,boolean,text)
+ RETURNS jsonb LANGUAGE sql AS \$\$ SELECT '{}'::jsonb \$\$;
+ REVOKE ALL ON FUNCTION public.approve_supplementary_concept_v272(uuid,text)
+ FROM PUBLIC,anon,authenticated;
+ REVOKE ALL ON FUNCTION public.open_next_supplementary_book_v272(
+ uuid,text,uuid,bigint,uuid,text,integer,integer,integer,boolean,text)
+ FROM PUBLIC,anon,authenticated;" >/dev/null
 
 # A documented V268 cleanup is mandatory before GoLive, even when the
 # sandbox is empty. Simulated provenance receipt exists ONLY in this fixture.

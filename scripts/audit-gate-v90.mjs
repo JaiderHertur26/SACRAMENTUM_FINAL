@@ -196,7 +196,8 @@ exec('pruebas-sinteticas',node,['--test',
  'scripts/test-verified-reset-v268.mjs',
  'scripts/test-four-screens-real-integration-v269.mjs',
  'scripts/test-next-official-book-v270.mjs',
- 'scripts/test-new-supplementary-decrees-v271.mjs']);
+ 'scripts/test-new-supplementary-decrees-v271.mjs',
+ 'scripts/test-supplementary-succession-v272.mjs']);
 const scripts=fs.readdirSync(path.join(root,'scripts')).filter(x=>/^verify-.*\.mjs$/.test(x)).sort();
 for(const file of scripts)exec('legacy/'+file,node,['scripts/'+file]);
 const npmOnWindows=process.platform==='win32';
