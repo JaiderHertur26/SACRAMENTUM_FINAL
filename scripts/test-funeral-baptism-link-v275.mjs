@@ -9,6 +9,7 @@ test('V275 real Funeral seat maps both baptism references into typed baptism_id'
   'V275: referencia bautismal de Exequias inválida',
   "v_raw->>'baptism_record_id'",
   "v_raw->>'baptismRecordId'",
+  "coalesce(nullif(btrim(v_raw->>'baptism_record_id'),'')," ,
   'baptism_id,nombres,apellidos',
   "m.book_type,'seated',v_baptism,v_raw->>'nombres'",
   "'baptism_record_id',v_baptism"

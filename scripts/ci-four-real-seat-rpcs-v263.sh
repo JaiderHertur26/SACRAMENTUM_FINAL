@@ -189,7 +189,9 @@ for spec in \
 done
 run "UPDATE public.pending_funerals SET raw_data=raw_data||
  jsonb_build_object('baptism_record_id',
- '26666666-0000-0000-0000-000000000099') WHERE id='$F_BAD_ALIAS';" >/dev/null
+ '26666666-0000-0000-0000-000000000099') WHERE id='$F_BAD_ALIAS';
+ UPDATE public.pending_funerals SET raw_data=raw_data||
+ jsonb_build_object('baptism_record_id','') WHERE id='$F_LINK';" >/dev/null
 linkedSeat(){ echo "SET qa.actor='$A'; SELECT public.seat_funeral_ledger_v263(
  '$P','$B4',1,1,2,'26666666-0000-0000-0000-0000000000$1',
  jsonb_build_array('$2'))"; }

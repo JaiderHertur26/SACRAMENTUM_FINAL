@@ -304,11 +304,11 @@ BEGIN
             btrim(v_raw->>'baptismRecordId') THEN
         RAISE EXCEPTION 'V275: Exequias tiene referencias bautismales contradictorias';
      END IF;
-     IF nullif(btrim(coalesce(v_raw->>'baptism_record_id',
-            v_raw->>'baptismRecordId','')),'') IS NOT NULL THEN
+     IF coalesce(nullif(btrim(v_raw->>'baptism_record_id'),''),
+         nullif(btrim(v_raw->>'baptismRecordId'),'')) IS NOT NULL THEN
        BEGIN
-         v_baptism:=btrim(coalesce(nullif(v_raw->>'baptism_record_id',''),
-            nullif(v_raw->>'baptismRecordId','')))::uuid;
+         v_baptism:=coalesce(nullif(btrim(v_raw->>'baptism_record_id'),''),
+            nullif(btrim(v_raw->>'baptismRecordId'),''))::uuid;
        EXCEPTION WHEN others THEN
          RAISE EXCEPTION 'V275: referencia bautismal de Exequias inválida';
        END;
