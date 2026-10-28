@@ -232,7 +232,7 @@ reject "SET qa.actor='$A'; SELECT public.seat_marriage_ledger_v263('$P','$B3',1,
 eq "$(run "SELECT active_count||':'||version FROM sacramentum_ledger.book_memories WHERE id='$B3'")" 1:1
 eq "$(run "SELECT count(*) FROM public.marriages")" 1
 eq "$(run "SELECT status||':'||reportado FROM public.pending_marriages WHERE id='$PX'")" pending:false
-eq "$(run "SELECT count(*) FROM sacramentum_ledger.seat_events")" 4
+eq "$(run "SELECT count(*) FROM sacramentum_ledger.seat_events")" 5
 run "DROP TRIGGER qa_fail_audit_v263 ON public.registry_audit_log;" >/dev/null
 
 # V269: FULL REAL linked Baptism + Confirmation as a two-stage process.
@@ -257,7 +257,7 @@ reject "SET qa.actor='$A'; SELECT public.seat_confirmation_ledger_v263(
  '$P','$B2',1,1,2,'77777777-0000-0000-0000-000000000001',
  jsonb_build_array('$PC2') );" "linked Confirmation cannot be seated BEFORE Baptism"
 eq "$(run "SELECT count(*) FROM public.confirmations WHERE nombres='DOS'")" 0
-eq "$(run "SELECT count(*) FROM sacramentum_ledger.active_seats")" 4
+eq "$(run "SELECT count(*) FROM sacramentum_ledger.active_seats")" 5
 run "SET qa.actor='$A'; SELECT public.seat_baptism_ledger_v263(
  '$P','$B1',1,1,2,'77777777-0000-0000-0000-000000000002',
  jsonb_build_array('$PB2'));" >/dev/null
@@ -275,7 +275,7 @@ eq "$(run "SELECT count(*) FROM public.confirmations WHERE nombres='DOS' AND
  raw_data->>'linkedBaptismRecordId'='$NEW_BAPTISM'")" 1
 eq "$(run "SELECT count(*) FROM public.marginal_notes WHERE sacrament_id='$NEW_BAPTISM'
  AND source_type='confirmation'")" 1
-eq "$(run "SELECT count(*) FROM sacramentum_ledger.active_seats")" 6
+eq "$(run "SELECT count(*) FROM sacramentum_ledger.active_seats")" 7
 
 # V270: atomic close of a used ordinary book + opening the NEXT book.
 # The original physical rows must remain seated, with immutable closed pointer.
