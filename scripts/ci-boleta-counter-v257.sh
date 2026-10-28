@@ -51,7 +51,7 @@ assert_eq "$(as_auth "$(call bautismo 000009 000015)")" 000015
 assert_eq "$(run "SELECT bautizos_params->>'ordinarioLibro' FROM public.parish_parameters WHERE parish_id='$P'")" 0001A
 assert_eq "$(run "SELECT confirmaciones_params->>'numeroRegistroActual' FROM public.parish_parameters WHERE parish_id='$P'")" 000009
 assert_eq "$(run "SELECT count(*) FROM public.registry_audit_log")" 1
-assert_eq "$(run "SELECT before_data->>'numeroRegistroActual'||'>'||after_data->>'numeroRegistroActual' FROM public.registry_audit_log LIMIT 1")" "000009>000015"
+assert_eq "$(run "SELECT (before_data->>'numeroRegistroActual')||'>'||(after_data->>'numeroRegistroActual') FROM public.registry_audit_log LIMIT 1")" "000009>000015"
 reject as_auth "$(call bautismo 000009 000016)" # stale CAS
 for sacrament in confirmacion matrimonio exequias; do
   if [[ "$sacrament" == matrimonio ]]; then old=00000009; new=00000010; else old=000009; new=000010; fi
