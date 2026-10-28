@@ -293,15 +293,35 @@ BEGIN
      IF (v_raw->>'fecha_defuncion')::date > (v_current->>'celebration_date')::date THEN
        RAISE EXCEPTION 'V263: las exequias no pueden preceder a la defunción';
      END IF;
+     -- V275: the existing Funeral BEFORE/AFTER triggers use the REAL typed
+     -- baptism_id. Keep both supported pending-boleta representations,
+     -- reject ambiguous references, and let the institution's existing
+     -- same-parish/name/date/deceased checks run inside this seat transaction.
+     v_baptism:=NULL;
+     IF nullif(btrim(coalesce(v_raw->>'baptism_record_id','')),'') IS NOT NULL
+        AND nullif(btrim(coalesce(v_raw->>'baptismRecordId','')),'') IS NOT NULL
+        AND btrim(v_raw->>'baptism_record_id') IS DISTINCT FROM
+            btrim(v_raw->>'baptismRecordId') THEN
+        RAISE EXCEPTION 'V275: Exequias tiene referencias bautismales contradictorias';
+     END IF;
+     IF nullif(btrim(coalesce(v_raw->>'baptism_record_id',
+            v_raw->>'baptismRecordId','')),'') IS NOT NULL THEN
+       BEGIN
+         v_baptism:=btrim(coalesce(nullif(v_raw->>'baptism_record_id',''),
+            nullif(v_raw->>'baptismRecordId','')))::uuid;
+       EXCEPTION WHEN others THEN
+         RAISE EXCEPTION 'V275: referencia bautismal de Exequias inválida';
+       END;
+     END IF;
      INSERT INTO public.funerals(
        id,parish_id,book_number,folio,number,numero_registro,book_type,status,
-       nombres,apellidos,document_id,sexo,fecha_nacimiento,lugar_nacimiento,
+       baptism_id,nombres,apellidos,document_id,sexo,fecha_nacimiento,lugar_nacimiento,
        fecha_defuncion,lugar_defuncion,fecha_exequias,hora_exequias,
        lugar_exequias,cementerio,causa_muerte,nombre_padre,nombre_madre,
        conyuge,ministro,da_fe,observations,nota_marginal,raw_data)
      VALUES(v_record,p_parish_id,v_book,lpad(v_folio::text,4,'0'),
        lpad(v_partida::text,4,'0'),v_current->>'registration_number',
-       m.book_type,'seated',v_raw->>'nombres',v_raw->>'apellidos',
+       m.book_type,'seated',v_baptism,v_raw->>'nombres',v_raw->>'apellidos',
        v_raw->>'document_id',v_raw->>'sexo',
        nullif(v_raw->>'fecha_nacimiento','')::date,
        v_raw->>'lugar_nacimiento',(v_raw->>'fecha_defuncion')::date,
@@ -311,7 +331,8 @@ BEGIN
        v_raw->>'nombre_padre',v_raw->>'nombre_madre',v_raw->>'conyuge',
        v_raw->>'ministro',coalesce(v_raw->>'daFe',v_raw->>'da_fe'),
        v_raw->>'observations',v_raw->>'nota_marginal',
-       v_raw||jsonb_build_object('book_number',v_book,
+       v_raw||jsonb_build_object('baptism_record_id',v_baptism,
+         'book_number',v_book,
          'folio',lpad(v_folio::text,4,'0'),
          'number',lpad(v_partida::text,4,'0'),
          'numero_registro',v_current->>'registration_number',

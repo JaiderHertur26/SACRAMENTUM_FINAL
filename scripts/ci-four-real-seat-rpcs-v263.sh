@@ -49,6 +49,8 @@ for t in baptisms confirmations marriages funerals; do
  abuelos_paternos text,abuelos_maternos text,ministro text,da_fe text,
  nuip text,serial_registro text,oficina_registro text,direccion text,
  nota_marginal text,observations text,book_type text,document_id text,
+ baptism_id uuid,is_deceased boolean,death_date date,death_place text,
+ linked_funeral_id uuid,
  fecha_nacimiento date,fecha_bautismo date,fecha_expedicion_registro date,
  hora_sacramento text,fecha_defuncion date,lugar_defuncion text,
  fecha_exequias date,hora_exequias time,lugar_exequias text,
@@ -65,6 +67,7 @@ run "CREATE TABLE public.marginal_notes(
  parish_id uuid,diocese_id uuid,entity_type text,entity_id uuid,
  action text,after_data jsonb,metadata jsonb);" >/dev/null
 pg psql -X -q -v ON_ERROR_STOP=1 -U postgres -d "$db" -f - < scripts/qa-v269-linked-baptism-confirmation-triggers.sql >/dev/null
+pg psql -X -q -v ON_ERROR_STOP=1 -U postgres -d "$db" -f - < scripts/qa-v275-funeral-baptism-triggers.sql >/dev/null
 pg psql -X -q -v ON_ERROR_STOP=1 -U postgres -d "$db" -f - < scripts/staged-v263-four-real-seat-rpcs.sql >/dev/null
 pg psql -X -q -v ON_ERROR_STOP=1 -U postgres -d "$db" -f - < scripts/staged-v267-first-official-book.sql >/dev/null
 pg psql -X -q -v ON_ERROR_STOP=1 -U postgres -d "$db" -f - < scripts/staged-v270-next-official-book.sql >/dev/null
@@ -153,6 +156,63 @@ eq "$(run "SELECT count(*) FROM public.marginal_notes
 eq "$(run "SELECT nombre_padre||':'||nombre_madre FROM public.baptisms WHERE nombres='PRUEBA'")" PADRE:MADRE
 eq "$(run "SELECT observations FROM public.marriages WHERE book_number='0003C'")" "Expediente de prueba"
 eq "$(run "SELECT cementerio FROM public.funerals WHERE book_number='0004D'")" TEST
+
+# V275: Funeral -> existing same-parish Baptism must propagate deceased status
+# with a physical marginal note. Rollback of mismatched links is mandatory.
+BLINK="$(run "SELECT id FROM public.baptisms WHERE book_number='0001A'
+ AND number='0001' AND nombres='PRUEBA'")"
+F_BAD_NAME=26666666-0000-0000-0000-000000000001
+F_BAD_OTHER=26666666-0000-0000-0000-000000000002
+F_BAD_DATE=26666666-0000-0000-0000-000000000003
+F_BAD_ALIAS=26666666-0000-0000-0000-000000000004
+F_LINK=26666666-0000-0000-0000-000000000005
+B_OTHER=26666666-0000-0000-0000-000000000099
+run "INSERT INTO public.baptisms(id,parish_id,book_number,folio,number,
+ celebration_date,nombres,apellidos,status,raw_data)
+ VALUES('$B_OTHER','$P2','0009X','0001','0001',
+ '2026-01-01','PRUEBA','FICTICIO','seated','{}'::jsonb);" >/dev/null
+for spec in \
+ "$F_BAD_NAME:OTRO:FICTICIO:2026-02-10:$BLINK" \
+ "$F_BAD_OTHER:PRUEBA:FICTICIO:2026-02-10:$B_OTHER" \
+ "$F_BAD_DATE:PRUEBA:FICTICIO:2025-12-31:$BLINK" \
+ "$F_BAD_ALIAS:PRUEBA:FICTICIO:2026-02-10:$BLINK" \
+ "$F_LINK:PRUEBA:FICTICIO:2026-02-10:$BLINK"; do
+ IFS=: read -r fp fn fl fd bid <<< "$spec"
+ run "INSERT INTO public.pending_funerals(id,parish_id,fecha_exequias,
+ numero_registro,raw_data) VALUES('$fp','$P','2026-02-12','6',
+ jsonb_build_object('nombres','$fn','apellidos','$fl',
+ 'fecha_defuncion','$fd','baptismRecordId','$bid'));" >/dev/null
+ run "INSERT INTO sacramentum_ledger.celebration_attestations_v263(
+ pending_id,parish_id,sacrament,origin,verified_at,verified_by,evidence_ref)
+ VALUES('$fp','$P','exequias','new_sacrament',clock_timestamp(),
+ '$A','ACTA-FUNERAL-BAPTISM-V275');" >/dev/null
+done
+run "UPDATE public.pending_funerals SET raw_data=raw_data||
+ jsonb_build_object('baptism_record_id',
+ '26666666-0000-0000-0000-000000000099') WHERE id='$F_BAD_ALIAS';" >/dev/null
+linkedSeat(){ echo "SET qa.actor='$A'; SELECT public.seat_funeral_ledger_v263(
+ '$P','$B4',1,1,2,'26666666-0000-0000-0000-0000000000$1',
+ jsonb_build_array('$2'))"; }
+reject "$(linkedSeat 11 "$F_BAD_NAME")" "funeral/baptism identity mismatch denied"
+reject "$(linkedSeat 12 "$F_BAD_OTHER")" "cross-parish Baptism cannot be marked deceased"
+reject "$(linkedSeat 13 "$F_BAD_DATE")" "death before Baptism denied"
+reject "$(linkedSeat 14 "$F_BAD_ALIAS")" "ambiguous baptism reference denied"
+eq "$(run "SELECT active_count FROM sacramentum_ledger.book_memories WHERE id='$B4'")" 1
+eq "$(run "SELECT coalesce(is_deceased,false) FROM public.baptisms WHERE id='$BLINK'")" f
+eq "$(run "SELECT count(*) FROM public.funerals WHERE baptism_id IS NOT NULL")" 0
+run "$(linkedSeat 15 "$F_LINK")" >/dev/null
+F_LINKED="$(run "SELECT id FROM public.funerals WHERE baptism_id='$BLINK'")"
+[[ -n "$F_LINKED" ]] || { echo 'V275 did not set typed baptism link'; exit 1; }
+eq "$(run "SELECT coalesce(is_deceased,false) FROM public.baptisms WHERE id='$BLINK'")" t
+eq "$(run "SELECT death_date||':'||linked_funeral_id FROM public.baptisms
+ WHERE id='$BLINK'")" "2026-02-10:$F_LINKED"
+eq "$(run "SELECT count(*) FROM public.marginal_notes
+ WHERE sacrament_id='$BLINK' AND note_type='defuncion' AND source_id='$F_LINKED'")" 1
+eq "$(run "SELECT count(*) FROM public.registry_audit_log
+ WHERE action='mark_deceased_from_funeral' AND entity_id='$BLINK'")" 1
+[[ "$(run "SELECT nota_marginal FROM public.baptisms WHERE id='$BLINK'")" == *'EXEQUIAS REGISTRADAS EN LIBRO 0004D'* ]] || exit 1
+eq "$(run "SELECT status||':'||reportado FROM public.pending_funerals WHERE id='$F_LINK'")" seated:true
+echo "V275 PG16 PASS: Funeral typed baptism_id with two raw aliases, death and marginal note in same transaction, wrong person/parish/date/alias rollback."
 
 # Audit failures must roll back an actual registry insert, pending transition,
 # active ledger record, and its immutable seat event.
