@@ -190,7 +190,8 @@ exec('pruebas-sinteticas',node,['--test',
  'scripts/test-real-pending-contract-v262.mjs',
  'scripts/test-four-real-seat-rpcs-v263.mjs',
  'scripts/test-ledger-ui-cutover-v264.mjs',
- 'scripts/test-celebration-attestation-v265.mjs']);
+ 'scripts/test-celebration-attestation-v265.mjs',
+ 'scripts/test-physical-reconciliation-v266.mjs']);
 const scripts=fs.readdirSync(path.join(root,'scripts')).filter(x=>/^verify-.*\.mjs$/.test(x)).sort();
 for(const file of scripts)exec('legacy/'+file,node,['scripts/'+file]);
 const npmOnWindows=process.platform==='win32';

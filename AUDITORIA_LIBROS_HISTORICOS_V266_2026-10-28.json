@@ -1,0 +1,674 @@
+{
+  "protocol": "V266",
+  "date": "2026-10-28",
+  "physicalEvidence": "NOT CERTIFIED",
+  "source": "Supabase read-only sacramental coordinates",
+  "scopes": 22,
+  "records": 8393,
+  "rows": [
+    {
+      "parish_key": "35e655bf8",
+      "sacrament": "bautismo",
+      "book_type": "ordinario",
+      "book": "1",
+      "records": 45,
+      "folios": 28,
+      "min_folio": 1,
+      "max_folio": 435,
+      "internal_gaps": 0,
+      "transitions": 11,
+      "resets": 0,
+      "skipped_folios": 10,
+      "duplicate_positions": 0,
+      "max_on_folio": 2,
+      "folios_over_two": 0,
+      "last_three": [
+        {
+          "folio": 435,
+          "number": 870
+        },
+        {
+          "folio": 435,
+          "number": 869
+        },
+        {
+          "folio": 434,
+          "number": 868
+        }
+      ],
+      "digest": "9b80675a4eb07290954b532de7881c5f"
+    },
+    {
+      "parish_key": "5716fb6d9",
+      "sacrament": "bautismo",
+      "book_type": "ordinario",
+      "book": "1",
+      "records": 752,
+      "folios": 375,
+      "min_folio": 1,
+      "max_folio": 377,
+      "internal_gaps": 4,
+      "transitions": 8,
+      "resets": 5,
+      "skipped_folios": 2,
+      "duplicate_positions": 0,
+      "max_on_folio": 4,
+      "folios_over_two": 3,
+      "last_three": [
+        {
+          "folio": 377,
+          "number": 753
+        },
+        {
+          "folio": 376,
+          "number": 752
+        },
+        {
+          "folio": 376,
+          "number": 751
+        }
+      ],
+      "digest": "bf68e1b1299de640def8b9f3c60845bf"
+    },
+    {
+      "parish_key": "867342ca6",
+      "sacrament": "bautismo",
+      "book_type": "ordinario",
+      "book": "1",
+      "records": 4,
+      "folios": 4,
+      "min_folio": 6,
+      "max_folio": 504,
+      "internal_gaps": 0,
+      "transitions": 3,
+      "resets": 0,
+      "skipped_folios": 3,
+      "duplicate_positions": 0,
+      "max_on_folio": 1,
+      "folios_over_two": 0,
+      "last_three": [
+        {
+          "folio": 504,
+          "number": 1007
+        },
+        {
+          "folio": 494,
+          "number": 987
+        },
+        {
+          "folio": 222,
+          "number": 443
+        }
+      ],
+      "digest": "e2fc72361254c2d313756541601cfb6a"
+    },
+    {
+      "parish_key": "5716fb6d9",
+      "sacrament": "bautismo",
+      "book_type": "ordinario",
+      "book": "2",
+      "records": 12,
+      "folios": 6,
+      "min_folio": 1,
+      "max_folio": 6,
+      "internal_gaps": 0,
+      "transitions": 0,
+      "resets": 0,
+      "skipped_folios": 0,
+      "duplicate_positions": 0,
+      "max_on_folio": 2,
+      "folios_over_two": 0,
+      "last_three": [
+        {
+          "folio": 6,
+          "number": 12
+        },
+        {
+          "folio": 6,
+          "number": 11
+        },
+        {
+          "folio": 5,
+          "number": 10
+        }
+      ],
+      "digest": "ef717581e93c7a7a5a3596c48cc144a5"
+    },
+    {
+      "parish_key": "867342ca6",
+      "sacrament": "bautismo",
+      "book_type": "ordinario",
+      "book": "2",
+      "records": 2,
+      "folios": 2,
+      "min_folio": 19,
+      "max_folio": 346,
+      "internal_gaps": 0,
+      "transitions": 1,
+      "resets": 0,
+      "skipped_folios": 1,
+      "duplicate_positions": 0,
+      "max_on_folio": 1,
+      "folios_over_two": 0,
+      "last_three": [
+        {
+          "folio": 346,
+          "number": 690
+        },
+        {
+          "folio": 19,
+          "number": 37
+        }
+      ],
+      "digest": "e324f22268f0a3a9b9be3dddbfb2d685"
+    },
+    {
+      "parish_key": "35e655bf8",
+      "sacrament": "bautismo",
+      "book_type": "ordinario",
+      "book": "3",
+      "records": 2,
+      "folios": 1,
+      "min_folio": 1,
+      "max_folio": 1,
+      "internal_gaps": 0,
+      "transitions": 0,
+      "resets": 0,
+      "skipped_folios": 0,
+      "duplicate_positions": 0,
+      "max_on_folio": 2,
+      "folios_over_two": 0,
+      "last_three": [
+        {
+          "folio": 1,
+          "number": 2
+        },
+        {
+          "folio": 1,
+          "number": 1
+        }
+      ],
+      "digest": "b4181ee220f4e2a9e393b6e50e75113b"
+    },
+    {
+      "parish_key": "5716fb6d9",
+      "sacrament": "bautismo",
+      "book_type": "ordinario",
+      "book": "3",
+      "records": 1001,
+      "folios": 502,
+      "min_folio": 1,
+      "max_folio": 503,
+      "internal_gaps": 0,
+      "transitions": 4,
+      "resets": 0,
+      "skipped_folios": 1,
+      "duplicate_positions": 0,
+      "max_on_folio": 2,
+      "folios_over_two": 0,
+      "last_three": [
+        {
+          "folio": 503,
+          "number": 1006
+        },
+        {
+          "folio": 503,
+          "number": 1005
+        },
+        {
+          "folio": 502,
+          "number": 1004
+        }
+      ],
+      "digest": "dc003f8492ee321ed797cf2979af26f7"
+    },
+    {
+      "parish_key": "35e655bf8",
+      "sacrament": "bautismo",
+      "book_type": "ordinario",
+      "book": "4",
+      "records": 1,
+      "folios": 1,
+      "min_folio": 4,
+      "max_folio": 4,
+      "internal_gaps": 0,
+      "transitions": 0,
+      "resets": 0,
+      "skipped_folios": 0,
+      "duplicate_positions": 0,
+      "max_on_folio": 1,
+      "folios_over_two": 0,
+      "last_three": [
+        {
+          "folio": 4,
+          "number": 8
+        }
+      ],
+      "digest": "714801e4283615b9e842e784a5040407"
+    },
+    {
+      "parish_key": "5716fb6d9",
+      "sacrament": "bautismo",
+      "book_type": "ordinario",
+      "book": "4",
+      "records": 905,
+      "folios": 454,
+      "min_folio": 1,
+      "max_folio": 454,
+      "internal_gaps": 0,
+      "transitions": 4,
+      "resets": 1,
+      "skipped_folios": 0,
+      "duplicate_positions": 0,
+      "max_on_folio": 3,
+      "folios_over_two": 1,
+      "last_three": [
+        {
+          "folio": 454,
+          "number": 907
+        },
+        {
+          "folio": 453,
+          "number": 906
+        },
+        {
+          "folio": 453,
+          "number": 905
+        }
+      ],
+      "digest": "13cd6aa8108e8c7ea2be99330f49728f"
+    },
+    {
+      "parish_key": "867342ca6",
+      "sacrament": "bautismo",
+      "book_type": "ordinario",
+      "book": "4",
+      "records": 17,
+      "folios": 17,
+      "min_folio": 10,
+      "max_folio": 26,
+      "internal_gaps": 0,
+      "transitions": 0,
+      "resets": 0,
+      "skipped_folios": 0,
+      "duplicate_positions": 0,
+      "max_on_folio": 1,
+      "folios_over_two": 0,
+      "last_three": [
+        {
+          "folio": 26,
+          "number": 26
+        },
+        {
+          "folio": 25,
+          "number": 25
+        },
+        {
+          "folio": 24,
+          "number": 24
+        }
+      ],
+      "digest": "ef82b9629be8fbb17e3bf5c14c4c945f"
+    },
+    {
+      "parish_key": "5716fb6d9",
+      "sacrament": "bautismo",
+      "book_type": "ordinario",
+      "book": "5",
+      "records": 1000,
+      "folios": 500,
+      "min_folio": 1,
+      "max_folio": 500,
+      "internal_gaps": 0,
+      "transitions": 0,
+      "resets": 0,
+      "skipped_folios": 0,
+      "duplicate_positions": 0,
+      "max_on_folio": 2,
+      "folios_over_two": 0,
+      "last_three": [
+        {
+          "folio": 500,
+          "number": 1000
+        },
+        {
+          "folio": 500,
+          "number": 999
+        },
+        {
+          "folio": 499,
+          "number": 998
+        }
+      ],
+      "digest": "2b93bc2072e8724e4bcb5a01aba78f6b"
+    },
+    {
+      "parish_key": "5716fb6d9",
+      "sacrament": "bautismo",
+      "book_type": "ordinario",
+      "book": "6",
+      "records": 1299,
+      "folios": 653,
+      "min_folio": 1,
+      "max_folio": 656,
+      "internal_gaps": 0,
+      "transitions": 6,
+      "resets": 0,
+      "skipped_folios": 1,
+      "duplicate_positions": 0,
+      "max_on_folio": 2,
+      "folios_over_two": 0,
+      "last_three": [
+        {
+          "folio": 656,
+          "number": 1311
+        },
+        {
+          "folio": 655,
+          "number": 1310
+        },
+        {
+          "folio": 655,
+          "number": 1309
+        }
+      ],
+      "digest": "c17760dd41cc32f664ed5c2e7c30a3bc"
+    },
+    {
+      "parish_key": "35e655bf8",
+      "sacrament": "confirmacion",
+      "book_type": "ordinario",
+      "book": "1",
+      "records": 4,
+      "folios": 2,
+      "min_folio": 1,
+      "max_folio": 2,
+      "internal_gaps": 0,
+      "transitions": 0,
+      "resets": 0,
+      "skipped_folios": 0,
+      "duplicate_positions": 0,
+      "max_on_folio": 2,
+      "folios_over_two": 0,
+      "last_three": [
+        {
+          "folio": 2,
+          "number": 4
+        },
+        {
+          "folio": 2,
+          "number": 3
+        },
+        {
+          "folio": 1,
+          "number": 2
+        }
+      ],
+      "digest": "0ddd433cefe32d51bcd1a4a6912fe2d9"
+    },
+    {
+      "parish_key": "5716fb6d9",
+      "sacrament": "confirmacion",
+      "book_type": "ordinario",
+      "book": "1",
+      "records": 1838,
+      "folios": 431,
+      "min_folio": 1,
+      "max_folio": 917,
+      "internal_gaps": 11,
+      "transitions": 105,
+      "resets": 103,
+      "skipped_folios": 1,
+      "duplicate_positions": 0,
+      "max_on_folio": 13,
+      "folios_over_two": 104,
+      "last_three": [
+        {
+          "folio": 917,
+          "number": 1834
+        },
+        {
+          "folio": 916,
+          "number": 1833
+        },
+        {
+          "folio": 916,
+          "number": 1832
+        }
+      ],
+      "digest": "53fa25e64893d84541ae16d57dc9ba6a"
+    },
+    {
+      "parish_key": "35e655bf8",
+      "sacrament": "confirmacion",
+      "book_type": "ordinario",
+      "book": "2",
+      "records": 1,
+      "folios": 1,
+      "min_folio": 5,
+      "max_folio": 5,
+      "internal_gaps": 0,
+      "transitions": 0,
+      "resets": 0,
+      "skipped_folios": 0,
+      "duplicate_positions": 0,
+      "max_on_folio": 1,
+      "folios_over_two": 0,
+      "last_three": [
+        {
+          "folio": 5,
+          "number": 10
+        }
+      ],
+      "digest": "e276a42552d3414ad719606408adfb89"
+    },
+    {
+      "parish_key": "5716fb6d9",
+      "sacrament": "confirmacion",
+      "book_type": "ordinario",
+      "book": "2",
+      "records": 248,
+      "folios": 125,
+      "min_folio": 1,
+      "max_folio": 229,
+      "internal_gaps": 7,
+      "transitions": 18,
+      "resets": 15,
+      "skipped_folios": 2,
+      "duplicate_positions": 0,
+      "max_on_folio": 3,
+      "folios_over_two": 5,
+      "last_three": [
+        {
+          "folio": 229,
+          "number": 248
+        },
+        {
+          "folio": 229,
+          "number": 247
+        },
+        {
+          "folio": 228,
+          "number": 246
+        }
+      ],
+      "digest": "d13bf84387174c52dbade718faf1378c"
+    },
+    {
+      "parish_key": "35e655bf8",
+      "sacrament": "exequias",
+      "book_type": "ordinario",
+      "book": "1",
+      "records": 1,
+      "folios": 1,
+      "min_folio": 1,
+      "max_folio": 1,
+      "internal_gaps": 0,
+      "transitions": 0,
+      "resets": 0,
+      "skipped_folios": 0,
+      "duplicate_positions": 0,
+      "max_on_folio": 1,
+      "folios_over_two": 0,
+      "last_three": [
+        {
+          "folio": 1,
+          "number": 1
+        }
+      ],
+      "digest": "84e1f51869ba648b8901495a10b294f9"
+    },
+    {
+      "parish_key": "35e655bf8",
+      "sacrament": "matrimonio",
+      "book_type": "ordinario",
+      "book": "1",
+      "records": 1,
+      "folios": 1,
+      "min_folio": 1,
+      "max_folio": 1,
+      "internal_gaps": 0,
+      "transitions": 0,
+      "resets": 0,
+      "skipped_folios": 0,
+      "duplicate_positions": 0,
+      "max_on_folio": 1,
+      "folios_over_two": 0,
+      "last_three": [
+        {
+          "folio": 1,
+          "number": 1
+        }
+      ],
+      "digest": "8f534e0933ff3ae26bc1d32cea4a7f11"
+    },
+    {
+      "parish_key": "5716fb6d9",
+      "sacrament": "matrimonio",
+      "book_type": "ordinario",
+      "book": "1",
+      "records": 963,
+      "folios": 481,
+      "min_folio": 1,
+      "max_folio": 620,
+      "internal_gaps": 6,
+      "transitions": 27,
+      "resets": 14,
+      "skipped_folios": 2,
+      "duplicate_positions": 0,
+      "max_on_folio": 4,
+      "folios_over_two": 13,
+      "last_three": [
+        {
+          "folio": 620,
+          "number": 1240
+        },
+        {
+          "folio": 620,
+          "number": 1239
+        },
+        {
+          "folio": 619,
+          "number": 1238
+        }
+      ],
+      "digest": "7f468860145fd9c081700ce033c1dcf2"
+    },
+    {
+      "parish_key": "5716fb6d9",
+      "sacrament": "matrimonio",
+      "book_type": "ordinario",
+      "book": "2",
+      "records": 3,
+      "folios": 2,
+      "min_folio": 1,
+      "max_folio": 2,
+      "internal_gaps": 0,
+      "transitions": 0,
+      "resets": 0,
+      "skipped_folios": 0,
+      "duplicate_positions": 0,
+      "max_on_folio": 2,
+      "folios_over_two": 0,
+      "last_three": [
+        {
+          "folio": 2,
+          "number": 3
+        },
+        {
+          "folio": 1,
+          "number": 2
+        },
+        {
+          "folio": 1,
+          "number": 1
+        }
+      ],
+      "digest": "4c52c8cf9270416565cb7ed819093426"
+    },
+    {
+      "parish_key": "5716fb6d9",
+      "sacrament": "matrimonio",
+      "book_type": "ordinario",
+      "book": "3",
+      "records": 247,
+      "folios": 123,
+      "min_folio": 1,
+      "max_folio": 123,
+      "internal_gaps": 1,
+      "transitions": 1,
+      "resets": 1,
+      "skipped_folios": 0,
+      "duplicate_positions": 0,
+      "max_on_folio": 3,
+      "folios_over_two": 3,
+      "last_three": [
+        {
+          "folio": 123,
+          "number": 249
+        },
+        {
+          "folio": 122,
+          "number": 248
+        },
+        {
+          "folio": 122,
+          "number": 247
+        }
+      ],
+      "digest": "60c217d498084f4a17c21f59a913769f"
+    },
+    {
+      "parish_key": "5716fb6d9",
+      "sacrament": "matrimonio",
+      "book_type": "ordinario",
+      "book": "4",
+      "records": 47,
+      "folios": 47,
+      "min_folio": 1,
+      "max_folio": 47,
+      "internal_gaps": 0,
+      "transitions": 0,
+      "resets": 0,
+      "skipped_folios": 0,
+      "duplicate_positions": 0,
+      "max_on_folio": 1,
+      "folios_over_two": 0,
+      "last_three": [
+        {
+          "folio": 47,
+          "number": 47
+        },
+        {
+          "folio": 46,
+          "number": 46
+        },
+        {
+          "folio": 45,
+          "number": 45
+        }
+      ],
+      "digest": "02cec997145cd75bbee457d490eb3594"
+    }
+  ]
+}
