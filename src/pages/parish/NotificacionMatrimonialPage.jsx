@@ -20,7 +20,7 @@ import ConfirmacionNotificacion from '@/components/ConfirmacionNotificacion';
 import FiltrosRespaldos from '@/components/FiltrosRespaldos';
 import TablaRespaldos from '@/components/TablaRespaldos';
 import ModalVerDocumento from '@/components/ModalVerDocumento';
-import SacramentalCaseWizardV277 from '@/pages/parish/SacramentalCaseWizardV277';
+const SacramentalCaseWizardV277 = React.lazy(() => import('@/pages/parish/SacramentalCaseWizardV277'));
 
 import { filtrarDocumentos } from '@/utils/matrimonialNotificationDocumentHelpers';
 import {
@@ -285,7 +285,7 @@ const NotificacionMatrimonialPage = () => {
 
 const MatrimonialCorrespondenceRoute = () => (
     new URLSearchParams(window.location.search).get('v277') === '1'
-        ? <SacramentalCaseWizardV277 initialSacrament="matrimonio" />
+        ? <React.Suspense fallback={<div className="p-8 text-center text-sm font-semibold">Preparando notificaciones sacramentales…</div>}><SacramentalCaseWizardV277 initialSacrament="matrimonio" /></React.Suspense>
         : <NotificacionMatrimonialPage />
 );
 export default MatrimonialCorrespondenceRoute;
