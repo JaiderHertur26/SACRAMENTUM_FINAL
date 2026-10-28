@@ -37,6 +37,11 @@ for(const newer of [
 ])sql.push("CREATE FUNCTION public."+newer+" RETURNS jsonb LANGUAGE sql AS $$ SELECT '{}'::jsonb $$;");
 sql.push("CREATE FUNCTION public.get_parish_ledger_seat_context_v264(uuid,text,jsonb) RETURNS jsonb LANGUAGE sql AS $$ SELECT '{}'::jsonb $$;");
 sql.push("CREATE FUNCTION public.attest_new_celebration_v265(uuid,text,uuid,text) RETURNS jsonb LANGUAGE sql AS $$ SELECT '{}'::jsonb $$;");
+// V273: these stage-only RPCs remain ungranted until the atomic V267 cutover.
+for(const fn of [
+ 'get_parish_ledger_seat_context_v264(uuid,text,jsonb)',
+ 'attest_new_celebration_v265(uuid,text,uuid,text)'
+])sql.push('REVOKE ALL ON FUNCTION public.'+fn+' FROM PUBLIC,anon,authenticated;');
 for(const newer of [
  'seat_baptism_ledger_v263(uuid,uuid,bigint,integer,integer,uuid,jsonb)',
  'seat_confirmation_ledger_v263(uuid,uuid,bigint,integer,integer,uuid,jsonb)',
