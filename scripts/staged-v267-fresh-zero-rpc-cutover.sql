@@ -102,7 +102,6 @@ BEGIN
      OR lower(up.role) NOT IN
        ('parish','chancery','diocese','admin_general')
     )
-   )
  ) THEN
    RAISE EXCEPTION 'V274: jurisdicción o rol activo inválido: revisar identidad institucional';
  END IF;
