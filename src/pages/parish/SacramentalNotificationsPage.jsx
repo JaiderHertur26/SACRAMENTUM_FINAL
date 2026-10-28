@@ -11,6 +11,7 @@ import ModalVerAviso from '@/components/ModalVerAviso';
 import ModalVerAcuseSacramental from '@/components/ModalVerAcuseSacramental';
 import ModalVincularPartidaNotificacion from '@/components/ModalVincularPartidaNotificacion';
 import { useAuth } from '@/context/AuthContext';
+import { updatePhysicalLocatorV277 } from '@/services/sacramentalPhysicalLocatorV277';
 import { getParishSessionScope } from '@/utils/parishSessionScope.mjs';
 import { useAppData } from '@/context/AppDataContext';
 import {
@@ -48,6 +49,9 @@ const SacramentalNotificationsSession = ({ user, parishId }) => {
   const [manualResolutionItem, setManualResolutionItem] = useState(null);
   const [showManualResolution, setShowManualResolution] = useState(false);
   const [pendingPhysicalAcceptance, setPendingPhysicalAcceptance] = useState(null);
+  const [locatorRecipient, setLocatorRecipient] = useState(null);
+  const [physicalLocator, setPhysicalLocator] = useState({book:'',folio:'',number:'',reference:''});
+  const [savingLocator,setSavingLocator]=useState(false);
   const [showPhysicalAccept, setShowPhysicalAccept] = useState(false);
 
   const currentParishInfo = useMemo(
@@ -187,6 +191,26 @@ const SacramentalNotificationsSession = ({ user, parishId }) => {
     } catch (error) {
       toast({ title: 'No se pudo vincular la partida', description: error?.message, variant: 'destructive' });
     }
+  };
+
+  const requestPhysicalLocator = (item) => {
+    if (loading || !incoming.some(row=>row.id===item?.id)) return;
+    const previous=item.payload?.manualLocator||{};
+    setPhysicalLocator({book:previous.book||'',folio:previous.folio||'',number:previous.number||'',
+      reference:item.payload?.searchReference||''});
+    setLocatorRecipient(item);
+  };
+
+  const savePhysicalLocator = async () => {
+    if(!locatorRecipient?.id || savingLocator)return;
+    setSavingLocator(true);
+    try{
+      await updatePhysicalLocatorV277({recipientId:locatorRecipient.id,...physicalLocator});
+      toast({title:'Partida física localizada',description:'Puede certificar el asiento físico después de efectuar la nota marginal.'});
+      setLocatorRecipient(null);setShowNotification(false);
+      await loadAll();
+    }catch(e){toast({title:'No se pudo localizar el libro',description:e.message,variant:'destructive'});}
+    finally{setSavingLocator(false);}
   };
 
   const requestPhysicalAcceptance = (item) => {
@@ -369,6 +393,7 @@ const SacramentalNotificationsSession = ({ user, parishId }) => {
         onMarkAsViewed={requestAccept}
         onResolveManual={requestManualResolution}
         onAcceptPhysical={requestPhysicalAcceptance}
+        onUpdateLocator={requestPhysicalLocator}
         receptorInfo={currentParishInfo}
       />
 
@@ -382,6 +407,29 @@ const SacramentalNotificationsSession = ({ user, parishId }) => {
         parishId={parishId}
         onResolve={resolveManualPartida}
       />
+
+      {locatorRecipient && <div role="dialog" aria-label="Localizar partida física" className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 p-4">
+        <div className="w-full max-w-xl space-y-5 rounded-2xl bg-white p-6 shadow-2xl">
+          <div><h3 className="font-serif text-xl font-black text-slate-900">Localizar Bautismo en libro físico</h3>
+            <p className="mt-2 text-xs text-slate-500">Compruebe físicamente la identidad y las coordenadas. Registrar estos datos NO certifica todavía el asiento de la nota marginal.</p></div>
+          <div className="grid grid-cols-3 gap-3">
+            {['book','folio','number'].map(k=><label key={k} className="text-[10px] font-black uppercase text-slate-500">
+              {k==='book'?'Libro':k==='folio'?'Folio':'Número'}
+              <input className="mt-1 w-full rounded-xl border px-3 py-2 font-mono" value={physicalLocator[k]}
+                onChange={e=>setPhysicalLocator(p=>({...p,[k]:e.target.value}))}/></label>)}
+          </div>
+          <label className="block text-[10px] font-black uppercase text-slate-500">Referencia documental del cotejo
+            <input className="mt-1 w-full rounded-xl border px-3 py-2" value={physicalLocator.reference}
+              onChange={e=>setPhysicalLocator(p=>({...p,reference:e.target.value}))}
+              placeholder="Libro examinado, oficio, archivo o diligencia de búsqueda"/>
+          </label>
+          <div className="flex justify-end gap-3">
+            <Button variant="outline" onClick={()=>setLocatorRecipient(null)}>Cancelar</Button>
+            <Button disabled={savingLocator||!physicalLocator.book||!physicalLocator.folio||!physicalLocator.number||physicalLocator.reference.trim().length<8}
+              onClick={savePhysicalLocator}>{savingLocator?'Guardando…':'Guardar localización física'}</Button>
+          </div>
+        </div>
+      </div>}
 
       <ModalVerAcuseSacramental
         isOpen={showReceipt}

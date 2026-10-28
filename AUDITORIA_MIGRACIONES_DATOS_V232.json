@@ -1,7 +1,7 @@
 {
   "protocol": "V232",
   "environment": "OFFLINE_QA_SCHEMAS_ONLY",
-  "migrationCount": 180,
+  "migrationCount": 184,
   "directWriteMigrationCount": 14,
   "directWriteStatementCount": 45,
   "findings": [
@@ -1440,6 +1440,30 @@
       "sha256": "7f3b3ffa0537874352a6c9f0553206523b755784ebc70b3ff76e0dead7d87481",
       "directWrites": 0,
       "statements": 5
+    },
+    {
+      "file": "supabase/migrations/20261028210554_sacramentum_v277_notification_case_rpcs_staged_no_client_grants.sql",
+      "sha256": "415b9724f7b3e219575d8c709aa24292e10e60c3a764f551b21e6974d5718341",
+      "directWrites": 0,
+      "statements": 15
+    },
+    {
+      "file": "supabase/migrations/20261028210716_sacramentum_v277b_parish_destinations_and_physical_locator_staged.sql",
+      "sha256": "3bb3b6b72f5c3d0cc1605d44a0f199815099b4aa149c41cf10d02589546fee97",
+      "directWrites": 0,
+      "statements": 6
+    },
+    {
+      "file": "supabase/migrations/20261028211430_sacramentum_v277c_parish_notification_case_acl_test_environment.sql",
+      "sha256": "db2b65b7ce0e4b7fd522f90f35e75b9e294282325386af7f8be97f08cd11ccdc",
+      "directWrites": 0,
+      "statements": 16
+    },
+    {
+      "file": "supabase/migrations/20261028212555_sacramentum_v277d_cross_diocese_physical_receipt_strict_recipient.sql",
+      "sha256": "91f994b363ed24fe666acaeb166a66f1cd0e8e915863ca0e098e83ca27067cb3",
+      "directWrites": 0,
+      "statements": 4
     }
   ]
 }

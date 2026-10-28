@@ -53,8 +53,8 @@ test('V230 migration is the exact applied database version, safe if already disa
    '20261027143000_authorize_legacy_batch_before_profile_v244.sql',
    '20261027152000_close_original_legacy_batch_enumeration_v245.sql',
    '20261027170500_contain_document_void_exposure_v248.sql'],'Original six V230-era migrations remain fixed');
- assert.equal(later.filter(x=>x.startsWith('2026102820') && x.includes('_sacramentum_')).length,14,
-  'Fourteen V276 staged migrations are independently hash-pinned by V229 security test');
+ assert.equal(later.filter(x=>x.startsWith('20261028') && x.includes('_sacramentum_')).length,18,
+  'Eighteen V276+V277 migrations are independently hash-pinned by V229 security test');
 });
 test('V230 before/after SQL verification confirms GraphQL extension disappeared and placeholder returns disabled',()=>{
  assert.equal(report.migration.installedPgGraphqlBefore,1);

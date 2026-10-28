@@ -9,6 +9,7 @@ const aliases=[
  '@/context/AuthContext',
  '@/services/officialNotificationsService',
  '@/services/matrimonialNotificationsService',
+ '@/services/sacramentalPhysicalLocatorV277',
  '@/services/chatService'
 ];
 export default defineConfig({

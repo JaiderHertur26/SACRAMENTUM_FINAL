@@ -28,5 +28,6 @@ export const AuthProvider=({children})=><>{children}</>;
 export const countUnreadOfficialNotifications=async()=>0;
 export const countSacramentalNotificationAttention=async()=>0;
 export const subscribeToSacramentalNotificationActivity=()=>()=>{};
+export const updatePhysicalLocatorV277=async()=>{throw new Error('Visual QA: el localizador físico está aislado');};
 export const countUnreadChatMessages=async()=>0;
 export const subscribeToChatActivity=()=>()=>{};

@@ -10,6 +10,12 @@ const sha=f=>createHash('sha256').update(fs.readFileSync(f,'utf8').replace(/\r\n
 const currentMigration='supabase/migrations/20261027044045_secure_definer_pg_temp_last_v229.sql';
 // V276: exact-byte certification of the 14 INSTALL-ONLY migrations already applied to Supabase.
 // Every newly deployed public RPC remains REVOKED until separately audited official cutover.
+const approvedV277Correspondence=new Map([
+ ['20261028210554_sacramentum_v277_notification_case_rpcs_staged_no_client_grants.sql','415b9724f7b3e219575d8c709aa24292e10e60c3a764f551b21e6974d5718341'],
+ ['20261028210716_sacramentum_v277b_parish_destinations_and_physical_locator_staged.sql','3bb3b6b72f5c3d0cc1605d44a0f199815099b4aa149c41cf10d02589546fee97'],
+ ['20261028211430_sacramentum_v277c_parish_notification_case_acl_test_environment.sql','db2b65b7ce0e4b7fd522f90f35e75b9e294282325386af7f8be97f08cd11ccdc'],
+ ['20261028212555_sacramentum_v277d_cross_diocese_physical_receipt_strict_recipient.sql','91f994b363ed24fe666acaeb166a66f1cd0e8e915863ca0e098e83ca27067cb3'],
+]);
 const approvedV276StagedLedger=new Map([
  ['20261028203353_sacramentum_v252_private_book_ledger_staged.sql','24023b8ceb3904df98574141004e8d19428886a0b4f9192ec5c43468910c5a51'],
  ['20261028203407_sacramentum_v253_private_operations_and_dependencies_staged.sql','f0d4282904af1ed013c9cfbb94cb03e23d4bbb45f9229c3d54e63b18238655a1'],
@@ -60,6 +66,8 @@ test('V229 remote migration version is identical to the checked-in CLI-created m
  const all=fs.readdirSync('supabase/migrations').filter(x=>x.endsWith('.sql')).sort();
  assert.equal(approvedV276StagedLedger.size,14);
  for(const f of approvedV276StagedLedger.keys())assert.ok(all.includes(f),'certified migration missing: '+f);
+ assert.equal(approvedV277Correspondence.size,4);
+ for(const f of approvedV277Correspondence.keys())assert.ok(all.includes(f),'missing V277: '+f);
  for(const later of all.filter(x=>('supabase/migrations/'+x)>currentMigration)) {
   const body=fs.readFileSync('supabase/migrations/'+later,'utf8');
   if(later==='20261027125848_harden_chat_actor_guard_v232.sql') {
@@ -87,6 +95,21 @@ test('V229 remote migration version is identical to the checked-in CLI-created m
     assert.match(body,/materialize_legacy_decrees_v68/);
     assert.match(body,/v_chancery IS NULL/);
     assert.doesNotMatch(body,/\\b(?:INSERT INTO|UPDATE\\s+public\\.|DELETE FROM|TRUNCATE\\s+TABLE|DROP TABLE)\\b/i);
+  } else if (approvedV277Correspondence.has(later)) {
+    assert.equal(sha('supabase/migrations/'+later),approvedV277Correspondence.get(later),
+      'V277 migration changed without re-certification: '+later);
+    assert.doesNotMatch(body,/^\s*TRUNCATE\s+TABLE\b/mi,
+      'V277 cannot truncate sacramental registries');
+    if (later.includes('_acl_')) {
+      assert.match(body,/GRANT EXECUTE ON FUNCTION public\.issue_sacramental_case_v277/);
+      assert.match(body,/has_function_privilege\('anon'/);
+    } else if (later.includes('v277d_cross_diocese')) {
+      assert.match(body,/v_row\.receiver_parish_id is distinct from v_parish/);
+      assert.match(body,/caseVersion/);
+      assert.match(body,/EXECUTE replace\(body,original,updated\)/);
+    } else {
+      assert.match(body,/REVOKE ALL ON FUNCTION public\./);
+    }
   } else if (approvedV276StagedLedger.has(later)) {
     assert.equal(sha('supabase/migrations/'+later),approvedV276StagedLedger.get(later),
       'new staged migration content changed without re-certification: '+later);
