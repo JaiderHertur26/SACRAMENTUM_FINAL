@@ -10,6 +10,7 @@ const sql=[
 for(const t of tables)sql.push('CREATE TABLE public."'+t+'" ('+
  'id uuid PRIMARY KEY DEFAULT gen_random_uuid(), parish_id uuid, diocese_id uuid,'+
  'auth_user_id uuid, role text, is_active boolean, status text DEFAULT \'pending\','+
+ 'chancery_id uuid,is_operational boolean DEFAULT true,'+
  'reportado boolean DEFAULT false, raw_data jsonb DEFAULT \'{}\'::jsonb,'+
  'book_number text, book_type text DEFAULT \'ordinario\', folio text, number text,'+
  'actor_user_id uuid,entity_type text,entity_id uuid,action text,after_data jsonb,metadata jsonb,'+
@@ -22,7 +23,8 @@ sql.push("CREATE UNIQUE INDEX uq_v260_marriage_physical_coordinates ON public.ma
 sql.push("CREATE UNIQUE INDEX uq_v260_funeral_physical_coordinates ON public.funerals(parish_id,book_type,book_number,folio,number) NULLS NOT DISTINCT;");
 sql.push("CREATE SCHEMA IF NOT EXISTS sacramentum_ledger;");
 sql.push("INSERT INTO public.parishes(id,diocese_id) VALUES ('00000000-0000-0000-0000-000000000001','00000000-0000-0000-0000-000000000010');");
-sql.push("INSERT INTO public.user_profiles(auth_user_id,parish_id,diocese_id,role,is_active,status) VALUES ('00000000-0000-0000-0000-000000000030','00000000-0000-0000-0000-000000000001','00000000-0000-0000-0000-000000000010','parish',true,'ACTIVE'),('00000000-0000-0000-0000-000000000031',null,'00000000-0000-0000-0000-000000000010','chancery',true,'ACTIVE');");
+sql.push("INSERT INTO public.chancelleries(id,diocese_id) VALUES ('00000000-0000-0000-0000-000000000040','00000000-0000-0000-0000-000000000010');");
+sql.push("INSERT INTO public.user_profiles(auth_user_id,parish_id,diocese_id,role,is_active,status) VALUES ('00000000-0000-0000-0000-000000000030','00000000-0000-0000-0000-000000000001','00000000-0000-0000-0000-000000000010','parish',true,'ACTIVE'),('00000000-0000-0000-0000-000000000031',null,'00000000-0000-0000-0000-000000000010','chancery',true,'ACTIVE'); UPDATE public.user_profiles SET chancery_id='00000000-0000-0000-0000-000000000040' WHERE role='chancery';");
 sql.push("INSERT INTO public.parish_parameters(parish_id,bautizos_params,confirmaciones_params,matrimonios_params,exequias_params) VALUES('00000000-0000-0000-0000-000000000001',jsonb_build_object('numeroRegistroActual','000053','partidasPorFolio',2),jsonb_build_object('numeroRegistroActual','000023'),jsonb_build_object('numeroRegistroActual','0012'),jsonb_build_object('numeroRegistroActual','0002'));");
 for(const old of [
  'seat_baptism_records(uuid,jsonb,integer,integer,integer)',

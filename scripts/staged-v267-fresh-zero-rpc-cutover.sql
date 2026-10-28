@@ -73,6 +73,39 @@ BEGIN
  ) THEN
    RAISE EXCEPTION 'V273: usuarios ACTIVOS sin cuenta autenticada: revisar antes de operar';
  END IF;
+ -- The single GoTrue identity must not activate two overlapping institutional
+ -- profiles. Email/username are not security keys for identity binding.
+ IF EXISTS(SELECT 1 FROM public.user_profiles up
+   WHERE up.is_active IS TRUE AND upper(coalesce(up.status,''))='ACTIVE'
+     AND up.auth_user_id IS NOT NULL
+   GROUP BY up.auth_user_id HAVING count(*)>1) THEN
+   RAISE EXCEPTION 'V274: una cuenta Auth no puede activar múltiples perfiles';
+ END IF;
+ -- An authenticated user with a stale or wrong ecclesiastical jurisdiction
+ -- would break tenant isolation. Check real database FKs, not display names.
+ IF EXISTS(
+   SELECT 1 FROM public.user_profiles up
+   LEFT JOIN public.dioceses d ON d.id=up.diocese_id
+   LEFT JOIN public.parishes p ON p.id=up.parish_id
+   LEFT JOIN public.chancelleries c ON c.id=up.chancery_id
+   WHERE up.is_active IS TRUE AND upper(coalesce(up.status,''))='ACTIVE'
+    AND (
+     (lower(up.role)='parish' AND
+       (p.id IS NULL OR p.is_operational IS DISTINCT FROM TRUE
+        OR p.diocese_id IS DISTINCT FROM up.diocese_id))
+     OR (lower(up.role)='chancery' AND
+       (c.id IS NULL OR c.diocese_id IS DISTINCT FROM up.diocese_id))
+     OR (lower(up.role)='diocese' AND d.id IS NULL)
+     OR (lower(up.role)='admin_general' AND
+       (up.diocese_id IS NOT NULL OR up.parish_id IS NOT NULL
+        OR up.chancery_id IS NOT NULL))
+     OR lower(up.role) NOT IN
+       ('parish','chancery','diocese','admin_general')
+    )
+   )
+ ) THEN
+   RAISE EXCEPTION 'V274: jurisdicción o rol activo inválido: revisar identidad institucional';
+ END IF;
  -- No test-era new-book authorizations or unpublished seat events survive
  -- the launch. Signoffs themselves are intentionally retained as evidence.
  IF to_regclass('sacramentum_ledger.supplementary_concept_approvals_v272') IS NULL THEN

@@ -83,7 +83,22 @@ rejectCutover "an ACTIVE user without an actual auth identity"
 run "INSERT INTO auth.users VALUES ('00000000-0000-0000-0000-000000000031');" >/dev/null
 run "INSERT INTO public.chancelleries(parish_id) VALUES(NULL);" >/dev/null
 rejectCutover "institutional master changed after verification"
-run "DELETE FROM public.chancelleries;" >/dev/null
+run "DELETE FROM public.chancelleries WHERE id<>'00000000-0000-0000-0000-000000000040';" >/dev/null
+# V274: test duplicate Auth identity and wrong jurisdiction independently.
+run "INSERT INTO public.user_profiles(auth_user_id,role,is_active,status)
+ VALUES('00000000-0000-0000-0000-000000000030','admin_general',true,'ACTIVE');" >/dev/null
+rejectCutover "one GoTrue identity bound to two active institutional roles"
+run "DELETE FROM public.user_profiles WHERE role='admin_general';" >/dev/null
+run "UPDATE public.parishes SET is_operational=false
+ WHERE id='00000000-0000-0000-0000-000000000001';" >/dev/null
+rejectCutover "active parish on an inactive parish must deny official launch"
+run "UPDATE public.parishes SET is_operational=true
+ WHERE id='00000000-0000-0000-0000-000000000001';" >/dev/null
+run "UPDATE public.user_profiles SET chancery_id=NULL WHERE role='chancery';" >/dev/null
+rejectCutover "active chancery without verified chancery scope must deny"
+run "UPDATE public.user_profiles
+ SET chancery_id='00000000-0000-0000-0000-000000000040'
+ WHERE role='chancery';" >/dev/null
 OLD='public.seat_baptism_records(uuid,jsonb,integer,integer,integer)'
 NEW='public.seat_baptism_ledger_v263(uuid,uuid,bigint,integer,integer,uuid,jsonb)'
 eq "$(run "SELECT has_function_privilege('authenticated','$OLD','EXECUTE')")" t
