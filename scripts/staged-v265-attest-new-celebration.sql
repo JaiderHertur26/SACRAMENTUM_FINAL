@@ -80,7 +80,7 @@ BEGIN
             AND c.response->>'confirmation_pending_id'=p_pending_id::text)))
     OR (p_sacrament IN ('matrimonio','exequias') AND
        c.sacrament_type=p_sacrament
-       AND c.response->>'pending_id'=p_pending_id::text))
+       AND c.response->>'pending_id'=p_pending_id::text)
    ) FOR SHARE
  LOOP v_receipts:=v_receipts+1; END LOOP;
  IF v_receipts<>1 THEN
