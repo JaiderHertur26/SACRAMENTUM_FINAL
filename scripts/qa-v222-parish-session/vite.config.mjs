@@ -16,6 +16,7 @@ export default defineConfig({
  {find:/^@\/components\/ModalVincularPartidaNotificacion$/,replacement:mock('mockModal.jsx')},
  {find:/^@\/components\/ui\/ConfirmationDialog$/,replacement:mock('mockModal.jsx')},
  {find:/^@\/services\/matrimonialNotificationsService$/,replacement:mock('mockSacramental.js')},
+ {find:/^@\/services\/sacramentalPhysicalLocatorV277$/,replacement:mock('mockPhysicalV277.js')},
  {find:/^@\/services\/officialNotificationsService$/,replacement:mock('mockOfficial.js')},
  {find:/^@\/services\/confirmationNotificationService$/,replacement:mock('mockConfirmation.js')},
  {find:'@',replacement:path.resolve(dir,'../../src')}

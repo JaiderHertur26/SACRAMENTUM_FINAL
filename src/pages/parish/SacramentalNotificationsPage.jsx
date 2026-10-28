@@ -11,7 +11,7 @@ import ModalVerAviso from '@/components/ModalVerAviso';
 import ModalVerAcuseSacramental from '@/components/ModalVerAcuseSacramental';
 import ModalVincularPartidaNotificacion from '@/components/ModalVincularPartidaNotificacion';
 import { useAuth } from '@/context/AuthContext';
-import { updatePhysicalLocatorV277 } from '@/services/sacramentalCasesV277';
+import { updatePhysicalLocatorV277 } from '@/services/sacramentalPhysicalLocatorV277';
 import { getParishSessionScope } from '@/utils/parishSessionScope.mjs';
 import { useAppData } from '@/context/AppDataContext';
 import {
