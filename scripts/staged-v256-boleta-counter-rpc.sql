@@ -118,21 +118,25 @@ BEGIN
   END IF;
   v_width:=greatest(length(v_old),length(p_new_value));
   v_normalized:=lpad(v_new_num::text,v_width,'0');
-  UPDATE public.parish_parameters pp SET
-    bautizos_params = CASE WHEN v_column='bautizos_params'
-      THEN jsonb_set(v_current,'{numeroRegistroActual}',to_jsonb(v_normalized),true)
-      ELSE pp.bautizos_params END,
-    confirmaciones_params = CASE WHEN v_column='confirmaciones_params'
-      THEN jsonb_set(v_current,'{numeroRegistroActual}',to_jsonb(v_normalized),true)
-      ELSE pp.confirmaciones_params END,
-    matrimonios_params = CASE WHEN v_column='matrimonios_params'
-      THEN jsonb_set(v_current,'{numeroRegistroActual}',to_jsonb(v_normalized),true)
-      ELSE pp.matrimonios_params END,
-    exequias_params = CASE WHEN v_column='exequias_params'
-      THEN jsonb_set(v_current,'{numeroRegistroActual}',to_jsonb(v_normalized),true)
-      ELSE pp.exequias_params END,
-    updated_at=now()
-    WHERE pp.id=v_row.id;
+  -- Only write the targeted JSON column. Updating all four columns would
+  -- fire unrelated UPDATE OF triggers and create avoidable contention.
+  IF v_column='bautizos_params' THEN
+    UPDATE public.parish_parameters
+      SET bautizos_params=jsonb_set(v_current,'{numeroRegistroActual}',to_jsonb(v_normalized),true),
+          updated_at=now() WHERE id=v_row.id;
+  ELSIF v_column='confirmaciones_params' THEN
+    UPDATE public.parish_parameters
+      SET confirmaciones_params=jsonb_set(v_current,'{numeroRegistroActual}',to_jsonb(v_normalized),true),
+          updated_at=now() WHERE id=v_row.id;
+  ELSIF v_column='matrimonios_params' THEN
+    UPDATE public.parish_parameters
+      SET matrimonios_params=jsonb_set(v_current,'{numeroRegistroActual}',to_jsonb(v_normalized),true),
+          updated_at=now() WHERE id=v_row.id;
+  ELSE
+    UPDATE public.parish_parameters
+      SET exequias_params=jsonb_set(v_current,'{numeroRegistroActual}',to_jsonb(v_normalized),true),
+          updated_at=now() WHERE id=v_row.id;
+  END IF;
   INSERT INTO public.registry_audit_log(
     actor_user_id,parish_id,diocese_id,entity_type,entity_id,
     action,before_data,after_data,metadata
