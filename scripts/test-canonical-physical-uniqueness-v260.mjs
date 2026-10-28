@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-const read=(p)=>fs.readFileSync(p,'utf8');
+const read=(p)=>fs.readFileSync(p,'utf8').replace(/\r\n/g,'\n');
 
 test('V260 protects all 4 physical registries including historical and annulled rows',()=>{
  const sql=read('scripts/staged-v260-canonical-physical-uniqueness.sql');

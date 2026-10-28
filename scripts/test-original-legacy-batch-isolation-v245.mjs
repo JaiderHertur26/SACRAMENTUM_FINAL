@@ -61,14 +61,14 @@ test('V245 current live PostgreSQL fingerprint remains exact in release guard, o
 });
 test('V245 only adds a schema-function patch; 45 historical data mutations stay forbidden',()=>{
  const inv=report();
- assert.equal(inv.migrationCount,166);
+ assert.equal(inv.migrationCount,180);
  assert.equal(CLEAN_REPLAY_HISTORICAL_MIGRATIONS,166);
  assert.equal(inv.directWriteMigrationCount,14);
  assert.equal(inv.directWriteStatementCount,45);
  const row=inv.checks.filter(x=>x.file.endsWith('close_original_legacy_batch_enumeration_v245.sql'));
  assert.equal(row.length,1);
  assert.equal(row[0].directWrites,0);
- assert.equal(crypto.createHash('sha256').update(JSON.stringify(inv.checks)).digest('hex'),HISTORICAL_MIGRATION_MANIFEST_SHA256);
+ assert.equal(crypto.createHash('sha256').update(JSON.stringify(inv.checks.slice(0,CLEAN_REPLAY_HISTORICAL_MIGRATIONS))).digest('hex'),HISTORICAL_MIGRATION_MANIFEST_SHA256);
 });
 test('V245 is not an official certification or complete privileged RPC review',()=>{
  assert.equal(e.environment,'SUPABASE_QA_ONLY_NOT_OFFICIAL');

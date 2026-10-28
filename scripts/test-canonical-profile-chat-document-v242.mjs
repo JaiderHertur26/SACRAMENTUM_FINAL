@@ -46,14 +46,14 @@ test('V242 catalogue hash is current and previous V241 document remains unaltere
 });
 test('V242 schema-only migration count and digest match frozen release inventory',()=>{
  const inv=report();
- assert.equal(inv.migrationCount,166);
+ assert.equal(inv.migrationCount,180);
  assert.equal(CLEAN_REPLAY_HISTORICAL_MIGRATIONS,166);
  assert.equal(inv.directWriteMigrationCount,14);
  assert.equal(inv.directWriteStatementCount,45);
  const entry=inv.checks.filter(c=>c.file.endsWith('harden_context_chat_matrimonial_identity_v242.sql'));
  assert.equal(entry.length,1);
  assert.equal(entry[0].directWrites,0);
- const actual=crypto.createHash('sha256').update(JSON.stringify(inv.checks)).digest('hex');
+ const actual=crypto.createHash('sha256').update(JSON.stringify(inv.checks.slice(0,CLEAN_REPLAY_HISTORICAL_MIGRATIONS))).digest('hex');
  assert.equal(actual,HISTORICAL_MIGRATION_MANIFEST_SHA256);
 });
 test('V242 is not a production certificate or full write-flow approval',()=>{

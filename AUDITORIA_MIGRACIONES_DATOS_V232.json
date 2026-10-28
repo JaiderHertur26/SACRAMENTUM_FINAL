@@ -1,7 +1,7 @@
 {
   "protocol": "V232",
   "environment": "OFFLINE_QA_SCHEMAS_ONLY",
-  "migrationCount": 166,
+  "migrationCount": 180,
   "directWriteMigrationCount": 14,
   "directWriteStatementCount": 45,
   "findings": [
@@ -1356,6 +1356,90 @@
       "sha256": "2f2c1b25a378bc3f817770637553c3514287a62d1483c4a4362b24ff0e155360",
       "directWrites": 0,
       "statements": 1
+    },
+    {
+      "file": "supabase/migrations/20261028203353_sacramentum_v252_private_book_ledger_staged.sql",
+      "sha256": "24023b8ceb3904df98574141004e8d19428886a0b4f9192ec5c43468910c5a51",
+      "directWrites": 0,
+      "statements": 17
+    },
+    {
+      "file": "supabase/migrations/20261028203407_sacramentum_v253_private_operations_and_dependencies_staged.sql",
+      "sha256": "f0d4282904af1ed013c9cfbb94cb03e23d4bbb45f9229c3d54e63b18238655a1",
+      "directWrites": 0,
+      "statements": 6
+    },
+    {
+      "file": "supabase/migrations/20261028203436_sacramentum_v263_four_sacrament_rpcs_private_staged.sql",
+      "sha256": "1fa78cab679af64bda49f07cb47324b090787e2e50a174047f1bc6c5b972d1ec",
+      "directWrites": 0,
+      "statements": 15
+    },
+    {
+      "file": "supabase/migrations/20261028203453_sacramentum_v264_parish_ledger_context_staged.sql",
+      "sha256": "5d522db9445f5121ce918713c4be414b712f5c5a1cd4f8de680580751d3d9e37",
+      "directWrites": 0,
+      "statements": 4
+    },
+    {
+      "file": "supabase/migrations/20261028203456_sacramentum_v265_new_celebration_attestation_staged.sql",
+      "sha256": "191bb20ea81bd3f0e25d038674a9daefa1e2e6e649a13257736f9c18b596d400",
+      "directWrites": 0,
+      "statements": 4
+    },
+    {
+      "file": "supabase/migrations/20261028203458_sacramentum_v266_two_signatures_physical_review_staged.sql",
+      "sha256": "9f3ea0d8099f412c543229ad03336fb445e831f84189ad7372b188ba1a166fd3",
+      "directWrites": 0,
+      "statements": 9
+    },
+    {
+      "file": "supabase/migrations/20261028203526_sacramentum_v267_open_first_official_book_staged.sql",
+      "sha256": "206656a7cc76bce10385c544f372d078b4be596286669613b34218dcb2f41ca0",
+      "directWrites": 0,
+      "statements": 4
+    },
+    {
+      "file": "supabase/migrations/20261028203530_sacramentum_v270_open_next_official_book_staged.sql",
+      "sha256": "b35d1ffbb92dc7ca0e2bd2aab009b44f805c14abea1999cdc71b1cad41eba9d9",
+      "directWrites": 0,
+      "statements": 4
+    },
+    {
+      "file": "supabase/migrations/20261028203532_sacramentum_v271_open_first_supplementary_book_staged.sql",
+      "sha256": "1689bb89cd6b74ad043cdc5cd078853e09c07e1baaa539ba8a43d1f4d8b7c6f2",
+      "directWrites": 0,
+      "statements": 4
+    },
+    {
+      "file": "supabase/migrations/20261028203535_sacramentum_v272_approve_supplementary_concept_staged.sql",
+      "sha256": "a15b3472af81948252d60db16aa06e6e166fae7b98248a761815b70a404c5ba4",
+      "directWrites": 0,
+      "statements": 7
+    },
+    {
+      "file": "supabase/migrations/20261028203538_sacramentum_v272_open_next_supplementary_book_staged.sql",
+      "sha256": "a08b93a879ab204b8523ba45a0ed0eb7544a19c419e74907e0ffbf7d52fd9e7d",
+      "directWrites": 0,
+      "statements": 4
+    },
+    {
+      "file": "supabase/migrations/20261028203541_sacramentum_v273_institutional_master_review_staged.sql",
+      "sha256": "50d81ca1b60a855c8b7fbbdda33141e882374faafbb82cabcd1afc39f7e89c0b",
+      "directWrites": 0,
+      "statements": 5
+    },
+    {
+      "file": "supabase/migrations/20261028203648_sacramentum_v271_new_supplement_decrees_staged.sql",
+      "sha256": "11a57ba092ad1c7aa8bab0334b84552e8d860af4d9f82c0efd570c74ebdb3883",
+      "directWrites": 0,
+      "statements": 8
+    },
+    {
+      "file": "supabase/migrations/20261028203711_sacramentum_v256_boleta_counter_staged_without_client_grant.sql",
+      "sha256": "7f3b3ffa0537874352a6c9f0553206523b755784ebc70b3ff76e0dead7d87481",
+      "directWrites": 0,
+      "statements": 5
     }
   ]
 }

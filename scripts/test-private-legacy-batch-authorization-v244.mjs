@@ -48,14 +48,14 @@ test('V244 152 privileged functions pinned to independent real QA fingerprint',(
 });
 test('V244 only adds reviewed DDL migration, preserving quarantined historical data writes',()=>{
  const inv=report();
- assert.equal(inv.migrationCount,166);
+ assert.equal(inv.migrationCount,180);
  assert.equal(CLEAN_REPLAY_HISTORICAL_MIGRATIONS,166);
  assert.equal(inv.directWriteMigrationCount,14);
  assert.equal(inv.directWriteStatementCount,45);
  const row=inv.checks.filter(x=>x.file.endsWith('authorize_legacy_batch_before_profile_v244.sql'));
  assert.equal(row.length,1);
  assert.equal(row[0].directWrites,0);
- assert.equal(crypto.createHash('sha256').update(JSON.stringify(inv.checks)).digest('hex'),HISTORICAL_MIGRATION_MANIFEST_SHA256);
+ assert.equal(crypto.createHash('sha256').update(JSON.stringify(inv.checks.slice(0,CLEAN_REPLAY_HISTORICAL_MIGRATIONS))).digest('hex'),HISTORICAL_MIGRATION_MANIFEST_SHA256);
 });
 test('V244 evidence explicitly cannot be used to claim official authorization or complete semantic audit',()=>{
  assert.equal(e.environment,'SUPABASE_QA_ONLY_NOT_OFFICIAL');

@@ -46,13 +46,15 @@ test('V230 migration is the exact applied database version, safe if already disa
  assert.doesNotMatch(src,/\bCASCADE\b|\b(?:TRUNCATE|DELETE FROM|INSERT INTO|DROP TABLE|DROP SCHEMA)\b/i);
  const later=fs.readdirSync('supabase/migrations').filter(x=>x.endsWith('.sql')).sort();
  assert.ok(later.includes(migration.split('/').at(-1)),'V230 migration must remain versioned');
- assert.deepEqual(later.filter(x=>('supabase/migrations/'+x)>migration),
+ assert.deepEqual(later.filter(x=>('supabase/migrations/'+x)>migration && x.startsWith('20261027')),
   ['20261027121500_harden_context_chat_matrimonial_identity_v242.sql',
    '20261027125848_harden_chat_actor_guard_v232.sql',
    '20261027133000_harden_materialize_chancery_v243.sql',
    '20261027143000_authorize_legacy_batch_before_profile_v244.sql',
    '20261027152000_close_original_legacy_batch_enumeration_v245.sql',
-   '20261027170500_contain_document_void_exposure_v248.sql'],'Only reviewed V242, V232, V243, V244, V245 and V248 may follow GraphQL hardening');
+   '20261027170500_contain_document_void_exposure_v248.sql'],'Original six V230-era migrations remain fixed');
+ assert.equal(later.filter(x=>x.startsWith('2026102820') && x.includes('_sacramentum_')).length,14,
+  'Fourteen V276 staged migrations are independently hash-pinned by V229 security test');
 });
 test('V230 before/after SQL verification confirms GraphQL extension disappeared and placeholder returns disabled',()=>{
  assert.equal(report.migration.installedPgGraphqlBefore,1);
