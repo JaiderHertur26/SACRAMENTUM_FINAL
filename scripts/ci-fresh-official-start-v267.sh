@@ -49,7 +49,7 @@ eq "$(run "SELECT has_function_privilege('anon','$NEW','EXECUTE')")" f
 eq "$(run "SELECT has_function_privilege('authenticated',
  'public.open_first_official_book_v267(uuid,text,uuid,text,integer,integer,integer,boolean)','EXECUTE')")" t
 eq "$(run "SELECT count(*) FROM public.parish_parameters")" 1
-eq "$(run "SELECT bautizos_params->>'numeroRegistroActual'||':'||confirmaciones_params->>'numeroRegistroActual'||':'||matrimonios_params->>'numeroRegistroActual'||':'||exequias_params->>'numeroRegistroActual' FROM public.parish_parameters")" '000000:000000:0000:0000'
+eq "$(run "SELECT (bautizos_params->>'numeroRegistroActual')||':'||(confirmaciones_params->>'numeroRegistroActual')||':'||(matrimonios_params->>'numeroRegistroActual')||':'||(exequias_params->>'numeroRegistroActual') FROM public.parish_parameters")" '000000:000000:0000:0000'
 eq "$(run "SELECT bautizos_params->>'partidasPorFolio' FROM public.parish_parameters")" 2
 eq "$(run "SELECT count(*) FROM public.user_profiles")" 2
 rejectCutover "no GoLive re-entry after receipt"
