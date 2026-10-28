@@ -421,7 +421,7 @@ SUPBOOK2="$(run "SELECT id FROM sacramentum_ledger.book_memories
 [[ -n "$SUPBOOK2" ]] || { echo 'No supplementary successor memory' >&2; exit 1; }
 eq "$(run "SELECT closed_at IS NOT NULL FROM sacramentum_ledger.book_memories WHERE id='$SUPBOOK'")" t
 eq "$(run "SELECT count(*) FROM public.marriages WHERE book_number='SUP0001' AND number='0001'")" 1
-eq "$(run "SELECT count(*) FROM public.registry_audit_log WHERE action LIKE '%v272'")" 2
+eq "$(run "SELECT count(*) FROM public.registry_audit_log WHERE entity_type='official_book' AND action LIKE '%v272'")" 2
 nextOpened="$(run "SET qa.actor='$A'; $(nextSup)")"
 [[ "$nextOpened" == *'"existing": true'* ]] || { echo "V272 retry did not return same unseated successor"; exit 1; }
 reject "SET qa.actor='$A'; SELECT public.seat_marriage_ledger_v263(
