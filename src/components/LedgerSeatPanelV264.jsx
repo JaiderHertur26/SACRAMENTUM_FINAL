@@ -1,7 +1,7 @@
 import React, {useEffect,useRef,useState} from 'react';
 import {Button} from '@/components/ui/button';
 import {institutionalConfirm} from '@/lib/institutionalDialog';
-import {getLedgerSeatContextV264,seatWithLedgerV264} from '@/services/ledgerSeatV264';
+import {getLedgerSeatContextV264,seatWithLedgerV264,attestNewCelebrationV265} from '@/services/ledgerSeatV264';
 import {prepareLedgerSeatRequestV264} from '@/domain/ledgerSeatV264.mjs';
 
 // V264: explicit manual book/folio/number. Never generate evidence in browser.
@@ -16,6 +16,8 @@ export default function LedgerSeatPanelV264({parishId,sacrament,pendingIds=[],on
   const [bookCode,setBookCode]=useState('');
   const [folio,setFolio]=useState('');
   const [partida,setPartida]=useState('');
+  const [evidenceByPending,setEvidenceByPending]=useState({});
+  const [attesting,setAttesting]=useState(false);
   const [loading,setLoading]=useState(true);
   const [submitting,setSubmitting]=useState(false);
   const [locked,setLocked]=useState(false);
@@ -45,6 +47,27 @@ export default function LedgerSeatPanelV264({parishId,sacrament,pendingIds=[],on
   const matching=allVerified&&rows.every(r=>r.bookType===type);
   const books=(ctx?.books||[]).filter(b=>b.type===type);
   const chosen=books.find(b=>b.id===bookId);
+  const verifyCelebration=async row=>{
+    if(!row.pending||row.verified||inFlight.current||loading||submitting||attesting||locked)return;
+    const ref=String(evidenceByPending[row.id]||'').trim();
+    if(ref.length<8||ref.length>120){setError('Indique la referencia real del acta de celebración (8 a 120 caracteres).');return;}
+    inFlight.current=true;setAttesting(true);setError('');
+    try {
+      const approved=await institutionalConfirm({
+        title:'Constancia institucional de celebración',
+        message:'Al aprobar, declara que la celebración ya se realizó y que el documento '+ref+' permite acreditarla. Esta constancia quedará vinculada a su usuario y a la boleta en auditoría. No corresponde a importaciones históricas.',
+        confirmText:'Certificar celebración',tone:'warning'
+      });
+      if(!approved)return;
+      setLocked(true);
+      await attestNewCelebrationV265({parishId,sacrament,pendingId:row.id,evidenceRef:ref});
+      await reload();
+      setMessage('Constancia registrada en el servidor. Verifique nuevamente el Libro físico antes de asentar.');
+    }catch(e){
+      setLocked(true);
+      setError('Comprobación sin confirmar. Consulte nuevamente la boleta antes de repetirla. '+(e?.message||''));
+    }finally {setAttesting(false);inFlight.current=false;}
+  };
   const click=async()=>{
     if(inFlight.current||locked||submitting||loading)return;
     const operationId=crypto.randomUUID();
@@ -79,6 +102,25 @@ export default function LedgerSeatPanelV264({parishId,sacrament,pendingIds=[],on
       {loading&&<p className="text-sm text-slate-500">Verificando memoria y celebraciones...</p>}
       {!loading&&!ctx&&<p className="text-sm text-amber-700">No se ha habilitado o no se puede consultar el servicio institucional de libros.</p>}
       {!loading&&ctx&&!allVerified&&<p className="text-sm text-amber-700">No se puede asentar: falta una constancia institucional de celebración o alguna boleta ya fue procesada.</p>}
+      {!loading&&ctx&&rows.filter(r=>r.pending&&!r.verified).map(row=>
+        <div key={row.id} className="rounded-xl border border-amber-200 bg-amber-50 p-4 space-y-3">
+          <p className="text-xs font-bold text-amber-900">Boleta {row.id} · celebración aún sin constancia institucional</p>
+          <label className="block text-xs font-bold text-slate-700">
+            Referencia del acta o comprobante de celebración
+            <input aria-label={`Comprobante de celebración para ${row.id}`}
+              value={evidenceByPending[row.id]||''}
+              onChange={event=>setEvidenceByPending(old=>({...old,[row.id]:event.target.value}))}
+              maxLength={120} autoComplete="off"
+              placeholder="Ej. ACTA-CELEBRACION-2026-001"
+              className="mt-1 w-full rounded-lg border border-amber-300 p-3 text-sm"/>
+          </label>
+          <Button type="button" variant="outline" onClick={()=>verifyCelebration(row)}
+            disabled={loading||submitting||attesting||locked}>
+            {attesting?'Registrando constancia...':'Certificar celebración efectuada'}
+          </Button>
+          <p className="text-xs text-slate-600">La firma del usuario parroquial responsable quedará registrada en auditoría. Los históricos no se pueden convertir por este procedimiento.</p>
+        </div>
+      )}
       {!loading&&ctx&&allVerified&&!matching&&<p className="text-sm text-amber-700">Separe los registros ordinarios y supletorios antes del asiento.</p>}
       {!loading&&ctx&&allVerified&&matching&&books.length===0&&<p className="text-sm text-amber-700">No existe un libro conciliado y habilitado para este tipo de registro.</p>}
       {!loading&&ctx&&allVerified&&matching&&books.length>0&&<>

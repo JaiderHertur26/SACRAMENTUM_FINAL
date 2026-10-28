@@ -24,3 +24,21 @@ export async function seatWithLedgerV264(args) {
   }
   return data;
 }
+
+export async function attestNewCelebrationV265({parishId,sacrament,pendingId,evidenceRef}) {
+  if (!ledgerV264Enabled) throw Error('La comprobación de celebraciones todavía no está habilitada.');
+  const evidence=String(evidenceRef||'').trim();
+  if (!parishId || !pendingId || !['bautismo','confirmacion','matrimonio','exequias'].includes(sacrament) ||
+      evidence.length<8 || evidence.length>120) {
+    throw Error('Es obligatorio identificar el registro y su comprobante institucional.');
+  }
+  const {data,error}=await supabase.rpc('attest_new_celebration_v265',{
+    p_parish_id:parishId,p_sacrament:sacrament,p_pending_id:pendingId,p_evidence_ref:evidence
+  });
+  if(error)throw error;
+  if(data?.pending_id!==pendingId || data?.sacrament!==sacrament ||
+     data?.evidence_ref!==evidence || !data?.verified_at){
+    throw Error('No se pudo verificar el comprobante de celebración en servidor.');
+  }
+  return data;
+}
