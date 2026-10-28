@@ -52,7 +52,10 @@ export function resolveRegistryJourney({path,record={},verified=false,linkedReco
       preservePhysicalCoordinates:true,coordinates});
   }
   if(path===ENTRY_PATH.NEW_DECREE_EXISTING||path===ENTRY_PATH.HISTORICAL_DECREE){
-    if(existing.length!==1) return Object.freeze({path,action:'review_required',consumeMemory:false,reason:'existing_record_not_unique'});
+    if(path===ENTRY_PATH.HISTORICAL_DECREE && verified!==true)
+      return Object.freeze({path,action:'review_required',consumeMemory:false,reason:'origin_not_verified'});
+    if(existing.length!==1 || !id(existing[0]))
+      return Object.freeze({path,action:'review_required',consumeMemory:false,reason:'existing_record_not_unique'});
     if(path===ENTRY_PATH.HISTORICAL_DECREE) {
       const coordinates=historicalCoordinates(record);
       return Object.freeze({path,action:'link_existing_decree',consumeMemory:false,
@@ -63,21 +66,48 @@ export function resolveRegistryJourney({path,record={},verified=false,linkedReco
   }
   throw Error('Operación registral no contemplada.');
 }
-/** Legacy decree import: requires a matched, already recorded original and, if supplied,
- * one matched replacement; NEVER creates records or reserves book memory.
+/**
+ * V255: SAFE REVIEW PLAN, never a database write. For an automatic historical
+ * association, a UUID alone is not proof of the source, parish, sacrament or
+ * physical location. Candidates must be verified *within the intended scope*.
+ * The database remains the final authority and must repeat these checks.
  */
+const SACRAMENTS=new Set(['bautismo','confirmacion','matrimonio','exequias']);
+const canonicalPhysical=value=>{
+  const s=normalizedText(value).toUpperCase();
+  return /^\d+$/.test(s)?BigInt(s).toString():s;
+};
+const samePhysical=(expected,actual)=>['book','folio','number']
+  .every(key=>canonicalPhysical(expected[key])===canonicalPhysical(actual[key]));
+const review=reason=>Object.freeze({action:'review_required',reason,consumeMemory:false});
+function checkHistoricalCandidate(matches,coordinates,parishId,sacrament,kind){
+  if(!Array.isArray(matches)||matches.length!==1)return {reason:kind+'_match_not_unique'};
+  const c=matches[0];
+  if(!c||typeof c!=='object'||!id(c.id))return {reason:kind+'_match_not_verified'};
+  if(c.parishId!==parishId||c.sacrament!==sacrament)return {reason:kind+'_outside_scope'};
+  try {
+    if(!samePhysical(coordinates,historicalCoordinates(c)))return {reason:kind+'_coordinates_mismatch'};
+  } catch { return {reason:kind+'_coordinates_mismatch'}; }
+  return {id:c.id};
+}
 export function validateHistoricalDecreeAssociation({originalCoordinates,replacementCoordinates,
-  originalMatches=[],replacementMatches=[]}={}){
+  originalMatches=[],replacementMatches=[],sourceVerified=false,mappedParishId=null,
+  sacrament=null,decreeReference=null}={}){
+  if(sourceVerified!==true||!id(mappedParishId))return review('origin_not_verified');
+  if(!SACRAMENTS.has(sacrament))return review('sacrament_not_verified');
+  if(!normalizedText(decreeReference))return review('missing_historical_decree_reference');
   const old=historicalCoordinates(originalCoordinates);
   const replacementsPresent=replacementCoordinates!==null&&replacementCoordinates!==undefined;
   const next=replacementsPresent?historicalCoordinates(replacementCoordinates):null;
-  if(!Array.isArray(originalMatches)||originalMatches.length!==1||!id(originalMatches[0]))
-    return Object.freeze({action:'review_required',reason:'original_match_not_unique',consumeMemory:false});
-  if(next&&(!Array.isArray(replacementMatches)||replacementMatches.length!==1||!id(replacementMatches[0])))
-    return Object.freeze({action:'review_required',reason:'replacement_match_not_unique',consumeMemory:false});
-  if(next&&originalMatches[0]===replacementMatches[0])
-    return Object.freeze({action:'review_required',reason:'original_equals_replacement',consumeMemory:false});
+  const original=checkHistoricalCandidate(originalMatches,old,mappedParishId,sacrament,'original');
+  if(original.reason)return review(original.reason);
+  let replacement=null;
+  if(next){
+    replacement=checkHistoricalCandidate(replacementMatches,next,mappedParishId,sacrament,'replacement');
+    if(replacement.reason)return review(replacement.reason);
+    if(original.id===replacement.id)return review('original_equals_replacement');
+  }
   return Object.freeze({action:'link_existing_decree',consumeMemory:false,
-    originalRecordId:originalMatches[0],replacementRecordId:next?replacementMatches[0]:null,
+    originalRecordId:original.id,replacementRecordId:replacement?.id??null,
     originalCoordinates:old,replacementCoordinates:next});
 }

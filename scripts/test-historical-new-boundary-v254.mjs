@@ -6,6 +6,9 @@ import {ENTRY_PATH,resolveRegistryJourney,historicalCoordinates,
 const uuid=n=>('00000000-0000-0000-0000-'+String(n).padStart(12,'0'));
 const refs={Libro:'0001A',folio:'0005',numero:'0012'};
 const newRecord={nombres:'Persona ficticia'};
+const parish=uuid(77);
+const historicalContext={sourceVerified:true,mappedParishId:parish,sacrament:'bautismo',decreeReference:'DECRETO-0001'};
+const candidate=(n,coordinates=refs,overrides={})=>({id:uuid(n),parishId:parish,sacrament:'bautismo',...coordinates,...overrides});
 test('V254 a newly celebrated sacrament pending seating consumes book memory only after confirmation',()=>{
  assert.deepEqual(resolveRegistryJourney({path:ENTRY_PATH.NEW_SACRAMENT,verified:true,record:newRecord}),
   {path:'new_sacrament',action:'seat_new',consumeMemory:true,preservePhysicalCoordinates:false});
@@ -40,30 +43,31 @@ test('V254 new supplementary decree may seat; a documentary or correcting decree
  assert.equal(correction.consumeMemory,false);
  assert.equal(correction.recordId,uuid(5));
 });
-test('V254 historical decree requires one existing match; cannot create a new historical partida',()=>{
- const ok=validateHistoricalDecreeAssociation({originalCoordinates:refs,originalMatches:[uuid(4)]});
+test('V255 historical decree association requires a verified, scoped existing partida',()=>{
+ const ok=validateHistoricalDecreeAssociation({...historicalContext,
+  originalCoordinates:refs,originalMatches:[candidate(4)]});
  assert.equal(ok.action,'link_existing_decree');
  assert.equal(ok.consumeMemory,false);
  assert.equal(ok.originalRecordId,uuid(4));
  assert.equal(ok.replacementRecordId,null);
- for(const matches of [[],[uuid(3),uuid(4)],['nonsense']]){
-  const r=validateHistoricalDecreeAssociation({originalCoordinates:refs,originalMatches:matches});
+ for(const matches of [[],[candidate(3),candidate(4)],['nonsense'],[uuid(4)]]){
+  const r=validateHistoricalDecreeAssociation({...historicalContext,originalCoordinates:refs,originalMatches:matches});
   assert.equal(r.action,'review_required');
   assert.equal(r.consumeMemory,false);
  }
 });
-test('V254 historical replacement must also be already recorded and unambiguous',()=>{
+test('V255 historical supplementary partida must already exist, match context and be unique',()=>{
  const replacement={Libro:'0011',folio:'0009',numero:'0013'};
- const linked=validateHistoricalDecreeAssociation({
+ const linked=validateHistoricalDecreeAssociation({...historicalContext,
   originalCoordinates:refs,replacementCoordinates:replacement,
-  originalMatches:[uuid(1)],replacementMatches:[uuid(2)]});
+  originalMatches:[candidate(1)],replacementMatches:[candidate(2,replacement)]});
  assert.equal(linked.action,'link_existing_decree');
  assert.equal(linked.replacementRecordId,uuid(2));
  assert.deepEqual(linked.replacementCoordinates,{book:'0011',folio:'0009',number:'0013'});
- for(const results of [[],[uuid(2),uuid(3)],[uuid(1)]]){
-  const x=validateHistoricalDecreeAssociation({
+ for(const results of [[],[candidate(2,replacement),candidate(3,replacement)],[candidate(1,replacement)]]){
+  const x=validateHistoricalDecreeAssociation({...historicalContext,
    originalCoordinates:refs,replacementCoordinates:replacement,
-   originalMatches:[uuid(1)],replacementMatches:results});
+   originalMatches:[candidate(1)],replacementMatches:results});
   assert.equal(x.consumeMemory,false);
   assert.equal(x.action,'review_required');
  }
@@ -74,15 +78,46 @@ test('V254 historical records require their documented coordinates and reject co
  assert.throws(()=>historicalCoordinates({...refs,book_number:'0002'}),/contradictorias/);
  assert.throws(()=>resolveRegistryJourney({path:'unknown'}),/procedencia/);
 });
-test('V254 historic decree route with no unambiguous match is manual review, not seating',()=>{
- const plan=resolveRegistryJourney({path:ENTRY_PATH.HISTORICAL_DECREE,
-  record:refs,linkedRecordIds:[]});
- assert.equal(plan.action,'review_required');
- assert.equal(plan.consumeMemory,false);
+test('V255 historic decree route is fail-closed without a verified source and one UUID match',()=>{
+ for(const options of [{record:refs,linkedRecordIds:[]},{record:refs,linkedRecordIds:[uuid(5)]},
+   {verified:true,record:refs,linkedRecordIds:['not-uuid']}]){
+  const plan=resolveRegistryJourney({path:ENTRY_PATH.HISTORICAL_DECREE,...options});
+  assert.equal(plan.action,'review_required');
+  assert.equal(plan.consumeMemory,false);
+ }
  const linked=resolveRegistryJourney({path:ENTRY_PATH.HISTORICAL_DECREE,
-  record:refs,linkedRecordIds:[uuid(5)]});
+  verified:true,record:refs,linkedRecordIds:[uuid(5)]});
  assert.equal(linked.action,'link_existing_decree');
  assert.equal(linked.consumeMemory,false);
+});
+test('V255 cannot automatically link a historical decree with wrong provenance or coordinates',()=>{
+ const options={...historicalContext,originalCoordinates:refs,originalMatches:[candidate(4)]};
+ for(const [change,reason] of [
+  [{sourceVerified:false},'origin_not_verified'],
+  [{mappedParishId:undefined},'origin_not_verified'],
+  [{sacrament:'undefined'},'sacrament_not_verified'],
+  [{decreeReference:'  '},'missing_historical_decree_reference'],
+  [{originalMatches:[candidate(4,refs,{parishId:uuid(55)})]},'original_outside_scope'],
+  [{originalMatches:[candidate(4,refs,{sacrament:'confirmacion'})]},'original_outside_scope'],
+  [{originalMatches:[candidate(4,{Libro:'0009',folio:'0005',numero:'0012'})]},'original_coordinates_mismatch']
+ ]){
+  const actual=validateHistoricalDecreeAssociation({...options,...change});
+  assert.equal(actual.action,'review_required');
+  assert.equal(actual.reason,reason);
+  assert.equal(actual.consumeMemory,false);
+ }
+ const replacement={Libro:'0011',folio:'0009',numero:'0013'};
+ for(const [match,reason] of [
+  [candidate(3,replacement,{parishId:uuid(55)}),'replacement_outside_scope'],
+  [candidate(3,{...replacement,numero:'0999'}),'replacement_coordinates_mismatch']
+ ]){
+  const actual=validateHistoricalDecreeAssociation({...options,replacementCoordinates:replacement,replacementMatches:[match]});
+  assert.equal(actual.reason,reason);
+ }
+ const ok=validateHistoricalDecreeAssociation({...options,
+  originalMatches:[candidate(4,{Libro:'0001A',folio:'5',numero:'12'})]});
+ assert.equal(ok.action,'link_existing_decree');
+ assert.deepEqual(ok.originalCoordinates,{book:'0001A',folio:'0005',number:'0012'});
 });
 test('V254 actual historical service preserves separate direct historical RPCs, never invokes new book memory',()=>{
  const src=fs.readFileSync('src/services/historicalRegistryService.js','utf8');
