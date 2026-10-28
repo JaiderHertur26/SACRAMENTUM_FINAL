@@ -77,7 +77,7 @@ run "INSERT INTO sacramentum_ledger.qa_celebration_evidence_v262(
  ('$PF','$P','exequias','new_sacrament',clock_timestamp(),'$ACTOR','ACTA-04');" >/dev/null
 reject "$(call bautismo "$B1" 88888888-0000-0000-0000-000000000012 "$PB")" "historical import with evidence does not seat"
 reject "$(call confirmacion "$B2" 88888888-0000-0000-0000-000000000013 "$PC" "$P2")" "foreign tenant cannot seat"
-reject "$(call matrimonio "$B3" 88888888-0000-0000-0000-000000000014 "$PM")" "wrong sacrament"
+reject "$(call matrimonio "$B3" 88888888-0000-0000-0000-000000000014 "$PC")" "wrong sacrament"
 run "UPDATE sacramentum_ledger.qa_celebration_evidence_v262 SET origin='new_sacrament'
  WHERE pending_id='$PB';" >/dev/null
 
