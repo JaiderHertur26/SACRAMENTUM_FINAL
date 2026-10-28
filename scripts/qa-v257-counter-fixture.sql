@@ -1,6 +1,16 @@
 -- V257: disposable PostgreSQL 16 fixture ONLY. Never deploy this schema.
-CREATE ROLE authenticated;
-CREATE ROLE anon;
+-- PostgreSQL roles are cluster-wide; V257 and V258 use separate databases
+-- in the SAME disposable test container.
+DO $qa_roles$
+BEGIN
+  IF NOT EXISTS(SELECT 1 FROM pg_roles WHERE rolname='authenticated') THEN
+    EXECUTE 'CREATE ROLE authenticated';
+  END IF;
+  IF NOT EXISTS(SELECT 1 FROM pg_roles WHERE rolname='anon') THEN
+    EXECUTE 'CREATE ROLE anon';
+  END IF;
+END;
+$qa_roles$;
 CREATE SCHEMA auth;
 CREATE OR REPLACE FUNCTION auth.uid() RETURNS uuid
 LANGUAGE sql STABLE AS $$
