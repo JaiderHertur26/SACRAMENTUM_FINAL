@@ -66,11 +66,23 @@ BEGIN
    IF previous.fingerprint<>v_fingerprint OR previous.actor_auth_id<>p_actor THEN
      RAISE EXCEPTION 'V259: operación idempotente reutilizada con contenido distinto';
    END IF;
+   -- A previously returned success must not be replayed after a later physical
+   -- reversal, even though the immutable seat receipt remains in the journal.
+   IF (SELECT count(*) FROM sacramentum_ledger.active_seats a
+        JOIN sacramentum_ledger.qa_pending_v259 p ON p.id=a.pending_id
+        WHERE a.book_id=p_book_id AND p.status='seated' AND a.id IN (
+          SELECT (value->>'seat_id')::uuid
+          FROM jsonb_array_elements(previous.response->'seats'))) <>
+      jsonb_array_length(previous.response->'seats') THEN
+     RAISE EXCEPTION 'V261: asiento ya revertido; recibo original solo documental';
+   END IF;
    RETURN previous.response;
  END IF;
  IF m.version IS DISTINCT FROM p_expected_version OR
    m.first_folio+m.active_count/m.partidas_per_folio<>p_expected_folio OR
-   m.first_partida+m.active_count<>p_expected_partida THEN
+   (CASE WHEN m.restart_partida_each_folio AND m.active_count>=m.partidas_per_folio
+      THEN 1+m.active_count%m.partidas_per_folio
+      ELSE m.first_partida+m.active_count END)<>p_expected_partida THEN
    RAISE EXCEPTION 'V259: cambió la memoria o el punto de asiento';
  END IF;
  v_sql_table:= CASE p_sacrament
@@ -116,7 +128,9 @@ BEGIN
  -- prospective physical location against existing original record tables.
  FOR v_index IN 0..jsonb_array_length(p_pending_ids)-1 LOOP
    v_next_folio:=m.first_folio+(m.active_count+v_index)/m.partidas_per_folio;
-   v_next_partida:=m.first_partida+m.active_count+v_index;
+   v_next_partida:=CASE WHEN m.restart_partida_each_folio AND m.active_count+v_index>=m.partidas_per_folio
+     THEN 1+(m.active_count+v_index)%m.partidas_per_folio
+     ELSE m.first_partida+m.active_count+v_index END;
    EXECUTE format(
       'SELECT EXISTS(SELECT 1 FROM public.%I r WHERE r.parish_id=$1
         AND (CASE WHEN r.book_number ~ ''^[0-9]+$''

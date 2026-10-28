@@ -20,21 +20,27 @@ export function canonicalBookKey(value){
   const book=exactBookCode(value).toUpperCase();
   return /^\d+$/.test(book)?String(BigInt(book)):book;
 }
-export function initializeBookMemory({book,firstFolio,firstNumber,entriesPerFolio}){
+export function initializeBookMemory({book,firstFolio,firstNumber,entriesPerFolio,restartNumberPerFolio=false}){
+  if(typeof restartNumberPerFolio!=='boolean')throw Error('Reinicio por folio debe ser booleano.');
   return Object.freeze({book:exactBookCode(book),bookKey:canonicalBookKey(book),
     firstFolio:positive(firstFolio,'Folio inicial'),firstNumber:positive(firstNumber,'Número inicial'),
-    entriesPerFolio:positive(entriesPerFolio,'Partidas por folio'),used:0});
+    entriesPerFolio:positive(entriesPerFolio,'Partidas por folio'),
+    restartNumberPerFolio,used:0});
 }
 export function validateState(s){
   if(!s||typeof s!=='object'||canonicalBookKey(s.book)!==s.bookKey)throw Error('Memoria de libro inválida.');
   positive(s.firstFolio,'Folio');positive(s.firstNumber,'Número');
   positive(s.entriesPerFolio,'Partidas por folio');
+  if(s.restartNumberPerFolio!==undefined&&typeof s.restartNumberPerFolio!=='boolean')throw Error('Reinicio por folio inválido.');
   if(!Number.isSafeInteger(s.used)||s.used<0)throw Error('Cantidad de asientos inválida.');
   return true;
 }
 export function nextBookCoordinates(s){
   validateState(s);
-  const n=s.firstNumber+s.used,f=s.firstFolio+Math.floor(s.used/s.entriesPerFolio);
+  const page=Math.floor(s.used/s.entriesPerFolio);
+  const n=s.restartNumberPerFolio===true&&page>0
+    ?1+s.used%s.entriesPerFolio:s.firstNumber+s.used;
+  const f=s.firstFolio+page;
   if(!Number.isSafeInteger(n)||n>2147483647||f>2147483647)throw Error('Límite técnico del libro.');
   return Object.freeze({book:s.book,folio:pad(f),number:pad(n),folioNumber:f,entryNumber:n});
 }
@@ -95,10 +101,15 @@ export function reverseTerminalSeats({memory,positions,hasActiveDependencies=fal
   if(!Array.isArray(positions)||!positions.length)throw Error('No hay asientos para revertir.');
   const numbers=positions.map(p=>{
     if(!p||canonicalBookKey(p.book)!==memory.bookKey)throw Error('Libro diferente.');
-    const n=positive(p.number,'Partida'),ordinal=n-memory.firstNumber;
-    if(ordinal<0||ordinal>=memory.used)throw Error('Partida fuera del libro.');
-    const f=memory.firstFolio+Math.floor(ordinal/memory.entriesPerFolio);
-    if(positive(p.folio,'Folio')!==f)throw Error('Folio incoherente.');
+    const f=positive(p.folio,'Folio'),n=positive(p.number,'Partida');
+    const page=f-memory.firstFolio;
+    if(page<0)throw Error('Folio incoherente.');
+    const ordinal=memory.restartNumberPerFolio===true
+      ?page*memory.entriesPerFolio+(page===0?n-memory.firstNumber:n-1)
+      :n-memory.firstNumber;
+    if(!Number.isSafeInteger(ordinal)||ordinal<0||ordinal>=memory.used)throw Error('Partida fuera del libro.');
+    const expected=nextBookCoordinates({...memory,used:ordinal});
+    if(expected.folioNumber!==f||expected.entryNumber!==n)throw Error('Folio o partida incoherente.');
     return ordinal;
   });
   if(new Set(numbers).size!==numbers.length)throw Error('Partida repetida.');

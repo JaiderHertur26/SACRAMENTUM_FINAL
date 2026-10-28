@@ -16,6 +16,7 @@ CREATE TABLE sacramentum_ledger.book_memories (
  first_folio integer NOT NULL CHECK (first_folio>0),
  first_partida integer NOT NULL CHECK (first_partida>0),
  partidas_per_folio integer NOT NULL CHECK (partidas_per_folio>0),
+ restart_partida_each_folio boolean NOT NULL DEFAULT false,
  active_count integer NOT NULL DEFAULT 0 CHECK (active_count>=0),
  legacy_reconciled boolean NOT NULL DEFAULT false,
  version bigint NOT NULL DEFAULT 0 CHECK (version>=0),
@@ -42,6 +43,7 @@ BEGIN
     OR NEW.first_folio IS DISTINCT FROM OLD.first_folio
     OR NEW.first_partida IS DISTINCT FROM OLD.first_partida
     OR NEW.partidas_per_folio IS DISTINCT FROM OLD.partidas_per_folio
+    OR NEW.restart_partida_each_folio IS DISTINCT FROM OLD.restart_partida_each_folio
     OR NEW.parish_id IS DISTINCT FROM OLD.parish_id
     OR NEW.sacrament IS DISTINCT FROM OLD.sacrament
     OR NEW.book_type IS DISTINCT FROM OLD.book_type) THEN
@@ -65,7 +67,7 @@ CREATE TABLE sacramentum_ledger.active_seats (
  created_by_auth uuid NOT NULL,
  seated_at timestamptz NOT NULL DEFAULT clock_timestamp(),
  CONSTRAINT uq_v252_book_ordinal UNIQUE (book_id,ordinal),
- CONSTRAINT uq_v252_book_partida UNIQUE (book_id,partida),
+ CONSTRAINT uq_v252_book_folio_partida UNIQUE (book_id,folio,partida),
  CONSTRAINT uq_v252_pending_unique UNIQUE (pending_id),
  CONSTRAINT uq_v252_record_unique UNIQUE (sacramental_record_id)
 );

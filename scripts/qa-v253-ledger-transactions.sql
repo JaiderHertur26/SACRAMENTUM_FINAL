@@ -70,7 +70,9 @@ BEGIN
    p_expected_version,m.version;
  END IF;
  IF (m.first_folio::bigint+m.active_count::bigint/m.partidas_per_folio::bigint)<>p_expected_folio
-  OR (m.first_partida::bigint+m.active_count::bigint)<>p_expected_partida THEN
+  OR (CASE WHEN m.restart_partida_each_folio AND m.active_count>=m.partidas_per_folio
+      THEN 1+m.active_count%m.partidas_per_folio
+      ELSE m.first_partida+m.active_count END)<>p_expected_partida THEN
   RAISE EXCEPTION 'Libro %, folio o partida inicial no coincide con la memoria',m.book_code;
  END IF;
  IF m.first_partida::bigint+m.active_count::bigint+jsonb_array_length(p_items)>2147483647 OR
@@ -116,7 +118,8 @@ BEGIN
  LOOP
   cnt:=m.active_count+idx;
   f:=m.first_folio+cnt/m.partidas_per_folio;
-  n:=m.first_partida+cnt;
+  n:=CASE WHEN m.restart_partida_each_folio AND cnt>=m.partidas_per_folio
+     THEN 1+cnt%m.partidas_per_folio ELSE m.first_partida+cnt END;
   INSERT INTO sacramentum_ledger.active_seats(
    book_id,ordinal,pending_id,sacramental_record_id,folio,partida,created_by_auth)
   VALUES(p_book_id,cnt,(val->>'pending_id')::uuid,(val->>'record_id')::uuid,f,n,p_actor)
