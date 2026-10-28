@@ -12,10 +12,16 @@ export function assertV251RevisedSource({file,historicalSha256,currentSha256}){
  if(newer){
   assert.ok(approvedV264.includes(file),'Unapproved V264 source: '+file);
   const preceding=receipt.reviewedSourceSha256[file];
-  assert.ok(preceding ? [preceding.before,preceding.after].includes(historicalSha256)
-    : newer.previousSourceSha256===historicalSha256,
-    'V264 historical browser baseline mismatch: '+file);
-  assert.equal(newer.previousSourceSha256,preceding?.after||historicalSha256,
+  // GitHub's browser jobs regenerate a fresh V205/V206/V207 report before
+  // synthetic tests. A freshly regenerated report legitimately contains V264
+  // source SHA; archived reports still contain V251/baseline SHA. Both must
+  // resolve to the same pinned, reviewed V264 current source.
+  const acceptedBrowserHashes=preceding
+    ? [preceding.before,preceding.after,newer.after]
+    : [newer.previousSourceSha256,newer.after];
+  assert.ok(acceptedBrowserHashes.includes(historicalSha256),
+    'V264 browser evidence neither a historic approved source nor reviewed current source: '+file);
+  if(preceding) assert.equal(newer.previousSourceSha256,preceding.after,
     'V264 predecessor source differs from reviewed V251 version: '+file);
   assert.equal(currentSha256,newer.after,'V264 UI modified without independent source review: '+file);
   return;

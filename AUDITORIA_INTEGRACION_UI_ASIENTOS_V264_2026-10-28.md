@@ -19,7 +19,7 @@
 ## Calidad, preservación de pruebas anteriores y límites
 - `scripts/test-ledger-ui-cutover-v264.mjs`: elección manual correcta y errores, mezcla de libro ordinario y supletorio, validación de evidencias, cuatro referencias de pantalla, modo apagado y revisión SHA256 de código.
 - `AUDITORIA_V264_REVISION_UI_ASIENTOS.json` conserva el origen y la huella previa V251 de las cuatro pantallas, además de su nueva huella; `scripts/v251-reviewed-source-receipt.mjs` reconoce esta revisión limitada sin alterar los informes históricos V205, V206 o V207. Cambios fuera de las cuatro páginas siguen fallando.
-- Auditoría local V264 30/30 y 6/6 controles específicos; compilación Vite aprobada.
+- Auditoría local V264 30/30 y 7/7 controles específicos; compilación Vite aprobada. La verificación de huellas admite solo los SHA256 históricos firmados por V251 o el SHA256 V264 que generan los ensayos de navegador de CI en su propia ejecución.
 
 ## No declarar operación oficial antes de
 1. Conciliar físicamente los 11 ámbitos de libros discontinuos (22 ámbitos conocidos) y fijar memorias V252 con autoridad.

@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {createHash} from 'node:crypto';
+import {assertV251RevisedSource} from './v251-reviewed-source-receipt.mjs';
 import {LEDGER_SACRAMENTS_V264,ledgerV264Enabled,
   validateLedgerSeatRequestV264,prepareLedgerSeatRequestV264} from '../src/domain/ledgerSeatV264.mjs';
 const read=f=>fs.readFileSync(f,'utf8');
@@ -90,4 +91,24 @@ test('V264 source review pins four screens without editing old V205-V207/V251 ev
   'AUDITORIA_CREACION_BOLETAS_NAVEGADOR_V207.json',
   'AUDITORIA_V251_REVISIÓN_SOLO_ETIQUETAS.json'
  ]);
+});
+
+test('V264 accepts freshly regenerated browser evidence and archived reviewed evidence only',()=>{
+ const review=JSON.parse(read('AUDITORIA_V264_REVISION_UI_ASIENTOS.json'));
+ const old=JSON.parse(read('AUDITORIA_V251_REVISIÓN_SOLO_ETIQUETAS.json'));
+ for(const [file,item] of Object.entries(review.reviewedSourceSha256)){
+   assert.doesNotThrow(()=>assertV251RevisedSource({
+     file,historicalSha256:item.after,currentSha256:item.after
+   }));
+   const previous=old.reviewedSourceSha256[file]?.before||item.previousSourceSha256;
+   assert.doesNotThrow(()=>assertV251RevisedSource({
+     file,historicalSha256:previous,currentSha256:item.after
+   }));
+   assert.throws(()=>assertV251RevisedSource({
+     file,historicalSha256:'0'.repeat(64),currentSha256:item.after
+   }));
+   assert.throws(()=>assertV251RevisedSource({
+     file,historicalSha256:previous,currentSha256:'f'.repeat(64)
+   }));
+ }
 });
