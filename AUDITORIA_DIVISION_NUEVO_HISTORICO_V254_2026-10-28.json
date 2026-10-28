@@ -1,0 +1,40 @@
+{
+  "protocol": "V254",
+  "date": "2026-10-28",
+  "environment": "Supabase QA read-only; user-authorized PC draft branch",
+  "newRule": "Only newly celebrated pending sacraments, or newly issued decrees explicitly requiring supplementary entries, may consume the new book ledger. Historical direct/imputed sacraments and historical decrees preserve original coordinates and link existing historical parts.",
+  "existingHistoricalDecrees": {
+    "total": 2,
+    "originalRecordLinkedAndParishMatched": 2,
+    "replacementRecordLinkedAndParishMatched": 2,
+    "duplicatedOriginalAsReplacement": 0,
+    "recordOrigin": "legacy_import",
+    "legacyHistoricalFlag": true,
+    "sourceLegacyArchiveTracked": 2,
+    "archived": 2,
+    "provenanceOnlyFlagPresent": 0
+  },
+  "archiveANULACION": {
+    "total": 7,
+    "materialized_decree": 2,
+    "archived_pending": 5,
+    "pendingOriginVerifiedAndMapped": 5,
+    "originalUniqueMatches": 4,
+    "originalAmbiguous": 1,
+    "originalMissing": 0,
+    "withSupplementLocation": 4,
+    "supplementaryAmbiguousCrossSacramentCandidates": 2,
+    "missingDecreeReference": 1
+  },
+  "criticalClarification": "Historical ANULACION import does not call the materializer automatically. apply_legacy_import_batch_v3 explicitly blocks ANULACION. materialize_legacy_decrees_v68 is a separate, Chancellor-only function requiring a verified mapped origin. It links originals and replacements ONLY when there is exactly one valid match; all others require review.",
+  "noChangesToQAData": true,
+  "liveMigrationApplied": false,
+  "productionDecreeImportAutoLinkEnabled": false,
+  "fixtureGuarantees": "V254 PostgreSQL isolated tests exercise verified-origin one-record matching, replacement record, ambiguous/missing quarantine, same-parish and sacrament matching, idempotent link, immutable event, and zero book ledger mutation.",
+  "nextActivationRequirements": [
+    "Keep historic registration RPCs separate, with exact physical coordinates and historical source preservation.",
+    "Integrate authorized auto-linking only after origin verification within the Cancilleria workflow; ambiguous or absent records require review; no automatic historical part creation.",
+    "Verify all four new seating RPCs, new decree supplementary pathway, server-derived origin classification, and real document dependencies before switching.",
+    "Preserve historical source audit events and never make newly entered historical records consume the future-ledger sequential counters."
+  ]
+}

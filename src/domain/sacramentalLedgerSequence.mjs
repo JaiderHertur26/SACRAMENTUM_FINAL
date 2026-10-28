@@ -56,6 +56,19 @@ export function planSacramentalBatch({memory,records,today,requestedFirst}){
   const values=records.map((r,i)=>{
     if(!r||typeof r.id!=='string'||!r.id.trim()||seen.has(r.id))throw Error('Registro duplicado o sin identificación.');
     seen.add(r.id);
+    // The pending registry MUST be a new, not-yet-seated celebration, or a
+    // newly issued decree explicitly requiring a supplementary partida.
+    // Historical direct/import sources already have their own book location.
+    if(!['new_sacrament','new_decree_supplement'].includes(r.flow))
+      throw Error('La memoria de libros solo admite registros sacramentales nuevos pendientes de asiento.');
+    if(r.recordOrigin==='historical_archive'||r.recordOrigin==='legacy_import'||r.historical===true)
+      throw Error('La partida histórica conserva sus coordenadas y no consume memoria nueva.');
+    if(['Libro','libro','book_number','folio','page_number','numero','number','entry_number']
+      .some(key=>r[key]!==undefined&&r[key]!==null&&String(r[key]).trim()!==''))
+      throw Error('Una partida ya numerada no puede consumir nuevamente Libro/Folio/Número.');
+    if(r.flow==='new_decree_supplement' &&
+      (r.decreeEffect!=='create_supplementary_record'||typeof r.decreeId!=='string'||!r.decreeId.trim()))
+      throw Error('Un decreto nuevo requiere orden expresa de crear partida supletoria.');
     if(r.celebrationVerified!==true)throw Error('Celebración sin comprobación.');
     const date=isoDate(r.celebrationDate);
     if(date>today)throw Error('La celebración aún no ha ocurrido.');

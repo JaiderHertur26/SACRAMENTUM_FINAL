@@ -79,7 +79,16 @@ BEGIN
  END IF;
  -- Validate entire request before inserting anything; rows are sorted server-side.
  FOR val IN SELECT value FROM jsonb_array_elements(p_items) LOOP
-   IF jsonb_typeof(val)<>'object' OR val->>'verified'<>'true'
+   IF jsonb_typeof(val)<>'object'
+    OR coalesce(val->>'flow','') NOT IN ('new_sacrament','new_decree_supplement')
+    OR coalesce(val->>'verified','')<>'true'
+    OR coalesce(val->>'recordOrigin','') ~* 'historic|legacy'
+    OR nullif(btrim(coalesce(val->>'book_number',val->>'Libro',val->>'libro','')),'') IS NOT NULL
+    OR nullif(btrim(coalesce(val->>'folio',val->>'page_number','')),'') IS NOT NULL
+    OR nullif(btrim(coalesce(val->>'number',val->>'numero','')),'') IS NOT NULL
+    OR (val->>'flow'='new_decree_supplement' AND (
+       coalesce(val->>'decree_effect','')<>'create_supplementary_record'
+       OR coalesce(val->>'decree_id','') !~* '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'))
     OR coalesce(val->>'registration_number','') !~ '^[0-9]+$' OR
     length(val->>'registration_number')>30 OR
     coalesce(val->>'celebration_date','') !~ '^\d{4}-\d{2}-\d{2}$' THEN

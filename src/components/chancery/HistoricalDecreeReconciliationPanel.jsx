@@ -79,7 +79,7 @@ export default function HistoricalDecreeReconciliationPanel() {
     total: cases.length,
     pending: cases.filter((item) => item.status === 'archived').length,
     manual: cases.filter((item) => item.status === 'review_required').length,
-    incorporated: cases.filter((item) => item.status === 'materialized_decree').length
+    incorporated: cases.filter((item) => item.status === 'materialized_decree' && item.linkVerified).length
   }), [cases]);
 
   const reconcile = async (group) => {
@@ -192,8 +192,17 @@ export default function HistoricalDecreeReconciliationPanel() {
                         {' · '}Supletoria: {item.replacementLocation || 'no indicada'}
                         {' · '}Fecha de origen: {item.historicalDate || 'no documentada'}
                       </p>
+                      {item.linkVerified && <p className="mt-2 text-xs font-semibold text-emerald-800">
+                        Vinculación verificada con la partida histórica existente; no se creó ni renumeró ninguna partida.
+                      </p>}
+                      {item.requiresLinkReview && <p role="alert" className="mt-2 text-xs font-semibold text-red-800">
+                        La referencia documental figura incorporada, pero no consta una vinculación completa con la partida. Requiere verificación.
+                      </p>}
                       {item.reason && <p className="mt-2 text-xs text-red-800">
                         Revisión: {REASONS[item.reason] || item.reason}
+                      </p>}
+                      {item.linkVerified && item.linkedReplacementRecordId && <p className="mt-1 text-xs text-emerald-800">
+                        Partida supletoria histórica relacionada con la original.
                       </p>}
                       <p className="mt-1 text-[10px] text-slate-400">
                         Fuente identificada · {item.sourceKey || 'sin clave'} · SHA-256: {item.sourceHash.slice(0, 12)}…

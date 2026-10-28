@@ -12,15 +12,28 @@ reject(){ if run "$1" >/dev/null 2>&1; then echo "UNEXPECTED SUCCESS: $2" >&2; e
 B='dddddddd-dddd-dddd-dddd-dddddddddddd'
 A='00000000-0000-0000-0000-000000000030'
 OP='aaaaaaaa-0000-0000-0000-000000000001'
-data='[{"pending_id":"00000000-0000-0000-0000-000000000103","record_id":"00000000-0000-0000-0000-000000000203","celebration_date":"2024-01-03","registration_number":"20","verified":true},{"pending_id":"00000000-0000-0000-0000-000000000102","record_id":"00000000-0000-0000-0000-000000000202","celebration_date":"2024-01-02","registration_number":"3","verified":true},{"pending_id":"00000000-0000-0000-0000-000000000101","record_id":"00000000-0000-0000-0000-000000000201","celebration_date":"2024-01-03","registration_number":"11","verified":true}]'
+data='[{"pending_id":"00000000-0000-0000-0000-000000000103","record_id":"00000000-0000-0000-0000-000000000203","celebration_date":"2024-01-03","registration_number":"20","flow":"new_sacrament","verified":true},{"pending_id":"00000000-0000-0000-0000-000000000102","record_id":"00000000-0000-0000-0000-000000000202","celebration_date":"2024-01-02","registration_number":"3","flow":"new_sacrament","verified":true},{"pending_id":"00000000-0000-0000-0000-000000000101","record_id":"00000000-0000-0000-0000-000000000201","celebration_date":"2024-01-03","registration_number":"11","flow":"new_sacrament","verified":true}]'
 run "INSERT INTO sacramentum_ledger.book_memories(id,parish_id,sacrament,book_type,book_code,first_folio,first_partida,partidas_per_folio) VALUES('$B','00000000-0000-0000-0000-000000000001','confirmacion','ordinario','0099B',1,1,2)" >/dev/null
 sql="SELECT sacramentum_ledger.qa_append_batch_v253('$B',0,'$OP',1,1,'$data'::jsonb,'$A')"
 reject "$sql" "unreconciled book may not seat"
+historical='[{"pending_id":"00000000-0000-0000-0000-000000000191","record_id":"00000000-0000-0000-0000-000000000291","celebration_date":"2020-01-03","registration_number":"90","flow":"historical_import","book_number":"0001","folio":"0004","number":"0009","verified":true}]'
+
 run "UPDATE sacramentum_ledger.book_memories SET legacy_reconciled=true WHERE id='$B'" >/dev/null
+reject "SELECT sacramentum_ledger.qa_append_batch_v253('$B',0,'$OP',1,1,'$historical'::jsonb,'$A')" "historical imports cannot consume new book memory"
+spoofed='[{"pending_id":"00000000-0000-0000-0000-000000000191","record_id":"00000000-0000-0000-0000-000000000291","celebration_date":"2020-01-03","registration_number":"90","flow":"new_sacrament","book_number":"0001","folio":"0004","number":"0009","verified":true}]'
+reject "SELECT sacramentum_ledger.qa_append_batch_v253('$B',0,'$OP',1,1,'$spoofed'::jsonb,'$A')" "existing historical physical coordinates cannot be submitted to new seating"
+existing_decree='[{"pending_id":"00000000-0000-0000-0000-000000000181","record_id":"00000000-0000-0000-0000-000000000281","celebration_date":"2024-01-03","registration_number":"75","flow":"new_decree_supplement","decree_effect":"act_on_existing_record","decree_id":"00000000-0000-0000-0000-000000000381","verified":true}]'
+reject "SELECT sacramentum_ledger.qa_append_batch_v253('$B',0,'$OP',1,1,'$existing_decree'::jsonb,'$A')" "a correction of an existing record cannot create supplementary partida"
+missing_flow='[{"pending_id":"00000000-0000-0000-0000-000000000151","record_id":"00000000-0000-0000-0000-000000000251","celebration_date":"2024-01-03","registration_number":"50","verified":true}]'
+reject "SELECT sacramentum_ledger.qa_append_batch_v253('$B',0,'$OP',1,1,'$missing_flow'::jsonb,'$A')" "missing origin must not bypass new-only boundary"
+missing_verified='[{"pending_id":"00000000-0000-0000-0000-000000000152","record_id":"00000000-0000-0000-0000-000000000252","celebration_date":"2024-01-03","registration_number":"51","flow":"new_sacrament"}]'
+reject "SELECT sacramentum_ledger.qa_append_batch_v253('$B',0,'$OP',1,1,'$missing_verified'::jsonb,'$A')" "missing celebration evidence must be rejected"
+
+
 reject "SELECT sacramentum_ledger.qa_append_batch_v253('$B',0,'$OP',1,2,'$data'::jsonb,'$A')" "wrong initial partida"
-unverified='[{"pending_id":"00000000-0000-0000-0000-000000000113","record_id":"00000000-0000-0000-0000-000000000213","celebration_date":"2024-01-03","registration_number":"12","verified":false}]'
+unverified='[{"pending_id":"00000000-0000-0000-0000-000000000113","record_id":"00000000-0000-0000-0000-000000000213","celebration_date":"2024-01-03","registration_number":"12","flow":"new_sacrament","verified":false}]'
 reject "SELECT sacramentum_ledger.qa_append_batch_v253('$B',0,'$OP',1,1,'$unverified'::jsonb,'$A')" "unverified celebration"
-duplicate='[{"pending_id":"00000000-0000-0000-0000-000000000113","record_id":"00000000-0000-0000-0000-000000000213","celebration_date":"2024-01-03","registration_number":"0012","verified":true},{"pending_id":"00000000-0000-0000-0000-000000000114","record_id":"00000000-0000-0000-0000-000000000214","celebration_date":"2024-01-03","registration_number":"12","verified":true}]'
+duplicate='[{"pending_id":"00000000-0000-0000-0000-000000000113","record_id":"00000000-0000-0000-0000-000000000213","celebration_date":"2024-01-03","registration_number":"0012","flow":"new_sacrament","verified":true},{"pending_id":"00000000-0000-0000-0000-000000000114","record_id":"00000000-0000-0000-0000-000000000214","celebration_date":"2024-01-03","registration_number":"12","flow":"new_sacrament","verified":true}]'
 reject "SELECT sacramentum_ledger.qa_append_batch_v253('$B',0,'$OP',1,1,'$duplicate'::jsonb,'$A')" "duplicate registration number 0012/12"
 [[ "$(run "SELECT active_count||':'||version FROM sacramentum_ledger.book_memories WHERE id='$B'")" == "0:0" ]]
 result="$(run "$sql")"
@@ -48,8 +61,8 @@ reject "SELECT sacramentum_ledger.qa_reverse_tail_v253('$B',2,'aaaaaaaa-0000-000
 
 C='eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee'
 run "INSERT INTO sacramentum_ledger.book_memories(id,parish_id,sacrament,book_type,book_code,first_folio,first_partida,partidas_per_folio,legacy_reconciled) VALUES('$C','00000000-0000-0000-0000-000000000001','confirmacion','ordinario','0099C',1,1,3,true)" >/dev/null
-one='[{"pending_id":"00000000-0000-0000-0000-000000000121","record_id":"00000000-0000-0000-0000-000000000221","celebration_date":"2024-01-01","registration_number":"22","verified":true}]'
-two='[{"pending_id":"00000000-0000-0000-0000-000000000122","record_id":"00000000-0000-0000-0000-000000000222","celebration_date":"2024-01-01","registration_number":"23","verified":true}]'
+one='[{"pending_id":"00000000-0000-0000-0000-000000000121","record_id":"00000000-0000-0000-0000-000000000221","celebration_date":"2024-01-01","registration_number":"22","flow":"new_sacrament","verified":true}]'
+two='[{"pending_id":"00000000-0000-0000-0000-000000000122","record_id":"00000000-0000-0000-0000-000000000222","celebration_date":"2024-01-01","registration_number":"23","flow":"new_sacrament","verified":true}]'
 run "SELECT sacramentum_ledger.qa_append_batch_v253('$C',0,'aaaaaaaa-0000-0000-0000-000000000021',1,1,'$one'::jsonb,'$A')" >/tmp/qa253_a.txt 2>&1 &
 pid1=$!
 run "SELECT sacramentum_ledger.qa_append_batch_v253('$C',0,'aaaaaaaa-0000-0000-0000-000000000022',1,1,'$two'::jsonb,'$A')" >/tmp/qa253_b.txt 2>&1 &
@@ -60,4 +73,10 @@ if wait "$pid2"; then winners=$((winners+1)); fi
 [[ "$winners" == "1" ]] || { echo "Concurrent race winner count: $winners"; cat /tmp/qa253_a.txt /tmp/qa253_b.txt; exit 1; }
 [[ "$(run "SELECT active_count||':'||version FROM sacramentum_ledger.book_memories WHERE id='$C'")" == "1:1" ]]
 [[ "$(run "SELECT count(*) FROM sacramentum_ledger.active_seats WHERE book_id='$C'")" == "1" ]]
-echo "V253 PostgreSQL transaction fixture PASS: blocked unreviewed books, chronological batches, folio jumps, replay, dependencies, terminal reversal, concurrent winner 1/2, atomic rollback. No live Supabase."
+D='ffffffff-ffff-ffff-ffff-ffffffffffff'
+run "INSERT INTO sacramentum_ledger.book_memories(id,parish_id,sacrament,book_type,book_code,first_folio,first_partida,partidas_per_folio,legacy_reconciled) VALUES('$D','00000000-0000-0000-0000-000000000001','bautismo','suplementario','DECRETO01',7,80,2,true)" >/dev/null
+new_decree='[{"pending_id":"00000000-0000-0000-0000-000000000161","record_id":"00000000-0000-0000-0000-000000000261","celebration_date":"2024-01-03","registration_number":"80","flow":"new_decree_supplement","decree_effect":"create_supplementary_record","decree_id":"00000000-0000-0000-0000-000000000361","verified":true}]'
+run "SELECT sacramentum_ledger.qa_append_batch_v253('$D',0,'aaaaaaaa-0000-0000-0000-000000000041',7,80,'$new_decree'::jsonb,'$A')" >/dev/null
+[[ "$(run "SELECT active_count||':'||version FROM sacramentum_ledger.book_memories WHERE id='$D'")" == "1:1" ]]
+[[ "$(run "SELECT folio::text||':'||partida::text FROM sacramentum_ledger.active_seats WHERE book_id='$D'")" == "7:80" ]]
+echo "V253 PostgreSQL transaction fixture PASS: blocked unreviewed books, chronological batches, folio jumps, replay, dependencies, terminal reversal, concurrent winner 1/2, atomic rollback. historical imports blocked, fresh decree supplement allowed. No live Supabase."

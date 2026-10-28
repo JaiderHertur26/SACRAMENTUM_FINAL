@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {initializeBookMemory,canonicalBookKey,exactBookCode,nextBookCoordinates,
   planSacramentalBatch,reverseTerminalSeats} from '../src/domain/sacramentalLedgerSequence.mjs';
 const memory=()=>initializeBookMemory({book:'0001A',firstFolio:1,firstNumber:1,entriesPerFolio:3});
-const row=(id,date,number)=>({id,celebrationDate:date,registrationNumber:number,celebrationVerified:true});
+const row=(id,date,number)=>({id,celebrationDate:date,registrationNumber:number,celebrationVerified:true,flow:'new_sacrament'});
 const coords=(m)=>{const x=nextBookCoordinates(m);return [x.book,x.folio,x.number];};
 const begin=m=>({book:m.book,folio:nextBookCoordinates(m).folio,number:nextBookCoordinates(m).number});
 test('V252 exact alphanumeric book name and leading zeroes survive',()=>{
