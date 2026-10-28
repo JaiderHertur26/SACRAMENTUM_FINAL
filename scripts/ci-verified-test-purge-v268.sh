@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # V268 only uses a disposable PostgreSQL 16 container and two disposable DBs.
 set -Eeuo pipefail
-: "\${PG_CONTAINER:?Requires isolated PostgreSQL16}"
+: "${PG_CONTAINER:?Requires isolated PostgreSQL16}"
 [[ "$PG_CONTAINER" =~ ^[A-Za-z0-9_-]+$ ]] || exit 2
 pg(){ docker exec -e PGPASSWORD=ci_fixture_not_secret -i "$PG_CONTAINER" "$@"; }
 db=sacramentum_purge_v268
@@ -11,7 +11,7 @@ run(){ pg psql -X -q -A -t -v ON_ERROR_STOP=1 -U postgres -d "$db" -c "$1" | tr 
 eq(){ [[ "$1" == "$2" ]] || { echo "Expected [$2], got [$1]" >&2; exit 1; }; }
 should_fail(){ if "$@" >/dev/null 2>&1; then echo "Unexpected successful unsafe operation" >&2; exit 1; fi; }
 apply(){
- local hash="\${1:-}" restored="\${2:-true}" ticket="\${3:-CHG-2026-10-28-TEST}"
+ local hash="${1:-}" restored="${2:-true}" ticket="${3:-CHG-2026-10-28-TEST}"
  { echo "SET sacramentum.v268.backup_sha256 TO '$hash';"
    echo "SET sacramentum.v268.restore_verified TO '$restored';"
    echo "SET sacramentum.v268.authorization_ticket TO '$ticket';"
@@ -61,14 +61,14 @@ should_fail apply "$(printf '%064d' 1)" false
 eq "$(run "SELECT count(*) FROM public.baptisms")" 1
 eq "$(run "SELECT to_regclass('sacramentum_ledger.purge_receipts_v268') IS NULL")" t
 
-pg pg_dump -U postgres -Fc -f "/tmp/\${db}.dump" "$db"
+pg pg_dump -U postgres -Fc -f "/tmp/${db}.dump" "$db"
 pg createdb -U postgres "$restore_db"
-pg pg_restore -U postgres --no-owner --no-privileges -d "$restore_db" "/tmp/\${db}.dump"
+pg pg_restore -U postgres --no-owner --no-privileges -d "$restore_db" "/tmp/${db}.dump"
 restored_count="$(pg psql -X -q -A -t -U postgres -d "$restore_db" -c "SELECT count(*) FROM public.baptisms" | tr -d '\r')"
 eq "$restored_count" 1
 eq "$(pg psql -X -q -A -t -U postgres -d "$restore_db" -c \
  "SELECT count(*) FROM public.parishes WHERE legacy_origin_id IS NOT NULL" | tr -d '\r')" 1
-HASH="$(pg sha256sum "/tmp/\${db}.dump" | awk '{print $1}')"
+HASH="$(pg sha256sum "/tmp/${db}.dump" | awk '{print $1}')"
 [[ "$HASH" =~ ^[0-9a-f]{64}$ ]] || exit 1
 
 # The independent verified backup remains unchanged across negative cases.
