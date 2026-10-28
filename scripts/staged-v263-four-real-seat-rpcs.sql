@@ -279,7 +279,10 @@ BEGIN
        coalesce(v_raw->>'observations',v_raw->>'observaciones'),'seated',
        v_raw||jsonb_build_object('book_type',m.book_type,
          'book_number',v_book,'folio',lpad(v_folio::text,4,'0'),
-         'number',lpad(v_partida::text,4,'0'),'status','seated'),m.book_type);
+         'number',lpad(v_partida::text,4,'0'),
+         'numero',lpad(v_partida::text,4,'0'),
+         'numeroRegistro',v_current->>'registration_number',
+         'status','seated'),m.book_type);
    ELSE
      IF nullif(btrim(coalesce(v_raw->>'nombres','')),'') IS NULL OR
        nullif(btrim(coalesce(v_raw->>'apellidos','')),'') IS NULL OR

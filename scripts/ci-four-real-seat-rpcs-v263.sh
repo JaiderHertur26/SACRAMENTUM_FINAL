@@ -261,8 +261,116 @@ eq "$(run "SELECT active_count FROM sacramentum_ledger.book_memories WHERE id='$
 reject "SET qa.actor='$A'; $(nextCall)" "cannot replay successor once it contains a seat"
 eq "$(run "SELECT count(*) FROM public.registry_audit_log WHERE action LIKE '%v270'")" 2
 
+# V271: new supplementary decree is issued by chancery, independently
+# approved by diocese and only THEN used for a manually opened physical book.
+CH=00000000-0000-0000-0000-000000000040
+DIO=00000000-0000-0000-0000-000000000041
+CON=00000000-0000-0000-0000-000000000042
+CHID=00000000-0000-0000-0000-000000000043
+PMS=88888888-0000-0000-0000-000000000002
+run "ALTER TABLE public.parishes ADD COLUMN is_operational boolean DEFAULT true;
+ ALTER TABLE public.user_profiles ADD COLUMN chancery_id uuid;
+ INSERT INTO public.user_profiles(auth_user_id,parish_id,diocese_id,role,is_active,status,chancery_id)
+ VALUES('$CH',NULL,'$D','chancery',true,'ACTIVE','$CHID'),
+ ('$DIO',NULL,'$D','diocese',true,'ACTIVE',NULL);
+ CREATE TABLE public.chancelleries(id uuid PRIMARY KEY,diocese_id uuid);
+ INSERT INTO public.chancelleries VALUES('$CHID','$D');
+ CREATE TABLE public.conceptos_anulacion(
+ id uuid PRIMARY KEY,diocese_id uuid,is_active boolean,seinscribe boolean,
+ enlibro integer,tipo text,sacrament_type text);
+ INSERT INTO public.conceptos_anulacion VALUES
+ ('$CON','$D',true,true,2,'porReposicion','matrimonio');
+ CREATE TABLE public.pending_creation_requests(
+ parish_id uuid,sacrament_type text,response jsonb);
+ CREATE TABLE public.decretos(
+ id uuid PRIMARY KEY DEFAULT gen_random_uuid(),parish_id uuid,diocese_id uuid,
+ chancery_id uuid,tipo text,sacrament_type text,decree_number text,
+ decree_date date,status text,issued_by uuid,original_record_id uuid,
+ replacement_record_id uuid,payload jsonb,
+ CONSTRAINT chk_decretos_status CHECK(status IN('active','archived','cancelled','reversed')));
+ CREATE FUNCTION public.qa_v271_decree_concept_snapshot() RETURNS trigger
+ LANGUAGE plpgsql AS \$\$ BEGIN
+ NEW.payload:=NEW.payload||jsonb_build_object('conceptPolicy',
+ jsonb_build_object('bookMode',2,'registersEffect',true));
+ RETURN NEW; END \$\$;
+ CREATE TRIGGER trg_v271_concept_snapshot BEFORE INSERT ON public.decretos
+ FOR EACH ROW EXECUTE FUNCTION public.qa_v271_decree_concept_snapshot();" >/dev/null
+run "INSERT INTO public.pending_marriages(id,parish_id,celebration_date,raw_data)
+ VALUES('$PMS','$P','2026-02-04',
+ jsonb_build_object('numero','00000008','numeroRegistro','00000008',
+ 'fechaSacramento','2026-02-04','novioNombres','NOVIO','noviaNombres','NOVIA'));
+ INSERT INTO public.pending_creation_requests VALUES('$P','matrimonio',
+ jsonb_build_object('pending_id','$PMS'));" >/dev/null
+pg psql -X -q -v ON_ERROR_STOP=1 -U postgres -d "$db" -f - < scripts/staged-v271-two-role-new-supplement-decrees.sql >/dev/null
+pg psql -X -q -v ON_ERROR_STOP=1 -U postgres -d "$db" -f - < scripts/staged-v271-first-supplementary-book.sql >/dev/null
+issue(){ echo "SELECT public.issue_new_supplementary_decree_v271(
+ '$P','matrimonio','$PMS','$CON','DEC-TEST-V271-001','2026-02-05',
+ 'MATRIMONIO PRUEBA','Reposición de registro de Matrimonio celebrado y no asentado',
+ 'ACTA-CELEBRACION-MATRIMONIO-001');"; }
+reject "$(issue)" "not authenticated for decree"
+reject "SET qa.actor='$A'; $(issue)" "parish cannot issue decree"
+reject "SET qa.actor='$DIO'; $(issue)" "diocese cannot issue as chancery"
+# Even with a fabricated V207 receipt, historical/imported boletas are denied.
+PML=88888888-0000-0000-0000-000000000003
+run "INSERT INTO public.pending_marriages(id,parish_id,celebration_date,raw_data)
+ VALUES('$PML','$P','2026-02-04',
+ jsonb_build_object('source','historical_import','numeroRegistro','9',
+ 'fechaSacramento','2026-02-04'));
+ INSERT INTO public.pending_creation_requests VALUES('$P','matrimonio',
+ jsonb_build_object('pending_id','$PML'));" >/dev/null
+reject "SET qa.actor='$CH'; SELECT public.issue_new_supplementary_decree_v271(
+ '$P','matrimonio','$PML','$CON','DEC-LEGACY-REJECT','2026-02-05',
+ 'MATRIMONIO PRUEBA','Fundamento documental de reposición indebida por importación',
+ 'ACTA-CELEBRACION-LEGACY');" "V271 historical import rejected"
+decree="$(run "SET qa.actor='$CH'; $(issue)")"
+[[ "$decree" == *'"pending_diocesan_review"'* ]] || { echo "V271 issuance failed $decree"; exit 1; }
+DEC="$(run "SELECT id FROM public.decretos WHERE decree_number='DEC-TEST-V271-001'")"
+reject "SET qa.actor='$CH'; $(issue)" "same decree number or pending ticket reused"
+run "INSERT INTO public.decretos(parish_id,diocese_id,chancery_id,tipo,
+ sacrament_type,decree_number,decree_date,status,issued_by,payload)
+ VALUES('$P','$D','$CHID','documental','matrimonio',
+ 'DOC-ONLY-001','2026-02-05','active','$CH',
+ jsonb_build_object('documentaryOnly',true,'recordOrigin','chancery_issue'));" >/dev/null
+DOCID="$(run "SELECT id FROM public.decretos WHERE decree_number='DOC-ONLY-001'")"
+reject "SET qa.actor='$DIO'; SELECT public.approve_new_supplementary_decree_v271(
+ '$DOCID','REV-DOC-REJECT');" "documentary decree can never authorize supplementary seat"
+eq "$(run "SELECT status FROM public.decretos WHERE id='$DEC'")" pending_diocesan_review
+eq "$(run "SELECT count(*) FROM sacramentum_ledger.celebration_attestations_v263 WHERE pending_id='$PMS'")" 0
+eq "$(run "SELECT count(*) FROM public.marriages WHERE book_type='suplementario'")" 0
+approve(){ echo "SELECT public.approve_new_supplementary_decree_v271(
+ '$DEC','REV-DIOCESANA-2026-001');"; }
+reject "$(approve)" "no-session cannot approve"
+reject "SET qa.actor='$CH'; $(approve)" "same issuer cannot approve"
+reject "SET qa.actor='$A'; $(approve)" "parish cannot approve decree"
+reject "SET qa.actor='$BAD'; $(approve)" "foreign parish cannot approve decree"
+eq "$(run "SELECT status FROM public.decretos WHERE id='$DEC'")" pending_diocesan_review
+openSupplement(){ echo "SELECT public.open_first_supplementary_book_v271(
+ '$P','matrimonio','$PMS','SUP0001',1,1,2,false);"; }
+reject "SET qa.actor='$A'; $(openSupplement)" "cannot open supplementary before diocese approval"
+eq "$(run "SELECT count(*) FROM sacramentum_ledger.book_memories WHERE sacrament='matrimonio' AND book_type='suplementario'")" 0
+approval="$(run "SET qa.actor='$DIO'; $(approve)")"
+[[ "$approval" == *'"alreadyApproved": false'* ]] || { echo "Approval failed $approval"; exit 1; }
+approval="$(run "SET qa.actor='$DIO'; $(approve)")"
+[[ "$approval" == *'"alreadyApproved": true'* ]] || { echo "Approval idempotence failed $approval"; exit 1; }
+eq "$(run "SELECT status FROM public.decretos WHERE id='$DEC'")" active
+eq "$(run "SELECT origin||':'||decree_effect FROM sacramentum_ledger.celebration_attestations_v263 WHERE pending_id='$PMS'")" new_decree_supplement:create_supplementary_record
+reject "SET qa.actor='$CH'; $(openSupplement)" "chancery cannot initialize parish supplementary book"
+opened="$(run "SET qa.actor='$A'; $(openSupplement)")"
+[[ "$opened" == *'"existing": false'* ]] || { echo "V271 supplementary book open failed $opened"; exit 1; }
+SUPBOOK="$(run "SELECT id FROM sacramentum_ledger.book_memories WHERE parish_id='$P' AND sacrament='matrimonio' AND book_type='suplementario'")"
+run "SET qa.actor='$A'; SELECT public.seat_marriage_ledger_v263(
+ '$P','$SUPBOOK',0,1,1,'99999999-0000-0000-0000-000000000003',
+ jsonb_build_array('$PMS'));" >/dev/null
+eq "$(run "SELECT count(*) FROM public.marriages WHERE book_number='SUP0001'
+ AND folio='0001' AND number='0001' AND book_type='suplementario'")" 1
+eq "$(run "SELECT raw_data->>'numeroRegistro'||':'||raw_data->>'numero'
+ FROM public.marriages WHERE book_number='SUP0001'")" '00000008:0001'
+eq "$(run "SELECT count(*) FROM public.registry_audit_log WHERE action='approve_new_supplementary_decree_v271'")" 1
+reject "SET qa.actor='$A'; $(openSupplement)" "cannot open duplicate after seat"
+eq "$(run "SELECT count(*) FROM public.decretos WHERE status='pending_diocesan_review'")" 0
+
 # No API execution while V263 is staged; separate cutting over grants is mandatory.
 eq "$(run "SELECT count(*) FROM pg_proc p JOIN pg_namespace n ON p.pronamespace=n.oid
  WHERE n.nspname='public' AND p.proname LIKE 'seat_%_ledger_v263'
  AND has_function_privilege('anon',p.oid,'EXECUTE')")" 0
-echo "V263 PG16 PASS: 4 real-table RPCs, original specific fields, confirmation cross-note, audit, rollback, multi-tenant and no client grants."
+echo "V263/V270/V271 PG16 PASS: four real physical asientos; closed-book successor; new decree with separate chancery/diocese approval; no early supplementary seat; historic and documentary rejected; field preservation, rollback and no premature client grants."

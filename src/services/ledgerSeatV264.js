@@ -107,3 +107,30 @@ export async function openNextOfficialBookV270({
   throw Error('El servidor no confirmó la sucesión exacta. Consulte antes de repetir.');
  return data;
 }
+
+export async function openFirstSupplementaryBookV271(args) {
+ if(!ledgerV264Enabled)throw Error('El libro supletorio aún no está habilitado.');
+ const {parishId,sacrament,pendingId,bookCode,firstFolio,firstNumber,capacity,
+ restartNumberEachFolio}=args;
+ const code=String(bookCode||'').trim();
+ const positive=value=>{const s=String(value??'').trim();
+   if(!/^[0-9]{1,10}$/.test(s)||Number(s)<1||Number(s)>2147483647)
+     throw Error('Libro supletorio: Folio, Número o capacidad inválidos.');
+   return Number(s);
+ };
+ if(!parishId||!pendingId||!['bautismo','confirmacion','matrimonio','exequias'].includes(sacrament)
+  ||!/^[A-Za-z0-9]{1,32}$/.test(code)
+  ||typeof restartNumberEachFolio!=='boolean')
+   throw Error('Identificación del libro supletorio inválida.');
+ const folio=positive(firstFolio),number=positive(firstNumber),perFolio=positive(capacity);
+ if(perFolio>200)throw Error('Máximo 200 partidas por folio.');
+ const {data,error}=await supabase.rpc('open_first_supplementary_book_v271',{
+  p_parish_id:parishId,p_sacrament:sacrament,p_pending_id:pendingId,
+  p_book_code:code,p_first_folio:folio,p_first_partida:number,
+  p_partidas_per_folio:perFolio,p_restart_number_each_folio:restartNumberEachFolio
+ });
+ if(error)throw error;
+ if(!data?.bookId||data.bookCode!==code||Number(data.nextFolio)!==folio||
+   Number(data.nextNumber)!==number)throw Error('El servidor no confirmó el libro supletorio.');
+ return data;
+}

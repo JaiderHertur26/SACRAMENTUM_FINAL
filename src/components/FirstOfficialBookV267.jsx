@@ -1,11 +1,11 @@
 import React,{useRef,useState} from 'react';
 import {Button} from '@/components/ui/button';
 import {institutionalConfirm} from '@/lib/institutionalDialog';
-import {openFirstOfficialBookV267} from '@/services/ledgerSeatV264';
+import {openFirstOfficialBookV267,openFirstSupplementaryBookV271} from '@/services/ledgerSeatV264';
 
 // Opens ONLY a genuinely empty book after verification of a new celebration.
 // Creates no sacramental record; the next screen still requires a manual seat.
-export default function FirstOfficialBookV267({parishId,sacrament,pendingId,onOpened}){
+export default function FirstOfficialBookV267({parishId,sacrament,pendingId,onOpened,bookType='ordinario'}){
   const [code,setCode]=useState('');
   const [folio,setFolio]=useState('');
   const [number,setNumber]=useState('');
@@ -29,7 +29,8 @@ export default function FirstOfficialBookV267({parishId,sacrament,pendingId,onOp
       });
       if(!approved)return;
       setLocked(true);
-      await openFirstOfficialBookV267(params);
+      if(bookType==='suplementario')await openFirstSupplementaryBookV271(params);
+      else await openFirstOfficialBookV267(params);
       if(onOpened)await onOpened();
     }catch(e){setLocked(true);
       setError('No se confirmó la apertura. Consulte nuevamente el libro antes de repetir. '+(e?.message||''));}
@@ -37,8 +38,8 @@ export default function FirstOfficialBookV267({parishId,sacrament,pendingId,onOp
   };
   return <section className="rounded-xl border border-blue-200 bg-blue-50 p-4 space-y-3"
     aria-label="Apertura manual del primer libro oficial">
-    <h4 className="font-bold text-blue-950">Primer Libro oficial · Registro desde cero</h4>
-    <p className="text-xs text-slate-700">No existen libros oficiales inicializados para este sacramento. Escriba los datos del primer libro real. Los antiguos registros de prueba no se utilizarán para calcular esta secuencia.</p>
+    <h4 className="font-bold text-blue-950">{bookType==='suplementario'?'Primer Libro Supletorio · Decreto aprobado':'Primer Libro oficial · Registro desde cero'}</h4>
+    <p className="text-xs text-slate-700">{bookType==='suplementario'?'Solo puede abrirse tras la aprobación independiente del decreto por Diócesis. Escriba los datos físicos reales del Libro Supletorio.':'Escriba los datos del primer libro oficial. Los registros de prueba no se utilizarán para calcular esta secuencia.'}</p>
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
       <label className="text-xs font-bold text-slate-700">Libro
         <input aria-label="Código del primer libro oficial" value={code}

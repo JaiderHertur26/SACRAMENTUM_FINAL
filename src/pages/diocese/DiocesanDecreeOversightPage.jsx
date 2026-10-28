@@ -5,6 +5,7 @@ import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/components/ui/use-toast';
 import { submitCourtReceiptCheck } from '@/services/nullityReceiptDualControl';
 import CourtReceiptInstitutionalPanel from '@/components/chancery/CourtReceiptInstitutionalPanel';
+import NewSupplementaryDecreePanelV271 from '@/components/chancery/NewSupplementaryDecreePanelV271';
 import NullityInstitutionalPreflightPanel from '@/components/chancery/NullityInstitutionalPreflightPanel';
 import { supabase } from '@/lib/supabaseClient';
 import { listDecrees } from '@/services/decreeRegistryService';
@@ -150,6 +151,7 @@ export default function DiocesanDecreeOversightPage() {
           </div>
         </header>
         <Link to="/diocese/decretos/conciliaciones" className="inline-flex rounded-xl border border-indigo-200 bg-indigo-50 px-4 py-3 text-xs font-bold text-indigo-900 hover:bg-indigo-100">Revisar autorizaciones de conciliación de notas →</Link>
+        <NewSupplementaryDecreePanelV271 mode="approve" />
         <NullityInstitutionalPreflightPanel />
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {[

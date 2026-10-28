@@ -110,7 +110,10 @@ BEGIN
   'public.get_parish_ledger_seat_context_v264(uuid,text,jsonb)',
   'public.attest_new_celebration_v265(uuid,text,uuid,text)',
   'public.open_first_official_book_v267(uuid,text,uuid,text,integer,integer,integer,boolean)',
-  'public.open_next_official_book_v270(uuid,text,uuid,bigint,uuid,text,integer,integer,integer,boolean,text)'
+  'public.open_next_official_book_v270(uuid,text,uuid,bigint,uuid,text,integer,integer,integer,boolean,text)',
+  'public.issue_new_supplementary_decree_v271(uuid,text,uuid,uuid,text,date,text,text,text)',
+  'public.approve_new_supplementary_decree_v271(uuid,text)',
+  'public.open_first_supplementary_book_v271(uuid,text,uuid,text,integer,integer,integer,boolean)'
  ] LOOP
   IF to_regprocedure(v_fn) IS NULL THEN
     RAISE EXCEPTION 'V267: servicio indispensable ausente %',v_fn;
@@ -160,6 +163,12 @@ GRANT EXECUTE ON FUNCTION public.open_first_official_book_v267(
  uuid,text,uuid,text,integer,integer,integer,boolean) TO authenticated;
 GRANT EXECUTE ON FUNCTION public.open_next_official_book_v270(
  uuid,text,uuid,bigint,uuid,text,integer,integer,integer,boolean,text) TO authenticated;
+GRANT EXECUTE ON FUNCTION public.issue_new_supplementary_decree_v271(
+ uuid,text,uuid,uuid,text,date,text,text,text) TO authenticated;
+GRANT EXECUTE ON FUNCTION public.approve_new_supplementary_decree_v271(
+ uuid,text) TO authenticated;
+GRANT EXECUTE ON FUNCTION public.open_first_supplementary_book_v271(
+ uuid,text,uuid,text,integer,integer,integer,boolean) TO authenticated;
 
 DO $verify$
 DECLARE s text;
@@ -179,7 +188,10 @@ BEGIN
   'public.seat_marriage_ledger_v263(uuid,uuid,bigint,integer,integer,uuid,jsonb)',
   'public.seat_funeral_ledger_v263(uuid,uuid,bigint,integer,integer,uuid,jsonb)',
   'public.open_first_official_book_v267(uuid,text,uuid,text,integer,integer,integer,boolean)',
-  'public.open_next_official_book_v270(uuid,text,uuid,bigint,uuid,text,integer,integer,integer,boolean,text)'
+  'public.open_next_official_book_v270(uuid,text,uuid,bigint,uuid,text,integer,integer,integer,boolean,text)',
+  'public.issue_new_supplementary_decree_v271(uuid,text,uuid,uuid,text,date,text,text,text)',
+  'public.approve_new_supplementary_decree_v271(uuid,text)',
+  'public.open_first_supplementary_book_v271(uuid,text,uuid,text,integer,integer,integer,boolean)'
  ] LOOP
   IF has_function_privilege('anon',s,'EXECUTE')
    OR NOT has_function_privilege('authenticated',s,'EXECUTE') THEN

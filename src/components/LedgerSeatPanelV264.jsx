@@ -128,7 +128,8 @@ export default function LedgerSeatPanelV264({parishId,sacrament,pendingIds=[],on
         <FirstOfficialBookV267 parishId={parishId} sacrament={sacrament}
           pendingId={pendingIds[0]} onOpened={reload}/>}
       {!loading&&ctx&&allVerified&&matching&&books.length===0&&type==='suplementario'&&
-        <p className="text-sm text-amber-700">El libro supletorio exige autorización institucional de decreto. Esta apertura inicial ordinaria no es válida.</p>}
+        <FirstOfficialBookV267 parishId={parishId} sacrament={sacrament}
+          pendingId={pendingIds[0]} bookType="suplementario" onOpened={reload}/>}
       {!loading&&ctx&&allVerified&&matching&&books.length>0&&<>
         <label className="block text-xs font-bold text-slate-600">Libro físico conciliado
           <select aria-label="Seleccionar libro físico" value={bookId} onChange={e=>{setBookId(e.target.value);setBookCode('');setFolio('');setPartida('');setError('');}}

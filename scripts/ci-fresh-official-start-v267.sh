@@ -26,6 +26,24 @@ run "CREATE FUNCTION public.open_next_official_book_v270(
  uuid,text,uuid,bigint,uuid,text,integer,integer,integer,boolean,text)
  FROM PUBLIC,anon,authenticated;" >/dev/null
 
+# V271 roles and supplementary book are tested with real PostgreSQL separately.
+# Here only verify the coordinated permissions cutover signatures.
+run "CREATE FUNCTION public.issue_new_supplementary_decree_v271(
+ uuid,text,uuid,uuid,text,date,text,text,text)
+ RETURNS jsonb LANGUAGE sql AS \$\$ SELECT '{}'::jsonb \$\$;
+ CREATE FUNCTION public.approve_new_supplementary_decree_v271(uuid,text)
+ RETURNS jsonb LANGUAGE sql AS \$\$ SELECT '{}'::jsonb \$\$;
+ CREATE FUNCTION public.open_first_supplementary_book_v271(
+ uuid,text,uuid,text,integer,integer,integer,boolean)
+ RETURNS jsonb LANGUAGE sql AS \$\$ SELECT '{}'::jsonb \$\$;
+ REVOKE ALL ON FUNCTION public.issue_new_supplementary_decree_v271(
+ uuid,text,uuid,uuid,text,date,text,text,text) FROM PUBLIC,anon,authenticated;
+ REVOKE ALL ON FUNCTION public.approve_new_supplementary_decree_v271(
+ uuid,text) FROM PUBLIC,anon,authenticated;
+ REVOKE ALL ON FUNCTION public.open_first_supplementary_book_v271(
+ uuid,text,uuid,text,integer,integer,integer,boolean)
+ FROM PUBLIC,anon,authenticated;" >/dev/null
+
 # A documented V268 cleanup is mandatory before GoLive, even when the
 # sandbox is empty. Simulated provenance receipt exists ONLY in this fixture.
 rejectCutover "missing V268 cleanup receipt"
