@@ -363,7 +363,7 @@ run "SET qa.actor='$A'; SELECT public.seat_marriage_ledger_v263(
  jsonb_build_array('$PMS'));" >/dev/null
 eq "$(run "SELECT count(*) FROM public.marriages WHERE book_number='SUP0001'
  AND folio='0001' AND number='0001' AND book_type='suplementario'")" 1
-eq "$(run "SELECT raw_data->>'numeroRegistro'||':'||raw_data->>'numero'
+eq "$(run "SELECT (raw_data->>'numeroRegistro')||':'||(raw_data->>'numero')
  FROM public.marriages WHERE book_number='SUP0001'")" '00000008:0001'
 eq "$(run "SELECT count(*) FROM public.registry_audit_log WHERE action='approve_new_supplementary_decree_v271'")" 1
 reject "SET qa.actor='$A'; $(openSupplement)" "cannot open duplicate after seat"
