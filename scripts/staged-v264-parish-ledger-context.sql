@@ -75,7 +75,10 @@ BEGIN
      'pending',v_state IS NOT NULL
        AND lower(coalesce(v_state->>'status',''))='pending'
        AND NOT coalesce((v_state->>'reportado')::boolean,false),
-     'verified',FOUND,
+     'verified',v_a.verified_at IS NOT NULL
+       AND v_a.verified_at<=clock_timestamp()
+       AND nullif(btrim(coalesce(v_a.evidence_ref,'')),'') IS NOT NULL
+       AND v_a.origin IN ('new_sacrament','new_decree_supplement'),
      'origin',v_a.origin,
      'bookType',CASE WHEN v_a.origin='new_decree_supplement'
        THEN 'suplementario' WHEN v_a.origin='new_sacrament'

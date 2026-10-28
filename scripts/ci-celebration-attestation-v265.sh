@@ -66,7 +66,9 @@ run "INSERT INTO public.pending_baptisms(id,parish_id,raw_data) VALUES
  INSERT INTO public.pending_confirmations(id,parish_id,raw_data) VALUES
  ('$CONF','$P','{\"fechaSacramento\":\"2026-01-02\"}'),
  ('$LINKED','$P','{\"fechaSacramento\":\"2026-01-02\"}');
- INSERT INTO public.pending_marriages(id,parish_id,celebration_date) VALUES('$MARR','$P','2026-01-03');
+ INSERT INTO public.pending_marriages(id,parish_id,celebration_date,raw_data)
+ VALUES('$MARR','$P','2026-01-03',jsonb_build_object(
+ 'numero','00000003','numeroRegistro','00000003','fechaSacramento','2026-01-03'));
  INSERT INTO public.pending_funerals(id,parish_id,fecha_exequias) VALUES('$FUNE','$P','2026-01-04');" >/dev/null
 run "INSERT INTO public.pending_creation_requests VALUES
  ('$P','bautismo','22222222-0000-0000-0000-000000000001','receipt1',

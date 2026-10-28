@@ -44,11 +44,13 @@ for t in baptisms confirmations marriages funerals; do
  id uuid PRIMARY KEY,parish_id uuid,book_number text,folio text,number text,
  numero_registro text,status text,celebration_date date,
  apellidos text,nombres text,sexo text,lugar_bautismo text,lugar_nacimiento text,
- nombre_padre text,nombre_madre text,tipo_union_padres text,padrinos text,
+ nombre_padre text,nombre_madre text,cedula_padre text,cedula_madre text,
+ tipo_union_padres text,padrinos text,
  abuelos_paternos text,abuelos_maternos text,ministro text,da_fe text,
  nuip text,serial_registro text,oficina_registro text,direccion text,
  nota_marginal text,observations text,book_type text,document_id text,
- fecha_nacimiento date,fecha_defuncion date,lugar_defuncion text,
+ fecha_nacimiento date,fecha_bautismo date,fecha_expedicion_registro date,
+ hora_sacramento text,fecha_defuncion date,lugar_defuncion text,
  fecha_exequias date,hora_exequias time,lugar_exequias text,
  cementerio text,causa_muerte text,conyuge text,
  raw_data jsonb NOT NULL DEFAULT '{}'::jsonb,updated_at timestamptz DEFAULT now());" >/dev/null
@@ -62,6 +64,7 @@ run "CREATE TABLE public.marginal_notes(
  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),actor_user_id uuid,
  parish_id uuid,diocese_id uuid,entity_type text,entity_id uuid,
  action text,after_data jsonb,metadata jsonb);" >/dev/null
+pg psql -X -q -v ON_ERROR_STOP=1 -U postgres -d "$db" -f - < scripts/qa-v269-linked-baptism-confirmation-triggers.sql >/dev/null
 pg psql -X -q -v ON_ERROR_STOP=1 -U postgres -d "$db" -f - < scripts/staged-v263-four-real-seat-rpcs.sql >/dev/null
 eq "$(run "SELECT count(*) FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace
  WHERE n.nspname='public' AND p.proname LIKE 'seat_%_ledger_v263'")" 4
@@ -98,7 +101,7 @@ run "INSERT INTO public.pending_confirmations(id,parish_id,raw_data) VALUES
  \"cross_baptism_id\":\"$REF\"}'::jsonb);" >/dev/null
 run "INSERT INTO public.pending_marriages(id,parish_id,celebration_date,raw_data) VALUES
  ('$PM','$P','2026-01-03',
- '{\"numeroRegistro\":\"3\",\"observations\":\"Expediente de prueba\"}'::jsonb);" >/dev/null
+ '{\"numero\":\"3\",\"numeroRegistro\":\"3\",\"observations\":\"Expediente de prueba\"}'::jsonb);" >/dev/null
 run "INSERT INTO public.pending_funerals(id,parish_id,fecha_exequias,numero_registro,raw_data)
  VALUES('$PF','$P','2026-01-04','4',
  '{\"nombres\":\"DIFUNTO\",\"apellidos\":\"PRUEBA\",
@@ -169,6 +172,48 @@ eq "$(run "SELECT count(*) FROM public.marriages")" 1
 eq "$(run "SELECT status||':'||reportado FROM public.pending_marriages WHERE id='$PX'")" pending:false
 eq "$(run "SELECT count(*) FROM sacramentum_ledger.seat_events")" 4
 run "DROP TRIGGER qa_fail_audit_v263 ON public.registry_audit_log;" >/dev/null
+
+# V269: FULL REAL linked Baptism + Confirmation as a two-stage process.
+# Live Supabase trigger copies the Baptism's actual record id, physical book
+# folio and number into its pending Confirmation when Baptism is seated.
+PB2=66666666-0000-0000-0000-000000000001
+PC2=66666666-0000-0000-0000-000000000002
+run "INSERT INTO public.pending_baptisms(id,parish_id,raw_data) VALUES
+ ('$PB2','$P',jsonb_build_object('fechaSacramento','2026-05-01',
+ 'numeroRegistro','6','nombres','DOS','apellidos','SACRAMENTOS',
+ 'fechaNacimiento','2013-05-01','cedulaPadre','PADRE-001',
+ 'fechaExpedicionRegistro','2025-10-01','linkedConfirmationPendingId','$PC2'));
+ INSERT INTO public.pending_confirmations(id,parish_id,raw_data) VALUES
+ ('$PC2','$P',jsonb_build_object('fechaSacramento','2026-05-02',
+ 'numeroRegistro','7','nombres','DOS','apellidos','SACRAMENTOS',
+ 'linkedBaptismPendingId','$PB2','baptismReferencePending',true));
+ INSERT INTO sacramentum_ledger.celebration_attestations_v263(
+ pending_id,parish_id,sacrament,origin,verified_at,verified_by,evidence_ref)
+ VALUES('$PB2','$P','bautismo','new_sacrament',clock_timestamp(),'$A','ACTA-BAUTISMO-COMBINADO'),
+ ('$PC2','$P','confirmacion','new_sacrament',clock_timestamp(),'$A','ACTA-CONFIRMACION-COMBINADO');" >/dev/null
+reject "SET qa.actor='$A'; SELECT public.seat_confirmation_ledger_v263(
+ '$P','$B2',1,1,2,'77777777-0000-0000-0000-000000000001',
+ jsonb_build_array('$PC2') );" "linked Confirmation cannot be seated BEFORE Baptism"
+eq "$(run "SELECT count(*) FROM public.confirmations WHERE nombres='DOS'")" 0
+eq "$(run "SELECT count(*) FROM sacramentum_ledger.active_seats")" 4
+run "SET qa.actor='$A'; SELECT public.seat_baptism_ledger_v263(
+ '$P','$B1',1,1,2,'77777777-0000-0000-0000-000000000002',
+ jsonb_build_array('$PB2'));" >/dev/null
+NEW_BAPTISM="$(run "SELECT raw_data->>'record_id' FROM public.pending_baptisms WHERE id='$PB2'")"
+eq "$(run "SELECT raw_data->>'linkedBaptismRecordId' FROM public.pending_confirmations
+ WHERE id='$PC2'")" "$NEW_BAPTISM"
+eq "$(run "SELECT raw_data->>'numeroBautismo' FROM public.pending_confirmations
+ WHERE id='$PC2'")" 0002
+eq "$(run "SELECT cedula_padre||':'||fecha_expedicion_registro::text
+ FROM public.baptisms WHERE id='$NEW_BAPTISM'")" PADRE-001:2025-10-01
+run "SET qa.actor='$A'; SELECT public.seat_confirmation_ledger_v263(
+ '$P','$B2',1,1,2,'77777777-0000-0000-0000-000000000003',
+ jsonb_build_array('$PC2'));" >/dev/null
+eq "$(run "SELECT count(*) FROM public.confirmations WHERE nombres='DOS' AND
+ raw_data->>'linkedBaptismRecordId'='$NEW_BAPTISM'")" 1
+eq "$(run "SELECT count(*) FROM public.marginal_notes WHERE sacrament_id='$NEW_BAPTISM'
+ AND source_type='confirmation'")" 1
+eq "$(run "SELECT count(*) FROM sacramentum_ledger.active_seats")" 6
 
 # No API execution while V263 is staged; separate cutting over grants is mandatory.
 eq "$(run "SELECT count(*) FROM pg_proc p JOIN pg_namespace n ON p.pronamespace=n.oid

@@ -51,8 +51,11 @@ BEGIN
    OR coalesce(v_raw->>'historicalEntryMode','') <> ''
    OR coalesce(v_pending->>'book_type','ordinario') NOT IN ('ordinario','')
    OR EXISTS(SELECT 1 FROM jsonb_object_keys(v_raw) k
-      WHERE k IN ('Libro','book_number','folio','number','numero','entry_number')
-      AND nullif(btrim(v_raw->>k),'') IS NOT NULL) THEN
+      WHERE k IN ('Libro','libro','book_number','folio','number','numero','entry_number')
+      AND nullif(btrim(v_raw->>k),'') IS NOT NULL
+      AND NOT (p_sacrament='matrimonio' AND k='numero'
+        AND v_raw->>'numero'=coalesce(v_raw->>'numeroRegistro',v_raw->>'numero_registro'))
+   ) THEN
    RAISE EXCEPTION 'V265: boleta histórica, supletoria o ya numerada; procedimiento distinto';
  END IF;
  v_date_text:=coalesce(nullif(v_pending->>'celebration_date',''),

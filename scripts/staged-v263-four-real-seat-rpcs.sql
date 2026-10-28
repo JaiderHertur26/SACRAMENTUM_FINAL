@@ -130,7 +130,10 @@ BEGIN
       EXISTS(SELECT 1 FROM jsonb_object_keys(v_raw) as k
         WHERE k IN ('book_number','Libro','libro','folio','page_number',
                     'number','numero','entry_number')
-          AND nullif(btrim(v_raw->>k),'') IS NOT NULL) THEN
+          AND nullif(btrim(v_raw->>k),'') IS NOT NULL
+          AND NOT (p_sacrament='matrimonio' AND k='numero'
+            AND v_raw->>'numero'=coalesce(v_raw->>'numeroRegistro',v_raw->>'numero_registro'))
+      ) THEN
      RAISE EXCEPTION 'V263: boleta con coordenadas previas o datos inválidos';
    END IF;
    v_date_text:=coalesce(nullif(v_pending->>'celebration_date',''),
@@ -178,7 +181,9 @@ BEGIN
        celebration_date,apellidos,nombres,sexo,lugar_bautismo,
        lugar_nacimiento,nombre_padre,nombre_madre,tipo_union_padres,
        padrinos,abuelos_paternos,abuelos_maternos,ministro,da_fe,
-       nuip,serial_registro,oficina_registro,direccion,raw_data)
+       nuip,serial_registro,oficina_registro,direccion,
+       fecha_nacimiento,cedula_padre,cedula_madre,fecha_expedicion_registro,
+       hora_sacramento,nota_marginal,observations,raw_data)
      VALUES(
        v_record,p_parish_id,v_book,lpad(v_folio::text,4,'0'),
        lpad(v_partida::text,4,'0'),v_current->>'registration_number','seated',
@@ -196,7 +201,15 @@ BEGIN
        v_raw->>'ministro',coalesce(v_raw->>'daFe',v_raw->>'da_fe'),
        v_raw->>'nuip',coalesce(v_raw->>'serialRegistro',v_raw->>'serial_registro'),
        coalesce(v_raw->>'oficinaRegistro',v_raw->>'oficina_registro'),
-       v_raw->>'direccion',v_raw||jsonb_build_object(
+       v_raw->>'direccion',
+       nullif(coalesce(v_raw->>'fechaNacimiento',v_raw->>'fecha_nacimiento'),'')::date,
+       coalesce(v_raw->>'cedulaPadre',v_raw->>'cedula_padre'),
+       coalesce(v_raw->>'cedulaMadre',v_raw->>'cedula_madre'),
+       nullif(coalesce(v_raw->>'fechaExpedicionRegistro',v_raw->>'fecha_expedicion_registro'),'')::date,
+       coalesce(v_raw->>'horaSacramento',v_raw->>'hora_sacramento'),
+       coalesce(v_raw->>'notaMarginal',v_raw->>'nota_marginal'),
+       coalesce(v_raw->>'observations',v_raw->>'observaciones'),
+       v_raw||jsonb_build_object(
         'Libro',v_book,'folio',lpad(v_folio::text,4,'0'),
         'numero',lpad(v_partida::text,4,'0'),'status','seated'));
    ELSIF p_sacrament='confirmacion' THEN
@@ -204,7 +217,10 @@ BEGIN
        id,parish_id,book_number,folio,number,numero_registro,status,
        celebration_date,apellidos,nombres,sexo,lugar_bautismo,
        lugar_nacimiento,nombre_padre,nombre_madre,tipo_union_padres,
-       padrinos,ministro,da_fe,nota_marginal,raw_data)
+       padrinos,ministro,da_fe,nota_marginal,
+       fecha_nacimiento,fecha_bautismo,nuip,direccion,cedula_padre,
+       cedula_madre,abuelos_paternos,abuelos_maternos,
+       hora_sacramento,observations,raw_data)
      VALUES(
        v_record,p_parish_id,v_book,lpad(v_folio::text,4,'0'),
        lpad(v_partida::text,4,'0'),v_current->>'registration_number','seated',
@@ -218,12 +234,21 @@ BEGIN
        v_raw->>'padrinos',v_raw->>'ministro',
        coalesce(v_raw->>'daFe',v_raw->>'da_fe'),
        coalesce(v_raw->>'notaMarginal',v_raw->>'nota_marginal'),
+       nullif(coalesce(v_raw->>'fechaNacimiento',v_raw->>'fecha_nacimiento'),'')::date,
+       nullif(coalesce(v_raw->>'fechaBautismo',v_raw->>'fecha_bautismo'),'')::date,
+       v_raw->>'nuip',v_raw->>'direccion',
+       coalesce(v_raw->>'cedulaPadre',v_raw->>'cedula_padre'),
+       coalesce(v_raw->>'cedulaMadre',v_raw->>'cedula_madre'),
+       coalesce(v_raw->>'abuelosPaternos',v_raw->>'abuelos_paternos'),
+       coalesce(v_raw->>'abuelosMaternos',v_raw->>'abuelos_maternos'),
+       coalesce(v_raw->>'horaSacramento',v_raw->>'hora_sacramento'),
+       coalesce(v_raw->>'observations',v_raw->>'observaciones'),
        v_raw||jsonb_build_object('Libro',v_book,
           'folio',lpad(v_folio::text,4,'0'),
           'numero',lpad(v_partida::text,4,'0'),'status','seated'));
      -- Only real cross-references pointing to this parish can be updated.
-     IF nullif(v_raw->>'cross_baptism_id','') IS NOT NULL THEN
-       BEGIN v_baptism:=(v_raw->>'cross_baptism_id')::uuid;
+     IF nullif(coalesce(v_raw->>'linkedBaptismRecordId',v_raw->>'cross_baptism_id'),'') IS NOT NULL THEN
+       BEGIN v_baptism:=coalesce(v_raw->>'linkedBaptismRecordId',v_raw->>'cross_baptism_id')::uuid;
        EXCEPTION WHEN others THEN RAISE EXCEPTION 'V263: referencia bautismal inválida'; END;
        SELECT b.nota_marginal INTO v_baptism_existing FROM public.baptisms b
         WHERE b.id=v_baptism AND b.parish_id=p_parish_id FOR UPDATE;
