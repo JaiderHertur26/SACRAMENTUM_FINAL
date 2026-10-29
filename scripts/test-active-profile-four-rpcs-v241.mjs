@@ -45,7 +45,7 @@ test('V241 live QA confirms role denials, argument validation, harmless read, do
 });
 test('V241 adds one schema-only migration; old data mutation blocklist untouched',()=>{
  const inv=report();
- assert.equal(inv.migrationCount,193); // Current inventory includes subsequent V242 migration.
+ assert.equal(inv.migrationCount,194); // Current inventory includes subsequent V242 migration.
  assert.equal(CLEAN_REPLAY_HISTORICAL_MIGRATIONS,166);
  assert.equal(inv.directWriteMigrationCount,15);
  assert.equal(inv.directWriteStatementCount,46);

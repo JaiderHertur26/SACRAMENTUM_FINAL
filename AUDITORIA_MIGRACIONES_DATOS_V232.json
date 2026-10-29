@@ -1,7 +1,7 @@
 {
   "protocol": "V232",
   "environment": "OFFLINE_QA_SCHEMAS_ONLY",
-  "migrationCount": 193,
+  "migrationCount": 194,
   "directWriteMigrationCount": 15,
   "directWriteStatementCount": 46,
   "findings": [
@@ -1528,6 +1528,12 @@
     {
       "file": "supabase/migrations/20261029032959_sacramentum_v292_chancery_concept_approval_preflight.sql",
       "sha256": "de6eeea79847f58141ead9e449ad3d292afdad625f811f40704bfc51ecf2725b",
+      "directWrites": 0,
+      "statements": 5
+    },
+    {
+      "file": "supabase/migrations/20261029034915_sacramentum_v293_chancery_role_authorized_no_diocese_concept_gate.sql",
+      "sha256": "7f558e8d059acd1c6cbb7848956c68cf4937a44e700a73afcfccfee8664f4810",
       "directWrites": 0,
       "statements": 5
     }
