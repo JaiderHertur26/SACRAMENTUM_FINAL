@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { Link } from 'react-router-dom';
+const SacramentalCaseWizardV277 = React.lazy(() => import('@/pages/parish/SacramentalCaseWizardV277'));
 import DashboardLayout from '@/components/DashboardLayout';
 import { useAuth } from '@/context/AuthContext';
 import { useAppData } from '@/context/AppDataContext';
@@ -65,7 +67,7 @@ const NotificacionMatrimonialPage = () => {
         try {
             const docs = await listSentMatrimonialNotifications(user.parishId);
             const matrimonialOnly = docs.filter(
-                (doc) => String(doc.notificationType || 'matrimonio').toLowerCase() === 'matrimonio'
+                (doc) => String(doc.notificationType || 'matrimonio').toLowerCase() === 'matrimonio' && doc.caseVersion !== 'V277'
             );
             setRawDocuments(matrimonialOnly);
             setFilteredDocuments(matrimonialOnly);
@@ -163,6 +165,7 @@ const NotificacionMatrimonialPage = () => {
                         </div>
                         <div>
                             <h1 className="text-3xl font-black text-slate-900 font-serif tracking-tight">Notificación Matrimonial</h1>
+                            <Link to="/parroquia/matrimonio/notificacion?v277=1" className="mt-3 inline-flex rounded-xl bg-blue-800 px-4 py-2 text-xs font-bold text-white">Circuito integral · dos contrayentes y destinos externos</Link>
                             <p className="text-slate-500 text-sm font-medium uppercase tracking-widest text-[10px]">Gestión de avisos a parroquias de bautismo</p>
                         </div>
                     </div>
@@ -282,4 +285,9 @@ const NotificacionMatrimonialPage = () => {
     );
 };
 
-export default NotificacionMatrimonialPage;
+const MatrimonialCorrespondenceRoute = () => (
+    new URLSearchParams(window.location.search).get('v277') === '1'
+      ? <React.Suspense fallback={<div className="p-8 text-center text-sm font-semibold">Preparando correspondencia sacramental…</div>}><SacramentalCaseWizardV277 initialSacrament="matrimonio"/></React.Suspense>
+      : <NotificacionMatrimonialPage/>
+);
+export default MatrimonialCorrespondenceRoute;

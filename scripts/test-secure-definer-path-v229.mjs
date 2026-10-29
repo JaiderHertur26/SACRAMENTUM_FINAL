@@ -10,6 +10,11 @@ const sha=f=>createHash('sha256').update(fs.readFileSync(f,'utf8').replace(/\r\n
 const currentMigration='supabase/migrations/20261027044045_secure_definer_pg_temp_last_v229.sql';
 // V276: exact-byte certification of the 14 INSTALL-ONLY migrations already applied to Supabase.
 // Every newly deployed public RPC remains REVOKED until separately audited official cutover.
+const approvedV288IntegratedNotifications=new Map([
+ ['20261029021505_sacramentum_v288_complete_notifications_and_private_return_evidence.sql','550108e2f481b59a22a7cfef7ed28e0db1f122c3797500cca6f84ad09a44d0c7'],
+ ['20261029021716_sacramentum_v289_shared_case_document_sender_and_recipient.sql','41e620bfc8147b9c008d22e971ed04ec1c385cda93b6853bffb5b961f53368ab'],
+ ['20261029022546_sacramentum_v290_storage_evidence_parish_guard.sql','8e68d8a2549e6f76ad0f54bb36e97d1a341043f23518211240386616dd97d603'],
+]);
 const approvedV287NoPrematureCoords=new Map([
  ['20261029013539_sacramentum_v287_keep_full_chancery_forms_remove_new_record_coordinates.sql','2cb2bda635d33e9d37ffc33e2b103a348b14d31609665be61447cbed15a16235'],
 ]);
@@ -76,6 +81,8 @@ test('V229 remote migration version is identical to the checked-in CLI-created m
  for(const f of approvedV280AppliedIntegrity.keys())assert.ok(all.includes(f),'V280 migrated RPC missing: '+f);
  assert.equal(approvedV287NoPrematureCoords.size,1);
  for(const f of approvedV287NoPrematureCoords.keys())assert.ok(all.includes(f),'V287 RPC migration missing: '+f);
+ assert.equal(approvedV288IntegratedNotifications.size,3);
+ for(const f of approvedV288IntegratedNotifications.keys())assert.ok(all.includes(f),'V288 notification migration missing: '+f);
  for(const later of all.filter(x=>('supabase/migrations/'+x)>currentMigration)) {
   const body=fs.readFileSync('supabase/migrations/'+later,'utf8');
   if(later==='20261027125848_harden_chat_actor_guard_v232.sql') {
@@ -103,6 +110,16 @@ test('V229 remote migration version is identical to the checked-in CLI-created m
     assert.match(body,/materialize_legacy_decrees_v68/);
     assert.match(body,/v_chancery IS NULL/);
     assert.doesNotMatch(body,/\\b(?:INSERT INTO|UPDATE\\s+public\\.|DELETE FROM|TRUNCATE\\s+TABLE|DROP TABLE)\\b/i);
+  } else if (approvedV288IntegratedNotifications.has(later)) {
+    assert.equal(sha('supabase/migrations/'+later),approvedV288IntegratedNotifications.get(later),
+      'V288/V289 integrated notifications migration changed without review: '+later);
+    assert.match(body,/SECURITY DEFINER/);
+    assert.match(body,/REVOKE ALL ON FUNCTION public\./);
+    assert.doesNotMatch(body,/^\s*TRUNCATE\s+TABLE\b/mi);
+    assert.doesNotMatch(body,/^\s*DELETE\s+FROM\s+public\./mi);
+    if(later.includes('v288_')){assert.match(body,/guard_v277_case_completion/);assert.match(body,/sacramental_evidence_sender_insert_v288/);}
+    if(later.includes('v289_'))assert.match(body,/get_sacramental_case_document_v289/);
+    if(later.includes('v290_')){assert.match(body,/can_access_sacramental_evidence_v290/);assert.match(body,/up\.auth_user_id=auth\.uid\(\)/);}
   } else if (approvedV287NoPrematureCoords.has(later)) {
     assert.equal(sha('supabase/migrations/'+later),approvedV287NoPrematureCoords.get(later),
       'V287 migration changed without integrity approval: '+later);

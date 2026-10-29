@@ -61,10 +61,10 @@ test('V245 current live PostgreSQL fingerprint remains exact in release guard, o
 });
 test('V245 only adds a schema-function patch; 45 historical data mutations stay forbidden',()=>{
  const inv=report();
- assert.equal(inv.migrationCount,188);
+ assert.equal(inv.migrationCount,191);
  assert.equal(CLEAN_REPLAY_HISTORICAL_MIGRATIONS,166);
- assert.equal(inv.directWriteMigrationCount,14);
- assert.equal(inv.directWriteStatementCount,45);
+ assert.equal(inv.directWriteMigrationCount,15);
+ assert.equal(inv.directWriteStatementCount,46);
  const row=inv.checks.filter(x=>x.file.endsWith('close_original_legacy_batch_enumeration_v245.sql'));
  assert.equal(row.length,1);
  assert.equal(row[0].directWrites,0);

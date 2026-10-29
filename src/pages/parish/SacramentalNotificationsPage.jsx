@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Helmet } from 'react-helmet';
+import { useReactToPrint } from 'react-to-print';
 import { BellRing, CheckCheck, FileCheck2, Inbox, Loader2, MailOpen, RefreshCcw } from 'lucide-react';
 import DashboardLayout from '@/components/DashboardLayout';
 import { Button } from '@/components/ui/button';
@@ -8,9 +9,13 @@ import { useToast } from '@/components/ui/use-toast';
 import ConfirmationDialog from '@/components/ui/ConfirmationDialog';
 import TablaAvisos from '@/components/TablaAvisos';
 import ModalVerAviso from '@/components/ModalVerAviso';
+import SacramentalCaseDocumentV277 from '@/components/SacramentalCaseDocumentV277';
+import { getSacramentalCaseDocumentV289 } from '@/services/sacramentalCasesV277';
+import { Link } from 'react-router-dom';
 import ModalVerAcuseSacramental from '@/components/ModalVerAcuseSacramental';
 import ModalVincularPartidaNotificacion from '@/components/ModalVincularPartidaNotificacion';
 import { useAuth } from '@/context/AuthContext';
+import { updatePhysicalLocatorV277 } from '@/services/sacramentalPhysicalLocatorV277';
 import { getParishSessionScope } from '@/utils/parishSessionScope.mjs';
 import { useAppData } from '@/context/AppDataContext';
 import {
@@ -39,6 +44,14 @@ const SacramentalNotificationsSession = ({ user, parishId }) => {
   const [selectedDocument, setSelectedDocument] = useState(null);
   const [selectedBaptism, setSelectedBaptism] = useState(null);
   const [showNotification, setShowNotification] = useState(false);
+  const [completeCase,setCompleteCase]=useState(null);
+  const completeCaseRef=useRef(null);
+  const printCompleteCase=useReactToPrint({content:()=>completeCaseRef.current,
+    documentTitle:'Correspondencia_Sacramental_Completa'});
+  const openCompleteCase=async notificationId=>{
+    try{const doc=await getSacramentalCaseDocumentV289(notificationId);setCompleteCase(doc);}
+    catch(e){toast({title:'No se pudo consultar el expediente compartido',description:e.message,variant:'destructive'});}
+  };
   const [pendingAcceptance, setPendingAcceptance] = useState(null);
   const [showAccept, setShowAccept] = useState(false);
 
@@ -48,6 +61,9 @@ const SacramentalNotificationsSession = ({ user, parishId }) => {
   const [manualResolutionItem, setManualResolutionItem] = useState(null);
   const [showManualResolution, setShowManualResolution] = useState(false);
   const [pendingPhysicalAcceptance, setPendingPhysicalAcceptance] = useState(null);
+  const [locatorRecipient, setLocatorRecipient] = useState(null);
+  const [physicalLocator, setPhysicalLocator] = useState({book:'',folio:'',number:'',reference:''});
+  const [savingLocator,setSavingLocator]=useState(false);
   const [showPhysicalAccept, setShowPhysicalAccept] = useState(false);
 
   const currentParishInfo = useMemo(
@@ -189,6 +205,26 @@ const SacramentalNotificationsSession = ({ user, parishId }) => {
     }
   };
 
+  const requestPhysicalLocator = (item) => {
+    if (loading || !incoming.some(row=>row.id===item?.id)) return;
+    const previous=item.payload?.manualLocator||{};
+    setPhysicalLocator({book:previous.book||'',folio:previous.folio||'',number:previous.number||'',
+      reference:item.payload?.searchReference||''});
+    setLocatorRecipient(item);
+  };
+
+  const savePhysicalLocator = async () => {
+    if(!locatorRecipient?.id || savingLocator)return;
+    setSavingLocator(true);
+    try{
+      await updatePhysicalLocatorV277({recipientId:locatorRecipient.id,...physicalLocator});
+      toast({title:'Partida física localizada',description:'Puede certificar el asiento físico después de efectuar la nota marginal.'});
+      setLocatorRecipient(null);setShowNotification(false);
+      await loadAll();
+    }catch(e){toast({title:'No se pudo localizar el libro',description:e.message,variant:'destructive'});}
+    finally{setSavingLocator(false);}
+  };
+
   const requestPhysicalAcceptance = (item) => {
     if (loading || !incoming.some(row => row.id === item?.id)) return;
     setPendingPhysicalAcceptance(item);
@@ -295,6 +331,7 @@ const SacramentalNotificationsSession = ({ user, parishId }) => {
         </div>
 
         <Tabs value={tab} onValueChange={setTab}>
+          <Link to="/parroquia/matrimonio/notificacion?v277=1" className="mb-5 inline-flex rounded-xl bg-blue-800 px-5 py-3 text-xs font-black text-white">Emitir y seguir Matrimonio / Confirmación · todos los casos</Link>
           <TabsList className="mb-6 grid h-14 w-full max-w-2xl grid-cols-2 rounded-2xl bg-slate-100 p-1">
             <TabsTrigger value="recibidas" className="rounded-xl font-black uppercase text-[10px] tracking-widest">
               Recibidas {pendingIncoming > 0 ? `(${pendingIncoming})` : ''}
@@ -369,6 +406,8 @@ const SacramentalNotificationsSession = ({ user, parishId }) => {
         onMarkAsViewed={requestAccept}
         onResolveManual={requestManualResolution}
         onAcceptPhysical={requestPhysicalAcceptance}
+        onUpdateLocator={requestPhysicalLocator}
+        onViewCaseDocument={openCompleteCase}
         receptorInfo={currentParishInfo}
       />
 
@@ -382,6 +421,43 @@ const SacramentalNotificationsSession = ({ user, parishId }) => {
         parishId={parishId}
         onResolve={resolveManualPartida}
       />
+
+      {locatorRecipient && <div role="dialog" aria-label="Localizar partida física" className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 p-4">
+        <div className="w-full max-w-xl space-y-5 rounded-2xl bg-white p-6 shadow-2xl">
+          <div><h3 className="font-serif text-xl font-black text-slate-900">Localizar Bautismo en libro físico</h3>
+            <p className="mt-2 text-xs text-slate-500">Compruebe físicamente la identidad y las coordenadas. Registrar estos datos NO certifica todavía el asiento de la nota marginal.</p></div>
+          <div className="grid grid-cols-3 gap-3">
+            {['book','folio','number'].map(k=><label key={k} className="text-[10px] font-black uppercase text-slate-500">
+              {k==='book'?'Libro':k==='folio'?'Folio':'Número'}
+              <input className="mt-1 w-full rounded-xl border px-3 py-2 font-mono" value={physicalLocator[k]}
+                onChange={e=>setPhysicalLocator(p=>({...p,[k]:e.target.value}))}/></label>)}
+          </div>
+          <label className="block text-[10px] font-black uppercase text-slate-500">Referencia documental del cotejo
+            <input className="mt-1 w-full rounded-xl border px-3 py-2" value={physicalLocator.reference}
+              onChange={e=>setPhysicalLocator(p=>({...p,reference:e.target.value}))}
+              placeholder="Libro examinado, oficio, archivo o diligencia de búsqueda"/>
+          </label>
+          <div className="flex justify-end gap-3">
+            <Button variant="outline" onClick={()=>setLocatorRecipient(null)}>Cancelar</Button>
+            <Button disabled={savingLocator||!physicalLocator.book||!physicalLocator.folio||!physicalLocator.number||physicalLocator.reference.trim().length<8}
+              onClick={savePhysicalLocator}>{savingLocator?'Guardando…':'Guardar localización física'}</Button>
+          </div>
+        </div>
+      </div>}
+
+      {completeCase && <div role="dialog" aria-label="Expediente sacramental consolidado" className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/75 p-4">
+        <div className="mx-auto max-w-4xl space-y-4 rounded-2xl bg-white p-5">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <p className="font-serif text-lg font-black">Expediente {completeCase.documentNumber}</p>
+            <div className="flex gap-2">
+              {completeCase.documentReady && <Button onClick={printCompleteCase}>Imprimir expediente completo</Button>}
+              <Button variant="outline" onClick={()=>setCompleteCase(null)}>Cerrar</Button>
+            </div>
+          </div>
+          {!completeCase.documentReady && <p className="rounded-xl border border-amber-200 bg-amber-50 p-3 text-xs font-bold text-amber-800">Documento en trámite. Solo podrá imprimirse como expediente completo cuando todas las anotaciones y devoluciones estén confirmadas.</p>}
+          <div ref={completeCaseRef}><SacramentalCaseDocumentV277 document={completeCase}/></div>
+        </div>
+      </div>}
 
       <ModalVerAcuseSacramental
         isOpen={showReceipt}

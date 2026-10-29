@@ -38,12 +38,12 @@ test('V248 block list prevents accidental reauthorization by normal authenticate
  const sample=fs.readFileSync('scripts/test-privileged-rpc-catalog-v236.mjs','utf8');
  assert.match(sample,/privileged_rpc_catalog_count:151/);
 });
-test('V248 188 migrations remain fully enumerated without legacy data changes',()=>{
+test('V248 191 migrations remain fully enumerated without legacy data changes',()=>{
  const inv=report();
- assert.equal(inv.migrationCount,188);
+ assert.equal(inv.migrationCount,191);
  assert.equal(CLEAN_REPLAY_HISTORICAL_MIGRATIONS,166);
- assert.equal(inv.directWriteMigrationCount,14);
- assert.equal(inv.directWriteStatementCount,45);
+ assert.equal(inv.directWriteMigrationCount,15);
+ assert.equal(inv.directWriteStatementCount,46);
  const rows=inv.checks.filter(x=>x.file.endsWith('contain_document_void_exposure_v248.sql'));
  assert.equal(rows.length,1);
  assert.equal(rows[0].directWrites,0);

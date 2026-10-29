@@ -244,6 +244,7 @@ export async function listSentMatrimonialNotifications(senderParishId) {
           || 'Parroquia receptora',
         targetBaptismId: recipient.target_baptism_id,
         partyRole: recipient.payload?.partyRole || 'principal',
+        payload: recipient.payload || {},
         status: recipient.status,
         readAt: recipient.read_at,
         acceptedAt: recipient.processed_at,
