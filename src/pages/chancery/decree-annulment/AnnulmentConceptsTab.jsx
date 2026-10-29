@@ -188,6 +188,15 @@ const AnnulmentConceptsTab = () => {
       return;
     }
 
+    if (form.tipo === 'porReposicion' && (Number(form.enlibro) !== 2 || !form.seinscribe || !form.gendocum || form.gennota)) {
+      toast({
+        title: 'Reglas de reposición incompatibles',
+        description: 'La reposición requiere asiento en libro supletorio y documento. Sin partida original utilizable no corresponde generar nota marginal.',
+        variant: 'destructive'
+      });
+      return;
+    }
+
     setSaving(true);
 
     try {
@@ -340,7 +349,7 @@ const AnnulmentConceptsTab = () => {
           {row.seinscribe && <span className="rounded border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[8px] font-black uppercase text-emerald-700">Inscribir</span>}
           {row.gennota && <span className="rounded border border-amber-200 bg-amber-50 px-2 py-0.5 text-[8px] font-black uppercase text-amber-700">Nota marginal</span>}
           {row.gendocum && <span className="rounded border border-blue-200 bg-blue-50 px-2 py-0.5 text-[8px] font-black uppercase text-blue-700">Documento</span>}
-          <span className="rounded border border-slate-200 bg-slate-50 px-2 py-0.5 text-[8px] font-black uppercase text-slate-600">{Number(row.enlibro||0)===1?'Confirmación':Number(row.enlibro||0)===2?'Bautismo / Matrimonio':'Libro según sacramento'}</span>
+          <span className="rounded border border-slate-200 bg-slate-50 px-2 py-0.5 text-[8px] font-black uppercase text-slate-600">{row.tipo === 'porReposicion' && Number(row.enlibro||0) === 2 ? 'Libro supletorio según sacramento' : Number(row.enlibro||0)===1?'Confirmación':Number(row.enlibro||0)===2?'Bautismo / Matrimonio':'Libro según sacramento'}</span>
         </div>
       )
     },
@@ -452,7 +461,10 @@ const AnnulmentConceptsTab = () => {
                 onChange={(event) =>
                   setForm((current) => ({
                     ...current,
-                    tipo: event.target.value
+                    tipo: event.target.value,
+                    ...(event.target.value === 'porReposicion' ? {
+                      enlibro: 2, seinscribe: true, gennota: false, gendocum: true
+                    } : {})
                   }))
                 }
                 className="h-10 w-full rounded-md border border-slate-200 bg-white px-3 text-sm font-semibold"
@@ -520,7 +532,7 @@ const AnnulmentConceptsTab = () => {
               <label className="flex items-center gap-3 rounded-xl border bg-white p-3 text-xs font-bold"><input type="checkbox" checked={form.seinscribe} onChange={e=>setForm(c=>({...c,seinscribe:e.target.checked}))}/>Inscribir el efecto en el registro sacramental</label>
               <label className="flex items-center gap-3 rounded-xl border bg-white p-3 text-xs font-bold"><input type="checkbox" checked={form.gennota} onChange={e=>setForm(c=>({...c,gennota:e.target.checked}))}/>Generar nota marginal</label>
               <label className="flex items-center gap-3 rounded-xl border bg-white p-3 text-xs font-bold"><input type="checkbox" checked={form.gendocum} onChange={e=>setForm(c=>({...c,gendocum:e.target.checked}))}/>Generar documento / constancia</label>
-              <label className="block rounded-xl border bg-white p-3 text-xs font-bold">Libro afectado<select value={form.enlibro} onChange={e=>setForm(c=>({...c,enlibro:Number(e.target.value)}))} className="mt-2 h-9 w-full rounded-lg border bg-white px-2 text-xs"><option value={0}>Según sacramento / general</option><option value={1}>Confirmación</option><option value={2}>Bautismo / Matrimonio</option></select></label>
+              <label className="block rounded-xl border bg-white p-3 text-xs font-bold">Libro afectado<select value={form.enlibro} onChange={e=>setForm(c=>({...c,enlibro:Number(e.target.value)}))} className="mt-2 h-9 w-full rounded-lg border bg-white px-2 text-xs"><option value={0}>Según sacramento / general</option><option value={1}>Confirmación</option><option value={2}>{form.tipo === 'porReposicion' ? 'Libro supletorio según sacramento' : 'Bautismo / Matrimonio'}</option></select></label>
             </div>
             <p className="mt-3 text-[10px] leading-relaxed text-slate-500">Estas reglas forman parte del concepto diocesano y permiten que Corrección y Reposición sepan qué acciones deben producir sin depender de decisiones manuales posteriores.</p>
           </div>

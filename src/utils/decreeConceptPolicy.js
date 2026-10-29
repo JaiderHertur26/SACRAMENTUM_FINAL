@@ -51,8 +51,9 @@ export const normalizeDecreeConceptPolicy = (concept = {}) => ({
   sourceReference: concept.source_reference || concept.sourceReference || ''
 });
 
-export const decreeConceptBookLabel = (bookMode) => {
+export const decreeConceptBookLabel = (bookMode, decreeType = '') => {
   const value = Number(bookMode || 0);
+  if (value === 2 && String(decreeType).toLowerCase() === 'porreposicion') return 'Libro supletorio según sacramento';
   if (value === 1) return 'Confirmación';
   if (value === 2) return 'Bautismo / Matrimonio';
   return 'Según el sacramento';
@@ -65,6 +66,6 @@ export const decreeConceptEffectLabels = (policy = {}) => {
     normalized.registersEffect ? 'Inscripción registral' : null,
     normalized.generatesMarginalNote ? 'Nota marginal' : null,
     normalized.generatesDocument ? 'Documento / constancia' : null,
-    decreeConceptBookLabel(normalized.bookMode)
+    decreeConceptBookLabel(normalized.bookMode, normalized.decreeType)
   ].filter(Boolean);
 };
