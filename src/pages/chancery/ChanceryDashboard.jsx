@@ -19,6 +19,7 @@ import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { supabase } from '@/lib/supabaseClient';
 import { loadChanceryPendingSacraments } from '@/services/chanceryPendingService';
+import ChanceryDecreeSeatReceiptsV280 from '@/components/chancery/ChanceryDecreeSeatReceiptsV280';
 
 const ChanceryDashboard = () => {
     const { data, getMisDatosList, updateMisDatosRecord, addMisDatosRecord } = useAppData();
@@ -218,6 +219,9 @@ const ChanceryDashboard = () => {
                         </Button>
                     </div>
                 </div>
+
+                {/* Avisos automáticos de asientos completados; fuera del Centro de Decretos simplificado. */}
+                <ChanceryDecreeSeatReceiptsV280 />
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
                     {statsCards.map((stat, idx) => (

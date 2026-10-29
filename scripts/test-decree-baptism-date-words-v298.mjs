@@ -29,7 +29,7 @@ const detail = (html, label) => {
 test('V298 Decreto 002: fecha de Bautismo escrita completa en letras', () => {
   const html = document(row);
   assert.equal(detail(html, 'FECHA DE BAUTISMO'), 'EL TRECE DE DICIEMBRE DE DOS MIL VEINTICUATRO');
-  assert.equal(detail(html, 'FECHA NACIMIENTO'), '2014-10-16');
+  assert.equal(detail(html, 'FECHA NACIMIENTO'), 'EL DIECISÉIS DE OCTUBRE DE DOS MIL CATORCE');
   assert.equal(detail(html, 'NOMBRES'), 'THIAGO JOSÉ');
   assert.match(html, /class="archdiocese-crest"/);
   assert.match(html, /padding-top:21mm;break-inside:avoid/);
@@ -50,5 +50,5 @@ test('V298 no convierte otras fechas ni sacramentos sin solicitud', () => {
   const confirmation = structuredClone(row);
   confirmation.sacrament_type = 'confirmacion';
   assert.equal(detail(document(confirmation), 'FECHA DE CONFIRMACIÓN'), '2024-12-13');
-  assert.equal(detail(document(row), 'FECHA NACIMIENTO'), '2014-10-16');
+  assert.equal(detail(document(row), 'FECHA NACIMIENTO'), 'EL DIECISÉIS DE OCTUBRE DE DOS MIL CATORCE');
 });

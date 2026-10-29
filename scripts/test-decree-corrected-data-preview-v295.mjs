@@ -59,12 +59,13 @@ test('V295 todos los campos corregidos prevalecen sin modificar el original',()=
    nombreMadre:'MADRE ANTIGUA',sexo:'MASCULINO',
    padrinos:'PADRINOS ANTIGUOS'};
  const html=buildDecreeDocumentHtml({...base,row:modified,sacramentalRecord:{...previous,raw_data:{...previous}}});
- for(const expected of ['REYES PÉREZ','2014-09-01','PADRE RECTIFICADO','MADRE RECTIFICADA',
+ for(const expected of ['REYES PÉREZ','EL UNO DE SEPTIEMBRE DE DOS MIL CATORCE','PADRE RECTIFICADO','MADRE RECTIFICADA',
  'LUGAR RECTIFICADO','CASADOS','FEMENINO','MINISTRO RECTIFICADO',
  'PADRINOS RECTIFICADOS','ABUELOS RECTIFICADOS','ABUELAS RECTIFICADAS']){
    assert.ok(html.includes(expected),'Campo rectificado no visible '+expected);
  }
  assert.equal(detail(html,'APELLIDOS'),'REYES PÉREZ');
+ assert.equal(modified.payload.newPartidaDraft.fechaNacimiento,'2014-09-01');
  assert.equal(detail(html,'PADRE'),'PADRE RECTIFICADO');
  assert.equal(detail(html,'MADRE'),'MADRE RECTIFICADA');
  assert.deepEqual(modified.payload.draftDetails.originalPartida,{nombres:'THIAGO JUNIOR',apellidos:'SIERRA REYES'});
