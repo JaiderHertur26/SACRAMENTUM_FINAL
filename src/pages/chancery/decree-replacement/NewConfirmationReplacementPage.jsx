@@ -283,7 +283,7 @@ const NewConfirmationReplacementPage = () => {
               <CanonicalActionFooter>
                 <Button onClick={handleSubmit} disabled={busy || !targetParishId || Boolean(params.suplementarioBlocked)} className="h-12 w-full bg-amber-500 font-black text-slate-950 hover:bg-amber-600">
                   {busy ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
-                  Emitir Reposición y Crear Partida Supletoria
+                  Expedir reposición y notificar a la parroquia
                 </Button>
               </CanonicalActionFooter>
             </CanonicalDetailPanel>

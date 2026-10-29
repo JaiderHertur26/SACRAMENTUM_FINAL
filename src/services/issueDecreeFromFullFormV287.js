@@ -5,6 +5,19 @@ import {supabase} from '@/lib/supabaseClient';
  * ni consume coordenadas físicas de la partida nueva.
  * El motor V280 crea el decreto pendiente; la parroquia lo sienta después.
  */
+export async function checkChanceryDecreeConceptV292({conceptId,sacrament,type}){
+  if(!conceptId||!sacrament||!type){
+    return {approved:false,status:'not_selected',message:'Seleccione un concepto de decreto.'};
+  }
+  const {data,error}=await supabase.rpc('check_chancery_decree_concept_v292',{
+    p_concept_id:conceptId,p_sacrament:sacrament,p_decree_type:type
+  });
+  if(error)throw new Error('No se pudo comprobar la autorización diocesana: '+error.message);
+  if(!data||data.conceptId!==conceptId||data.sacrament!==sacrament||data.type!==type)
+    throw new Error('No se pudo verificar el concepto seleccionado.');
+  return data;
+}
+
 export async function issueDecreeFromFullFormV287({
   parishId,sacrament,type,originalRecordId,conceptId,decreeNumber,decreeDate,
   targetName,reason,evidenceRef,newRecord,details={}
@@ -14,6 +27,12 @@ export async function issueDecreeFromFullFormV287({
      !['correccion','reposicion'].includes(type)||
      !reason?.trim()||!targetName?.trim()){
     throw new Error('Complete la parroquia, concepto, número y fecha del decreto y su fundamento.');
+  }
+  // V292: la autorización se comprueba ANTES de crear una memoria pendiente.
+  // Nunca se presume ni se registra una aprobación desde Cancillería.
+  const authorization=await checkChanceryDecreeConceptV292({conceptId,sacrament,type});
+  if(authorization.approved!==true){
+    throw new Error(authorization.message||'Concepto no autorizado. La Diócesis debe autorizarlo en su Archivo de decretos.');
   }
   const record={...newRecord};
   for(const key of [

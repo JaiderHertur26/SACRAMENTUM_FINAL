@@ -1,7 +1,7 @@
 {
   "protocol": "V232",
   "environment": "OFFLINE_QA_SCHEMAS_ONLY",
-  "migrationCount": 192,
+  "migrationCount": 193,
   "directWriteMigrationCount": 15,
   "directWriteStatementCount": 46,
   "findings": [
@@ -1522,6 +1522,12 @@
     {
       "file": "supabase/migrations/20261029031120_sacramentum_v291_search_celebrated_sources_paged.sql",
       "sha256": "3ed447cf3918d8ee09dd417ac73234137e7ff917bd652e8a4e28acc5318ae5b0",
+      "directWrites": 0,
+      "statements": 5
+    },
+    {
+      "file": "supabase/migrations/20261029032959_sacramentum_v292_chancery_concept_approval_preflight.sql",
+      "sha256": "de6eeea79847f58141ead9e449ad3d292afdad625f811f40704bfc51ecf2725b",
       "directWrites": 0,
       "statements": 5
     }
