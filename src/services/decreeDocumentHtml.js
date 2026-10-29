@@ -1,5 +1,5 @@
 import { buildDocumentaryDecreeHtml } from './decreeDocumentaryHtml.mjs';
-import { testDocumentPrintCss } from '../utils/testDocumentStamp.mjs';
+import { isTestRegistryData } from '../utils/testDocumentStamp.mjs';
 
 const clean = (value) => String(value ?? '').trim();
 
@@ -234,7 +234,7 @@ const decreeCode = (institution, type) => {
       || (upper(institution.dioceseName).includes('BARRANQUILLA') ? 'CAL-ODC-022' : 'SAC-ODC-022');
   }
   return clean(institution.correctionCode || institution.decreeCorrectionCode)
-    || (upper(institution.dioceseName).includes('BARRANQUILLA') ? 'CAL-ODC-021' : 'SAC-ODC-021');
+    || (upper(institution.dioceseName).includes('BARRANQUILLA') ? 'CAL-ODC-022' : 'SAC-ODC-022');
 };
 
 const joinContact = (institution = {}) => [
@@ -270,10 +270,13 @@ export function buildDecreeDocumentHtml({ row = {}, institution = {}, parish = {
   ].filter(Boolean).join(' '));
   const reason = upper(payload.reason || payload.fundamento || payload.causa || payload.observaciones || payload.legacyRaw?.observacio || '');
   const officeEmail = clean(institution.email);
-  const signer = upper(institution.chancellorName || institution.canciller || 'CANCILLER');
-  const signerTitle = jurisdictionType(dioceseName) === 'Arquidiócesis' ? 'CANCILLER ARQUIDIOCESANO' : 'CANCILLER DIOCESANO';
-  const code = decreeCode({ ...institution, dioceseName }, type);
-  const version = upper(institution.version || institution.documentVersion || '001');
+  // La autoridad que DA FE es quien expidió el DECRETO, no el código legado de la partida.
+  const signer = upper(payload.issuingSigner?.name || institution.chancellorName || institution.canciller || 'CANCILLER');
+  const signerTitle = payload.issuingSigner?.office==='vice_canciller'
+    ? (jurisdictionType(dioceseName)==='Arquidiócesis'?'VICECANCILLER ARQUIDIOCESANO':'VICECANCILLER DIOCESANO')
+    : (jurisdictionType(dioceseName)==='Arquidiócesis'?'CANCILLER ARQUIDIOCESANO':'CANCILLER DIOCESANO');
+  const code = dioceseName.includes('BARRANQUILLA') ? 'CAL-ODC-022' : decreeCode({ ...institution, dioceseName }, type);
+  const version = '002';
 
   const locationBoxes = type === 'correccion'
     ? `<div class="coords original">
@@ -321,7 +324,7 @@ export function buildDecreeDocumentHtml({ row = {}, institution = {}, parish = {
       : 'El despacho parroquial deberá velar por el resguardo y custodia del nuevo libro supletorio.');
 
   const footerContact = joinContact(institution);
-  const details = buildDetails(sacrament, record);
+  const details = buildDetails(sacrament, {...record, daFe:signer, da_fe:signer, dafe:signer, ministerFaith:signer});
 
   return `<!doctype html>
 <html lang="es">
@@ -329,53 +332,53 @@ export function buildDecreeDocumentHtml({ row = {}, institution = {}, parish = {
 <meta charset="utf-8">
 <title>Decreto ${escapeHtml(decreeNumber)}</title>
 <style>
-@page{size:Letter;margin:10mm 12mm 9mm}
+@page{size:Letter;margin:7mm 10mm 7mm}
 *{box-sizing:border-box}
 html,body{margin:0;padding:0;color:#161616;background:#fff}
-body{font-family:"Times New Roman",Times,serif;font-size:10.2pt;line-height:1.25}
-.sheet{width:100%;min-height:250mm;position:relative}
+body{font-family:"Times New Roman",Times,serif;font-size:9pt;line-height:1.13}
+.sheet{width:100%;min-height:0;position:relative;break-inside:avoid}
 .doc-code{position:absolute;right:0;top:0;text-align:right;font-family:Arial,sans-serif;font-size:6.5pt;font-weight:700;line-height:1.4}
-.header{text-align:center;padding-top:4mm}
-.header h1{font-size:16pt;letter-spacing:.04em;margin:0;font-weight:700}
-.header h2{font-size:11.2pt;letter-spacing:.08em;margin:2mm 0 0;font-weight:700}
-.title-box{display:inline-block;margin-top:4mm;border:1.5px solid #111;padding:2.4mm 5mm;font-weight:700;font-size:12pt;letter-spacing:.04em}
-.top-rule{border-top:1px solid #111;margin:4mm 0 4.2mm}
-.lead-grid{display:grid;grid-template-columns:1fr 78mm;gap:7mm;align-items:start}
-.recipient{font-size:10.8pt;text-align:justify;letter-spacing:.025em;line-height:1.45;padding-top:6mm}
+.header{text-align:center;padding-top:2mm}
+.header h1{font-size:14pt;letter-spacing:.03em;margin:0;font-weight:700}
+.header h2{font-size:10pt;letter-spacing:.06em;margin:1mm 0 0;font-weight:700}
+.title-box{display:inline-block;margin-top:2mm;border:1.5px solid #111;padding:1.5mm 4mm;font-weight:700;font-size:11pt;letter-spacing:.03em}
+.top-rule{border-top:1px solid #111;margin:2mm 0 2mm}
+.lead-grid{display:grid;grid-template-columns:1fr 78mm;gap:4mm;align-items:start}
+.recipient{font-size:9pt;text-align:justify;letter-spacing:.015em;line-height:1.22;padding-top:3mm}
 .decree-meta{border:1.4px solid #111;background:#f7f7f7}
 .decree-meta .block{text-align:right;padding:2mm 2.5mm}
 .decree-meta .block+ .block{border-top:1px solid #111}
 .decree-meta b{display:block;font-size:6.8pt;letter-spacing:.12em}
 .decree-meta strong{display:block;font-family:Consolas,"Courier New",monospace;font-size:15pt;margin-top:.6mm;letter-spacing:.06em}
 .decree-meta small{display:block;font-family:Consolas,"Courier New",monospace;font-size:7.2pt;font-weight:700;margin-top:.5mm}
-.intro{margin:4mm 0 2mm;text-align:justify;font-size:10.2pt}
-.target{text-align:center;font-size:13.2pt;font-weight:700;letter-spacing:.035em;margin:2mm auto 2mm;width:70%;border-bottom:1px solid #111;padding-bottom:1.5mm}
+.intro{margin:2.5mm 0 1.2mm;text-align:justify;font-size:9pt}
+.target{text-align:center;font-size:11pt;font-weight:700;letter-spacing:.02em;margin:1mm auto 1.5mm;width:80%;border-bottom:1px solid #111;padding-bottom:.6mm}
 .coords{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid #111;border-radius:3px;overflow:hidden;margin-top:2.5mm;background:#fafafa}
-.coords>div{text-align:center;padding:2mm 1mm;min-height:15mm}
+.coords>div{text-align:center;padding:1mm 1mm;min-height:10mm}
 .coords>div+div{border-left:1px solid #111}
 .coords b{display:block;font-size:7pt;letter-spacing:.1em}
 .coords strong{display:block;font-family:Consolas,"Courier New",monospace;font-size:10pt;margin-top:1.4mm}
-.section-rule{border-top:1.6px solid #111;margin:4mm 0 2mm}
+.section-rule{border-top:1.4px solid #111;margin:2mm 0 1.2mm}
 .section-title{text-align:center;font-size:8.5pt;letter-spacing:.13em;font-weight:700;margin-bottom:2mm}
 .details{margin-top:3mm}
-.detail-row{display:grid;grid-template-columns:44mm 1fr;gap:3mm;min-height:5.2mm;align-items:end}
-.detail-label{font-size:8.4pt;font-weight:700;letter-spacing:.08em}
-.detail-value{font-family:Consolas,"Courier New",monospace;font-size:8.4pt;border-bottom:1px dotted #7a7a7a;padding:0 1.5mm 1mm;min-height:4.6mm}
-.evidence,.disposition{margin-top:3mm;border:1px solid #111;background:#fafafa;padding:2.4mm 3mm 2mm}
+.detail-row{display:grid;grid-template-columns:44mm 1fr;gap:2mm;min-height:4.3mm;align-items:end;break-inside:avoid}
+.detail-label{font-size:7.8pt;font-weight:700;letter-spacing:.055em}
+.detail-value{font-family:Consolas,"Courier New",monospace;font-size:7.7pt;border-bottom:1px dotted #7a7a7a;padding:0 1mm .5mm;min-height:3.7mm;overflow-wrap:anywhere}
+.evidence,.disposition{margin-top:1.7mm;border:1px solid #111;background:#fafafa;padding:1.5mm 2mm 1.4mm;break-inside:avoid}
 .evidence legend,.disposition legend{font-size:8.2pt;font-weight:700;letter-spacing:.08em;background:#fff;padding:0 2mm}
 .disposition{font-family:Consolas,"Courier New",monospace;font-size:7.9pt;font-weight:700;line-height:1.35}
 .observation{margin-top:1.6mm;border-top:1px dashed #9a9a9a;padding-top:1.5mm}
-.important{font-size:7.5pt;margin-top:2.5mm;line-height:1.3}
-.signature-row{display:grid;grid-template-columns:1fr 54mm;gap:14mm;align-items:end;margin:10mm 12mm 0 12mm}
+.important{font-size:7pt;margin-top:1.6mm;line-height:1.2}
+.signature-row{display:grid;grid-template-columns:1fr 33mm;gap:6mm;align-items:end;margin:4mm 9mm 0 9mm;break-inside:avoid}
 .signature{text-align:center;border-top:1px solid #111;padding-top:2mm}
 .signature strong{display:block;font-size:9pt;letter-spacing:.06em}
 .signature span{display:block;font-size:7pt;font-weight:700;letter-spacing:.12em;margin-top:1mm}
-.seal{width:27mm;height:27mm;border:2px dotted #111;border-radius:50%;display:flex;align-items:center;justify-content:center;text-align:center;font-size:6.8pt;font-weight:700;letter-spacing:.06em}
-.footer{border-top:1px solid #111;text-align:center;margin-top:4mm;padding-top:2mm}
+.seal{width:19mm;height:19mm;border:2px dotted #111;border-radius:50%;display:flex;align-items:center;justify-content:center;text-align:center;font-size:6.8pt;font-weight:700;letter-spacing:.06em}
+.footer{border-top:1px solid #111;text-align:center;margin-top:2mm;padding-top:1.3mm;break-inside:avoid}
 .footer strong{display:block;font-size:7.4pt;letter-spacing:.11em}
 .footer div{font-size:6.8pt;margin-top:.7mm}
 @media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}.sheet{page-break-after:avoid}}
-${testDocumentPrintCss()}
+${isTestRegistryData() ? '.footer::after{content:"ENTORNO DE PRUEBAS · DOCUMENTO NO OFICIAL";display:block;font:6pt Arial,sans-serif;margin-top:2px}' : ''}
 </style>
 </head>
 <body>
@@ -429,7 +432,18 @@ ${testDocumentPrintCss()}
     ${officeEmail ? `<div>E-mail: ${escapeHtml(officeEmail)}</div>` : ''}
   </footer>
 </div>
-<script>window.onload=()=>window.print()</script>
+<script>
+window.onload=()=>{
+  // Letter: 279,4 mm de altura menos los márgenes de impresión.
+  // Escala únicamente cuando los detalles documentales exceden una página.
+  const sheet=document.querySelector('.sheet');
+  const availableHeight=970;
+  if(sheet && sheet.getBoundingClientRect().height>availableHeight){
+    sheet.style.zoom=String(Math.min(1,availableHeight/sheet.getBoundingClientRect().height));
+  }
+  requestAnimationFrame(()=>requestAnimationFrame(()=>window.print()));
+};
+</script>
 </body>
 </html>`;
 }

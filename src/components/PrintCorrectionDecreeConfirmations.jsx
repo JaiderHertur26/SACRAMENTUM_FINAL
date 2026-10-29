@@ -95,8 +95,8 @@ const PrintCorrectionDecreeConfirmations = forwardRef(({ decreeData }, ref) => {
 
   const jurisdictionKind = jurisdictionName.includes('ARQUIDIÓCESIS') ? 'Arquidiócesis' : jurisdictionName.includes('DIÓCESIS') ? 'Diócesis' : 'jurisdicción eclesiástica';
 
-  const cancillerName = chanceryData.canciller || '[CANCILLER NO CONFIGURADO]';
-  const cancillerCargo = chanceryData.cargo || 'CANCILLER DIOCESANO';
+  const cancillerName = decreeData.issuingSigner?.name || decreeData.payload?.issuingSigner?.name || chanceryData.canciller || '[CANCILLER NO CONFIGURADO]';
+  const cancillerCargo = decreeData.issuingSigner?.title || decreeData.payload?.issuingSigner?.title || chanceryData.cargo || 'CANCILLER DIOCESANO';
 
   let finalTargetParishName = targetParishInfo.name || '[NOMBRE PARROQUIA]';
   let finalTargetCity = targetParishInfo.city || misDatosParroquia.ciudad || authUser?.city || '[CIUDAD NO CONFIGURADA]';
@@ -143,7 +143,7 @@ const PrintCorrectionDecreeConfirmations = forwardRef(({ decreeData }, ref) => {
     lugarBautismo: getVal('lugarBautismo'), // Exclusivo confirmación/matrimonio
     padrinos: getVal('padrinos'),
     ministro: rawMinistro,
-    daFe: getVal('daFe') || getVal('dafe') || getVal('ministerFaith') || ''
+    daFe: cancillerName
   };
 
   const sexoRaw = String(confirmationRecord.sexoRaw || '').toUpperCase().trim();
@@ -180,7 +180,7 @@ const PrintCorrectionDecreeConfirmations = forwardRef(({ decreeData }, ref) => {
                <span className="font-bold uppercase tracking-wider text-[10pt] text-black">Decreto de Corrección de Partida</span>
             </div>
             <div className="absolute right-0 top-0 text-[6pt] font-mono text-black font-bold text-right leading-tight">
-              CÓDIGO: CAL-ODC-021<br/>VERSIÓN: 001
+              CÓDIGO: CAL-ODC-022<br/>VERSIÓN: 002
             </div>
           </div>
 

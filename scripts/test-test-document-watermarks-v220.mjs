@@ -45,9 +45,15 @@ for(const [title,builder] of documentBuilders){
  test('V220 independent printable HTML marks '+title,()=>{
   const html=builder();
   assert.ok(html.startsWith('<!doctype html>')||html.startsWith('<!DOCTYPE html>'));
-  assert.match(html,/COPIA DE REVISIÓN/);
-  assert.match(html,/COPIA DE REVISIÓN/);
-  assert.match(html,/body::after/);
+  if(title==='decreto de corrección'||title==='decreto de reposición'){
+    assert.doesNotMatch(html,/COPIA DE REVISIÓN/);
+    assert.match(html,/ENTORNO DE PRUEBAS/);
+    assert.match(html,/size:Letter/);
+  }else{
+    assert.match(html,/COPIA DE REVISIÓN/);
+    assert.match(html,/COPIA DE REVISIÓN/);
+    assert.match(html,/body::after/);
+  }
  });
 }
 for(const [label,builder] of [

@@ -11,6 +11,7 @@ test('V292 es una migración histórica inmutable, reemplazada por V293 sin apro
 });
 test('V293 conserva la emisión original V287 sin un prechequeo duplicado',()=>{
  const service=read('src/services/issueDecreeFromFullFormV287.js');
- assert.match(service,/issue_chancery_form_decree_v287/);
+ assert.match(service,/issue_chancery_form_decree_v294/);
+ assert.match(service,/chooseDecreeSignerV294/);
  assert.doesNotMatch(service,/checkChanceryDecreeConceptV292|authorization\.approved|approve_decree_concept/);
 });
