@@ -250,7 +250,8 @@ const joinContact = (institution = {}) => [
 
 export function buildDecreeDocumentHtml({ row = {}, institution = {}, parish = {}, sacramentalRecord = {}, autoPrint = true } = {}) {
   const payload = row.payload || {};
-  if (String(row.tipo || payload.decreeType || '').toLowerCase().includes('documental')) {
+  if (String(row.tipo || payload.decreeType || '').toLowerCase().includes('documental') ||
+      String(row.tipo || payload.decreeType || '').toLowerCase() === 'repeticion') {
     return buildDocumentaryDecreeHtml({ row, institution, parish });
   }
   const type = decreeTypeKey(row.tipo || payload.decreeType || payload.decretoType);

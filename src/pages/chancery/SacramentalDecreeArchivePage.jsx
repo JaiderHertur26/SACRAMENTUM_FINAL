@@ -741,7 +741,7 @@ const SacramentalDecreeArchivePage = () => {
               <p className="mt-1 text-xs text-slate-600">Consulta jerárquica por vicaría, decanato y parroquia</p>
             </div>
             <div className="flex flex-wrap gap-2" aria-label="Filtros por tipo de decreto">
-              {[['all','Todos'],['correccion','Correcciones'],['reposicion','Reposiciones'],['documental','Documentales'],['tribunal','Tribunal / nulidades']].map(([key,label])=>(
+              {[['all','Todos'],['correccion','Correcciones'],['reposicion','Reposiciones'],['repeticion','Repetición'],['documental','Documentales'],['tribunal','Tribunal / nulidades']].map(([key,label])=>(
                 <button key={key} type="button" onClick={()=>updateType(key)}
                   aria-pressed={typeFilter === key}
                   className={typeFilter === key ? 'rounded-xl bg-slate-900 px-3 py-2 text-xs font-bold text-white' : 'rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50'}>{label}</button>

@@ -4,6 +4,7 @@ import { useAuth } from '@/context/AuthContext';
 import DecreeCenterHeader from '@/components/chancery/DecreeCenterHeader';
 import { useSearchParams } from 'react-router-dom';
 import ChanceryDecreeInstitutionalManagementPage from './ChanceryDecreeInstitutionalManagementPage';
+import RepetitionDecreeWorkflowPage from '@/pages/RepetitionDecreeWorkflowPage';
 
 /**
  * Entrada única al Centro de Decretos. Las operaciones institucionales
@@ -18,6 +19,7 @@ const SacramentalDecreesCenterPage = () => {
   // Misma ruta ya autorizada en App.jsx: la gestión especializada se
   // presenta separadamente sin alterar el contrato de autenticación.
   if (view === 'gestion-institucional') return <ChanceryDecreeInstitutionalManagementPage />;
+  if (view === 'repeticion') return <RepetitionDecreeWorkflowPage scope="chancery" />;
 
   return (
     <DashboardLayout entityName={user?.dioceseName || 'Cancillería'}>

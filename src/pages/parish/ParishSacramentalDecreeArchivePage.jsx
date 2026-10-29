@@ -67,7 +67,7 @@ const ParishSacramentalDecreeArchivePage = () => {
   const rawType = String(searchParams.get('type') || '').toLowerCase();
   const rawSacrament = String(searchParams.get('sacrament') || 'bautismo').toLowerCase();
 
-  const typeFilter = ['reposicion','correccion','documental','tribunal'].includes(rawType) ? rawType : 'all';
+  const typeFilter = ['reposicion','correccion','documental','repeticion','tribunal'].includes(rawType) ? rawType : 'all';
 
   const sacrament = normalizeSacramentType(rawSacrament);
   const mode = typeFilter === 'correccion'
@@ -187,6 +187,7 @@ const ParishSacramentalDecreeArchivePage = () => {
                 ['all', 'Todos'],
                 ['correccion', 'Correcciones'],
                 ['reposicion', 'Reposiciones'],
+                ['repeticion', 'Repetición'],
                 ['documental', 'Documentales'],
                 ['tribunal', 'Tribunal / nulidades']
               ].map(([value, label]) => (

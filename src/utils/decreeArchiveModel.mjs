@@ -14,6 +14,7 @@ export const decreeCategory = (value, payload = {}) => {
   const v = raw.includes('legacy') ? String(payload.decreeType || payload.decretoType || payload.tipo || raw).toLowerCase() : String(value || payload.decreeType || payload.decretoType || payload.tipo || '').toLowerCase();
   if (v.includes('nulidad') || v === 'tribunal') return 'tribunal';
   if (v.includes('repos') || v.includes('replacement')) return 'reposicion';
+  if (v.includes('repeticion') || v.includes('repetición')) return 'repeticion';
   if (v.includes('correc') || v.includes('rectific')) return 'correccion';
   if (v.includes('document') || v.includes('constancia') || v.includes('repeticion') || v.includes('repetición') || v.includes('sin_efecto')) return 'documental';
   return 'otro';
@@ -39,7 +40,7 @@ export const isHistoricallyExecuted = (row = {}) => {
 export const decreeEffect = (row = {}) => {
   const payload = row.payload || {};
   const kind = decreeCategory(row.tipo, payload);
-  if (kind === 'documental' || kind === 'tribunal' || payload.registersEffect === false || payload.conceptPolicy?.registersEffect === false) {
+  if (kind === 'documental' || kind === 'repeticion' || kind === 'tribunal' || payload.registersEffect === false || payload.conceptPolicy?.registersEffect === false) {
     return 'sin_modificacion';
   }
   if (isHistoricalDecree(row)) {
@@ -62,6 +63,7 @@ export const decreeTypeLabel = (row = {}) => ({
   correccion: 'Corrección',
   reposicion: 'Reposición',
   documental: 'Documental · sin efecto registral',
+  repeticion: 'Repetición · actuación documental',
   tribunal: 'Antecedente de tribunal',
   otro: 'Otro decreto'
 }[decreeCategory(row.tipo, row.payload)]);

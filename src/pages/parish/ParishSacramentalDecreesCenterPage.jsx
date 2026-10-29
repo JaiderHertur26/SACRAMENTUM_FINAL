@@ -1,5 +1,6 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import RepetitionDecreeWorkflowPage from '@/pages/RepetitionDecreeWorkflowPage';
 import DashboardLayout from '@/components/DashboardLayout';
 import { useAuth } from '@/context/AuthContext';
 import DecreeCenterHeader, {
@@ -7,7 +8,7 @@ import DecreeCenterHeader, {
   DECREE_SACRAMENT_META,
   decreeRouteFor
 } from '@/components/chancery/DecreeCenterHeader';
-import { ArrowRight, FileText, LockKeyhole, ShieldCheck } from 'lucide-react';
+import { ArrowRight, FileText, LockKeyhole, ShieldCheck, ClipboardList } from 'lucide-react';
 
 const PARISH_REQUEST_DOCUMENTS = Object.freeze({
   bautismo: [['73021','Solicitud de corrección'],['73071','Solicitud de reposición']],
@@ -19,12 +20,20 @@ const PARISH_REQUEST_DOCUMENTS = Object.freeze({
 const ParishSacramentalDecreesCenterPage = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [params]=useSearchParams();
+  if (params.get('view') === 'repeticion') return <RepetitionDecreeWorkflowPage scope="parish" />;
 
   return (
     <DashboardLayout entityName={user?.parishName || 'Parroquia'}>
       <div className="mx-auto max-w-7xl space-y-7 pb-20">
         <DecreeCenterHeader scope="parish" />
 
+        <button type="button" onClick={() => navigate('/parroquia/decretos?view=repeticion')}
+          className="flex w-full items-center gap-3 rounded-2xl border border-blue-200 bg-blue-50 p-4 text-left hover:bg-blue-100">
+          <ClipboardList className="h-6 w-6 text-blue-800"/>
+          <span><strong className="block text-sm text-blue-950">Decretos de Repetición recibidos</strong>
+          <span className="text-xs text-blue-800">Verificar, documentar cumplimiento o solicitar aclaración a Cancillería; sin nuevos asientos automáticos.</span></span>
+        </button>
         <section className="grid gap-5 lg:grid-cols-3">
           {Object.entries(DECREE_OPERATION_META).map(([key, operation]) => {
             const Icon = operation.icon;
