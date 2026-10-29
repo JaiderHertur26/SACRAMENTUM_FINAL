@@ -45,9 +45,11 @@ test('V300 especialidades intactas, en otra pantalla protegida y accesible desde
  }
  assert.match(advanced,/Decreto documental nuevo/);
  assert.match(advanced,/Recuperar decreto antiguo/);
- assert.match(app,/path="\/chancery\/decretos\/gestion-institucional" element=\{<ProtectedRoute requiredRole=\{ROLE_TYPES.CHANCERY\}>/);
+ assert.match(main,/if \(view === 'gestion-institucional'\) return <ChanceryDecreeInstitutionalManagementPage/);
+ assert.match(main,/useSearchParams/);
+ assert.doesNotMatch(app,/path="\/chancery\/decretos\/gestion-institucional"/);
  assert.match(app,/path="\/chancery\/decretos" element=\{<ProtectedRoute requiredRole=\{ROLE_TYPES.CHANCERY\}>/);
- assert.match(sidebar,/path: '\/chancery\/decretos\/gestion-institucional'/);
+ assert.match(sidebar,/path: '\/chancery\/decretos\?view=gestion-institucional'/);
 });
 
 test('V300 Parroquia no recibe cambios en su Centro de Decretos',()=>{
