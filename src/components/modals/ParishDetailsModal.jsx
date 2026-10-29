@@ -7,7 +7,7 @@ const ParishDetailsModal = ({ isOpen, onClose, parish, vicaries = [], deaneries 
   if (!parish) return null;
 
   const vicaryId = parish.vicary_id || parish.vicaryId || '';
-  const deaneryId = parish.decanate_id || parish.decanateId || parish.deanery_id || '';
+  const deaneryId = parish.decanate_id || parish.decanateId || '';
   const vicary = vicaries.find((v) => String(v.id) === String(vicaryId));
   const deanery = deaneries.find((d) => String(d.id) === String(deaneryId));
   const displayUser = profile?.full_name || profile?.username || profile?.email || 'Sin cuenta activada';
@@ -28,7 +28,7 @@ const ParishDetailsModal = ({ isOpen, onClose, parish, vicaries = [], deaneries 
           </div>
           <div>
             <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider block mb-1">Decanato</label>
-            <p className="text-slate-900">{deanery?.name || 'No asignado'}</p>
+            <p className="text-slate-900">{deanery?.name || (vicary ? 'Adscripción directa a la Vicaría (sin decanato)' : 'No asignado')}</p>
           </div>
         </div>
 

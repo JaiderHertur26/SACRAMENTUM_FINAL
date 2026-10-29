@@ -17,7 +17,7 @@ const EditParishModal = ({ isOpen, onClose, parish, dioceseId, vicaries = [], de
       city: parish.city || '',
       priest: parish.parroco || '',
       vicaryId: parish.vicary_id || parish.vicaryId || '',
-      deaneryId: parish.decanate_id || parish.decanateId || parish.deanery_id || '',
+      deaneryId: parish.decanate_id || parish.decanateId || '',
     });
   }, [parish]);
 
@@ -36,8 +36,17 @@ const EditParishModal = ({ isOpen, onClose, parish, dioceseId, vicaries = [], de
       toast({ title: 'Nombre requerido', description: 'La parroquia debe conservar un nombre oficial.', variant: 'destructive' });
       return;
     }
-    if (!formData.vicaryId || !formData.deaneryId) {
-      toast({ title: 'Jerarquía obligatoria', description: 'La parroquia debe pertenecer a una Vicaría y a un Decanato.', variant: 'destructive' });
+    if (!formData.vicaryId) {
+      toast({ title: 'Vicaría obligatoria', description: 'La parroquia debe pertenecer a una vicaría. El decanato es opcional.', variant: 'destructive' });
+      return;
+    }
+
+    if (!vicaries.some(v => String(v.id) === String(formData.vicaryId))) {
+      toast({ title: 'Vicaría inválida', description: 'La vicaría seleccionada no pertenece a la organización disponible.', variant: 'destructive' });
+      return;
+    }
+    if (formData.deaneryId && !availableDeaneries.some(d => String(d.id) === String(formData.deaneryId))) {
+      toast({ title: 'Decanato inválido', description: 'El decanato no pertenece a la vicaría seleccionada.', variant: 'destructive' });
       return;
     }
 
@@ -90,10 +99,10 @@ const EditParishModal = ({ isOpen, onClose, parish, dioceseId, vicaries = [], de
             </select>
           </div>
           <div>
-            <label className="text-sm font-medium text-slate-700 block mb-1">Decanato</label>
+            <label className="text-sm font-medium text-slate-700 block mb-1">Decanato (opcional)</label>
             <select value={formData.deaneryId} onChange={(e) => setFormData({ ...formData, deaneryId: e.target.value })}
               className="w-full border border-slate-200 rounded-lg px-3 py-2 bg-white" disabled={!formData.vicaryId}>
-              <option value="">Seleccione Decanato</option>
+              <option value="">Sin decanato · directamente adscrita a la Vicaría</option>
               {availableDeaneries.map((d) => <option key={d.id} value={d.id}>{d.name}</option>)}
             </select>
           </div>
