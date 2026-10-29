@@ -25,7 +25,9 @@ const sacramentLabel = (value) => {
 const NotificationCard = ({ notification, onView }) => {
     const isUnread = notification.status === 'pending' || notification.status === 'unread';
     const isCorrection = ['correction', 'correccion'].includes(notification.decree_type);
-    const decreeLabel = isCorrection ? 'Decreto de Corrección' : 'Decreto de Reposición';
+    const decreeLabel = notification.decree_type === 'repeticion' ? 'Decreto de Repetición' :
+      notification.decree_type === 'documental' ? 'Decreto Documental' :
+      isCorrection ? 'Decreto de Corrección' : 'Decreto de Reposición';
 
     return (
         <motion.div 

@@ -3,7 +3,9 @@ import { TABLE_NAMES, NOTIFICATION_STATUS } from '@/config/supabaseConfig';
 
 const normalizeDecreeType = (value) => {
   const v = String(value || '').toLowerCase();
+  if (v.includes('repet')) return 'repeticion';
   if (v.includes('repos')) return 'reposicion';
+  if (v.includes('document')) return 'documental';
   if (v.includes('anul') || v.includes('nul')) return 'anulacion';
   return 'correccion';
 };

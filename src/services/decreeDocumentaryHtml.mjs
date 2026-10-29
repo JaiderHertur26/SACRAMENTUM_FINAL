@@ -11,8 +11,11 @@ export function buildDocumentaryDecreeHtml({row={},institution={},parish={}}={})
   const p = row.payload || {};
   const issuerBrand = decreeInstitutionBranding(row);
   const historical = p.historical === true || p.recordOrigin === 'historical_archive';
-  const title = historical ? 'RECONSTRUCCIÓN DE DECRETO HISTÓRICO' : 'DECRETO DOCUMENTAL DE CANCILLERÍA';
-  const notice = historical
+  const repetition = row.tipo === 'repeticion' || p.decreeType === 'repeticion';
+  const title = repetition ? 'DECRETO DE REPETICIÓN' : historical ? 'RECONSTRUCCIÓN DE DECRETO HISTÓRICO' : 'DECRETO DOCUMENTAL DE CANCILLERÍA';
+  const notice = repetition
+    ? 'ACTUACIÓN DE REPETICIÓN / ERROR DE TRANSCRIPCIÓN: LA PARROQUIA DEBE EXAMINAR LA EVIDENCIA Y DEJAR CONSTANCIA. NO SE CREA, ANULA NI RENÚMERA PARTIDA AUTOMÁTICAMENTE.'
+    : historical
     ? 'TRANSCRIPCIÓN / RECONSTRUCCIÓN PARA ARCHIVO: NO CONSTITUYE NUEVA EXPEDICIÓN DEL ACTO ORIGINAL NI CERTIFICA EFECTOS REGISTRALES NO VERIFICADOS.'
     : 'ACTO DOCUMENTAL: NO ORDENA ANULACIÓN, CORRECCIÓN NI REPOSICIÓN DE PARTIDAS SACRAMENTALES.';
   const date = String(row.decree_date || p.decreeDate || '').slice(0,10);
@@ -43,14 +46,17 @@ export function buildDocumentaryDecreeHtml({row={},institution={},parish={}}={})
       <dt>Parroquia</dt><dd>${value(row.parish_name || parish.name || p.parishName)}</dd>
       <dt>Sacramento</dt><dd>${value(sacramentLabel[row.sacrament_type || p.sacramentType] || row.sacrament_type || p.sacramentType)}</dd>
       <dt>Expediente</dt><dd>${value(p.targetName)}</dd>
-      <dt>Estado</dt><dd>${historical ? 'Archivo histórico documental' : 'Decreto documental vigente'}</dd>
+      <dt>Estado</dt><dd>${repetition ? value(p.repetitionWorkflowStatus === 'completed_documentary' ? 'Constancia parroquial registrada' : p.repetitionWorkflowStatus === 'needs_chancery_review' ? 'En revisión por Cancillería' : 'Pendiente de constancia parroquial') : historical ? 'Archivo histórico documental' : 'Decreto documental vigente'}</dd>
     </dl>
     <h2>FUNDAMENTO Y DISPOSICIONES</h2>
     <section class="reason">${value(p.reason || p.fundamento)}</section>
+    ${repetition ? `<h2>REFERENCIA DOCUMENTAL</h2><section class="reason">${value(p.evidenceRef)}</section>
+       <h2>DISPOSICIÓN DE CANCILLERÍA AL PÁRROCO</h2><section class="reason">${value(p.instruction)}</section>` : ''}
     ${historical ? `<h2>FUENTE DEL ANTECEDENTE</h2><section class="reason">${value(p.sourceReference)}</section>` : ''}
     <footer>
+      ${repetition ? `<div style="height:70px"></div><div style="max-width:430px;margin:0 auto 14px;text-align:center;border-top:1px solid #23314a;padding-top:6px"><strong>${value(p.signerName)}</strong><div>${value(p.signerTitle)}</div></div>` : ''}
       <strong>${historical ? 'Custodia documental de Cancillería' : 'Cancillería diocesana'}</strong>
-      <p class="muted">${historical
+      <p class="muted">${repetition ? 'La constancia de verificación se registra en el expediente institucional; no autoriza por sí sola la modificación de partidas.' : historical
         ? 'Copia de consulta reconstruida a partir de la fuente indicada; no sustituye al original.'
         : 'Este documento no tiene efecto automático sobre las partidas. Consulte el expediente institucional para su validación.'}</p>
       <p>Archivo del mismo decreto en Cancillería y en su parroquia destinataria.</p>
