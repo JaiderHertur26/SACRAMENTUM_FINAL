@@ -10,9 +10,9 @@ const empty={parishId:'',sacrament:'bautismo',type:'correccion',
  decreeDate:'',targetName:'',reason:'',evidenceRef:''};
 const input='mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-800';
 const label='text-xs font-bold text-slate-700';
-export default function ChanceryDecreeIssueV280(){
+export default function ChanceryDecreeIssueV280({initialSacrament='bautismo',initialType='correccion'}){
  const {user}=useAuth();
- const [form,setForm]=useState(empty);
+ const [form,setForm]=useState(()=>({...empty,sacrament:initialSacrament,type:initialType}));
  const [parishes,setParishes]=useState([]);
  const [ctx,setCtx]=useState(null);
  const [loading,setLoading]=useState(false);
