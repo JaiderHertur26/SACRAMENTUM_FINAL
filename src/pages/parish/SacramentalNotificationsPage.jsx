@@ -10,12 +10,10 @@ import ConfirmationDialog from '@/components/ui/ConfirmationDialog';
 import TablaAvisos from '@/components/TablaAvisos';
 import ModalVerAviso from '@/components/ModalVerAviso';
 import SacramentalCaseDocumentV277 from '@/components/SacramentalCaseDocumentV277';
-import { getSacramentalCaseDocumentV289 } from '@/services/sacramentalCasesV277';
 import { Link } from 'react-router-dom';
 import ModalVerAcuseSacramental from '@/components/ModalVerAcuseSacramental';
 import ModalVincularPartidaNotificacion from '@/components/ModalVincularPartidaNotificacion';
 import { useAuth } from '@/context/AuthContext';
-import { updatePhysicalLocatorV277 } from '@/services/sacramentalPhysicalLocatorV277';
 import { getParishSessionScope } from '@/utils/parishSessionScope.mjs';
 import { useAppData } from '@/context/AppDataContext';
 import {
@@ -49,7 +47,8 @@ const SacramentalNotificationsSession = ({ user, parishId }) => {
   const printCompleteCase=useReactToPrint({content:()=>completeCaseRef.current,
     documentTitle:'Correspondencia_Sacramental_Completa'});
   const openCompleteCase=async notificationId=>{
-    try{const doc=await getSacramentalCaseDocumentV289(notificationId);setCompleteCase(doc);}
+    try{const {getSacramentalCaseDocumentV289}=await import('@/services/sacramentalCasesV277');
+      const doc=await getSacramentalCaseDocumentV289(notificationId);setCompleteCase(doc);}
     catch(e){toast({title:'No se pudo consultar el expediente compartido',description:e.message,variant:'destructive'});}
   };
   const [pendingAcceptance, setPendingAcceptance] = useState(null);
@@ -217,6 +216,7 @@ const SacramentalNotificationsSession = ({ user, parishId }) => {
     if(!locatorRecipient?.id || savingLocator)return;
     setSavingLocator(true);
     try{
+      const {updatePhysicalLocatorV277}=await import('@/services/sacramentalPhysicalLocatorV277');
       await updatePhysicalLocatorV277({recipientId:locatorRecipient.id,...physicalLocator});
       toast({title:'Partida física localizada',description:'Puede certificar el asiento físico después de efectuar la nota marginal.'});
       setLocatorRecipient(null);setShowNotification(false);
