@@ -23,20 +23,34 @@ export function ceremonyPeopleV277(record,sacrament) {
 
 export async function loadSacramentalCaseContextV277(parishId) {
   if(!parishId) throw new Error('Sesión parroquial incompleta');
-  const [marriages,confirmations,destinations] = await Promise.all([
-    supabase.from('marriages').select('id,parish_id,celebration_date,book_number,folio,number,status,raw_data').eq('parish_id',parishId).order('celebration_date',{ascending:false}).limit(300),
-    supabase.from('confirmations').select('id,parish_id,celebration_date,book_number,folio,number,status,nombres,apellidos').eq('parish_id',parishId).order('celebration_date',{ascending:false}).limit(300),
-    supabase.rpc('list_sacramental_parish_destinations_v277')
-  ]);
-  if(marriages.error) throw marriages.error;
-  if(confirmations.error) throw confirmations.error;
-  if(destinations.error) throw destinations.error;
-  const eligible=x=>active(x)&&Boolean(x.celebration_date&&x.book_number&&x.folio&&x.number);
+  // V291: no consultar las primeras 300 partidas ni cargar padrones completos.
+  // El selector invoca el buscador paginado del servidor por separado.
+  const {data:destinations,error}=await supabase.rpc('list_sacramental_parish_destinations_v277');
+  if(error) throw error;
   return {
-    marriages:(marriages.data||[]).filter(x=>eligible(x)&&ceremonyPeopleV277(x,'matrimonio').every(p=>p.name.length>=4)),
-    confirmations:(confirmations.data||[]).filter(x=>eligible(x)&&ceremonyPeopleV277(x,'confirmacion').every(p=>p.name.length>=4)),
-    parishes:(destinations.data||[]).map(p=>({...p,dioceseName:p.dioceseName||'Diócesis'}))
+    parishes:(destinations||[]).map(p=>({...p,dioceseName:p.dioceseName||'Diócesis'}))
   };
+}
+
+/**
+ * V291: búsqueda real en servidor, paginada y restringida por auth.uid().
+ * No acepta parishId para impedir consultas a otra parroquia.
+ */
+export async function searchCelebratedSacramentalRecordsV291({
+  sacrament,query='',book='',folio='',number='',date='',page=0,limit=15
+}={}) {
+  if(!['matrimonio','confirmacion'].includes(sacrament))
+    throw new Error('Sacramento no válido');
+  if(!Number.isInteger(page)||page<0||page>13333)
+    throw new Error('Página de resultados inválida');
+  const {data,error}=await supabase.rpc('search_celebrated_sacramental_records_v291',{
+    p_sacrament:sacrament,p_query:query.trim(),p_book:book.trim(),
+    p_folio:folio.trim(),p_number:number.trim(),p_date:date||null,
+    p_offset:page*limit,p_limit:limit
+  });
+  if(error)throw new Error(error.message||'No fue posible buscar partidas asentadas');
+  if(!data||!Array.isArray(data.items))throw new Error('Respuesta de búsqueda inválida');
+  return {items:data.items,total:Number(data.total)||0,hasMore:data.hasMore===true};
 }
 
 export async function issueSacramentalCaseV277({sacrament,sourceRecordId,senderParishId,parties}) {

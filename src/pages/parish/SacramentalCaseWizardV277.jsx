@@ -5,6 +5,7 @@ import {BookOpenCheck,Church,FileCheck2,FileText,Inbox,Loader2,Printer,RefreshCc
 import DashboardLayout from '@/components/DashboardLayout';
 import BusquedaPartidaBautismo from '@/components/BusquedaPartidaBautismo';
 import SacramentalCaseDocumentV277 from '@/components/SacramentalCaseDocumentV277';
+import CelebratedSacramentSearchV291 from '@/components/CelebratedSacramentSearchV291';
 import {Button} from '@/components/ui/button';
 import {useToast} from '@/components/ui/use-toast';
 import {useAuth} from '@/context/AuthContext';
@@ -17,7 +18,7 @@ import {validateSacramentalCase,notificationCaseLabel,CASE_STATUS} from '@/domai
 
 const inputClass='mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-semibold text-slate-800';
 const labelClass='text-[10px] font-black uppercase tracking-wider text-slate-500';
-const emptyContext={marriages:[],confirmations:[],parishes:[]};
+const emptyContext={parishes:[]};
 const blankDestination=(base,parishId)=>({...base,mode:'local',parishId,baptismId:null,
   externalParishName:'',externalDioceseName:'',deliveryReference:'',
   searchReference:'',locator:{book:'',folio:'',number:''}});
@@ -84,7 +85,7 @@ function CaseSession({user,parishId,initialSacrament='matrimonio'}){
   const {toast}=useToast();
   const [sacrament,setSacrament]=useState(()=>new URLSearchParams(window.location.search).get('sacrament')==='confirmacion'?'confirmacion':initialSacrament);
   const [context,setContext]=useState(emptyContext);
-  const [sourceId,setSourceId]=useState('');
+  const [source,setSource]=useState(null);
   const [parties,setParties]=useState([]);
   const [documents,setDocuments]=useState([]);
   const [mode,setView]=useState('emitir');
@@ -94,8 +95,7 @@ function CaseSession({user,parishId,initialSacrament='matrimonio'}){
   const [preview,setPreview]=useState(null);
   const printRef=useRef(null);
   const handlePrint=useReactToPrint({content:()=>printRef.current,documentTitle:'Notificacion_Sacramental_SACRAMENTUM'});
-  const sources=sacrament==='matrimonio'?context.marriages:context.confirmations;
-  const source=sources.find(x=>x.id===sourceId)||null;
+
   const reload=useCallback(async()=>{
     setBusy(true);
     try{
@@ -106,23 +106,22 @@ function CaseSession({user,parishId,initialSacrament='matrimonio'}){
   },[parishId,toast]);
   useEffect(()=>{reload();},[reload]);
   useEffect(()=>{
-    setSourceId('');setParties([]);setPreview(null);
+    setSource(null);setParties([]);setPreview(null);
   },[sacrament]);
-  const chooseSource=id=>{
-    setSourceId(id);
-    const selected=sources.find(x=>x.id===id);
-    setParties(selected?ceremonyPeopleV277(selected,sacrament).map(p=>blankDestination(p,parishId)):[]);
+  const chooseSource=record=>{
+    setSource(record);
+    setParties(record?ceremonyPeopleV277(record,sacrament).map(p=>blankDestination(p,parishId)):[]);
   };
   const updateParty=(index,newValue)=>setParties(prev=>prev.map((p,i)=>i===index?newValue:p));
   const send=async()=>{
     if(submitting)return;
     try{
       const valid=validateSacramentalCase({sacrament,senderParishId:parishId,parties});
-      if(!sourceId||valid.length!==parties.length)throw new Error('Seleccione una partida del sacramento celebrado');
+      if(!source?.id||valid.length!==parties.length)throw new Error('Seleccione una partida del sacramento celebrado');
       setSubmitting(true);
-      const result=await issueSacramentalCaseV277({sacrament,sourceRecordId:sourceId,senderParishId:parishId,parties});
+      const result=await issueSacramentalCaseV277({sacrament,sourceRecordId:source.id,senderParishId:parishId,parties});
       toast({title:'Correspondencia sacramental emitida',description:`${result.document_number} · ${result.internal} destinos internos, ${result.external} externos. Cada persona tendrá su propia constancia.`});
-      setView('seguimiento');setSourceId('');setParties([]);
+      setView('seguimiento');setSource(null);setParties([]);
       await reload();
     }catch(e){toast({title:'No se pudo emitir',description:e.message,variant:'destructive'});}
     finally{setSubmitting(false);}
@@ -166,15 +165,12 @@ function CaseSession({user,parishId,initialSacrament='matrimonio'}){
               <option value="matrimonio">Matrimonio · 2 contrayentes</option>
               <option value="confirmacion">Confirmación · 1 confirmando</option>
             </select></label>
-          <label className={labelClass+" mt-4 block"}>Partida del sacramento celebrado
-            <select className={inputClass} value={sourceId} onChange={e=>chooseSource(e.target.value)}>
-              <option value="">Seleccione registro asentado</option>
-              {sources.map(x=><option key={x.id} value={x.id}>
-                {ceremonyPeopleV277(x,sacrament).map(p=>p.name).join(' / ')} · {x.celebration_date}
-                {' '}· L {x.book_number} F {x.folio} N {x.number}
-              </option>)}
-            </select></label>
-          {!busy&&!sources.length&&<p className="mt-3 text-xs text-amber-700">No hay partidas asentadas y vigentes disponibles para este sacramento en la sesión actual.</p>}
+          <div className="mt-4">
+            <h2 className={labelClass}>Partida del sacramento celebrado</h2>
+            <p className="mt-1 text-xs text-slate-500">Localice la partida por persona, datos del libro o fecha. La búsqueda consulta el servidor y muestra 15 resultados por página.</p>
+            <CelebratedSacramentSearchV291 key={parishId+':'+sacrament}
+              sacrament={sacrament} selected={source} onSelect={chooseSource}/>
+          </div>
         </div>
         {parties.map((p,i)=><PartyEditor key={p.role} party={p} index={i}
           senderParishId={parishId} parishes={context.parishes} onChange={updateParty}/>)}

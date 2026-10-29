@@ -10,6 +10,7 @@ const sha=f=>createHash('sha256').update(fs.readFileSync(f,'utf8').replace(/\r\n
 const currentMigration='supabase/migrations/20261027044045_secure_definer_pg_temp_last_v229.sql';
 // V276: exact-byte certification of the 14 INSTALL-ONLY migrations already applied to Supabase.
 // Every newly deployed public RPC remains REVOKED until separately audited official cutover.
+const approvedV291Search=new Map([['20261029031120_sacramentum_v291_search_celebrated_sources_paged.sql','3ed447cf3918d8ee09dd417ac73234137e7ff917bd652e8a4e28acc5318ae5b0']]);
 const approvedV288IntegratedNotifications=new Map([
  ['20261029021505_sacramentum_v288_complete_notifications_and_private_return_evidence.sql','550108e2f481b59a22a7cfef7ed28e0db1f122c3797500cca6f84ad09a44d0c7'],
  ['20261029021716_sacramentum_v289_shared_case_document_sender_and_recipient.sql','41e620bfc8147b9c008d22e971ed04ec1c385cda93b6853bffb5b961f53368ab'],
@@ -83,6 +84,8 @@ test('V229 remote migration version is identical to the checked-in CLI-created m
  for(const f of approvedV287NoPrematureCoords.keys())assert.ok(all.includes(f),'V287 RPC migration missing: '+f);
  assert.equal(approvedV288IntegratedNotifications.size,3);
  for(const f of approvedV288IntegratedNotifications.keys())assert.ok(all.includes(f),'V288 notification migration missing: '+f);
+ assert.equal(approvedV291Search.size,1);
+ for(const f of approvedV291Search.keys())assert.ok(all.includes(f),'V291 migration missing: '+f);
  for(const later of all.filter(x=>('supabase/migrations/'+x)>currentMigration)) {
   const body=fs.readFileSync('supabase/migrations/'+later,'utf8');
   if(later==='20261027125848_harden_chat_actor_guard_v232.sql') {
@@ -110,6 +113,12 @@ test('V229 remote migration version is identical to the checked-in CLI-created m
     assert.match(body,/materialize_legacy_decrees_v68/);
     assert.match(body,/v_chancery IS NULL/);
     assert.doesNotMatch(body,/\\b(?:INSERT INTO|UPDATE\\s+public\\.|DELETE FROM|TRUNCATE\\s+TABLE|DROP TABLE)\\b/i);
+  } else if (approvedV291Search.has(later)) {
+    assert.equal(sha('supabase/migrations/'+later),approvedV291Search.get(later),'V291 reviewed SQL changed');
+    assert.match(body,/search_celebrated_sacramental_records_v291/);
+    assert.match(body,/up\.auth_user_id=auth\.uid\(\)/);
+    assert.match(body,/REVOKE ALL ON FUNCTION/);
+    assert.doesNotMatch(body,/^\s*TRUNCATE\s+TABLE\b/mi);
   } else if (approvedV288IntegratedNotifications.has(later)) {
     assert.equal(sha('supabase/migrations/'+later),approvedV288IntegratedNotifications.get(later),
       'V288/V289 integrated notifications migration changed without review: '+later);
