@@ -1,7 +1,7 @@
 {
   "protocol": "V232",
   "environment": "OFFLINE_QA_SCHEMAS_ONLY",
-  "migrationCount": 191,
+  "migrationCount": 192,
   "directWriteMigrationCount": 15,
   "directWriteStatementCount": 46,
   "findings": [
@@ -1518,6 +1518,12 @@
       "sha256": "8e68d8a2549e6f76ad0f54bb36e97d1a341043f23518211240386616dd97d603",
       "directWrites": 0,
       "statements": 9
+    },
+    {
+      "file": "supabase/migrations/20261029031120_sacramentum_v291_search_celebrated_sources_paged.sql",
+      "sha256": "3ed447cf3918d8ee09dd417ac73234137e7ff917bd652e8a4e28acc5318ae5b0",
+      "directWrites": 0,
+      "statements": 5
     }
   ]
 }
