@@ -73,7 +73,7 @@ export default function ChanceryDecreeIssueV280(){
  return <section aria-label="Expedir decretos sin libro" className="space-y-5 rounded-3xl border-2 border-blue-100 bg-white p-6 shadow-sm">
   <div><p className="text-[10px] font-black uppercase tracking-widest text-blue-600">Cancillería · Expedición y envío</p>
    <h2 className="mt-2 font-serif text-xl font-black">Nuevo decreto para asiento en la parroquia</h2>
-   <p className="mt-2 text-xs text-slate-600">Corrección: anula la partida original al sentar la nueva. Reposición: crea una partida sin anular otra. Ambos exigen concepto supletorio autorizado; la parroquia asigna Libro, Folio y Número al aceptar.</p>
+   <p className="mt-2 text-xs text-slate-600">Corrección: anula la partida original al sentar la nueva. Reposición: crea una partida sin anular otra. Cancillería expide con su competencia institucional; la parroquia asigna Libro, Folio y Número al sentar.</p>
   </div>
   <div className="grid gap-3 md:grid-cols-3">
    <label className={label}>Parroquia destinataria
@@ -93,9 +93,9 @@ export default function ChanceryDecreeIssueV280(){
      <option value="reposicion">Crea nueva sin anulación</option>
     </select>
    </label>
-   <label className={label+" md:col-span-3"}>Concepto eclesiástico autorizado
+   <label className={label+" md:col-span-3"}>Concepto eclesiástico vigente
     <select className={input} disabled={!ctx} value={form.conceptId} onChange={e=>edit('conceptId',e.target.value)}>
-     <option value="">Seleccione concepto aprobado por Diócesis</option>
+     <option value="">Seleccione concepto compatible</option>
      {conceptOptions.map(x=><option key={x.id} value={x.id}>{x.codigo} · {x.concepto}</option>)}
     </select>
    </label>
@@ -119,7 +119,7 @@ export default function ChanceryDecreeIssueV280(){
   </div>
   {selectedPending&&<p className="text-xs text-slate-600">Se utiliza la boleta nueva {selectedPending.registrationNumber}. No se asigna libro desde Cancillería.</p>}
   {loading&&<p className="text-xs">Comprobando actas y conceptos…</p>}
-  {!loading&&ctx&&conceptOptions.length===0&&<p className="text-xs font-bold text-amber-800">Esta diócesis no tiene un concepto compatible y aprobado para esta operación. La emisión no puede realizarse hasta que exista la aprobación institucional.</p>}
+  {!loading&&ctx&&conceptOptions.length===0&&<p className="text-xs font-bold text-amber-800">No hay concepto vigente y compatible para esta operación. Revise su clasificación en el catálogo eclesiástico.</p>}
   {error&&<p role="alert" className="text-sm font-semibold text-red-700">{error}</p>}
   {done&&<p role="status" className="text-sm font-semibold text-green-700">{done}</p>}
   <Button disabled={sending||loading||!ctx||!conceptOptions.length||!form.conceptId||!form.pendingId||!form.decreeNumber||!form.decreeDate}

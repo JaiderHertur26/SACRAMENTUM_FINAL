@@ -15,7 +15,6 @@ import { pickRecordValue, dateOnlyRecordValue, normalizeParentUnion, normalizeSe
 import { convertDateToSpanishText } from '@/utils/dateTimeFormatters';
 import DecreeCenterHeader from '@/components/chancery/DecreeCenterHeader';
 import DecreeConceptEffects from '@/components/chancery/DecreeConceptEffects';
-import ChanceryConceptApprovalStatusV292 from '@/components/chancery/ChanceryConceptApprovalStatusV292';
 import { filterDecreeConcepts, normalizeDecreeConceptPolicy } from '@/utils/decreeConceptPolicy';
 import {
   CanonicalParishSelector,
@@ -75,7 +74,6 @@ const NewDecreeCorrectionPage = () => {
     const navigate = useNavigate();
 
     const [isLoading, setIsLoading] = useState(false);
-    const [conceptApproved,setConceptApproved]=useState(false);
     const [cloudParams, setCloudParams] = useState({});
     const [conceptos, setConceptos] = useState([]);
     
@@ -434,8 +432,7 @@ const NewDecreeCorrectionPage = () => {
 
                             <div className="px-6 pt-5">
                                 <DecreeConceptEffects concept={selectedConcept} />
-                    <ChanceryConceptApprovalStatusV292 conceptId={decreeData.conceptoAnulacion}
-                      sacrament="bautismo" type="correccion" onStatusChange={setConceptApproved}/>
+                    
                             </div>
 
                             <CanonicalSupplementaryPreview
@@ -523,7 +520,7 @@ const NewDecreeCorrectionPage = () => {
                             </div>
 
                             <CanonicalActionFooter>
-                                <Button onClick={handleSave} disabled={!foundRecord || !conceptApproved || isLoading} className="h-12 w-full bg-slate-900 font-black text-white hover:bg-slate-800">
+                                <Button onClick={handleSave} disabled={!foundRecord || isLoading} className="h-12 w-full bg-slate-900 font-black text-white hover:bg-slate-800">
                                     {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
                                     Expedir corrección y notificar a la parroquia
                                 </Button>

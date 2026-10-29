@@ -7,7 +7,6 @@ import { submitCourtReceiptCheck } from '@/services/nullityReceiptDualControl';
 import CourtReceiptInstitutionalPanel from '@/components/chancery/CourtReceiptInstitutionalPanel';
 import NewSupplementaryDecreePanelV271 from '@/components/chancery/NewSupplementaryDecreePanelV271';
 import DiocesanSupplementaryConceptApprovalV272 from '@/components/chancery/DiocesanSupplementaryConceptApprovalV272';
-import DiocesanNewDecreeConceptApprovalV282 from '@/components/chancery/DiocesanNewDecreeConceptApprovalV282';
 import NullityInstitutionalPreflightPanel from '@/components/chancery/NullityInstitutionalPreflightPanel';
 import { supabase } from '@/lib/supabaseClient';
 import { listDecrees } from '@/services/decreeRegistryService';
@@ -153,7 +152,6 @@ export default function DiocesanDecreeOversightPage() {
           </div>
         </header>
         <Link to="/diocese/decretos/conciliaciones" className="inline-flex rounded-xl border border-indigo-200 bg-indigo-50 px-4 py-3 text-xs font-bold text-indigo-900 hover:bg-indigo-100">Revisar autorizaciones de conciliación de notas →</Link>
-        <DiocesanNewDecreeConceptApprovalV282 />
         <DiocesanSupplementaryConceptApprovalV272 />
         <NewSupplementaryDecreePanelV271 mode="approve" />
         <NullityInstitutionalPreflightPanel />

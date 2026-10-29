@@ -81,6 +81,6 @@ test('V280 pantallas enlazadas a decreto, Cancillería y Diócesis',()=>{
  assert.match(page,/seatStatus==='seated'/);
  assert.match(chancery,/ChanceryDecreeIssueV280/);
  assert.match(chancery,/ChanceryDecreeSeatReceiptsV280/);
- assert.match(diocesan,/DiocesanNewDecreeConceptApprovalV282/);
+ assert.doesNotMatch(diocesan,/DiocesanNewDecreeConceptApprovalV282/); // V293: autorización propia de Cancillería
  assert.match(context,/CREATE FUNCTION public\.get_parish_decree_books_v280/);
 });
