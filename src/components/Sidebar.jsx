@@ -349,6 +349,7 @@ const Sidebar = ({ isOpen, onClose, onLogout, role, menuItems: externalMenuItems
                 icon: FileText,
                 children: [
                     { label: 'Centro de Decretos', path: '/chancery/decretos', icon: ScrollText },
+                    { label: 'Gestión institucional', path: '/chancery/decretos?view=gestion-institucional' },
                     { label: 'Decretos documentales', path: '/chancery/decretos/archivo?type=documental&sacrament=bautismo' },
                     { label: 'Conceptos de Decreto', path: '/chancery/decree-annulment' }
                 ]

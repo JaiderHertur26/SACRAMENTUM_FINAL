@@ -9,7 +9,7 @@ const diocese=read('scripts/v282-diocese-new-seat-concept-approval.sql');
 const kernel=read('scripts/v281-repair-real-ledger-kernel.sql');
 const params=read('scripts/v279-parish-parameters-readonly-counter.sql');
 const page=read('src/pages/parish/ParishDecreeDetailPage.jsx');
-const chancery=read('src/pages/chancery/SacramentalDecreesCenterPage.jsx');
+const chancery=read('src/pages/chancery/ChanceryDecreeInstitutionalManagementPage.jsx');
 const diocesan=read('src/pages/diocese/DiocesanDecreeOversightPage.jsx');
 
 test('V279 Parámetros es solo SELECT, contador RPC exclusivo',()=>{
