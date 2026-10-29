@@ -6,6 +6,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/Input';
 import { Link, useSearchParams } from 'react-router-dom';
 import DecreeCenterHeader from '@/components/chancery/DecreeCenterHeader';
+import DecreeTerritoryNavigator from '@/components/chancery/DecreeTerritoryNavigator';
+import { buildDecreeTerritory, matchesDecreeTerritory } from '@/utils/decreeTerritory.mjs';
 import { supabase } from '@/lib/supabaseClient';
 import { listDecrees } from '@/services/decreeRegistryService';
 import { decreeCategory, decreeCanReverse, decreeEffect, decreeTypeLabel } from '@/utils/decreeArchiveModel.mjs';
@@ -92,6 +94,8 @@ const SacramentalDecreeArchivePage = () => {
 
   const [dioceseId, setDioceseId] = useState(user?.dioceseId || user?.diocese_id || '');
   const [rows, setRows] = useState([]);
+  const [territory, setTerritory] = useState({ parishes: [], vicaries: [], deaneries: [] });
+  const [territoryFilter, setTerritoryFilter] = useState({});
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState('');
   const [typeFilter, setTypeFilter] = useState(forcedType || 'all');
@@ -141,10 +145,10 @@ const SacramentalDecreeArchivePage = () => {
     setLoading(true);
 
     try {
-      const [parishResult, dioceseResult, chanceryResult] = await Promise.all([
+      const [parishResult, dioceseResult, chanceryResult, vicaryResult, deaneryResult] = await Promise.all([
         supabase
           .from('parishes')
-          .select('id,name,city,address,phone,nit')
+          .select('id,name,city,address,phone,nit,vicary_id,decanate_id,deanery_id')
           .eq('diocese_id', dioceseId),
         supabase
           .from('dioceses')
@@ -156,14 +160,19 @@ const SacramentalDecreeArchivePage = () => {
           .select('id,name,city,chancellor_name,vice_chancellor_name')
           .eq('diocese_id', dioceseId)
           .limit(1)
-          .maybeSingle()
+          .maybeSingle(),
+        supabase.from('vicarias').select('id,name,diocese_id').eq('diocese_id',dioceseId),
+        supabase.from('decanatos').select('id,name,diocese_id,vicaria_id').eq('diocese_id',dioceseId)
       ]);
 
       if (parishResult.error) throw parishResult.error;
       if (dioceseResult.error) throw dioceseResult.error;
       if (chanceryResult.error) throw chanceryResult.error;
+      if (vicaryResult.error) throw vicaryResult.error;
+      if (deaneryResult.error) throw deaneryResult.error;
 
       const parishes = parishResult.data || [];
+      setTerritory({parishes, vicaries: vicaryResult.data || [], deaneries: deaneryResult.data || []});
       const diocese = dioceseResult.data || null;
       const chancery = chanceryResult.data || null;
 
@@ -287,6 +296,8 @@ const SacramentalDecreeArchivePage = () => {
     load();
   }, [dioceseId]);
 
+  const territoryIndex = useMemo(() => buildDecreeTerritory(rows,territory.parishes,territory.vicaries,territory.deaneries),[rows,territory]);
+
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
 
@@ -299,6 +310,7 @@ const SacramentalDecreeArchivePage = () => {
       );
 
       if (rowSacrament !== sacrament) return false;
+      if (!matchesDecreeTerritory(row, territoryIndex, territoryFilter)) return false;
 
       const type = TYPE_KEY(
         row.tipo || row.payload?.decreeType || row.payload?.decretoType
@@ -322,7 +334,7 @@ const SacramentalDecreeArchivePage = () => {
         .toLowerCase()
         .includes(q);
     });
-  }, [rows, query, sacrament, typeFilter]);
+  }, [rows, query, sacrament, typeFilter, territoryIndex, territoryFilter]);
 
   const reverse = async (row) => {
     if (isLegacyHistoricalDecree(row)) {
@@ -710,6 +722,7 @@ const SacramentalDecreeArchivePage = () => {
     <DashboardLayout entityName={user?.dioceseName || 'Cancillería'}>
       <div className="mx-auto max-w-7xl space-y-7 pb-20">
         <DecreeCenterHeader mode="archive" sacrament={sacrament} />
+        <DecreeTerritoryNavigator rows={rows} {...territory} selection={territoryFilter} onChange={setTerritoryFilter} loading={loading} />
         <Link to="/chancery/decretos/conciliaciones" className="inline-flex rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-xs font-bold text-amber-900 hover:bg-amber-100">Conciliación institucional de notas posteriores →</Link>
 
         <section className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">

@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import DashboardLayout from '@/components/DashboardLayout';
 import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/components/ui/use-toast';
@@ -10,6 +10,8 @@ import DiocesanSupplementaryConceptApprovalV272 from '@/components/chancery/Dioc
 import NullityInstitutionalPreflightPanel from '@/components/chancery/NullityInstitutionalPreflightPanel';
 import { supabase } from '@/lib/supabaseClient';
 import { listDecrees } from '@/services/decreeRegistryService';
+import DecreeTerritoryNavigator from '@/components/chancery/DecreeTerritoryNavigator';
+import { buildDecreeTerritory, matchesDecreeTerritory } from '@/utils/decreeTerritory.mjs';
 import { decreeCategory, decreeTypeLabel, decreeEffect, isHistoricalDecree } from '@/utils/decreeArchiveModel.mjs';
 import { ScrollText, Search, History, ShieldCheck, X, RefreshCw } from 'lucide-react';
 
@@ -45,10 +47,17 @@ const impactText = (row) => {
 export default function DiocesanDecreeOversightPage() {
   const { user } = useAuth();
   const { toast } = useToast();
+  const [searchParams] = useSearchParams();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [reload, setReload] = useState(0);
   const [rows, setRows] = useState([]);
+  const [territory, setTerritory] = useState({ parishes: [], vicaries: [], deaneries: [] });
+  const [territoryFilter, setTerritoryFilter] = useState(() => ({
+    vicaryId: searchParams.get('vicary') || '',
+    deaneryId: searchParams.get('deanery') || '',
+    parishId: searchParams.get('parish') || ''
+  }));
   const [parishNames, setParishNames] = useState({});
   const [nullityReviews, setNullityReviews] = useState({});
   const [unverifiedDecisions, setUnverifiedDecisions] = useState({});
@@ -73,19 +82,24 @@ export default function DiocesanDecreeOversightPage() {
           dioceseId = data?.diocese_id;
         }
         if (!dioceseId) throw new Error('El usuario no tiene una jurisdicción diocesana válida.');
-        const [records, parishes, reviews, decisions, checks] = await Promise.all([
+        const [records, parishes, reviews, decisions, checks, vicaries, deaneries] = await Promise.all([
           listDecrees({dioceseId}),
-          supabase.from('parishes').select('id,name').eq('diocese_id',dioceseId),
+          supabase.from('parishes').select('id,name,diocese_id,vicary_id,decanate_id,deanery_id').eq('diocese_id',dioceseId),
           supabase.from('nullity_judicial_review_cases').select('nullity_decree_id,request_reference,status').eq('diocese_id',dioceseId),
           supabase.from('nullity_court_decision_receipts').select('id,nullity_decree_id,court_document_reference,reported_outcome').eq('diocese_id',dioceseId),
-          supabase.from('nullity_court_receipt_checks').select('receipt_id,stage,reported_finding').eq('diocese_id',dioceseId)
+          supabase.from('nullity_court_receipt_checks').select('receipt_id,stage,reported_finding').eq('diocese_id',dioceseId),
+          supabase.from('vicarias').select('id,name,diocese_id').eq('diocese_id',dioceseId),
+          supabase.from('decanatos').select('id,name,diocese_id,vicaria_id').eq('diocese_id',dioceseId)
         ]);
         if (parishes.error) throw parishes.error;
         if (reviews.error) throw reviews.error;
         if (decisions.error) throw decisions.error;
         if (checks.error) throw checks.error;
+        if (vicaries.error) throw vicaries.error;
+        if (deaneries.error) throw deaneries.error;
         if (!mounted) return;
         setRows(records);
+        setTerritory({parishes:parishes.data||[],vicaries:vicaries.data||[],deaneries:deaneries.data||[]});
         setNullityReviews(Object.fromEntries((reviews.data || []).map(r => [r.nullity_decree_id,r])));
         const counts = {};
         for (const receipt of decisions.data || []) counts[receipt.nullity_decree_id] = (counts[receipt.nullity_decree_id] || 0) + 1;
@@ -120,7 +134,10 @@ export default function DiocesanDecreeOversightPage() {
     registry: rows.filter(r => ['registral','historico_ejecutado'].includes(decreeEffect(r))).length
   }),[rows]);
 
+  const territoryIndex = useMemo(() => buildDecreeTerritory(rows,territory.parishes,territory.vicaries,territory.deaneries),[rows,territory]);
+
   const visible = useMemo(() => rows.filter((row) => {
+    if (!matchesDecreeTerritory(row,territoryIndex,territoryFilter)) return false;
     if (kind !== 'todos' && decreeCategory(row.tipo,row.payload) !== kind) return false;
     if (sacrament !== 'todos' && row.sacramentType !== sacrament) return false;
     const term = query.trim().toLowerCase();
@@ -128,7 +145,7 @@ export default function DiocesanDecreeOversightPage() {
     return [row.decreeNumber,row.targetName,row.status,row.tipo,
       parishNames[row.parish_id],row.payload?.sourceReference,row.payload?.reason]
       .filter(Boolean).join(' ').toLowerCase().includes(term);
-  }),[rows,kind,sacrament,query,parishNames]);
+  }),[rows,kind,sacrament,query,parishNames,territoryIndex,territoryFilter]);
 
   const label = (row) => parishNames[row.parish_id] || row.payload?.parishName || 'Parroquia de origen histórico';
   const location = (row, original = false) => original
@@ -151,6 +168,7 @@ export default function DiocesanDecreeOversightPage() {
             </div>
           </div>
         </header>
+        <DecreeTerritoryNavigator rows={rows} {...territory} selection={territoryFilter} onChange={setTerritoryFilter} loading={loading} />
         <Link to="/diocese/decretos/conciliaciones" className="inline-flex rounded-xl border border-indigo-200 bg-indigo-50 px-4 py-3 text-xs font-bold text-indigo-900 hover:bg-indigo-100">Revisar autorizaciones de conciliación de notas →</Link>
         <DiocesanSupplementaryConceptApprovalV272 />
         <NewSupplementaryDecreePanelV271 mode="approve" />
