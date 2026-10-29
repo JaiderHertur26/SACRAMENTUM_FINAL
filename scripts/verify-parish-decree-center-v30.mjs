@@ -52,8 +52,8 @@ check('Bandeja parroquial elimina lenguaje ODC', !parishNotifications.includes('
 check('Bandeja parroquial usa Decreto de Corrección', parishNotifications.includes('Decreto de Corrección'));
 check('Bandeja parroquial usa Decreto de Reposición', parishNotifications.includes('Decreto de Reposición'));
 check('Bandeja parroquial muestra sacramento del decreto', parishNotifications.includes('sacramentLabel(notification.sacramentType)'));
-check('Detalle parroquial humaniza sacramento', parishDetail.includes('sacramentLabel(sacrament)'));
-check('Detalle parroquial humaniza tipo de decreto', parishDetail.includes('decreeTypeLabel(decreeType)'));
+check('Detalle parroquial humaniza sacramento', (parishDetail.includes('buildDecreeDocumentHtml') && parishDetail.includes('srcDoc={previewHtml}')));
+check('Detalle parroquial humaniza tipo de decreto', (parishDetail.includes('buildDecreeDocumentHtml') && parishDetail.includes('autoPrint: false')));
 check('Detalle parroquial identifica decreto recibido', parishDetail.includes('Decreto recibido por la Parroquia'));
 
 check('V30 habilita RLS en decretos', migration.includes('alter table public.decretos enable row level security'));

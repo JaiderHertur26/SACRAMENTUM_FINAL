@@ -325,20 +325,36 @@ const ParishDecreeDetailPage = () => {
 
   const typeKey = String(decreeType || '').toLowerCase();
   const documentary = typeKey.includes('documental') || payload.documentaryOnly === true;
+  // V295: el documento del archivo es exactamente la vista del destinatario.
+  // El formato de pantalla no ejecuta el comando de impresión.
+  const previewHtml = useMemo(() => decree ? buildDecreeDocumentHtml({
+    row: decree,
+    institution: {
+      dioceseName: user?.dioceseName || 'Diócesis / Arquidiócesis',
+      officeName: 'OFICINA DE CANCILLERÍA',
+      documentOfficeName: 'OFICINA DE DOCUMENTOS DE CANCILLERÍA'
+    },
+    parish: { name: user?.parishName || payload.parishName || 'Parroquia' },
+    autoPrint: false
+  }) : '', [decree,user?.dioceseName,user?.parishName]);
+
   const printDecree = () => {
-    if (!documentary) { window.print(); return; }
     const popup = window.open('', '_blank', 'width=980,height=1160');
     if (!popup) {
-      toast({ title: 'Permita ventanas emergentes para imprimir', variant: 'destructive' });
+      toast({title:'Permita ventanas emergentes para imprimir',variant:'destructive'});
       return;
     }
-    const html = buildDecreeDocumentHtml({
-      row: decree,
-      institution: { dioceseName: user?.dioceseName || 'Diócesis / Arquidiócesis', officeName: 'CANCILLERÍA' },
-      parish: { name: user?.parishName || payload.parishName || 'Parroquia' }
-    });
     popup.document.open();
-    popup.document.write(html);
+    popup.document.write(buildDecreeDocumentHtml({
+      row: decree,
+      institution: {
+        dioceseName: user?.dioceseName || 'Diócesis / Arquidiócesis',
+        officeName: 'OFICINA DE CANCILLERÍA',
+        documentOfficeName: 'OFICINA DE DOCUMENTOS DE CANCILLERÍA'
+      },
+      parish: { name: user?.parishName || payload.parishName || 'Parroquia' },
+      autoPrint: true
+    }));
     popup.document.close();
   };
   const isCorrection = typeKey.includes('correc');
@@ -389,7 +405,7 @@ const ParishDecreeDetailPage = () => {
                 Cancillería · Decreto recibido por la Parroquia
               </p>
               <h1 className="mt-1 font-serif text-3xl font-black text-slate-950">
-                Decreto {decreeNumber || 'sin número'}
+                {decreeNumber ? (String(decreeNumber).toLowerCase().startsWith('decreto') ? decreeNumber : 'Decreto ' + decreeNumber) : 'Decreto sin número'}
               </h1>
             </div>
           </div>
@@ -425,153 +441,31 @@ const ParishDecreeDetailPage = () => {
           <>
           {payload.recordOrigin==='chancery_pending_seat_v280' &&
             <ParishDecreeSeatPanelV280 decreeId={decree.id} onSeated={()=>setRetryCount(v=>v+1)} />}
-          <article className="overflow-hidden rounded-[2.25rem] border border-slate-200 bg-white shadow-xl shadow-slate-900/5 print:rounded-none print:border-0 print:shadow-none">
-            <header className="border-b border-slate-100 bg-gradient-to-r from-slate-50 to-white p-8 print:bg-white">
-              <div className="flex items-center gap-3">
-                <div className="rounded-2xl bg-blue-50 p-3 text-blue-600 print:hidden">
-                  <FileText className="h-6 w-6" />
-                </div>
-                <div className="flex-1">
-                  <p className="text-[9px] font-black uppercase tracking-[0.24em] text-[#9a7921]">
-                    SACRAMENTUM · Cancillería Diocesana
-                  </p>
-                  <h2 className="mt-1 font-serif text-2xl font-black uppercase text-slate-900">
-                    Decreto de {decreeTypeLabel(decreeType)}
-                  </h2>
-                  <p className="mt-1 text-sm font-bold uppercase text-slate-500">
-                    {sacramentLabel(sacrament)} · {text(decreeNumber, 'S/N')}
-                  </p>
-                </div>
-                <div className="hidden items-center gap-2 rounded-2xl border border-green-200 bg-green-50 px-4 py-3 text-[9px] font-black uppercase tracking-widest text-green-700 md:flex print:flex">
-                  <ShieldCheck className="h-4 w-4" /> Documento institucional
-                </div>
+          <section className="mt-6 overflow-hidden rounded-[1.75rem] border border-slate-200 bg-white shadow-lg shadow-slate-900/5 print:border-0 print:shadow-none"
+            aria-label="Vista previa del decreto de Cancillería">
+            <header className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 bg-slate-50 px-5 py-4 print:hidden">
+              <div>
+                <h2 className="font-serif text-lg font-black text-slate-900">Vista del decreto recibido</h2>
+                <p className="mt-1 text-xs text-slate-500">
+                  El documento de Cancillería, tal como se presenta en papel tamaño carta.
+                  {payload.recordOrigin==='chancery_pending_seat_v280' && payload.seatStatus!=='seated'
+                    ? ' Los datos del nuevo asiento se completarán al sentar.' : ''}
+                </p>
               </div>
+              {!(payload.recordOrigin==='chancery_pending_seat_v280' && payload.seatStatus!=='seated') &&
+                <Button type="button" variant="outline" onClick={printDecree} className="rounded-xl bg-white">
+                  <Printer className="mr-2 h-4 w-4" /> Imprimir decreto
+                </Button>}
             </header>
-
-            <div className="space-y-7 p-8">
-              <section>
-                <div className="mb-4 flex items-center gap-2">
-                  <BookOpen className="h-4 w-4 text-blue-600" />
-                  <h3 className="text-sm font-black uppercase tracking-widest text-slate-800">
-                    Información del decreto
-                  </h3>
-                </div>
-                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                  <DataItem label="Número de decreto" value={decreeNumber} />
-                  <DataItem label="Fecha del decreto" value={formatDate(decreeDate)} />
-                  <DataItem label="Sacramento" value={sacramentLabel(sacrament)} />
-                  <DataItem label="Tipo de decreto" value={decreeTypeLabel(decreeType)} />
-                  {documentary && <DataItem label="Afectación a partida" value="Ninguna · acto exclusivamente documental" />}
-                  {payload.sourceReference && <DataItem label="Fuente histórica" value={payload.sourceReference} />}
-                  <DataItem label="Estado" value={payload.recordOrigin==='chancery_pending_seat_v280' ? (payload.seatStatus==='seated'?'Sentado y notificado a Cancillería':'Pendiente de asiento parroquial') : decreeStatusLabel(decree.status)} />
-                  <DataItem label="Persona / Titular" value={targetName} />
-                  {auditInfo && <DataItem label="Ejecutado por" value={auditInfo.actorName} />}
-                  {auditInfo && <DataItem label="Rol institucional" value={roleLabel(auditInfo.actorRole)} />}
-                  {auditInfo && <DataItem label="Registro de auditoría" value={formatDateTime(auditInfo.createdAt)} />}
-                </div>
-              </section>
-
-              {payload.recordOrigin==='chancery_pending_seat_v280' && payload.seatStatus==='seated' && (
-                <section className="grid gap-3 rounded-xl border border-green-200 bg-green-50 p-4 md:grid-cols-3">
-                  <DataItem label="Libro de asiento" value={payload.seatBook} />
-                  <DataItem label="Folio" value={payload.seatFolio} />
-                  <DataItem label="Número de partida" value={payload.seatNumber} />
-                </section>
-              )}
-              <TextBlock title="Contenido y alcance del decreto" tone="blue">
-                {relationText}
-              </TextBlock>
-
-              {reason && (
-                <TextBlock title="Fundamento / Motivo" tone="amber">
-                  {reason}
-                </TextBlock>
-              )}
-
-              {conceptPolicy && (
-                <section className="rounded-2xl border border-blue-100 bg-blue-50/50 p-5">
-                  <div className="flex flex-col justify-between gap-4 md:flex-row md:items-start">
-                    <div>
-                      <p className="text-[9px] font-black uppercase tracking-[0.18em] text-blue-700">Efectos definidos al emitir el decreto</p>
-                      <p className="mt-1 text-sm font-black uppercase text-slate-900">{conceptPolicy.code ? conceptPolicy.code + ' · ' : ''}{conceptPolicy.concept || 'Concepto diocesano'}</p>
-                      <div className="mt-3 flex flex-wrap gap-2 text-[9px] font-black uppercase tracking-wider">
-                        {conceptPolicy.registersEffect && <span className="rounded-full border border-emerald-200 bg-white px-3 py-1 text-emerald-700">Inscripción registral</span>}
-                        {conceptPolicy.generatesMarginalNote && <span className="rounded-full border border-amber-200 bg-white px-3 py-1 text-amber-700">Nota marginal</span>}
-                        {conceptPolicy.generatesDocument && <span className="rounded-full border border-blue-200 bg-white px-3 py-1 text-blue-700">Documento / constancia</span>}
-                        <span className="rounded-full border border-slate-200 bg-white px-3 py-1 text-slate-600">Libro: {decreeConceptBookLabel(conceptPolicy.bookMode)}</span>
-                        {conceptPolicy.issuer && <span className="rounded-full border border-slate-200 bg-white px-3 py-1 text-slate-600">Expide: {conceptPolicy.issuer}</span>}
-                      </div>
-                    </div>
-                    {conceptPolicy.generatesDocument && (
-                      <Button type="button" variant="outline" onClick={() => navigate('/documentos/plantillas?q=decreto')} className="shrink-0 rounded-xl bg-white print:hidden">
-                        <FileText className="mr-2 h-4 w-4" /> Preparar documento asociado
-                      </Button>
-                    )}
-                  </div>
-                </section>
-              )}
-
-              <div className="grid gap-4 lg:grid-cols-2">
-                <RecordLocation
-                  title={isCorrection ? 'Partida original afectada' : 'Referencia original'}
-                  data={original}
-                  tone={isCorrection ? 'red' : 'slate'}
-                />
-                <RecordLocation
-                  title={isCorrection ? 'Nueva partida / resultado' : 'Partida supletoria'}
-                  data={replacement}
-                  tone="green"
-                />
+            <div className="overflow-x-auto bg-slate-100 p-3 sm:p-6">
+              <div className="mx-auto w-[820px] max-w-none overflow-hidden bg-white shadow-md">
+                <iframe title="Vista del decreto de Cancillería en formato carta"
+                  sandbox="" referrerPolicy="no-referrer" loading="eager"
+                  srcDoc={previewHtml} className="block w-[820px] border-0 bg-white"
+                  style={{ height: '1060px' }}/>
               </div>
-
-              {evidence && typeof evidence === 'object' && Object.keys(evidence).length > 0 && (
-                <section className="rounded-2xl border border-slate-200 bg-slate-50/50 p-5">
-                  <p className="text-[9px] font-black uppercase tracking-[0.18em] text-slate-500">
-                    Evidencia incorporada al expediente
-                  </p>
-                  <div className="mt-4 grid gap-3 md:grid-cols-2">
-                    {Object.entries(evidence).map(([key, value]) => (
-                      <DataItem key={key} label={humanLabel(key)} value={typeof value === 'object' ? JSON.stringify(value) : value} />
-                    ))}
-                  </div>
-                </section>
-              )}
-
-              {originalNote && (
-                <TextBlock title="Nota marginal sobre la partida original">
-                  {originalNote}
-                </TextBlock>
-              )}
-
-              {replacementNote && (
-                <TextBlock title="Nota marginal / asiento resultante">
-                  {replacementNote}
-                </TextBlock>
-              )}
-
-              {scalarExtras.length > 0 && (
-                <section>
-                  <p className="mb-4 text-[9px] font-black uppercase tracking-[0.18em] text-slate-500">
-                    Datos adicionales del expediente
-                  </p>
-                  <div className="grid gap-3 md:grid-cols-2">
-                    {scalarExtras.map(([key, value]) => (
-                      <DataItem key={key} label={humanLabel(key)} value={value} />
-                    ))}
-                  </div>
-                </section>
-              )}
             </div>
-
-            <footer className="border-t border-slate-100 px-8 py-5">
-              <p className="text-[9px] font-bold uppercase tracking-widest text-slate-400">
-                ID institucional: {decree.id}
-              </p>
-              <p className="mt-1 text-[9px] text-slate-400">
-                El expediente permanece vinculado a Cancillería, a la parroquia destinataria y a la trazabilidad del registro sacramental.
-              </p>
-            </footer>
-          </article>
+          </section>
           </>
         )}
       </div>

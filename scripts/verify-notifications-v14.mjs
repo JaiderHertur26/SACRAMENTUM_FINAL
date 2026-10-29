@@ -34,14 +34,15 @@ expect(/Leer decreto/.test(official) && /Ver decreto/.test(official),
   'Cancillería: faltan acciones leer/ver decreto');
 
 const decreeDetail=read('src/pages/parish/ParishDecreeDetailPage.jsx');
+const decreeDocument=read('src/services/decreeDocumentHtml.js');
 expect(/const parishId = user\?\.parishId \|\| user\?\.parish_id/.test(decreeDetail) &&
   /\.eq\('parish_id', parishId\)/.test(decreeDetail),
   'Decreto directo: no valida pertenencia a la parroquia');
 expect(/Imprimir decreto/.test(decreeDetail),
   'Decreto directo: falta impresión');
-expect(/Fundamento \/ Motivo/.test(decreeDetail),
+expect(/buildDecreeDocumentHtml/.test(decreeDetail) && /disposition/.test(decreeDocument) && /reason/.test(decreeDocument),
   'Decreto directo: falta fundamento/motivo');
-expect(/Nota marginal/.test(decreeDetail),
+expect(/buildDecreeDocumentHtml/.test(decreeDetail) && /NOTA MARGINAL/.test(decreeDocument),
   'Decreto directo: faltan notas marginales');
 
 const service=read('src/services/matrimonialNotificationsService.js');
