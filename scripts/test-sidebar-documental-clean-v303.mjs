@@ -8,9 +8,16 @@ const app = read('src/App.jsx');
 const header = read('src/components/chancery/DecreeCenterHeader.jsx');
 const archive = read('src/pages/chancery/SacramentalDecreeArchivePage.jsx');
 
-test('V303 no muestra Plantillas Documentales en ningún rol', () => {
-  assert.doesNotMatch(sidebar,/label:\s*['"]Plantillas Documentales['"]/);
-  assert.doesNotMatch(sidebar,/path:\s*['"]\/documentos\/plantillas['"]/);
+test('V304 Plantillas Documentales solo aparece en el rol Parroquia', () => {
+  const beforeParish = sidebar.split('if (safeRole === ROLE_TYPES.PARISH)')[0];
+  const parish = sidebar.split('if (safeRole === ROLE_TYPES.PARISH)')[1]
+    .split('if (safeRole === ROLE_TYPES.CHANCERY)')[0];
+  const afterParish = sidebar.split('if (safeRole === ROLE_TYPES.CHANCERY)')[1];
+  assert.doesNotMatch(beforeParish,/label:\s*['"]Plantillas Documentales['"]/);
+  assert.match(parish,/label:\s*['"]Plantillas Documentales['"]/);
+  assert.match(parish,/path:\s*['"]\/documentos\/plantillas['"]/);
+  assert.doesNotMatch(afterParish,/label:\s*['"]Plantillas Documentales['"]/);
+  assert.equal((sidebar.match(/label:\s*['"]Plantillas Documentales['"]/g)||[]).length,1);
   for (const role of ['ADMIN_GENERAL','DIOCESE','PARISH','CHANCERY']) {
     assert.ok(sidebar.includes('safeRole === ROLE_TYPES.' + role), role);
   }
