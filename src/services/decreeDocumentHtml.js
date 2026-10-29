@@ -1,5 +1,4 @@
 import { buildDocumentaryDecreeHtml } from './decreeDocumentaryHtml.mjs';
-import { isTestRegistryData } from '../utils/testDocumentStamp.mjs';
 import { decreeInstitutionBranding } from '../utils/decreeInstitutionBranding.mjs';
 
 const clean = (value) => String(value ?? '').trim();
@@ -126,7 +125,7 @@ const buildRecord = (payload, type, sacramentalRecord = {}) => {
   const changes = type === 'correccion' ? (payload.changes || {}) : {};
   const raw = sacramentalRecord?.raw_data || sacramentalRecord?.rawData || {};
   const legacyNormalized = raw?.legacy_normalized || raw?.legacyNormalized || {};
-  // V295: la partida original aporta valores de respaldo. El borrador corregido
+  // V295: la partida original aporta valores de respaldo. El formulario corregido
   // tiene prioridad en todos los campos sin modificar la partida histórica.
   return compactObject(original, raw, legacyNormalized, sacramentalRecord,
     payload, summary, changes, recordData, correctedDraft);
@@ -392,7 +391,6 @@ body{font-family:"Times New Roman",Times,serif;font-size:9pt;line-height:1.13}
 .footer strong{display:block;font-size:7.4pt;letter-spacing:.11em}
 .footer div{font-size:6.8pt;margin-top:.7mm}
 @media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}.sheet{page-break-after:avoid}}
-${isTestRegistryData() ? '.footer::after{content:"ENTORNO DE PRUEBAS · DOCUMENTO NO OFICIAL";display:block;font:6pt Arial,sans-serif;margin-top:2px}' : ''}
 </style>
 </head>
 <body>

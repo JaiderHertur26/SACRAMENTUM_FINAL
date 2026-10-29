@@ -34,20 +34,16 @@ test('V251 workflows still distinguish reserved preregistration from seated sacr
  assert.match(dossier,/<option value="draft">Pre-registro<\/option>/);
  assert.match(dossier,/<option value="ready">Completo \/ listo<\/option>/);
 });
-test('V251 print and PDF keep non-certifying provenance in known QA project, without requested word',()=>{
+test('V299 documentación sin etiquetas de pruebas pero guardas institucionales intactas',()=>{
  assert.equal(isTestRegistryData(),true);
  assert.equal(isKnownTestRegistryProject('https://foczofcmwampjvlfbsqn.supabase.co'),true);
- const css=testDocumentPrintCss();
- assert.match(css,/COPIA DE REVISIÓN/);
- assert.doesNotMatch(css,/\bborrador\b/i);
+ assert.equal(testDocumentPrintCss(),'');
  const pdf=new jsPDF({unit:'mm',format:'a4'});
- stampTestPdfPages(pdf);
+ assert.strictEqual(stampTestPdfPages(pdf),pdf);
  const content=pdf.internal.pages.slice(1).join('\n');
- assert.match(content,/COPIA DE REVISIÓN/);
- assert.match(content,/NO APTO PARA EXPEDICIÓN/);
- assert.doesNotMatch(content,/\bborrador\b/i);
+ assert.doesNotMatch(content,/COPIA DE REVISIÓN|NO APTO PARA EXPEDICIÓN/);
  const spa=source('src/index.css');
- assert.match(spa,/COPIA DE REVISIÓN/);
+ assert.doesNotMatch(spa,/COPIA DE REVISIÓN/);
  assert.doesNotMatch(spa,/\bborrador\b/i);
 });
 test('V251 does not modify recognized QA reference, release guard or operational statuses',()=>{

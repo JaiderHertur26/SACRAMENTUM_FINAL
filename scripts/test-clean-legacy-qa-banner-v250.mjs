@@ -32,14 +32,13 @@ test('V250 login and all dashboards no longer mount QA alert ribbons',()=>{
  assert.doesNotMatch(dash,/usingTestRecords|role="status" aria-label=/);
  assert.match(dash,/ecclesial-workspace/);
 });
-test('V250 generated samples remain conspicuously drafts, never falsely certified',()=>{
+test('V299 elimina estampas repetitivas sin activar el modo oficial',()=>{
  assert.equal(isTestRegistryData(),true);
- assert.match(testDocumentPrintCss(),/COPIA DE REVISIÓN/);
+ assert.equal(testDocumentPrintCss(),'');
  const doc=new jsPDF();
- stampTestPdfPages(doc);
+ assert.strictEqual(stampTestPdfPages(doc),doc);
  const content=doc.internal.pages.slice(1).join('\n');
- assert.match(content,/COPIA DE REVISIÓN/);
- assert.match(content,/NO APTO PARA EXPEDICIÓN/);
+ assert.doesNotMatch(content,/COPIA DE REVISIÓN|NO APTO PARA EXPEDICIÓN/);
 });
 test('V250 QA database protection remains independent from presentation',()=>{
  assert.equal(isKnownTestRegistryProject('https://foczofcmwampjvlfbsqn.supabase.co'),true);
