@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   AlertCircle, Building2, CheckCircle2, Church, Copy, Edit, Eye,
@@ -32,8 +31,6 @@ import EditVicaryModal from '@/components/modals/EditVicaryModal';
 import EditDecanateModal from '@/components/modals/EditDecanateModal';
 import ParishDetailsModal from '@/components/modals/ParishDetailsModal';
 import { institutionalConfirm } from '@/lib/institutionalDialog';
-import { listDecrees } from '@/services/decreeRegistryService';
-import { buildDecreeTerritory } from '@/utils/decreeTerritory.mjs';
 
 const EMPTY_ENV = { name: '', city: '', vicaryId: '', deaneryId: '', priest: '' };
 const initialModals = {
@@ -59,7 +56,6 @@ const DioceseEcclesiasticalPage = () => {
   const [realVicaries, setRealVicaries] = useState([]);
   const [realDeaneries, setRealDeaneries] = useState([]);
   const [realParishes, setRealParishes] = useState([]);
-  const [decreeRows, setDecreeRows] = useState([]);
   const [profiles, setProfiles] = useState([]);
   const [pendingEnvs, setPendingEnvs] = useState([]);
   const [loadingStructure, setLoadingStructure] = useState(true);
@@ -94,11 +90,7 @@ const DioceseEcclesiasticalPage = () => {
       if (!dioceseId) throw new Error('Tu perfil no tiene una Diócesis/Arquidiócesis vinculada.');
       setCurrentDioceseId(dioceseId);
 
-      const [structure, decreeList] = await Promise.all([
-        loadEcclesiasticalStructure(dioceseId, user.id),
-        listDecrees({dioceseId}).catch((error) => { console.warn('Contadores de decretos no disponibles:',error); return null; })
-      ]);
-      setDecreeRows(decreeList);
+      const structure = await loadEcclesiasticalStructure(dioceseId, user.id);
       setRealDioceseName(structure.diocese?.name || user?.dioceseName || 'Jurisdicción');
       setRealDiocese(structure.diocese || null);
       setRealChancery(structure.chancery);
@@ -158,8 +150,6 @@ const DioceseEcclesiasticalPage = () => {
     [envFormData.vicaryId, getDeaneries]
   );
 
-  const decreeTerritory = useMemo(() => decreeRows ? buildDecreeTerritory(decreeRows,realParishes,realVicaries,realDeaneries) : null,[decreeRows,realParishes,realVicaries,realDeaneries]);
-  const counter = (bucket,key) => decreeTerritory ? (decreeTerritory[bucket]?.[key] || 0) : '—';
   const hasPendingChancery = pendingEnvs.some((env) => env.type === 'CHANCERY');
   const chanceryProfile = realChancery ? profileForChancery(profiles, realChancery.id) : null;
 
@@ -358,7 +348,7 @@ const DioceseEcclesiasticalPage = () => {
         {label && <div className="bg-slate-50/80 px-5 py-3 border-b border-slate-100"><span className="text-[10px] font-black text-[#4B7BA7] uppercase tracking-widest">{label}</span></div>}
         <table className="w-full text-sm text-left">
           <thead className="bg-white border-b border-slate-50 text-[9px] uppercase text-slate-400 font-black tracking-widest">
-            <tr><th className="px-6 py-4">Parroquia</th><th className="px-6 py-4">Párroco</th><th className="px-6 py-4">Cuenta</th><th className="px-6 py-4">Decretos</th><th className="px-6 py-4 text-right">Acciones</th></tr>
+            <tr><th className="px-6 py-4">Parroquia</th><th className="px-6 py-4">Párroco</th><th className="px-6 py-4">Cuenta</th><th className="px-6 py-4 text-right">Acciones</th></tr>
           </thead>
           <tbody className="divide-y divide-slate-50">
             {parishes.map((parish) => {
@@ -368,7 +358,6 @@ const DioceseEcclesiasticalPage = () => {
                   <td className="px-6 py-4 font-black text-slate-800 uppercase"><div className="flex items-center gap-3"><Church className="w-4 h-4 text-[#4B7BA7]" />{parish.name}</div></td>
                   <td className="px-6 py-4 text-xs font-bold text-slate-600">{parish.parroco || 'Sin asignar'}</td>
                   <td className="px-6 py-4 text-xs text-slate-500">{parishProfile?.full_name || parishProfile?.email || 'Sin activar'}</td>
-                  <td className="px-6 py-4"><Link className="rounded-lg border border-blue-200 bg-blue-50 px-3 py-2 text-xs font-bold text-blue-800 hover:bg-blue-100" to={'/diocese/decretos/archivo?parish=' + encodeURIComponent(parish.id) + '&vicary=' + encodeURIComponent(parish.vicary_id || '') + '&deanery=' + encodeURIComponent(parish.decanate_id || '')}>{counter('byParish',parish.id)} · Ver archivo</Link></td>
                   <td className="px-6 py-4 text-right">
                     <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                       <button onClick={() => openModal('parishDetails', parish)} className="p-2 hover:bg-amber-50 rounded-xl text-[#D4AF37]"><Eye className="w-4 h-4" /></button>
@@ -475,10 +464,10 @@ const DioceseEcclesiasticalPage = () => {
               const directParishes = getDirectParishes(vicary.id);
               return (
                 <div key={vicary.id} className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
-                  <div className="bg-slate-800 p-6 lg:px-10 flex justify-between items-center"><div><h3 className="font-black text-2xl text-white uppercase">{vicary.name}</h3><Link to={'/diocese/decretos/archivo?vicary='+encodeURIComponent(vicary.id)} className="mt-2 inline-block rounded-lg border border-white/30 px-3 py-1 text-xs font-bold text-white hover:bg-white/10">{counter('byVicary',vicary.id)} decretos · Consultar</Link><p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1"><User className="w-3 h-3 inline mr-1 text-[#D4AF37]" />Vicario: {vicary.vicar_name || 'Sin asignar'}</p></div><div className="flex gap-2"><button onClick={() => openModal('editVicary', vicary)} className="p-3 bg-slate-700 rounded-xl text-white"><Edit className="w-4 h-4" /></button><button onClick={() => handleDeleteVicary(vicary)} className="p-3 bg-red-500/20 rounded-xl text-red-300"><Trash2 className="w-4 h-4" /></button></div></div>
+                  <div className="bg-slate-800 p-6 lg:px-10 flex justify-between items-center"><div><h3 className="font-black text-2xl text-white uppercase">{vicary.name}</h3><p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1"><User className="w-3 h-3 inline mr-1 text-[#D4AF37]" />Vicario: {vicary.vicar_name || 'Sin asignar'}</p></div><div className="flex gap-2"><button onClick={() => openModal('editVicary', vicary)} className="p-3 bg-slate-700 rounded-xl text-white"><Edit className="w-4 h-4" /></button><button onClick={() => handleDeleteVicary(vicary)} className="p-3 bg-red-500/20 rounded-xl text-red-300"><Trash2 className="w-4 h-4" /></button></div></div>
                   <div className="p-6 lg:p-10 space-y-8">
                     {!vicaryDeaneries.length && !directParishes.length && <p className="text-xs font-bold text-slate-400 uppercase tracking-widest italic text-center py-6">Vicaría sin decanatos ni parroquias.</p>}
-                    {vicaryDeaneries.map((deanery) => <div key={deanery.id} className="p-6 rounded-2xl border border-slate-100"><div className="flex justify-between items-center mb-4"><div><h4 className="font-black text-slate-800 uppercase text-lg">{deanery.name}</h4><Link to={'/diocese/decretos/archivo?vicary='+encodeURIComponent(vicary.id)+'&deanery='+encodeURIComponent(deanery.id)} className="mt-1 inline-block text-xs font-bold text-blue-700 underline">{counter('byDeanery',deanery.id)} decretos · Ver archivo</Link><p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Decano: {deanery.dean_name || 'Sin asignar'}</p></div><div className="flex gap-2"><button onClick={() => openModal('editDecanate', deanery)} className="p-2.5 hover:bg-slate-100 rounded-lg text-slate-500"><Edit className="w-4 h-4" /></button><button onClick={() => handleDeleteDeanery(deanery)} className="p-2.5 hover:bg-red-50 rounded-lg text-red-400"><Trash2 className="w-4 h-4" /></button></div></div><ParishTable parishes={getParishesByDeanery(deanery.id)} /></div>)}
+                    {vicaryDeaneries.map((deanery) => <div key={deanery.id} className="p-6 rounded-2xl border border-slate-100"><div className="flex justify-between items-center mb-4"><div><h4 className="font-black text-slate-800 uppercase text-lg">{deanery.name}</h4><p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Decano: {deanery.dean_name || 'Sin asignar'}</p></div><div className="flex gap-2"><button onClick={() => openModal('editDecanate', deanery)} className="p-2.5 hover:bg-slate-100 rounded-lg text-slate-500"><Edit className="w-4 h-4" /></button><button onClick={() => handleDeleteDeanery(deanery)} className="p-2.5 hover:bg-red-50 rounded-lg text-red-400"><Trash2 className="w-4 h-4" /></button></div></div><ParishTable parishes={getParishesByDeanery(deanery.id)} /></div>)}
                     {directParishes.length > 0 && <div className="bg-blue-50/30 p-5 rounded-2xl border border-dashed border-[#4B7BA7]/30"><ParishTable parishes={directParishes} label="Parroquias directamente adscritas a la Vicaría" /></div>}
                   </div>
                 </div>
