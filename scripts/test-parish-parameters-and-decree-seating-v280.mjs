@@ -78,7 +78,7 @@ test('V282 aprobación diocesana independiente, conceptos de corrección y repos
 });
 test('V280 pantallas enlazadas a decreto, Cancillería y Diócesis',()=>{
  assert.match(page,/ParishDecreeSeatPanelV280/);
- assert.match(page,/seatStatus==='seated'/);
+ assert.match(page,/seatStatus!=='seated'/); // V295: vista previa disponible; impresión sujeta al asiento
  assert.match(chancery,/ChanceryDecreeIssueV280/);
  assert.match(chancery,/ChanceryDecreeSeatReceiptsV280/);
  assert.doesNotMatch(diocesan,/DiocesanNewDecreeConceptApprovalV282/); // V293: autorización propia de Cancillería

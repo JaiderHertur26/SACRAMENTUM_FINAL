@@ -259,8 +259,8 @@ const PrintCorrectionDecreeConfirmations = forwardRef(({ decreeData }, ref) => {
       </div>
 
       <div className="w-full shrink-0 pt-2">
-          <div className="flex justify-between items-end px-12 mb-3">
-            <div className="text-center w-5/12">
+          <div className="flex justify-center items-end px-12 mb-3">
+            <div className="text-center w-7/12">
               <div className="border-t border-black pt-1 font-bold uppercase text-[8pt] tracking-wide text-black">
                 {cancillerName}
               </div>
@@ -268,11 +268,7 @@ const PrintCorrectionDecreeConfirmations = forwardRef(({ decreeData }, ref) => {
                  {cancillerCargo}
               </div>
             </div>
-            <div className="text-center w-1/3">
-              <div className="h-20 w-20 border-2 border-dotted border-black rounded-full mx-auto flex items-center justify-center text-black text-[8px] font-bold uppercase tracking-widest text-center leading-tight p-1">
-                Sello<br/>Cancillería
-              </div>
-            </div>
+
           </div>
 
           <div className="w-full text-center text-[7pt] text-black border-t border-black pt-1.5">

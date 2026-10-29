@@ -120,11 +120,15 @@ const detailRow = (label, value, className = '') => {
 const buildRecord = (payload, type, sacramentalRecord = {}) => {
   const original = payload.before || payload.originalData || payload.originalRecord || {};
   const recordData = payload.recordData || payload.newRecord || payload.replacementData || {};
+  const correctedDraft = payload.newPartidaDraft || {};
   const summary = payload.newPartidaSummary || payload.replacementLocation || {};
   const changes = type === 'correccion' ? (payload.changes || {}) : {};
   const raw = sacramentalRecord?.raw_data || sacramentalRecord?.rawData || {};
   const legacyNormalized = raw?.legacy_normalized || raw?.legacyNormalized || {};
-  return compactObject(original, recordData, summary, changes, raw, legacyNormalized, sacramentalRecord, payload);
+  // V295: la partida original aporta valores de respaldo. El borrador corregido
+  // tiene prioridad en todos los campos sin modificar la partida histórica.
+  return compactObject(original, raw, legacyNormalized, sacramentalRecord,
+    payload, summary, changes, recordData, correctedDraft);
 };
 
 const buildBaptismDetails = (r) => {
@@ -244,7 +248,7 @@ const joinContact = (institution = {}) => [
   clean(institution.country || 'COLOMBIA')
 ].filter(Boolean).join(' · ');
 
-export function buildDecreeDocumentHtml({ row = {}, institution = {}, parish = {}, sacramentalRecord = {} } = {}) {
+export function buildDecreeDocumentHtml({ row = {}, institution = {}, parish = {}, sacramentalRecord = {}, autoPrint = true } = {}) {
   const payload = row.payload || {};
   if (String(row.tipo || payload.decreeType || '').toLowerCase().includes('documental')) {
     return buildDocumentaryDecreeHtml({ row, institution, parish });
@@ -264,7 +268,11 @@ export function buildDecreeDocumentHtml({ row = {}, institution = {}, parish = {
   const parishCity = upper(row.parish_city || parish.city || payload.parishCity || '');
   const decreeNumber = upper(row.decree_number || payload.decreeNumber || payload.numeroDecreto || '—');
   const decreeDate = row.decree_date || payload.decreeDate || payload.fechaDecreto || '';
-  const targetName = upper(payload.newTargetName || payload.targetName || row.targetName || [
+  const proposedName = [
+    firstValue(payload.newPartidaDraft || {}, ['nombres','firstName','first_name']),
+    firstValue(payload.newPartidaDraft || {}, ['apellidos','lastName','last_name'])
+  ].filter(Boolean).join(' ');
+  const targetName = upper(proposedName || payload.newTargetName || payload.targetName || row.targetName || [
     firstValue(record, ['nombres','firstName']),
     firstValue(record, ['apellidos','lastName'])
   ].filter(Boolean).join(' '));
@@ -369,8 +377,8 @@ body{font-family:"Times New Roman",Times,serif;font-size:9pt;line-height:1.13}
 .disposition{font-family:Consolas,"Courier New",monospace;font-size:7.9pt;font-weight:700;line-height:1.35}
 .observation{margin-top:1.6mm;border-top:1px dashed #9a9a9a;padding-top:1.5mm}
 .important{font-size:7pt;margin-top:1.6mm;line-height:1.2}
-.signature-row{display:grid;grid-template-columns:1fr 33mm;gap:6mm;align-items:end;margin:4mm 9mm 0 9mm;break-inside:avoid}
-.signature{text-align:center;border-top:1px solid #111;padding-top:2mm}
+.signature-row{display:flex;align-items:flex-end;justify-content:center;margin:4mm auto 0;break-inside:avoid}
+.signature{width:110mm;max-width:100%;text-align:center;border-top:1px solid #111;padding-top:2mm;margin:0 auto}
 .signature strong{display:block;font-size:9pt;letter-spacing:.06em}
 .signature span{display:block;font-size:7pt;font-weight:700;letter-spacing:.12em;margin-top:1mm}
 .seal{width:19mm;height:19mm;border:2px dotted #111;border-radius:50%;display:flex;align-items:center;justify-content:center;text-align:center;font-size:6.8pt;font-weight:700;letter-spacing:.06em}
@@ -423,7 +431,6 @@ ${isTestRegistryData() ? '.footer::after{content:"ENTORNO DE PRUEBAS · DOCUMENT
       <strong>${escapeHtml(signer)}</strong>
       <span>${escapeHtml(signerTitle)}</span>
     </div>
-    <div class="seal">SELLO<br>CANCILLERÍA</div>
   </div>
 
   <footer class="footer">
@@ -441,7 +448,7 @@ window.onload=()=>{
   if(sheet && sheet.getBoundingClientRect().height>availableHeight){
     sheet.style.zoom=String(Math.min(1,availableHeight/sheet.getBoundingClientRect().height));
   }
-  requestAnimationFrame(()=>requestAnimationFrame(()=>window.print()));
+  ${autoPrint ? "requestAnimationFrame(()=>requestAnimationFrame(()=>window.print()));" : ""}
 };
 </script>
 </body>
