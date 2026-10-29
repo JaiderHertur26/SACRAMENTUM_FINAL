@@ -210,7 +210,8 @@ exec('pruebas-sinteticas',node,['--test',
  'scripts/test-chancery-concept-precheck-v292.mjs',
  'scripts/test-chancery-autonomous-issuance-v293.mjs',
  'scripts/test-decree-signer-letter-v294.mjs',
- 'scripts/test-decree-corrected-data-preview-v295.mjs']);
+ 'scripts/test-decree-corrected-data-preview-v295.mjs',
+ 'scripts/test-decree-corrected-identity-v296.mjs']);
 const scripts=fs.readdirSync(path.join(root,'scripts')).filter(x=>/^verify-.*\.mjs$/.test(x)).sort();
 for(const file of scripts)exec('legacy/'+file,node,['scripts/'+file]);
 const npmOnWindows=process.platform==='win32';
