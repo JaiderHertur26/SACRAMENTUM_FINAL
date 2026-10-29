@@ -116,8 +116,14 @@ test('V312 documento imprimible identifica Repetición, evidencia, disposición 
  assert.ok(!escaped.includes('<script>alert(1)</script>'));
 });
 test('V312 rutas, botones, campos y recibo del archivo en ambos roles',()=>{
- assert.match(app,/path="\/chancery\/decretos\/repeticion"[^]*?requiredRole=\{ROLE_TYPES\.CHANCERY\}/);
- assert.match(app,/path="\/parroquia\/decretos\/repeticion"[^]*?requiredRole=\{ROLE_TYPES\.PARISH\}/);
+ assert.match(app,/path="\/chancery\/decretos"[^\n]+requiredRole=\{ROLE_TYPES\.CHANCERY\}/);
+ const chanceryCenter=src('src/pages/chancery/SacramentalDecreesCenterPage.jsx');
+ assert.match(chanceryCenter,/view === 'repeticion'/);
+ assert.match(chanceryCenter,/<RepetitionDecreeWorkflowPage scope="chancery"/);
+ assert.match(app,/path="\/parroquia\/decretos"[^\n]+requiredRole=\{ROLE_TYPES\.PARISH\}/);
+ const parishCenter=src('src/pages/parish/ParishSacramentalDecreesCenterPage.jsx');
+ assert.match(parishCenter,/params.get\('view'\) === 'repeticion'/);
+ assert.match(parishCenter,/<RepetitionDecreeWorkflowPage scope="parish"/);
  assert.match(side,/Decretos de Repetición/);
  assert.match(ui,/Expedir nuevo Decreto de Repetición/);
  assert.match(ui,/Concepto histórico de Repetición/);

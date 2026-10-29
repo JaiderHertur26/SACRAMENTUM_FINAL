@@ -93,7 +93,6 @@ const FuneralDecreesPage = lazy(() => import('@/pages/chancery/exequias/FuneralD
 const SacramentalDecreesCenterPage = lazy(() => import('@/pages/chancery/SacramentalDecreesCenterPage'));
 const SacramentalDecreeArchivePage = lazy(() => import('@/pages/chancery/SacramentalDecreeArchivePage'));
 const DocumentaryDecreePage = lazy(() => import('@/pages/chancery/DocumentaryDecreePage'));
-const RepetitionDecreeWorkflowPage = lazy(() => import('@/pages/RepetitionDecreeWorkflowPage'));
 const LaterNoteReconciliationPage = lazy(() => import('@/pages/chancery/LaterNoteReconciliationPage'));
 const HistoricalLinkReviewPage = lazy(() => import('@/pages/chancery/HistoricalLinkReviewPage'));
 const MarriageDecreesPage = lazy(() => import('@/pages/chancery/marriage/MarriageDecreesPage'));
@@ -203,7 +202,6 @@ const AppContent = () => {
 
                 {/* --- CENTRO PARROQUIAL UNIFICADO DE DECRETOS --- */}
                 <Route path="/parroquia/decretos" element={<ProtectedRoute requiredRole={ROLE_TYPES.PARISH}><ParishSacramentalDecreesCenterPage /></ProtectedRoute>} />
-                <Route path="/parroquia/decretos/repeticion" element={<ProtectedRoute requiredRole={ROLE_TYPES.PARISH}><RepetitionDecreeWorkflowPage scope="parish" /></ProtectedRoute>} />
                 <Route path="/parroquia/decretos/archivo" element={<ProtectedRoute requiredRole={ROLE_TYPES.PARISH}><ParishSacramentalDecreeArchivePage /></ProtectedRoute>} />
 
                 {/* Compatibilidad con rutas históricas de Parroquia */}
@@ -278,7 +276,6 @@ const AppContent = () => {
                 <Route path="/chancery/decretos/conciliaciones" element={<ProtectedRoute requiredRole={ROLE_TYPES.CHANCERY}><LaterNoteReconciliationPage /></ProtectedRoute>} />
                 <Route path="/chancery/historicos/conciliacion" element={<ProtectedRoute requiredRole={ROLE_TYPES.CHANCERY}><HistoricalLinkReviewPage /></ProtectedRoute>} />
           <Route path="/chancery/decretos/documental" element={<ProtectedRoute requiredRole={ROLE_TYPES.CHANCERY}><DocumentaryDecreePage /></ProtectedRoute>} />
-          <Route path="/chancery/decretos/repeticion" element={<ProtectedRoute requiredRole={ROLE_TYPES.CHANCERY}><RepetitionDecreeWorkflowPage scope="chancery" /></ProtectedRoute>} />
                 <Route path="/chancery/matrimonio/decretos" element={<ProtectedRoute requiredRole={ROLE_TYPES.CHANCERY}><MarriageDecreesPage /></ProtectedRoute>} />
 
                 {/* --- DECREES (CORRECTION & REPLACEMENT - CHANCERY) --- */}

@@ -442,7 +442,7 @@ const ParishDecreeDetailPage = () => {
           <>
           {payload.recordOrigin==='chancery_repetition_v312' && <section className="mt-6 rounded-2xl border border-blue-200 bg-blue-50 p-4">
             <p className="text-xs font-bold text-blue-900">Decreto de Repetición: verifique la disposición y registre su constancia documental o solicite aclaración a Cancillería.</p>
-            <Button type="button" onClick={()=>navigate('/parroquia/decretos/repeticion')} className="mt-3">Gestionar Repetición</Button>
+            <Button type="button" onClick={()=>navigate('/parroquia/decretos?view=repeticion')} className="mt-3">Gestionar Repetición</Button>
           </section>}
           {payload.recordOrigin==='chancery_pending_seat_v280' &&
             <ParishDecreeSeatPanelV280 decreeId={decree.id} onSeated={()=>setRetryCount(v=>v+1)} />}
