@@ -95,8 +95,8 @@ const PrintCorrectionDecree = forwardRef(({ decreeData }, ref) => {
 
   const jurisdictionKind = jurisdictionName.includes('ARQUIDIÓCESIS') ? 'Arquidiócesis' : jurisdictionName.includes('DIÓCESIS') ? 'Diócesis' : 'jurisdicción eclesiástica';
 
-  const cancillerName = decreeData.cancillerName || decreeData.chancellorName || chanceryData.canciller || chanceryData.nombreCanciller || chanceryData.parroco || '[CANCILLER NO CONFIGURADO]';
-  const cancillerCargo = decreeData.cancillerCargo || decreeData.chancellorTitle || chanceryData.cargo || 'CANCILLER DIOCESANO';
+  const cancillerName = decreeData.issuingSigner?.name || decreeData.payload?.issuingSigner?.name || decreeData.cancillerName || decreeData.chancellorName || chanceryData.canciller || chanceryData.nombreCanciller || chanceryData.parroco || '[CANCILLER NO CONFIGURADO]';
+  const cancillerCargo = decreeData.issuingSigner?.title || decreeData.payload?.issuingSigner?.title || decreeData.cancillerCargo || decreeData.chancellorTitle || chanceryData.cargo || 'CANCILLER DIOCESANO';
 
   let finalTargetParishName = targetParishInfo.name || '[NOMBRE PARROQUIA]';
   let finalTargetCity = targetParishInfo.city || misDatosParroquia.ciudad || authUser?.city || '[CIUDAD NO CONFIGURADA]';
@@ -145,7 +145,7 @@ const PrintCorrectionDecree = forwardRef(({ decreeData }, ref) => {
     abuelosMaternos: getVal('abuelosMaternos'),
     padrinos: getVal('padrinos'),
     ministro: rawMinistro,
-    daFe: getVal('daFe') || getVal('dafe') || getVal('ministerFaith') || ''
+    daFe: cancillerName
   };
 
   const unionTypeMap = { '1': 'Matrimonio Católico', '2': 'Matrimonio Civil', '3': 'Unión Libre', '4': 'Madre Soltera', '5': 'Otro' };
@@ -188,7 +188,7 @@ const PrintCorrectionDecree = forwardRef(({ decreeData }, ref) => {
                <span className="font-bold uppercase tracking-wider text-[10pt] text-black">Decreto de Corrección de Partida</span>
             </div>
             <div className="absolute right-0 top-0 text-[6pt] font-mono text-black font-bold text-right leading-tight">
-              CÓDIGO: CAL-ODC-021<br/>VERSIÓN: 001
+              CÓDIGO: CAL-ODC-022<br/>VERSIÓN: 002
             </div>
           </div>
 

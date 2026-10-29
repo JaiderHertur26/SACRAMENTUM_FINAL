@@ -41,7 +41,7 @@ test('V287 emite solo memoria pendiente en Supabase',()=>{
 });
 test('V287 el servicio no envía coordenadas en la llamada RPC',()=>{
  const s=read('src/services/issueDecreeFromFullFormV287.js');
- assert.match(s,/supabase\.rpc\('issue_chancery_form_decree_v287'/);
+ assert.match(s,/supabase\.rpc\('issue_chancery_form_decree_v294'/);
  assert.match(s,/delete record\[key\]/);
  assert.match(s,/data\?\.book!=null\|\|data\?\.folio!=null\|\|data\?\.number!=null/);
 });

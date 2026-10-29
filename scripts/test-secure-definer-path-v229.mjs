@@ -10,6 +10,7 @@ const sha=f=>createHash('sha256').update(fs.readFileSync(f,'utf8').replace(/\r\n
 const currentMigration='supabase/migrations/20261027044045_secure_definer_pg_temp_last_v229.sql';
 // V276: exact-byte certification of the 14 INSTALL-ONLY migrations already applied to Supabase.
 // Every newly deployed public RPC remains REVOKED until separately audited official cutover.
+const approvedV294SignerDecree=new Map([['20261029041812_sacramentum_v294_decree_signer_role_name_and_audit.sql','6d60f378118403950894f6260ab5e87371d1874f5a45c67f6bc0ec45765a85d9']]);
 const approvedV293ChanceryAutonomy=new Map([['20261029034915_sacramentum_v293_chancery_role_authorized_no_diocese_concept_gate.sql','7f558e8d059acd1c6cbb7848956c68cf4937a44e700a73afcfccfee8664f4810']]);
 const approvedV292ConceptPreflight=new Map([['20261029032959_sacramentum_v292_chancery_concept_approval_preflight.sql','de6eeea79847f58141ead9e449ad3d292afdad625f811f40704bfc51ecf2725b']]);
 const approvedV291Search=new Map([['20261029031120_sacramentum_v291_search_celebrated_sources_paged.sql','3ed447cf3918d8ee09dd417ac73234137e7ff917bd652e8a4e28acc5318ae5b0']]);
@@ -92,6 +93,8 @@ test('V229 remote migration version is identical to the checked-in CLI-created m
  for(const f of approvedV292ConceptPreflight.keys())assert.ok(all.includes(f),'V292 migration missing: '+f);
  assert.equal(approvedV293ChanceryAutonomy.size,1);
  for(const f of approvedV293ChanceryAutonomy.keys())assert.ok(all.includes(f),'V293 migration missing: '+f);
+ assert.equal(approvedV294SignerDecree.size,1);
+ for(const f of approvedV294SignerDecree.keys())assert.ok(all.includes(f),'V294 migration missing: '+f);
  for(const later of all.filter(x=>('supabase/migrations/'+x)>currentMigration)) {
   const body=fs.readFileSync('supabase/migrations/'+later,'utf8');
   if(later==='20261027125848_harden_chat_actor_guard_v232.sql') {
@@ -119,6 +122,12 @@ test('V229 remote migration version is identical to the checked-in CLI-created m
     assert.match(body,/materialize_legacy_decrees_v68/);
     assert.match(body,/v_chancery IS NULL/);
     assert.doesNotMatch(body,/\\b(?:INSERT INTO|UPDATE\\s+public\\.|DELETE FROM|TRUNCATE\\s+TABLE|DROP TABLE)\\b/i);
+  } else if (approvedV294SignerDecree.has(later)) {
+    assert.equal(sha('supabase/migrations/'+later),approvedV294SignerDecree.get(later),'V294 decree signer SQL changed');
+    assert.match(body,/issue_chancery_form_decree_v294/);
+    assert.match(body,/list_chancery_decree_signers_v294/);
+    assert.match(body,/up\.role='chancery'/);
+    assert.match(body,/REVOKE ALL ON FUNCTION/);
   } else if (approvedV293ChanceryAutonomy.has(later)) {
     assert.equal(sha('supabase/migrations/'+later),approvedV293ChanceryAutonomy.get(later),'V293 certified autonomy SQL changed');
     assert.match(body,/CREATE OR REPLACE FUNCTION public\.issue_chancery_decree_v280/);

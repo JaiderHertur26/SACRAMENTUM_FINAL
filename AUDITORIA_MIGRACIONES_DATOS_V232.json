@@ -1,7 +1,7 @@
 {
   "protocol": "V232",
   "environment": "OFFLINE_QA_SCHEMAS_ONLY",
-  "migrationCount": 194,
+  "migrationCount": 195,
   "directWriteMigrationCount": 15,
   "directWriteStatementCount": 46,
   "findings": [
@@ -1536,6 +1536,12 @@
       "sha256": "7f558e8d059acd1c6cbb7848956c68cf4937a44e700a73afcfccfee8664f4810",
       "directWrites": 0,
       "statements": 5
+    },
+    {
+      "file": "supabase/migrations/20261029041812_sacramentum_v294_decree_signer_role_name_and_audit.sql",
+      "sha256": "6d60f378118403950894f6260ab5e87371d1874f5a45c67f6bc0ec45765a85d9",
+      "directWrites": 0,
+      "statements": 8
     }
   ]
 }

@@ -91,8 +91,8 @@ const PrintRepositionDecree = forwardRef(({ decreeData }, ref) => {
 
   const diocesisName = (decreeData.dioceseName || decreeData.diocese_name || decreeData.jurisdictionName || decreeData.jurisdiction_name || chanceryData.nombreDiocesis || chanceryData.diocesis || chanceryData.jurisdiccion || authUser?.dioceseName || authUser?.diocese_name || 'JURISDICCIÓN ECLESIÁSTICA').toUpperCase();
   const jurisdictionKind = diocesisName.includes('ARQUIDIÓCESIS') ? 'Arquidiócesis' : diocesisName.includes('DIÓCESIS') ? 'Diócesis' : 'jurisdicción eclesiástica';
-  const cancillerName = (decreeData.cancillerName || decreeData.chancellorName || chanceryData.canciller || chanceryData.nombreCanciller || chanceryData.nombreSacerdote || '[CANCILLER NO CONFIGURADO]').toUpperCase();
-  const cargoName = (decreeData.cancillerCargo || decreeData.chancellorTitle || chanceryData.cargo || 'CANCILLER DIOCESANO').toUpperCase();
+  const cancillerName = (decreeData.issuingSigner?.name || decreeData.payload?.issuingSigner?.name || decreeData.cancillerName || decreeData.chancellorName || chanceryData.canciller || chanceryData.nombreCanciller || chanceryData.nombreSacerdote || '[CANCILLER NO CONFIGURADO]').toUpperCase();
+  const cargoName = (decreeData.issuingSigner?.title || decreeData.payload?.issuingSigner?.title || decreeData.cancillerCargo || decreeData.chancellorTitle || chanceryData.cargo || 'CANCILLER DIOCESANO').toUpperCase();
 
   const parroquiaNombre = targetParishInfo.name || misDatosParroquia.nombre || authUser?.parishName || '[PARROQUIA NO CONFIGURADA]';
   const ciudadParroquia = targetParishInfo.city || misDatosParroquia.ciudad || authUser?.city || '[CIUDAD NO CONFIGURADA]';
@@ -137,7 +137,7 @@ const PrintRepositionDecree = forwardRef(({ decreeData }, ref) => {
     maternalGrandparents: (getVal('maternalGrandparents') || getVal('abuelosMaternos') || getVal('abuemat') || '---').toUpperCase(),
     godparents: (getVal('godparents') || getVal('padrinos') || '---').toUpperCase(),
     minister: (getVal('minister') || getVal('ministro') || '---').toUpperCase(),
-    daFe: (getVal('ministerFaith') || getVal('daFe') || getVal('da_fe') || '---').toUpperCase(),
+    daFe: cancillerName,
   };
 
   const sacramentType = String(decreeData.sacramentType || decreeData.sacrament || decreeData.sacramento || 'bautismo').toLowerCase();
@@ -180,7 +180,7 @@ const PrintRepositionDecree = forwardRef(({ decreeData }, ref) => {
                <span className="font-bold uppercase tracking-wider text-[10pt] text-black">Decreto de Reposición de Partida</span>
             </div>
             <div className="absolute right-0 top-0 text-[6pt] font-mono text-black font-bold text-right leading-tight">
-              CÓDIGO: CAL-ODC-022<br/>VERSIÓN: 001
+              CÓDIGO: CAL-ODC-022<br/>VERSIÓN: 002
             </div>
           </div>
 
