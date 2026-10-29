@@ -252,7 +252,9 @@ export function buildDecreeDocumentHtml({ row = {}, institution = {}, parish = {
   const type = decreeTypeKey(row.tipo || payload.decreeType || payload.decretoType);
   const sacrament = sacramentKey(row.sacrament_type || payload.sacramentType || payload.sacramento || payload.sacrament);
   const original = locationData(payload.originalLocation || payload.originalPartidaSummary || payload.originalRecordSummary || {});
-  const replacement = locationData(payload.replacementLocation || payload.newPartidaSummary || payload.newRecordSummary || payload.datosNuevaPartida || {});
+  const replacement = locationData(payload.recordOrigin === 'chancery_pending_seat_v280' && payload.seatStatus === 'seated'
+    ? { book: payload.seatBook, folio: payload.seatFolio, number: payload.seatNumber }
+    : (payload.replacementLocation || payload.newPartidaSummary || payload.newRecordSummary || payload.datosNuevaPartida || {}));
   const evidence = payload.evidence || payload.decreeEvidence || payload.recordData?.evidence || {};
   const record = buildRecord(payload, type, sacramentalRecord);
   const dioceseName = upper(institution.dioceseName || institution.diocese || 'DIÓCESIS / ARQUIDIÓCESIS');
