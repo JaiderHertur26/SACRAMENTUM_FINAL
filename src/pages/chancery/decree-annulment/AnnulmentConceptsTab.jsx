@@ -179,6 +179,15 @@ const AnnulmentConceptsTab = () => {
       return;
     }
 
+    if (form.tipo === 'porReposicion' && form.sacrament_type === 'general') {
+      toast({
+        title: 'Seleccione el sacramento',
+        description: 'Un decreto de Reposición debe clasificarse por Bautismo, Confirmación, Matrimonio o Exequias; no como General.',
+        variant: 'destructive'
+      });
+      return;
+    }
+
     if (form.tipo === 'porNulidad') {
       toast({
         title: 'Tipo no permitido',
@@ -322,7 +331,9 @@ const AnnulmentConceptsTab = () => {
       render: (row) => (
         <div className="flex flex-col gap-1">
           <span className="w-fit rounded-full border border-indigo-200 bg-indigo-50 px-3 py-1.5 text-[9px] font-black uppercase tracking-widest text-indigo-700">
-            {decreeConceptSacramentLabel(row.sacrament_type)}
+            {row.source_kind === 'legacy_catalog' && row.sacrament_type === 'general'
+                ? 'General · histórico'
+                : decreeConceptSacramentLabel(row.sacrament_type)}
           </span>
           {row.source_kind === 'legacy_catalog' && (
             <span className="text-[8px] font-black uppercase tracking-widest text-slate-400">Catálogo histórico</span>
@@ -485,13 +496,13 @@ const AnnulmentConceptsTab = () => {
               onChange={(event) => setForm((current) => ({ ...current, sacrament_type: event.target.value }))}
               className="h-10 w-full rounded-md border border-slate-200 bg-white px-3 text-sm font-semibold"
             >
-              <option value="general">General / varios sacramentos</option>
+              <option value="general" disabled={form.tipo === 'porReposicion'}>General / varios sacramentos</option>
               <option value="bautismo">Bautismo</option>
               <option value="confirmacion">Confirmación</option>
               <option value="matrimonio">Matrimonio</option>
               <option value="exequias">Exequias</option>
             </select>
-            <p className="mt-1 text-[9px] leading-relaxed text-slate-400">El concepto sólo podrá utilizarse en este sacramento. “General” queda disponible para todos.</p>
+            <p className="mt-1 text-[9px] leading-relaxed text-slate-400">{form.tipo === 'porReposicion' ? 'Para Reposición seleccione un sacramento concreto; no se admite General.' : 'El concepto sólo podrá utilizarse en este sacramento. General queda reservado a conceptos transversales o históricos.'}</p>
           </div>
 
           <div>

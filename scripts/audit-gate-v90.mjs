@@ -223,7 +223,8 @@ exec('pruebas-sinteticas',node,['--test',
  'scripts/test-parish-direct-vicary-edit-v305c.mjs',
  'scripts/test-professional-chancery-archive-v306.mjs',
  'scripts/test-chancery-decree-chat-privacy-v307.mjs',
- 'scripts/test-reposition-concepts-v308.mjs']);
+ 'scripts/test-reposition-concepts-v308.mjs',
+ 'scripts/test-reposition-concept-names-v309.mjs']);
 const scripts=fs.readdirSync(path.join(root,'scripts')).filter(x=>/^verify-.*\.mjs$/.test(x)).sort();
 for(const file of scripts)exec('legacy/'+file,node,['scripts/'+file]);
 const npmOnWindows=process.platform==='win32';
