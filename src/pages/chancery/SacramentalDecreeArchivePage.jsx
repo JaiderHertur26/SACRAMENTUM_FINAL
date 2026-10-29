@@ -10,6 +10,7 @@ import { supabase } from '@/lib/supabaseClient';
 import { listDecrees } from '@/services/decreeRegistryService';
 import { decreeCategory, decreeCanReverse, decreeEffect, decreeTypeLabel } from '@/utils/decreeArchiveModel.mjs';
 import { buildDecreeDocumentHtml } from '@/services/decreeDocumentHtml';
+import { decreeCorrectedTargetName } from '@/utils/decreeCorrectedName.mjs';
 import {
   Search,
   Printer,
@@ -311,8 +312,7 @@ const SacramentalDecreeArchivePage = () => {
       return [
         row.decree_number,
         row.payload?.decreeNumber,
-        row.payload?.targetName,
-        row.payload?.newTargetName,
+        decreeCorrectedTargetName(row.payload, row.payload?.targetName || row.payload?.newTargetName, row.sacrament_type),
         row.parish_name,
         row.status,
         type
@@ -863,8 +863,7 @@ const SacramentalDecreeArchivePage = () => {
                           </div>
 
                           <p className="mt-1 text-sm font-bold uppercase text-slate-700">
-                            {row.payload?.targetName ||
-                              row.payload?.newTargetName ||
+                            {decreeCorrectedTargetName(row.payload, row.payload?.targetName || row.payload?.newTargetName, row.sacrament_type) ||
                               (legacyHistorical
                                 ? row.payload?.concept || 'Expediente histórico importado'
                                 : 'Expediente sacramental')}

@@ -1,4 +1,5 @@
 import {supabase} from '@/lib/supabaseClient';
+import {nameFromCorrectedRecord} from '@/utils/decreeCorrectedName.mjs';
 
 /**
  * V287: conserva el formulario y sus datos; Cancillería no elige, predice
@@ -16,6 +17,8 @@ export async function issueDecreeFromFullFormV287({
     throw new Error('Complete la parroquia, concepto, número y fecha del decreto y su fundamento.');
   }
   const record={...newRecord};
+  // El nombre persistido debe ser el corregido, no el nombre de la búsqueda original.
+  const correctedTargetName=nameFromCorrectedRecord(record,sacrament)||targetName.trim();
   for(const key of [
     'Libro','libro','book','book_number','bookNumber','folio','page','page_number',
     'number','entry','entry_number','numero','numeroPartida',
@@ -34,7 +37,7 @@ export async function issueDecreeFromFullFormV287({
     p_concept_id:conceptId,
     p_decree_number:decreeNumber.trim(),
     p_decree_date:decreeDate,
-    p_target_name:targetName.trim(),
+    p_target_name:correctedTargetName,
     p_reason:reason.trim(),
     p_evidence_ref:String(evidenceRef||('PARTIDA-'+originalRecordId)).trim(),
     p_new_record:record,
