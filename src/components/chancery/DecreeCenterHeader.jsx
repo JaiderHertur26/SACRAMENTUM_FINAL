@@ -51,7 +51,7 @@ export const DECREE_SACRAMENT_META = Object.freeze({
   matrimonio: {
     label: 'Matrimonio',
     icon: Heart,
-    description: 'Corrección, reposición y repetición documental de Matrimonio. La nulidad sigue un proceso distinto.'
+    description: 'Corrección, reposición y repetición documental de Matrimonio. La nulidad no pertenece a este Centro.'
   },
   exequias: {
     label: 'Exequias',
