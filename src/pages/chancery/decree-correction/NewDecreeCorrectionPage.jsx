@@ -1,3 +1,4 @@
+import { issueDecreeFromFullFormV287 } from '@/services/issueDecreeFromFullFormV287';
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
 import { useAuth } from '@/context/AuthContext';
@@ -327,128 +328,30 @@ const NewDecreeCorrectionPage = () => {
         return ['fechaSacramento', 'nombres', 'apellidos'].every(field => newPartida[field]);
     };
 
-    // 🚀 EJECUCIÓN DIRECTA A SUPABASE (CON EMPAQUE MULTILLAVE)
+    // V287: conservar expediente íntegro; nunca sentar aquí la partida nueva.
     const handleSave = async () => {
-        if (!validateForm()) { 
-            toast({ title: "Validación", description: "Complete todos los campos requeridos y asegúrese de haber buscado la partida.", variant: "destructive" }); 
-            return; 
-        }
-        setIsLoading(true);
-
-        try {
-            const { data: existingDecree } = await supabase.from('decretos').select('id').eq('tipo', 'correccion')
-                .eq('parish_id', targetParish).contains('payload', { decreeNumber: decreeData.numeroDeDecreto }).maybeSingle();
-
-            if (existingDecree) {
-                setIsLoading(false);
-                toast({ title: "Decreto Duplicado", description: `El decreto ${decreeData.numeroDeDecreto} ya existe en esa parroquia.`, variant: "destructive" }); 
-                return;
-            }
-
-            const supletorioLibro = String(cloudParams.suplementarioLibro || '1').padStart(4, '0');
-            const supletorioFolio = String(cloudParams.suplementarioFolio || '1').padStart(4, '0');
-            const supletorioNumero = String(cloudParams.suplementarioNumero || '1').padStart(4, '0');
-            await assertSupplementaryCoordinateAvailable(supabase, {
-                table: 'baptisms', parishId: targetParish,
-                book: supletorioLibro, folio: supletorioFolio, number: supletorioNumero
-            });
-
-            // Conserva únicamente el Da Fe documental indicado en la partida/corrección.
-            // Si no existe, permanece vacío: nunca se reconstruye desde el párroco actual.
-            let finalDaFe = cleanTitle(newPartida.daFe);
-            finalDaFe = finalDaFe && finalDaFe !== 'EL PÁRROCO' ? `PBRO. ${finalDaFe}` : finalDaFe;
-
-            let templateAnulada = chanceryNotesConfig?.correccion_anulada || "PARTIDA ANULADA POR DECRETO No. [NUMERO_DECRETO] DE FECHA [FECHA_DECRETO]. LA INFORMACIÓN CORREGIDA PASA AL LIBRO SUPLETORIO: L-[LIBRO_NUEVA] F-[FOLIO_NUEVA] N-[NUMERO_NUEVA].";
-            let noteAnulada = templateAnulada
-                .replace(/\[FECHA_DECRETO\]/g, convertDateToSpanishText(decreeData.fechaEmision).replace(/^EL\s+/i, ''))
-                .replace(/\[NUMERO_DECRETO\]/g, decreeData.numeroDeDecreto)
-                .replace(/\[LIBRO_NUEVA[\]\)]|\[LIBRO_PARTIDA_NUEVA[\]\)]|\[LIBRO NUEVA[\]\)]/gi, supletorioLibro)
-                .replace(/\[FOLIO_NUEVA[\]\)]|\[FOLIO_PARTIDA_NUEVA[\]\)]|\[FOLIO NUEVA[\]\)]/gi, supletorioFolio)
-                .replace(/\[NUMERO_NUEVA[\]\)]|\[NUMERO NUEVA[\]\)]|\[NUMERO_PARTIDA_NUEVA[\]\)]/gi, supletorioNumero);
-
-            let templateNueva = chanceryNotesConfig?.correccion_nueva || "ESTA PARTIDA SE INSCRIBIÓ SEGÚN DECRETO NÚMERO: [NUMERO_DECRETO] DE FECHA: [FECHA_DECRETO] EXPEDIDO POR: [OFICINA_DECRETO] Y ANULA LA PARTIDA DEL LIBRO: [LIBRO_ANULADA], FOLIO: [FOLIO_ANULADA], NÚMERO: [NUMERO_PARTIDA_ANULADA]. DA FE: [MINISTRO].";
-            let notaSupletoriaFinal = templateNueva
-                .replace(/\[NUMERO_DECRETO\]/g, decreeData.numeroDeDecreto)
-                .replace(/\[FECHA_DECRETO\]/g, convertDateToSpanishText(decreeData.fechaEmision).replace(/^EL\s+/i, ''))
-                .replace(/\[OFICINA_DECRETO\]/g, 'CANCILLERÍA')
-                .replace(/\[LIBRO_ANULADA\]/g, String(decreeData.Libro).padStart(4, '0'))
-                .replace(/\[FOLIO_ANULADA\]/g, String(decreeData.folio).padStart(4, '0'))
-                .replace(/\[NUMERO_PARTIDA_ANULADA\]/g, String(decreeData.numero).padStart(4, '0'))
-                .replace(/\[MINISTRO\]|\[NOMBRE_SACERDOTE\]/gi, finalDaFe || '---');
-
-            const payloadDecree = {
-                decreeNumber: decreeData.numeroDeDecreto, 
-                decreeDate: decreeData.fechaEmision,
-                conceptoAnulacionId: decreeData.conceptoAnulacion,
-                conceptPolicy: normalizeDecreeConceptPolicy(selectedConcept),
-                reason: decreeReason.trim(),
-                fundamento: decreeReason.trim(),
-                observaciones: newPartida.observaciones,
-                targetName: decreeData.nombreBautizado, 
-                newTargetName: `${newPartida.nombres} ${newPartida.apellidos}`.trim(), 
-                
-                fechaSacramento: newPartida.fechaSacramento, sexo: newPartida.sexo,
-                fechaNacimiento: newPartida.fechaNacimiento, lugarNacimiento: newPartida.lugarNacimiento,
-                nombrePadre: newPartida.nombrePadre, nombreMadre: newPartida.nombreMadre,
-                tipoUnionPadres: newPartida.tipoUnionPadres, abuelosPaternos: newPartida.abuelosPaternos,
-                abuelosMaternos: newPartida.abuelosMaternos, padrinos: newPartida.padrinos,
-                ministro: newPartida.ministro, 
-                // 🚀 EMPAQUE MULTILLAVE PARA BLINDAR EL DECRETO PDF
-                daFe: finalDaFe, dafe: finalDaFe, da_fe: finalDaFe, ministerFaith: finalDaFe,
-
-                originalPartidaId: foundRecord.id,
-                originalPartidaSummary: { 
-                    book: decreeData.Libro, page: decreeData.folio, entry: decreeData.numero,
-                    nombres: foundRecord.nombres || foundRecord.first_name || '', apellidos: foundRecord.apellidos || foundRecord.last_name || '',
-                    daFe: finalDaFe, dafe: finalDaFe
-                },
-                newPartidaSummary: { 
-                    book: supletorioLibro, page: supletorioFolio, entry: supletorioNumero,
-                    nombres: newPartida.nombres, apellidos: newPartida.apellidos,
-                    daFe: finalDaFe, dafe: finalDaFe
-                }
-            };
-
-            // Ejecución institucional atómica: PostgreSQL bloquea el consecutivo y
-            // confirma partida original + supletoria + decreto + notas + aviso + auditoría juntos.
-            const correctedData = {
-                ...newPartida,
-                daFe: finalDaFe,
-                estado: 'permanente',
-                status: 'seated'
-            };
-
-            const { data: rpcData, error: rpcError } = await supabase.rpc('apply_baptism_correction', {
-                p_parish_id: targetParish,
-                p_original_baptism_id: foundRecord.id,
-                p_decree_number: decreeData.numeroDeDecreto.trim(),
-                p_decree_date: decreeData.fechaEmision,
-                p_concept_id: decreeData.conceptoAnulacion || null,
-                p_corrected_data: correctedData,
-                p_decree_payload: payloadDecree,
-                p_annulled_note: noteAnulada,
-                p_replacement_note: notaSupletoriaFinal,
-                p_expected_book: Number.parseInt(cloudParams.suplementarioLibro || 1, 10),
-                p_expected_folio: Number.parseInt(cloudParams.suplementarioFolio || 1, 10),
-                p_expected_number: Number.parseInt(cloudParams.suplementarioNumero || 1, 10)
-            });
-
-            if (rpcError) {
-                if (String(rpcError.message || '').includes('apply_baptism_correction') || String(rpcError.message || '').includes('Could not find the function')) {
-                    throw new Error('Falta aplicar la migración profesional de Bautismo en Supabase antes de emitir el decreto.');
-                }
-                throw rpcError;
-            }
-
-            const rpcResult = Array.isArray(rpcData) ? rpcData[0] : rpcData;
-            setIsLoading(false);
-            toast({ title: "Decreto emitido correctamente", description: `Bautismo corregido de forma transaccional. Nueva partida ${rpcResult?.book_number || ""}-${rpcResult?.folio || ""}-${rpcResult?.number || ""}.`, className: "bg-green-50 text-green-900 border-green-200" });
-            navigate('/chancery/decretos/archivo?sacrament=bautismo&type=correccion');
-            
-        } catch (error) {
-            setIsLoading(false); console.error("Error al guardar:", error);
-            toast({ title: "Error", description: error.message, variant: "destructive" });
-        }
+      if (!validateForm()) {
+        toast({title:'Validación',description:'Complete los campos y confirme la partida original.',variant:'destructive'});return;
+      }
+      setIsLoading(true);
+      try {
+        const result=await issueDecreeFromFullFormV287({
+          parishId:targetParish,sacrament:'bautismo',type:'correccion',
+          originalRecordId:foundRecord.id,conceptId:decreeData.conceptoAnulacion,
+          decreeNumber:decreeData.numeroDeDecreto,decreeDate:decreeData.fechaEmision,
+          targetName:decreeData.nombreBautizado || `${newPartida.nombres} ${newPartida.apellidos}`,
+          reason:decreeReason,evidenceRef:'PARTIDA-'+foundRecord.id,
+          newRecord:{...newPartida},
+          details:{originalPartidaId:foundRecord.id,
+            originalPartidaSummary:{book:decreeData.Libro,page:decreeData.folio,entry:decreeData.numero},
+            originalPartida:foundRecord,ministerFaith:newPartida.daFe,
+            observaciones:newPartida.observaciones,
+            conceptPolicy:normalizeDecreeConceptPolicy(selectedConcept)}
+        });
+        toast({title:'Decreto expedido y enviado',description:'Pendiente de asiento parroquial. No se asignó Libro, Folio ni Número.'});
+        navigate('/chancery/decretos/archivo?sacrament=bautismo&type=correccion');
+      }catch(e){toast({title:'No se pudo expedir',description:e.message,variant:'destructive'});}
+      finally{setIsLoading(false);}
     };
 
     return (

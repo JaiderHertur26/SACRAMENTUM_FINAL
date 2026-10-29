@@ -1,3 +1,4 @@
+import { issueDecreeFromFullFormV287 } from '@/services/issueDecreeFromFullFormV287';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import DashboardLayout from '@/components/DashboardLayout';
@@ -546,141 +547,52 @@ const FuneralDecreesPage = () => {
     return null;
   };
 
-  const issueCorrection = async () => {
-    const validation = validateCorrection();
-
-    if (validation) {
-      toast({
-        title: 'No se puede emitir la corrección',
-        description: validation,
-        variant: 'destructive'
-      });
-      return;
-    }
-
-    const changes = buildChanges(selected, form);
-
-    if (!(await institutionalConfirm({
-      title: 'Emitir corrección de Exequias',
-      message: 'La partida existente quedará ANULADA y se creará una NUEVA partida en el Libro Supletorio. Los consecutivos consumidos no podrán reutilizarse.',
-      confirmText: 'Sí, emitir corrección',
-      tone: 'destructive'
-    }))) {
-      return;
-    }
-
+  const issueCorrection=async()=>{
+    const validation=validateCorrection();
+    if(validation){toast({title:'No se puede emitir',description:validation,variant:'destructive'});return;}
+    const changes=buildChanges(selected,form);
+    if(!(await institutionalConfirm({title:'Expedir corrección de Exequias',
+      message:'Se notificará a la parroquia. La partida original no se anula hasta sentar la nueva.',
+      confirmText:'Expedir y enviar',tone:'warning'})))return;
     setSaving(true);
-
-    try {
-      const result = await applyFuneralCorrectionDecree({
-        funeralId: selected.id,
-        decreeDate,
-        reason: effectiveReason(),
-        changes,
-        decreeNumber: decreeNumber.trim()
+    try{
+      await issueDecreeFromFullFormV287({
+        parishId:selectedParishId,sacrament:'exequias',type:'correccion',
+        originalRecordId:selected.id,conceptId,decreeNumber,decreeDate,
+        targetName:`${form.nombres||selected.nombres} ${form.apellidos||selected.apellidos}`,
+        reason:effectiveReason(),evidenceRef:'PARTIDA-'+selected.id,
+        newRecord:{...buildRecord(form),...changes},
+        details:{originalPartidaId:selected.id,originalPartida:selected,
+          changedFields:changes,originalPartidaSummary:{book:selected.book_number,
+            page:selected.folio,entry:selected.number}}
       });
-
-      if (result?.decree_id) {
-        await attachDecreeConceptPolicy({ decreeId: result.decree_id, conceptId });
-      }
-
-      toast({
-        title: 'Corrección emitida correctamente',
-        description:
-          `Decreto ${result?.decree_number || 'emitido'} · original anulada · ` +
-          `nueva supletoria L-${result?.book_number || '—'} F-${
-            result?.folio || '—'
-          } N-${result?.number || '—'} · REG. ${
-            result?.numero_registro || '—'
-          }.`,
-        className: 'bg-green-50 border-green-200 text-green-900'
-      });
-
-      resetWorkArea();
-      await load();
+      toast({title:'Decreto expedido',description:'La parroquia asignará la numeración al sentar.'});
+      resetWorkArea();await load();
       navigate('/chancery/decretos/archivo?sacrament=exequias&type=correccion');
-    } catch (error) {
-      toast({
-        title: 'No se pudo emitir la corrección',
-        description: error?.message || 'Supabase rechazó la operación.',
-        variant: 'destructive'
-      });
-    } finally {
-      setSaving(false);
-    }
+    }catch(e){toast({title:'No se pudo expedir',description:e.message,variant:'destructive'});}
+    finally{setSaving(false);}
   };
-
-  const issueReposition = async () => {
-    const validation = validateReposition();
-
-    if (validation) {
-      toast({
-        title: 'No se puede emitir la reposición',
-        description: validation,
-        variant: 'destructive'
-      });
-      return;
-    }
-
-    if (!(await institutionalConfirm({
-      title: 'Emitir reposición de Exequias',
-      message: 'No se anulará ninguna partida. Se creará una nueva partida supletoria porque no existe el asiento original utilizable y existe evidencia de que las Exequias sí se realizaron.',
-      confirmText: 'Sí, emitir reposición',
-      tone: 'warning'
-    }))) {
-      return;
-    }
-
+  const issueReposition=async()=>{
+    const validation=validateReposition();
+    if(validation){toast({title:'No se puede emitir',description:validation,variant:'destructive'});return;}
+    if(!(await institutionalConfirm({title:'Expedir reposición de Exequias',
+      message:'Se notificará a la parroquia. La partida nueva se numerará únicamente al sentarla.',
+      confirmText:'Expedir y enviar',tone:'warning'})))return;
     setSaving(true);
-
-    try {
-      const result = await createFuneralRepositionByDecree({
-        parishId: selectedParishId,
-        decreeDate,
-        reason: effectiveReason(),
-        record: {
-          ...buildRecord(form),
-          conceptoDecreto: selectedConcept?.concepto || '',
-          conceptoDecretoId: conceptId
-        },
-        evidence: {
-          type: evidence.type,
-          reference: evidence.reference.trim(),
-          issuer: evidence.issuer.trim(),
-          date: evidence.date || null,
-          description: evidence.description.trim()
-        },
-        decreeNumber: decreeNumber.trim()
+    try{
+      await issueDecreeFromFullFormV287({
+        parishId:selectedParishId,sacrament:'exequias',type:'reposicion',
+        conceptId,decreeNumber,decreeDate,
+        targetName:`${form.nombres} ${form.apellidos}`,
+        reason:effectiveReason(),evidenceRef:evidence.reference,
+        newRecord:{...buildRecord(form)},details:{evidence,conceptPolicy:selectedConcept}
       });
-
-      if (result?.decree_id) {
-        await attachDecreeConceptPolicy({ decreeId: result.decree_id, conceptId });
-      }
-
-      toast({
-        title: 'Reposición emitida correctamente',
-        description:
-          `Decreto ${result?.decree_number || 'emitido'} · nueva partida supletoria ` +
-          `L-${result?.book_number || '—'} F-${result?.folio || '—'} N-${
-            result?.number || '—'
-          } · REG. ${result?.numero_registro || '—'}.`,
-        className: 'bg-green-50 border-green-200 text-green-900'
-      });
-
-      resetWorkArea();
-      await load();
+      toast({title:'Decreto expedido',description:'Sin Libro, Folio ni Número de nueva partida.'});
+      resetWorkArea();await load();
       navigate('/chancery/decretos/archivo?sacrament=exequias&type=reposicion');
-    } catch (error) {
-      toast({
-        title: 'No se pudo emitir la reposición',
-        description: error?.message || 'Supabase rechazó la operación.',
-        variant: 'destructive'
-      });
-    } finally {
-      setSaving(false);
-    }
+    }catch(e){toast({title:'No se pudo expedir',description:e.message,variant:'destructive'});}
+    finally{setSaving(false);}
   };
-
 
   const selectedParish = parishes.find((p) => p.id === selectedParishId) || null;
 

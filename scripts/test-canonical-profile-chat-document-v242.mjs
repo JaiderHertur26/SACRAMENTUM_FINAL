@@ -46,7 +46,7 @@ test('V242 catalogue hash is current and previous V241 document remains unaltere
 });
 test('V242 schema-only migration count and digest match frozen release inventory',()=>{
  const inv=report();
- assert.equal(inv.migrationCount,187);
+ assert.equal(inv.migrationCount,188);
  assert.equal(CLEAN_REPLAY_HISTORICAL_MIGRATIONS,166);
  assert.equal(inv.directWriteMigrationCount,14);
  assert.equal(inv.directWriteStatementCount,45);

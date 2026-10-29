@@ -1,7 +1,7 @@
 {
   "protocol": "V232",
   "environment": "OFFLINE_QA_SCHEMAS_ONLY",
-  "migrationCount": 187,
+  "migrationCount": 188,
   "directWriteMigrationCount": 14,
   "directWriteStatementCount": 45,
   "findings": [
@@ -1482,6 +1482,12 @@
       "sha256": "ab4b9cbce987f4aebd49dcacace1c7e087c3e75cc046eeefdcb0dcead28b7c8c",
       "directWrites": 0,
       "statements": 7
+    },
+    {
+      "file": "supabase/migrations/20261029013539_sacramentum_v287_keep_full_chancery_forms_remove_new_record_coordinates.sql",
+      "sha256": "2cb2bda635d33e9d37ffc33e2b103a348b14d31609665be61447cbed15a16235",
+      "directWrites": 0,
+      "statements": 6
     }
   ]
 }

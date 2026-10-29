@@ -1,3 +1,4 @@
+import { issueDecreeFromFullFormV287 } from '@/services/issueDecreeFromFullFormV287';
 import React, { useEffect, useMemo, useState } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
 import { useAuth } from '@/context/AuthContext';
@@ -248,45 +249,57 @@ const MarriageDecreesPage = () => {
     return concept ? `${concept}: ${base}` : base;
   };
 
-  const issueCorrection = async () => {
-    if (!selected) return toast({title:'Corrección',description:'Seleccione la partida matrimonial original.',variant:'destructive'});
-    if (!decreeNumber.trim() || !decreeDate || !conceptId || !reason.trim()) return toast({title:'Corrección',description:'Número, fecha, concepto y fundamento del decreto son obligatorios.',variant:'destructive'});
-    const changes = buildChanges(selected,form);
-    if (!Object.keys(changes).length) return toast({title:'Corrección',description:'Modifique al menos un dato de la nueva partida.',variant:'destructive'});
-    if (!(await institutionalConfirm({
-      title: 'Emitir corrección matrimonial',
-      message: 'La partida original quedará ANULADA y se creará una nueva partida MATRIMONIAL SUPLETORIA.',
-      confirmText: 'Sí, emitir corrección',
-      tone: 'destructive'
-    }))) return;
+  const issueCorrection=async()=>{
+    if(!selected){toast({title:'Corrección',description:'Seleccione la partida matrimonial original.',variant:'destructive'});return;}
+    if(!decreeNumber.trim()||!decreeDate||!conceptId||!reason.trim()){
+      toast({title:'Corrección',description:'Número, fecha, concepto y fundamento obligatorios.',variant:'destructive'});return;
+    }
+    const changes=buildChanges(selected,form);
+    if(!Object.keys(changes).length){toast({title:'Corrección',description:'Modifique al menos un dato.',variant:'destructive'});return;}
+    if(!(await institutionalConfirm({title:'Expedir corrección matrimonial',
+      message:'La parroquia recibirá el decreto. La partida original solo se anulará al sentar la nueva.',
+      confirmText:'Expedir y enviar a parroquia',tone:'warning'})))return;
     setSaving(true);
-    try {
-      const result = await applyMarriageCorrectionDecree({marriageId:selected.id,decreeDate,reason:effectiveReason(),changes,decreeNumber:decreeNumber.trim()});
-      if (result?.decree_id) await attachDecreeConceptPolicy({ decreeId: result.decree_id, conceptId });
-      toast({title:'Corrección matrimonial emitida',description:`Nueva supletoria L-${result?.book_number||'—'} F-${result?.folio||'—'} N-${result?.number||'—'} · REG. ${result?.numero_registro||'—'}.`,className:'bg-green-50 border-green-200 text-green-900'});
+    try{
+      await issueDecreeFromFullFormV287({
+        parishId:selectedParishId,sacrament:'matrimonio',type:'correccion',
+        originalRecordId:selected.id,conceptId,decreeNumber,decreeDate,
+        targetName:`${form.novioNombres} ${form.novioApellidos} y ${form.noviaNombres} ${form.noviaApellidos}`,
+        reason:effectiveReason(),evidenceRef:'PARTIDA-'+selected.id,
+        newRecord:{...rawFromRecord(selected),...form,...changes},
+        details:{originalPartidaId:selected.id,originalPartida:selected,
+          changedFields:changes,originalPartidaSummary:{book:selected.book_number,
+            page:selected.folio,entry:selected.number}}
+      });
+      toast({title:'Decreto enviado',description:'La partida nueva no tiene aún Libro, Folio ni Número.'});
       navigate('/chancery/decretos/archivo?sacrament=matrimonio&type=correccion');
-    } catch(e){ toast({title:'No se pudo emitir',description:e.message,variant:'destructive'}); }
+    }catch(e){toast({title:'No se pudo expedir',description:e.message,variant:'destructive'});}
     finally{setSaving(false);}
   };
-
-  const issueReposition = async () => {
-    if (!selectedParishId) return toast({title:'Reposición',description:'Seleccione la parroquia de destino.',variant:'destructive'});
-    if (!decreeNumber.trim() || !decreeDate || !conceptId || !reason.trim()) return toast({title:'Reposición',description:'Número, fecha, concepto y fundamento del decreto son obligatorios.',variant:'destructive'});
-    if (!form.novioNombres.trim() || !form.novioApellidos.trim() || !form.noviaNombres.trim() || !form.noviaApellidos.trim() || !form.fechaHoraPrevista) return toast({title:'Reposición',description:'Nombres y apellidos de ambos contrayentes y fecha del Matrimonio son obligatorios.',variant:'destructive'});
-    if (!evidence.type || !evidence.reference.trim() || !evidence.issuer.trim() || !evidence.description.trim()) return toast({title:'Reposición',description:'Registre la evidencia que demuestra que el Matrimonio sí se celebró.',variant:'destructive'});
-    if (!(await institutionalConfirm({
-      title: 'Emitir reposición matrimonial',
-      message: 'Se creará una partida matrimonial SUPLETORIA sin anular ninguna partida, porque no existe un asiento original utilizable.',
-      confirmText: 'Sí, emitir reposición',
-      tone: 'warning'
-    }))) return;
+  const issueReposition=async()=>{
+    if(!selectedParishId||!decreeNumber.trim()||!decreeDate||!conceptId||!reason.trim()||
+      !form.novioNombres.trim()||!form.noviaNombres.trim()||!form.fechaHoraPrevista){
+      toast({title:'Reposición',description:'Complete los datos de ambos contrayentes y la celebración.',variant:'destructive'});return;
+    }
+    if(!evidence.type||!evidence.reference.trim()||!evidence.issuer.trim()||!evidence.description.trim()){
+      toast({title:'Evidencia obligatoria',description:'Falta evidencia documental.',variant:'destructive'});return;
+    }
+    if(!(await institutionalConfirm({title:'Expedir reposición matrimonial',
+      message:'Se enviará a la parroquia para crear la partida cuando sea sentada; sin numeración anticipada.',
+      confirmText:'Expedir y enviar a parroquia',tone:'warning'})))return;
     setSaving(true);
-    try {
-      const result = await createMarriageRepositionDecree({parishId:selectedParishId,decreeDate,reason:effectiveReason(),record:{...form, conceptoDecreto:selectedConcept?.concepto || '', conceptoDecretoId:conceptId},evidence:{...evidence,reference:evidence.reference.trim(),issuer:evidence.issuer.trim(),description:evidence.description.trim()},decreeNumber:decreeNumber.trim()});
-      if (result?.decree_id) await attachDecreeConceptPolicy({ decreeId: result.decree_id, conceptId });
-      toast({title:'Reposición matrimonial emitida',description:`Supletoria L-${result?.book_number||'—'} F-${result?.folio||'—'} N-${result?.number||'—'} · REG. ${result?.numero_registro||'—'}.`,className:'bg-green-50 border-green-200 text-green-900'});
+    try{
+      await issueDecreeFromFullFormV287({
+        parishId:selectedParishId,sacrament:'matrimonio',type:'reposicion',
+        conceptId,decreeNumber,decreeDate,
+        targetName:`${form.novioNombres} ${form.novioApellidos} y ${form.noviaNombres} ${form.noviaApellidos}`,
+        reason:effectiveReason(),evidenceRef:evidence.reference,
+        newRecord:{...form},details:{evidence,conceptPolicy:selectedConcept}
+      });
+      toast({title:'Decreto enviado',description:'La parroquia asignará la numeración al sentar.'});
       navigate('/chancery/decretos/archivo?sacrament=matrimonio&type=reposicion');
-    } catch(e){toast({title:'No se pudo emitir',description:e.message,variant:'destructive'});} finally{setSaving(false);}
+    }catch(e){toast({title:'No se pudo expedir',description:e.message,variant:'destructive'});}
+    finally{setSaving(false);}
   };
 
   const targetReady = mode === 'correction' ? Boolean(selected) : Boolean(selectedParishId);
