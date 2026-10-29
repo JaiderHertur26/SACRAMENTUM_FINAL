@@ -1,9 +1,10 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   Building2, Church, Landmark, Loader2, MessageCircleMore, Plus, RefreshCw,
-  Search, Send, ShieldCheck, Users, X, CheckCheck
+  Search, Send, ShieldCheck, Users, X, CheckCheck, Trash2, LockKeyhole
 } from 'lucide-react';
 import DashboardLayout from '@/components/DashboardLayout';
+import { institutionalConfirm } from '@/lib/institutionalDialog';
 import { useAuth } from '@/context/AuthContext';
 import {
   ensureDiocesanChatDefaults,
@@ -15,6 +16,7 @@ import {
   sendChatMessage,
   startDirectChat,
   subscribeToChatRoom,
+  withdrawChatMessage,
 } from '@/services/chatService';
 
 const roleLabel = {
@@ -69,6 +71,7 @@ const CommunicationsPageSession = ({ profile, user }) => {
   const [loading, setLoading] = useState(true);
   const [messagesLoading, setMessagesLoading] = useState(false);
   const [sending, setSending] = useState(false);
+  const [removingMessageId,setRemovingMessageId] = useState(null);
   const [connectionStatus, setConnectionStatus] = useState('CLOSED');
   const [error, setError] = useState('');
   const bottomRef = useRef(null);
@@ -250,6 +253,24 @@ const CommunicationsPageSession = ({ profile, user }) => {
     }
   };
 
+  const removeMyMessage = async (message) => {
+    if (!message?.id || message.sender_profile_id !== myProfileId || message.deleted_at || removingMessageId) return;
+    const approved = await institutionalConfirm({
+      title:'Eliminar mensaje enviado',
+      message:'El contenido dejará de ser visible para todos los participantes de esta conversación. Se conserva únicamente la constancia de que existió un mensaje retirado.',
+      confirmText:'Sí, eliminar mensaje',tone:'warning'
+    });
+    if (!approved) return;
+    setRemovingMessageId(message.id);setError('');
+    try {
+      await withdrawChatMessage(message.id);
+      setMessages(previous=>previous.map(item=>item.id===message.id?{...item,body:'Mensaje retirado',metadata:{},deleted_at:new Date().toISOString()}:item));
+      if (selectedRoomId) await loadMessages(selectedRoomId,{silent:true});
+      requestChatBadgeRefresh();
+    } catch(e){setError(e?.message || 'No fue posible retirar el mensaje');}
+    finally{setRemovingMessageId(null);}
+  };
+
   const openDirect = async (person) => {
     setError('');
     try {
@@ -291,7 +312,7 @@ const CommunicationsPageSession = ({ profile, user }) => {
             </div>
             <h1 className="mt-2 text-3xl font-black tracking-tight text-slate-900">Chat Diocesano</h1>
             <p className="text-slate-500 mt-1">
-              Parroquias, Cancillería y Diócesis conectadas dentro de una misma jurisdicción.
+              Conversaciones privadas entre dos participantes y grupos institucionales de la misma jurisdicción.
             </p>
           </div>
           <div className="flex items-center gap-2">
@@ -367,6 +388,9 @@ const CommunicationsPageSession = ({ profile, user }) => {
                             </span>
                           )}
                         </div>
+                        <p className={room.kind==='direct' ? 'mt-1 flex items-center gap-1 text-[10px] font-bold text-emerald-700' : 'mt-1 flex items-center gap-1 text-[10px] font-bold text-blue-700'}>
+                          {room.kind==='direct'?<><LockKeyhole className="h-3 w-3"/> Privado · solo dos participantes</>:<><Users className="h-3 w-3"/> Grupo compartido · miembros de esta diócesis</>}
+                        </p>
                         {room.organization && <p className="text-[10px] font-bold text-[#4B7BA7] truncate mt-0.5">{room.organization}</p>}
                         <p className="text-xs text-slate-400 truncate mt-1">{room.last_message || 'Sin mensajes todavía'}</p>
                       </div>
@@ -403,9 +427,9 @@ const CommunicationsPageSession = ({ profile, user }) => {
                   <div className="min-w-0">
                     <h2 className="font-black text-slate-900 truncate">{selectedRoom.name}</h2>
                     <p className="text-xs text-slate-400 truncate">
-                      {selectedRoom.organization || (selectedRoom.kind === 'diocesan'
-                        ? 'Canal general de la jurisdicción'
-                        : 'Canal institucional de Cancillería')}
+                      {selectedRoom.kind==='direct'
+                        ? 'Privado · solo tú y el destinatario pueden leer estos mensajes'
+                        : 'Grupo compartido · visible para los usuarios de esta Diócesis/Arquidiócesis'}
                     </p>
                   </div>
                   <button
@@ -426,7 +450,7 @@ const CommunicationsPageSession = ({ profile, user }) => {
                         <MessageCircleMore className="w-8 h-8 text-slate-300" />
                       </div>
                       <p className="mt-4 font-black text-slate-600">Comienza la conversación</p>
-                      <p className="text-xs text-slate-400 mt-1">El primer mensaje quedará guardado de forma permanente.</p>
+                      <p className="text-xs text-slate-400 mt-1">Los mensajes enviados pueden retirarse por su autor.</p>
                     </div>
                   ) : (
                     <div className="max-w-4xl mx-auto space-y-3">
@@ -448,10 +472,17 @@ const CommunicationsPageSession = ({ profile, user }) => {
                                   {message.sender_name}
                                 </p>
                               )}
-                              <p className="text-sm whitespace-pre-wrap break-words leading-relaxed">{message.body}</p>
+                              <p className={'text-sm whitespace-pre-wrap break-words leading-relaxed '+(message.deleted_at?'italic opacity-70':'')}>{message.deleted_at?'Mensaje retirado':message.body}</p>
                               <div className={`mt-1.5 flex items-center justify-end gap-1 text-[10px] ${mine ? 'text-white/65' : 'text-slate-400'}`}>
                                 <span>{formatTime(message.created_at)}</span>
-                                {mine && <CheckCheck className="w-3 h-3" />}
+                                {mine && !message.deleted_at && <CheckCheck className="w-3 h-3" />}
+                                {mine && !message.deleted_at && (
+                                  <button type="button" onClick={()=>removeMyMessage(message)}
+                                    disabled={!!removingMessageId} title="Eliminar mi mensaje para todos" aria-label="Eliminar mensaje para todos"
+                                    className="ml-2 rounded-lg p-1 text-white/85 hover:bg-white/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white disabled:opacity-50">
+                                    {removingMessageId===message.id?<Loader2 className="h-3 w-3 animate-spin"/>:<Trash2 className="h-3 w-3"/>}
+                                  </button>
+                                )}
                               </div>
                             </div>
                           </div>
@@ -463,6 +494,12 @@ const CommunicationsPageSession = ({ profile, user }) => {
                 </div>
 
                 <form onSubmit={handleSend} className="shrink-0 border-t border-slate-100 p-4 md:p-5 bg-white">
+                  <div className={'mx-auto mb-3 flex max-w-4xl items-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold '+(selectedRoom.kind==='direct'?'bg-emerald-50 text-emerald-900':'bg-blue-50 text-blue-900')}>
+                    {selectedRoom.kind==='direct'?<LockKeyhole className="h-4 w-4"/>:<Users className="h-4 w-4"/>}
+                    {selectedRoom.kind==='direct'
+                      ? 'Mensaje privado: solamente tú y el destinatario seleccionado.'
+                      : 'Mensaje al grupo: lo verán los miembros de la jurisdicción diocesana.'}
+                  </div>
                   <div className="max-w-4xl mx-auto flex items-end gap-3">
                     <div className="flex-1 min-w-0">
                       <textarea

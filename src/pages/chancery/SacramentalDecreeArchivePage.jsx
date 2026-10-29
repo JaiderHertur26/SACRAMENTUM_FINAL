@@ -7,9 +7,11 @@ import { Input } from '@/components/ui/Input';
 import { Link, useSearchParams } from 'react-router-dom';
 import DecreeCenterHeader from '@/components/chancery/DecreeCenterHeader';
 import ChanceryDecreeHierarchy from '@/components/chancery/ChanceryDecreeHierarchy';
+import DecreeDocumentEditModal from '@/components/chancery/DecreeDocumentEditModal';
+import { canEditChanceryDecreeDocument } from '@/utils/decreeDocumentEditPolicy.mjs';
 
 import { supabase } from '@/lib/supabaseClient';
-import { listDecrees } from '@/services/decreeRegistryService';
+import { listDecrees, editChanceryDecreeDocument } from '@/services/decreeRegistryService';
 import { decreeCategory, decreeCanReverse, decreeEffect, decreeTypeLabel } from '@/utils/decreeArchiveModel.mjs';
 import { buildDecreeDocumentHtml } from '@/services/decreeDocumentHtml';
 import { decreeCorrectedTargetName } from '@/utils/decreeCorrectedName.mjs';
@@ -94,6 +96,8 @@ const SacramentalDecreeArchivePage = () => {
 
   const [dioceseId, setDioceseId] = useState(user?.dioceseId || user?.diocese_id || '');
   const [rows, setRows] = useState([]);
+  const [activeChanceryId,setActiveChanceryId] = useState(null);
+  const [editingDecree,setEditingDecree] = useState(null);
   const [territory, setTerritory] = useState({ parishes: [], vicaries: [], deaneries: [] });
 
   const [loading, setLoading] = useState(true);
@@ -175,6 +179,7 @@ const SacramentalDecreeArchivePage = () => {
       setTerritory({parishes, vicaries: vicaryResult.data || [], deaneries: deaneryResult.data || []});
       const diocese = dioceseResult.data || null;
       const chancery = chanceryResult.data || null;
+      setActiveChanceryId(chancery?.id || null);
 
       let identity = {};
       if (chancery?.id) {
@@ -707,6 +712,16 @@ const SacramentalDecreeArchivePage = () => {
     }
   };
 
+  const saveDecreeEdit = async (input) => {
+    if (!canEditChanceryDecreeDocument(editingDecree,activeChanceryId)) throw new Error('Decreto no editable en esta etapa');
+    const result = await editChanceryDecreeDocument(input);
+    if (result?.updated) {
+      await load();
+      toast({title:'Decreto actualizado',description:'Los cambios documentales quedaron registrados en auditoría.'});
+    }
+    setEditingDecree(null);
+  };
+
   const updateType = (value) => {
     setTypeFilter(value);
     const next = new URLSearchParams(searchParams);
@@ -743,7 +758,9 @@ const SacramentalDecreeArchivePage = () => {
         </div>
         {typeFilter !== 'tribunal' && (loading ? (
           <div className="flex justify-center rounded-3xl border border-slate-200 bg-white p-16"><Loader2 className="h-7 w-7 animate-spin text-blue-600" /></div>
-        ) : <ChanceryDecreeHierarchy rows={filtered} {...territory} onView={print} onReverse={reverse} />)}
+        ) : <ChanceryDecreeHierarchy rows={filtered} {...territory} onView={print} onReverse={reverse}
+            canEdit={row=>canEditChanceryDecreeDocument(row,activeChanceryId)}
+            onEdit={row=>setEditingDecree(row)} />)}
         {typeFilter === 'tribunal' && <>
         <Link to="/chancery/decretos/conciliaciones" className="inline-flex rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-xs font-bold text-amber-900 hover:bg-amber-100">Conciliación institucional de notas posteriores →</Link>
 
@@ -1041,6 +1058,7 @@ const SacramentalDecreeArchivePage = () => {
           )}
         </section>
         </>}
+        <DecreeDocumentEditModal decree={editingDecree} onClose={()=>setEditingDecree(null)} onSave={saveDecreeEdit}/>
       </div>
     </DashboardLayout>
   );

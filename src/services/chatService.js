@@ -55,6 +55,8 @@ export const countUnreadChatMessages = async () => {
   return Number(data || 0);
 };
 
+// Only the sender may withdraw a message. The database replaces its content
+// with a non-recoverable tombstone while preserving its timeline position.
 export const withdrawChatMessage = async (messageId) => {
   const { error } = await supabase.rpc('withdraw_chat_message', { p_message_id: messageId });
   if (error) throw error;

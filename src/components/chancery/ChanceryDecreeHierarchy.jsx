@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { Archive, ChevronDown, Church, Eye, FileText, FolderTree, Printer, RotateCcw } from 'lucide-react';
+import { Archive, ChevronDown, Church, Eye, FileText, FolderTree, Printer, RotateCcw, Pencil } from 'lucide-react';
 import { buildChanceryArchiveHierarchy } from '@/utils/chanceryArchiveHierarchy.mjs';
 import { decreeCanReverse, decreeEffect, decreeTypeLabel } from '@/utils/decreeArchiveModel.mjs';
 import { decreeCorrectedTargetName } from '@/utils/decreeCorrectedName.mjs';
@@ -23,7 +23,7 @@ const formatDate=value=>{
 
 export default function ChanceryDecreeHierarchy({
   rows=[],parishes=[],vicaries=[],deaneries=[],
-  onView=()=>{},onReverse=()=>{}
+  onView=()=>{},onReverse=()=>{},onEdit=()=>{},canEdit=()=>false
 }) {
   const hierarchy=useMemo(()=>buildChanceryArchiveHierarchy(rows,parishes,vicaries,deaneries),
     [rows,parishes,vicaries,deaneries]);
@@ -73,6 +73,10 @@ export default function ChanceryDecreeHierarchy({
                           onClick={()=>onView(row)} className="rounded-lg p-2 text-amber-600 hover:bg-amber-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-600">
                           <Eye className="h-4 w-4"/>
                         </button>
+                        {canEdit(row)&&<button type="button" title="Editar texto del decreto" aria-label="Editar decreto" onClick={()=>onEdit(row)}
+                          className="rounded-lg p-2 text-blue-700 hover:bg-blue-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-600">
+                          <Pencil className="h-4 w-4"/>
+                        </button>}
                         <button type="button" title="Ver detalles del expediente" aria-label="Ver detalles del expediente"
                           aria-expanded={!!expandedDetails[row.id]} onClick={()=>toggleRow(row.id)}
                           className="rounded-lg p-2 text-blue-600 hover:bg-blue-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-600">
