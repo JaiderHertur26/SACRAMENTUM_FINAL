@@ -16,6 +16,7 @@ import { useAuth } from '@/context/AuthContext';
 import { supabase } from '@/lib/supabaseClient';
 import { decreeConceptBookLabel, normalizeDecreeConceptPolicy } from '@/utils/decreeConceptPolicy';
 import { buildDecreeDocumentHtml } from '@/services/decreeDocumentHtml';
+import ParishDecreeSeatPanelV280 from '@/components/parish/ParishDecreeSeatPanelV280';
 
 const text = (value, fallback = '—') => {
   if (value === null || value === undefined || value === '') return fallback;
@@ -393,7 +394,7 @@ const ParishDecreeDetailPage = () => {
             </div>
           </div>
 
-          {decree && (
+          {decree && !(payload.recordOrigin==='chancery_pending_seat_v280' && payload.seatStatus!=='seated') && (
             <Button
               variant="outline"
               onClick={printDecree}
@@ -421,6 +422,9 @@ const ParishDecreeDetailPage = () => {
             )}
           </div>
         ) : (
+          <>
+          {payload.recordOrigin==='chancery_pending_seat_v280' &&
+            <ParishDecreeSeatPanelV280 decreeId={decree.id} onSeated={()=>setRetryCount(v=>v+1)} />}
           <article className="overflow-hidden rounded-[2.25rem] border border-slate-200 bg-white shadow-xl shadow-slate-900/5 print:rounded-none print:border-0 print:shadow-none">
             <header className="border-b border-slate-100 bg-gradient-to-r from-slate-50 to-white p-8 print:bg-white">
               <div className="flex items-center gap-3">
@@ -459,7 +463,7 @@ const ParishDecreeDetailPage = () => {
                   <DataItem label="Tipo de decreto" value={decreeTypeLabel(decreeType)} />
                   {documentary && <DataItem label="Afectación a partida" value="Ninguna · acto exclusivamente documental" />}
                   {payload.sourceReference && <DataItem label="Fuente histórica" value={payload.sourceReference} />}
-                  <DataItem label="Estado" value={decreeStatusLabel(decree.status)} />
+                  <DataItem label="Estado" value={payload.recordOrigin==='chancery_pending_seat_v280' ? (payload.seatStatus==='seated'?'Sentado y notificado a Cancillería':'Pendiente de asiento parroquial') : decreeStatusLabel(decree.status)} />
                   <DataItem label="Persona / Titular" value={targetName} />
                   {auditInfo && <DataItem label="Ejecutado por" value={auditInfo.actorName} />}
                   {auditInfo && <DataItem label="Rol institucional" value={roleLabel(auditInfo.actorRole)} />}
@@ -467,6 +471,13 @@ const ParishDecreeDetailPage = () => {
                 </div>
               </section>
 
+              {payload.recordOrigin==='chancery_pending_seat_v280' && payload.seatStatus==='seated' && (
+                <section className="grid gap-3 rounded-xl border border-green-200 bg-green-50 p-4 md:grid-cols-3">
+                  <DataItem label="Libro de asiento" value={payload.seatBook} />
+                  <DataItem label="Folio" value={payload.seatFolio} />
+                  <DataItem label="Número de partida" value={payload.seatNumber} />
+                </section>
+              )}
               <TextBlock title="Contenido y alcance del decreto" tone="blue">
                 {relationText}
               </TextBlock>
@@ -561,6 +572,7 @@ const ParishDecreeDetailPage = () => {
               </p>
             </footer>
           </article>
+          </>
         )}
       </div>
     </DashboardLayout>

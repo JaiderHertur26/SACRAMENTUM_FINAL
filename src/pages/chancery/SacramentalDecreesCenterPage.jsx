@@ -11,6 +11,8 @@ import { ArrowRight, FileText, History } from 'lucide-react';
 import HistoricalDecreeReconciliationPanel from '@/components/chancery/HistoricalDecreeReconciliationPanel';
 import NewSupplementaryDecreePanelV271 from '@/components/chancery/NewSupplementaryDecreePanelV271';
 import NullityInstitutionalPreflightPanel from '@/components/chancery/NullityInstitutionalPreflightPanel';
+import ChanceryDecreeIssueV280 from '@/components/chancery/ChanceryDecreeIssueV280';
+import ChanceryDecreeSeatReceiptsV280 from '@/components/chancery/ChanceryDecreeSeatReceiptsV280';
 
 const SacramentalDecreesCenterPage = () => {
   const { user } = useAuth();
@@ -36,6 +38,8 @@ const SacramentalDecreesCenterPage = () => {
           </button>
         </section>
 
+        <ChanceryDecreeIssueV280 />
+        <ChanceryDecreeSeatReceiptsV280 />
         <NewSupplementaryDecreePanelV271 mode="issue" />
         <NullityInstitutionalPreflightPanel />
 

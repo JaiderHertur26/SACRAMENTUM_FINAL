@@ -1,7 +1,7 @@
 {
   "protocol": "V232",
   "environment": "OFFLINE_QA_SCHEMAS_ONLY",
-  "migrationCount": 180,
+  "migrationCount": 187,
   "directWriteMigrationCount": 14,
   "directWriteStatementCount": 45,
   "findings": [
@@ -1440,6 +1440,48 @@
       "sha256": "7f3b3ffa0537874352a6c9f0553206523b755784ebc70b3ff76e0dead7d87481",
       "directWrites": 0,
       "statements": 5
+    },
+    {
+      "file": "supabase/migrations/20261029000944_sacramentum_v279_parameters_read_only_counter_only.sql",
+      "sha256": "f5c685351063eb19773fe9760ff19e31ddf5927e252dab04a8260db03a4acd48",
+      "directWrites": 0,
+      "statements": 7
+    },
+    {
+      "file": "supabase/migrations/20261029001435_sacramentum_v281_production_ledger_kernel_missing_dependency_repair.sql",
+      "sha256": "76d566458c759176fd1ea732bef8218cca0976aad0bec2ca1fe086042acf7a46",
+      "directWrites": 0,
+      "statements": 6
+    },
+    {
+      "file": "supabase/migrations/20261029001737_sacramentum_v280_issue_decree_without_book_coordinates.sql",
+      "sha256": "1d23b3b33f8f618d0226ee24bb3291c5f0dea819ce644bae11001fc278e7b77f",
+      "directWrites": 0,
+      "statements": 11
+    },
+    {
+      "file": "supabase/migrations/20261029001740_sacramentum_v280_parish_seat_strict_order_and_chancery_receipt.sql",
+      "sha256": "de99e6cf9377c309387b8bde1812ecfc0e3334d29bad53f32d7ebd481d82e851",
+      "directWrites": 0,
+      "statements": 14
+    },
+    {
+      "file": "supabase/migrations/20261029001838_sacramentum_v280b_screen_context_decree_parish_and_chancery.sql",
+      "sha256": "005c5bbdfec8d2e67acbdcc82bd827947a4bbeb41646ff04d7bd9999b564514d",
+      "directWrites": 0,
+      "statements": 8
+    },
+    {
+      "file": "supabase/migrations/20261029002432_sacramentum_v282_diocese_approve_new_correction_reposition_concepts.sql",
+      "sha256": "a1383118546d5967707d4e953588fd6778c22d8b775f06ec2fc508010b4ce196",
+      "directWrites": 0,
+      "statements": 8
+    },
+    {
+      "file": "supabase/migrations/20261029002837_sacramentum_v283_revoke_legacy_parameter_save_rpcs.sql",
+      "sha256": "ab4b9cbce987f4aebd49dcacace1c7e087c3e75cc046eeefdcb0dcead28b7c8c",
+      "directWrites": 0,
+      "statements": 7
     }
   ]
 }

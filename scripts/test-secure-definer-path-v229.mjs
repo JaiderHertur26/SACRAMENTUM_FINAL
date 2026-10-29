@@ -10,6 +10,15 @@ const sha=f=>createHash('sha256').update(fs.readFileSync(f,'utf8').replace(/\r\n
 const currentMigration='supabase/migrations/20261027044045_secure_definer_pg_temp_last_v229.sql';
 // V276: exact-byte certification of the 14 INSTALL-ONLY migrations already applied to Supabase.
 // Every newly deployed public RPC remains REVOKED until separately audited official cutover.
+const approvedV280AppliedIntegrity=new Map([
+ ['20261029000944_sacramentum_v279_parameters_read_only_counter_only.sql','f5c685351063eb19773fe9760ff19e31ddf5927e252dab04a8260db03a4acd48'],
+ ['20261029001435_sacramentum_v281_production_ledger_kernel_missing_dependency_repair.sql','76d566458c759176fd1ea732bef8218cca0976aad0bec2ca1fe086042acf7a46'],
+ ['20261029001737_sacramentum_v280_issue_decree_without_book_coordinates.sql','1d23b3b33f8f618d0226ee24bb3291c5f0dea819ce644bae11001fc278e7b77f'],
+ ['20261029001740_sacramentum_v280_parish_seat_strict_order_and_chancery_receipt.sql','de99e6cf9377c309387b8bde1812ecfc0e3334d29bad53f32d7ebd481d82e851'],
+ ['20261029001838_sacramentum_v280b_screen_context_decree_parish_and_chancery.sql','005c5bbdfec8d2e67acbdcc82bd827947a4bbeb41646ff04d7bd9999b564514d'],
+ ['20261029002432_sacramentum_v282_diocese_approve_new_correction_reposition_concepts.sql','a1383118546d5967707d4e953588fd6778c22d8b775f06ec2fc508010b4ce196'],
+ ['20261029002837_sacramentum_v283_revoke_legacy_parameter_save_rpcs.sql','ab4b9cbce987f4aebd49dcacace1c7e087c3e75cc046eeefdcb0dcead28b7c8c'],
+]);
 const approvedV276StagedLedger=new Map([
  ['20261028203353_sacramentum_v252_private_book_ledger_staged.sql','24023b8ceb3904df98574141004e8d19428886a0b4f9192ec5c43468910c5a51'],
  ['20261028203407_sacramentum_v253_private_operations_and_dependencies_staged.sql','f0d4282904af1ed013c9cfbb94cb03e23d4bbb45f9229c3d54e63b18238655a1'],
@@ -60,6 +69,8 @@ test('V229 remote migration version is identical to the checked-in CLI-created m
  const all=fs.readdirSync('supabase/migrations').filter(x=>x.endsWith('.sql')).sort();
  assert.equal(approvedV276StagedLedger.size,14);
  for(const f of approvedV276StagedLedger.keys())assert.ok(all.includes(f),'certified migration missing: '+f);
+ assert.equal(approvedV280AppliedIntegrity.size,7);
+ for(const f of approvedV280AppliedIntegrity.keys())assert.ok(all.includes(f),'V280 migrated RPC missing: '+f);
  for(const later of all.filter(x=>('supabase/migrations/'+x)>currentMigration)) {
   const body=fs.readFileSync('supabase/migrations/'+later,'utf8');
   if(later==='20261027125848_harden_chat_actor_guard_v232.sql') {
@@ -87,6 +98,27 @@ test('V229 remote migration version is identical to the checked-in CLI-created m
     assert.match(body,/materialize_legacy_decrees_v68/);
     assert.match(body,/v_chancery IS NULL/);
     assert.doesNotMatch(body,/\\b(?:INSERT INTO|UPDATE\\s+public\\.|DELETE FROM|TRUNCATE\\s+TABLE|DROP TABLE)\\b/i);
+  } else if (approvedV280AppliedIntegrity.has(later)) {
+    assert.equal(sha('supabase/migrations/'+later),approvedV280AppliedIntegrity.get(later),
+      'changed approved V280 SQL without renewed review: '+later);
+    assert.doesNotMatch(body,/^\s*TRUNCATE\s+TABLE\b/mi);
+    assert.doesNotMatch(body,/^\s*DELETE\s+FROM\s+public\./mi);
+    if(later.includes('v279_')) {
+      assert.match(body,/REVOKE INSERT, UPDATE, DELETE/);
+      assert.match(body,/update_parish_boleta_counter_v256/);
+    } else if (later.includes('v283_')) {
+      assert.match(body,/REVOKE EXECUTE ON FUNCTION public\.save_baptism_parameters/);
+      assert.match(body,/save_confirmation_parameters/);
+      assert.match(body,/save_marriage_parameters/);
+      assert.match(body,/save_funeral_parameters/);
+    } else if (later.includes('v281_')) {
+      assert.match(body,/append_verified_batch_v281/);
+      assert.match(body,/REVOKE ALL ON FUNCTION sacramentum_ledger/);
+    } else {
+      assert.match(body,/SECURITY DEFINER/);
+      assert.match(body,/auth\.uid\(\)/);
+      assert.match(body,/REVOKE ALL ON FUNCTION public\./);
+    }
   } else if (approvedV276StagedLedger.has(later)) {
     assert.equal(sha('supabase/migrations/'+later),approvedV276StagedLedger.get(later),
       'new staged migration content changed without re-certification: '+later);
