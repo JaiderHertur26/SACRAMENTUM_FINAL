@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
+import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   AlertCircle, Building2, CheckCircle2, Church, Copy, Edit, Eye,
@@ -31,6 +32,8 @@ import EditVicaryModal from '@/components/modals/EditVicaryModal';
 import EditDecanateModal from '@/components/modals/EditDecanateModal';
 import ParishDetailsModal from '@/components/modals/ParishDetailsModal';
 import { institutionalConfirm } from '@/lib/institutionalDialog';
+import { listDecrees } from '@/services/decreeRegistryService';
+import { buildDecreeTerritory } from '@/utils/decreeTerritory.mjs';
 
 const EMPTY_ENV = { name: '', city: '', vicaryId: '', deaneryId: '', priest: '' };
 const initialModals = {
@@ -56,6 +59,7 @@ const DioceseEcclesiasticalPage = () => {
   const [realVicaries, setRealVicaries] = useState([]);
   const [realDeaneries, setRealDeaneries] = useState([]);
   const [realParishes, setRealParishes] = useState([]);
+  const [decreeRows, setDecreeRows] = useState([]);
   const [profiles, setProfiles] = useState([]);
   const [pendingEnvs, setPendingEnvs] = useState([]);
   const [loadingStructure, setLoadingStructure] = useState(true);
@@ -90,7 +94,11 @@ const DioceseEcclesiasticalPage = () => {
       if (!dioceseId) throw new Error('Tu perfil no tiene una Diócesis/Arquidiócesis vinculada.');
       setCurrentDioceseId(dioceseId);
 
-      const structure = await loadEcclesiasticalStructure(dioceseId, user.id);
+      const [structure, decreeList] = await Promise.all([
+        loadEcclesiasticalStructure(dioceseId, user.id),
+        listDecrees({dioceseId}).catch((error) => { console.warn('Contadores de decretos no disponibles:',error); return null; })
+      ]);
+      setDecreeRows(decreeList);
       setRealDioceseName(structure.diocese?.name || user?.dioceseName || 'Jurisdicción');
       setRealDiocese(structure.diocese || null);
       setRealChancery(structure.chancery);
@@ -127,14 +135,14 @@ const DioceseEcclesiasticalPage = () => {
   );
 
   const getParishesByDeanery = useCallback(
-    (deaneryId) => realParishes.filter((p) => normalizedId(p.decanate_id || p.decanateId || p.deanery_id) === normalizedId(deaneryId)),
+    (deaneryId) => realParishes.filter((p) => normalizedId(p.decanate_id || p.decanateId) === normalizedId(deaneryId)),
     [realParishes]
   );
 
   const getDirectParishes = useCallback(
     (vicaryId) => realParishes.filter((p) => {
       const parishVicary = p.vicary_id || p.vicaryId;
-      const parishDeanery = p.decanate_id || p.decanateId || p.deanery_id;
+      const parishDeanery = p.decanate_id || p.decanateId;
       return normalizedId(parishVicary) === normalizedId(vicaryId) && !parishDeanery;
     }),
     [realParishes]
@@ -150,6 +158,8 @@ const DioceseEcclesiasticalPage = () => {
     [envFormData.vicaryId, getDeaneries]
   );
 
+  const decreeTerritory = useMemo(() => decreeRows ? buildDecreeTerritory(decreeRows,realParishes,realVicaries,realDeaneries) : null,[decreeRows,realParishes,realVicaries,realDeaneries]);
+  const counter = (bucket,key) => decreeTerritory ? (decreeTerritory[bucket]?.[key] || 0) : '—';
   const hasPendingChancery = pendingEnvs.some((env) => env.type === 'CHANCERY');
   const chanceryProfile = realChancery ? profileForChancery(profiles, realChancery.id) : null;
 
@@ -254,8 +264,8 @@ const DioceseEcclesiasticalPage = () => {
       toast({ title: 'Cancillería ya asignada', description: 'Sólo puede existir una Cancillería por jurisdicción.', variant: 'destructive' });
       return;
     }
-    if (type === 'PARISH' && (!envFormData.vicaryId || !envFormData.deaneryId)) {
-      toast({ title: 'Jerarquía obligatoria', description: 'Toda parroquia debe quedar asignada a una Vicaría y a un Decanato.', variant: 'destructive' });
+    if (type === 'PARISH' && !envFormData.vicaryId) {
+      toast({ title: 'Vicaría obligatoria', description: 'Toda parroquia operativa debe estar vinculada a una vicaría. El decanato es opcional.', variant: 'destructive' });
       return;
     }
     if (type === 'PARISH' && envFormData.deaneryId) {
@@ -348,7 +358,7 @@ const DioceseEcclesiasticalPage = () => {
         {label && <div className="bg-slate-50/80 px-5 py-3 border-b border-slate-100"><span className="text-[10px] font-black text-[#4B7BA7] uppercase tracking-widest">{label}</span></div>}
         <table className="w-full text-sm text-left">
           <thead className="bg-white border-b border-slate-50 text-[9px] uppercase text-slate-400 font-black tracking-widest">
-            <tr><th className="px-6 py-4">Parroquia</th><th className="px-6 py-4">Párroco</th><th className="px-6 py-4">Cuenta</th><th className="px-6 py-4 text-right">Acciones</th></tr>
+            <tr><th className="px-6 py-4">Parroquia</th><th className="px-6 py-4">Párroco</th><th className="px-6 py-4">Cuenta</th><th className="px-6 py-4">Decretos</th><th className="px-6 py-4 text-right">Acciones</th></tr>
           </thead>
           <tbody className="divide-y divide-slate-50">
             {parishes.map((parish) => {
@@ -358,6 +368,7 @@ const DioceseEcclesiasticalPage = () => {
                   <td className="px-6 py-4 font-black text-slate-800 uppercase"><div className="flex items-center gap-3"><Church className="w-4 h-4 text-[#4B7BA7]" />{parish.name}</div></td>
                   <td className="px-6 py-4 text-xs font-bold text-slate-600">{parish.parroco || 'Sin asignar'}</td>
                   <td className="px-6 py-4 text-xs text-slate-500">{parishProfile?.full_name || parishProfile?.email || 'Sin activar'}</td>
+                  <td className="px-6 py-4"><Link className="rounded-lg border border-blue-200 bg-blue-50 px-3 py-2 text-xs font-bold text-blue-800 hover:bg-blue-100" to={'/diocese/decretos/archivo?parish=' + encodeURIComponent(parish.id) + '&vicary=' + encodeURIComponent(parish.vicary_id || '') + '&deanery=' + encodeURIComponent(parish.decanate_id || '')}>{counter('byParish',parish.id)} · Ver archivo</Link></td>
                   <td className="px-6 py-4 text-right">
                     <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                       <button onClick={() => openModal('parishDetails', parish)} className="p-2 hover:bg-amber-50 rounded-xl text-[#D4AF37]"><Eye className="w-4 h-4" /></button>
@@ -424,7 +435,7 @@ const DioceseEcclesiasticalPage = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <Button variant="secondary" onClick={() => openModal('createVicary')} className="h-16 rounded-2xl font-black uppercase tracking-widest text-[10px]"><Network className="w-5 h-5 mr-2" /> Crear Vicaría</Button>
             <Button variant="secondary" onClick={() => openModal('createDecanate')} disabled={!realVicaries.length} className="h-16 rounded-2xl font-black uppercase tracking-widest text-[10px]"><LayoutGrid className="w-5 h-5 mr-2" /> Crear Decanato</Button>
-            <Button onClick={() => setEnvModal({ isOpen: true, type: 'PARISH' })} disabled={!realVicaries.length || !realDeaneries.length} className="h-16 rounded-2xl bg-[#4B7BA7] hover:bg-[#3A6286] text-white disabled:bg-slate-100 disabled:text-slate-400 font-black uppercase tracking-widest text-[10px]"><Church className="w-5 h-5 mr-2" /> Autorizar Parroquia</Button>
+            <Button onClick={() => setEnvModal({ isOpen: true, type: 'PARISH' })} disabled={!realVicaries.length} className="h-16 rounded-2xl bg-[#4B7BA7] hover:bg-[#3A6286] text-white disabled:bg-slate-100 disabled:text-slate-400 font-black uppercase tracking-widest text-[10px]"><Church className="w-5 h-5 mr-2" /> Autorizar Parroquia</Button>
             <Button onClick={() => setEnvModal({ isOpen: true, type: 'CHANCERY' })} disabled={!!realChancery || hasPendingChancery} className="h-16 rounded-2xl bg-[#D4AF37] hover:bg-[#C4A027] text-[#111111] disabled:bg-slate-100 disabled:text-slate-400 font-black uppercase tracking-widest text-[10px]"><Building2 className="w-5 h-5 mr-2" /> {realChancery ? 'Cancillería Activa' : hasPendingChancery ? 'Cancillería Pendiente' : 'Autorizar Cancillería'}</Button>
           </div>
 
@@ -464,10 +475,10 @@ const DioceseEcclesiasticalPage = () => {
               const directParishes = getDirectParishes(vicary.id);
               return (
                 <div key={vicary.id} className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
-                  <div className="bg-slate-800 p-6 lg:px-10 flex justify-between items-center"><div><h3 className="font-black text-2xl text-white uppercase">{vicary.name}</h3><p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1"><User className="w-3 h-3 inline mr-1 text-[#D4AF37]" />Vicario: {vicary.vicar_name || 'Sin asignar'}</p></div><div className="flex gap-2"><button onClick={() => openModal('editVicary', vicary)} className="p-3 bg-slate-700 rounded-xl text-white"><Edit className="w-4 h-4" /></button><button onClick={() => handleDeleteVicary(vicary)} className="p-3 bg-red-500/20 rounded-xl text-red-300"><Trash2 className="w-4 h-4" /></button></div></div>
+                  <div className="bg-slate-800 p-6 lg:px-10 flex justify-between items-center"><div><h3 className="font-black text-2xl text-white uppercase">{vicary.name}</h3><Link to={'/diocese/decretos/archivo?vicary='+encodeURIComponent(vicary.id)} className="mt-2 inline-block rounded-lg border border-white/30 px-3 py-1 text-xs font-bold text-white hover:bg-white/10">{counter('byVicary',vicary.id)} decretos · Consultar</Link><p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1"><User className="w-3 h-3 inline mr-1 text-[#D4AF37]" />Vicario: {vicary.vicar_name || 'Sin asignar'}</p></div><div className="flex gap-2"><button onClick={() => openModal('editVicary', vicary)} className="p-3 bg-slate-700 rounded-xl text-white"><Edit className="w-4 h-4" /></button><button onClick={() => handleDeleteVicary(vicary)} className="p-3 bg-red-500/20 rounded-xl text-red-300"><Trash2 className="w-4 h-4" /></button></div></div>
                   <div className="p-6 lg:p-10 space-y-8">
                     {!vicaryDeaneries.length && !directParishes.length && <p className="text-xs font-bold text-slate-400 uppercase tracking-widest italic text-center py-6">Vicaría sin decanatos ni parroquias.</p>}
-                    {vicaryDeaneries.map((deanery) => <div key={deanery.id} className="p-6 rounded-2xl border border-slate-100"><div className="flex justify-between items-center mb-4"><div><h4 className="font-black text-slate-800 uppercase text-lg">{deanery.name}</h4><p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Decano: {deanery.dean_name || 'Sin asignar'}</p></div><div className="flex gap-2"><button onClick={() => openModal('editDecanate', deanery)} className="p-2.5 hover:bg-slate-100 rounded-lg text-slate-500"><Edit className="w-4 h-4" /></button><button onClick={() => handleDeleteDeanery(deanery)} className="p-2.5 hover:bg-red-50 rounded-lg text-red-400"><Trash2 className="w-4 h-4" /></button></div></div><ParishTable parishes={getParishesByDeanery(deanery.id)} /></div>)}
+                    {vicaryDeaneries.map((deanery) => <div key={deanery.id} className="p-6 rounded-2xl border border-slate-100"><div className="flex justify-between items-center mb-4"><div><h4 className="font-black text-slate-800 uppercase text-lg">{deanery.name}</h4><Link to={'/diocese/decretos/archivo?vicary='+encodeURIComponent(vicary.id)+'&deanery='+encodeURIComponent(deanery.id)} className="mt-1 inline-block text-xs font-bold text-blue-700 underline">{counter('byDeanery',deanery.id)} decretos · Ver archivo</Link><p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Decano: {deanery.dean_name || 'Sin asignar'}</p></div><div className="flex gap-2"><button onClick={() => openModal('editDecanate', deanery)} className="p-2.5 hover:bg-slate-100 rounded-lg text-slate-500"><Edit className="w-4 h-4" /></button><button onClick={() => handleDeleteDeanery(deanery)} className="p-2.5 hover:bg-red-50 rounded-lg text-red-400"><Trash2 className="w-4 h-4" /></button></div></div><ParishTable parishes={getParishesByDeanery(deanery.id)} /></div>)}
                     {directParishes.length > 0 && <div className="bg-blue-50/30 p-5 rounded-2xl border border-dashed border-[#4B7BA7]/30"><ParishTable parishes={directParishes} label="Parroquias directamente adscritas a la Vicaría" /></div>}
                   </div>
                 </div>
@@ -483,7 +494,7 @@ const DioceseEcclesiasticalPage = () => {
                 <motion.form key="create" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onSubmit={handleGenerateToken} className="space-y-4">
                   <div><label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Nombre Oficial</label><input required value={envFormData.name} onChange={(e) => setEnvFormData({ ...envFormData, name: e.target.value })} className="w-full mt-1 px-5 py-4 bg-slate-50 border border-slate-200 rounded-xl outline-none font-bold" placeholder={envModal.type === 'PARISH' ? 'Parroquia San José' : 'Cancillería Arquidiocesana'} /></div>
                   <div><label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Ciudad / Municipio</label><input required value={envFormData.city} onChange={(e) => setEnvFormData({ ...envFormData, city: e.target.value })} className="w-full mt-1 px-5 py-4 bg-slate-50 border border-slate-200 rounded-xl outline-none font-bold" placeholder="Barranquilla" /></div>
-                  {envModal.type === 'PARISH' && <><div><label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Párroco Actual (Opcional)</label><input value={envFormData.priest} onChange={(e) => setEnvFormData({ ...envFormData, priest: e.target.value })} className="w-full mt-1 px-5 py-4 bg-slate-50 border border-slate-200 rounded-xl outline-none font-bold" /></div><div className="grid grid-cols-1 md:grid-cols-2 gap-3 bg-slate-50 p-4 rounded-xl"><div><label className="text-[9px] font-black text-slate-500 uppercase">Vicaría</label><select value={envFormData.vicaryId} onChange={(e) => setEnvFormData({ ...envFormData, vicaryId: e.target.value, deaneryId: '' })} className="w-full mt-1 px-3 py-3 bg-white border rounded-lg"><option value="">Seleccione Vicaría</option>{realVicaries.map((v) => <option key={v.id} value={v.id}>{v.name}</option>)}</select></div><div><label className="text-[9px] font-black text-slate-500 uppercase">Decanato</label><select value={envFormData.deaneryId} onChange={(e) => setEnvFormData({ ...envFormData, deaneryId: e.target.value })} disabled={!envFormData.vicaryId} className="w-full mt-1 px-3 py-3 bg-white border rounded-lg"><option value="">Seleccione Decanato</option>{availableDeaneriesForForm.map((d) => <option key={d.id} value={d.id}>{d.name}</option>)}</select></div></div></>}
+                  {envModal.type === 'PARISH' && <><div><label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Párroco Actual (Opcional)</label><input value={envFormData.priest} onChange={(e) => setEnvFormData({ ...envFormData, priest: e.target.value })} className="w-full mt-1 px-5 py-4 bg-slate-50 border border-slate-200 rounded-xl outline-none font-bold" /></div><div className="grid grid-cols-1 md:grid-cols-2 gap-3 bg-slate-50 p-4 rounded-xl"><div><label className="text-[9px] font-black text-slate-500 uppercase">Vicaría</label><select value={envFormData.vicaryId} onChange={(e) => setEnvFormData({ ...envFormData, vicaryId: e.target.value, deaneryId: '' })} className="w-full mt-1 px-3 py-3 bg-white border rounded-lg"><option value="">Seleccione Vicaría</option>{realVicaries.map((v) => <option key={v.id} value={v.id}>{v.name}</option>)}</select></div><div><label className="text-[9px] font-black text-slate-500 uppercase">Decanato</label><select value={envFormData.deaneryId} onChange={(e) => setEnvFormData({ ...envFormData, deaneryId: e.target.value })} disabled={!envFormData.vicaryId} className="w-full mt-1 px-3 py-3 bg-white border rounded-lg"><option value="">Sin decanato · dependencia directa de la vicaría</option>{availableDeaneriesForForm.map((d) => <option key={d.id} value={d.id}>{d.name}</option>)}</select></div></div></>}
                   <div className="pt-4 flex gap-3"><Button type="button" variant="outline" onClick={resetEnvModal} className="w-1/3">Cancelar</Button><Button type="submit" disabled={isGenerating} className="w-2/3 bg-[#4B7BA7] text-white">{isGenerating ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Generar Código'}</Button></div>
                 </motion.form>
               ) : (

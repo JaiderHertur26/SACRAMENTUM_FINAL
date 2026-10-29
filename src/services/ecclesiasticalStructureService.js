@@ -114,6 +114,7 @@ export async function updateParishTerritory({ id, dioceseId, name, city, priest,
     parroco: clean(priest),
     vicary_id: clean(vicaryId),
     decanate_id: clean(deaneryId),
+    ...(deaneryId ? {} : {deanery_id: null}),
   }).eq('id', id).eq('diocese_id', dioceseId).select('*').single();
   return throwIf(result, 'No fue posible actualizar la parroquia.');
 }
