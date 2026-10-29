@@ -26,8 +26,8 @@ test('V300 Centro muestra únicamente la tarjeta de Gobierno Documental',()=>{
  'Recuperar decreto antiguo','Decreto documental nuevo'])assert.ok(!main.includes(duplicate),duplicate);
 });
 
-test('V300 sus tres operaciones y cuatro sacramentos conservan rutas institucionales',()=>{
- for(const x of ['correction','reposition','archive'])assert.match(header,new RegExp('\\b'+x+':'));
+test('V313 sus cuatro operaciones y cuatro sacramentos conservan rutas institucionales',()=>{
+ for(const x of ['correction','reposition','repetition','archive'])assert.match(header,new RegExp('\\b'+x+':'));
  for(const x of ['bautismo','confirmacion','matrimonio','exequias'])assert.match(header,new RegExp('\\b'+x+':'));
  for(const x of ['/chancery/decree-correction/new','/chancery/decree-replacement/new',
   '/chancery/decretos/archivo','/chancery/matrimonio/decretos','/chancery/exequias/decretos'])

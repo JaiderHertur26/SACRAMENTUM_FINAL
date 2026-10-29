@@ -4,6 +4,7 @@ import {
   ScrollText,
   FileCheck2,
   ArchiveRestore,
+  CopyCheck,
   History,
   Church,
   HeartHandshake,
@@ -24,6 +25,11 @@ export const DECREE_OPERATION_META = Object.freeze({
     subtitle: 'No existe una partida utilizable: se crea una nueva partida supletoria con fundamento documental suficiente.',
     icon: ArchiveRestore
   },
+  repetition: {
+    label: 'Repetición',
+    subtitle: 'Error de transcripción o repetición: expediente documental, verificación y constancia, sin modificar partidas automáticamente.',
+    icon: CopyCheck
+  },
   archive: {
     label: 'Archivo',
     subtitle: 'Consulta, impresión y trazabilidad institucional de los decretos emitidos.',
@@ -35,22 +41,22 @@ export const DECREE_SACRAMENT_META = Object.freeze({
   bautismo: {
     label: 'Bautismo',
     icon: Church,
-    description: 'Corrección y reposición de partidas bautismales.'
+    description: 'Corrección, reposición y repetición documental de partidas bautismales.'
   },
   confirmacion: {
     label: 'Confirmación',
     icon: HeartHandshake,
-    description: 'Corrección y reposición de partidas de Confirmación.'
+    description: 'Corrección, reposición y repetición documental de Confirmación.'
   },
   matrimonio: {
     label: 'Matrimonio',
     icon: Heart,
-    description: 'Corrección y reposición del registro matrimonial. La nulidad no pertenece a este Centro.'
+    description: 'Corrección, reposición y repetición documental de Matrimonio. La nulidad no pertenece a este Centro.'
   },
   exequias: {
     label: 'Exequias',
     icon: ScrollText,
-    description: 'Corrección y reposición de partidas de Exequias.'
+    description: 'Corrección, reposición y repetición documental de Exequias.'
   }
 });
 
@@ -61,6 +67,7 @@ export const decreeRouteFor = (mode, sacrament, scope = 'chancery') => {
 
   if (scope === 'parish') {
     const params = new URLSearchParams();
+    if (mode === 'repetition') return `/parroquia/decretos?view=repeticion&sacrament=${encodeURIComponent(sacramentKey)}`;
     if (mode && mode !== 'archive') params.set('type', mode === 'reposition' ? 'reposicion' : 'correccion');
     params.set('sacrament', sacramentKey);
     return `/parroquia/decretos/archivo?${params.toString()}`;
@@ -68,6 +75,9 @@ export const decreeRouteFor = (mode, sacrament, scope = 'chancery') => {
 
   if (mode === 'archive') {
     return `/chancery/decretos/archivo?sacrament=${encodeURIComponent(sacramentKey)}`;
+  }
+  if (mode === 'repetition') {
+    return `/chancery/decretos?view=repeticion&sacrament=${encodeURIComponent(sacramentKey)}`;
   }
 
   const correction = {
@@ -104,8 +114,8 @@ const DecreeCenterHeader = ({
 
   const resolvedSubtitle = subtitle || (
     isParish
-      ? 'Recepción, consulta e impresión de decretos de Corrección y Reposición emitidos por Cancillería para Bautismo, Confirmación, Matrimonio y Exequias.'
-      : 'Gobierno documental unificado de Corrección y Reposición para Bautismo, Confirmación, Matrimonio y Exequias.'
+      ? 'Recepción, consulta y constancias de Corrección, Reposición y Repetición para Bautismo, Confirmación, Matrimonio y Exequias.'
+      : 'Gobierno documental unificado de Corrección, Reposición y Repetición para Bautismo, Confirmación, Matrimonio y Exequias.'
   );
 
   const switchMode = (nextMode) => {
@@ -161,7 +171,7 @@ const DecreeCenterHeader = ({
       </div>
 
       <div className="space-y-3 p-4">
-        <div className="grid gap-3 md:grid-cols-3">
+        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
           {Object.entries(DECREE_OPERATION_META).map(([key, meta]) => {
             const Icon = meta.icon;
             const active = mode === key;
