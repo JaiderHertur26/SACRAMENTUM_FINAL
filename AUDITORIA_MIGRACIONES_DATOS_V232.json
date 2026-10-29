@@ -1,9 +1,9 @@
 {
   "protocol": "V232",
   "environment": "OFFLINE_QA_SCHEMAS_ONLY",
-  "migrationCount": 188,
-  "directWriteMigrationCount": 14,
-  "directWriteStatementCount": 45,
+  "migrationCount": 191,
+  "directWriteMigrationCount": 15,
+  "directWriteStatementCount": 46,
   "findings": [
     {
       "file": "supabase/migrations/20260904000100_001_registry_core.sql",
@@ -356,6 +356,18 @@
           "kind": "INSERT INTO",
           "head": "insert into public.registry_audit_log( actor_user_id,diocese_id,entity_type,entity_id,action,before_data,after_data,metadata ) select null, p.diocese_id, ? , p.id, ? , jsonb_b",
           "sourceSha256": "5172b864568803d13618eca329b033067204c16d405c502afe6eb2a5e743c724"
+        }
+      ]
+    },
+    {
+      "file": "supabase/migrations/20261029021505_sacramentum_v288_complete_notifications_and_private_return_evidence.sql",
+      "sha256": "550108e2f481b59a22a7cfef7ed28e0db1f122c3797500cca6f84ad09a44d0c7",
+      "actions": [
+        {
+          "statementIndex": 3,
+          "kind": "INSERT INTO",
+          "head": "INSERT INTO storage.buckets(id,name,public,file_size_limit,allowed_mime_types) VALUES( ? , ? ,false,10485760, ARRAY[ ? , ? , ? ]) ON CONFLICT(id) DO NOTHING",
+          "sourceSha256": "550108e2f481b59a22a7cfef7ed28e0db1f122c3797500cca6f84ad09a44d0c7"
         }
       ]
     }
@@ -1488,6 +1500,24 @@
       "sha256": "2cb2bda635d33e9d37ffc33e2b103a348b14d31609665be61447cbed15a16235",
       "directWrites": 0,
       "statements": 6
+    },
+    {
+      "file": "supabase/migrations/20261029021505_sacramentum_v288_complete_notifications_and_private_return_evidence.sql",
+      "sha256": "550108e2f481b59a22a7cfef7ed28e0db1f122c3797500cca6f84ad09a44d0c7",
+      "directWrites": 1,
+      "statements": 15
+    },
+    {
+      "file": "supabase/migrations/20261029021716_sacramentum_v289_shared_case_document_sender_and_recipient.sql",
+      "sha256": "41e620bfc8147b9c008d22e971ed04ec1c385cda93b6853bffb5b961f53368ab",
+      "directWrites": 0,
+      "statements": 5
+    },
+    {
+      "file": "supabase/migrations/20261029022546_sacramentum_v290_storage_evidence_parish_guard.sql",
+      "sha256": "8e68d8a2549e6f76ad0f54bb36e97d1a341043f23518211240386616dd97d603",
+      "directWrites": 0,
+      "statements": 9
     }
   ]
 }

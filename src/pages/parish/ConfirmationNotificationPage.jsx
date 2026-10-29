@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { BellRing, Church, Loader2, MailCheck, Send, ShieldCheck } from 'lucide-react';
 import DashboardLayout from '@/components/DashboardLayout';
 import { Button } from '@/components/ui/button';
@@ -44,7 +45,7 @@ function ConfirmationNotificationSession({user,parishId,dioceseId}){
 
   const send=async()=>{
     if(busy)return;
-    if(!ctx.confirmations.some(c=>c.id===confirmationId) || !ctx.parishes.some(p=>p.id===receiverParishId && p.id!==parishId)){
+    if(!ctx.confirmations.some(c=>c.id===confirmationId) || !ctx.parishes.some(p=>p.id===receiverParishId)){
       toast({title:'Referencia de origen o destino no autorizada',description:'Actualice los registros para esta parroquia antes de emitir.',variant:'destructive'});return;
     }
     if(!confirmationId||!receiverParishId){toast({title:'Seleccione la Confirmación y la parroquia destinataria',variant:'destructive'});return;}
@@ -62,9 +63,10 @@ function ConfirmationNotificationSession({user,parishId,dioceseId}){
       <div><p className="text-[9px] font-black uppercase tracking-[.22em] text-[#4B7BA7]">Correspondencia sacramental</p><h1 className="font-serif text-4xl font-black text-slate-950">Notificación de Confirmación</h1><p className="mt-2 max-w-3xl text-sm text-slate-500">Comunica oficialmente a la parroquia de Bautismo que el fiel recibió la Confirmación, para que se asiente la nota marginal y quede acuse institucional.</p></div>
 
       <div className="rounded-[2rem] border bg-white p-6 shadow-sm">
+        <div className="mb-5 rounded-xl border border-blue-200 bg-blue-50 p-4 text-sm text-blue-900"><p className="font-bold">Confirmación: todos los destinos de Bautismo</p><p className="mt-1 text-xs">Incluye la propia parroquia, otras parroquias registradas, libros físicos y parroquias externas.</p><Link to="/parroquia/matrimonio/notificacion?v277=1&sacrament=confirmacion" className="mt-3 inline-flex rounded-lg bg-blue-800 px-4 py-2 text-xs font-bold text-white">Abrir circuito integral</Link></div>
         <div className="grid gap-5 md:grid-cols-2">
           <label><span className="text-[10px] font-black uppercase text-slate-500">Confirmación asentada</span><select value={confirmationId} onChange={e=>setConfirmationId(e.target.value)} className="mt-2 w-full rounded-xl border px-3 py-3 font-bold"><option value="">Seleccione…</option>{ctx.confirmations.map(c=><option key={c.id} value={c.id}>{[c.nombres,c.apellidos].filter(Boolean).join(' ')} · L {c.book_number||'—'} F {c.folio||'—'} N {c.number||'—'}</option>)}</select></label>
-          <label><span className="text-[10px] font-black uppercase text-slate-500">Parroquia de Bautismo destinataria</span><select value={receiverParishId} onChange={e=>setReceiverParishId(e.target.value)} className="mt-2 w-full rounded-xl border px-3 py-3 font-bold"><option value="">Seleccione…</option>{ctx.parishes.filter(p=>p.id!==parishId).map(p=><option key={p.id} value={p.id}>{p.name}{p.city?` · ${p.city}`:''}</option>)}</select></label>
+          <label><span className="text-[10px] font-black uppercase text-slate-500">Parroquia de Bautismo destinataria</span><select value={receiverParishId} onChange={e=>setReceiverParishId(e.target.value)} className="mt-2 w-full rounded-xl border px-3 py-3 font-bold"><option value="">Seleccione…</option>{ctx.parishes.map(p=><option key={p.id} value={p.id}>{p.name}{p.city?` · ${p.city}`:''}</option>)}</select></label>
         </div>
 
         {conf&&<div className="mt-6 rounded-2xl border border-blue-100 bg-blue-50/50 p-5"><div className="grid gap-4 md:grid-cols-4">{field('Confirmando',[conf.nombres,conf.apellidos].filter(Boolean).join(' '))}{field('Fecha Confirmación',conf.celebration_date)}{field('Partida Confirmación',`L ${conf.book_number||'—'} · F ${conf.folio||'—'} · N ${conf.number||'—'}`)}{field('Bautismo conocido',conf.lugar_bautismo)}</div></div>}

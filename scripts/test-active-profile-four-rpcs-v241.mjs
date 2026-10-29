@@ -45,10 +45,10 @@ test('V241 live QA confirms role denials, argument validation, harmless read, do
 });
 test('V241 adds one schema-only migration; old data mutation blocklist untouched',()=>{
  const inv=report();
- assert.equal(inv.migrationCount,188); // Current inventory includes subsequent V242 migration.
+ assert.equal(inv.migrationCount,191); // Current inventory includes subsequent V242 migration.
  assert.equal(CLEAN_REPLAY_HISTORICAL_MIGRATIONS,166);
- assert.equal(inv.directWriteMigrationCount,14);
- assert.equal(inv.directWriteStatementCount,45);
+ assert.equal(inv.directWriteMigrationCount,15);
+ assert.equal(inv.directWriteStatementCount,46);
  const file=inv.checks.filter(x=>x.file.endsWith('harden_four_active_profile_rpcs_v241.sql'));
  assert.equal(file.length,1);
  assert.equal(file[0].directWrites,0);

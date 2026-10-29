@@ -71,7 +71,9 @@ const ModalVerAviso = ({
     onDeleteAviso,
     receptorInfo,
     onResolveManual,
-    onAcceptPhysical
+    onAcceptPhysical,
+    onUpdateLocator,
+    onViewCaseDocument
 }) => {
     const printRef = useRef();
     const { getParrocos, data } = useAppData();
@@ -86,10 +88,13 @@ const ModalVerAviso = ({
     const isPending = aviso.status !== 'aceptada';
     const notificationType = String(documento.notificationType || aviso.document?.notificationType || 'matrimonio').toLowerCase();
     const isNullity = notificationType === 'nulidad_matrimonial';
+    const isConfirmation = notificationType === 'confirmacion';
+    const isV277 = documento.caseVersion === 'V277';
     const manualLocator = aviso?.payload?.manualLocator || documento?.manualBaptismLocator || {};
     const isManualUnlinked = !isNullity
         && !aviso?.targetBaptismId
-        && Boolean(manualLocator?.book && manualLocator?.folio && manualLocator?.number);
+        && (isV277 || Boolean(manualLocator?.book && manualLocator?.folio && manualLocator?.number));
+    const physicalCoordinatesReady = Boolean(manualLocator?.book && manualLocator?.folio && manualLocator?.number);
     const modalTitle = isNullity
         ? `Notificación Sacramental · Nulidad Matrimonial: ${aviso.consecutivo}`
         : `Notificación Sacramental: ${aviso.consecutivo}`;
@@ -190,7 +195,14 @@ const ModalVerAviso = ({
                             >
                                 <Link2 className="mr-2 h-4 w-4" /> Vincular partida digital
                             </Button>
+                            {isV277 && !physicalCoordinatesReady && (
+                                <Button variant="outline" onClick={() => onUpdateLocator?.(aviso)}
+                                    className="border-amber-300 bg-amber-50 text-amber-800">
+                                    <BookOpenCheck className="mr-2 h-4 w-4" /> Localizar libro físico
+                                </Button>
+                            )}
                             <Button
+                                disabled={!physicalCoordinatesReady}
                                 onClick={() => onAcceptPhysical?.(aviso)}
                                 className="bg-green-600 text-white hover:bg-green-700"
                             >
@@ -244,7 +256,7 @@ const ModalVerAviso = ({
                 {/* SECCIÓN 3: ACTO SACRAMENTAL QUE ORIGINA LA NOTIFICACIÓN */}
                 <section>
                     <h3 className="text-md font-bold text-slate-900 border-b border-slate-200 pb-2 mb-3">
-                        {isNullity ? '3. Sentencia / Decreto de Nulidad Matrimonial' : '3. Datos del Matrimonio Celebrado'}
+                        {isNullity ? '3. Sentencia / Decreto de Nulidad Matrimonial' : isConfirmation ? '3. Datos de la Confirmación Celebrada' : '3. Datos del Matrimonio Celebrado'}
                     </h3>
 
                     {isNullity ? (
@@ -266,6 +278,14 @@ const ModalVerAviso = ({
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                    ) : isConfirmation ? (
+                        <div className="grid grid-cols-1 gap-x-6 md:grid-cols-2">
+                            <DataRow label="Fecha de Confirmación" value={formatearFecha(documento.confirmationDate || documento.sourceDate)} />
+                            <DataRow label="Parroquia de Confirmación" value={emisorInfo?.name} />
+                            <DataRow label="Libro de Confirmación" value={documento.confirmationBook || documento.sourceBook} />
+                            <DataRow label="Folio" value={documento.confirmationFolio || documento.sourceFolio} />
+                            <DataRow label="Número" value={documento.confirmationNumber || documento.sourceNumber} />
                         </div>
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6">
@@ -304,6 +324,7 @@ const ModalVerAviso = ({
             {/* ACTIONS FOOTER */}
             <div className="mt-8 pt-4 border-t border-slate-200 flex justify-between items-center bg-slate-50 -mx-6 px-6 -mb-6 pb-6">
                 <div className="flex gap-2">
+                    {isV277 && <Button variant="outline" onClick={()=>onViewCaseDocument?.(documento.id||aviso.documentoId)} className="border-blue-200 text-blue-800">Ver expediente consolidado</Button>}
                     <Button variant="outline" onClick={handlePrint} className="flex items-center gap-2 border-slate-300 text-slate-700 bg-white hover:bg-slate-100">
                         <Printer className="w-4 h-4" />
                         Imprimir

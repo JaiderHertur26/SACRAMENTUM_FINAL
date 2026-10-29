@@ -45,10 +45,10 @@ test('V243 PostgreSQL fingerprint was independently observed and previously publ
 });
 test('V243 inventory is schema-only and historical direct data writes still blocked',()=>{
  const inv=report();
- assert.equal(inv.migrationCount,188);
+ assert.equal(inv.migrationCount,191);
  assert.equal(CLEAN_REPLAY_HISTORICAL_MIGRATIONS,166);
- assert.equal(inv.directWriteMigrationCount,14);
- assert.equal(inv.directWriteStatementCount,45);
+ assert.equal(inv.directWriteMigrationCount,15);
+ assert.equal(inv.directWriteStatementCount,46);
  const entries=inv.checks.filter(x=>x.file.endsWith('harden_materialize_chancery_v243.sql'));
  assert.equal(entries.length,1);
  assert.equal(entries[0].directWrites,0);

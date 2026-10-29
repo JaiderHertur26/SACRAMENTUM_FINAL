@@ -32,14 +32,14 @@ test('V231 SQL lexer ignores DML inside comments, strings and dollar-quoted priv
  assert.match(s[1],/^insert into public.document_templates/i);
  assert.match(s[2],/^update public.legacy_import_rows/i);
 });
-test('V231 detects all 188 versioned migrations with SHA256 fingerprints and full source coverage',()=>{
+test('V231 detects all 191 versioned migrations with SHA256 fingerprints and full source coverage',()=>{
  const scan=report();
- assert.equal(scan.migrationCount,188);
- assert.equal(inv.migrationCount,188);
+ assert.equal(scan.migrationCount,191);
+ assert.equal(inv.migrationCount,191);
  assert.deepEqual(scan.checks,inv.checks);
  assert.deepEqual(scan.findings,inv.findings);
- assert.equal(inv.checks.length,188);
- assert.equal(new Set(inv.checks.map(x=>x.file)).size,188);
+ assert.equal(inv.checks.length,191);
+ assert.equal(new Set(inv.checks.map(x=>x.file)).size,191);
  assert.ok(inv.checks.every(x=>/^[a-f0-9]{64}$/.test(x.sha256)));
 });
 test('V231 pinned history manifest digest matches the independent Vercel release guard',()=>{
@@ -48,10 +48,11 @@ test('V231 pinned history manifest digest matches the independent Vercel release
  assert.equal(CLEAN_REPLAY_MUTATIONS_TO_EXCLUDE,39);
  assert.equal(CLEAN_REPLAY_REFERENCE_CATALOGS_TO_REVIEW,6);
 });
-test('V231 inventory confirms 45 direct-data statements spanning fourteen distinct QA migration files',()=>{
- assert.equal(inv.directWriteMigrationCount,14);
- assert.equal(inv.directWriteStatementCount,45);
- assert.equal(inv.findings.length,14);
+test('V231 inventory separates 45 historic QA mutations from one private V288 storage-bucket setup',()=>{
+ assert.equal(inv.directWriteMigrationCount,15);
+ assert.equal(inv.directWriteStatementCount,46);
+ assert.equal(inv.findings.length,15);
+ assert.ok(inv.findings.some(x=>String(x.file).includes('v288_complete_notifications')));
  assert.equal(policy.entries.length,45);
  assert.equal(policy.summary.migrationsWithDirectDataStatements,14);
 });

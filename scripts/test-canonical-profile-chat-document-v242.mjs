@@ -46,10 +46,10 @@ test('V242 catalogue hash is current and previous V241 document remains unaltere
 });
 test('V242 schema-only migration count and digest match frozen release inventory',()=>{
  const inv=report();
- assert.equal(inv.migrationCount,188);
+ assert.equal(inv.migrationCount,191);
  assert.equal(CLEAN_REPLAY_HISTORICAL_MIGRATIONS,166);
- assert.equal(inv.directWriteMigrationCount,14);
- assert.equal(inv.directWriteStatementCount,45);
+ assert.equal(inv.directWriteMigrationCount,15);
+ assert.equal(inv.directWriteStatementCount,46);
  const entry=inv.checks.filter(c=>c.file.endsWith('harden_context_chat_matrimonial_identity_v242.sql'));
  assert.equal(entry.length,1);
  assert.equal(entry[0].directWrites,0);
