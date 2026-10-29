@@ -255,7 +255,6 @@ const Sidebar = ({ isOpen, onClose, onLogout, role, menuItems: externalMenuItems
             { label: 'Diócesis/Arquidiócesis', path: '/admin/dioceses', icon: Church },
             { label: 'Usuarios Institucionales', path: '/admin/users', icon: Users },
             { label: 'Migración Histórica', path: '/admin/migration-center', icon: Archive },
-            { label: 'Plantillas Documentales', path: '/documentos/plantillas', icon: FileText },
         ];
     } 
     // 2. DIÓCESIS
@@ -268,7 +267,6 @@ const Sidebar = ({ isOpen, onClose, onLogout, role, menuItems: externalMenuItems
             { label: 'Supervisión de Decretos', path: '/diocese/decretos/archivo', icon: ScrollText },
             { label: 'Chat Diocesano', path: '/communications', icon: MessageCircleMore, badgeCount: chatCount },
             { label: 'Migración Histórica', path: '/diocese/migration-center', icon: Archive },
-            { label: 'Plantillas Documentales', path: '/documentos/plantillas', icon: FileText },
         ];
     } 
     // 3. PARROQUIA
@@ -321,7 +319,6 @@ const Sidebar = ({ isOpen, onClose, onLogout, role, menuItems: externalMenuItems
                 ]
             },
             { label: 'Libros Sacramentales', path: '/parroquia/libros', icon: BookOpen },
-            { label: 'Plantillas Documentales', path: '/documentos/plantillas', icon: FileText },
             { label: 'Datos Auxiliares', path: '/datos-auxiliares', icon: Database },
             { label: 'Parámetros', path: '/parroquia/bautismo/parametros', icon: Sliders },
             {
@@ -329,7 +326,6 @@ const Sidebar = ({ isOpen, onClose, onLogout, role, menuItems: externalMenuItems
                 icon: FileText,
                 children: [
                     { label: 'Centro de Decretos', path: '/parroquia/decretos', icon: ScrollText },
-                    { label: 'Decretos documentales recibidos', path: '/parroquia/decretos/archivo?type=documental&sacrament=bautismo' },
                     { label: 'Correcciones recibidas', path: '/parroquia/decretos/archivo?type=correccion&sacrament=bautismo' },
                     { label: 'Reposiciones recibidas', path: '/parroquia/decretos/archivo?type=reposicion&sacrament=bautismo' }
                 ]
@@ -343,13 +339,11 @@ const Sidebar = ({ isOpen, onClose, onLogout, role, menuItems: externalMenuItems
         return [
             { label: 'Inicio', path: '/chancery/dashboard', icon: LayoutDashboard },
             { label: 'Buscador Unificado', path: '/buscar', icon: Search },
-            { label: 'Plantillas Documentales', path: '/documentos/plantillas', icon: FileText },
             {
                 label: 'Decretos',
                 icon: FileText,
                 children: [
                     { label: 'Centro de Decretos', path: '/chancery/decretos', icon: ScrollText },
-                    { label: 'Decretos documentales', path: '/chancery/decretos/archivo?type=documental&sacrament=bautismo' },
                     { label: 'Conceptos de Decreto', path: '/chancery/decree-annulment' }
                 ]
             },
