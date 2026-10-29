@@ -58,7 +58,7 @@ export const hydrateDecree = (row = {}) => {
 };
 
 // Consulta canónica del archivo de decretos.
-// La emisión/reversión jurídica se realiza exclusivamente por RPC de Cancillería/Diócesis.
+// La lectura documental se reserva a Cancillería y a la parroquia destino; las autorizaciones diocesanas siguen circuitos RPC distintos.
 // La consulta exige ámbito explícito, incluye expedientes legacy y recorre páginas.
 // PostgREST limita las respuestas por defecto: nunca perder decretos > 1000.
 export async function listDecrees({ parishIds = [], dioceseId = null, type = null, sacramentType = null } = {}) {

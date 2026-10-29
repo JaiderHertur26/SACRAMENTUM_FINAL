@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, Navigate, useSearchParams } from 'react-router-dom';
 import DashboardLayout from '@/components/DashboardLayout';
 import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/components/ui/use-toast';
@@ -44,7 +44,9 @@ const impactText = (row) => {
   })[effect] || 'No determinado';
 };
 
-export default function DiocesanDecreeOversightPage() {
+// Conservado solo como referencia de las validaciones institucionales históricas.
+// No se monta: el archivo individual de decretos pertenece exclusivamente a Cancillería y Parroquia.
+function HistoricDiocesanDecreeOversightPage() {
   const { user } = useAuth();
   const { toast } = useToast();
   const [searchParams] = useSearchParams();
@@ -283,4 +285,9 @@ export default function DiocesanDecreeOversightPage() {
       </div>
     </DashboardLayout>
   );
+}
+
+// El acceso directo al antiguo archivo diocesano queda cerrado.
+export default function DiocesanDecreeOversightPage() {
+  return <Navigate to="/diocese/dashboard" replace />;
 }

@@ -264,7 +264,6 @@ const Sidebar = ({ isOpen, onClose, onLogout, role, menuItems: externalMenuItems
             { label: 'Buscador Unificado', path: '/buscar', icon: Search },
             { label: 'Organización Eclesiástica', path: '/diocese/ecclesiastical', icon: Network },
             { label: 'Informes Sacramentales', path: '/diocese/reports', icon: BarChart3 },
-            { label: 'Supervisión de Decretos', path: '/diocese/decretos/archivo', icon: ScrollText },
             { label: 'Chat Diocesano', path: '/communications', icon: MessageCircleMore, badgeCount: chatCount },
             { label: 'Migración Histórica', path: '/diocese/migration-center', icon: Archive },
         ];

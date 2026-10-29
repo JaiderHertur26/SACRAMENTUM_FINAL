@@ -62,14 +62,17 @@ const UnifiedSearchPage = () => {
                 return;
             }
             try {
-                const { data } = await supabase
+                const { data, error } = await supabase
                     .from('parishes')
-                    .select('id, name, city, address, diocese_id')
+                    .select('id, name, city, address, diocese_id, is_operational')
                     .eq('diocese_id', searchParams.dioceseId)
+                    .eq('is_operational', true)
                     .order('name', { ascending: true });
                 
-                if (data) setFilteredParishes(data);
+                if (error) throw error;
+                setFilteredParishes(data || []);
             } catch (error) {
+                setFilteredParishes([]);
                 console.error("Error cargando parroquias:", error);
             }
         };
@@ -240,7 +243,7 @@ const UnifiedSearchPage = () => {
             if (isGlobal) {
                 let allFoundParishIds = new Set(allProcessedData.map(d => d.parishId).filter(Boolean));
                 if (allFoundParishIds.size > 0) {
-                    const { data: missingParishes } = await supabase.from('parishes').select('id, name, city, address, diocese_id').in('id', Array.from(allFoundParishIds));
+                    const { data: missingParishes } = await supabase.from('parishes').select('id, name, city, address, diocese_id, is_operational').in('id', Array.from(allFoundParishIds)).eq('is_operational', true);
                     if (missingParishes) allParishesRef = missingParishes;
                 }
             }

@@ -34,26 +34,22 @@ test('V305A clasifica y filtra sin duplicar el decreto',()=>{
  assert.deepEqual(filter({vicaryId:'v2'}),['d','e']);
  assert.deepEqual(filter({unassigned:true}),['f','g']);
 });
-test('V305A archivo Diócesis y Cancillería consulta ámbito y muestra árbol',()=>{
+test('V310 archivo exclusivamente Cancillería / Parroquia, Diócesis sin acceso documental',()=>{
  const ch=source('src/pages/chancery/SacramentalDecreeArchivePage.jsx');
  const dioc=source('src/pages/diocese/DiocesanDecreeOversightPage.jsx');
  const tree=source('src/components/chancery/DecreeTerritoryNavigator.jsx');
  const org=source('src/pages/diocese/DioceseEcclesiasticalPage.jsx');
- for(const s of [ch,dioc]){
-  assert.match(s,/DecreeTerritoryNavigator|ChanceryDecreeHierarchy/);
-  assert.match(s,/matchesDecreeTerritory|ChanceryDecreeHierarchy/);
-  assert.match(s,/from\('vicarias'\)/);assert.match(s,/from\('decanatos'\)/);
-  assert.match(s,/\.eq\('diocese_id',dioceseId\)/);
- }
+ assert.match(ch,/DecreeTerritoryNavigator|ChanceryDecreeHierarchy/);
+ assert.match(ch,/from\('vicarias'\)/);
+ assert.match(ch,/from\('decanatos'\)/);
+ assert.match(ch,/\.eq\('diocese_id',dioceseId\)/);
  assert.match(tree,/Sin parroquia vinculada/);
  assert.match(tree,/Parroquias directamente adscritas/);
  assert.match(tree,/Decanato \(opcional\)/);
- assert.match(org,/counter\('byParish',parish\.id\)/);
- assert.match(org,/counter\('byDeanery',deanery\.id\)/);
- assert.match(org,/counter\('byVicary',vicary\.id\)/);
- assert.match(dioc,/searchParams\.get\('parish'\)/);
+ assert.doesNotMatch(org,/listDecrees\(\{dioceseId\}\)/);
+ assert.doesNotMatch(org,/counter\('byParish'|counter\('byDeanery'|counter\('byVicary'/);
+ assert.doesNotMatch(org,/\/diocese\/decretos\/archivo/);
  assert.match(ch,/listDecrees\(\{ dioceseId \}\)/);
- assert.match(dioc,/listDecrees\(\{dioceseId\}\)/);
 });
 test('V306 reglas de alta: vicaría obligatoria, decanato opcional y validación en la función Edge',()=>{
  const org=source('src/pages/diocese/DioceseEcclesiasticalPage.jsx');
