@@ -88,6 +88,14 @@ export async function listDecrees({ parishIds = [], dioceseId = null, type = nul
   );
 }
 
+export async function editChanceryDecreeDocument({ decreeId, changes, reason }) {
+  const { data, error } = await supabase.rpc('edit_chancery_decree_document_v307', {
+    p_decree_id: decreeId, p_changes: changes, p_reason: reason,
+  });
+  if (error) throw error;
+  return data;
+}
+
 export async function attachDecreeConceptPolicy({ decreeId, conceptId }) {
   if (!decreeId || !conceptId) return false;
   const { data, error } = await supabase.rpc('attach_decree_concept_policy', {
