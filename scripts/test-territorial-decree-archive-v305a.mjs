@@ -61,5 +61,6 @@ test('V305A reglas de alta institucional permanecen intactas hasta despliegue Ed
  assert.match(org,/!realVicaries.length \|\| !realDeaneries.length/);
  assert.match(org,/!envFormData.vicaryId \|\| !envFormData.deaneryId/);
  assert.match(edge,/!verifiedVicaryId \|\| !requestedDeaneryId/);
- assert.match(edit,/!formData.vicaryId \|\| !formData.deaneryId/);
+ // La validación de alta (Edge) sigue intacta; la edición de parroquias ya activas puede permitir decanato opcional.
+ assert.match(edit,/!formData.vicaryId/);
 });

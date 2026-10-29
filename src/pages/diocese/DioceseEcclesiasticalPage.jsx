@@ -135,14 +135,14 @@ const DioceseEcclesiasticalPage = () => {
   );
 
   const getParishesByDeanery = useCallback(
-    (deaneryId) => realParishes.filter((p) => normalizedId(p.decanate_id || p.decanateId || p.deanery_id) === normalizedId(deaneryId)),
+    (deaneryId) => realParishes.filter((p) => normalizedId(p.decanate_id || p.decanateId) === normalizedId(deaneryId)),
     [realParishes]
   );
 
   const getDirectParishes = useCallback(
     (vicaryId) => realParishes.filter((p) => {
       const parishVicary = p.vicary_id || p.vicaryId;
-      const parishDeanery = p.decanate_id || p.decanateId || p.deanery_id;
+      const parishDeanery = p.decanate_id || p.decanateId;
       return normalizedId(parishVicary) === normalizedId(vicaryId) && !parishDeanery;
     }),
     [realParishes]
