@@ -136,7 +136,7 @@ const buildBaptismDetails = (r) => {
   const names = firstValue(r, ['nombres', 'firstName', 'first_name']);
   const surnames = firstValue(r, ['apellidos', 'lastName', 'last_name']);
   return [
-    detailRow('FECHA DE BAUTISMO:', formatDate(firstValue(r, ['fechaSacramento','sacramentDate','fecha_bautismo','celebration_date','fecbau']))),
+    detailRow('FECHA DE BAUTISMO:', dateInWords(firstValue(r, ['fechaSacramento','sacramentDate','fecha_bautismo','celebration_date','fecbau']))),
     detailRow('NOMBRES:', upper(names)),
     detailRow('APELLIDOS:', upper(surnames)),
     detailRow('FECHA NACIMIENTO:', formatDate(firstValue(r, ['fechaNacimiento','birthDate','fecha_nacimiento','birth_date','fecnac']))),
