@@ -58,6 +58,10 @@ test('V306 pantalla de archivo centrada en jerarquía sin selectores y tarjetas 
  assert.match(panel,/onView\(row\)/);
  assert.match(panel,/onReverse\(row\)/);
  assert.match(panel,/Ver detalles del expediente/);
+ assert.match(panel,/hierarchicalName\('Vicaría',v.name\)/);
+ assert.match(panel,/hierarchicalName\('Decanato',d.name\)/);
+ assert.match(panel,/line-through decoration-rose-400/);
+ assert.match(panel,/decreeEffect\(row\) !== 'sin_modificacion'/);
  assert.doesNotMatch(panel,/>Eliminar decreto</);
 });
 test('V306 alta diocesana permite crear parroquia sin decanato con verificaciones de seguridad',()=>{
