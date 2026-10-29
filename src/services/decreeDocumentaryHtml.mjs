@@ -1,4 +1,5 @@
 import { testDocumentPrintCss } from '../utils/testDocumentStamp.mjs';
+import { decreeInstitutionBranding } from '../utils/decreeInstitutionBranding.mjs';
 
 // Mismo expediente imprimible en Cancillería y Parroquia, sin convertir una
 // recuperación histórica en nueva emisión ni ordenar modificaciones de partidas.
@@ -8,6 +9,7 @@ const value = (v) => e(String(v ?? '').trim() || '—');
 const sacramentLabel = {bautismo:'BAUTISMO',confirmacion:'CONFIRMACIÓN',matrimonio:'MATRIMONIO',exequias:'EXEQUIAS'};
 export function buildDocumentaryDecreeHtml({row={},institution={},parish={}}={}) {
   const p = row.payload || {};
+  const issuerBrand = decreeInstitutionBranding(row);
   const historical = p.historical === true || p.recordOrigin === 'historical_archive';
   const title = historical ? 'RECONSTRUCCIÓN DE DECRETO HISTÓRICO' : 'DECRETO DOCUMENTAL DE CANCILLERÍA';
   const notice = historical
@@ -24,13 +26,15 @@ export function buildDocumentaryDecreeHtml({row={},institution={},parish={}}={})
   dl{display:grid;grid-template-columns:140px 1fr;gap:12px;border-top:1px solid #bdc3ce;padding-top:18px}
   dt{font-weight:bold;font-size:10pt;color:#526173;text-transform:uppercase}dd{margin:0;overflow-wrap:anywhere}
   .reason{white-space:pre-wrap;margin:14px 0 24px;padding:12px 18px;background:#f7f8fa;border-left:3px solid #586d86}
+  .masthead.branded{position:relative;min-height:100px;padding-left:76px;padding-right:76px}
+  .institutional-crest{position:absolute;left:2px;top:8px;height:85px;width:47px;object-fit:contain}
   footer{border-top:1px solid #bdc3ce;padding-top:20px;font-size:10pt;margin-top:45px}
   .controls{text-align:right;margin:0 auto 20px}button{padding:9px 20px;background:#23314a;color:#fff;border:none;cursor:pointer}
   @media print{.controls{display:none}body{font-size:11pt}.reason{background:transparent}}
   ${testDocumentPrintCss()}
   </style></head><body>
   <main><div class="controls"><button onclick="window.print()">Imprimir documento</button></div>
-    <header class="masthead"><h2>${value(institution.dioceseName || institution.diocese || 'DIÓCESIS / ARQUIDIÓCESIS')}</h2>
+    <header class="masthead${issuerBrand ? ' branded' : ''}">${issuerBrand ? `<img class="institutional-crest" src="${e(issuerBrand.crestSrc)}" alt="Escudo Arquidiócesis de Barranquilla">` : ''}<h2>${value(issuerBrand?.dioceseName || institution.dioceseName || institution.diocese || 'DIÓCESIS / ARQUIDIÓCESIS')}</h2>
       <h2>${value(institution.officeName || institution.chanceryName || 'CANCILLERÍA')}</h2><h1>${title}</h1></header>
     <div class="notice">${notice}</div>
     <dl>

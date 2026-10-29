@@ -1,5 +1,6 @@
 import { buildDocumentaryDecreeHtml } from './decreeDocumentaryHtml.mjs';
 import { isTestRegistryData } from '../utils/testDocumentStamp.mjs';
+import { decreeInstitutionBranding } from '../utils/decreeInstitutionBranding.mjs';
 
 const clean = (value) => String(value ?? '').trim();
 
@@ -261,7 +262,8 @@ export function buildDecreeDocumentHtml({ row = {}, institution = {}, parish = {
     : (payload.replacementLocation || payload.newPartidaSummary || payload.newRecordSummary || payload.datosNuevaPartida || {}));
   const evidence = payload.evidence || payload.decreeEvidence || payload.recordData?.evidence || {};
   const record = buildRecord(payload, type, sacramentalRecord);
-  const dioceseName = upper(institution.dioceseName || institution.diocese || 'DIÓCESIS / ARQUIDIÓCESIS');
+  const issuerBrand = decreeInstitutionBranding(row);
+  const dioceseName = upper(issuerBrand?.dioceseName || institution.dioceseName || institution.diocese || 'DIÓCESIS / ARQUIDIÓCESIS');
   const chanceryName = upper(institution.officeName || 'OFICINA DE CANCILLERÍA');
   const documentOfficeName = upper(institution.documentOfficeName || 'OFICINA DE DOCUMENTOS DE CANCILLERÍA');
   const parishName = upper(row.parish_name || parish.name || payload.parishName || payload.targetParishName || 'PARROQUIA');
@@ -347,6 +349,9 @@ body{font-family:"Times New Roman",Times,serif;font-size:9pt;line-height:1.13}
 .sheet{width:100%;min-height:0;position:relative;break-inside:avoid}
 .doc-code{position:absolute;right:0;top:0;text-align:right;font-family:Arial,sans-serif;font-size:6.5pt;font-weight:700;line-height:1.4}
 .header{text-align:center;padding-top:2mm}
+/* El escudo ocupa el margen izquierdo; no duplica ni desplaza el título. */
+.header.barranquilla-chancery{position:relative;min-height:27mm;padding:2mm 17mm 0}
+.archdiocese-crest{position:absolute;top:1mm;left:2mm;height:24mm;width:13.3mm;object-fit:contain}
 .header h1{font-size:14pt;letter-spacing:.03em;margin:0;font-weight:700}
 .header h2{font-size:10pt;letter-spacing:.06em;margin:1mm 0 0;font-weight:700}
 .title-box{display:inline-block;margin-top:2mm;border:1.5px solid #111;padding:1.5mm 4mm;font-weight:700;font-size:11pt;letter-spacing:.03em}
@@ -377,7 +382,8 @@ body{font-family:"Times New Roman",Times,serif;font-size:9pt;line-height:1.13}
 .disposition{font-family:Consolas,"Courier New",monospace;font-size:7.9pt;font-weight:700;line-height:1.35}
 .observation{margin-top:1.6mm;border-top:1px dashed #9a9a9a;padding-top:1.5mm}
 .important{font-size:7pt;margin-top:1.6mm;line-height:1.2}
-.signature-row{display:flex;align-items:flex-end;justify-content:center;margin:4mm auto 0;break-inside:avoid}
+/* Zona libre real para firma a mano; reserva el área antes de trazar la raya. */
+.signature-row{display:flex;align-items:flex-end;justify-content:center;margin:2.5mm auto 0;padding-top:21mm;break-inside:avoid}
 .signature{width:110mm;max-width:100%;text-align:center;border-top:1px solid #111;padding-top:2mm;margin:0 auto}
 .signature strong{display:block;font-size:9pt;letter-spacing:.06em}
 .signature span{display:block;font-size:7pt;font-weight:700;letter-spacing:.12em;margin-top:1mm}
@@ -392,7 +398,8 @@ ${isTestRegistryData() ? '.footer::after{content:"ENTORNO DE PRUEBAS · DOCUMENT
 <body>
 <div class="sheet">
   <div class="doc-code">CÓDIGO: ${escapeHtml(code)}<br>VERSIÓN: ${escapeHtml(version)}</div>
-  <header class="header">
+  <header class="header${issuerBrand ? ' barranquilla-chancery' : ''}">
+    ${issuerBrand ? `<img class="archdiocese-crest" src="${escapeHtml(issuerBrand.crestSrc)}" alt="Escudo de la Arquidiócesis de Barranquilla">` : ''}
     <h1>${escapeHtml(dioceseName)}</h1>
     <h2>${escapeHtml(chanceryName)}</h2>
     <div class="title-box">DECRETO DE ${type === 'correccion' ? 'CORRECCIÓN' : 'REPOSICIÓN'} DE PARTIDA</div>
