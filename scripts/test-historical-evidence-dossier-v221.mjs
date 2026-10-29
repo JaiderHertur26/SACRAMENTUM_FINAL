@@ -64,11 +64,12 @@ test('V221 missing field values are explicit rather than falsely invented',()=>{
  assert.match(html,/No registrado/);
  assert.match(html,/No registrado \/ No registrado \/ No registrado/);
 });
-test('V221 printed workpaper includes an independent draft provenance mark',()=>{
+test('V299 ficha imprimible sin sello de prueba y con datos de cotejo visibles',()=>{
  const html=build();
- assert.match(html,/body::before/);
- assert.match(html,/body::after/);
- assert.match(html,/@media print/);
+ assert.doesNotMatch(html,/body::before|body::after/);
+ assert.doesNotMatch(html,/COPIA DE REVISIÓN|ENTORNO DE PRUEBAS|DOCUMENTO NO OFICIAL/);
+ assert.match(html,/@page/);
+ assert.match(html,/Ficha preliminar de cotejo histórico/);
 });
 test('V221 actual Chancery page adds click-triggered print and enforces session/case scope',()=>{
  const ui=fs.readFileSync('src/pages/chancery/HistoricalLinkReviewPage.jsx','utf8');
