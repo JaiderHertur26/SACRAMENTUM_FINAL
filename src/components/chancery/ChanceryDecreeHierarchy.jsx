@@ -1,10 +1,11 @@
 import React, { useMemo, useState } from 'react';
 import { Archive, ChevronDown, Church, Eye, FileText, FolderTree, Printer, RotateCcw } from 'lucide-react';
 import { buildChanceryArchiveHierarchy } from '@/utils/chanceryArchiveHierarchy.mjs';
-import { decreeCanReverse, decreeTypeLabel } from '@/utils/decreeArchiveModel.mjs';
+import { decreeCanReverse, decreeEffect, decreeTypeLabel } from '@/utils/decreeArchiveModel.mjs';
 import { decreeCorrectedTargetName } from '@/utils/decreeCorrectedName.mjs';
 
 const field=value=>String(value??'').trim()||'—';
+const hierarchicalName = (type,name) => new RegExp('^'+type+'\\b','i').test(String(name||'')) ? String(name) : type+' '+String(name||'');
 const location=payload=>payload?.originalLocation||payload?.originalPartidaSummary||{};
 const originalText=payload=>{
   const loc=location(payload);
@@ -60,7 +61,7 @@ export default function ChanceryDecreeHierarchy({
                     </td>
                     <td className="px-3 py-4 align-top text-slate-700">{formatDate(row.decree_date||payload.decreeDate)}</td>
                     <td className="px-3 py-4 align-top font-extrabold uppercase leading-relaxed text-violet-700">{title}</td>
-                    <td className="px-3 py-4 align-top font-mono leading-relaxed text-rose-600">
+                    <td className={'px-3 py-4 align-top font-mono leading-relaxed text-rose-600 '+(showOriginal && decreeEffect(row) !== 'sin_modificacion'?'line-through decoration-rose-400':'')}>
                       {showOriginal?originalText(payload):'—'}
                     </td>
                     <td className="px-3 py-4 align-top text-[10px] font-bold uppercase tracking-widest text-slate-500">
@@ -140,7 +141,7 @@ export default function ChanceryDecreeHierarchy({
           <summary className="flex cursor-pointer list-none items-center justify-between gap-3 border-b border-slate-200 bg-slate-100 px-5 py-5 marker:hidden [&::-webkit-details-marker]:hidden">
             <span className="flex items-center gap-3">
               <span className="rounded-xl bg-white p-3 text-blue-700 shadow-sm"><FolderTree className="h-5 w-5"/></span>
-              <span><strong className="block font-serif text-lg font-black uppercase text-slate-950">Vicaría {v.name}</strong>
+              <span><strong className="block font-serif text-lg font-black uppercase text-slate-950">{hierarchicalName('Vicaría',v.name)}</strong>
                 <small className="text-[10px] font-bold uppercase tracking-[.22em] text-slate-500">Jurisdicción zonal</small></span>
             </span>
             <span className="flex items-center gap-3">
@@ -152,7 +153,7 @@ export default function ChanceryDecreeHierarchy({
             {v.deaneries.map(d=>(
               <details key={d.id} className="group/dean rounded-2xl border-l-4 border-blue-100 bg-white p-3 sm:p-4" open>
                 <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-2 marker:hidden [&::-webkit-details-marker]:hidden">
-                  <strong className="font-serif text-sm font-black uppercase text-slate-800 sm:text-base">Decanato {d.name}</strong>
+                  <strong className="font-serif text-sm font-black uppercase text-slate-800 sm:text-base">{hierarchicalName('Decanato',d.name)}</strong>
                   <span className="flex items-center gap-2">
                     <span className="text-xs font-bold text-blue-800">{count(d.count)}</span>
                     <ChevronDown className="h-4 w-4 text-slate-500 transition group-open/dean:rotate-180"/>
