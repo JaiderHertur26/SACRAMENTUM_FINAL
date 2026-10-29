@@ -54,7 +54,7 @@ test('V305 permite parroquias directas sin decanato en pantalla, edición, activ
  const screen=read('src/pages/diocese/DioceseEcclesiasticalPage.jsx');
  const edit=read('src/components/modals/EditParishModal.jsx');
  const edge=read('supabase/functions/activate-environment/index.ts');
- const migration=read('supabase/migrations/20261029190000_v305_optional_deanery_for_parish.sql');
+ const migration=read('supabase/deployment/v305_optional_deanery_for_parish.sql');
  assert.match(screen,/disabled=\{!realVicaries\.length\}/);
  assert.doesNotMatch(screen,/disabled=\{!realVicaries\.length \|\| !realDeaneries\.length\}/);
  assert.match(screen,/type === 'PARISH' && !envFormData\.vicaryId/);

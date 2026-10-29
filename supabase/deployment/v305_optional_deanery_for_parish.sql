@@ -1,4 +1,7 @@
 -- V305: Parroquias operativas pueden depender directamente de una vicaria.
+-- Archivo de despliegue revisado: aplicar por Supabase MCP apply_migration al proyecto QA.
+-- Se conserva intacto el manifiesto histórico de 195 migraciones certificado en V231.
+-- La ejecución es DDL transaccional; no contiene UPDATE/DELETE/INSERT de partidas.
 -- No se amplian roles, jurisdicciones ni permisos de creacion directa.
 create or replace function public.enforce_parish_hierarchy()
 returns trigger language plpgsql set search_path to 'public'
