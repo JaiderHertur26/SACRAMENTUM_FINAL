@@ -123,8 +123,8 @@ Deno.serve(async (req) => {
 
       let verifiedVicaryId: string | null = text(data.vicaryId, 80) || null;
       const requestedDeaneryId: string | null = text(data.decanateId, 80) || null;
-      if (!verifiedVicaryId || !requestedDeaneryId) {
-        throw new Error('Toda Parroquia debe quedar asignada a una Vicaría y a un Decanato.');
+      if (!verifiedVicaryId) {
+        throw new Error('Toda Parroquia operativa requiere una Vicaría. El Decanato es opcional.');
       }
 
       if (verifiedVicaryId) {

@@ -40,7 +40,8 @@ test('V305A archivo Diócesis y Cancillería consulta ámbito y muestra árbol',
  const tree=source('src/components/chancery/DecreeTerritoryNavigator.jsx');
  const org=source('src/pages/diocese/DioceseEcclesiasticalPage.jsx');
  for(const s of [ch,dioc]){
-  assert.match(s,/DecreeTerritoryNavigator/);assert.match(s,/matchesDecreeTerritory/);
+  assert.match(s,/DecreeTerritoryNavigator|ChanceryDecreeHierarchy/);
+  assert.match(s,/matchesDecreeTerritory|ChanceryDecreeHierarchy/);
   assert.match(s,/from\('vicarias'\)/);assert.match(s,/from\('decanatos'\)/);
   assert.match(s,/\.eq\('diocese_id',dioceseId\)/);
  }
@@ -54,13 +55,14 @@ test('V305A archivo Diócesis y Cancillería consulta ámbito y muestra árbol',
  assert.match(ch,/listDecrees\(\{ dioceseId \}\)/);
  assert.match(dioc,/listDecrees\(\{dioceseId\}\)/);
 });
-test('V305A reglas de alta institucional permanecen intactas hasta despliegue Edge aprobado',()=>{
+test('V306 reglas de alta: vicaría obligatoria, decanato opcional y validación en la función Edge',()=>{
  const org=source('src/pages/diocese/DioceseEcclesiasticalPage.jsx');
  const edge=source('supabase/functions/activate-environment/index.ts');
  const edit=source('src/components/modals/EditParishModal.jsx');
- assert.match(org,/!realVicaries.length \|\| !realDeaneries.length/);
- assert.match(org,/!envFormData.vicaryId \|\| !envFormData.deaneryId/);
- assert.match(edge,/!verifiedVicaryId \|\| !requestedDeaneryId/);
- // La validación de alta (Edge) sigue intacta; la edición de parroquias ya activas puede permitir decanato opcional.
+ assert.match(org,/disabled=\{!realVicaries.length\}/);
+ assert.match(org,/type === 'PARISH' && !envFormData.vicaryId/);
+ assert.match(edge,/if \(!verifiedVicaryId\)/);
+ assert.match(edge,/if \(requestedDeaneryId\)/);
+ // La validación de alta exige vicaría y la función Edge permite decanato opcional.
  assert.match(edit,/!formData.vicaryId/);
 });

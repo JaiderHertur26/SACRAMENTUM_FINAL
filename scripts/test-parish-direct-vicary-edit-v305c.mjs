@@ -35,10 +35,10 @@ test('V305C organizacion reconoce parroquias sin decanato aunque exista antigua 
  assert.doesNotMatch(details,/decanateId \|\| parish\.deanery_id/);
 });
 
-test('V305C no ofrece autorizar nuevas parroquias sin decanato mientras Edge Function no cambie', () => {
- assert.match(activate,/if \(!verifiedVicaryId \|\| !requestedDeaneryId\)/);
- assert.match(structure,/type === 'PARISH' && \(!envFormData\.vicaryId \|\| !envFormData\.deaneryId\)/);
- assert.match(structure,/disabled=\{!realVicaries\.length \|\| !realDeaneries\.length\}/);
+test('V306 autoriza nuevas parroquias sin decanato después de desplegar Edge Function', () => {
+ assert.match(activate,/if \(!verifiedVicaryId\)/);
+ assert.match(structure,/type === 'PARISH' && !envFormData\.vicaryId/);
+ assert.match(structure,/disabled=\{!realVicaries\.length\}/);
 });
 
 test('V305C contadores siguen jurisdiccion territorial actual, sin mover ni duplicar decretos',()=>{

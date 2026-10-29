@@ -6,8 +6,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/Input';
 import { Link, useSearchParams } from 'react-router-dom';
 import DecreeCenterHeader from '@/components/chancery/DecreeCenterHeader';
-import DecreeTerritoryNavigator from '@/components/chancery/DecreeTerritoryNavigator';
-import { buildDecreeTerritory, matchesDecreeTerritory } from '@/utils/decreeTerritory.mjs';
+import ChanceryDecreeHierarchy from '@/components/chancery/ChanceryDecreeHierarchy';
+
 import { supabase } from '@/lib/supabaseClient';
 import { listDecrees } from '@/services/decreeRegistryService';
 import { decreeCategory, decreeCanReverse, decreeEffect, decreeTypeLabel } from '@/utils/decreeArchiveModel.mjs';
@@ -95,7 +95,7 @@ const SacramentalDecreeArchivePage = () => {
   const [dioceseId, setDioceseId] = useState(user?.dioceseId || user?.diocese_id || '');
   const [rows, setRows] = useState([]);
   const [territory, setTerritory] = useState({ parishes: [], vicaries: [], deaneries: [] });
-  const [territoryFilter, setTerritoryFilter] = useState({});
+
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState('');
   const [typeFilter, setTypeFilter] = useState(forcedType || 'all');
@@ -296,8 +296,6 @@ const SacramentalDecreeArchivePage = () => {
     load();
   }, [dioceseId]);
 
-  const territoryIndex = useMemo(() => buildDecreeTerritory(rows,territory.parishes,territory.vicaries,territory.deaneries),[rows,territory]);
-
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
 
@@ -310,7 +308,6 @@ const SacramentalDecreeArchivePage = () => {
       );
 
       if (rowSacrament !== sacrament) return false;
-      if (!matchesDecreeTerritory(row, territoryIndex, territoryFilter)) return false;
 
       const type = TYPE_KEY(
         row.tipo || row.payload?.decreeType || row.payload?.decretoType
@@ -334,7 +331,7 @@ const SacramentalDecreeArchivePage = () => {
         .toLowerCase()
         .includes(q);
     });
-  }, [rows, query, sacrament, typeFilter, territoryIndex, territoryFilter]);
+  }, [rows, query, sacrament, typeFilter]);
 
   const reverse = async (row) => {
     if (isLegacyHistoricalDecree(row)) {
@@ -722,7 +719,32 @@ const SacramentalDecreeArchivePage = () => {
     <DashboardLayout entityName={user?.dioceseName || 'Cancillería'}>
       <div className="mx-auto max-w-7xl space-y-7 pb-20">
         <DecreeCenterHeader mode="archive" sacrament={sacrament} />
-        <DecreeTerritoryNavigator rows={rows} {...territory} selection={territoryFilter} onChange={setTerritoryFilter} loading={loading} />
+        <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <h2 className="font-serif text-xl font-black text-slate-950">Archivo de decretos</h2>
+              <p className="mt-1 text-xs text-slate-600">Consulta jerárquica por vicaría, decanato y parroquia</p>
+            </div>
+            <div className="flex flex-wrap gap-2" aria-label="Filtros por tipo de decreto">
+              {[['all','Todos'],['correccion','Correcciones'],['reposicion','Reposiciones'],['documental','Documentales'],['tribunal','Tribunal / nulidades']].map(([key,label])=>(
+                <button key={key} type="button" onClick={()=>updateType(key)}
+                  aria-pressed={typeFilter === key}
+                  className={typeFilter === key ? 'rounded-xl bg-slate-900 px-3 py-2 text-xs font-bold text-white' : 'rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50'}>{label}</button>
+              ))}
+            </div>
+          </div>
+          <div className="mt-4 flex flex-wrap gap-3">
+            <div className="relative min-w-[220px] flex-1">
+              <Search className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
+              <Input className="pl-10" value={query} onChange={e=>setQuery(e.target.value)} placeholder="Buscar decreto, persona o parroquia" aria-label="Buscar decreto" />
+            </div>
+            <Button variant="outline" onClick={load} disabled={loading}><RefreshCw className="mr-2 h-4 w-4"/>Actualizar</Button>
+          </div>
+        </div>
+        {typeFilter !== 'tribunal' && (loading ? (
+          <div className="flex justify-center rounded-3xl border border-slate-200 bg-white p-16"><Loader2 className="h-7 w-7 animate-spin text-blue-600" /></div>
+        ) : <ChanceryDecreeHierarchy rows={filtered} {...territory} onView={print} onReverse={reverse} />)}
+        {typeFilter === 'tribunal' && <>
         <Link to="/chancery/decretos/conciliaciones" className="inline-flex rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-xs font-bold text-amber-900 hover:bg-amber-100">Conciliación institucional de notas posteriores →</Link>
 
         <section className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
@@ -1018,6 +1040,7 @@ const SacramentalDecreeArchivePage = () => {
             </div>
           )}
         </section>
+        </>}
       </div>
     </DashboardLayout>
   );
