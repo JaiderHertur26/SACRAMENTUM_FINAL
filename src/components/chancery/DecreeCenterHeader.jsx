@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   ScrollText,
@@ -92,10 +93,14 @@ const DecreeCenterHeader = ({
   scope = 'chancery',
   title = 'Centro de Decretos Sacramentales',
   subtitle,
-  showBack = false
+  showBack = false,
+  showCenterButton = true,
+  selectionOnly = false
 }) => {
   const navigate = useNavigate();
   const isParish = scope === 'parish';
+  const [homeSacrament, setHomeSacrament] = useState('bautismo');
+  const selectedSacrament = selectionOnly ? homeSacrament : sacrament;
 
   const resolvedSubtitle = subtitle || (
     isParish
@@ -104,11 +109,15 @@ const DecreeCenterHeader = ({
   );
 
   const switchMode = (nextMode) => {
-    const targetSacrament = sacrament || 'bautismo';
+    const targetSacrament = selectedSacrament || 'bautismo';
     navigate(decreeRouteFor(nextMode, targetSacrament, scope));
   };
 
   const switchSacrament = (nextSacrament) => {
+    if (selectionOnly) {
+      setHomeSacrament(nextSacrament);
+      return;
+    }
     const targetMode = mode || 'archive';
     navigate(decreeRouteFor(targetMode, nextSacrament, scope));
   };
@@ -136,19 +145,19 @@ const DecreeCenterHeader = ({
             <p className="text-[9px] font-black uppercase tracking-[0.26em] text-amber-300">
               {isParish ? 'Parroquia · Decretos recibidos de Cancillería' : 'Cancillería · Gobierno Documental'}
             </p>
-            <h1 className="mt-1 font-serif text-3xl font-black text-white">{title}</h1>
+            <h1 className="mt-1 font-serif text-3xl font-black !text-white">{title}</h1>
             <p className="mt-1 max-w-3xl text-xs text-slate-300">{resolvedSubtitle}</p>
           </div>
         </div>
 
-        <button
+        {showCenterButton && <button
           type="button"
           onClick={() => navigate(centerPath(scope))}
           className="inline-flex items-center gap-2 self-start rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-[9px] font-black uppercase tracking-widest text-slate-200 transition hover:bg-white/10 md:self-auto"
         >
           {isParish ? <Eye className="h-4 w-4 text-amber-300" /> : <ShieldCheck className="h-4 w-4 text-amber-300" />}
           {isParish ? 'Centro parroquial' : 'Centro unificado'}
-        </button>
+        </button>}
       </div>
 
       <div className="space-y-3 p-4">
@@ -189,7 +198,7 @@ const DecreeCenterHeader = ({
         <div className="grid grid-cols-2 gap-2 rounded-2xl bg-slate-50 p-2 md:grid-cols-4">
           {Object.entries(DECREE_SACRAMENT_META).map(([key, meta]) => {
             const Icon = meta.icon;
-            const active = sacrament === key;
+            const active = selectedSacrament === key;
             return (
               <button
                 key={key}

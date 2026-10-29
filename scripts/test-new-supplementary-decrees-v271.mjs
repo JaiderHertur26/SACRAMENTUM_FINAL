@@ -59,7 +59,7 @@ test('V271 UI and 3 permissions only on verified cutover, with 3-role PostgreSQL
  assert.ok(read('src/components/FirstOfficialBookV267.jsx').includes('openFirstSupplementaryBookV271'));
  assert.ok(read('src/components/chancery/NewSupplementaryDecreePanelV271.jsx').includes('issue_new_supplementary_decree_v271'));
  assert.ok(read('src/components/chancery/NewSupplementaryDecreePanelV271.jsx').includes('approve_new_supplementary_decree_v271'));
- assert.ok(read('src/pages/chancery/SacramentalDecreesCenterPage.jsx').includes('NewSupplementaryDecreePanelV271'));
+ assert.ok(read('src/pages/chancery/ChanceryDecreeInstitutionalManagementPage.jsx').includes('NewSupplementaryDecreePanelV271'));
  assert.ok(read('src/pages/diocese/DiocesanDecreeOversightPage.jsx').includes('NewSupplementaryDecreePanelV271'));
  for(const s of ['same issuer cannot approve','cannot open supplementary before diocese approval',
    'book_type=\'suplementario\'','raw_data->>\'numeroRegistro\''])assert.ok(ci.includes(s),s);

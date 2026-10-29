@@ -8,7 +8,7 @@ const positive = read('scripts/qa-rollback-historical-decrees-v118.sql');
 const adversarial = read('scripts/qa-rollback-historical-adversarial-v118.sql');
 const service = read('src/services/legacyDecreeReconciliationService.js');
 const component = read('src/components/chancery/HistoricalDecreeReconciliationPanel.jsx');
-const center = read('src/pages/chancery/SacramentalDecreesCenterPage.jsx');
+const center = read('src/pages/chancery/ChanceryDecreeInstitutionalManagementPage.jsx');
 
 test('V118 sólo permite a Cancillería y exige origen explícito y verificado', () => {
   assert.match(migration, /v_role <> 'chancery'/);

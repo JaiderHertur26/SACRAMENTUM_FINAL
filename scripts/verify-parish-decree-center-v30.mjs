@@ -14,6 +14,7 @@ const header = read('src/components/chancery/DecreeCenterHeader.jsx');
 const parishCenter = read('src/pages/parish/ParishSacramentalDecreesCenterPage.jsx');
 const parishArchive = read('src/pages/parish/ParishSacramentalDecreeArchivePage.jsx');
 const chanceryCenter = read('src/pages/chancery/SacramentalDecreesCenterPage.jsx');
+const chanceryManagement = read('src/pages/chancery/ChanceryDecreeInstitutionalManagementPage.jsx');
 const service = read('src/services/decreeRegistryService.js');
 const parishNotifications = read('src/pages/parish/ParishNotificationsPage.jsx');
 const parishDetail = read('src/pages/parish/ParishDecreeDetailPage.jsx');
@@ -33,14 +34,14 @@ for (const sacrament of ['bautismo','confirmacion','matrimonio','exequias']) {
   check(`Lenguaje compartido incluye ${sacrament}`, header.includes(`${sacrament}:`) && parishCenter.includes('DECREE_SACRAMENT_META'));
 }
 for (const operation of ['correction','reposition','archive']) {
-  check(`Operación compartida ${operation}`, header.includes(`${operation}:`) && parishCenter.includes('DECREE_OPERATION_META') && chanceryCenter.includes('DECREE_OPERATION_META'));
+  check(`Operación compartida ${operation}`, header.includes(`${operation}:`) && parishCenter.includes('DECREE_OPERATION_META') && chanceryCenter.includes('DecreeCenterHeader'));
 }
 
 check('Corrección usa definición canónica de partida original anulada', header.includes('la original queda anulada') && header.includes('partida supletoria vinculada'));
 check('Reposición usa definición canónica sin partida utilizable', header.includes('No existe una partida utilizable') && header.includes('fundamento documental suficiente'));
 check('Parroquia declara que no emite ni revierte', parishCenter.includes('La Parroquia recibe y consulta') && parishArchive.includes('no emitir ni revertir decretos'));
-check('Cancillería conserva emisión y reversión', chanceryCenter.includes('reversión auditada'));
-check('Nulidad matrimonial permanece fuera de Corrección/Reposición', chanceryCenter.includes('Tribunal Eclesiástico'));
+check('Cancillería conserva emisión y constancias en gestión institucional', chanceryManagement.includes('ChanceryDecreeIssueV280') && chanceryManagement.includes('ChanceryDecreeSeatReceiptsV280'));
+check('Nulidad matrimonial permanece fuera de Corrección/Reposición', header.includes('La nulidad no pertenece a este Centro') && chanceryManagement.includes('NullityInstitutionalPreflightPanel'));
 
 check('Archivo parroquial filtra por parishId', parishArchive.includes('parishIds: [user.parishId]'));
 check('Archivo parroquial filtra por sacramento', parishArchive.includes('sacramentType: sacrament'));

@@ -91,6 +91,7 @@ const NewDecreeCorrectionPage = lazy(() => import('@/pages/chancery/decree-corre
 const NewConfirmationCorrectionPage = lazy(() => import('@/pages/chancery/decree-correction/NewConfirmationCorrectionPage'));
 const FuneralDecreesPage = lazy(() => import('@/pages/chancery/exequias/FuneralDecreesPage'));
 const SacramentalDecreesCenterPage = lazy(() => import('@/pages/chancery/SacramentalDecreesCenterPage'));
+const ChanceryDecreeInstitutionalManagementPage = lazy(() => import('@/pages/chancery/ChanceryDecreeInstitutionalManagementPage'));
 const SacramentalDecreeArchivePage = lazy(() => import('@/pages/chancery/SacramentalDecreeArchivePage'));
 const DocumentaryDecreePage = lazy(() => import('@/pages/chancery/DocumentaryDecreePage'));
 const LaterNoteReconciliationPage = lazy(() => import('@/pages/chancery/LaterNoteReconciliationPage'));
@@ -272,6 +273,7 @@ const AppContent = () => {
 
                 {/* --- CENTRO UNIFICADO DE DECRETOS SACRAMENTALES Â· FASE 033 --- */}
                 <Route path="/chancery/decretos" element={<ProtectedRoute requiredRole={ROLE_TYPES.CHANCERY}><SacramentalDecreesCenterPage /></ProtectedRoute>} />
+                <Route path="/chancery/decretos/gestion-institucional" element={<ProtectedRoute requiredRole={ROLE_TYPES.CHANCERY}><ChanceryDecreeInstitutionalManagementPage /></ProtectedRoute>} />
                 <Route path="/chancery/decretos/archivo" element={<ProtectedRoute requiredRole={ROLE_TYPES.CHANCERY}><SacramentalDecreeArchivePage /></ProtectedRoute>} />
                 <Route path="/chancery/decretos/conciliaciones" element={<ProtectedRoute requiredRole={ROLE_TYPES.CHANCERY}><LaterNoteReconciliationPage /></ProtectedRoute>} />
                 <Route path="/chancery/historicos/conciliacion" element={<ProtectedRoute requiredRole={ROLE_TYPES.CHANCERY}><HistoricalLinkReviewPage /></ProtectedRoute>} />

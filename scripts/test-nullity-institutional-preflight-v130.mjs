@@ -10,7 +10,7 @@ const scope=get('scripts/qa-rollback-nullity-preflight-read-scope-v130.sql');
 const original=get('scripts/qa-rollback-nullity-without-preauthorization-v128.sql');
 const ui=get('src/components/chancery/NullityInstitutionalPreflightPanel.jsx');
 const service=get('src/services/nullityInstitutionalPreflightService.js');
-const chancery=get('src/pages/chancery/SacramentalDecreesCenterPage.jsx');
+const chancery=get('src/pages/chancery/ChanceryDecreeInstitutionalManagementPage.jsx');
 const diocese=get('src/pages/diocese/DiocesanDecreeOversightPage.jsx');
 
 test('V128 guarda expediente de revisión con identificador, partes, documentos y hash',()=>{
