@@ -1,6 +1,8 @@
 import React, {useCallback,useEffect,useState} from 'react';
-import {useNavigate} from 'react-router-dom';
-import {Archive,ArrowLeft,BellRing,CheckCircle2,ClipboardCheck,FileText,Loader2,Printer,RefreshCcw,RotateCcw,Send,ShieldCheck} from 'lucide-react';
+import {useNavigate,useSearchParams} from 'react-router-dom';
+import DecreeCenterHeader from '@/components/chancery/DecreeCenterHeader';
+import RepetitionCanonicalIssueForm from '@/components/chancery/RepetitionCanonicalIssueForm';
+import {CheckCircle2,ClipboardCheck,FileText,Printer,RefreshCcw,RotateCcw} from 'lucide-react';
 import DashboardLayout from '@/components/DashboardLayout';
 import {useAuth} from '@/context/AuthContext';
 import {supabase} from '@/lib/supabaseClient';
@@ -12,7 +14,8 @@ import {issueRepetitionDecree,resolveParishRepetition,returnRepetitionToParish,
 
 const INPUT='mt-1.5 w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 focus:border-blue-500 focus:outline-none';
 const FIELD='block text-xs font-semibold text-slate-700';
-const initial={parishId:'',sacrament:'bautismo',conceptId:'',number:'',date:'',target:'',
+const localDateISO=()=>{ const now=new Date();return new Date(now.getTime()-now.getTimezoneOffset()*60000).toISOString().slice(0,10); };
+const initial={parishId:'',sacrament:'bautismo',conceptId:'',number:'',date:localDateISO(),target:'',
   reason:'',evidence:'',instruction:'',signer:'canciller'};
 const note=(item)=>item?.payload || {};
 const workflow=(item)=>note(item).repetitionWorkflowStatus||'awaiting_parish';
@@ -22,13 +25,14 @@ export default function RepetitionDecreeWorkflowPage({scope='parish'}){
  const chancery=scope==='chancery';
  const {user}=useAuth();
  const navigate=useNavigate();
+ const [params]=useSearchParams();
+ const selectedSacrament=SACRAMENTS[params.get('sacrament')]?params.get('sacrament'):'bautismo';
  const {toast}=useToast();
  const [form,setForm]=useState(initial);
  const [rows,setRows]=useState([]);
  const [parishes,setParishes]=useState([]);
  const [concepts,setConcepts]=useState([]);
  const [signers,setSigners]=useState({});
- const [dioceseId,setDioceseId]=useState(null);
  const [loading,setLoading]=useState(true);
  const [busy,setBusy]=useState(false);
  const [error,setError]=useState('');
@@ -38,8 +42,6 @@ export default function RepetitionDecreeWorkflowPage({scope='parish'}){
  const [observation,setObservation]=useState('');
  const [clarification,setClarification]=useState('');
  const [filter,setFilter]=useState('all');
- const parishId=user?.parishId||user?.parish_id||'';
- const set=(k,v)=>setForm(current=>({...current,[k]:v}));
 
  const refresh=useCallback(async()=>{
    setLoading(true);setError('');
@@ -50,7 +52,6 @@ export default function RepetitionDecreeWorkflowPage({scope='parish'}){
      if(profileError)throw profileError;
      if(!profile || profile.role!==(chancery?'chancery':'parish'))throw Error('Sesión institucional no autorizada');
      if(!profile.diocese_id)throw Error('Diócesis sin identificar');
-     setDioceseId(profile.diocese_id);
      const decrees=await listRepetitionDecrees(chancery?
        {dioceseId:profile.diocese_id}:{parishId:profile.parish_id});
      setRows(decrees);
@@ -73,9 +74,9 @@ export default function RepetitionDecreeWorkflowPage({scope='parish'}){
    finally{setLoading(false);}
  },[chancery,user?.auth_user_id,user?.id]);
  useEffect(()=>{setFocused(null);void refresh();},[refresh]);
- const optionConcepts=concepts.filter(c=>c.sacrament_type==='general'||c.sacrament_type===form.sacrament);
+ useEffect(()=>{setForm(current=>current.sacrament===selectedSacrament?current:{...current,sacrament:selectedSacrament,conceptId:''});setFocused(null);},[selectedSacrament]);
  const current=rows.find(r=>r.id===focused?.id)||null;
- const eligible=rows.filter(r=>filter==='all'||workflow(r)===filter);
+ const eligible=rows.filter(r=>r.sacrament_type===selectedSacrament&&(filter==='all'||workflow(r)===filter));
  const submit=async(e)=>{
    e.preventDefault();if(busy)return;
    const confirmed=await institutionalConfirm({
@@ -128,70 +129,15 @@ export default function RepetitionDecreeWorkflowPage({scope='parish'}){
    popup.document.open();popup.document.write(html);popup.document.close();
  };
  return <DashboardLayout entityName={chancery?user?.dioceseName||'Cancillería':user?.parishName||'Parroquia'}>
-  <main className="mx-auto max-w-6xl space-y-6 pb-20">
-   <header className="rounded-3xl bg-gradient-to-r from-slate-950 to-blue-950 p-6 text-white">
-     <button className="mb-4 inline-flex items-center gap-2 text-xs text-slate-200 hover:text-white"
-       onClick={()=>navigate(chancery?'/chancery/decretos':'/parroquia/decretos')}>
-       <ArrowLeft className="h-4 w-4"/> Volver al Centro de Decretos
-     </button>
-     <p className="text-[10px] font-black uppercase tracking-[.22em] text-amber-300">
-       {chancery?'Cancillería · Emisión y seguimiento':'Parroquia · Recepción y constancias'}
-     </p>
-     <h1 className="mt-2 font-serif text-2xl font-bold !text-white">Decretos de Repetición</h1>
-     <p className="mt-2 max-w-4xl text-xs leading-relaxed text-slate-200">
-       Concepto histórico: Error de transcripción o repetición. Circuito documental distinto de
-       Corrección y Reposición. No se crean, anulan ni renumeran partidas automáticamente.
-     </p>
-   </header>
+  <main className="mx-auto max-w-[1500px] space-y-7 pb-20">
+   <DecreeCenterHeader mode="repetition" sacrament={selectedSacrament} scope={scope}
+     title={`Decretos de Repetición · ${SACRAMENTS[selectedSacrament]}`}
+     subtitle="Misma estructura de Corrección y Reposición. Trámite documental del error de transcripción o repetición: expedición, verificación, constancia y archivo."
+     showBack />
    {error&&<div role="alert" className="rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-900">{error}</div>}
-   {chancery&&<section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-     <h2 className="font-serif text-xl font-bold text-slate-950">Expedir nuevo Decreto de Repetición</h2>
-     <p className="mt-2 text-xs text-slate-600">Cancillería identifica el expediente, selecciona el concepto, firma y remite al párroco. La expedición deja una notificación automática en la parroquia.</p>
-     <form onSubmit={submit} className="mt-5 grid gap-4 md:grid-cols-2">
-       <label className={FIELD}>Parroquia destinataria
-         <select required className={INPUT} value={form.parishId} onChange={e=>set('parishId',e.target.value)}><option value="">Seleccione parroquia</option>{parishes.map(p=><option key={p.id} value={p.id}>{p.name}</option>)}</select>
-       </label>
-       <label className={FIELD}>Sacramento
-         <select required className={INPUT} value={form.sacrament} onChange={e=>setForm(v=>({...v,sacrament:e.target.value,conceptId:''}))}>{Object.entries(SACRAMENTS).map(([id,label])=><option key={id} value={id}>{label}</option>)}</select>
-       </label>
-       <label className={FIELD+' md:col-span-2'}>Concepto histórico de Repetición
-         <select required className={INPUT} value={form.conceptId} onChange={e=>set('conceptId',e.target.value)}><option value="">Seleccione concepto</option>{optionConcepts.map(c=><option key={c.id} value={c.id}>{c.codigo} · {c.concepto}</option>)}</select>
-       </label>
-       <label className={FIELD}>Número del decreto
-         <input className={INPUT} maxLength={80} required value={form.number} onChange={e=>set('number',e.target.value)} placeholder="Ej. REP-2026-001"/>
-       </label>
-       <label className={FIELD}>Fecha de expedición
-         <input className={INPUT} required type="date" max={new Date().toISOString().slice(0,10)} value={form.date} onChange={e=>set('date',e.target.value)}/>
-       </label>
-       <label className={FIELD+' md:col-span-2'}>Titular o interesado
-         <input className={INPUT} maxLength={300} required value={form.target} onChange={e=>set('target',e.target.value)}/>
-       </label>
-       <label className={FIELD+' md:col-span-2'}>Fundamento y descripción de la transcripción o repetición
-         <textarea className={INPUT} rows={4} required minLength={20} maxLength={4000} value={form.reason} onChange={e=>set('reason',e.target.value)}/>
-       </label>
-       <label className={FIELD+' md:col-span-2'}>Referencia documental verificable (expediente, partida, libro, folio, número)
-         <input className={INPUT} minLength={8} maxLength={1000} required value={form.evidence} onChange={e=>set('evidence',e.target.value)}/>
-       </label>
-       <label className={FIELD+' md:col-span-2'}>Disposición que debe revisar y cumplir la parroquia
-         <textarea className={INPUT} rows={3} required minLength={15} maxLength={4000} value={form.instruction} onChange={e=>set('instruction',e.target.value)}/>
-       </label>
-       <label className={FIELD+' md:col-span-2'}>Autoridad que expide · DA FE
-         <select required className={INPUT} value={form.signer} onChange={e=>set('signer',e.target.value)}>
-           <option value="canciller" disabled={!signers.canciller}>Canciller · {signers.canciller||'No configurado'}</option>
-           <option value="vicecanciller" disabled={!signers.viceCanciller}>Vicecanciller · {signers.viceCanciller||'No configurado'}</option>
-         </select>
-       </label>
-       <div className="md:col-span-2 rounded-xl bg-amber-50 p-3 text-xs text-amber-900">
-         <ShieldCheck className="mr-2 inline-block h-4 w-4"/> No se solicita Libro, Folio o Número para crear una partida nueva; este concepto no tiene efecto registral automático.
-       </div>
-       <div className="md:col-span-2 flex justify-end">
-         <button disabled={busy||loading||!form.conceptId||!(form.signer==='canciller'?signers.canciller:signers.viceCanciller)} type="submit"
-           className="inline-flex items-center gap-2 rounded-xl bg-blue-900 px-5 py-3 text-sm font-bold text-white disabled:opacity-50">
-           {busy?<Loader2 className="h-4 w-4 animate-spin"/>:<Send className="h-4 w-4"/>} Expedir y enviar a la parroquia
-         </button>
-       </div>
-     </form>
-   </section>}
+   {chancery&&<RepetitionCanonicalIssueForm form={form} setForm={setForm}
+     parishes={parishes} concepts={concepts} signers={signers}
+     busy={busy} loading={loading} onSubmit={submit}/>}
    <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
      <div className="flex flex-wrap items-center justify-between gap-3">
        <div><p className="text-[10px] font-black uppercase tracking-widest text-blue-700">{chancery?'Archivo y constancias':'Decretos recibidos'}</p>

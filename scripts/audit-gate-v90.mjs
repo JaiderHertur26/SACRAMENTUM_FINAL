@@ -227,7 +227,8 @@ exec('pruebas-sinteticas',node,['--test',
  'scripts/test-reposition-concept-names-v309.mjs',
  'scripts/test-operational-parishes-private-decrees-v310.mjs',
  'scripts/test-supabase-orphan-cleanup-v311.mjs',
- 'scripts/test-decree-repetition-full-v312.mjs']);
+ 'scripts/test-decree-repetition-full-v312.mjs',
+ 'scripts/test-decree-center-uniform-repetition-v313.mjs']);
 const scripts=fs.readdirSync(path.join(root,'scripts')).filter(x=>/^verify-.*\.mjs$/.test(x)).sort();
 for(const file of scripts)exec('legacy/'+file,node,['scripts/'+file]);
 const npmOnWindows=process.platform==='win32';

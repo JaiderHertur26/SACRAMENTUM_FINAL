@@ -326,8 +326,7 @@ const Sidebar = ({ isOpen, onClose, onLogout, role, menuItems: externalMenuItems
                 children: [
                     { label: 'Centro de Decretos', path: '/parroquia/decretos', icon: ScrollText },
                     { label: 'Correcciones recibidas', path: '/parroquia/decretos/archivo?type=correccion&sacrament=bautismo' },
-                    { label: 'Reposiciones recibidas', path: '/parroquia/decretos/archivo?type=reposicion&sacrament=bautismo' },
-                    { label: 'Decretos de Repetición', path: '/parroquia/decretos?view=repeticion' }
+                    { label: 'Reposiciones recibidas', path: '/parroquia/decretos/archivo?type=reposicion&sacrament=bautismo' }
                 ]
             },            
             { label: 'Chat Diocesano', path: '/communications', icon: MessageCircleMore, badgeCount: chatCount },
@@ -344,8 +343,7 @@ const Sidebar = ({ isOpen, onClose, onLogout, role, menuItems: externalMenuItems
                 icon: FileText,
                 children: [
                     { label: 'Centro de Decretos', path: '/chancery/decretos', icon: ScrollText },
-                    { label: 'Conceptos de Decreto', path: '/chancery/decree-annulment' },
-                    { label: 'Decretos de Repetición', path: '/chancery/decretos?view=repeticion' }
+                    { label: 'Conceptos de Decreto', path: '/chancery/decree-annulment' }
                 ]
             },
             { label: 'Pendientes', path: '/chancery/pending', icon: ScrollText },

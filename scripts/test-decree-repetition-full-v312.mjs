@@ -124,10 +124,12 @@ test('V312 rutas, botones, campos y recibo del archivo en ambos roles',()=>{
  const parishCenter=src('src/pages/parish/ParishSacramentalDecreesCenterPage.jsx');
  assert.match(parishCenter,/params.get\('view'\) === 'repeticion'/);
  assert.match(parishCenter,/<RepetitionDecreeWorkflowPage scope="parish"/);
- assert.match(side,/Decretos de Repetición/);
- assert.match(ui,/Expedir nuevo Decreto de Repetición/);
- assert.match(ui,/Concepto histórico de Repetición/);
- assert.match(ui,/Autoridad que expide/);
+ assert.match(src('src/components/chancery/DecreeCenterHeader.jsx'),/repetition: \{/);
+ const canonicalForm=src('src/components/chancery/RepetitionCanonicalIssueForm.jsx');
+ assert.match(ui,/<RepetitionCanonicalIssueForm/);
+ assert.match(canonicalForm,/Naturaleza del decreto de Repetición/);
+ assert.match(canonicalForm,/Concepto/);
+ assert.match(canonicalForm,/DA FE · Autoridad que expide el decreto/);
  assert.match(ui,/Ver \/ Imprimir/);
  assert.match(ui,/Registrar actuación parroquial/);
  assert.match(ui,/Solicitar aclaración a Cancillería/);

@@ -12,7 +12,7 @@ export function buildDocumentaryDecreeHtml({row={},institution={},parish={}}={})
   const issuerBrand = decreeInstitutionBranding(row);
   const historical = p.historical === true || p.recordOrigin === 'historical_archive';
   const repetition = row.tipo === 'repeticion' || p.decreeType === 'repeticion';
-  const title = repetition ? 'DECRETO DE REPETICIÓN' : historical ? 'RECONSTRUCCIÓN DE DECRETO HISTÓRICO' : 'DECRETO DOCUMENTAL DE CANCILLERÍA';
+  const title = repetition ? `DECRETO DE REPETICIÓN DE ${sacramentLabel[row.sacrament_type || p.sacramentType] || 'SACRAMENTO'}` : historical ? 'RECONSTRUCCIÓN DE DECRETO HISTÓRICO' : 'DECRETO DOCUMENTAL DE CANCILLERÍA';
   const notice = repetition
     ? 'ACTUACIÓN DE REPETICIÓN / ERROR DE TRANSCRIPCIÓN: LA PARROQUIA DEBE EXAMINAR LA EVIDENCIA Y DEJAR CONSTANCIA. NO SE CREA, ANULA NI RENÚMERA PARTIDA AUTOMÁTICAMENTE.'
     : historical

@@ -8,7 +8,7 @@ import DecreeCenterHeader, {
   DECREE_SACRAMENT_META,
   decreeRouteFor
 } from '@/components/chancery/DecreeCenterHeader';
-import { ArrowRight, FileText, LockKeyhole, ShieldCheck, ClipboardList } from 'lucide-react';
+import { ArrowRight, FileText, LockKeyhole, ShieldCheck } from 'lucide-react';
 
 const PARISH_REQUEST_DOCUMENTS = Object.freeze({
   bautismo: [['73021','Solicitud de corrección'],['73071','Solicitud de reposición']],
@@ -28,20 +28,16 @@ const ParishSacramentalDecreesCenterPage = () => {
       <div className="mx-auto max-w-7xl space-y-7 pb-20">
         <DecreeCenterHeader scope="parish" />
 
-        <button type="button" onClick={() => navigate('/parroquia/decretos?view=repeticion')}
-          className="flex w-full items-center gap-3 rounded-2xl border border-blue-200 bg-blue-50 p-4 text-left hover:bg-blue-100">
-          <ClipboardList className="h-6 w-6 text-blue-800"/>
-          <span><strong className="block text-sm text-blue-950">Decretos de Repetición recibidos</strong>
-          <span className="text-xs text-blue-800">Verificar, documentar cumplimiento o solicitar aclaración a Cancillería; sin nuevos asientos automáticos.</span></span>
-        </button>
-        <section className="grid gap-5 lg:grid-cols-3">
+        <section className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
           {Object.entries(DECREE_OPERATION_META).map(([key, operation]) => {
             const Icon = operation.icon;
             const parishText = key === 'correction'
               ? 'Consulta las correcciones emitidas por Cancillería para partidas de esta parroquia.'
               : key === 'reposition'
                 ? 'Consulta las reposiciones autorizadas por Cancillería cuando no existía una partida utilizable.'
-                : 'Consulta el archivo completo, impresión y trazabilidad de los decretos recibidos.';
+                : key === 'repetition'
+                  ? 'Registra constancias y aclaraciones de decretos documentales de Repetición.'
+                  : 'Consulta el archivo completo, impresión y trazabilidad de los decretos recibidos.';
 
             return (
               <article key={key} className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
@@ -69,7 +65,7 @@ const ParishSacramentalDecreesCenterPage = () => {
             </h2>
             <p className="mt-1 max-w-3xl text-xs leading-relaxed text-slate-500">
               La Parroquia consulta los decretos emitidos por Cancillería con la misma clasificación
-              institucional usada en el Centro Diocesano: Corrección, Reposición y Archivo.
+              institucional usada en Cancillería: Corrección, Reposición, Repetición y Archivo.
             </p>
           </div>
 
@@ -90,7 +86,7 @@ const ParishSacramentalDecreesCenterPage = () => {
                     </div>
                   </div>
 
-                  <div className="mt-4 grid grid-cols-3 gap-2">
+                  <div className="mt-4 grid grid-cols-2 gap-2 xl:grid-cols-4">
                     {Object.entries(DECREE_OPERATION_META).map(([mode, operation]) => (
                       <button
                         key={mode}
@@ -139,6 +135,7 @@ const ParishSacramentalDecreesCenterPage = () => {
                   Corrección significa que existe una partida con error y se conserva la relación entre
                   la original anulada y la nueva partida supletoria. Reposición significa que no existe una
                   partida utilizable y se reconstruye el asiento con fundamento documental suficiente.
+                  Repetición requiere revisión y constancia documental sin alterar automáticamente la partida.
                 </p>
               </div>
             </div>
