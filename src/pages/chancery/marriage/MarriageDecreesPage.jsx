@@ -516,7 +516,7 @@ const MarriageDecreesPage = () => {
                   className={`h-12 w-full font-black ${mode === 'correction' ? 'bg-slate-900 text-white hover:bg-slate-800' : 'bg-amber-500 text-slate-950 hover:bg-amber-600'}`}
                 >
                   {saving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : mode === 'correction' ? <FileCheck2 className="mr-2 h-4 w-4" /> : <ArchiveRestore className="mr-2 h-4 w-4" />}
-                  {mode === 'correction' ? 'Emitir Corrección y Crear Partida Supletoria' : 'Emitir Reposición y Crear Partida Supletoria'}
+                  {mode === 'correction' ? 'Expedir corrección y notificar a la parroquia' : 'Expedir reposición y notificar a la parroquia'}
                 </Button>
               </CanonicalActionFooter>
             </CanonicalDetailPanel>
