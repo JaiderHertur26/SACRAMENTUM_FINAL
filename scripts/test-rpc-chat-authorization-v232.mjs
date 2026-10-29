@@ -120,9 +120,9 @@ test('V232 all sacramental totals and fictitious auth users remain unchanged',()
   baptisms:5040,confirmations:2091,marriages:1261,funerals:1,
   chat_messages:1,chat_rooms:4,chat_room_members:16,auth_users:12});
 });
-test('V232 187 migrations are now versioned without reauthorizing old QA DML',()=>{
+test('V232 188 migrations are now versioned without reauthorizing old QA DML',()=>{
  assert.equal(historical.protocol,'V232');
- assert.equal(historical.migrationCount,187);
+ assert.equal(historical.migrationCount,188);
  assert.equal(historical.directWriteMigrationCount,14);
  assert.equal(historical.directWriteStatementCount,45);
  const current=migrationInventory();

@@ -1,3 +1,4 @@
+import { issueDecreeFromFullFormV287 } from '@/services/issueDecreeFromFullFormV287';
 import React, { useState, useEffect, useRef } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
 import { useAuth } from '@/context/AuthContext';
@@ -213,117 +214,33 @@ const NewDecreeReplacementPage = () => {
         setBautismoDecree(prev => ({ ...prev, [name]: name === 'numeroDecreto' ? value.toUpperCase() : value }));
     };
 
-    // --- SUBMIT 100% SUPABASE ---
     const handleSubmit = async (e) => {
-        e.preventDefault();
-        
-        if (!bautismoDecree.targetParishId) {
-            return toast({ title: "Faltan Datos", description: "Debe seleccionar la Parroquia Destino.", variant: "destructive" });
-        }
-
-        if (!bautismoDecree.numeroDecreto || !bautismoNewPartida.firstName || !bautismoNewPartida.lastName || !bautismoDecree.conceptoAnulacionId) {
-            toast({ title: "Faltan Datos", description: "Complete los campos obligatorios (*).", variant: "destructive" });
-            return;
-        }
-        if (!evidence.type || !evidence.reference.trim() || !evidence.issuer.trim() || !evidence.description.trim()) {
-            toast({ title: "Evidencia obligatoria", description: "La reposición exige tipo, referencia, emisor/custodio y descripción de la evidencia.", variant: "destructive" });
-            return;
-        }
-        if (!decreeReason.trim()) {
-            toast({ title: "Fundamento obligatorio", description: "Explique por qué procede la reposición y cómo la evidencia acredita el Bautismo.", variant: "destructive" });
-            return;
-        }
-
-        setIsSubmitting(true);
-
-        try {
-            // 1. Validar Duplicidad de Decreto en esa Parroquia
-            const { data: existingDecree } = await supabase.from('decretos').select('id').eq('tipo', 'reposicion')
-                .eq('parish_id', bautismoDecree.targetParishId).contains('payload', { decreeNumber: bautismoDecree.numeroDecreto }).maybeSingle();
-
-            if (existingDecree) {
-                setIsSubmitting(false);
-                toast({ title: "Decreto Duplicado", description: `El decreto ${bautismoDecree.numeroDecreto} ya existe en esa Parroquia.`, variant: "destructive" }); 
-                return;
-            }
-
-            // 2. Motor de Notas (Usando plantillas de Cancillería o Defaults)
-            const conceptoMatch = conceptos.find(c => String(c.id) === String(bautismoDecree.conceptoAnulacionId));
-            const conceptoText = conceptoMatch?.concepto || 'REPOSICIÓN POR DETERIORO O PÉRDIDA';
-            const fechaTexto = convertDateToSpanishText(bautismoDecree.fechaDecreto).replace(/^EL\s+/i, '').toUpperCase();
-            
-            // 🚀 LIMPIEZA DE FIRMAS Y EMPAQUE SEGURO
-            let finalMin = cleanTitle(bautismoNewPartida.minister);
-            finalMin = finalMin !== 'EL PÁRROCO' && finalMin ? `PBRO. ${finalMin}` : finalMin;
-            
-            let finalDaFe = cleanTitle(bautismoNewPartida.ministerFaith);
-            finalDaFe = finalDaFe !== 'EL PÁRROCO' && finalDaFe ? `PBRO. ${finalDaFe}` : finalDaFe;
-
-            // Obtener Parámetros en vivo (por si alguien guardó mientras rellenábamos)
-            const { data: latestParams } = await supabase.from('parish_parameters').select('bautizos_params').eq('parish_id', bautismoDecree.targetParishId).single();
-            const currentParams = latestParams?.bautizos_params || cloudParams;
-            
-            const supletorioLibro = String(currentParams.suplementarioLibro || '1').padStart(4, '0');
-            const supletorioFolio = String(currentParams.suplementarioFolio || '1').padStart(4, '0');
-            const supletorioNumero = String(currentParams.suplementarioNumero || '1').padStart(4, '0');
-            await assertSupplementaryCoordinateAvailable(supabase, {
-                table: 'baptisms', parishId: bautismoDecree.targetParishId,
-                book: supletorioLibro, folio: supletorioFolio, number: supletorioNumero
-            });
-
-            let templateNueva = chanceryNotesConfig?.reposicion_nueva || "ESTA PARTIDA SE INSCRIBE POR REPOSICIÓN SEGÚN DECRETO NO. [NUMERO_DECRETO] DE FECHA [FECHA_DECRETO], MOTIVO: [CAUSA_REPOSICION]. LA INFORMACIÓN SUMINISTRADA ES FIEL A LA CONTENIDA EN EL LIBRO SUPLETORIO.";
-            
-            const notaMarginalTecnica = templateNueva
-                .replace(/\[NUMERO_DECRETO\]/g, bautismoDecree.numeroDecreto.toUpperCase())
-                .replace(/\[FECHA_DECRETO\]/g, fechaTexto)
-                .replace(/\[CAUSA_REPOSICION\]/g, conceptoText.toUpperCase())
-                .replace(/\[MINISTRO\]/g, finalDaFe);
-
-            // 3. Reposición atómica en PostgreSQL: partida, consecutivo, decreto, nota, aviso y auditoría.
-            const normalizedData = {
-                ...bautismoNewPartida,
-                placeOfBirth: bautismoNewPartida.lugarNacimientoDetalle,
-                minister: finalMin,
-                ministerFaith: finalDaFe,
-                daFe: finalDaFe,
-                decreeEvidence: evidence,
-                reason: decreeReason.trim(),
-                fundamento: decreeReason.trim()
-            };
-            const payloadDecree = {
-                decreeNumber: bautismoDecree.numeroDecreto, numeroDecreto: bautismoDecree.numeroDecreto,
-                decreeDate: bautismoDecree.fechaDecreto, conceptoAnulacionId: bautismoDecree.conceptoAnulacionId,
-                conceptPolicy: normalizeDecreeConceptPolicy(conceptoMatch),
-                causa: conceptoText, targetName: `${bautismoNewPartida.lastName} ${bautismoNewPartida.firstName}`.trim(),
-                ...bautismoNewPartida, ministro: finalMin, daFe: finalDaFe, dafe: finalDaFe, ministerFaith: finalDaFe,
-                evidence,
-                reason: decreeReason.trim(),
-                fundamento: decreeReason.trim()
-            };
-
-            const { data: result, error: replacementError } = await supabase.rpc('apply_baptism_replacement', {
-                p_parish_id: bautismoDecree.targetParishId,
-                p_decree_number: bautismoDecree.numeroDecreto.trim(),
-                p_decree_date: bautismoDecree.fechaDecreto,
-                p_concept_id: bautismoDecree.conceptoAnulacionId,
-                p_new_data: normalizedData,
-                p_decree_payload: payloadDecree,
-                p_replacement_note: notaMarginalTecnica,
-                p_expected_book: Number(currentParams.suplementarioLibro || 1),
-                p_expected_folio: Number(currentParams.suplementarioFolio || 1),
-                p_expected_number: Number(currentParams.suplementarioNumero || 1)
-            });
-            if (replacementError) throw replacementError;
-            const created = Array.isArray(result) ? result[0] : result;
-
-            toast({ title: "Reposición Exitosa", description: `Partida supletoria ${created?.book_number || supletorioLibro}-${created?.folio || supletorioFolio}-${created?.number || supletorioNumero} y decreto registrados en una sola transacción.`, className: "bg-green-50 text-green-900 border-green-200" });
-            navigate('/chancery/decretos/archivo?sacrament=bautismo&type=reposicion');
-
-        } catch (error) { 
-            toast({ title: "Error en Proceso", description: error.message, variant: "destructive" }); 
-        } finally { 
-            setIsSubmitting(false); 
-        }
+      e.preventDefault();
+      if(!bautismoDecree.targetParishId||!bautismoDecree.numeroDecreto||
+        !bautismoDecree.conceptoAnulacionId||!bautismoNewPartida.firstName||
+        !bautismoNewPartida.lastName||!bautismoNewPartida.sacramentDate){
+        toast({title:'Datos incompletos',description:'Complete los datos sacramentales y el concepto.',variant:'destructive'});return;
+      }
+      if(!evidence.type||!evidence.reference.trim()||!evidence.issuer.trim()||!evidence.description.trim()||!decreeReason.trim()){
+        toast({title:'Evidencia obligatoria',description:'Debe justificar la reposición con evidencia verificable.',variant:'destructive'});return;
+      }
+      setIsSubmitting(true);
+      try{
+        await issueDecreeFromFullFormV287({
+          parishId:bautismoDecree.targetParishId,sacrament:'bautismo',type:'reposicion',
+          conceptId:bautismoDecree.conceptoAnulacionId,
+          decreeNumber:bautismoDecree.numeroDecreto,decreeDate:bautismoDecree.fechaDecreto,
+          targetName:`${bautismoNewPartida.firstName} ${bautismoNewPartida.lastName}`,
+          reason:decreeReason,evidenceRef:evidence.reference,
+          newRecord:{...bautismoNewPartida,nombres:bautismoNewPartida.firstName,
+            apellidos:bautismoNewPartida.lastName,fechaSacramento:bautismoNewPartida.sacramentDate},
+          details:{evidence,recordDraft:bautismoNewPartida,conceptPolicy:normalizeDecreeConceptPolicy(
+            conceptos.find(c=>String(c.id)===String(bautismoDecree.conceptoAnulacionId)))}
+        });
+        toast({title:'Decreto expedido y enviado',description:'Sin numeración nueva: será asignada por la parroquia al sentar.'});
+        navigate('/chancery/decretos/archivo?sacrament=bautismo&type=reposicion');
+      }catch(err){toast({title:'No se pudo expedir',description:err.message,variant:'destructive'});}
+      finally{setIsSubmitting(false);}
     };
 
     // --- ESTILOS VISUALES ---

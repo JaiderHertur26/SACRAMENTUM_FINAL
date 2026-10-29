@@ -48,7 +48,7 @@ test('V244 152 privileged functions pinned to independent real QA fingerprint',(
 });
 test('V244 only adds reviewed DDL migration, preserving quarantined historical data writes',()=>{
  const inv=report();
- assert.equal(inv.migrationCount,187);
+ assert.equal(inv.migrationCount,188);
  assert.equal(CLEAN_REPLAY_HISTORICAL_MIGRATIONS,166);
  assert.equal(inv.directWriteMigrationCount,14);
  assert.equal(inv.directWriteStatementCount,45);

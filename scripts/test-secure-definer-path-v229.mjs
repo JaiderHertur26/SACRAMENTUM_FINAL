@@ -10,6 +10,9 @@ const sha=f=>createHash('sha256').update(fs.readFileSync(f,'utf8').replace(/\r\n
 const currentMigration='supabase/migrations/20261027044045_secure_definer_pg_temp_last_v229.sql';
 // V276: exact-byte certification of the 14 INSTALL-ONLY migrations already applied to Supabase.
 // Every newly deployed public RPC remains REVOKED until separately audited official cutover.
+const approvedV287NoPrematureCoords=new Map([
+ ['20261029013539_sacramentum_v287_keep_full_chancery_forms_remove_new_record_coordinates.sql','2cb2bda635d33e9d37ffc33e2b103a348b14d31609665be61447cbed15a16235'],
+]);
 const approvedV280AppliedIntegrity=new Map([
  ['20261029000944_sacramentum_v279_parameters_read_only_counter_only.sql','f5c685351063eb19773fe9760ff19e31ddf5927e252dab04a8260db03a4acd48'],
  ['20261029001435_sacramentum_v281_production_ledger_kernel_missing_dependency_repair.sql','76d566458c759176fd1ea732bef8218cca0976aad0bec2ca1fe086042acf7a46'],
@@ -71,6 +74,8 @@ test('V229 remote migration version is identical to the checked-in CLI-created m
  for(const f of approvedV276StagedLedger.keys())assert.ok(all.includes(f),'certified migration missing: '+f);
  assert.equal(approvedV280AppliedIntegrity.size,7);
  for(const f of approvedV280AppliedIntegrity.keys())assert.ok(all.includes(f),'V280 migrated RPC missing: '+f);
+ assert.equal(approvedV287NoPrematureCoords.size,1);
+ for(const f of approvedV287NoPrematureCoords.keys())assert.ok(all.includes(f),'V287 RPC migration missing: '+f);
  for(const later of all.filter(x=>('supabase/migrations/'+x)>currentMigration)) {
   const body=fs.readFileSync('supabase/migrations/'+later,'utf8');
   if(later==='20261027125848_harden_chat_actor_guard_v232.sql') {
@@ -98,6 +103,14 @@ test('V229 remote migration version is identical to the checked-in CLI-created m
     assert.match(body,/materialize_legacy_decrees_v68/);
     assert.match(body,/v_chancery IS NULL/);
     assert.doesNotMatch(body,/\\b(?:INSERT INTO|UPDATE\\s+public\\.|DELETE FROM|TRUNCATE\\s+TABLE|DROP TABLE)\\b/i);
+  } else if (approvedV287NoPrematureCoords.has(later)) {
+    assert.equal(sha('supabase/migrations/'+later),approvedV287NoPrematureCoords.get(later),
+      'V287 migration changed without integrity approval: '+later);
+    assert.match(body,/CREATE FUNCTION public\.issue_chancery_form_decree_v287/);
+    assert.match(body,/issue_chancery_decree_v280/);
+    assert.match(body,/noPhysicalCoordinatesAssigned/);
+    assert.match(body,/REVOKE EXECUTE ON FUNCTION %s FROM PUBLIC,anon,authenticated/);
+    assert.doesNotMatch(body,/^\s*TRUNCATE\s+TABLE\b/mi);
   } else if (approvedV280AppliedIntegrity.has(later)) {
     assert.equal(sha('supabase/migrations/'+later),approvedV280AppliedIntegrity.get(later),
       'changed approved V280 SQL without renewed review: '+later);

@@ -245,30 +245,9 @@ export const PreviewBox = ({ label, value }) => (
   </div>
 );
 
-export const CanonicalSupplementaryPreview = ({ book, folio, number, registry, blocked = false }) => (
-  <div className="border-b border-amber-100 bg-amber-50/70 p-6 md:p-7">
-    <div className="flex items-start gap-3">
-      <BookCopy className="mt-0.5 h-5 w-5 shrink-0 text-amber-700" />
-      <div className="min-w-0 flex-1">
-        <p className="text-xs font-black uppercase text-amber-900">Próxima ubicación supletoria</p>
-        <div className="mt-3 grid gap-2 sm:grid-cols-2 xl:grid-cols-4">
-          <PreviewBox label="Libro" value={book} />
-          <PreviewBox label="Folio" value={folio} />
-          <PreviewBox label="Número" value={number} />
-          <PreviewBox label="N.º Registro" value={registry || 'AUTOMÁTICO'} />
-        </div>
-        {blocked ? (
-          <div className="mt-3 flex items-center gap-2 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-xs font-bold text-red-700">
-            <AlertTriangle className="h-4 w-4" /> El Libro Supletorio está bloqueado.
-          </div>
-        ) : null}
-        <p className="mt-3 text-[10px] leading-relaxed text-amber-800">
-          La vista previa no reserva números. PostgreSQL vuelve a validar y consume el consecutivo al emitir.
-        </p>
-      </div>
-    </div>
-  </div>
-);
+// La asignación de Libro, Folio y Número de la partida nueva ocurre
+// exclusivamente al sentar en la parroquia. No hay vista previa en Cancillería.
+export const CanonicalSupplementaryPreview = () => null;
 
 export const CanonicalNotice = ({ tone = 'blue', title, text }) => {
   const cls = tone === 'rose'

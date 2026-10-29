@@ -1,3 +1,4 @@
+import { issueDecreeFromFullFormV287 } from '@/services/issueDecreeFromFullFormV287';
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
 import { useAuth } from '@/context/AuthContext';
@@ -409,130 +410,25 @@ const NewConfirmationCorrectionPage = () => {
   };
 
   const handleSave = async () => {
-    if (!validateForm()) {
-      toast({ title: 'Validación', description: 'Complete todos los campos requeridos.', variant: 'destructive' });
-      return;
-    }
-
+    if (!validateForm()) {toast({title:'Validación',description:'Complete los datos y busque la partida original.',variant:'destructive'});return;}
     setIsLoading(true);
-    try {
-      const supletorioLibro = Number.parseInt(cloudParams.suplementarioLibro || 1, 10);
-      const supletorioFolio = Number.parseInt(cloudParams.suplementarioFolio || 1, 10);
-      const supletorioNumero = Number.parseInt(cloudParams.suplementarioNumero || 1, 10);
-
-      const daFeClean = cleanTitle(newPartida.daFe);
-      const finalDaFe = daFeClean ? `PBRO. ${daFeClean}` : '';
-
-      const marginalTemplates = await getMarginalNoteTemplates(targetParishId);
-
-      const noteAnulada = marginalNotesEngine.forAnnulledCorrection(targetParishId, {
-        numeroDecreto: decreeData.numeroDeDecreto,
-        fechaDecreto: decreeData.fechaEmision,
-        libroNuevo: supletorioLibro,
-        folioNuevo: supletorioFolio,
-        numeroNuevo: supletorioNumero
-      }, marginalTemplates);
-
-      const notaSupletoriaFinal = marginalNotesEngine.forNewCorrection(targetParishId, {
-        numeroDecreto: decreeData.numeroDeDecreto,
-        fechaDecreto: decreeData.fechaEmision,
-        libroAnulada: decreeData.Libro,
-        folioAnulada: decreeData.folio,
-        numeroAnulada: decreeData.numero,
-        ministro: finalDaFe
-      }, marginalTemplates);
-
-      const correctedData = {
-        ...newPartida,
-        daFe: finalDaFe,
-        linkedBaptismId: selectedBaptismId,
-        estado: 'permanente',
-        status: 'seated'
-      };
-
-      const payloadDecree = {
-        decreeNumber: decreeData.numeroDeDecreto,
-        decreeDate: decreeData.fechaEmision,
-        conceptoAnulacionId: decreeData.conceptoAnulacion,
-        conceptPolicy: normalizeDecreeConceptPolicy(selectedConcept),
-        reason: decreeReason.trim(),
-        fundamento: decreeReason.trim(),
-        observaciones: newPartida.observaciones,
-        targetName: decreeData.nombreConfirmado,
-        newTargetName: `${newPartida.nombres} ${newPartida.apellidos}`.trim(),
-        sacramento: 'confirmacion',
-        sacramentType: 'confirmacion',
-        fechaSacramento: newPartida.fechaSacramento,
-        lugarSacramento: newPartida.lugarSacramento,
-        sexo: newPartida.sexo,
-        fechaNacimiento: newPartida.fechaNacimiento,
-        edad: newPartida.edad,
-        lugarBautismo: newPartida.lugarBautismo,
-        nombrePadre: newPartida.nombrePadre,
-        nombreMadre: newPartida.nombreMadre,
-        padrinos: newPartida.padrinos,
-        ministro: newPartida.ministro,
-        daFe: finalDaFe,
-        dafe: finalDaFe,
-        da_fe: finalDaFe,
-        ministerFaith: finalDaFe,
-        linkedBaptismId: selectedBaptismId,
-        originalPartidaId: foundRecord.id,
-        originalPartidaSummary: {
-          book: decreeData.Libro,
-          page: decreeData.folio,
-          entry: decreeData.numero,
-          nombres: foundRecord.nombres || foundRecord.first_name || '',
-          apellidos: foundRecord.apellidos || foundRecord.last_name || '',
-          daFe: foundRecord.da_fe || foundRecord.daFe || ''
-        },
-        newPartidaSummary: {
-          book: supletorioLibro,
-          page: supletorioFolio,
-          entry: supletorioNumero,
-          nombres: newPartida.nombres,
-          apellidos: newPartida.apellidos,
-          lugarBautismo: newPartida.lugarBautismo,
-          daFe: finalDaFe,
-          dafe: finalDaFe
-        }
-      };
-
-      const { data, error } = await supabase.rpc('apply_confirmation_correction', {
-        p_parish_id: targetParishId,
-        p_original_confirmation_id: foundRecord.id,
-        p_decree_number: decreeData.numeroDeDecreto.trim(),
-        p_decree_date: decreeData.fechaEmision,
-        p_concept_id: decreeData.conceptoAnulacion || null,
-        p_corrected_data: correctedData,
-        p_decree_payload: payloadDecree,
-        p_annulled_note: noteAnulada,
-        p_replacement_note: notaSupletoriaFinal,
-        p_expected_book: supletorioLibro,
-        p_expected_folio: supletorioFolio,
-        p_expected_number: supletorioNumero
+    try{
+      await issueDecreeFromFullFormV287({
+        parishId:targetParishId,sacrament:'confirmacion',type:'correccion',
+        originalRecordId:foundRecord.id,conceptId:decreeData.conceptoAnulacion,
+        decreeNumber:decreeData.numeroDeDecreto,decreeDate:decreeData.fechaEmision,
+        targetName:decreeData.nombreConfirmado || `${newPartida.nombres} ${newPartida.apellidos}`,
+        reason:decreeReason,evidenceRef:'PARTIDA-'+foundRecord.id,
+        newRecord:{...newPartida,linkedBaptismId:selectedBaptismId},
+        details:{originalPartidaId:foundRecord.id,
+          originalPartidaSummary:{book:decreeData.Libro,page:decreeData.folio,entry:decreeData.numero},
+          originalPartida:foundRecord,linkedBaptismId:selectedBaptismId,
+          conceptPolicy:normalizeDecreeConceptPolicy(selectedConcept)}
       });
-
-      if (error) {
-        if (String(error.message || '').includes('apply_confirmation_correction')) {
-          throw new Error('Falta aplicar la migración profesional de SACRAMENTUM en Supabase antes de emitir decretos de Confirmación.');
-        }
-        throw error;
-      }
-
-      const result = Array.isArray(data) ? data[0] : data;
-      toast({
-        title: 'Decreto emitido correctamente',
-        description: `Confirmación corregida de forma transaccional. Nueva partida ${result?.book_number || ''}-${result?.folio || ''}-${result?.number || ''}.`,
-        className: 'bg-green-50 text-green-900 border-green-200'
-      });
+      toast({title:'Decreto expedido y enviado',description:'La parroquia asignará Libro, Folio y Número al sentar.'});
       navigate('/chancery/decretos/archivo?sacrament=confirmacion&type=correccion');
-    } catch (error) {
-      console.error('Error al guardar corrección de Confirmación:', error);
-      toast({ title: 'No se pudo emitir el decreto', description: error.message, variant: 'destructive' });
-    } finally {
-      setIsLoading(false);
-    }
+    }catch(e){toast({title:'No se pudo expedir',description:e.message,variant:'destructive'});}
+    finally{setIsLoading(false);}
   };
 
   const labelClass = "block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1";

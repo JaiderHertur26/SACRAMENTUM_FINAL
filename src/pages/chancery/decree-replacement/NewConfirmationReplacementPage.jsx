@@ -1,3 +1,4 @@
+import { issueDecreeFromFullFormV287 } from '@/services/issueDecreeFromFullFormV287';
 import React, { useEffect, useMemo, useState } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
 import { useAuth } from '@/context/AuthContext';
@@ -105,56 +106,27 @@ const NewConfirmationReplacementPage = () => {
   const selectedConcept = concepts.find(c => String(c.id) === String(decree.conceptId)) || null;
 
   const handleSubmit = async () => {
-    if (!targetParishId || !decree.number.trim() || !decree.date || !decree.conceptId || !record.nombres.trim() || !record.apellidos.trim() || !record.fechaSacramento) {
-      toast({ title: 'Datos incompletos', description: 'Parroquia, decreto, concepto, fecha de Confirmación, nombres y apellidos son obligatorios.', variant: 'destructive' });
-      return;
+    if(!targetParishId||!decree.number.trim()||!decree.date||!decree.conceptId||
+      !record.nombres.trim()||!record.apellidos.trim()||!record.fechaSacramento){
+      toast({title:'Datos incompletos',description:'Complete los datos sacramentales y del decreto.',variant:'destructive'});return;
     }
-    if (!evidence.type || !evidence.reference.trim() || !evidence.issuer.trim() || !evidence.description.trim()) {
-      toast({ title: 'Evidencia obligatoria', description: 'La reposición exige tipo, referencia, emisor/custodio y descripción de la evidencia.', variant: 'destructive' });
-      return;
-    }
-    if (!decreeReason.trim()) {
-      toast({ title: 'Fundamento obligatorio', description: 'Explique por qué procede la reposición y cómo la evidencia acredita la Confirmación.', variant: 'destructive' });
-      return;
+    if(!evidence.type||!evidence.reference.trim()||!evidence.issuer.trim()||
+      !evidence.description.trim()||!decreeReason.trim()){
+      toast({title:'Evidencia obligatoria',description:'Falta fundamento o prueba documental.',variant:'destructive'});return;
     }
     setBusy(true);
-    try {
-      const daFeClean = cleanTitle(record.daFe);
-      const finalDaFe = daFeClean ? `PBRO. ${upper(daFeClean)}` : '';
-      const ministroClean = cleanTitle(record.ministro);
-      const finalMinister = ministroClean ? upper(ministroClean) : '';
-      const concept = concepts.find(c => String(c.id) === String(decree.conceptId));
-      const dateText = convertDateToSpanishText(decree.date).replace(/^EL\s+/i, '').toUpperCase();
-      const daFeClause = finalDaFe ? ` DA FE: ${finalDaFe}.` : '';
-      const note = `ESTA PARTIDA DE CONFIRMACIÓN SE INSCRIBE POR REPOSICIÓN SEGÚN DECRETO NO. ${upper(decree.number)} DE FECHA ${dateText}${concept?.concepto ? `, MOTIVO: ${upper(concept.concepto)}` : ''}.${daFeClause}`;
-      const normalized = { ...record, ministro: finalMinister, daFe: finalDaFe, status: 'seated', estado: 'permanente', decreeEvidence: evidence, reason: decreeReason.trim(), fundamento: decreeReason.trim() };
-      const payload = {
-        sacrament: 'confirmacion', sacramentType: 'confirmacion', decretoType: 'reposicion',
-        decreeNumber: upper(decree.number), decreeDate: decree.date, conceptoAnulacionId: decree.conceptId,
-        conceptPolicy: normalizeDecreeConceptPolicy(concept),
-        causa: concept?.concepto || 'REPOSICIÓN', reason: decreeReason.trim(), fundamento: decreeReason.trim(), targetParishId, targetParishName: parish?.name || '',
-        targetName: `${upper(record.apellidos)} ${upper(record.nombres)}`.trim(), ...normalized, evidence,
-        newPartidaSummary: { book: next.book, page: next.folio, entry: next.number, nombres: record.nombres, apellidos: record.apellidos, daFe: finalDaFe }
-      };
-      const { data, error } = await supabase.rpc('apply_confirmation_replacement', {
-        p_parish_id: targetParishId,
-        p_decree_number: upper(decree.number),
-        p_decree_date: decree.date,
-        p_concept_id: decree.conceptId,
-        p_new_data: normalized,
-        p_decree_payload: payload,
-        p_replacement_note: note,
-        p_expected_book: next.book,
-        p_expected_folio: next.folio,
-        p_expected_number: next.number
+    try{
+      await issueDecreeFromFullFormV287({
+        parishId:targetParishId,sacrament:'confirmacion',type:'reposicion',
+        conceptId:decree.conceptId,decreeNumber:decree.number,decreeDate:decree.date,
+        targetName:`${record.nombres} ${record.apellidos}`,reason:decreeReason,
+        evidenceRef:evidence.reference,newRecord:{...record},
+        details:{evidence,conceptPolicy:normalizeDecreeConceptPolicy(selectedConcept)}
       });
-      if (error) throw error;
-      const result = Array.isArray(data) ? data[0] : data;
-      toast({ title: 'Reposición de Confirmación emitida', description: `Partida supletoria L-${result?.book_number || next.book} F-${result?.folio || next.folio} N-${result?.number || next.number}.`, className: 'bg-green-50 text-green-900 border-green-200' });
+      toast({title:'Decreto expedido y enviado',description:'La parroquia fijará Libro, Folio y Número al sentar.'});
       navigate('/chancery/decretos/archivo?sacrament=confirmacion&type=reposicion');
-    } catch (error) {
-      toast({ title: 'No se pudo emitir', description: error.message, variant: 'destructive' });
-    } finally { setBusy(false); }
+    }catch(e){toast({title:'No se pudo expedir',description:e.message,variant:'destructive'});}
+    finally{setBusy(false);}
   };
 
   const filteredParishes = parishes.filter((p) => {
