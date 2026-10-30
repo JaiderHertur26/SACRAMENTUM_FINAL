@@ -196,7 +196,11 @@ export default function RepetitionDecreeWorkflowPage({scope='parish'}){
            <div><h3 className="text-sm font-black text-slate-900">{title(r)}</h3>
              <p className="mt-1 text-xs text-slate-600">{note(r).targetName||'Sin titular'} · {r.decree_date}</p>
              <p className="mt-1 text-xs font-bold text-blue-800">{repetitionStatusLabel(workflow(r))}</p>
-             {isMulti(r)&&<p className="mt-1 text-xs text-slate-700">{involvedParishIds(note(r).affectedEntries).length} parroquias en el sistema, {(note(r).affectedEntries||[]).filter(e=>e.external).length} externas · {Object.values(note(r).repetitionParishActions||{}).filter(a=>a.outcome==='documented').length+Object.keys(note(r).repetitionExternalActions||{}).length} constancias completas</p>}
+             {isMulti(r)&&<p className="mt-1 text-xs text-slate-700">{involvedParishIds(note(r).affectedEntries).length} parroquias en el sistema, {(note(r).affectedEntries||[]).filter(e=>e.external).length} externas · {Object.values(note(r).repetitionParishActions||{}).filter(a=>a.outcome==='documented').length+Object.keys(note(r).repetitionExternalActions||{}).length} constancias completas
+               {' · '}{(note(r).affectedEntries||[]).filter((e,index)=>e.disposition==='without_effect'&&
+                 (e.external?Boolean(note(r).repetitionExternalActions?.[e.externalKey]):Boolean(note(r).repetitionEntryActions?.['entry-'+(index+1)]))).length}
+               {' de '}{(note(r).affectedEntries||[]).filter(e=>e.disposition==='without_effect').length} notas/constancias individuales
+             </p>}
            </div>
            <div className="flex flex-wrap gap-2">
              <button type="button" onClick={()=>print(r)} className="inline-flex items-center gap-1 rounded-lg border bg-white px-3 py-2 text-xs font-bold"><Printer className="h-4 w-4"/> Ver / Imprimir</button>
@@ -223,6 +227,14 @@ export default function RepetitionDecreeWorkflowPage({scope='parish'}){
            <p><b>{index+1}. {entry.parishName}</b> · Libro {entry.book} · Folio {entry.folio} · Número {entry.number}</p>
            <p><b>Disposición:</b> {REPETITION_DISPOSITIONS[entry.disposition]}</p>
            <p><b>Fundamento:</b> {entry.justification}</p>
+           {!entry.external&&entry.disposition==='without_effect'&&<p className="mt-2 rounded-lg bg-amber-50 p-2 text-xs">
+             <b>Nota marginal ordenada:</b> {note(current).repetitionEntryActions?.['entry-'+(index+1)]
+               ?<><span className="font-bold text-emerald-800">Asentada / certificada</span>
+                 {' · '}{note(current).repetitionEntryActions?.['entry-'+(index+1)]?.method==='digital'?'Digital vinculada':'Asiento físico certificado'}
+                 {' · Referencia: '}{note(current).repetitionEntryActions?.['entry-'+(index+1)]?.evidenceRef}
+                 {' · Observación: '}{note(current).repetitionEntryActions?.['entry-'+(index+1)]?.observations}</>
+               :<span className="font-bold text-amber-800">Pendiente de asiento individual por la parroquia custodio</span>}
+           </p>}
            {entry.external&&<p><b>Jurisdicción externa:</b> {entry.externalJurisdiction||'No especificada'}</p>}
            <p><b>Constancia:</b> {entry.external
              ?note(current).repetitionExternalActions?.[entry.externalKey]?.evidenceRef
