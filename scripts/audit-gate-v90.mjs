@@ -234,7 +234,8 @@ exec('pruebas-sinteticas',node,['--test',
  'scripts/test-repetition-closeout-v317.mjs',
  'scripts/test-v318-notification-sequence.mjs',
  'scripts/test-v319-pruebas-prolongadas.mjs',
- 'scripts/test-v320-supabase-advisors.mjs']);
+ 'scripts/test-v320-supabase-advisors.mjs',
+ 'scripts/test-v321-hardening.mjs']);
 const scripts=fs.readdirSync(path.join(root,'scripts')).filter(x=>/^verify-.*\.mjs$/.test(x)).sort();
 for(const file of scripts)exec('legacy/'+file,node,['scripts/'+file]);
 const npmOnWindows=process.platform==='win32';
