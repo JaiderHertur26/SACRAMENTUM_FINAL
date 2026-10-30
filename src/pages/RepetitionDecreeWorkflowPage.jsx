@@ -158,7 +158,9 @@ export default function RepetitionDecreeWorkflowPage({scope='parish'}){
    if(!popup){toast({title:'Habilite ventanas emergentes',variant:'destructive'});return;}
    const html=buildDecreeDocumentHtml({row,institution:{
      dioceseName:user?.dioceseName||'Diócesis / Arquidiócesis',officeName:'CANCILLERÍA',
-   },parish:{name:parishes.find(p=>p.id===row.parish_id)?.name||user?.parishName||note(row).parishName||'Parroquia'},autoPrint:false});
+   },parish:{name:parishes.find(p=>p.id===row.parish_id)?.name||
+       note(row).affectedEntries?.find(entry=>entry.parishId===row.parish_id)?.parishName||
+       note(row).parishName||user?.parishName||'Parroquia'},autoPrint:false});
    popup.document.open();popup.document.write(html);popup.document.close();
  };
  return <DashboardLayout entityName={chancery?user?.dioceseName||'Cancillería':user?.parishName||'Parroquia'}>
