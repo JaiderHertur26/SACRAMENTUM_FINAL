@@ -13,8 +13,13 @@ export function buildDocumentaryDecreeHtml({row={},institution={},parish={}}={})
   const historical = p.historical === true || p.recordOrigin === 'historical_archive';
   const repetition = row.tipo === 'repeticion' || p.decreeType === 'repeticion';
   const title = repetition ? `DECRETO DE REPETICIÓN DE ${sacramentLabel[row.sacrament_type || p.sacramentType] || 'SACRAMENTO'}` : historical ? 'RECONSTRUCCIÓN DE DECRETO HISTÓRICO' : 'DECRETO DOCUMENTAL DE CANCILLERÍA';
+  const multi = repetition && Array.isArray(p.affectedEntries) && p.affectedEntries.length>=2;
+  const label={retain:'Conservar como partida acreditativa',without_effect:'Declarar sin efectos registrales',investigate:'Pendiente de investigación'};
+  const affectedHtml=multi?'<h2>PARTIDAS INVOLUCRADAS Y DISPOSICIÓN INDIVIDUAL</h2>'+p.affectedEntries.map((entry,i)=>
+    '<section class="reason"><strong>Partida '+(i+1)+' — '+value(entry.parishName)+'</strong><p>Libro '+value(entry.book)+' · Folio '+value(entry.folio)+' · Número '+value(entry.number)+'</p><p><strong>Disposición: </strong>'+value(label[entry.disposition]||'Pendiente')+'</p><p>'+value(entry.justification)+'</p></section>'
+  ).join('') : '';
   const notice = repetition
-    ? 'ACTUACIÓN DE REPETICIÓN / ERROR DE TRANSCRIPCIÓN: LA PARROQUIA DEBE EXAMINAR LA EVIDENCIA Y DEJAR CONSTANCIA. NO SE CREA, ANULA NI RENÚMERA PARTIDA AUTOMÁTICAMENTE.'
+    ? multi?'DUPLICIDAD DE PARTIDAS: SE CONSERVAN LOS ASIENTOS HISTÓRICOS. LAS DISPOSICIONES REGISTRALES REQUIEREN VERIFICACIÓN INDIVIDUAL, AUTORIDAD COMPETENTE Y CONSTANCIA DE CADA PARROQUIA. NO HAY ANULACIÓN AUTOMÁTICA.':'ACTUACIÓN DE REPETICIÓN / ERROR DE TRANSCRIPCIÓN: LA PARROQUIA DEBE EXAMINAR LA EVIDENCIA Y DEJAR CONSTANCIA. NO SE CREA, ANULA NI RENÚMERA PARTIDA AUTOMÁTICAMENTE.'
     : historical
     ? 'TRANSCRIPCIÓN / RECONSTRUCCIÓN PARA ARCHIVO: NO CONSTITUYE NUEVA EXPEDICIÓN DEL ACTO ORIGINAL NI CERTIFICA EFECTOS REGISTRALES NO VERIFICADOS.'
     : 'ACTO DOCUMENTAL: NO ORDENA ANULACIÓN, CORRECCIÓN NI REPOSICIÓN DE PARTIDAS SACRAMENTALES.';
@@ -50,6 +55,7 @@ export function buildDocumentaryDecreeHtml({row={},institution={},parish={}}={})
     </dl>
     <h2>FUNDAMENTO Y DISPOSICIONES</h2>
     <section class="reason">${value(p.reason || p.fundamento)}</section>
+    ${affectedHtml}
     ${repetition ? `<h2>REFERENCIA DOCUMENTAL</h2><section class="reason">${value(p.evidenceRef)}</section>
        <h2>DISPOSICIÓN DE CANCILLERÍA AL PÁRROCO</h2><section class="reason">${value(p.instruction)}</section>` : ''}
     ${historical ? `<h2>FUENTE DEL ANTECEDENTE</h2><section class="reason">${value(p.sourceReference)}</section>` : ''}
@@ -59,7 +65,7 @@ export function buildDocumentaryDecreeHtml({row={},institution={},parish={}}={})
       <p class="muted">${repetition ? 'La constancia de verificación se registra en el expediente institucional; no autoriza por sí sola la modificación de partidas.' : historical
         ? 'Copia de consulta reconstruida a partir de la fuente indicada; no sustituye al original.'
         : 'Este documento no tiene efecto automático sobre las partidas. Consulte el expediente institucional para su validación.'}</p>
-      <p>Archivo del mismo decreto en Cancillería y en su parroquia destinataria.</p>
+      <p>${multi?'Archivo compartido del expediente en Cancillería y en todas las parroquias afectadas.':'Archivo del mismo decreto en Cancillería y en su parroquia destinataria.'}</p>
     </footer>
   </main></body></html>`;
 }

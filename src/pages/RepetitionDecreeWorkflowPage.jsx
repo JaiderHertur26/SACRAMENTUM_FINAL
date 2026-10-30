@@ -2,6 +2,7 @@ import React, {useCallback,useEffect,useState} from 'react';
 import {useNavigate,useSearchParams} from 'react-router-dom';
 import DecreeCenterHeader from '@/components/chancery/DecreeCenterHeader';
 import RepetitionCanonicalIssueForm from '@/components/chancery/RepetitionCanonicalIssueForm';
+import { REPETITION_DISPOSITIONS, involvedParishIds, repetitionCaseStatus } from '@/utils/repetitionCaseV314.mjs';
 import {CheckCircle2,ClipboardCheck,FileText,Printer,RefreshCcw,RotateCcw} from 'lucide-react';
 import DashboardLayout from '@/components/DashboardLayout';
 import {useAuth} from '@/context/AuthContext';
@@ -10,15 +11,17 @@ import {useToast} from '@/components/ui/use-toast';
 import {institutionalConfirm} from '@/lib/institutionalDialog';
 import {buildDecreeDocumentHtml} from '@/services/decreeDocumentHtml';
 import {issueRepetitionDecree,resolveParishRepetition,returnRepetitionToParish,
-  listRepetitionDecrees,repetitionStatusLabel,SACRAMENTS} from '@/services/repetitionDecreeV312';
+  listRepetitionDecrees,repetitionStatusLabel,SACRAMENTS,registerExternalRepetitionConstancy} from '@/services/repetitionDecreeV312';
 
 const INPUT='mt-1.5 w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 focus:border-blue-500 focus:outline-none';
 const FIELD='block text-xs font-semibold text-slate-700';
 const localDateISO=()=>{ const now=new Date();return new Date(now.getTime()-now.getTimezoneOffset()*60000).toISOString().slice(0,10); };
+const blankEntry=()=>({parishId:'',parishName:'',external:false,externalJurisdiction:'',book:'',folio:'',number:'',recordId:'',disposition:'investigate',justification:''});
 const initial={parishId:'',sacrament:'bautismo',conceptId:'',number:'',date:localDateISO(),target:'',
-  reason:'',evidence:'',instruction:'',signer:'canciller'};
+  reason:'',evidence:'',instruction:'',signer:'canciller',caseMode:'documentary',affectedEntries:[blankEntry(),blankEntry()]};
 const note=(item)=>item?.payload || {};
-const workflow=(item)=>note(item).repetitionWorkflowStatus||'awaiting_parish';
+const workflow=(item)=>repetitionCaseStatus(item);
+const isMulti=(item)=>note(item).repetitionCaseMode==='duplicate_baptism_entries_v314';
 const title=(item)=>`Decreto ${item.decree_number||'sin número'} · ${SACRAMENTS[item.sacrament_type]||item.sacrament_type}`;
 
 export default function RepetitionDecreeWorkflowPage({scope='parish'}){
@@ -41,6 +44,11 @@ export default function RepetitionDecreeWorkflowPage({scope='parish'}){
  const [evidence,setEvidence]=useState('');
  const [observation,setObservation]=useState('');
  const [clarification,setClarification]=useState('');
+ const [activeParishId,setActiveParishId]=useState('');
+ const [returnParishId,setReturnParishId]=useState('');
+ const [externalKey,setExternalKey]=useState('');
+ const [externalEvidence,setExternalEvidence]=useState('');
+ const [externalObservation,setExternalObservation]=useState('');
  const [filter,setFilter]=useState('all');
 
  const refresh=useCallback(async()=>{
@@ -52,6 +60,7 @@ export default function RepetitionDecreeWorkflowPage({scope='parish'}){
      if(profileError)throw profileError;
      if(!profile || profile.role!==(chancery?'chancery':'parish'))throw Error('Sesión institucional no autorizada');
      if(!profile.diocese_id)throw Error('Diócesis sin identificar');
+     setActiveParishId(profile.parish_id||'');
      const decrees=await listRepetitionDecrees(chancery?
        {dioceseId:profile.diocese_id}:{parishId:profile.parish_id});
      setRows(decrees);
@@ -74,21 +83,29 @@ export default function RepetitionDecreeWorkflowPage({scope='parish'}){
    finally{setLoading(false);}
  },[chancery,user?.auth_user_id,user?.id]);
  useEffect(()=>{setFocused(null);void refresh();},[refresh]);
- useEffect(()=>{setForm(current=>current.sacrament===selectedSacrament?current:{...current,sacrament:selectedSacrament,conceptId:''});setFocused(null);},[selectedSacrament]);
+ useEffect(()=>{setForm(current=>current.sacrament===selectedSacrament?current:{...current,sacrament:selectedSacrament,conceptId:'',caseMode:'documentary'});setFocused(null);},[selectedSacrament]);
  const current=rows.find(r=>r.id===focused?.id)||null;
+ const parishAction=isMulti(current)?note(current).repetitionParishActions?.[activeParishId]:null;
+ const canAct=current&&!chancery&&(isMulti(current)?
+   involvedParishIds(note(current).affectedEntries).includes(activeParishId)&&!parishAction:
+   workflow(current)==='awaiting_parish');
+ const reviewParishes=isMulti(current)?involvedParishIds(note(current).affectedEntries).filter(id=>
+    note(current).repetitionParishActions?.[id]?.outcome==='needs_review'):[];
  const eligible=rows.filter(r=>r.sacrament_type===selectedSacrament&&(filter==='all'||workflow(r)===filter));
  const submit=async(e)=>{
    e.preventDefault();if(busy)return;
    const confirmed=await institutionalConfirm({
      title:'Expedir Decreto de Repetición',
-     message:'Se expedirá a la parroquia un decreto documental de Repetición. No crea ni anula partidas y no asigna Libro, Folio ni Número. ¿Confirma la expedición y envío?',
+     message:form.caseMode==='duplicate_baptism_entries'
+      ?'Se expedirá un decreto con la disposición de cada partida y notificación a todas las parroquias afectadas. Ninguna partida se borra o modifica automáticamente. ¿Confirma?'
+      :'Se expedirá a la parroquia un decreto documental de Repetición. No crea ni anula partidas y no asigna Libro, Folio ni Número. ¿Confirma?',
      confirmText:'Expedir y remitir',tone:'warning'});
    if(!confirmed)return;
    setBusy(true);setError('');
    try{
      const result=await issueRepetitionDecree(form);
-     toast({title:'Decreto de Repetición expedido',description:`Decreto ${result.decreeNumber} enviado a la parroquia; queda pendiente su constancia.`});
-     setForm(v=>({...v,number:'',target:'',reason:'',evidence:'',instruction:''}));
+     toast({title:'Decreto de Repetición expedido',description:form.caseMode==='duplicate_baptism_entries'?`Decreto ${result.decreeNumber} remitido a las parroquias internas. Pendientes sus constancias y las externas, si existen.`:`Decreto ${result.decreeNumber} enviado a la parroquia; queda pendiente su constancia.`});
+     setForm(v=>({...v,number:'',target:'',reason:'',evidence:'',instruction:'',affectedEntries:[blankEntry(),blankEntry()]}));
      await refresh();
    }catch(e){setError(e.message||'No se pudo expedir');}
    finally{setBusy(false);}
@@ -98,23 +115,39 @@ export default function RepetitionDecreeWorkflowPage({scope='parish'}){
    const confirmed=await institutionalConfirm({
       title:resolution==='documented'?'Registrar constancia parroquial':'Devolver a Cancillería',
       message:resolution==='documented'
-       ?'La constancia documental cerrará el expediente en Cancillería, sin modificar la partida ni la memoria de libros.'
+       ?isMulti(current)?'Se registrará la actuación de esta parroquia. El expediente solo queda completo cuando respondan todas las parroquias afectadas. Ninguna inscripción se borrará automáticamente.':'La constancia documental cerrará el expediente en Cancillería, sin modificar la partida ni la memoria de libros.'
        :'Se solicitará aclaración a Cancillería. No se modificará ninguna partida.',
       confirmText:resolution==='documented'?'Confirmar constancia':'Solicitar aclaración',tone:'warning'});
    if(!confirmed)return;
    setBusy(true);setError('');
    try{
-     await resolveParishRepetition({decreeId:current.id,resolution,evidence,observation});
+     await resolveParishRepetition({decreeId:current.id,resolution,evidence,observation,multiParish:isMulti(current)});
      toast({title:resolution==='documented'?'Constancia remitida a Cancillería':'Expediente devuelto a Cancillería'});
      setFocused(null);setEvidence('');setObservation('');await refresh();
    }catch(e){setError(e.message||'No se pudo finalizar');}
+   finally{setBusy(false);}
+ };
+ const recordExternal=async(e)=>{
+   e.preventDefault();if(!current||busy||!isMulti(current))return;
+   const confirmed=await institutionalConfirm({title:'Registrar constancia de parroquia externa',
+    message:'Confirme que Cancillería recibió y verificó una constancia real de esa parroquia. Esta operación no altera automáticamente las partidas.',
+    confirmText:'Registrar evidencia',tone:'warning'});
+   if(!confirmed)return;
+   setBusy(true);setError('');
+   try{
+    await registerExternalRepetitionConstancy({decreeId:current.id,externalKey,
+      evidence:externalEvidence,observation:externalObservation});
+    toast({title:'Constancia externa registrada'});
+    setExternalKey('');setExternalEvidence('');setExternalObservation('');setFocused(null);await refresh();
+   }catch(e){setError(e.message||'No se pudo registrar la constancia externa');}
    finally{setBusy(false);}
  };
  const resend=async(e)=>{
    e.preventDefault();if(!current||busy)return;
    setBusy(true);setError('');
    try{
-     await returnRepetitionToParish({decreeId:current.id,instruction:clarification});
+     await returnRepetitionToParish({decreeId:current.id,instruction:clarification,
+       parishId:isMulti(current)?returnParishId:undefined,multiParish:isMulti(current)});
      toast({title:'Aclaración remitida a la parroquia',description:'El expediente vuelve a la bandeja parroquial.'});
      setFocused(null);setClarification('');await refresh();
    }catch(e){setError(e.message||'No se pudo reenviar');}
@@ -147,7 +180,7 @@ export default function RepetitionDecreeWorkflowPage({scope='parish'}){
        </button>
      </div>
      <div className="mt-4 flex flex-wrap gap-2">
-       {Object.entries({all:'Todos',awaiting_parish:'Pendientes',needs_chancery_review:'En aclaración',completed_documentary:'Completos'}).map(([id,label])=>
+       {Object.entries({all:'Todos',awaiting_parish:'Pendientes',awaiting_parishes:'Varias parroquias',needs_chancery_review:'En aclaración',completed_documentary:'Completos'}).map(([id,label])=>
          <button type="button" key={id} onClick={()=>setFilter(id)} className={'rounded-full border px-4 py-2 text-xs font-semibold '+(filter===id?'bg-slate-900 text-white':'bg-white text-slate-600')}>{label}</button>)}
      </div>
      {loading?<p className="mt-5 text-sm text-slate-600">Consultando expediente…</p>:
@@ -157,10 +190,11 @@ export default function RepetitionDecreeWorkflowPage({scope='parish'}){
            <div><h3 className="text-sm font-black text-slate-900">{title(r)}</h3>
              <p className="mt-1 text-xs text-slate-600">{note(r).targetName||'Sin titular'} · {r.decree_date}</p>
              <p className="mt-1 text-xs font-bold text-blue-800">{repetitionStatusLabel(workflow(r))}</p>
+             {isMulti(r)&&<p className="mt-1 text-xs text-slate-700">{involvedParishIds(note(r).affectedEntries).length} parroquias en el sistema, {(note(r).affectedEntries||[]).filter(e=>e.external).length} externas · {Object.values(note(r).repetitionParishActions||{}).filter(a=>a.outcome==='documented').length+Object.keys(note(r).repetitionExternalActions||{}).length} constancias completas</p>}
            </div>
            <div className="flex flex-wrap gap-2">
              <button type="button" onClick={()=>print(r)} className="inline-flex items-center gap-1 rounded-lg border bg-white px-3 py-2 text-xs font-bold"><Printer className="h-4 w-4"/> Ver / Imprimir</button>
-             <button type="button" onClick={()=>{setFocused(r);setError('');setEvidence('');setObservation('');setClarification('');}}
+             <button type="button" onClick={()=>{setFocused(r);setError('');setEvidence('');setObservation('');setClarification('');setReturnParishId('');}}
                className="inline-flex items-center gap-1 rounded-lg bg-blue-900 px-3 py-2 text-xs font-bold text-white"><FileText className="h-4 w-4"/> Actuaciones</button>
            </div>
          </div>
@@ -178,6 +212,21 @@ export default function RepetitionDecreeWorkflowPage({scope='parish'}){
        <p><b>Referencia:</b> {note(current).evidenceRef}</p>
        <p><b>Disposición de Cancillería:</b> {note(current).instruction}</p>
        <p><b>Firmante:</b> {note(current).signerName} · {note(current).signerTitle}</p>
+       {isMulti(current)&&<div className="space-y-3 pt-3"><h3 className="font-bold">Partidas afectadas y decisiones individuales</h3>
+         {(note(current).affectedEntries||[]).map((entry,index)=><div key={index} className="rounded-lg border p-3">
+           <p><b>{index+1}. {entry.parishName}</b> · Libro {entry.book} · Folio {entry.folio} · Número {entry.number}</p>
+           <p><b>Disposición:</b> {REPETITION_DISPOSITIONS[entry.disposition]}</p>
+           <p><b>Fundamento:</b> {entry.justification}</p>
+           {entry.external&&<p><b>Jurisdicción externa:</b> {entry.externalJurisdiction||'No especificada'}</p>}
+           <p><b>Constancia:</b> {entry.external
+             ?note(current).repetitionExternalActions?.[entry.externalKey]?.evidenceRef
+                ?'Constancia externa registrada':'Pendiente de evidencia externa'
+             :note(current).repetitionParishActions?.[entry.parishId]?.outcome==='documented'
+             ?'Registrada':note(current).repetitionParishActions?.[entry.parishId]?.outcome==='needs_review'
+             ?'Solicita aclaración':'Pendiente'}</p>
+         </div>)}
+       </div>}
+       {parishAction&&<p className="rounded-xl border border-blue-200 bg-blue-50 p-3"><b>Su parroquia:</b> {parishAction.outcome==='documented'?'Constancia remitida':'Aclaración solicitada'}. {parishAction.observations}</p>}
        {note(current).parishResolution&&<div className="mt-3 rounded-xl bg-emerald-50 p-3">
          <p className="font-bold">Actuación parroquial: {note(current).parishResolution.outcome==='documented'?'Constancia registrada':'Solicita aclaración'}</p>
          <p>{note(current).parishResolution.observations}</p>
@@ -185,11 +234,32 @@ export default function RepetitionDecreeWorkflowPage({scope='parish'}){
        </div>}
        {note(current).chanceryClarification?.instruction&&<p className="rounded-xl bg-amber-50 p-3"><b>Aclaración de Cancillería:</b> {note(current).chanceryClarification.instruction}</p>}
      </div>
-     {!chancery&&workflow(current)==='awaiting_parish'&&<form onSubmit={execute} className="mt-5 space-y-3">
+     {chancery&&isMulti(current)&&note(current).affectedEntries?.some(entry=>
+       entry.external&&!note(current).repetitionExternalActions?.[entry.externalKey])&&
+       <form onSubmit={recordExternal} className="mt-5 space-y-3 rounded-xl border border-amber-200 bg-white p-4">
+        <h3 className="text-sm font-black">Constancias de parroquias externas</h3>
+        <p className="text-xs text-slate-600">Cancillería registra aquí la evidencia recibida formalmente. Las parroquias externas no necesitan una cuenta en este sistema.</p>
+        <label className={FIELD}>Parroquia externa
+         <select required className={INPUT} value={externalKey} onChange={e=>setExternalKey(e.target.value)}>
+          <option value="">Seleccione...</option>
+          {note(current).affectedEntries.filter(entry=>entry.external&&!note(current).repetitionExternalActions?.[entry.externalKey]).map(entry=>
+            <option key={entry.externalKey} value={entry.externalKey}>{entry.parishName} · Libro {entry.book}, Folio {entry.folio}, Número {entry.number}</option>)}
+         </select>
+        </label>
+        <label className={FIELD}>Referencia de constancia recibida
+         <input required className={INPUT} maxLength={500} value={externalEvidence} onChange={e=>setExternalEvidence(e.target.value)}/>
+        </label>
+        <label className={FIELD}>Observaciones de Cancillería
+         <textarea required minLength={15} maxLength={1500} rows={2} className={INPUT} value={externalObservation} onChange={e=>setExternalObservation(e.target.value)}/>
+        </label>
+        <button disabled={busy||!externalKey||externalEvidence.trim().length<8||externalObservation.trim().length<15}
+          className="rounded-xl bg-blue-900 px-4 py-3 text-xs font-bold text-white disabled:opacity-50">Registrar constancia externa</button>
+       </form>}
+     {canAct&&<form onSubmit={execute} className="mt-5 space-y-3">
        <h3 className="text-sm font-black">Registrar actuación parroquial</h3>
        <label className={FIELD}>Resultado
          <select className={INPUT} value={resolution} onChange={e=>setResolution(e.target.value)}>
-           <option value="documented">Actuación comprobada · registrar constancia y cerrar</option>
+           <option value="documented">Actuación comprobada · remitir constancia a Cancillería</option>
            <option value="needs_review">Solicitar aclaración a Cancillería</option>
          </select>
        </label>
@@ -207,12 +277,17 @@ export default function RepetitionDecreeWorkflowPage({scope='parish'}){
      </form>}
      {chancery&&workflow(current)==='needs_chancery_review'&&<form onSubmit={resend} className="mt-5 space-y-3">
        <h3 className="text-sm font-bold">Responder aclaración y reenviar al párroco</h3>
+       {isMulti(current)&&<label className={FIELD}>Parroquia que solicitó aclaración
+         <select required className={INPUT} value={returnParishId} onChange={e=>setReturnParishId(e.target.value)}>
+          <option value="">Seleccione...</option>
+          {reviewParishes.map(id=><option key={id} value={id}>{note(current).affectedEntries?.find(e=>e.parishId===id)?.parishName||id}</option>)}
+         </select></label>}
        <textarea className={INPUT} required minLength={15} maxLength={1500} rows={3} value={clarification} onChange={e=>setClarification(e.target.value)}/>
-       <button disabled={busy||clarification.trim().length<15}
+       <button disabled={busy||clarification.trim().length<15||(isMulti(current)&&!returnParishId)}
          className="inline-flex items-center gap-2 rounded-xl bg-blue-900 px-4 py-3 text-xs font-bold text-white disabled:opacity-50"><RotateCcw className="h-4 w-4"/> Aclarar y reenviar</button>
      </form>}
      {workflow(current)==='completed_documentary'&&<p className="mt-4 flex items-center gap-2 rounded-xl bg-emerald-100 p-3 text-sm font-bold text-emerald-900">
-       <CheckCircle2 className="h-5 w-5"/> Expediente completo: la constancia parroquial está registrada en Cancillería. No se alteró la partida.</p>}
+       <CheckCircle2 className="h-5 w-5"/> Expediente completo: todas las constancias parroquiales se registraron en Cancillería. No se alteraron automáticamente las partidas.</p>}
    </section>}
   </main>
  </DashboardLayout>;
