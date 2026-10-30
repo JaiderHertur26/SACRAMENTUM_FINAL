@@ -12,7 +12,8 @@ const scenarios=[
  'scripts/qa-rollback-baptism-missing-exact-audit-v138.sql'
 ];
 const issuer=migration.slice(migration.indexOf('CREATE OR REPLACE FUNCTION public.apply_confirmation_correction_internal('),migration.indexOf('-- V138 - reverse_correction_decree'));
-const reversal=migration.slice(migration.indexOf('CREATE OR REPLACE FUNCTION public.reverse_correction_decree('));
+// La comprobación textual debe ser independiente de CRLF/LF en Windows y CI.
+const reversal=migration.slice(migration.indexOf('CREATE OR REPLACE FUNCTION public.reverse_correction_decree(')).replace(/\r\n/g,'\n');
 test('V138 reforma emisor de Confirmación y restaurador histórico en Supabase',()=>{
  assert.match(issuer,/CREATE OR REPLACE FUNCTION public.apply_confirmation_correction_internal/);
  assert.match(reversal,/CREATE OR REPLACE FUNCTION public.reverse_correction_decree/);

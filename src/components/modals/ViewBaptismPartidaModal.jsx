@@ -14,6 +14,7 @@ import { getMarginalNoteTemplates, DEFAULT_MARGINAL_NOTE_TEMPLATES } from '@/ser
 import MarginalNotesPrintSelector from '@/components/MarginalNotesPrintSelector';
 import MarginalNoteComposer from '@/components/MarginalNoteComposer';
 import { listMarginalNotesForRecord, registerRegistryPrint } from '@/services/marginalNotesV2Service';
+import { hasActiveRepetitionWithoutEffect } from '@/utils/repetitionRegistryEffect.mjs';
 
 const InfoCard = ({ label, val, icon: Icon }) => (
     <div className="bg-white/80 backdrop-blur-sm p-5 rounded-[2rem] border border-white shadow-sm flex items-center gap-4">
@@ -43,6 +44,7 @@ const ViewBaptismPartidaModal = ({ isOpen, onClose, partida, auxiliaryData }) =>
     const { toast } = useToast();
 
     const [marginalNotes, setMarginalNotes] = useState([]);
+    const [notesVerified, setNotesVerified] = useState(false);
     const [selectedNotes, setSelectedNotes] = useState([]);
     const [notesRevision, setNotesRevision] = useState(0);
     const [templates, setTemplates] = useState({ ...DEFAULT_MARGINAL_NOTE_TEMPLATES });
@@ -50,16 +52,21 @@ const ViewBaptismPartidaModal = ({ isOpen, onClose, partida, auxiliaryData }) =>
     const parishId = partida?.parishId || partida?.parish_id || auxiliaryData?.entity_id || auxiliaryData?.id;
 
     useEffect(() => {
+        let active = true;
         if (isOpen && partida) {
+            setNotesVerified(false);
+            setMarginalNotes([]);
+            setSelectedNotes([]);
             const fetchAllNotes = async () => {
                 let allNotes = [];
+                let verified = false;
                 let cloudTemplates = { ...DEFAULT_MARGINAL_NOTE_TEMPLATES };
                 try {
                     cloudTemplates = await getMarginalNoteTemplates(parishId);
-                    setTemplates(cloudTemplates);
+                    if (active) setTemplates(cloudTemplates);
                 } catch (templateError) {
                     console.warn('No fue posible cargar las plantillas marginales:', templateError);
-                    setTemplates(cloudTemplates);
+                    if (active) setTemplates(cloudTemplates);
                 }
 
                 // Fuente canónica de notas: excluye notas revertidas y conserva la nota histórica inline.
@@ -70,6 +77,7 @@ const ViewBaptismPartidaModal = ({ isOpen, onClose, partida, auxiliaryData }) =>
                         sacramentId: partida.id,
                         legacyInlineNote: partida.notaMarginal || partida.nota_marginal || ''
                     });
+                    verified = true;
                 } catch (notesError) {
                     console.warn('No fue posible cargar las notas marginales:', notesError);
                     allNotes = [];
@@ -126,14 +134,18 @@ const ViewBaptismPartidaModal = ({ isOpen, onClose, partida, auxiliaryData }) =>
                     print_policy: note.print_policy || 'optional',
                     print_default: note.print_default !== false
                 }));
-                setMarginalNotes(allNotes);
-                setSelectedNotes(allNotes
-                    .filter(n => n.print_policy === 'required' || (n.print_policy === 'optional' && n.print_default !== false))
-                    .map(n => n.id));
+                if (active) {
+                    setMarginalNotes(allNotes);
+                    setSelectedNotes(allNotes
+                        .filter(n => n.print_policy === 'required' || (n.print_policy === 'optional' && n.print_default !== false))
+                        .map(n => n.id));
+                    setNotesVerified(verified);
+                }
             };
             
             fetchAllNotes();
         }
+        return () => { active = false; };
     }, [isOpen, partida, parishId, auxiliaryData, notesRevision]);
 
     if (!isOpen || !partida) return null;
@@ -162,10 +174,19 @@ const ViewBaptismPartidaModal = ({ isOpen, onClose, partida, auxiliaryData }) =>
     const estaAnulada = partida.tipoIdentidad === 'id_anulada_correccion' || ['anulada', 'annulled'].includes(estadoPartida);
     const estaRevertida = ['reversed', 'revertida'].includes(estadoPartida);
     const estaReemplazada = ['replaced', 'deleted'].includes(estadoPartida);
-    const noVigente = estaAnulada || estaRevertida || estaReemplazada;
+    const sinEfectoRepeticion = hasActiveRepetitionWithoutEffect(marginalNotes);
+    const noVigente = estaAnulada || estaRevertida || estaReemplazada || sinEfectoRepeticion;
     const esReposicion = partida.tipoIdentidad === 'id_creada_reposicion';
 
     const ejecutarImpresion = async () => {
+        if (!notesVerified) {
+            toast({title:'Impresión detenida',description:'No fue posible verificar las notas marginales vigentes. Recargue la partida antes de certificar.',variant:'destructive'});
+            return;
+        }
+        if (noVigente) {
+            toast({title:'Impresión oficial bloqueada',description:'Este asiento no acredita una partida vigente. Conserve y consulte el registro histórico y su decreto.',variant:'destructive'});
+            return;
+        }
         const contenido = componenteImpresionRef.current;
         if (!contenido) return;
         // Inmovilizar HTML y selección antes de esperar a la base de datos.
@@ -235,6 +256,7 @@ const ViewBaptismPartidaModal = ({ isOpen, onClose, partida, auxiliaryData }) =>
                                             {estaAnulada && <Badge color="red" icon={AlertCircle} label="Anulada" />}
                                             {estaRevertida && <Badge color="red" icon={AlertCircle} label="Revertida" />}
                                             {estaReemplazada && <Badge color="red" icon={AlertCircle} label="Reemplazada / no vigente" />}
+                                            {sinEfectoRepeticion && <Badge color="red" icon={AlertCircle} label="Sin efectos por Decreto de Repetición" />}
                                             {esReposicion && <Badge color="amber" icon={ShieldCheck} label="Reposición" />}
                                             {!noVigente && <Badge color="green" icon={CheckCircle2} label="Vigente" />}
                                         </div>
@@ -290,7 +312,7 @@ const ViewBaptismPartidaModal = ({ isOpen, onClose, partida, auxiliaryData }) =>
                                     {noVigente && (
                                         <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-50 overflow-hidden select-none">
                                             <div className="transform -rotate-45 text-[9rem] font-black text-red-600/5 border-[30px] border-red-600/5 p-16 rounded-[100px] uppercase tracking-tighter">
-                                                {estaAnulada ? 'Anulada' : estaRevertida ? 'Revertida' : 'No vigente'}
+                                                {sinEfectoRepeticion ? 'Sin efectos' : estaAnulada ? 'Anulada' : estaRevertida ? 'Revertida' : 'No vigente'}
                                             </div>
                                         </div>
                                     )}
@@ -311,8 +333,8 @@ const ViewBaptismPartidaModal = ({ isOpen, onClose, partida, auxiliaryData }) =>
                             <div className="flex items-center gap-6 text-left">
                                 <div className="flex flex-col">
                                     <span className="text-[9px] font-black text-slate-300 uppercase tracking-widest leading-none mb-1">Estado de Integridad</span>
-                                    <span className="text-xs font-bold text-green-500 flex items-center gap-1.5 uppercase">
-                                        <CheckCircle2 className="w-3.5 h-3.5" /> Registro Preparado
+                                    <span className={`text-xs font-bold flex items-center gap-1.5 uppercase ${noVigente ? 'text-rose-700' : 'text-green-500'}`}>
+                                        {noVigente ? <AlertCircle className="w-3.5 h-3.5"/> : <CheckCircle2 className="w-3.5 h-3.5"/>} {noVigente ? 'Solo consulta histórica · no certificable' : 'Registro Preparado'}
                                     </span>
                                 </div>
                                 <div className="h-8 w-px bg-slate-100 hidden md:block"></div>
@@ -327,7 +349,8 @@ const ViewBaptismPartidaModal = ({ isOpen, onClose, partida, auxiliaryData }) =>
                                     Cerrar Vista
                                 </Button>
                                 <Button 
-                                    onClick={ejecutarImpresion} 
+                                    onClick={ejecutarImpresion}
+                                    disabled={noVigente || !notesVerified}
                                     className="flex-1 sm:flex-none bg-[#4B7BA7] hover:bg-[#3A6286] text-white shadow-xl shadow-blue-900/20 font-black px-12 py-7 rounded-2xl gap-3 transition-all transform active:scale-95 text-[11px] uppercase tracking-widest"
                                 >
                                     <Printer className="w-5 h-5" /> Imprimir Partida Oficial
