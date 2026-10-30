@@ -21,6 +21,8 @@ import {
   canonicalTextareaClass
 } from '@/components/chancery/CanonicalDecreePrimitives';
 import { SACRAMENTS } from '@/utils/repetitionDecreePolicy.mjs';
+import RepetitionDuplicateEntriesForm from '@/components/chancery/RepetitionDuplicateEntriesForm';
+import { validateAffectedEntries } from '@/utils/repetitionCaseV314.mjs';
 
 /**
  * El mismo sistema de captura usado por Corrección y Reposición.
@@ -38,17 +40,22 @@ export default function RepetitionCanonicalIssueForm({
   );
   const selectedConcept = eligibleConcepts.find(c=>c.id===form.conceptId)||null;
   const signerValid=form.signer==='canciller'?signers.canciller:signers.viceCanciller;
+  let caseInvalid=false;
+  if(form.caseMode==='duplicate_baptism_entries'){
+    try { validateAffectedEntries(form.affectedEntries,form.parishId); }
+    catch { caseInvalid=true; }
+  }
   const remaining=(!parish||!form.conceptId||!form.number||!form.date||!form.target
-    ||!form.reason||!form.evidence||!form.instruction||!signerValid);
+    ||!form.reason||!form.evidence||!form.instruction||!signerValid||caseInvalid);
 
   return (
     <form onSubmit={onSubmit} className="grid gap-6 lg:grid-cols-[0.88fr_1.35fr]">
       <CanonicalMasterPanel
-        kicker="01 · Parroquia de destino"
+        kicker="01 · Parroquia principal"
         footer={
           <div className="border-t border-blue-100 bg-blue-50/60 p-4 text-[10px] leading-relaxed text-blue-900">
-            La Repetición se remite exclusivamente a una parroquia operativa de la jurisdicción.
-            No anula ni crea partidas. El párroco verificará la actuación documental.
+            En duplicidades, el mismo decreto se notificará a todas las parroquias afectadas que estén operativas.
+            Nunca se eliminan los datos históricos ni se crean partidas automáticamente.
           </div>
         }>
         <CanonicalParishSelector
@@ -109,9 +116,20 @@ export default function RepetitionCanonicalIssueForm({
             <CanonicalNotice
               tone="blue"
               title="Naturaleza del decreto de Repetición"
-              text="Este procedimiento permite examinar un error de transcripción o repetición y dejar constancia de su tratamiento. No cambia automáticamente datos sacramentales, no genera una partida supletoria ni asigna Libro, Folio o Número nuevos."
+              text="Repetición puede referirse a una inscripción duplicada o a otro error histórico. Cancillería decide por escrito el tratamiento de cada partida. No cambia automáticamente datos sacramentales, no elimina el hecho histórico ni crea nuevas coordenadas."
             />
 
+            {form.sacrament==='bautismo'&&<section className="space-y-3">
+              <CanonicalSectionTitle title="Naturaleza del expediente" subtitle="Distinga duplicidad de partidas de errores de transcripción."/>
+              <select className={canonicalSelectClass} value={form.caseMode||'documentary'}
+                onChange={e=>set('caseMode',e.target.value)}>
+                <option value="documentary">Error histórico / actuación documental (V312)</option>
+                <option value="duplicate_baptism_entries">Dos o más partidas del mismo bautizado</option>
+              </select>
+            </section>}
+            {form.sacrament==='bautismo'&&form.caseMode==='duplicate_baptism_entries'&&
+              <RepetitionDuplicateEntriesForm entries={form.affectedEntries||[]}
+                onChange={value=>set('affectedEntries',value)} parishes={parishes}/>}
             <section>
               <CanonicalSectionTitle title={`Datos de ${SACRAMENTS[form.sacrament]}`}
                 subtitle="Identificación del interesado del expediente, sin modificar la partida original."/>
@@ -171,7 +189,7 @@ export default function RepetitionCanonicalIssueForm({
             <Button type="submit" disabled={busy||loading||!!remaining}
               className="h-12 w-full bg-amber-500 font-black text-slate-950 hover:bg-amber-600">
               {busy?<Loader2 className="mr-2 h-4 w-4 animate-spin"/>:<Save className="mr-2 h-4 w-4"/>}
-              Expedir repetición y notificar a la parroquia
+              {form.caseMode==='duplicate_baptism_entries'?'Expedir y notificar a las parroquias':'Expedir repetición y notificar a la parroquia'}
             </Button>
           </CanonicalActionFooter>
         </CanonicalDetailPanel>

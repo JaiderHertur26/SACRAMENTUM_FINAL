@@ -4,6 +4,7 @@ import { useAuth } from '@/context/AuthContext';
 import { useAppData } from '@/context/AppDataContext';
 import { fetchBaptismsFromSource, getParishPrintProfile } from '@/services/sacramentsService';
 import { listMarginalNotesForRecord } from '@/services/marginalNotesV2Service';
+import { hasActiveRepetitionWithoutEffect } from '@/utils/repetitionRegistryEffect.mjs';
 import Table from '@/components/ui/Table';
 import { Button } from '@/components/ui/button';
 import { 
@@ -13,6 +14,7 @@ import {
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import ViewBaptismPartidaModal from '@/components/modals/ViewBaptismPartidaModal';
+import { supabase } from '@/lib/supabaseClient';
 
 const formatCivilDate = (value) => {
     if (!value) return '---';
@@ -21,11 +23,13 @@ const formatCivilDate = (value) => {
     return match ? `${match[3]}/${match[2]}/${match[1]}` : raw;
 };
 
-const getStatusMeta = (value) => {
+const getStatusMeta = (value, repetitionEffect = null) => {
     const status = String(value || '').trim().toLowerCase();
     if (['anulada', 'annulled'].includes(status)) return { label: 'Anulada', inactive: true };
     if (['reversed', 'revertida'].includes(status)) return { label: 'Revertida', inactive: true };
     if (['replaced', 'deleted'].includes(status)) return { label: 'No vigente', inactive: true };
+    if (repetitionEffect === true) return { label: 'Sin efectos por Repetición', inactive: true };
+    if (repetitionEffect === null) return { label: 'Verificando notas', inactive: true, unverified: true };
     return { label: 'Vigente', inactive: false };
 };
 
@@ -35,6 +39,7 @@ const InfoBox = ({ data, marginalNotes = [] }) => {
     
     const isReplacement = data.isSupplementary || data.tipoIdentidad === 'id_creada_reposicion';
     const isNarrative = data.historicalEntryMode === 'narrative' && String(data.literalTranscription || '').trim().length > 0;
+    const sinEfectoRepeticion = hasActiveRepetitionWithoutEffect(marginalNotes);
     const visibleMarginalNotes = marginalNotes
         .map(note => String(note?.content || '').trim())
         .filter(Boolean);
@@ -80,6 +85,7 @@ const InfoBox = ({ data, marginalNotes = [] }) => {
             </div>
 
             <div className="p-8 space-y-8">
+                {sinEfectoRepeticion && <div role="alert" className="rounded-xl border-2 border-rose-300 bg-rose-50 p-4 text-xs font-bold uppercase text-rose-900">Partida sin efectos registrales por Decreto de Repetición. Conservar el asiento histórico; prohibido certificarlo como vigente.</div>}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-center bg-slate-50/50 p-6 rounded-[2rem] border border-slate-100">
                     <div className="space-y-1">
                         <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest block">Localización Física</span>
@@ -206,6 +212,7 @@ const BaptismPartidasPage = () => {
   
   const [searchTerm, setSearchTerm] = useState('');
   const [records, setRecords] = useState([]);
+  const [repetitionEffects, setRepetitionEffects] = useState({key:'', ids:new Set()});
   const [archiveTotal, setArchiveTotal] = useState(0);
   const [totalRecords, setTotalRecords] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
@@ -294,7 +301,22 @@ const BaptismPartidasPage = () => {
 
           setTotalRecords(filtered.length);
           const from = (currentPage - 1) * recordsPerPage;
-          setRecords(filtered.slice(from, from + recordsPerPage));
+          const pageRecords=filtered.slice(from,from+recordsPerPage);
+          setRecords(pageRecords);
+          const pageKey=`${parishId}:${pageRecords.map(r=>r.id).join(',')}`;
+          setRepetitionEffects({key:'',ids:new Set()});
+          if(pageRecords.length>0){
+              const {data:noteRows,error:noteError}=await supabase.from('marginal_notes')
+                  .select('sacrament_id,note_type,status,linked_decree:decretos!marginal_notes_decree_id_fkey(status)')
+                  .eq('parish_id',parishId).eq('sacrament_type','bautismo')
+                  .eq('note_type','decree_repetition')
+                  .in('sacrament_id',pageRecords.map(r=>r.id));
+              if(noteError) throw noteError;
+              const ids=new Set((noteRows||[]).filter(note=>hasActiveRepetitionWithoutEffect([note])).map(n=>n.sacrament_id));
+              setRepetitionEffects({key:pageKey,ids});
+          }else{
+              setRepetitionEffects({key:pageKey,ids:new Set()});
+          }
 
           setSelectedPartida(prev => {
               if (!prev) return prev;
@@ -311,6 +333,7 @@ const BaptismPartidasPage = () => {
       fetchRecords();
   }, [fetchRecords]);
 
+  const effectPageKey=`${parishId}:${records.map(r=>r.id).join(',')}`;
   const columns = [
     { 
         header: 'Archivo',
@@ -338,10 +361,10 @@ const BaptismPartidasPage = () => {
     {
         header: 'Estado',
         render: (r) => {
-            const meta = getStatusMeta(r.status);
+            const meta = getStatusMeta(r.status,repetitionEffects.key===effectPageKey?repetitionEffects.ids.has(r.id):null);
             return (
                 <div className="flex flex-col items-start gap-1.5">
-                    <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[9px] font-black border uppercase tracking-tighter ${meta.inactive ? 'bg-red-50 text-red-600 border-red-100' : 'bg-green-50 text-green-600 border-green-100'}`}>
+                    <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[9px] font-black border uppercase tracking-tighter ${meta.unverified?'bg-slate-50 text-slate-600 border-slate-200':meta.inactive ? 'bg-red-50 text-red-600 border-red-100' : 'bg-green-50 text-green-600 border-green-100'}`}>
                         {meta.inactive ? <XCircle className="w-3 h-3"/> : <CircleCheckBig className="w-3 h-3"/>}
                         {meta.label}
                     </span>

@@ -8,6 +8,7 @@ import { supabase } from '@/lib/supabaseClient';
 import { getParishPrintProfile, purificarRegistroBautismo } from '@/services/sacramentsService';
 import ViewBaptismPartidaModal from '@/components/modals/ViewBaptismPartidaModal';
 import { listMarginalNotesForRecord } from '@/services/marginalNotesV2Service';
+import { hasActiveRepetitionWithoutEffect } from '@/utils/repetitionRegistryEffect.mjs';
 import { ArrowLeft, Printer, AlertCircle, Loader2, ShieldCheck, BookOpen, User, Users, MapPin, PenTool, Fingerprint } from 'lucide-react';
 
 const formatDate = (value) => {
@@ -42,6 +43,7 @@ const BaptismDetailPage = () => {
   const [error, setError] = useState('');
   const [printOpen, setPrintOpen] = useState(false);
   const [marginalNotes, setMarginalNotes] = useState([]);
+  const [noteCheckFailed, setNoteCheckFailed] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -57,6 +59,7 @@ const BaptismDetailPage = () => {
 
       setLoading(true);
       setError('');
+      setNoteCheckFailed(false);
       try {
         const { data, error: queryError } = await supabase
           .from('baptisms')
@@ -78,7 +81,7 @@ const BaptismDetailPage = () => {
             legacyInlineNote: normalized.notaMarginal || normalized.nota_marginal || ''
           }).catch((notesError) => {
             console.warn('No fue posible cargar las notas marginales vigentes del Bautismo:', notesError);
-            return [];
+            return null;
           })
         ]);
 
@@ -86,6 +89,7 @@ const BaptismDetailPage = () => {
           setRecord(normalized);
           setProfile(printProfile || {});
           setMarginalNotes(currentMarginalNotes || []);
+          setNoteCheckFailed(currentMarginalNotes === null);
         }
       } catch (loadError) {
         if (active) setError(loadError?.message || 'No fue posible cargar la partida.');
@@ -128,15 +132,19 @@ const BaptismDetailPage = () => {
     : record.source === 'historical_book_digitization'
       ? 'Digitalización histórica'
       : 'Registro ordinario';
+  const sinEfectoRepeticion = hasActiveRepetitionWithoutEffect(marginalNotes);
   const status = String(record.status || '').toLowerCase();
-  const statusLabel = ['anulada', 'annulled'].includes(status)
+  const statusLabel = noteCheckFailed ? 'Notas sin verificar'
+    : sinEfectoRepeticion ? 'Sin efectos por Decreto de Repetición'
+    : ['anulada', 'annulled'].includes(status)
     ? 'Anulada'
     : ['reversed', 'revertida'].includes(status)
       ? 'Revertida'
       : ['replaced', 'deleted'].includes(status)
         ? 'Reemplazada / no vigente'
         : 'Vigente';
-  const statusClass = ['anulada', 'annulled', 'reversed', 'revertida', 'replaced', 'deleted'].includes(status)
+  const statusClass = noteCheckFailed ? 'border-slate-300 bg-slate-100 text-slate-700'
+    : sinEfectoRepeticion || ['anulada', 'annulled', 'reversed', 'revertida', 'replaced', 'deleted'].includes(status)
     ? 'border-red-200 bg-red-50 text-red-700'
     : 'border-green-200 bg-green-50 text-green-700';
   const marginalNotesText = marginalNotes
@@ -165,12 +173,14 @@ const BaptismDetailPage = () => {
             <div className="flex flex-wrap items-center gap-3">
               <span className={`rounded-full border px-4 py-2 text-[10px] font-black uppercase ${statusClass}`}>{statusLabel}</span>
               <span className="rounded-full border border-blue-100 bg-blue-50 px-4 py-2 text-[10px] font-black uppercase text-[#4B7BA7]">{sourceLabel}</span>
-              <Button onClick={() => setPrintOpen(true)} className="rounded-xl bg-[#4B7BA7] text-white">
+              <Button disabled={sinEfectoRepeticion || noteCheckFailed} onClick={() => setPrintOpen(true)} className="rounded-xl bg-[#4B7BA7] text-white">
                 <Printer className="mr-2 h-4 w-4" /> Imprimir partida
               </Button>
             </div>
           </div>
 
+          {noteCheckFailed && <div role="alert" className="rounded-2xl border border-amber-300 bg-amber-50 p-4 text-sm font-semibold text-amber-900">No se pudo comprobar el estado de las notas marginales. La certificación queda suspendida hasta recargar y verificar el expediente.</div>}
+          {sinEfectoRepeticion && <div role="alert" className="rounded-2xl border-2 border-rose-300 bg-rose-50 p-5 text-sm font-semibold text-rose-950">Esta inscripción se conserva en el archivo histórico, pero quedó SIN EFECTOS REGISTRALES por Decreto de Repetición. No debe expedirse como partida acreditativa vigente. Consulte la nota marginal y el decreto asociado.</div>}
           <div className="rounded-[2.5rem] border border-slate-100 bg-white p-8 shadow-sm">
             <div className="mb-6 flex items-center gap-3">
               <BookOpen className="h-5 w-5 text-[#D4AF37]" />
