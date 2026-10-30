@@ -1,0 +1,42 @@
+[
+  {
+    "script": "qa-rollback-marriage-funeral-repositions-late-notes-v155.sql",
+    "status": "PASS",
+    "result": "[]"
+  },
+  {
+    "script": "qa-rollback-decree-status-v189.sql",
+    "status": "PASS",
+    "result": "[{\"qa_result\":{\"rollback_required\":true,\"fictitious_decrees\":1,\"invalid_status_denied\":1,\"invalid_sacrament_denied\":1,\"original_record_unchanged\":true}}]"
+  },
+  {
+    "script": "qa-rollback-decree-number-v187.sql",
+    "status": "PASS",
+    "result": "[{\"qa_results\":{\"created\":1,\"same_diocese\":true,\"collision_denied\":1}}]"
+  },
+  {
+    "script": "qa-rollback-historical-four-workflows-v173.sql",
+    "status": "PASS",
+    "result": "[]"
+  },
+  {
+    "script": "qa-rollback-historical-decrees-v118.sql",
+    "status": "PASS",
+    "result": "[]"
+  },
+  {
+    "script": "qa-rollback-nullity-dual-authorization-v128.sql",
+    "status": "PASS",
+    "result": "[]"
+  },
+  {
+    "script": "qa-rollback-nullity-preflight-cross-diocese-v130.sql",
+    "status": "PASS",
+    "result": "[]"
+  },
+  {
+    "script": "qa-rollback-nullity-preflight-read-scope-v130.sql",
+    "status": "PASS",
+    "result": "[]"
+  }
+]
