@@ -53,7 +53,9 @@ test('V314 evita cerrar expediente hasta obtener todas las constancias',()=>{
  assert.equal(repetitionCaseStatus(row({})),'awaiting_parishes');
  assert.equal(repetitionCaseStatus(row({[a]:{outcome:'documented'}})),'awaiting_parishes');
  assert.equal(repetitionCaseStatus(row({[a]:{outcome:'documented'},[b]:{outcome:'needs_review'}})),'needs_chancery_review');
- assert.equal(repetitionCaseStatus(row({[a]:{outcome:'documented'},[b]:{outcome:'documented'}})),'completed_documentary');
+ const complete=row({[a]:{outcome:'documented'},[b]:{outcome:'documented'}});
+ complete.payload.repetitionEntryActions={'entry-2':{method:'digital',outcome:'note_recorded'}};
+ assert.equal(repetitionCaseStatus(complete),'completed_documentary');
 });
 
 test('V314 exige fundamento y conserva validación documental histórica V312',()=>{

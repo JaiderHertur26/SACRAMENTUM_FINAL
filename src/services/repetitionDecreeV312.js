@@ -42,6 +42,15 @@ export async function returnRepetitionToParish({decreeId,instruction,parishId,mu
  }
  return rpc('return_repetition_to_parish_v312',{p_decree_id:decreeId,p_instruction:instruction.trim()});
 }
+export async function registerRepetitionEntryMarginal({decreeId,entryIndex,method,evidence,observation}){
+ if(!decreeId||!Number.isInteger(entryIndex)||entryIndex<1||!['digital','physical'].includes(method)
+  ||String(evidence||'').trim().length<8||String(observation||'').trim().length<15)
+  throw Error('Falta partida, modalidad, referencia u observación verificable');
+ return rpc('register_repetition_entry_marginal_v315',{
+  p_decree_id:decreeId,p_entry_index:entryIndex,p_method:method,
+  p_evidence:String(evidence).trim(),p_observation:String(observation).trim()
+ });
+}
 export async function registerExternalRepetitionConstancy({decreeId,externalKey,evidence,observation}){
  if(!decreeId||!externalKey||String(evidence||'').trim().length<8||String(observation||'').trim().length<15)
   throw Error('Referencia y observación verificable de la parroquia externa obligatorias');

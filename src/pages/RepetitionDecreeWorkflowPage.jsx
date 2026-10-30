@@ -2,6 +2,7 @@ import React, {useCallback,useEffect,useState} from 'react';
 import {useNavigate,useSearchParams} from 'react-router-dom';
 import DecreeCenterHeader from '@/components/chancery/DecreeCenterHeader';
 import RepetitionCanonicalIssueForm from '@/components/chancery/RepetitionCanonicalIssueForm';
+import RepetitionParishMarginalPanel from '@/components/chancery/RepetitionParishMarginalPanel';
 import { REPETITION_DISPOSITIONS, involvedParishIds, repetitionCaseStatus } from '@/utils/repetitionCaseV314.mjs';
 import {CheckCircle2,ClipboardCheck,FileText,Printer,RefreshCcw,RotateCcw} from 'lucide-react';
 import DashboardLayout from '@/components/DashboardLayout';
@@ -89,6 +90,9 @@ export default function RepetitionDecreeWorkflowPage({scope='parish'}){
  const canAct=current&&!chancery&&(isMulti(current)?
    involvedParishIds(note(current).affectedEntries).includes(activeParishId)&&!parishAction:
    workflow(current)==='awaiting_parish');
+ const pendingMarginalCount=isMulti(current)?(note(current).affectedEntries||[]).filter((entry,index)=>
+  entry.parishId===activeParishId&&entry.disposition==='without_effect'&&
+  !note(current).repetitionEntryActions?.['entry-'+(index+1)]).length:0;
  const reviewParishes=isMulti(current)?involvedParishIds(note(current).affectedEntries).filter(id=>
     note(current).repetitionParishActions?.[id]?.outcome==='needs_review'):[];
  const eligible=rows.filter(r=>r.sacrament_type===selectedSacrament&&(filter==='all'||workflow(r)===filter));
@@ -257,6 +261,9 @@ export default function RepetitionDecreeWorkflowPage({scope='parish'}){
         <button disabled={busy||!externalKey||externalEvidence.trim().length<8||externalObservation.trim().length<15}
           className="rounded-xl bg-blue-900 px-4 py-3 text-xs font-bold text-white disabled:opacity-50">Registrar constancia externa</button>
        </form>}
+     {!chancery&&current&&isMulti(current)&&involvedParishIds(note(current).affectedEntries).includes(activeParishId)&&
+      <RepetitionParishMarginalPanel decree={current} parishId={activeParishId}
+       busy={busy} setBusy={setBusy} onApplied={refresh} onError={setError}/>}
      {canAct&&<form onSubmit={execute} className="mt-5 space-y-3">
        <h3 className="text-sm font-black">Registrar actuación parroquial</h3>
        <label className={FIELD}>Resultado
@@ -272,7 +279,8 @@ export default function RepetitionDecreeWorkflowPage({scope='parish'}){
        <label className={FIELD}>Observación de párroco (obligatoria)
          <textarea className={INPUT} minLength={15} maxLength={1500} required rows={3} value={observation} onChange={e=>setObservation(e.target.value)}/>
        </label>
-       <button disabled={busy||observation.trim().length<15||(resolution==='documented'&&evidence.trim().length<8)}
+       {resolution==='documented'&&pendingMarginalCount>0&&<p className="rounded-lg bg-amber-100 p-3 text-xs font-bold text-amber-900">Faltan {pendingMarginalCount} nota(s) marginal(es) ordenada(s) para esta parroquia; no se puede cerrar todavía.</p>}
+       <button disabled={busy||observation.trim().length<15||(resolution==='documented'&&(evidence.trim().length<8||pendingMarginalCount>0))}
         className="inline-flex items-center gap-2 rounded-xl bg-emerald-800 px-4 py-3 text-xs font-bold text-white disabled:opacity-50">
          <ClipboardCheck className="h-4 w-4"/>{resolution==='documented'?'Registrar y avisar a Cancillería':'Solicitar aclaración'}
        </button>

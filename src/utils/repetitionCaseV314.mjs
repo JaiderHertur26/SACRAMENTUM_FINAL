@@ -44,6 +44,9 @@ export function repetitionCaseStatus(caseRow) {
   const externalActions=p.repetitionExternalActions||{};
   if (ids.some(id=>actions[id]?.outcome==='needs_review')) return 'needs_chancery_review';
   if(external.some(e=>!externalActions[e.externalKey]?.evidenceRef))return 'awaiting_parishes';
+  const entryActions=p.repetitionEntryActions||{};
+  if ((p.affectedEntries||[]).some((e,index)=>!e.external&&e.disposition==='without_effect'
+    &&!entryActions['entry-'+(index+1)])) return 'awaiting_parishes';
   if (ids.every(id=>actions[id]?.outcome==='documented')) return 'completed_documentary';
   return 'awaiting_parishes';
 }
