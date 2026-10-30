@@ -1,0 +1,247 @@
+﻿[
+    {
+        "file":  "capturas-boletas-v322.json",
+        "bytes":  146014,
+        "sha256":  "d6e4cc13dfa6a3a475899988495024772b59192d9a002e96cc963283e8b23511"
+    },
+    {
+        "file":  "capturas-notificaciones-v322.json",
+        "bytes":  1221,
+        "sha256":  "89b9e0dbd4bc5988bed6d2fedab01d5421f7ac7a0a5a3aad2e8f2f8096bbfc00"
+    },
+    {
+        "file":  "capturas-partidas-v322.json",
+        "bytes":  9269,
+        "sha256":  "673b05055f46eccc287ed4c4d31bd3e8de1c65bf40111a753b549e51c9f35261"
+    },
+    {
+        "file":  "manifest-ejemplos.json",
+        "bytes":  2917,
+        "sha256":  "40ea97777c07b2c60f3e159df218e96432e7bf1cc35a88cd747411f491bedbe0"
+    },
+    {
+        "file":  "README.md",
+        "bytes":  7385,
+        "sha256":  "daedbea5b9c0f8affa2c18a672417164a5fc66e756ff219275265e53265fb330"
+    },
+    {
+        "file":  "sql-bloque1.json",
+        "bytes":  1318,
+        "sha256":  "38e87a2976b9ed7552e0340c6752d36f5090cb3d7fd9b93313bf2f2e8336c543"
+    },
+    {
+        "file":  "sql-bloque2.json",
+        "bytes":  1147,
+        "sha256":  "0dca349bef0392ad3c7b55d813ffbaee31aa8b00ff3713de1ad73d7cb6f24372"
+    },
+    {
+        "file":  "sql-bloque3.json",
+        "bytes":  3940,
+        "sha256":  "873b3775f057944e126e514a3d8b1ee6f68022e98173e10758cead41822852ed"
+    },
+    {
+        "file":  "BOLETAS/boleta-react-bautismo-v322.png",
+        "bytes":  24570,
+        "sha256":  "8eb03b3f7e69ccd13da916b0f1d2f944c1f5e5782861fe33307aa7dd4247eac1"
+    },
+    {
+        "file":  "BOLETAS/boleta-react-confirmacion-v322.png",
+        "bytes":  28520,
+        "sha256":  "9112ac0ea390be3c06a67281e51b537700151e71b4e74750d9225172f6c6c40b"
+    },
+    {
+        "file":  "BOLETAS/boleta-react-exequias-v322.png",
+        "bytes":  30500,
+        "sha256":  "0d4face3a12cc07ee602804ff69809505c9ba1092e7f7e4864d92f81d3f9dd0b"
+    },
+    {
+        "file":  "BOLETAS/boleta-react-matrimonio-v322.png",
+        "bytes":  24940,
+        "sha256":  "b78fc355fd1fff684e81ee6d0fd9df6d85e7835c98c10d803633ce9abc26f62b"
+    },
+    {
+        "file":  "DECRETOS/decreto-correccion-v322.html",
+        "bytes":  8446,
+        "sha256":  "31a98783aedadb81bf1faa78065de332116da328b7a1e77b22f8c57a59a918ef"
+    },
+    {
+        "file":  "DECRETOS/decreto-correccion-v322.pdf",
+        "bytes":  108855,
+        "sha256":  "9edccd41b3faf8fccda1a6c9a7a5f74c47ee98a51e47f444f04d97740077d141"
+    },
+    {
+        "file":  "DECRETOS/decreto-documental-v322.html",
+        "bytes":  2938,
+        "sha256":  "0623cd1addc8bb862fe839ab3e1a2c4680f881467fd2594778b9cb748f7daa9b"
+    },
+    {
+        "file":  "DECRETOS/decreto-documental-v322.pdf",
+        "bytes":  64940,
+        "sha256":  "612c651c7cc913ccef8a21b2bad86151110f967669a1d620601e46a1d405af59"
+    },
+    {
+        "file":  "DECRETOS/decreto-historico-v322.html",
+        "bytes":  3059,
+        "sha256":  "58dc3d7bce0a9bf096b3a0816b66fcfd0aa5990014ea54a716d329f79c7bdd5f"
+    },
+    {
+        "file":  "DECRETOS/decreto-historico-v322.pdf",
+        "bytes":  65627,
+        "sha256":  "687637aaff6c3620f6880955a5d3237cebf5c53d630ff478525ea432a923fc29"
+    },
+    {
+        "file":  "DECRETOS/decreto-repeticion-v322.html",
+        "bytes":  4255,
+        "sha256":  "36e869f13a01b2cceece944677b9b0835b91733065dfb7b19c791fa03ab5f52d"
+    },
+    {
+        "file":  "DECRETOS/decreto-repeticion-v322.pdf",
+        "bytes":  77019,
+        "sha256":  "557e1558070d5ebd29fe05d92332284e78c22e2b600c5def3eb0cb78675053b6"
+    },
+    {
+        "file":  "DECRETOS/decreto-reposicion-v322.html",
+        "bytes":  8560,
+        "sha256":  "929e3cb06b7f49b6aea214d14f65b9e6b1ebd78f53a84b39ad51b4d0ff540385"
+    },
+    {
+        "file":  "DECRETOS/decreto-reposicion-v322.pdf",
+        "bytes":  110456,
+        "sha256":  "5962ce3efeb95cae4df026f263095e7dd4a58cbafd335d2dd69b472623ec786f"
+    },
+    {
+        "file":  "INDICES/indices-bautismo-v322.pdf",
+        "bytes":  4485,
+        "sha256":  "5ee02ffa61b77fc8eb1adcc83d639b9cca1bb4fca7eb037b1014773080ed5a3a"
+    },
+    {
+        "file":  "INDICES/indices-confirmacion-v322.pdf",
+        "bytes":  4495,
+        "sha256":  "f6f26f3c77b3376f7592370398641917b28f429272c9e071f6f81e8c3e1445db"
+    },
+    {
+        "file":  "INDICES/indices-exequias-v322.pdf",
+        "bytes":  4458,
+        "sha256":  "20a8ca1e6e0095d732233d8643fe608f9e3b044baa0d529dae50f2a3399d5f84"
+    },
+    {
+        "file":  "INDICES/indices-matrimonio-v322.pdf",
+        "bytes":  4463,
+        "sha256":  "fad96130af2659b728e22a5b9991efd1b4c137c02f0de4c3ba731248fa99f819"
+    },
+    {
+        "file":  "LIBROS/libros-bautismo-v322.pdf",
+        "bytes":  4464,
+        "sha256":  "b8d498326562eade13aaaf1e0343e8c189d1413277e38deaf9f6852f541febef"
+    },
+    {
+        "file":  "LIBROS/libros-confirmacion-v322.pdf",
+        "bytes":  4551,
+        "sha256":  "6ceedd6253fd35d739426a8d3e14792f272aeba60095cde1a2680804c19940b1"
+    },
+    {
+        "file":  "LIBROS/libros-exequias-v322.pdf",
+        "bytes":  4438,
+        "sha256":  "3c34d17ec7019a2411bf68bff896fbe2ebcea048e3af30036e9035526235a3d5"
+    },
+    {
+        "file":  "LIBROS/libros-matrimonio-v322.pdf",
+        "bytes":  4460,
+        "sha256":  "fdb32fe94cfac4735094483dab1dc202d044fca46a70cf7991895fe32f7e1237"
+    },
+    {
+        "file":  "NOTIFICACIONES/aviso-sacramental-parroquia-b-v322.png",
+        "bytes":  33978,
+        "sha256":  "c13fabeeb3eff3c884a516450c097a2f1c4778859e74cc3bc0dfaa9520baeffb"
+    },
+    {
+        "file":  "NOTIFICACIONES/notificacion-decreto-parroquia-b-v322.png",
+        "bytes":  25566,
+        "sha256":  "3aa4f808807e31d7b918df1a35789cc8eafab13a63f1b9cd20a1f04ffb6f54e8"
+    },
+    {
+        "file":  "NOTIFICACIONES/origen-confirmacion-parroquia-b-v322.png",
+        "bytes":  53992,
+        "sha256":  "c3ecfe2678285f93c079cef291d099852e8ef251956409a7223838b4927a6dc6"
+    },
+    {
+        "file":  "PARTIDAS/v195-bautismo-letter.png",
+        "bytes":  62353,
+        "sha256":  "19b6930b48e698a971f59c4d2933020ff9e4d021f5d1336f88ca62376a88798f"
+    },
+    {
+        "file":  "PARTIDAS/v195-bautismo-mobile.png",
+        "bytes":  62629,
+        "sha256":  "c43dd8151f5902b7ede6c8cbefa95b6317dc71f420effa7e9f85d8bf013c88aa"
+    },
+    {
+        "file":  "PARTIDAS/v195-confirmacion-letter.png",
+        "bytes":  60859,
+        "sha256":  "20370fe0d58a83fdf5421f7468099acb4fab7b8b049bfdcbc2f7de73f27fab23"
+    },
+    {
+        "file":  "PARTIDAS/v195-confirmacion-mobile.png",
+        "bytes":  61182,
+        "sha256":  "c47e1c18cf271c66689bdc1eb8b9c8d6aab0827c586c1ffd0f2c3734fc170c33"
+    },
+    {
+        "file":  "PARTIDAS/v195-exequias-letter.png",
+        "bytes":  55495,
+        "sha256":  "c211c29d643681ac996b06565ed36489110ed404a14bf67fc9abd5887ed00d7c"
+    },
+    {
+        "file":  "PARTIDAS/v195-exequias-mobile.png",
+        "bytes":  55876,
+        "sha256":  "919fa0ec68f319eb6f80161d9ff2ee03e5e34f6601ad0578be95d5573d9c8ebd"
+    },
+    {
+        "file":  "PARTIDAS/v195-matrimonio-letter.png",
+        "bytes":  60374,
+        "sha256":  "246ddb4309e7ea43fbdb36c3934f59ef137d71c90fcab62834b27359f096d806"
+    },
+    {
+        "file":  "PARTIDAS/v195-matrimonio-mobile.png",
+        "bytes":  60734,
+        "sha256":  "0029d3019593eb41b823d7fa90e01cd3cd10ec92550a7dd2b5e2ed9e168d5d65"
+    },
+    {
+        "file":  "PARTIDAS/v195-xss-bautismo-letter.png",
+        "bytes":  69116,
+        "sha256":  "06cd34876228ba48639fb2ecb4cbac61ed1c7f9334884a2a6e872e9bf4d53b1d"
+    },
+    {
+        "file":  "PARTIDAS/v195-xss-bautismo-mobile.png",
+        "bytes":  69417,
+        "sha256":  "207f921c738d1723a17e3cd5b89029211d52eed6f9c6be58869ada675a1d608b"
+    },
+    {
+        "file":  "PARTIDAS/v195-xss-confirmacion-letter.png",
+        "bytes":  69131,
+        "sha256":  "7437aad35a7e2b1c0d75aeb6ed8de50ebb700da47c12b10cbea2f362bc3ec682"
+    },
+    {
+        "file":  "PARTIDAS/v195-xss-confirmacion-mobile.png",
+        "bytes":  69459,
+        "sha256":  "f16a8e0feb55d1e3bfb8b4fe8f804ba61fa50989221c984ef6d9faa42ce7f0cc"
+    },
+    {
+        "file":  "PARTIDAS/v195-xss-exequias-letter.png",
+        "bytes":  61057,
+        "sha256":  "b6bb528ad74b8cfc76f8944f0c0efaf58c9a497c182997a1aad2a7cb2fb126c0"
+    },
+    {
+        "file":  "PARTIDAS/v195-xss-exequias-mobile.png",
+        "bytes":  61416,
+        "sha256":  "9b9d4693c9d4778e185434e0928483ca9c4deda0f04ec2e1e533a3ae0914fcac"
+    },
+    {
+        "file":  "PARTIDAS/v195-xss-matrimonio-letter.png",
+        "bytes":  66317,
+        "sha256":  "aac2b7ce184b9891f5b055a9e49b8c6669617f397cae247ae847318a6e864721"
+    },
+    {
+        "file":  "PARTIDAS/v195-xss-matrimonio-mobile.png",
+        "bytes":  66552,
+        "sha256":  "2d955d484c06226efb652b26944c5938617c6332ee93c3b3d03fb8f6ba8000d2"
+    }
+]

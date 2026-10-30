@@ -1,0 +1,110 @@
+{
+  "generatedAt": "2026-10-30T19:52:55.414Z",
+  "origin": "Plantillas reales, datos 100% ficticios",
+  "items": [
+    {
+      "file": "LIBROS/libros-bautismo-v322.pdf",
+      "bytes": 4464,
+      "kind": "LIBROS",
+      "s": "bautismo",
+      "origin": "src/services/sacramentalBookPdf.js",
+      "fictitious": true
+    },
+    {
+      "file": "INDICES/indices-bautismo-v322.pdf",
+      "bytes": 4485,
+      "kind": "INDICES",
+      "s": "bautismo",
+      "origin": "src/services/sacramentalBookPdf.js",
+      "fictitious": true
+    },
+    {
+      "file": "LIBROS/libros-confirmacion-v322.pdf",
+      "bytes": 4551,
+      "kind": "LIBROS",
+      "s": "confirmacion",
+      "origin": "src/services/sacramentalBookPdf.js",
+      "fictitious": true
+    },
+    {
+      "file": "INDICES/indices-confirmacion-v322.pdf",
+      "bytes": 4495,
+      "kind": "INDICES",
+      "s": "confirmacion",
+      "origin": "src/services/sacramentalBookPdf.js",
+      "fictitious": true
+    },
+    {
+      "file": "LIBROS/libros-matrimonio-v322.pdf",
+      "bytes": 4460,
+      "kind": "LIBROS",
+      "s": "matrimonio",
+      "origin": "src/services/sacramentalBookPdf.js",
+      "fictitious": true
+    },
+    {
+      "file": "INDICES/indices-matrimonio-v322.pdf",
+      "bytes": 4463,
+      "kind": "INDICES",
+      "s": "matrimonio",
+      "origin": "src/services/sacramentalBookPdf.js",
+      "fictitious": true
+    },
+    {
+      "file": "LIBROS/libros-exequias-v322.pdf",
+      "bytes": 4438,
+      "kind": "LIBROS",
+      "s": "exequias",
+      "origin": "src/services/sacramentalBookPdf.js",
+      "fictitious": true
+    },
+    {
+      "file": "INDICES/indices-exequias-v322.pdf",
+      "bytes": 4458,
+      "kind": "INDICES",
+      "s": "exequias",
+      "origin": "src/services/sacramentalBookPdf.js",
+      "fictitious": true
+    },
+    {
+      "file": "DECRETOS/decreto-correccion-v322.pdf",
+      "bytes": 108855,
+      "kind": "DECRETO",
+      "s": "correccion",
+      "origin": "src/services/decreeDocumentHtml.js",
+      "fictitious": true
+    },
+    {
+      "file": "DECRETOS/decreto-reposicion-v322.pdf",
+      "bytes": 110456,
+      "kind": "DECRETO",
+      "s": "reposicion",
+      "origin": "src/services/decreeDocumentHtml.js",
+      "fictitious": true
+    },
+    {
+      "file": "DECRETOS/decreto-repeticion-v322.pdf",
+      "bytes": 77019,
+      "kind": "DECRETO",
+      "s": "repeticion",
+      "origin": "src/services/decreeDocumentHtml.js",
+      "fictitious": true
+    },
+    {
+      "file": "DECRETOS/decreto-documental-v322.pdf",
+      "bytes": 64940,
+      "kind": "DECRETO",
+      "s": "documental",
+      "origin": "src/services/decreeDocumentHtml.js",
+      "fictitious": true
+    },
+    {
+      "file": "DECRETOS/decreto-historico-v322.pdf",
+      "bytes": 65627,
+      "kind": "DECRETO",
+      "s": "historico",
+      "origin": "src/services/decreeDocumentHtml.js",
+      "fictitious": true
+    }
+  ]
+}

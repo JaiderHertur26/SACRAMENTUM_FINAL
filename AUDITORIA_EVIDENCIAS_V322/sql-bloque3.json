@@ -1,0 +1,47 @@
+[
+  {
+    "script": "qa-rollback-multiparroquial-notificacion-v319.sql",
+    "status": "PASS",
+    "result": "[{\"test_result\":{\"complete\":true,\"parishes\":3,\"rollback\":true,\"marginal_notes\":2,\"idempotent_replay\":1,\"separate_recipients\":2,\"early_closure_denied\":1,\"duplicate_issuance_denied\":1,\"foreign_processing_denied\":1,\"simulated_parish_accounts\":2}}]"
+  },
+  {
+    "script": "qa-rollback-multiparroquial-repeticion-v319.sql",
+    "status": "PASS",
+    "result": "[{\"test_result\":{\"parishes\":3,\"rollback\":true,\"decree_issued\":1,\"marginal_notes\":2,\"parish_resolutions\":3,\"certificate_blocked\":true,\"decree_notifications\":3,\"early_closure_denied\":true,\"completed_documentary\":true,\"cross_parish_rejected\":true,\"physical_forgery_denied\":true,\"duplicated_notes_rejected\":true,\"original_entries_preserved\":true}}]"
+  },
+  {
+    "script": "qa-rollback-multiparroquial-repeticion-externa-v319.sql",
+    "status": "PASS",
+    "result": "[{\"test_result\":{\"parishes\":3,\"rollback\":true,\"decree_issued\":1,\"marginal_notes\":2,\"external_parishes\":1,\"parish_resolutions\":3,\"certificate_blocked\":true,\"decree_notifications\":3,\"early_closure_denied\":true,\"completed_documentary\":true,\"cross_parish_rejected\":true,\"physical_forgery_denied\":true,\"duplicated_notes_rejected\":true,\"original_entries_preserved\":true}}]"
+  },
+  {
+    "script": "qa-rollback-notifications-rls-v320.sql",
+    "status": "PASS",
+    "result": "[{\"test\":{\"rollback\":true,\"parish_own_only\":true,\"bishop_no_decrees\":true,\"chancery_all_diocesan\":true,\"bishop_general_notices\":true}}]"
+  },
+  {
+    "script": "qa-rollback-internal-numbering-privilege-v321.sql",
+    "status": "PASS",
+    "result": "[{\"result\":{\"rollback\":true,\"direct_sequence_denied\":true,\"valid_issuance_rpc_preserved\":true}}]"
+  },
+  {
+    "script": "qa-rollback-documentary-decree-lifecycle-v210.sql",
+    "status": "FAIL",
+    "error": "INVALID_ARGUMENT: Error code: INVALID_ARGUMENT; Error: RuntimeException: Error calling MCP tool: [TextContent(type='text', text='{\"error\":{\"name\":\"HttpException\",\"message\":\"Failed to run sql query: ERROR:  P0001: V210 coherent parish actors missing\\\\nCONTEXT:  PL/pgSQL function inline_code_block line 87 at RAISE\\\\n\"}}', annotations=None, meta=None)]"
+  },
+  {
+    "script": "qa-rollback-registry-print-integrity-v140.sql",
+    "status": "FAIL",
+    "error": "INVALID_ARGUMENT: Error code: INVALID_ARGUMENT; Error: RuntimeException: Error calling MCP tool: [TextContent(type='text', text='{\"error\":{\"name\":\"HttpException\",\"message\":\"Failed to run sql query: ERROR:  23514: V194: constancia incompleta: cotejo de partida y huella obligatorios\\\\nCONTEXT:  PL/pgSQL function public.guard_registry_print_integrity_v194() line 15 at RAISE\\\\nSQL statement \\\\\"insert into publi"
+  },
+  {
+    "script": "qa-rollback-print-receipt-authenticated-v142.sql",
+    "status": "FAIL",
+    "error": "INVALID_ARGUMENT: Error code: INVALID_ARGUMENT; Error: RuntimeException: Error calling MCP tool: [TextContent(type='text', text='{\"error\":{\"name\":\"HttpException\",\"message\":\"Failed to run sql query: ERROR:  23514: V194: constancia incompleta: cotejo de partida y huella obligatorios\\\\nCONTEXT:  PL/pgSQL function public.guard_registry_print_integrity_v194() line 15 at RAISE\\\\nSQL statement \\\\\"insert into publi"
+  },
+  {
+    "script": "qa-rollback-marginal-four-sacraments-v216.sql",
+    "status": "FAIL",
+    "error": "INVALID_ARGUMENT: Error code: INVALID_ARGUMENT; Error: RuntimeException: Error calling MCP tool: [TextContent(type='text', text='{\"error\":{\"name\":\"HttpException\",\"message\":\"Failed to run sql query: ERROR:  22P02: invalid input syntax for type uuid: \\\\\"\\\\\"\\\\nCONTEXT:  PL/pgSQL function inline_code_block line 2 during statement block local variable initialization\\\\n\"}}', annotations=None, meta=None)]"
+  }
+]

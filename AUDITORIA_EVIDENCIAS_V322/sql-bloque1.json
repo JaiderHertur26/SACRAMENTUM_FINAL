@@ -1,0 +1,42 @@
+[
+  {
+    "script": "qa-rollback-four-boleta-consecutives-v192.sql",
+    "status": "PASS",
+    "result": "[{\"result\":{\"boletas\":8,\"sacraments\":4,\"ids_distinct\":true,\"strict_consecutives\":true,\"all_changes_rolled_back\":true}}]"
+  },
+  {
+    "script": "qa-rollback-four-sacrament-seating-v193.sql",
+    "status": "PASS",
+    "result": "[{\"results\":{\"rollback\":true,\"pendings_closed\":4,\"sacramental_lifecycles\":4,\"duplicate_seating_rejected\":4},\"min_seat_audit_entries\":4}]"
+  },
+  {
+    "script": "qa-rollback-print-integrity-v194.sql",
+    "status": "PASS",
+    "result": "[{\"qa_result\":{\"rollback\":true,\"verified_receipts\":4,\"sacraments_covered\":4,\"required_notes_preserved\":4,\"rejected_invalid_requests\":20}}]"
+  },
+  {
+    "script": "qa-rollback-decree-role-matrix-v115.sql",
+    "status": "PASS",
+    "result": "[]"
+  },
+  {
+    "script": "qa-rollback-corrections-v115.sql",
+    "status": "PASS",
+    "result": "[]"
+  },
+  {
+    "script": "qa-rollback-repositions-v115.sql",
+    "status": "PASS",
+    "result": "[]"
+  },
+  {
+    "script": "qa-rollback-corrections-reconciliation-all-sacraments-v159.sql",
+    "status": "PASS",
+    "result": "[]"
+  },
+  {
+    "script": "qa-rollback-marriage-funeral-corrections-late-notes-v155.sql",
+    "status": "PASS",
+    "result": "[]"
+  }
+]
