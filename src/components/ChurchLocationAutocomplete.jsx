@@ -1,8 +1,9 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { useAppData } from '@/context/AppDataContext';
 import { useAuth } from '@/context/AuthContext';
 import { supabase } from '@/lib/supabaseClient';
 import AuxiliaryAutocomplete from '@/components/AuxiliaryAutocomplete';
+import { readSharedAuxiliaryCatalog } from '@/services/sharedAuxiliaryCatalogService';
+import useAuxiliaryCatalogRefresh from '@/hooks/useAuxiliaryCatalogRefresh';
 
 const upper = (value='') => String(value || '').trim().toUpperCase();
 
@@ -27,8 +28,23 @@ const ChurchLocationAutocomplete = ({
   parishName = ''
 }) => {
   const { user } = useAuth();
-  const { getIglesiasList, getCiudadesList } = useAppData();
   const [directoryOptions, setDirectoryOptions] = useState([]);
+  const contextId = user?.parish_id || user?.parishId || user?.diocese_id || user?.dioceseId || null;
+  const [shared, setShared] = useState({ contextId: null, churches: [], cities: [] });
+  const loadShared = async () => {
+    if (!contextId || (Array.isArray(churches) && Array.isArray(cities))) return;
+    try {
+      const [churchRows, cityRows] = await Promise.all([
+        Array.isArray(churches) ? churches : readSharedAuxiliaryCatalog('iglesias', contextId),
+        Array.isArray(cities) ? cities : readSharedAuxiliaryCatalog('ciudades', contextId)
+      ]);
+      setShared({ contextId, churches: churchRows, cities: cityRows });
+    } catch {
+      setShared({ contextId, churches: [], cities: [] });
+    }
+  };
+  useEffect(() => { loadShared(); }, [contextId, churches, cities]);
+  useAuxiliaryCatalogRefresh(loadShared, contextId);
 
   useEffect(() => {
     if (disabled) {
@@ -74,13 +90,12 @@ const ChurchLocationAutocomplete = ({
   }, [value, disabled]);
 
   const options = useMemo(() => {
-    const contextId = user?.parish_id || user?.parishId || user?.diocese_id || user?.dioceseId || null;
     const sourceChurches = Array.isArray(churches)
       ? churches
-      : (contextId ? (getIglesiasList(contextId) || []) : []);
+      : (shared.contextId === contextId ? shared.churches : []);
     const sourceCities = Array.isArray(cities)
       ? cities
-      : (contextId ? (getCiudadesList(contextId) || []) : []);
+      : (shared.contextId === contextId ? shared.cities : []);
 
     const values = [
       parishName,
@@ -101,7 +116,7 @@ const ChurchLocationAutocomplete = ({
       .filter(Boolean);
 
     return [...new Set(values)];
-  }, [user, churches, cities, parishName, getIglesiasList, getCiudadesList, directoryOptions]);
+  }, [contextId, shared, churches, cities, parishName, directoryOptions]);
 
   const handleChange = (event) => {
     const next = event?.target?.value ?? '';

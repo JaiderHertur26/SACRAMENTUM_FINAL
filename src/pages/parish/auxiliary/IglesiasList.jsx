@@ -1,10 +1,12 @@
+import { readSharedAuxiliaryCatalog } from '@/services/sharedAuxiliaryCatalogService';
+import useAuxiliaryCatalogRefresh from '@/hooks/useAuxiliaryCatalogRefresh';
 import React, { useState, useEffect } from 'react';
 import { useAppData } from '@/context/AppDataContext';
 import { useAuth } from '@/context/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/Input';
 import { useToast } from '@/components/ui/use-toast';
-import { supabase } from '@/lib/supabaseClient'; 
+import { supabase } from '@/lib/supabaseClient';
 import { Plus, Search, Pencil, Trash2, Loader2 } from 'lucide-react';
 
 import CreateIglesiaModal from '@/components/modals/CreateIglesiaModal';
@@ -19,14 +21,14 @@ const IglesiasList = () => {
     const [items, setItems] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [isLoading, setIsLoading] = useState(true);
-    
+
     const [modals, setModals] = useState({
         create: false,
         edit: false,
         delete: false
     });
     const [selectedItem, setSelectedItem] = useState(null);
-    
+
     // La parroquia operativa proviene exclusivamente de la sesión autenticada.
     // Nunca se reutiliza un currentParish antiguo del navegador.
     const parishId = user?.parishId || user?.parish_id || null;
@@ -35,18 +37,12 @@ const IglesiasList = () => {
         if (!parishId) return;
         setIsLoading(true);
         try {
-            const { data, error } = await supabase
-                .from('iglesias')
-                .select('*')
-                .eq('parish_id', parishId)
-                .order('nombre', { ascending: true });
-
-            if (error) throw error;
+            const data = await readSharedAuxiliaryCatalog('iglesias', parishId);
             setItems(data || []);
             localStorage.setItem(`iglesias_${parishId}`, JSON.stringify(data || []));
         } catch (error) {
             console.error("Error cargando iglesias:", error);
-            setItems(getIglesiasList(parishId)); 
+            setItems([]);
         } finally {
             setIsLoading(false);
         }
@@ -59,13 +55,15 @@ const IglesiasList = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [parishId]);
 
+    useAuxiliaryCatalogRefresh(loadData, user?.parishId || user?.parish_id);
+
     const handleCreate = async (data) => {
         if (!parishId) {
              toast({ title: 'Error', description: 'No se ha identificado la parroquia actual.', variant: 'destructive' });
              return;
         }
 
-        const isDuplicate = items.some(i => 
+        const isDuplicate = items.some(i =>
             (data.codigo && String(i.codigo).toLowerCase() === String(data.codigo).toLowerCase()) ||
             (data.nombre && String(i.nombre).toLowerCase() === String(data.nombre).toLowerCase())
         );
@@ -125,8 +123,8 @@ const IglesiasList = () => {
         setModals(prev => ({ ...prev, delete: true }));
     };
 
-    const filteredItems = items.filter(i => 
-        (i.nombre || '').toLowerCase().includes(searchTerm.toLowerCase()) || 
+    const filteredItems = items.filter(i =>
+        (i.nombre || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
         (i.codigo || '').toLowerCase().includes(searchTerm.toLowerCase())
     );
 
@@ -137,8 +135,8 @@ const IglesiasList = () => {
             <div className="flex flex-col lg:flex-row justify-between items-center mb-4 gap-4">
                 <div className="relative w-full lg:w-1/3">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
-                    <Input 
-                        placeholder="Buscar por nombre o código..." 
+                    <Input
+                        placeholder="Buscar por nombre o código..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         className="pl-9 w-full"
@@ -150,8 +148,8 @@ const IglesiasList = () => {
                         Total: <span className="text-[#111111] font-bold">{filteredItems.length}</span> registros
                     </div>
 
-                    <Button 
-                        onClick={() => setModals(prev => ({ ...prev, create: true }))} 
+                    <Button
+                        onClick={() => setModals(prev => ({ ...prev, create: true }))}
                         className="flex-1 lg:flex-none bg-[#4B7BA7] hover:bg-[#3A6286] text-white flex items-center gap-2"
                     >
                         <Plus className="w-4 h-4" /> Agregar Iglesia
@@ -190,7 +188,7 @@ const IglesiasList = () => {
                                         <td className="px-4 py-2 sticky left-0 bg-white border-r border-slate-100 z-10 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">
                                             <div className="flex items-center gap-1 justify-center">
                                                 {/* 🚀 EL ESCUDO CONTRA CLICS FANTASMA */}
-                                                <button 
+                                                <button
                                                     type="button"
                                                     onClick={(e) => { e.preventDefault(); e.stopPropagation(); openEditModal(item); }}
                                                     className="p-1.5 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded transition-colors relative z-10"
@@ -198,7 +196,7 @@ const IglesiasList = () => {
                                                 >
                                                     <Pencil className="w-4 h-4" />
                                                 </button>
-                                                <button 
+                                                <button
                                                     type="button"
                                                     onClick={(e) => { e.preventDefault(); e.stopPropagation(); openDeleteModal(item); }}
                                                     className="p-1.5 text-red-600 hover:text-red-800 hover:bg-red-50 rounded transition-colors relative z-10"
@@ -226,24 +224,24 @@ const IglesiasList = () => {
                 </div>
             </div>
 
-            <CreateIglesiaModal 
-                isOpen={modals.create} 
-                onClose={() => setModals(prev => ({ ...prev, create: false }))} 
-                onCreate={handleCreate} 
+            <CreateIglesiaModal
+                isOpen={modals.create}
+                onClose={() => setModals(prev => ({ ...prev, create: false }))}
+                onCreate={handleCreate}
             />
 
             {/* 🚀 CANDADO QUE GARANTIZA QUE EL MODAL RECIBA LA DATA */}
             {selectedItem && (
                 <>
-                    <EditIglesiaModal 
-                        isOpen={modals.edit} 
-                        onClose={() => { setModals(prev => ({ ...prev, edit: false })); setSelectedItem(null); }} 
+                    <EditIglesiaModal
+                        isOpen={modals.edit}
+                        onClose={() => { setModals(prev => ({ ...prev, edit: false })); setSelectedItem(null); }}
                         onUpdate={handleUpdate}
                         item={selectedItem}
                     />
-                    <DeleteIglesiaModal 
-                        isOpen={modals.delete} 
-                        onClose={() => { setModals(prev => ({ ...prev, delete: false })); setSelectedItem(null); }} 
+                    <DeleteIglesiaModal
+                        isOpen={modals.delete}
+                        onClose={() => { setModals(prev => ({ ...prev, delete: false })); setSelectedItem(null); }}
                         onDelete={handleDelete}
                         item={selectedItem}
                     />

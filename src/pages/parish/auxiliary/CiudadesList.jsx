@@ -1,3 +1,5 @@
+import { readSharedAuxiliaryCatalog } from '@/services/sharedAuxiliaryCatalogService';
+import useAuxiliaryCatalogRefresh from '@/hooks/useAuxiliaryCatalogRefresh';
 import React, { useState, useEffect, useMemo } from 'react';
 import { useAppData } from '@/context/AppDataContext';
 import { useAuth } from '@/context/AuthContext';
@@ -5,9 +7,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/Input';
 import { Modal } from '@/components/ui/Modal';
 import { useToast } from '@/components/ui/use-toast';
-import { supabase } from '@/lib/supabaseClient'; 
-import { 
-    Pencil, Trash2, Plus, Search, MapPin, 
+import { supabase } from '@/lib/supabaseClient';
+import {
+    Pencil, Trash2, Plus, Search, MapPin,
     Globe, Database, ShieldCheck, Clock, User as UserIcon,
     AlertCircle, Loader2
 } from 'lucide-react';
@@ -24,11 +26,11 @@ const CiudadesList = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [currentItem, setCurrentItem] = useState(null);
-    
-    const [formData, setFormData] = useState({ 
-        nombre: '', 
-        source: 'MANUAL', 
-        count: '0', 
+
+    const [formData, setFormData] = useState({
+        nombre: '',
+        source: 'MANUAL',
+        count: '0',
         weight: '0',
         usuario: ''
     });
@@ -39,20 +41,12 @@ const CiudadesList = () => {
         if (!contextId) return;
         setIsLoading(true);
         try {
-            const { data, error } = await supabase
-                .from('ciudades')
-                .select('*')
-                .eq('context_id', contextId)
-                .order('nombre', { ascending: true });
-
-            if (error) throw error;
+            const data = await readSharedAuxiliaryCatalog('ciudades', contextId);
             setItems(data || []);
             localStorage.setItem(`ciudades_${contextId}`, JSON.stringify(data || []));
         } catch (error) {
             console.error("Error cargando ciudades desde Supabase:", error);
-            const fallbackData = getCiudadesList(contextId);
-            const sortedData = [...fallbackData].sort((a, b) => a.nombre.localeCompare(b.nombre));
-            setItems(sortedData);
+            setItems([]);
         } finally {
             setIsLoading(false);
         }
@@ -63,16 +57,18 @@ const CiudadesList = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [contextId]);
 
+    useAuxiliaryCatalogRefresh(loadData, user?.parishId || user?.parish_id);
+
     const handleOpenModal = (item = null) => {
         if (item) {
             setCurrentItem(item);
             setFormData({ ...item });
         } else {
             setCurrentItem(null);
-            setFormData({ 
-                nombre: '', 
-                source: 'MANUAL', 
-                count: '0', 
+            setFormData({
+                nombre: '',
+                source: 'MANUAL',
+                count: '0',
                 weight: '0',
                 usuario: user?.username || 'SISTEMA'
             });
@@ -122,7 +118,7 @@ const CiudadesList = () => {
         })) {
             setIsLoading(true);
             const result = await deleteCiudad(item.id, contextId);
-            
+
             if (result.success) {
                 toast({ title: 'Registro eliminado', description: 'La ciudad ha sido removida del catálogo de Supabase.' });
                 await loadData();
@@ -142,22 +138,22 @@ const CiudadesList = () => {
             <div className="flex flex-col md:flex-row justify-between items-center gap-4 bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm">
                 <div className="relative w-full max-w-md group">
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-300 group-focus-within:text-[#4B7BA7] transition-colors" />
-                    <input 
-                        placeholder="Buscar por nombre de ciudad..." 
+                    <input
+                        placeholder="Buscar por nombre de ciudad..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         className="w-full pl-12 pr-4 py-3.5 bg-slate-50 border border-transparent rounded-2xl text-sm font-bold uppercase tracking-tight outline-none focus:bg-white focus:ring-4 focus:ring-blue-500/5 focus:border-[#4B7BA7] transition-all"
                     />
                 </div>
-                
+
                 <div className="flex items-center gap-3 w-full lg:w-auto">
                     <div className="hidden lg:flex flex-col items-end mr-4">
                         <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Capacidad de Catálogo</span>
                         <span className="text-xl font-black text-slate-800 leading-none">{items.length} <span className="text-[10px] text-[#4B7BA7]">CIUDADES</span></span>
                     </div>
 
-                    <Button 
-                        onClick={() => handleOpenModal()} 
+                    <Button
+                        onClick={() => handleOpenModal()}
                         className="flex-1 lg:flex-none bg-[#4B7BA7] hover:bg-[#3A6286] text-white px-8 py-7 rounded-2xl font-black uppercase tracking-widest text-[10px] shadow-xl shadow-blue-900/20 transition-all transform active:scale-95 flex items-center gap-2"
                     >
                         <Plus className="w-4 h-4" /> Agregar Ciudad
@@ -246,9 +242,9 @@ const CiudadesList = () => {
                     <div className="space-y-6">
                         <div className="space-y-2">
                             <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Nombre Oficial Ciudad/Municipio *</label>
-                            <Input 
-                                value={formData.nombre} 
-                                onChange={e => setFormData({...formData, nombre: e.target.value.toUpperCase()})} 
+                            <Input
+                                value={formData.nombre}
+                                onChange={e => setFormData({...formData, nombre: e.target.value.toUpperCase()})}
                                 className="py-6 font-black uppercase text-slate-800 border-slate-200 focus:ring-[#4B7BA7]/10"
                                 placeholder="EJ: BARRANQUILLA"
                             />

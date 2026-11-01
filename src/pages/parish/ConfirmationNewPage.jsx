@@ -1,3 +1,4 @@
+import { readSharedAuxiliaryCatalog } from '@/services/sharedAuxiliaryCatalogService';
 import { generateUUID } from '@/utils/supabaseHelpers';
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -93,7 +94,7 @@ const ConfirmationNewPage = () => {
             }
 
             try {
-                const { data: iglesiasData } = await supabase.from('iglesias').select('nombre, codigo, ciudad').eq('parish_id', parishId);
+                const iglesiasData = await readSharedAuxiliaryCatalog('iglesias', parishId);
                 if (iglesiasData) setListaIglesias(iglesiasData);
             } catch (err) { console.error("Error cargando iglesias", err); }
         };

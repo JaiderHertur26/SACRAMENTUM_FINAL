@@ -1,3 +1,5 @@
+import { readSharedAuxiliaryCatalog } from '@/services/sharedAuxiliaryCatalogService';
+import useAuxiliaryCatalogRefresh from '@/hooks/useAuxiliaryCatalogRefresh';
 import React, { useState, useEffect } from 'react';
 import { useAppData } from '@/context/AppDataContext';
 import { useAuth } from '@/context/AuthContext';
@@ -6,7 +8,7 @@ import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
 import { Modal } from '@/components/ui/Modal';
 import { useToast } from '@/components/ui/use-toast';
-import { supabase } from '@/lib/supabaseClient'; 
+import { supabase } from '@/lib/supabaseClient';
 import { Pencil, Trash2, Plus, Search, Loader2, UserCheck } from 'lucide-react';
 import { institutionalConfirm } from '@/lib/institutionalDialog';
 
@@ -20,7 +22,7 @@ const ObisposList = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [currentItem, setCurrentItem] = useState(null);
-    const [isLoading, setIsLoading] = useState(true); 
+    const [isLoading, setIsLoading] = useState(true);
     const [formData, setFormData] = useState({ nombre: '', apellido: '', diocesis: '', fechaNombramiento: '', email: '' });
 
     // 🚀 Lógica de Espejo 1 a 1 con Supabase
@@ -30,33 +32,21 @@ const ObisposList = () => {
 
         setIsLoading(true);
         try {
-            // Obtenemos obispos
-            const { data: dataObispos, error: errObispos } = await supabase
-                .from('obispos')
-                .select('*')
-                .eq('parish_id', parishId)
-                .order('nombre', { ascending: true });
-            
-            if (errObispos) throw errObispos;
-
-            // Obtenemos diócesis para el select
-            const { data: dataDiocesis, error: errDiocesis } = await supabase
-                .from('diocesis')
-                .select('*')
-                .eq('parish_id', parishId);
-
-            if (errDiocesis) throw errDiocesis;
+            const [dataObispos, dataDiocesis] = await Promise.all([
+                readSharedAuxiliaryCatalog('obispos', parishId),
+                readSharedAuxiliaryCatalog('diocesis', parishId)
+            ]);
 
             setItems(dataObispos || []);
             setDiocesisList(dataDiocesis || []);
-            
+
             // Backup en memoria
             localStorage.setItem(`obispos_${parishId}`, JSON.stringify(dataObispos || []));
             localStorage.setItem(`diocesis_${parishId}`, JSON.stringify(dataDiocesis || []));
         } catch (error) {
             console.error("Error cargando obispos:", error);
-            setItems(getObispos(parishId)); // Fallback a local
-            setDiocesisList(getDiocesis(parishId));
+            setItems([]);
+            setDiocesisList([]);
         } finally {
             setIsLoading(false);
         }
@@ -66,6 +56,8 @@ const ObisposList = () => {
         loadData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [user?.parishId]);
+
+    useAuxiliaryCatalogRefresh(loadData, user?.parishId || user?.parish_id);
 
     const handleOpenModal = (item = null) => {
         if (item) {
@@ -85,8 +77,8 @@ const ObisposList = () => {
         }
 
         // 🚀 BLOQUEO DE DUPLICADOS MANUALES
-        const isDuplicate = items.some(i => 
-            i.id !== currentItem?.id && 
+        const isDuplicate = items.some(i =>
+            i.id !== currentItem?.id &&
             (i.nombre || '').toLowerCase() === (formData.nombre || '').toLowerCase() &&
             (i.apellido || '').toLowerCase() === (formData.apellido || '').toLowerCase()
         );
@@ -143,8 +135,8 @@ const ObisposList = () => {
         }
     };
 
-    const filteredItems = items.filter(i => 
-        (i.nombre || '').toLowerCase().includes(searchTerm.toLowerCase()) || 
+    const filteredItems = items.filter(i =>
+        (i.nombre || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
         (i.apellido || '').toLowerCase().includes(searchTerm.toLowerCase())
     );
 
@@ -156,8 +148,8 @@ const ObisposList = () => {
             <div className="flex flex-col lg:flex-row justify-between items-center mb-4 gap-4">
                 <div className="relative w-full lg:w-1/3">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
-                    <Input 
-                        placeholder="Buscar obispo..." 
+                    <Input
+                        placeholder="Buscar obispo..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         className="pl-9 w-full"
@@ -169,8 +161,8 @@ const ObisposList = () => {
                         Total: <span className="text-[#111111] font-bold">{filteredItems.length}</span> registros
                     </div>
 
-                    <Button 
-                        onClick={() => handleOpenModal()} 
+                    <Button
+                        onClick={() => handleOpenModal()}
                         className="flex-1 lg:flex-none bg-[#4B7BA7] hover:bg-[#3A6286] text-white flex items-center gap-2"
                     >
                         <Plus className="w-4 h-4" /> Agregar Obispo
@@ -209,7 +201,7 @@ const ObisposList = () => {
                                         <td className="px-4 py-2 sticky left-0 bg-white border-r border-slate-100 z-10 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">
                                             <div className="flex items-center gap-1 justify-center">
                                                 {/* 🚀 BOTONES PROTEGIDOS CONTRA EVENT BUBBLING */}
-                                                <button 
+                                                <button
                                                     type="button"
                                                     onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleOpenModal(item); }}
                                                     className="p-1.5 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded transition-colors"
@@ -217,7 +209,7 @@ const ObisposList = () => {
                                                 >
                                                     <Pencil className="w-4 h-4" />
                                                 </button>
-                                                <button 
+                                                <button
                                                     type="button"
                                                     onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleDelete(item); }}
                                                     className="p-1.5 text-red-600 hover:text-red-800 hover:bg-red-50 rounded transition-colors"
@@ -253,9 +245,9 @@ const ObisposList = () => {
                     </div>
                     <div>
                         <label className="block text-sm font-medium text-slate-900 mb-1">Diócesis</label>
-                        <Select 
-                            value={formData.diocesis} 
-                            onChange={e => setFormData({...formData, diocesis: e.target.value})} 
+                        <Select
+                            value={formData.diocesis}
+                            onChange={e => setFormData({...formData, diocesis: e.target.value})}
                             options={diocesisOptions}
                             placeholder="Seleccione..."
                         />

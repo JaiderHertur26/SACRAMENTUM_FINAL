@@ -32,10 +32,10 @@ const DatosAuxiliaresPage = () => {
             <Helmet>
                 <title>Datos Auxiliares · SACRAMENTUM</title>
             </Helmet>
-            
+
             <div className="mb-6">
                 <h1 className="text-2xl font-bold text-[#111111]">Datos Auxiliares</h1>
-                <p className="text-slate-500 mt-1">Gestionar listas auxiliares y catálogos del sistema.</p>
+                <p className="text-slate-500 mt-1">Catálogos comunes de la diócesis y datos propios de la parroquia.</p>
             </div>
 
             <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden min-h-[600px] flex flex-col">
@@ -47,8 +47,8 @@ const DatosAuxiliaresPage = () => {
                             onClick={() => setActiveTab(tab.id)}
                             className={cn(
                                 "flex items-center gap-2 px-6 py-4 text-sm font-bold transition-all whitespace-nowrap border-b-2 outline-none",
-                                activeTab === tab.id 
-                                    ? "border-[#D4AF37] text-[#111111] bg-white" 
+                                activeTab === tab.id
+                                    ? "border-[#D4AF37] text-[#111111] bg-white"
                                     : "border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-100/50"
                             )}
                         >
@@ -60,6 +60,11 @@ const DatosAuxiliaresPage = () => {
 
                 {/* Tab Content */}
                 <div className="p-6 flex-1 bg-white">
+                    <p className="mb-5 rounded-xl border border-slate-200 bg-slate-50 p-3 text-sm text-slate-600">
+                        {['parrocos', 'misdatos'].includes(activeTab)
+                            ? 'Estos datos pertenecen exclusivamente a esta parroquia.'
+                            : 'Catálogo compartido: lo que agregues, edites o elimines estará disponible para todas las parroquias de esta diócesis.'}
+                    </p>
                     {tabs.find(t => t.id === activeTab)?.component}
                 </div>
             </div>

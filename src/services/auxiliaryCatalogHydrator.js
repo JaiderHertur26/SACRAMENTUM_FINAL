@@ -1,3 +1,4 @@
+import { readSharedAuxiliaryCatalog } from '@/services/sharedAuxiliaryCatalogService';
 import { supabase } from '@/lib/supabaseClient';
 
 const safePayload = (value) => {
@@ -30,10 +31,10 @@ export const refreshAuxiliaryCatalogCaches = async (activeUser) => {
 
   const [parrocosRes, iglesiasRes, obisposRes, diocesisRes, ciudadesRes] = await Promise.all([
     queryByParish('parrocos'),
-    queryByParish('iglesias'),
-    queryByParish('obispos'),
-    queryByParish('diocesis'),
-    supabase.from('ciudades').select('*').eq('context_id', contextId),
+    readSharedAuxiliaryCatalog('iglesias', contextId).then(data => ({ data, error:null })),
+    readSharedAuxiliaryCatalog('obispos', contextId).then(data => ({ data, error:null })),
+    readSharedAuxiliaryCatalog('diocesis', contextId).then(data => ({ data, error:null })),
+    readSharedAuxiliaryCatalog('ciudades', contextId).then(data => ({ data, error:null })),
   ]);
 
   let refreshed = 0;

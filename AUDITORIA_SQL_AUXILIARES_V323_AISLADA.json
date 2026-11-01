@@ -1,0 +1,21 @@
+{
+  "environment": "PostgreSQL WASM aislado (PGlite 0.5.14)",
+  "version": {
+    "server_version": "18.6"
+  },
+  "testedAt": "2026-11-01T20:23:11.119Z",
+  "existing_content_preserved": true,
+  "checks": 54,
+  "complete": true,
+  "dioceses": 2,
+  "parishes": 3,
+  "rollback": true,
+  "shared_catalogs": 5,
+  "private_sections_preserved": 2,
+  "imports": {
+    "rollback": true,
+    "materializations": 8,
+    "unique_shared_rows": 4,
+    "provenance_preserved": true
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "protocol": "V323",
+  "testedAt": "2026-11-01T20:02:25.443Z",
+  "previous": {
+    "info": 0,
+    "low": 0,
+    "moderate": 11,
+    "high": 0,
+    "critical": 0,
+    "total": 11
+  },
+  "current": {
+    "info": 0,
+    "low": 0,
+    "moderate": 0,
+    "high": 0,
+    "critical": 0,
+    "total": 0
+  },
+  "runtime": {
+    "info": 0,
+    "low": 0,
+    "moderate": 0,
+    "high": 0,
+    "critical": 0,
+    "total": 0
+  },
+  "installed_engine": "11.0.1",
+  "legacy_and_modern_api_tests": 5,
+  "master_gate": {
+    "passed": 30,
+    "checks": 30
+  },
+  "lock_sha256": "784f3b632e3dad4262eceef52289b8d01e63d2e9b0469be9200af13e1c2103d7",
+  "audit_threshold_unchanged": true,
+  "audit_exclusions_added": 0
+}

@@ -1,3 +1,5 @@
+import { readSharedAuxiliaryCatalog } from '@/services/sharedAuxiliaryCatalogService';
+import useAuxiliaryCatalogRefresh from '@/hooks/useAuxiliaryCatalogRefresh';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 
@@ -50,18 +52,19 @@ export default function useSacramentalAuxiliaries(parishId, parishName='') {
     try{
       const [p,c,ci,b,bt]=await Promise.all([
         supabase.from('parrocos').select('*').eq('parish_id',parishId),
-        supabase.from('iglesias').select('*').eq('parish_id',parishId).order('nombre'),
-        supabase.from('ciudades').select('*').eq('context_id',parishId).order('nombre'),
-        supabase.from('obispos').select('*').eq('parish_id',parishId).order('nombre'),
-        supabase.from('bishop_tenures').select('*').eq('parish_id',parishId).order('start_date',{ascending:false})
+        readSharedAuxiliaryCatalog('iglesias', parishId),
+        readSharedAuxiliaryCatalog('ciudades', parishId),
+        readSharedAuxiliaryCatalog('obispos', parishId),
+        readSharedAuxiliaryCatalog('bishop_tenures', parishId)
       ]);
-      const err=[p,c,ci,b,bt].map(x=>x.error).find(Boolean);
+      const err=p.error;
       if(err) throw err;
       setData({
-        priests:p.data||[],churches:c.data||[],cities:ci.data||[],
-        bishops:b.data||[],bishopTenures:bt.data||[]
+        priests:p.data||[],churches:c,cities:ci,
+        bishops:b,bishopTenures:bt
       });
     }catch(error){
+      setData({ priests:[],churches:[],cities:[],bishops:[],bishopTenures:[] });
       console.error('Auxiliary catalogs load error:',error);
     }finally{
       setLoading(false);
@@ -69,6 +72,7 @@ export default function useSacramentalAuxiliaries(parishId, parishName='') {
   },[parishId]);
 
   useEffect(()=>{ refresh(); },[refresh]);
+  useAuxiliaryCatalogRefresh(refresh, parishId);
 
   const priestAtDate=useCallback((date)=>{
     const target=date || new Date().toISOString().slice(0,10);
