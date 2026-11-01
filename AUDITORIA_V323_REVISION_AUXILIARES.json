@@ -1,0 +1,16 @@
+{
+  "protocol": "V323",
+  "testedAt": "2026-11-01T19:34:51.137Z",
+  "scope": "Catálogos diocesanos; creación de boletas conserva su contrato",
+  "reviewedSourceSha256": {
+    "src/pages/parish/ConfirmationNewPage.jsx": {
+      "before": "db4bf3845b7e8f52a9d822a08627a1b60800e0226c805fe88b40afa4894fdfa9",
+      "after": "a414f2dc0a115930dd31d8430e497a7ae1a1a23045c2a97a9a742c5b588cef93"
+    }
+  },
+  "browser_passed": 21,
+  "shared_catalog_service_tests": 7,
+  "isolated_postgres_checks": 54,
+  "isolated_legacy_materializations": 8,
+  "live_database_applied": false
+}

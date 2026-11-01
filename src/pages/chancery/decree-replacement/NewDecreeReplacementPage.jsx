@@ -1,3 +1,4 @@
+import { readSharedAuxiliaryCatalog } from '@/services/sharedAuxiliaryCatalogService';
 import { issueDecreeFromFullFormV287 } from '@/services/issueDecreeFromFullFormV287';
 import React, { useState, useEffect, useRef } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
@@ -47,38 +48,38 @@ const NewDecreeReplacementPage = () => {
     const { user } = useAuth();
     const navigate = useNavigate();
     const { toast } = useToast();
-    
+
     // 🚀 CEREBRO GLOBAL
     const { getMisDatosList } = useAppData();
-    
+
     const [activeTab, setActiveTab] = useState("bautismo");
     const [isSubmitting, setIsSubmitting] = useState(false);
-    
+
     // --- ESTADOS EXCLUSIVOS CANCILLERÍA (100% NUBE) ---
     const [parishesList, setParishesList] = useState([]);
     const [conceptos, setConceptos] = useState([]);
     const [chanceryNotesConfig, setChanceryNotesConfig] = useState(null);
     const [cloudParams, setCloudParams] = useState({});
-    
+
     // --- ESTADOS PARA LAS LISTAS DEPENDIENTES DE LA PARROQUIA ---
     const [ciudades, setCiudades] = useState([]);
-    
+
     // Contadores en vivo desde Supabase
     const [nextParams, setNextParams] = useState({ libro: '', folio: '', numero: '' });
 
 
     // --- ESTADOS DE FORMULARIO ---
-    const [bautismoDecree, setBautismoDecree] = useState({ 
-        parroquia: '', targetParishId: '', numeroDecreto: '', 
-        fechaDecreto: localDateISO(), conceptoAnulacionId: '' 
+    const [bautismoDecree, setBautismoDecree] = useState({
+        parroquia: '', targetParishId: '', numeroDecreto: '',
+        fechaDecreto: localDateISO(), conceptoAnulacionId: ''
     });
-    
+
     const [bautismoNewPartida, setBautismoNewPartida] = useState({
-        sacramentDate: '', firstName: '', lastName: '', birthDate: '', 
-        lugarNacimientoDetalle: '', lugarBautismo: '', fatherName: '', ceduPadre: '', 
-        motherName: '', ceduMadre: '', tipoUnionPadres: '', sex: '', 
-        paternalGrandparents: '', maternalGrandparents: '', godparents: '', 
-        minister: '', ministerFaith: '', serialRegCivil: '', nuipNuit: '', 
+        sacramentDate: '', firstName: '', lastName: '', birthDate: '',
+        lugarNacimientoDetalle: '', lugarBautismo: '', fatherName: '', ceduPadre: '',
+        motherName: '', ceduMadre: '', tipoUnionPadres: '', sex: '',
+        paternalGrandparents: '', maternalGrandparents: '', godparents: '',
+        minister: '', ministerFaith: '', serialRegCivil: '', nuipNuit: '',
         oficinaRegistro: '', fechaExpedicion: ''
     });
     const [parishQuery, setParishQuery] = useState('');
@@ -104,7 +105,7 @@ const NewDecreeReplacementPage = () => {
                 const entityId = user.chanceryId || user.id;
                 const misDatosList = getMisDatosList(entityId);
                 let entityLabel = '';
-                
+
                 if (misDatosList && misDatosList.length > 0) {
                     const dato = misDatosList[0];
                     const nombre = (dato.nombre || dato.nombreCancilleria || user.dioceseName || 'CANCILLERÍA').toUpperCase();
@@ -180,8 +181,8 @@ const NewDecreeReplacementPage = () => {
                     : '';
                 setBautismoNewPartida(prev => ({ ...prev, ministerFaith: activePriestName, minister: '' }));
 
-                // C. Traer Ciudades Registradas de esa Parroquia
-                const { data: citiesData } = await supabase.from('ciudades').select('nombre').eq('context_id', pid);
+                // C. Catálogo de ciudades común de la diócesis destino.
+                const citiesData = await readSharedAuxiliaryCatalog('ciudades', pid);
                 if (citiesData) {
                     setCiudades(citiesData.map(c => (c.nombre || '').toUpperCase()));
                 } else {

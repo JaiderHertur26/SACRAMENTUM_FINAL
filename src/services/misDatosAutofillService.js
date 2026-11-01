@@ -1,3 +1,4 @@
+import { readSharedAuxiliaryCatalog } from '@/services/sharedAuxiliaryCatalogService';
 import { supabase } from '@/lib/supabaseClient';
 
 const clean = (value) => String(value ?? '').trim();
@@ -32,7 +33,7 @@ export async function loadMisDatosAutofillContext(parishId) {
   if (!parish) return { defaults: {}, churches: [] };
 
   const [churchesResult, dioceseResult, vicaryResult, decanateResult, priestResult, chanceryResult] = await Promise.all([
-    supabase.from('iglesias').select('*').eq('parish_id', parishId).order('nombre'),
+    readSharedAuxiliaryCatalog('iglesias', parishId).then(data => ({ data, error: null })),
     parish.diocese_id
       ? supabase.from('dioceses').select('*').eq('id', parish.diocese_id).maybeSingle()
       : Promise.resolve({ data: null, error: null }),

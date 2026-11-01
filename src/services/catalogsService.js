@@ -1,3 +1,4 @@
+import { writeSharedAuxiliaryCatalog, deleteSharedAuxiliaryCatalog, importSharedAuxiliaryCatalog } from '@/services/sharedAuxiliaryCatalogService';
 import { supabase } from '@/lib/supabaseClient';
 import { generateUUID } from '@/utils/supabaseHelpers';
 
@@ -133,7 +134,7 @@ export const addParroco = async (item, parishId) => {
     try {
         if (!parishId) throw new Error('Parroquia requerida para registrar un párroco.');
         const newItem = { ...item, id: generateUUID(), createdAt: new Date().toISOString() };
-        
+
         const dbRecord = {
             id: newItem.id,
             parish_id: parishId,
@@ -158,7 +159,7 @@ export const addParroco = async (item, parishId) => {
             return { success: true, requiresAttention: true, data: newItem,
                 message: 'Párroco guardado; falló la actualización del estado actual. Revise la sincronización antes de emitir documentos.' };
         }
-        return { success: true, data: newItem }; 
+        return { success: true, data: newItem };
     } catch (e) {
         return { success: false, message: "Error al guardar: " + e.message };
     }
@@ -171,7 +172,7 @@ export const updateParroco = async (id, item, parishId) => {
         const original = current.find(p => p.id === id);
         if (!original) throw new Error('Párroco no encontrado en el catálogo de esta parroquia. Recargue la lista.');
         const updatedItem = { ...original, ...item, id, updatedAt: new Date().toISOString() };
-        
+
         const dbRecord = {
             nombre: updatedItem.nombre || null,
             apellido: updatedItem.apellido || null,
@@ -195,7 +196,7 @@ export const updateParroco = async (id, item, parishId) => {
             return { success: true, requiresAttention: true,
                 message: 'El cambio fue guardado, pero falló la sincronización del párroco actual. Revise antes de emitir documentos.' };
         }
-        return { success: true }; 
+        return { success: true };
     } catch (e) {
         return { success: false, message: "Error al actualizar: " + e.message };
     }
@@ -230,10 +231,10 @@ export const importParrocos = async (payload, parishId, append = false) => {
             id: generateUUID(),
             createdAt: new Date().toISOString()
         }));
-        
-        const dbRecords = newItems.map(item => ({ 
-            id: item.id, 
-            parish_id: parishId, 
+
+        const dbRecords = newItems.map(item => ({
+            id: item.id,
+            parish_id: parishId,
             nombre: item.nombre || null,
             apellido: item.apellido || null,
             email: item.email || null,
@@ -241,9 +242,9 @@ export const importParrocos = async (payload, parishId, append = false) => {
             fecha_ingreso: cleanDate(item.fechaIngreso || item.fechaNombramiento),
             fecha_salida: cleanDate(item.fechaSalida),
             estado: item.estado || '2',
-            payload: item 
+            payload: item
         }));
-        
+
         if (dbRecords.length > 0) {
             const chunkSize = 200;
             for (let i = 0; i < dbRecords.length; i += chunkSize) {
@@ -276,9 +277,9 @@ export const addIglesia = async (item, parishId) => {
     try {
         const list = getIglesiasList(parishId);
         if (list.some(i => i.codigo === item.codigo)) return { success: false, message: "Código duplicado" };
-        
+
         const newItem = { ...item, id: generateUUID(), createdAt: new Date().toISOString() };
-        
+
         const dbRecord = {
             id: newItem.id,
             parish_id: parishId,
@@ -295,7 +296,7 @@ export const addIglesia = async (item, parishId) => {
             created_at: newItem.createdAt
         };
 
-        const { error } = await supabase.from('iglesias').insert([dbRecord]);
+        const { error } = await writeSharedAuxiliaryCatalog('iglesias', parishId, dbRecord);
         if (error) throw error;
 
         localStorage.setItem(`iglesias_${parishId}`, JSON.stringify([...list, newItem]));
@@ -309,22 +310,22 @@ export const updateIglesia = async (id, updates, parishId) => {
     try {
         const list = getIglesiasList(parishId);
         const updatedItem = { ...list.find(i => i.id === id), ...updates, updatedAt: new Date().toISOString() };
-        
+
         const dbRecord = {
             codigo: updatedItem.codigo || null,
             nombre: updatedItem.nombre || null,
-            nit: updatedItem.nronit || updatedItem.nit || null,
+            nit: updates.nit ?? updates.nronit ?? updatedItem.nit ?? updatedItem.nronit ?? null,
             direccion: updatedItem.direccion || null,
             ciudad: updatedItem.ciudad || null,
             telefono: updatedItem.telefono || null,
-            fax: updatedItem.nrofax || updatedItem.fax || null,
+            fax: updates.fax ?? updates.nrofax ?? updatedItem.fax ?? updatedItem.nrofax ?? null,
             email: updatedItem.email || null,
             parroco: updatedItem.parroco || null,
             diocesis: updatedItem.diocesis || null,
             updated_at: updatedItem.updatedAt
         };
 
-        const { error } = await supabase.from('iglesias').update(dbRecord).eq('id', id);
+        const { error } = await writeSharedAuxiliaryCatalog('iglesias', parishId, dbRecord, id);
         if (error) throw error;
 
         const updatedList = list.map(i => i.id === id ? updatedItem : i);
@@ -337,7 +338,7 @@ export const updateIglesia = async (id, updates, parishId) => {
 
 export const deleteIglesia = async (id, parishId) => {
     try {
-        const { error } = await supabase.from('iglesias').delete().eq('id', id);
+        const { error } = await deleteSharedAuxiliaryCatalog('iglesias', parishId, id);
         if (error) throw error;
         const list = getIglesiasList(parishId);
         const filtered = list.filter(i => i.id !== id);
@@ -353,7 +354,7 @@ export const importIglesias = async (jsonData, parishId, append = false) => {
     try {
         const key = `iglesias_${parishId}`;
         const currentData = append ? safeJsonParse(localStorage.getItem(key), []) : [];
-        
+
         const newItems = (jsonData.data || []).map(item => ({
             id: generateUUID(),
             parish_id: parishId,
@@ -370,17 +371,9 @@ export const importIglesias = async (jsonData, parishId, append = false) => {
             created_at: new Date().toISOString()
         }));
 
-        if (newItems.length > 0) {
-            const chunkSize = 200;
-            for (let i = 0; i < newItems.length; i += chunkSize) {
-                const chunk = newItems.slice(i, i + chunkSize);
-                const { error } = await supabase.from('iglesias').insert(chunk);
-                if (error) throw error;
-            }
-        }
-
-        localStorage.setItem(key, JSON.stringify([...currentData, ...newItems]));
-        return { success: true, count: newItems.length };
+        const imported = await importSharedAuxiliaryCatalog('iglesias', parishId, newItems);
+        if (imported.error) throw imported.error;
+        return { success: true, count: imported.imported, skipped: imported.skipped };
     } catch (e) {
         return { success: false, message: e.message };
     }
@@ -396,7 +389,7 @@ export const addObispo = async (item, parishId) => {
     try {
         const current = getObispos(parishId);
         const newItem = { ...item, id: generateUUID(), createdAt: new Date().toISOString() };
-        
+
         const dbRecord = {
             id: newItem.id,
             parish_id: parishId,
@@ -408,7 +401,7 @@ export const addObispo = async (item, parishId) => {
             created_at: newItem.createdAt
         };
 
-        const { error } = await supabase.from('obispos').insert([dbRecord]);
+        const { error } = await writeSharedAuxiliaryCatalog('obispos', parishId, dbRecord);
         if (error) throw error;
 
         saveAuxData('obispos', parishId, [...current, newItem]);
@@ -422,7 +415,7 @@ export const updateObispo = async (id, updates, parishId) => {
     try {
         const current = getObispos(parishId);
         const updatedItem = { ...current.find(i => i.id === id), ...updates, updatedAt: new Date().toISOString() };
-        
+
         const dbRecord = {
             nombre: updatedItem.nombre || null,
             apellido: updatedItem.apellido || null,
@@ -432,7 +425,7 @@ export const updateObispo = async (id, updates, parishId) => {
             updated_at: updatedItem.updatedAt
         };
 
-        const { error } = await supabase.from('obispos').update(dbRecord).eq('id', id);
+        const { error } = await writeSharedAuxiliaryCatalog('obispos', parishId, dbRecord, id);
         if (error) throw error;
 
         const updatedList = current.map(i => i.id === id ? updatedItem : i);
@@ -445,7 +438,7 @@ export const updateObispo = async (id, updates, parishId) => {
 
 export const deleteObispo = async (id, parishId) => {
     try {
-        const { error } = await supabase.from('obispos').delete().eq('id', id);
+        const { error } = await deleteSharedAuxiliaryCatalog('obispos', parishId, id);
         if (error) throw error;
         const current = getObispos(parishId);
         const filtered = current.filter(i => i.id !== id);
@@ -460,7 +453,7 @@ export const importObispos = async (jsonData, parishId, append = false) => {
     if (!parishId) return { success: false, message: "Falta ID de parroquia." };
     try {
         const currentData = append ? getAuxData('obispos', parishId) : [];
-        
+
         const newItems = (jsonData.data || []).map(item => ({
             id: generateUUID(),
             parish_id: parishId,
@@ -472,13 +465,9 @@ export const importObispos = async (jsonData, parishId, append = false) => {
             created_at: new Date().toISOString()
         }));
 
-        if (newItems.length > 0) {
-            const { error } = await supabase.from('obispos').insert(newItems);
-            if (error) throw error;
-        }
-
-        saveAuxData('obispos', parishId, [...currentData, ...newItems]);
-        return { success: true, count: newItems.length };
+        const imported = await importSharedAuxiliaryCatalog('obispos', parishId, newItems);
+        if (imported.error) throw imported.error;
+        return { success: true, count: imported.imported, skipped: imported.skipped };
     } catch (e) {
         return { success: false, message: e.message };
     }
@@ -494,7 +483,7 @@ export const addCiudad = async (item, contextId) => {
     if (!contextId) return { success: false, message: "Falta ID de contexto" };
     try {
         const newItem = { ...item, id: generateUUID(), createdAt: new Date().toISOString() };
-        
+
         const dbRecord = {
             id: newItem.id,
             context_id: contextId,
@@ -506,7 +495,7 @@ export const addCiudad = async (item, contextId) => {
             created_at: newItem.createdAt
         };
 
-        const { error } = await supabase.from('ciudades').insert([dbRecord]);
+        const { error } = await writeSharedAuxiliaryCatalog('ciudades', contextId, dbRecord);
         if (error) throw error;
 
         const list = getCiudadesList(contextId);
@@ -522,7 +511,7 @@ export const updateCiudad = async (id, updates, contextId) => {
     try {
         const list = getCiudadesList(contextId);
         const updatedItem = { ...list.find(i => i.id === id), ...updates, updatedAt: new Date().toISOString() };
-        
+
         const dbRecord = {
             nombre: updatedItem.nombre || null,
             source: updatedItem.source || 'MANUAL',
@@ -532,7 +521,7 @@ export const updateCiudad = async (id, updates, contextId) => {
             updated_at: updatedItem.updatedAt
         };
 
-        const { error } = await supabase.from('ciudades').update(dbRecord).eq('id', id);
+        const { error } = await writeSharedAuxiliaryCatalog('ciudades', contextId, dbRecord, id);
         if (error) throw error;
 
         const updatedList = list.map(i => i.id === id ? updatedItem : i);
@@ -546,7 +535,7 @@ export const updateCiudad = async (id, updates, contextId) => {
 export const deleteCiudad = async (id, contextId) => {
     if (!contextId) return { success: false, message: "Falta ID de contexto" };
     try {
-        const { error } = await supabase.from('ciudades').delete().eq('id', id);
+        const { error } = await deleteSharedAuxiliaryCatalog('ciudades', contextId, id);
         if (error) throw error;
         const list = getCiudadesList(contextId);
         localStorage.setItem(`ciudades_${contextId}`, JSON.stringify(list.filter(i => i.id !== id)));
@@ -562,11 +551,11 @@ export const importCiudades = async (jsonData, contextId, append = false) => {
         const key = `ciudades_${contextId}`;
         const currentData = append ? safeJsonParse(localStorage.getItem(key), []) : [];
         const newItems = (jsonData.data || []).map(item => ({
-            id: generateUUID(), 
+            id: generateUUID(),
             nombre: (item.data || item.nombre || '').trim(),
-            source: item.source || 'import', 
-            count: item.count || 0, 
-            weight: item.weight || 0, 
+            source: item.source || 'import',
+            count: item.count || 0,
+            weight: item.weight || 0,
             createdAt: new Date().toISOString()
         })).filter(item => item.nombre);
 
@@ -581,17 +570,9 @@ export const importCiudades = async (jsonData, contextId, append = false) => {
             created_at: item.createdAt
         }));
 
-        if (dbRecords.length > 0) {
-            const chunkSize = 200;
-            for (let i = 0; i < dbRecords.length; i += chunkSize) {
-                const chunk = dbRecords.slice(i, i + chunkSize);
-                const { error } = await supabase.from('ciudades').insert(chunk);
-                if (error) throw error;
-            }
-        }
-
-        localStorage.setItem(key, JSON.stringify([...currentData, ...newItems]));
-        return { success: true, count: newItems.length };
+        const imported = await importSharedAuxiliaryCatalog('ciudades', contextId, dbRecords);
+        if (imported.error) throw imported.error;
+        return { success: true, count: imported.imported, skipped: imported.skipped };
     } catch (e) {
         return { success: false, message: e.message };
     }
@@ -607,7 +588,7 @@ export const addDiocesis = async (item, parishId) => {
     try {
         const current = getDiocesis(parishId);
         const newItem = { ...item, id: generateUUID(), createdAt: new Date().toISOString() };
-        
+
         const dbRecord = {
             id: newItem.id,
             parish_id: parishId,
@@ -618,7 +599,7 @@ export const addDiocesis = async (item, parishId) => {
             created_at: newItem.createdAt
         };
 
-        const { error } = await supabase.from('diocesis').insert([dbRecord]);
+        const { error } = await writeSharedAuxiliaryCatalog('diocesis', parishId, dbRecord);
         if (error) throw error;
 
         saveAuxData('diocesis', parishId, [...current, newItem]);
@@ -632,7 +613,7 @@ export const updateDiocesis = async (id, updates, parishId) => {
     try {
         const current = getDiocesis(parishId);
         const updatedItem = { ...current.find(i => i.id === id), ...updates, updatedAt: new Date().toISOString() };
-        
+
         const dbRecord = {
             nombre: updatedItem.nombre || null,
             codigo: updatedItem.codigo || null,
@@ -641,7 +622,7 @@ export const updateDiocesis = async (id, updates, parishId) => {
             updated_at: updatedItem.updatedAt
         };
 
-        const { error } = await supabase.from('diocesis').update(dbRecord).eq('id', id);
+        const { error } = await writeSharedAuxiliaryCatalog('diocesis', parishId, dbRecord, id);
         if (error) throw error;
 
         const updatedList = current.map(i => i.id === id ? updatedItem : i);
@@ -654,7 +635,7 @@ export const updateDiocesis = async (id, updates, parishId) => {
 
 export const deleteDiocesis = async (id, parishId) => {
     try {
-        const { error } = await supabase.from('diocesis').delete().eq('id', id);
+        const { error } = await deleteSharedAuxiliaryCatalog('diocesis', parishId, id);
         if (error) throw error;
         const current = getDiocesis(parishId);
         const filtered = current.filter(i => i.id !== id);
@@ -669,7 +650,7 @@ export const importDiocesis = async (jsonData, parishId, append = false) => {
     if (!parishId) return { success: false, message: "Falta ID de parroquia." };
     try {
         const currentData = append ? getAuxData('diocesis', parishId) : [];
-        
+
         const newItems = (jsonData.data || []).map(item => ({
             id: generateUUID(),
             parish_id: parishId,
@@ -680,13 +661,9 @@ export const importDiocesis = async (jsonData, parishId, append = false) => {
             created_at: new Date().toISOString()
         }));
 
-        if (newItems.length > 0) {
-            const { error } = await supabase.from('diocesis').insert(newItems);
-            if (error) throw error;
-        }
-
-        saveAuxData('diocesis', parishId, [...currentData, ...newItems]);
-        return { success: true, count: newItems.length };
+        const imported = await importSharedAuxiliaryCatalog('diocesis', parishId, newItems);
+        if (imported.error) throw imported.error;
+        return { success: true, count: imported.imported, skipped: imported.skipped };
     } catch (e) {
         return { success: false, message: e.message };
     }
@@ -711,7 +688,7 @@ export const addMisDatosRecord = async (item, contextId) => {
     try {
         if (!contextId) throw new Error("Falta ID de entidad.");
         const cleanPayload = Array.isArray(item) ? item[0] : item;
-        
+
         const dbRecord = {
             entity_id: contextId,
             nombre: cleanPayload.nombre || null,
@@ -728,12 +705,12 @@ export const addMisDatosRecord = async (item, contextId) => {
 
         const { data: saved, error } = await supabase.from('mis_datos').insert([dbRecord]).select().single();
         if (error) throw error;
-        
+
         const local = safeJsonParse(localStorage.getItem('mis_datos'), []);
         localStorage.setItem('mis_datos', JSON.stringify([...local, saved]));
         return { success: true, message: "Guardado exitosamente" };
-    } catch (error) { 
-        return { success: false, message: error.message }; 
+    } catch (error) {
+        return { success: false, message: error.message };
     }
 };
 
@@ -766,8 +743,8 @@ export const updateMisDatosRecord = async (id, updates, contextId) => {
 
         localStorage.setItem('mis_datos', JSON.stringify(local.map(md => md.id === id ? { ...md, payload: updatedPayload } : md)));
         return { success: true, message: "Actualizado exitosamente" };
-    } catch (error) { 
-        return { success: false, message: error.message }; 
+    } catch (error) {
+        return { success: false, message: error.message };
     }
 };
 
@@ -792,7 +769,7 @@ export const importMisDatos = async (recordsArray, contextId) => {
     if (!contextId) return { success: false, message: "Falta ID de entidad." };
     try {
         const local = safeJsonParse(localStorage.getItem('mis_datos'), []);
-        
+
         const newItemsWithIds = recordsArray.map(item => {
             const cleanPayload = Array.isArray(item) ? item[0] : item;
             return {
@@ -828,14 +805,13 @@ export const importMisDatos = async (recordsArray, contextId) => {
 
         localStorage.setItem('mis_datos', JSON.stringify([...local, ...newItemsWithIds]));
         window.dispatchEvent(new Event('storage'));
-        
-        return { 
-            success: true, 
-            count: newItemsWithIds.length, 
-            message: `${newItemsWithIds.length} registros inyectados a la Nube.` 
+
+        return {
+            success: true,
+            count: newItemsWithIds.length,
+            message: `${newItemsWithIds.length} registros inyectados a la Nube.`
         };
     } catch (e) {
         return { success: false, message: e.message };
     }
 };
-

@@ -1,0 +1,40 @@
+{
+  "scope": "Huella del contenido anterior; excluye únicamente diocese_id en los cinco catálogos comunes",
+  "rows": [
+    {
+      "table_name": "diocesis",
+      "rows": 103,
+      "content_hash": "57226f8c026df0ebe7e3ed669a8cef5b"
+    },
+    {
+      "table_name": "iglesias",
+      "rows": 1138,
+      "content_hash": "db4be02281a7dceafed0c3af087da244"
+    },
+    {
+      "table_name": "obispos",
+      "rows": 0,
+      "content_hash": null
+    },
+    {
+      "table_name": "bishop_tenures",
+      "rows": 0,
+      "content_hash": null
+    },
+    {
+      "table_name": "ciudades",
+      "rows": 1500,
+      "content_hash": "37c13436029eb8bd75748950030195a6"
+    },
+    {
+      "table_name": "parrocos",
+      "rows": 8,
+      "content_hash": "b6df202bc9bd76140a9a042528e89724"
+    },
+    {
+      "table_name": "mis_datos",
+      "rows": 2,
+      "content_hash": "efd8c3490ba5e746c0a554a386a710ec"
+    }
+  ]
+}

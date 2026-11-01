@@ -1,3 +1,5 @@
+import { readSharedAuxiliaryCatalog, writeSharedAuxiliaryCatalog, deleteSharedAuxiliaryCatalog } from '@/services/sharedAuxiliaryCatalogService';
+import useAuxiliaryCatalogRefresh from '@/hooks/useAuxiliaryCatalogRefresh';
 import React, { useEffect, useMemo, useState } from 'react';
 import { CalendarRange, Loader2, Pencil, Plus, Trash2 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
@@ -40,23 +42,15 @@ const BishopTenuresList = () => {
     if(!parishId) return;
     setLoading(true);
     try {
-      const [tenuresRes,bishopsRes] = await Promise.all([
-        supabase
-          .from('bishop_tenures')
-          .select('*')
-          .eq('parish_id',parishId)
-          .order('start_date',{ascending:false}),
-        supabase
-          .from('obispos')
-          .select('*')
-          .eq('parish_id',parishId)
-          .order('nombre')
+      const [tenures, bishops] = await Promise.all([
+        readSharedAuxiliaryCatalog('bishop_tenures', parishId),
+        readSharedAuxiliaryCatalog('obispos', parishId)
       ]);
-      if(tenuresRes.error) throw tenuresRes.error;
-      if(bishopsRes.error) throw bishopsRes.error;
-      setItems(tenuresRes.data || []);
-      setBishops(bishopsRes.data || []);
+      setItems(tenures.sort((a,b)=>b.start_date.localeCompare(a.start_date)));
+      setBishops(bishops);
     } catch(error) {
+      setItems([]);
+      setBishops([]);
       toast({
         title:'No se pudo cargar',
         description:error.message,
@@ -68,6 +62,7 @@ const BishopTenuresList = () => {
   };
 
   useEffect(()=>{ load(); },[parishId]);
+  useAuxiliaryCatalogRefresh(load, parishId);
 
   const openNew=()=>{
     setEditing(null);
@@ -126,9 +121,7 @@ const BishopTenuresList = () => {
       notes:form.notes || null
     };
 
-    const result=editing
-      ? await supabase.from('bishop_tenures').update(payload).eq('id',editing.id).eq('parish_id',parishId)
-      : await supabase.from('bishop_tenures').insert(payload);
+    const result = await writeSharedAuxiliaryCatalog('bishop_tenures', parishId, payload, editing?.id || null);
 
     if(result.error) {
       toast({
@@ -156,11 +149,7 @@ const BishopTenuresList = () => {
       tone:'destructive'
     });
     if(!ok) return;
-    const { error }=await supabase
-      .from('bishop_tenures')
-      .delete()
-      .eq('id',item.id)
-      .eq('parish_id',parishId);
+    const { error } = await deleteSharedAuxiliaryCatalog('bishop_tenures', parishId, item.id);
     if(error) {
       toast({title:'No se pudo eliminar',description:error.message,variant:'destructive'});
       return;
@@ -177,7 +166,7 @@ const BishopTenuresList = () => {
             Historial de Obispos Titulares
           </h2>
           <p className="text-sm text-slate-500 mt-1">
-            Define quién era el Obispo titular en cada periodo. Es independiente del directorio general de Obispos.
+            Define quién era el Obispo titular en cada periodo para todas las parroquias de la diócesis.
           </p>
         </div>
         <Button onClick={openNew} className="bg-[#4B7BA7] text-white hover:bg-[#3A6286]">
