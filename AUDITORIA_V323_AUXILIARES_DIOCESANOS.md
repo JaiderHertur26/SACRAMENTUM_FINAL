@@ -16,9 +16,9 @@ Los materializadores de importación se ajustan al ámbito diocesano. Una segund
 - PostgreSQL 18.6 en WASM aislado: 54 controles aprobados con tres identidades ficticias y dos diócesis, ROLLBACK completo.
 - Ocho materializaciones SQL aisladas: cuatro catálogos cargados desde dos parroquias; cuatro filas únicas, procedencia preservada.
 - Navegador Chrome aislado: 21/21 escenarios de creación de boletas, cero excepciones y cero solicitudes externas. Es simulación de servicios, no sesiones institucionales reales.
-- Puerta general local: 29/30 controles. Pasan las pruebas sintéticas, verificadores históricos, compilación, frontera de secretos, CSS y auditoría de dependencias de producción.
+- Puerta general local: 30/30 controles. Pasan las pruebas sintéticas, verificadores históricos, compilación, frontera de secretos, CSS y auditoría de dependencias de producción.
 
-El control pendiente de dependencias completas detecta 11 avisos moderados asociados a minimatch y herramientas ESLint ya existentes. package.json y package-lock.json no fueron modificados por V323. Se conserva el bloqueo; no se rebaja el umbral para publicar.
+La cadena de herramientas se actualizó a ESLint 9.39.5 y al motor oficial minimatch 11.0.1 con un adaptador de interfaz CommonJS/ESM. Cinco pruebas adicionales verifican el motor real, su integridad y la configuración de lint. Las auditorías estándar de dependencias completas y de producción arrojan cero vulnerabilidades. No se añadieron exclusiones ni se rebajó el umbral de seguridad.
 Referencia: https://github.com/advisories/GHSA-g3hv-75wg-m249
 
 ## Estado de activación
@@ -29,7 +29,7 @@ El SQL fue creado con Supabase CLI y se conserva en:
 `supabase/deployment/20261101190320_shared_diocesan_auxiliary_catalogs_v323.sql`.
 Se sigue el esquema de despliegues V314–V321; el inventario histórico de 166 migraciones y sus hashes permanece intacto. Esta entrega no certifica reproducción oficial de un esquema nuevo ni apertura de libros oficiales.
 
-Antes de activar: resolver el control de dependencias, aplicar el SQL confirmado, ejecutar `scripts/qa-rollback-diocesan-auxiliaries-v323.sql` en Supabase, comparar huellas de contenido y consultar Advisors. Después se podrá integrar y verificar la publicación.
+Antes de activar: aplicar el SQL confirmado, ejecutar `scripts/qa-rollback-diocesan-auxiliaries-v323.sql` en Supabase, comparar huellas de contenido y consultar Advisors. Después se podrá integrar y verificar la publicación.
 
 ## Evidencias
 - AUDITORIA_SQL_AUXILIARES_V323_AISLADA.json
@@ -37,5 +37,6 @@ Antes de activar: resolver el control de dependencias, aplicar el SQL confirmado
 - AUDITORIA_V323_REVISION_AUXILIARES.json
 - AUDITORIA_PUERTA_CALIDAD_V323.json
 - AUDITORIA_V323_HUELLAS_PREVIAS.json
+- AUDITORIA_V323_SEGURIDAD_DEPENDENCIAS.json
 
 Las pruebas nuevas de PostgreSQL nativo se añadieron a GitHub Actions mediante un servicio postgres:16 aislado. Su ejecución remota queda registrada por CI; los resultados WASM anteriores no se presentan como resultados de Supabase.
