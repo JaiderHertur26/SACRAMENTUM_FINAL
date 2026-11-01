@@ -2,6 +2,7 @@
 -- Nunca ejecutar este archivo contra una instancia existente.
 CREATE ROLE anon;
 CREATE ROLE authenticated;
+CREATE ROLE service_role;
 CREATE SCHEMA auth;
 CREATE TABLE auth.users(id uuid PRIMARY KEY,aud text,role text,is_anonymous boolean,email text);
 CREATE FUNCTION auth.uid() RETURNS uuid LANGUAGE sql STABLE AS $$
@@ -43,6 +44,11 @@ CREATE TABLE public.obispos(id uuid PRIMARY KEY DEFAULT gen_random_uuid(),parish
 CREATE TABLE public.bishop_tenures(id uuid PRIMARY KEY DEFAULT gen_random_uuid(),parish_id uuid NOT NULL REFERENCES public.parishes(id) ON DELETE CASCADE,
  bishop_id uuid REFERENCES public.obispos(id) ON DELETE SET NULL,bishop_name text NOT NULL,start_date date NOT NULL,end_date date,notes text,
  source_metadata jsonb NOT NULL DEFAULT '{}',created_at timestamptz DEFAULT now(),updated_at timestamptz DEFAULT now(),CHECK(end_date IS NULL OR end_date>=start_date));
+-- Reproduce la ACL vigente desde privileged_rpc_hardening_v25.
+CREATE FUNCTION public.sacramentum_bishop_at_date(p_parish_id uuid,p_date date DEFAULT CURRENT_DATE)
+RETURNS jsonb LANGUAGE sql AS $$ SELECT null::jsonb $$;
+REVOKE ALL ON FUNCTION public.sacramentum_bishop_at_date(uuid,date) FROM PUBLIC,anon,authenticated;
+GRANT EXECUTE ON FUNCTION public.sacramentum_bishop_at_date(uuid,date) TO service_role;
 CREATE FUNCTION public.sacramentum_validate_bishop_tenure() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN RETURN NEW; END $$;
 CREATE TRIGGER trg_validate_bishop_tenure BEFORE INSERT OR UPDATE ON public.bishop_tenures FOR EACH ROW EXECUTE FUNCTION public.sacramentum_validate_bishop_tenure();
 CREATE TABLE public.ciudades(id uuid PRIMARY KEY DEFAULT gen_random_uuid(),context_id uuid,nombre text NOT NULL,source text,count integer,weight integer,usuario text,

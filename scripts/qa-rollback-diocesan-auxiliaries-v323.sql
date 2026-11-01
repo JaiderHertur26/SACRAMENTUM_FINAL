@@ -48,7 +48,10 @@ BEGIN
     IF n<>1 THEN RAISE EXCEPTION 'B no pudo actualizar %',tables[i]; END IF;
     checks:=checks+2;
   END LOOP;
+  -- Resolver interno: V25 reserva EXECUTE al servidor; se prueba su validación de identidad.
+  EXECUTE 'RESET ROLE';
   resolved:=public.sacramentum_bishop_at_date(pb,'1300-06-01');
+  EXECUTE 'SET LOCAL ROLE authenticated';
   IF resolved->>'id' IS DISTINCT FROM ids[4]::text THEN RAISE EXCEPTION 'El motor episcopal no comparte por diócesis'; END IF;
   checks:=checks+1;
 
@@ -122,8 +125,10 @@ BEGIN
   IF NOT blocked THEN RAISE EXCEPTION 'Se permitió insertar en otra diócesis'; END IF;
   checks:=checks+1;
   blocked:=false;
+  EXECUTE 'RESET ROLE';
   BEGIN PERFORM public.sacramentum_bishop_at_date(pa,'1300-06-01');
     EXCEPTION WHEN insufficient_privilege THEN blocked:=true; END;
+  EXECUTE 'SET LOCAL ROLE authenticated';
   IF NOT blocked THEN RAISE EXCEPTION 'RPC episcopal reveló información de otra diócesis'; END IF;
   checks:=checks+1;
 
@@ -153,8 +158,10 @@ BEGIN
     checks:=checks+1;
   END LOOP;
   EXECUTE 'RESET ROLE';
-  IF has_function_privilege('anon','sacramentum_private.auxiliary_diocese_id_v323()','EXECUTE') THEN
-    RAISE EXCEPTION 'Helper privado accesible anónimamente';
+  IF has_function_privilege('anon','sacramentum_private.auxiliary_diocese_id_v323()','EXECUTE')
+    OR has_function_privilege('anon','public.sacramentum_bishop_at_date(uuid,date)','EXECUTE')
+    OR has_function_privilege('authenticated','public.sacramentum_bishop_at_date(uuid,date)','EXECUTE') THEN
+    RAISE EXCEPTION 'Permisos de funciones internas ampliados indebidamente';
   END IF;
   checks:=checks+1;
   PERFORM set_config('qa323.result',jsonb_build_object('checks',checks,'shared_catalogs',5,

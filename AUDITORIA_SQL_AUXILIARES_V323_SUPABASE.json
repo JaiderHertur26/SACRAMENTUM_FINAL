@@ -1,0 +1,80 @@
+{
+  "protocol": "V323",
+  "environment": "Supabase enlazado · REGISTRO SACRAMENTOS",
+  "project_id": "foczofcmwampjvlfbsqn",
+  "testedAt": "2026-11-01T20:24:45.164Z",
+  "migration": {
+    "name": "shared_diocesan_auxiliary_catalogs_v323",
+    "path": "supabase/deployment/20261101190320_shared_diocesan_auxiliary_catalogs_v323.sql",
+    "applied": true
+  },
+  "checks": 54,
+  "complete": true,
+  "dioceses": 2,
+  "parishes": 3,
+  "rollback": true,
+  "shared_catalogs": 5,
+  "private_sections_preserved": 2,
+  "content_hashes_unchanged": true,
+  "tables": [
+    {
+      "table_name": "diocesis",
+      "rows": 103,
+      "scoped_rows": 103,
+      "content_hash": "57226f8c026df0ebe7e3ed669a8cef5b"
+    },
+    {
+      "table_name": "iglesias",
+      "rows": 1138,
+      "scoped_rows": 1138,
+      "content_hash": "db4be02281a7dceafed0c3af087da244"
+    },
+    {
+      "table_name": "obispos",
+      "rows": 0,
+      "scoped_rows": 0,
+      "content_hash": null
+    },
+    {
+      "table_name": "bishop_tenures",
+      "rows": 0,
+      "scoped_rows": 0,
+      "content_hash": null
+    },
+    {
+      "table_name": "ciudades",
+      "rows": 1500,
+      "scoped_rows": 1500,
+      "content_hash": "37c13436029eb8bd75748950030195a6"
+    },
+    {
+      "table_name": "parrocos",
+      "rows": 8,
+      "scoped_rows": null,
+      "content_hash": "b6df202bc9bd76140a9a042528e89724"
+    },
+    {
+      "table_name": "mis_datos",
+      "rows": 2,
+      "scoped_rows": null,
+      "content_hash": "efd8c3490ba5e746c0a554a386a710ec"
+    }
+  ],
+  "temporary_data": {
+    "temporary_dioceses_remaining": 0,
+    "temporary_parishes_remaining": 0
+  },
+  "internal_bishop_resolver_acl": "Se conserva la restricción V25: sin EXECUTE para anon/authenticated. El ensayo de su validación jurisdiccional se ejecuta como servidor con identidad JWT ficticia.",
+  "security_advisors": {
+    "error": 0,
+    "authenticated_security_definer_function_executable": 172,
+    "auth_leaked_password_protection": 1,
+    "rls_enabled_no_policy": 17,
+    "baseline_unchanged": true
+  },
+  "performance_advisors": {
+    "error": 0,
+    "warnings": 0,
+    "unused_index_info": 84
+  }
+}

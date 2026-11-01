@@ -22,16 +22,20 @@ La cadena de herramientas se actualizó a ESLint 9.39.5 y al motor oficial minim
 Referencia: https://github.com/advisories/GHSA-g3hv-75wg-m249
 
 ## Estado de activación
-**PREPARADO; NO APLICADO A SUPABASE NI INTEGRADO EN MAIN.**
-Las solicitudes execute_sql/apply_migration requirieron confirmación del conector y retornaron `expired`. Se verificó posteriormente que las cinco columnas nuevas todavía no existen en la instancia. No se intentó sortear esa confirmación por otra vía.
+**APLICADO Y VERIFICADO EN SUPABASE.** La migración se confirmó mediante el conector y quedó aplicada. Los 54 controles se repitieron en la base enlazada: dos parroquias comparten los cinco catálogos, otra diócesis queda aislada y Párrocos/Mis Datos conservan su privacidad. El ensayo terminó con ROLLBACK y no dejó diócesis ni parroquias temporales.
+
+Se compararon cantidades y huellas completas del contenido anterior en las siete tablas: sin cambios en registros existentes. Quedaron asociados a su diócesis los 103 registros de Diócesis, 1.138 Iglesias y 1.500 Ciudades. Los avisos de seguridad de Advisors coinciden con la línea base; no hay errores nuevos ni advertencias de rendimiento. Los índices nuevos aparecen como información de uso pendiente.
+
+El ensayo reproduce la restricción de la migración V25 del resolver episcopal interno: no se amplían sus permisos a usuarios anónimos o autenticados. La comprobación de su autorización jurisdiccional se realiza como servidor con la identidad de ensayo; el CRUD compartido se prueba con el rol authenticated.
 
 El SQL fue creado con Supabase CLI y se conserva en:
 `supabase/deployment/20261101190320_shared_diocesan_auxiliary_catalogs_v323.sql`.
-Se sigue el esquema de despliegues V314–V321; el inventario histórico de 166 migraciones y sus hashes permanece intacto. Esta entrega no certifica reproducción oficial de un esquema nuevo ni apertura de libros oficiales.
+Se sigue el esquema de despliegues V314–V321; el inventario histórico de 166 migraciones y sus hashes permanece intacto. Esta entrega no certifica apertura de libros oficiales.
 
-Antes de activar: aplicar el SQL confirmado, ejecutar `scripts/qa-rollback-diocesan-auxiliaries-v323.sql` en Supabase, comparar huellas de contenido y consultar Advisors. Después se podrá integrar y verificar la publicación.
+Integración y despliegue: [PR #142](https://github.com/JaiderHertur26/SACRAMENTUM_FINAL/pull/142). La integración exige que los controles automáticos de la revisión estén aprobados.
 
 ## Evidencias
+- AUDITORIA_SQL_AUXILIARES_V323_SUPABASE.json
 - AUDITORIA_SQL_AUXILIARES_V323_AISLADA.json
 - AUDITORIA_CREACION_BOLETAS_NAVEGADOR_V323.json
 - AUDITORIA_V323_REVISION_AUXILIARES.json

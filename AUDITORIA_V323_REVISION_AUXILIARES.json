@@ -1,6 +1,6 @@
 {
   "protocol": "V323",
-  "testedAt": "2026-11-01T19:34:51.137Z",
+  "testedAt": "2026-11-01T20:24:45.164Z",
   "scope": "Catálogos diocesanos; creación de boletas conserva su contrato",
   "reviewedSourceSha256": {
     "src/pages/parish/ConfirmationNewPage.jsx": {
@@ -12,5 +12,8 @@
   "shared_catalog_service_tests": 7,
   "isolated_postgres_checks": 54,
   "isolated_legacy_materializations": 8,
-  "live_database_applied": false
+  "live_database_applied": true,
+  "live_database_checks": 54,
+  "live_database_contents_preserved": true,
+  "live_database_evidence": "AUDITORIA_SQL_AUXILIARES_V323_SUPABASE.json"
 }
