@@ -40,18 +40,15 @@ test('V249 modernized presentation never applies a global print or admin backgro
  assert.doesNotMatch(style,/admin_general/);
  assert.match(read('src/index.css'),/@media print/);
 });
-test('V249 pastoral words and canonical styling in three actual role dashboards',()=>{
- const p=read('src/pages/parish/ParishDashboard.jsx');
- const d=read('src/pages/diocese/DioceseUserDashboard.jsx');
- const c=read('src/pages/chancery/ChanceryDashboard.jsx');
- assert.match(p,/ecclesial-parish-hero/);
- assert.match(p,/Vida parroquial y sacramentos/);
- assert.match(d,/ecclesial-scope-hero/);
- assert.match(d,/Vida y organización diocesana/);
- assert.match(c,/ecclesial-scope-hero/);
- assert.match(c,/Curia diocesana/);
- assert.doesNotMatch(c,/Mando Superior Diocesano/);
- assert.doesNotMatch(p,/Consola de Administración/);
+test('V249 pastoral identity continues in the shared V324 command centers',()=>{
+ const config=read('src/config/commandCenters.js');
+ for(const file of ['src/pages/parish/ParishDashboard.jsx','src/pages/diocese/DioceseUserDashboard.jsx','src/pages/chancery/ChanceryDashboard.jsx']){
+  assert.match(read(file),/EcclesialCommandCenter/);
+  assert.match(read(file),/commandCenter/);
+ }
+ for(const words of ['Vida parroquial y sacramentos','Vida y organización diocesana','Curia diocesana'])
+  assert.ok(config.includes(words),words);
+ assert.doesNotMatch(config,/Mando Superior Diocesano|Consola de Administración/);
 });
 test('V249 inventory includes ALL real protected routes by role while excluding admin from recoloring',()=>{
  assert.equal(routes.protocol,'V249');

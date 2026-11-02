@@ -163,7 +163,7 @@ const SidebarItem = ({ item, isActive, isChild = false, badgeCount, ecclesial = 
 // =========================================================================
 // 🏛️ COMPONENTE PRINCIPAL: SIDEBAR
 // =========================================================================
-const Sidebar = ({ isOpen, onClose, onLogout, role, menuItems: externalMenuItems }) => {
+const Sidebar = ({ isOpen, onClose, onLogout, role, menuItems: externalMenuItems, commandCenter = false }) => {
   const location = useLocation();
   const { user, profile, logout } = useAuth(); 
   const [notificationCount, setNotificationCount] = useState(0);
@@ -172,7 +172,8 @@ const Sidebar = ({ isOpen, onClose, onLogout, role, menuItems: externalMenuItems
 
   const rawRole = profile?.role || user?.role || (typeof role === 'object' && role !== null ? (role.role || role.name) : role);
   const safeRole = normalizeRole(rawRole);
-  const isEcclesial = [ROLE_TYPES.DIOCESE, ROLE_TYPES.CHANCERY, ROLE_TYPES.PARISH].includes(safeRole);
+  const isEcclesial = [ROLE_TYPES.DIOCESE, ROLE_TYPES.CHANCERY, ROLE_TYPES.PARISH].includes(safeRole)
+    || (commandCenter && safeRole === ROLE_TYPES.ADMIN_GENERAL);
   const showBarranquillaIdentity = isBarranquillaInstitutionalUser(user);
 
   useEffect(() => {
@@ -354,7 +355,8 @@ const Sidebar = ({ isOpen, onClose, onLogout, role, menuItems: externalMenuItems
     return [{ label: 'Inicio', path: location.pathname, icon: LayoutDashboard }];
   };
 
-  const finalMenuItems = externalMenuItems && externalMenuItems.length > 0 ? externalMenuItems : getMenuItems();
+  const finalMenuItems = (externalMenuItems && externalMenuItems.length > 0 ? externalMenuItems : getMenuItems())
+    .map(item => commandCenter && item.label === 'Inicio' ? { ...item, label: 'Centro de mando' } : item);
 
   const handleLogoutClick = () => {
       if (onLogout) {

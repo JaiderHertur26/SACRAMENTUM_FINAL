@@ -1,145 +1,13 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '@/components/DashboardLayout';
+import EcclesialCommandCenter from '@/components/EcclesialCommandCenter';
 import { useAuth } from '@/context/AuthContext';
 import { supabase } from '@/lib/supabaseClient';
 import { purificarRegistroBautismo } from '@/services/sacramentsService';
 import { Button } from '@/components/ui/button';
-import {
-  Church,
-  ScrollText,
-  Activity,
-  AlertCircle,
-  Clock,
-  CheckCircle2,
-  Loader2,
-  RefreshCcw,
-  Landmark,
-  FileStack,
-  ChevronRight,
-  Zap,
-  Search,
-  ArrowUpRight,
-  ShieldCheck,
-  Heart,
-  Droplets,
-  Sparkles,
-  Archive,
-  BookOpen,
-  Cross
-} from 'lucide-react';
-import { motion } from 'framer-motion';
+import { Activity, AlertCircle, Clock, CheckCircle2, Loader2, ChevronRight, Archive, BookOpen } from 'lucide-react';
 import { cn } from '@/lib/utils';
-
-const CARD_THEMES = {
-  baptisms: {
-    label: 'Bautizos',
-    description: 'Partidas asentadas',
-    icon: Droplets,
-    accent: 'text-blue-600',
-    iconBg: 'bg-blue-50',
-    border: 'border-blue-100/80',
-    glow: 'from-blue-500/10 via-blue-400/5 to-transparent',
-    route: '/parroquia/bautismo/partidas'
-  },
-  confirmations: {
-    label: 'Confirmaciones',
-    description: 'Partidas asentadas',
-    icon: ScrollText,
-    accent: 'text-blue-600',
-    iconBg: 'bg-blue-50',
-    border: 'border-blue-100/80',
-    glow: 'from-blue-500/10 via-blue-400/5 to-transparent',
-    route: '/parroquia/confirmacion/partidas'
-  },
-  marriages: {
-    label: 'Matrimonios',
-    description: 'Partidas asentadas',
-    icon: Heart,
-    accent: 'text-blue-700',
-    iconBg: 'bg-blue-50',
-    border: 'border-blue-100/80',
-    glow: 'from-blue-500/10 via-blue-400/5 to-transparent',
-    route: '/parroquia/matrimonio/partidas'
-  },
-  funerals: {
-    label: 'Exequias',
-    description: 'Partidas asentadas',
-    icon: Cross,
-    accent: 'text-slate-700',
-    iconBg: 'bg-slate-50',
-    border: 'border-slate-200/80',
-    glow: 'from-slate-500/10 via-slate-400/5 to-transparent',
-    route: '/parroquia/exequias/partidas'
-  },
-  total: {
-    label: 'Total Registros',
-    description: 'Archivo sacramental',
-    icon: FileStack,
-    accent: 'text-blue-700',
-    iconBg: 'bg-blue-50',
-    border: 'border-blue-100/80',
-    glow: 'from-blue-500/10 via-blue-400/5 to-transparent',
-    route: '/buscar'
-  }
-};
-
-const QUICK_ACTIONS = [
-  {
-    label: 'Buscador Unificado',
-    description: 'Encuentra personas, partidas y documentos',
-    icon: Search,
-    route: '/buscar',
-    accent: 'text-blue-700',
-    iconBg: 'bg-blue-50',
-    hover: 'hover:border-blue-200 hover:bg-blue-50/35'
-  },
-  {
-    label: 'Nuevo Bautismo',
-    description: 'Registra un bautismo para su posterior asiento',
-    icon: Droplets,
-    route: '/parroquia/bautismo/nuevo',
-    accent: 'text-amber-700',
-    iconBg: 'bg-amber-50',
-    hover: 'hover:border-amber-200 hover:bg-amber-50/35'
-  },
-  {
-    label: 'Digitalizar partida existente',
-    description: 'Transcribe una partida ya asentada en el libro físico',
-    icon: BookOpen,
-    route: '/parroquia/bautismo/celebrado',
-    accent: 'text-violet-700',
-    iconBg: 'bg-violet-50',
-    hover: 'hover:border-violet-200 hover:bg-violet-50/35'
-  },
-  {
-    label: 'Nueva Confirmación',
-    description: 'Registra una nueva confirmación',
-    icon: Sparkles,
-    route: '/parroquia/confirmacion/nuevo',
-    accent: 'text-blue-700',
-    iconBg: 'bg-blue-50',
-    hover: 'hover:border-blue-200 hover:bg-blue-50/35'
-  },
-  {
-    label: 'Registro Matrimonial',
-    description: 'Abre un nuevo expediente matrimonial',
-    icon: Heart,
-    route: '/parroquia/matrimonio/nuevo',
-    accent: 'text-blue-700',
-    iconBg: 'bg-blue-50',
-    hover: 'hover:border-blue-200 hover:bg-blue-50/35'
-  },
-  {
-    label: 'Registrar Exequias',
-    description: 'Gestiona un nuevo registro de exequias',
-    icon: Cross,
-    route: '/parroquia/exequias',
-    accent: 'text-slate-700',
-    iconBg: 'bg-slate-50',
-    hover: 'hover:border-slate-200 hover:bg-slate-50/60'
-  }
-];
 
 const safeJson = (value) => {
   if (!value) return {};
@@ -166,6 +34,8 @@ const ParishDashboard = () => {
     total: 0
   });
   const [hasPending, setHasPending] = useState(false);
+  const [pendingCount, setPendingCount] = useState(0);
+  const [loadError, setLoadError] = useState(false);
   const [pendingTarget, setPendingTarget] = useState(null);
 
   const currentParishId = user?.parish_id || user?.parishId || null;
@@ -201,6 +71,7 @@ const ParishDashboard = () => {
     }
 
     setIsSyncing(true);
+    setLoadError(false);
 
     try {
       const [bRes, cRes, mRes, fRes, bPendingRes, cPendingRes, mPendingRes, fPendingRes] = await Promise.all([
@@ -374,6 +245,7 @@ const ParishDashboard = () => {
       const anyPending = hasBaptismPending || hasConfirmationPending || hasMarriagePending || hasFuneralPending;
 
       setHasPending(anyPending);
+      setPendingCount(bPending.length + cPending.length + mPending.length + fPending.length);
       setPendingTarget(
         hasBaptismPending
           ? '/parroquia/bautismo/sentar-registros'
@@ -474,6 +346,7 @@ const ParishDashboard = () => {
       setRecentRecords(allRecords.slice(0, 8));
     } catch (error) {
       console.error('Dashboard Sync Error:', error);
+      setLoadError(true);
     } finally {
       setIsSyncing(false);
     }
@@ -486,207 +359,30 @@ const ParishDashboard = () => {
     return () => window.removeEventListener('storage', updateDashboardData);
   }, [updateDashboardData]);
 
-  const statsCards = [
-    { ...CARD_THEMES.baptisms, value: stats.baptisms },
-    { ...CARD_THEMES.confirmations, value: stats.confirmations },
-    { ...CARD_THEMES.marriages, value: stats.marriages },
-    { ...CARD_THEMES.funerals, value: stats.funerals },
-    { ...CARD_THEMES.total, value: stats.total }
-  ];
-
   return (
-    <DashboardLayout entityName={nombreParroquia}>
-      <div className="relative mx-auto max-w-[1380px] pb-12">
-        <div className="pointer-events-none absolute -top-14 right-0 h-80 w-80 rounded-full bg-blue-100/35 blur-3xl" />
-        <div className="pointer-events-none absolute top-44 left-1/4 h-64 w-64 rounded-full bg-amber-100/25 blur-3xl" />
-
-        <section className="ecclesial-parish-hero relative overflow-hidden rounded-[2.25rem] border border-[#e3d5be] bg-gradient-to-br from-[#fffdf8] via-[#fcf5e9] to-[#f4ebdd] shadow-[0_28px_80px_-46px_rgba(90,45,54,0.25)]">
-          <div className="absolute inset-y-0 right-0 w-[46%] bg-gradient-to-l from-[#DCEBFA]/55 via-[#EDF5FC]/35 to-transparent" />
-          <div className="absolute -right-10 -top-12 opacity-[0.055]">
-            <Church className="h-64 w-64 text-[#1F4F7A]" />
-          </div>
-
-          <div className="relative z-10 flex flex-col gap-8 px-7 py-8 lg:flex-row lg:items-center lg:justify-between lg:px-10">
-            <div className="max-w-3xl">
-              <div className="mb-3 flex items-center gap-3 text-[#2D679B]">
-                <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-blue-100 bg-white shadow-sm">
-                  <Landmark className="h-4 w-4" />
-                </div>
-                <span className="text-[10px] font-black uppercase tracking-[0.32em]">
-                  Despacho y archivo sacramental
-                </span>
-              </div>
-
-              <h1 className="font-serif text-4xl font-black tracking-tight text-slate-950 md:text-5xl">
-                Vida parroquial y sacramentos
-              </h1>
-
-              <div className="mt-4 flex flex-wrap items-center gap-3">
-                <p className="text-[11px] font-black uppercase tracking-[0.16em] text-slate-500">
-                  {nombreParroquia}
-                </p>
-
-                {hasPending && (
-                  <motion.button
-                    type="button"
-                    initial={{ scale: 0.94, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    onClick={() => pendingTarget && navigate(pendingTarget)}
-                    className="inline-flex items-center gap-2 rounded-full border border-amber-200 bg-amber-50 px-3.5 py-1.5 text-[9px] font-black uppercase tracking-wider text-amber-700 shadow-sm transition hover:bg-amber-100"
-                  >
-                    <AlertCircle className="h-3.5 w-3.5 animate-pulse" />
-                    Existen registros pendientes de asiento
-                  </motion.button>
-                )}
-              </div>
-
-              <div className="mt-6 flex items-center gap-3 text-slate-500">
-                <div className="h-px w-10 bg-[#C7A23A]" />
-                <p className="font-serif text-sm italic">
-                  Cada registro custodia una historia de fe.
-                </p>
-              </div>
-            </div>
-
-            <div className="flex flex-wrap gap-3 lg:justify-end">
-              <Button
-                variant="outline"
-                onClick={updateDashboardData}
-                disabled={isSyncing}
-                className="h-12 rounded-2xl border-slate-200 bg-white/80 px-5 shadow-sm backdrop-blur hover:bg-white"
-              >
-                <RefreshCcw
-                  className={cn(
-                    'mr-2 h-4 w-4 text-slate-400 transition-transform duration-500',
-                    isSyncing && 'animate-spin'
-                  )}
-                />
-                <span className="text-[10px] font-black uppercase tracking-widest text-slate-700">
-                  Actualizar datos
-                </span>
-              </Button>
-
-            </div>
-          </div>
-        </section>
-
-        <section className="relative z-20 -mt-1 grid grid-cols-1 gap-5 py-7 sm:grid-cols-2 xl:grid-cols-5">
-          {statsCards.map((stat, index) => {
-            const Icon = stat.icon;
-
-            return (
-              <motion.button
-                type="button"
-                key={stat.label}
-                initial={{ opacity: 0, y: 18 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.07 }}
-                onClick={() => navigate(stat.route)}
-                className={cn(
-                  'group relative min-h-[160px] overflow-hidden rounded-[1.9rem] border bg-white p-6 text-left shadow-[0_18px_46px_-32px_rgba(15,23,42,0.35)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_22px_55px_-30px_rgba(15,23,42,0.28)]',
-                  stat.border
-                )}
-              >
-                <div className={cn('absolute inset-0 bg-gradient-to-br opacity-70', stat.glow)} />
-                <Icon
-                  className={cn(
-                    'absolute -bottom-5 -right-4 h-28 w-28 opacity-[0.045] transition-transform duration-500 group-hover:scale-110',
-                    stat.accent
-                  )}
-                />
-
-                <div className="relative z-10 flex h-full flex-col justify-between">
-                  <div className="flex items-start justify-between">
-                    <div
-                      className={cn(
-                        'flex h-11 w-11 items-center justify-center rounded-2xl border border-white/70 shadow-sm',
-                        stat.iconBg
-                      )}
-                    >
-                      <Icon className={cn('h-5 w-5', stat.accent)} />
-                    </div>
-
-                    <div className="flex h-9 w-9 items-center justify-center rounded-full border border-slate-100 bg-white/85 text-slate-300 transition group-hover:border-slate-200 group-hover:text-slate-600">
-                      <ArrowUpRight className="h-4 w-4" />
-                    </div>
-                  </div>
-
-                  <div className="mt-5">
-                    <p className="text-3xl font-black tracking-tight text-slate-950">
-                      {isSyncing ? (
-                        <Loader2 className="h-6 w-6 animate-spin text-slate-300" />
-                      ) : (
-                        stat.value
-                      )}
-                    </p>
-                    <p className="mt-1 text-[10px] font-black uppercase tracking-[0.18em] text-slate-500">
-                      {stat.label}
-                    </p>
-                    <p className="mt-2 text-xs font-medium text-slate-400">
-                      {stat.description}
-                    </p>
-                  </div>
-                </div>
-              </motion.button>
-            );
-          })}
-        </section>
-
-        <section className="grid grid-cols-1 gap-6 xl:grid-cols-[0.92fr_2.08fr]">
-          <div className="rounded-[2rem] border border-slate-200/75 bg-white p-6 shadow-[0_20px_55px_-38px_rgba(15,23,42,0.35)]">
-            <div className="mb-5">
-              <div className="flex items-center gap-2">
-                <Zap className="h-4 w-4 text-[#D2A827]" />
-                <h2 className="text-[10px] font-black uppercase tracking-[0.26em] text-slate-500">
-                  Accesos Inmediatos
-                </h2>
-              </div>
-              <p className="mt-2 text-xs text-slate-400">
-                Accesos al archivo y a la vida sacramental de la parroquia.
-              </p>
-            </div>
-
-            <div className="space-y-3">
-              {QUICK_ACTIONS.map((action) => {
-                const Icon = action.icon;
-
-                return (
-                  <button
-                    type="button"
-                    key={action.label}
-                    onClick={() => navigate(action.route)}
-                    className={cn(
-                      'group flex w-full items-center gap-4 rounded-2xl border border-slate-100 bg-slate-50/65 p-4 text-left transition duration-200 hover:-translate-y-0.5 hover:bg-white hover:shadow-lg hover:shadow-slate-200/50',
-                      action.hover
-                    )}
-                  >
-                    <div
-                      className={cn(
-                        'flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl',
-                        action.iconBg
-                      )}
-                    >
-                      <Icon className={cn('h-5 w-5', action.accent)} />
-                    </div>
-
-                    <div className="min-w-0 flex-1">
-                      <p className="text-[11px] font-black uppercase tracking-wide text-slate-800">
-                        {action.label}
-                      </p>
-                      <p className="mt-1 truncate text-[11px] text-slate-400">
-                        {action.description}
-                      </p>
-                    </div>
-
-                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-400 transition group-hover:translate-x-0.5 group-hover:text-slate-700">
-                      <ChevronRight className="h-4 w-4" />
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
+    <DashboardLayout entityName={nombreParroquia} commandCenter>
+      <div className="mx-auto pb-8">
+        <EcclesialCommandCenter
+          role="parish"
+          entityName={nombreParroquia}
+          loading={isSyncing}
+          error={loadError}
+          onRefresh={updateDashboardData}
+          metrics={[
+            { label: 'Bautismos', value: stats.baptisms, icon: 'droplets', to: '/parroquia/bautismo/partidas' },
+            { label: 'Confirmaciones', value: stats.confirmations, icon: 'flame', to: '/parroquia/confirmacion/partidas' },
+            { label: 'Matrimonios', value: stats.marriages, icon: 'heart', to: '/parroquia/matrimonio/partidas' },
+            { label: 'Exequias', value: stats.funerals, icon: 'cross', to: '/parroquia/exequias/partidas' },
+            { label: 'Total de registros', value: stats.total, icon: 'book', to: '/buscar' },
+          ]}
+          attention={[{
+            label: 'Registros pendientes de asiento',
+            value: isSyncing || loadError ? '—' : pendingCount,
+            icon: 'clock',
+            to: pendingTarget || '/parroquia/bautismo/sentar-registros',
+          }]}
+        />
+        <section aria-label="Actividad reciente del despacho">
           <div className="overflow-hidden rounded-[2rem] border border-slate-200/75 bg-white shadow-[0_20px_55px_-38px_rgba(15,23,42,0.35)]">
             <div className="flex flex-col gap-4 border-b border-slate-100 bg-gradient-to-r from-slate-50/90 to-white px-6 py-5 md:flex-row md:items-center md:justify-between">
               <div className="flex items-center gap-3">
@@ -792,50 +488,6 @@ const ParishDashboard = () => {
                   </table>
                 </div>
               )}
-            </div>
-          </div>
-        </section>
-
-        <section className="mt-6 overflow-hidden rounded-[2rem] border border-blue-200/50 bg-gradient-to-r from-[#2D679B] via-[#3978AE] to-[#4B8BC0] text-white shadow-[0_24px_60px_-38px_rgba(30,64,175,0.65)]">
-          <div className="relative flex flex-col gap-6 px-7 py-6 md:flex-row md:items-center md:justify-between">
-            <div className="absolute -bottom-16 -right-10 opacity-[0.08]">
-              <Church className="h-48 w-48" />
-            </div>
-
-            <div className="relative z-10 flex items-start gap-4">
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-white/20 bg-white/10 backdrop-blur">
-                <ShieldCheck className="h-6 w-6" />
-              </div>
-
-              <div>
-                <p className="text-[9px] font-black uppercase tracking-[0.24em] text-blue-100">
-                  Soporte Técnico
-                </p>
-                <h3 className="mt-1 text-lg font-black">
-                  ¿Necesitas ayuda con un decreto, una corrección o una reposición?
-                </h3>
-                <p className="mt-1 text-xs text-blue-100/90">
-                  Consulta las notificaciones de Cancillería y continúa el flujo institucional.
-                </p>
-              </div>
-            </div>
-
-            <div className="relative z-10 flex items-center gap-4">
-              <div className="hidden text-right lg:block">
-                <p className="font-serif text-sm italic text-blue-50">
-                  Al servicio de la Iglesia, siempre.
-                </p>
-                <div className="ml-auto mt-2 h-px w-12 bg-[#E4C05C]" />
-              </div>
-
-              <Button
-                type="button"
-                onClick={() => navigate('/parish/notifications')}
-                className="h-11 rounded-2xl border border-white/20 bg-white px-5 text-[10px] font-black uppercase tracking-widest text-[#285F91] shadow-lg hover:bg-blue-50"
-              >
-                Ver Cancillería
-                <ChevronRight className="ml-1.5 h-4 w-4" />
-              </Button>
             </div>
           </div>
         </section>

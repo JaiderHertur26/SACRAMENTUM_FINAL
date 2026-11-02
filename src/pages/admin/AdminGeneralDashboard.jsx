@@ -1,12 +1,10 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import {
-  Activity, Church, Copy, Download, Eye, FileText, LayoutDashboard,
-  Search, Settings as SettingsIcon, ShieldCheck, Trash2, Users,
-} from 'lucide-react';
+import { Activity, Copy, Eye, Search, Trash2 } from 'lucide-react';
 
 import DashboardLayout from '@/components/DashboardLayout';
+import EcclesialCommandCenter from '@/components/EcclesialCommandCenter';
 import DetailsModal from '@/components/modals/DetailsModal';
 import Table from '@/components/ui/Table';
 import { Button } from '@/components/ui/button';
@@ -29,9 +27,11 @@ const AdminGeneralDashboard = () => {
   const [selectedDiocese, setSelectedDiocese] = useState(null);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
 
   const loadCloudData = useCallback(async () => {
     setLoading(true);
+    setLoadError(false);
     try {
       const [tokensRes, diocesesRes, profilesRes, parishesRes, baptismsRes, confirmationsRes, marriagesRes, funeralsRes] = await Promise.all([
         supabase.from('pending_tokens').select('id,token,type,payload,created_by,created_at').eq('type', 'DIOCESE').order('created_at', { ascending: false }),
@@ -78,6 +78,7 @@ const AdminGeneralDashboard = () => {
       });
     } catch (error) {
       console.error('Fallo al sincronizar el Panel General:', error);
+      setLoadError(true);
       toast({
         title: 'No fue posible sincronizar el Panel General',
         description: error?.message || 'Verifica la conexión y las políticas de Supabase.',
@@ -91,20 +92,6 @@ const AdminGeneralDashboard = () => {
   useEffect(() => {
     loadCloudData();
   }, [loadCloudData]);
-
-  const menuItems = [
-    { label: 'Inicio', path: '/admin/dashboard', icon: LayoutDashboard },
-    { label: 'Buscador Unificado', path: '/buscar', icon: Search },
-    { label: 'Diócesis/Arquidiócesis', path: '/admin/dioceses', icon: Church },
-    { label: 'Ajustes', path: '/admin/settings', icon: SettingsIcon },
-  ];
-
-  const stats = [
-    { label: 'Diócesis Activas', value: systemStats.dioceses, icon: Church, color: 'bg-blue-600/10', text: 'text-blue-700' },
-    { label: 'Total Parroquias', value: systemStats.parishes, icon: Church, color: 'bg-blue-500/10', text: 'text-blue-700' },
-    { label: 'Total Sacramentos', value: systemStats.sacraments, icon: FileText, color: 'bg-[#D4AF37]/10', text: 'text-amber-700' },
-    { label: 'Total Usuarios', value: systemStats.users, icon: Users, color: 'bg-slate-700/10', text: 'text-slate-700' },
-  ];
 
   const dioceseTableData = useMemo(() => {
     const needle = searchTerm.trim().toLowerCase();
@@ -169,39 +156,27 @@ const AdminGeneralDashboard = () => {
   ];
 
   return (
-    <DashboardLayout menuItems={menuItems} entityName="Administración General">
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-        <div className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
-          <div>
-            <h1 className="text-3xl font-black text-slate-950 flex items-center gap-3 tracking-tight">
-              <ShieldCheck className="w-8 h-8 text-[#D4AF37]" /> Panel General
-            </h1>
-            <p className="text-slate-500 mt-1 uppercase text-xs font-bold tracking-widest">Control Maestro Global del Sistema</p>
-          </div>
-          <Button
-            variant="outline"
-            onClick={() => navigate('/admin/settings')}
-            className="gap-2 border-slate-200 text-slate-700 bg-white rounded-2xl h-12 px-6 hover:bg-slate-50 shadow-sm"
-          >
-            <SettingsIcon className="w-4 h-4 text-blue-600" /> Seguridad y respaldos
-          </Button>
-        </div>
-
+    <DashboardLayout entityName="Administración General" commandCenter>
+      <motion.div className="min-w-0" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+        <EcclesialCommandCenter
+          role="admin_general"
+          entityName="Administración General"
+          loading={loading}
+          error={loadError}
+          metrics={[
+            { label: 'Diócesis y arquidiócesis', value: systemStats.dioceses, icon: 'church', to: '/admin/dioceses' },
+            { label: 'Parroquias', value: systemStats.parishes, icon: 'church', to: '/admin/dioceses' },
+            { label: 'Registros sacramentales', value: systemStats.sacraments, icon: 'book', to: '/buscar' },
+            { label: 'Usuarios institucionales', value: systemStats.users, icon: 'users', to: '/admin/users' },
+          ]}
+          attention={[{
+            label: 'Códigos pendientes de activación',
+            value: loading ? '—' : pendingDioceses.length,
+            icon: 'clock',
+            to: '/admin/dioceses',
+          }]}
+        />
         <InstitutionalReadinessV274 />
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-          {stats.map((stat) => (
-            <div key={stat.label} className="bg-white rounded-3xl p-8 shadow-sm border border-slate-100 flex items-center gap-5">
-              <div className={`p-4 rounded-2xl ${stat.color} shadow-inner`}>
-                <stat.icon className={`w-7 h-7 ${stat.text}`} />
-              </div>
-              <div>
-                <p className="text-3xl font-black text-slate-900 tracking-tighter">{loading ? '…' : stat.value}</p>
-                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">{stat.label}</p>
-              </div>
-            </div>
-          ))}
-        </div>
 
         {pendingDioceses.length > 0 && (
           <div className="mb-10 border border-amber-200 bg-amber-50/40 rounded-3xl overflow-hidden shadow-sm">
@@ -215,7 +190,7 @@ const AdminGeneralDashboard = () => {
                   <h4 className="font-black text-slate-900 pr-10 truncate text-lg tracking-tight">{env.name || 'Jurisdicción'}</h4>
                   <p className="text-xs text-slate-500 mb-5 font-medium mt-1">{env.city || '---'} · {env.date}</p>
                   <div className="bg-slate-50 p-3 rounded-xl border border-dashed border-slate-300 flex justify-between items-center gap-2">
-                    <code className="text-sm font-black text-[#4B7BA7] tracking-wider truncate">{env.token}</code>
+                    <code className="min-w-0 text-sm font-black text-[#4B7BA7] tracking-wider truncate">{env.token}</code>
                     <button type="button" onClick={() => copyToClipboard(env.token)} className="text-slate-400 hover:text-[#D4AF37]" title="Copiar código">
                       <Copy className="w-5 h-5" />
                     </button>
@@ -229,14 +204,14 @@ const AdminGeneralDashboard = () => {
           </div>
         )}
 
-        <div className="bg-white rounded-3xl shadow-sm border border-slate-100 p-8">
-          <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-6">
+        <div className="min-w-0 bg-white rounded-3xl shadow-sm border border-slate-100 p-4 sm:p-6 lg:p-8">
+          <div className="flex flex-col xl:flex-row justify-between items-start xl:items-center mb-8 gap-6">
             <div>
               <h3 className="font-black text-slate-900 text-xl tracking-tight">Jurisdicciones Activas</h3>
               <p className="text-xs text-slate-500 font-medium uppercase tracking-widest mt-1">Diócesis y Arquidiócesis vinculadas a un usuario en el sistema.</p>
             </div>
-            <div className="flex flex-1 md:flex-none gap-4 w-full md:w-auto">
-              <div className="relative w-full md:w-72">
+            <div className="flex flex-col sm:flex-row flex-1 xl:flex-none gap-3 w-full xl:w-auto">
+              <div className="relative min-w-0 w-full sm:flex-1 xl:w-72">
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                 <input
                   type="text"
@@ -251,7 +226,9 @@ const AdminGeneralDashboard = () => {
               </Button>
             </div>
           </div>
-          <Table columns={columnsDioceses} data={dioceseTableData} className="border-none" />
+          <div className="min-w-0 max-w-full overflow-x-auto">
+            <Table columns={columnsDioceses} data={dioceseTableData} className="border-none" />
+          </div>
         </div>
       </motion.div>
 

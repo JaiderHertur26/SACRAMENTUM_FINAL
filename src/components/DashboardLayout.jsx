@@ -6,7 +6,7 @@ import { Church } from 'lucide-react';
 import { ROLE_TYPES } from '@/config/supabaseConfig';
 import '@/styles/ecclesial-workspace.css';
 
-const DashboardLayout = ({ children, entityName }) => {
+const DashboardLayout = ({ children, entityName, commandCenter = false }) => {
   const { user, profile, logout } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const handleLogout = async () => {
@@ -61,14 +61,14 @@ const DashboardLayout = ({ children, entityName }) => {
   const roleForPresentation = typeof profile?.role === 'string' ? profile.role : getSafeRole(user);
   const isEcclesialWorkspace = [
     ROLE_TYPES.DIOCESE, ROLE_TYPES.CHANCERY, ROLE_TYPES.PARISH
-  ].includes(roleForPresentation);
+  ].includes(roleForPresentation) || (commandCenter && roleForPresentation === ROLE_TYPES.ADMIN_GENERAL);
   const ecclesialArea = roleForPresentation === ROLE_TYPES.DIOCESE
     ? 'Gobierno diocesano' : roleForPresentation === ROLE_TYPES.CHANCERY
-      ? 'Cancillería eclesiástica' : 'Archivo parroquial';
+      ? 'Cancillería eclesiástica' : roleForPresentation === ROLE_TYPES.ADMIN_GENERAL ? 'Administración institucional' : 'Archivo parroquial';
 
   return (
     <div
-      className={isEcclesialWorkspace ? "ecclesial-workspace min-h-screen flex flex-col" : "min-h-screen bg-slate-50 flex flex-col"}
+      className={(isEcclesialWorkspace ? "ecclesial-workspace min-h-screen flex flex-col" : "min-h-screen bg-slate-50 flex flex-col") + (commandCenter ? " command-center-workspace" : "")}
       data-ecclesial-role={isEcclesialWorkspace ? roleForPresentation : undefined}
     >
       <Sidebar 
@@ -76,6 +76,7 @@ const DashboardLayout = ({ children, entityName }) => {
         onClose={() => setSidebarOpen(false)} 
         onLogout={handleLogout}
         role={getSafeRole(user)}
+        commandCenter={commandCenter}
       />
       
       <Header 
@@ -84,6 +85,7 @@ const DashboardLayout = ({ children, entityName }) => {
         entityName={safeEntityName} 
         onLogout={handleLogout}
         onToggleSidebar={() => setSidebarOpen(!sidebarOpen)}
+        commandCenter={commandCenter}
       />
 
       {/* Main Content Area */}
@@ -93,7 +95,7 @@ const DashboardLayout = ({ children, entityName }) => {
         <div className={isEcclesialWorkspace
           ? "ecclesial-content p-4 lg:p-8 max-w-7xl mx-auto w-full"
           : "p-4 lg:p-8 max-w-7xl mx-auto w-full"}>
-          {isEcclesialWorkspace && (
+          {isEcclesialWorkspace && !commandCenter && (
             <div className="ecclesial-context" aria-label="Identidad del área eclesial">
               <div className="ecclesial-context-heading">
                 <span className="ecclesial-context-icon"><Church size={17} aria-hidden="true" /></span>
