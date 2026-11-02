@@ -1,0 +1,34 @@
+{
+  "protocol": "V325",
+  "approved": true,
+  "reviewedAt": "2026-11-02T02:10:46.341Z",
+  "scope": "Cuatro pantallas de asiento; filtro por procedencia de decreto y navegación al formulario legal. RPC ordinarios bloqueados en base. Sin modificar la numeración de sacramentos ordinarios.",
+  "approvedSourceFiles": [
+    "src/pages/parish/BaptismSentarRegistrosPage.jsx",
+    "src/pages/parish/ConfirmationSentarRegistrosPage.jsx",
+    "src/pages/parish/MatrimonioSentarRegistrosPage.jsx",
+    "src/pages/parish/FuneralRegistryPage.jsx"
+  ],
+  "reviewedSourceSha256": {
+    "src/pages/parish/BaptismSentarRegistrosPage.jsx": {
+      "before": "723435ca6ead3c7c4333ae6e693f632cbf9ebf7f91c3f59e174ce0aa69ea1c4f",
+      "after": "354eae24bdaa95d5e288ed780708ad86581a19b42d20f1679df90870fff3549c",
+      "changes": "Separar pendientes de decreto antes de hidratar las boletas; acceso a bandeja propia; manejo transaccional ordinario conservado."
+    },
+    "src/pages/parish/ConfirmationSentarRegistrosPage.jsx": {
+      "before": "a78a105ba3b33d2d95962b3a320e8de0e668167ee064af048df10f1a82de18a4",
+      "after": "cdee297b3b4acd9c00ddfbab46ef2cc82d05a849ed127f8f8752a219ca963c9c",
+      "changes": "Separar pendientes de decreto antes de hidratar las boletas; acceso a bandeja propia; manejo transaccional ordinario conservado."
+    },
+    "src/pages/parish/MatrimonioSentarRegistrosPage.jsx": {
+      "before": "84c0112f5766a701a930a9e8d2c501e78754426092048f162f28184257dd1845",
+      "after": "157c3718b786f3c6447b499f148ccbdac73eb6e9c16b57f865f80d8ce93a4d65",
+      "changes": "Separar pendientes de decreto antes de hidratar las boletas; acceso a bandeja propia; manejo transaccional ordinario conservado."
+    },
+    "src/pages/parish/FuneralRegistryPage.jsx": {
+      "before": "881c82376d94306517dce1f4883199beab817801d478a4987e73ec28d75c32a7",
+      "after": "013e12f08b5f29fc418470a8b48edd793906adc1b6e2083c4812872e018f4eff",
+      "changes": "Separar pendientes de decreto antes de hidratar las boletas; acceso a bandeja propia; manejo transaccional ordinario conservado."
+    }
+  }
+}
