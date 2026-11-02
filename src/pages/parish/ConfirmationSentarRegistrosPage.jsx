@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '@/components/DashboardLayout';
+import DecreeSeatingLinkV325 from '@/components/DecreeSeatingLinkV325';
+import { isOrdinaryPendingV325 } from '@/domain/pendingOriginV325.mjs';
 import { useAuth } from '@/context/AuthContext';
 import { useAppData } from '@/context/AppDataContext';
 import { Button } from '@/components/ui/button';
@@ -90,7 +92,7 @@ const ConfirmationSentarRegistrosPage = () => {
             let recordsMapped = [];
             
             if (!tempError && tempData && tempData.length > 0) {
-                const cloudPending = tempData.map(pb => {
+                const cloudPending = tempData.filter(isOrdinaryPendingV325).map(pb => {
                     const raw = typeof pb.raw_data === 'string' ? JSON.parse(pb.raw_data) : (pb.raw_data || {});
                     const normalized = purificarRegistroConfirmacion({
                         ...raw,
@@ -438,12 +440,14 @@ const ConfirmationSentarRegistrosPage = () => {
 
     if (isLoading) return (
         <DashboardLayout entityName={nombreParroquia}>
+            <DecreeSeatingLinkV325 />
             <div className="flex justify-center py-20"><Loader2 className="animate-spin text-[#4B7BA7] w-8 h-8" /></div>
         </DashboardLayout>
     );
 
     if (loadError) return (
         <DashboardLayout entityName={nombreParroquia}>
+            <DecreeSeatingLinkV325 />
             <div role="alert" className="mx-auto mt-12 max-w-2xl rounded-2xl border border-red-200 bg-red-50 p-10 text-center">
                 <AlertCircle className="mx-auto mb-4 h-12 w-12 text-red-500" />
                 <h2 className="text-xl font-black text-red-800">No fue posible verificar los registros de Confirmación</h2>
@@ -465,6 +469,7 @@ const ConfirmationSentarRegistrosPage = () => {
 
     return (
         <DashboardLayout entityName={nombreParroquia}>
+            <DecreeSeatingLinkV325 />
             <div className="hidden print:block">
                 {(printingRecord || currentConfirmation) && <ConfirmationTicket confirmationData={printingRecord || currentConfirmation} parishInfo={parishInfo} />}
             </div>

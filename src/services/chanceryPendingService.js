@@ -1,3 +1,4 @@
+import { isOrdinaryPendingV325 } from '@/domain/pendingOriginV325.mjs';
 import { supabase } from '@/lib/supabaseClient';
 
 const parseObject = (value) => {
@@ -98,7 +99,7 @@ export const loadChanceryPendingSacraments = async (user) => {
       return [];
     }
 
-    return (data || []).map((row) => {
+    return (data || []).filter(isOrdinaryPendingV325).map((row) => {
       const raw = parseObject(row.raw_data);
       return {
         id: row.id,

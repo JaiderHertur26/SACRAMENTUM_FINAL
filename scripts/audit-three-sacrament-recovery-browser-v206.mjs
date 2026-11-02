@@ -38,6 +38,13 @@ try{
  const click=async(label,twice=false)=>evaluate("(()=>{const b=[...document.querySelectorAll('button')].find(b=>b.textContent.trim().includes("+JSON.stringify(label)+"));if(!b||b.disabled)return false;b.dispatchEvent(new MouseEvent('mousedown',{bubbles:true,button:0}));b.click();"+(twice?"b.click();":"")+"return true})()");
  await call('Page.enable');await call('Runtime.enable');await call('Fetch.enable',{patterns:[{urlPattern:'*'}]});
 
+ // V325: compile the isolated Vite graph before timing recovery scenarios.
+ // Each scenario still navigates afresh and keeps its original six-second assertions.
+ await call('Page.navigate',{url:'http://127.0.0.1:4856/?kind=bautismo&case=initial-read-error'});
+ let compiled=false;
+ for(let i=0;i<400;i++){if((await state()).text.includes('No fue posible verificar')){compiled=true;break;}await sleep(100);}
+ if(!compiled)throw Error('Initial isolated fixture compilation did not complete');
+
  const definitions=[
   ...['bautismo','confirmacion'].flatMap(kind=>['individual-timeout','individual-lost-response','individual-read-failure','success-read-failure','batch-timeout','batch-lost-response','batch-read-failure','initial-read-error','batch-cancel'].map(scenario=>({kind,scenario}))),
   ...['individual-timeout','individual-lost-response','individual-read-failure','success-read-failure','initial-read-error','double-across-records'].map(scenario=>({kind:'exequias',scenario}))

@@ -2,6 +2,8 @@ import { generateUUID } from '@/utils/supabaseHelpers';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '@/components/DashboardLayout';
+import DecreeSeatingLinkV325 from '@/components/DecreeSeatingLinkV325';
+import { isOrdinaryPendingV325 } from '@/domain/pendingOriginV325.mjs';
 import LedgerSeatPanelV264 from '@/components/LedgerSeatPanelV264';
 import {ledgerV264Enabled} from '@/domain/ledgerSeatV264.mjs';
 import { useAuth } from '@/context/AuthContext';
@@ -187,7 +189,7 @@ const FuneralRegistryPage = () => {
       ]);
       setParams({ ...defaultParams, ...(p || {}) });
       setRecords(r || []);
-      setPending(pe || []);
+      setPending((pe || []).filter(isOrdinaryPendingV325));
       return true;
     } catch (error) {
       const message = error?.message || 'No fue posible sincronizar Exequias.';
@@ -608,11 +610,13 @@ const FuneralRegistryPage = () => {
 
   if (isRefreshing) return (
     <DashboardLayout entityName={ownerParishName}>
+            <DecreeSeatingLinkV325 />
       <div role="status" className="p-12 text-center">Sincronizando registros de Exequias...</div>
     </DashboardLayout>
   );
   if (syncError) return (
     <DashboardLayout entityName={ownerParishName}>
+            <DecreeSeatingLinkV325 />
       <div role="alert" className="mx-auto mt-12 max-w-2xl rounded-2xl border border-red-200 bg-red-50 p-10 text-center">
         <h2 className="text-xl font-black text-red-800">No fue posible verificar los registros de Exequias</h2>
         <p className="mt-3 text-sm text-red-700">{syncError}</p>
@@ -624,6 +628,7 @@ const FuneralRegistryPage = () => {
 
   return (
     <DashboardLayout entityName={user?.parishName || 'Parroquia'}>
+            <DecreeSeatingLinkV325 />
 <div className="max-w-7xl mx-auto pb-24 pt-6">
         <div className="flex flex-col gap-4 mb-8 md:flex-row md:items-center md:justify-between">
           <div className="flex items-center gap-4">

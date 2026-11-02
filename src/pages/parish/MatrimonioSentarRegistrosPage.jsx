@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '@/components/DashboardLayout';
+import DecreeSeatingLinkV325 from '@/components/DecreeSeatingLinkV325';
+import { isOrdinaryPendingV325 } from '@/domain/pendingOriginV325.mjs';
 import { useAuth } from '@/context/AuthContext';
 import { useAppData } from '@/context/AppDataContext';
 import { Button } from '@/components/ui/button';
@@ -147,9 +149,9 @@ const MatrimonioSentarRegistrosPage = () => {
                 listReportedMarriageTicketsCloud(resolvedParishId),
                 getMatrimonioParameters(resolvedParishId)
             ]);
-            const available = pending || [];
+            const available = (pending || []).filter(isOrdinaryPendingV325);
             setPendingMarriages(available);
-            setReportedMarriages(reported || []);
+            setReportedMarriages((reported || []).filter(isOrdinaryPendingV325));
             setMarriageParams(p || null);
             // Only keep selections which the server still identifies as pending.
             setSelectedIds(ids => ids.filter(id => available.some(record => record.id === id)));
@@ -281,12 +283,14 @@ const MatrimonioSentarRegistrosPage = () => {
 
     if (isLoading) return (
         <DashboardLayout entityName={nombreParroquia}>
+            <DecreeSeatingLinkV325 />
             <div className="flex justify-center py-20"><Loader2 className="animate-spin text-[#4B7BA7] w-8 h-8" /></div>
         </DashboardLayout>
     );
 
     if (loadError) return (
         <DashboardLayout entityName={nombreParroquia}>
+            <DecreeSeatingLinkV325 />
             <div role="alert" className="mx-auto mt-12 max-w-2xl rounded-2xl border border-red-200 bg-red-50 p-10 text-center">
                 <AlertCircle className="mx-auto mb-4 h-12 w-12 text-red-500" />
                 <h2 className="text-xl font-black text-red-800">No fue posible verificar los registros de Matrimonio</h2>
@@ -299,6 +303,7 @@ const MatrimonioSentarRegistrosPage = () => {
 
     if (pendingMarriages.length === 0 && reportedMarriages.length === 0) return (
         <DashboardLayout entityName={nombreParroquia}>
+            <DecreeSeatingLinkV325 />
             <div className="flex flex-col items-center justify-center min-h-[420px] bg-white rounded-[3rem] p-12 text-center border-2 border-dashed">
                 <CheckCircle2 className="w-16 h-16 text-green-200 mb-4" />
                 <h3 className="text-xl font-bold uppercase text-slate-400">Archivo al Día</h3>
@@ -333,6 +338,7 @@ const MatrimonioSentarRegistrosPage = () => {
 
     return (
         <DashboardLayout entityName={nombreParroquia}>
+            <DecreeSeatingLinkV325 />
             <div className="hidden print:block bg-white">{printingRecord && <MatrimonioTicket data={printingRecord} parishInfo={parishInfo} />}</div>
             <div className="print:hidden max-w-7xl mx-auto px-4 pb-20">
                 <div className="flex flex-col md:flex-row justify-between items-center mb-10 gap-6">

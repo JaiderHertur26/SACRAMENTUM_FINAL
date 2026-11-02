@@ -1,4 +1,6 @@
 import React from 'react';
+import ParishDecreeQueueV325 from '@/components/parish/ParishDecreeQueueV325';
+import DecreeSeatingLinkV325 from '@/components/DecreeSeatingLinkV325';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import RepetitionDecreeWorkflowPage from '@/pages/RepetitionDecreeWorkflowPage';
 import DashboardLayout from '@/components/DashboardLayout';
@@ -22,11 +24,19 @@ const ParishSacramentalDecreesCenterPage = () => {
   const navigate = useNavigate();
   const [params]=useSearchParams();
   if (params.get('view') === 'repeticion') return <RepetitionDecreeWorkflowPage scope="parish" />;
+  if (params.get('view') === 'asiento') return (
+    <DashboardLayout entityName={user?.parishName || 'Parroquia'}>
+      <div className="mx-auto max-w-7xl space-y-6 pb-12"><DecreeCenterHeader scope="parish" /><ParishDecreeQueueV325 />
+        <button type="button" className="text-sm font-semibold text-[#682b3e]" onClick={() => navigate('/parroquia/decretos')}>Volver al Centro de Decretos</button>
+      </div>
+    </DashboardLayout>
+  );
 
   return (
     <DashboardLayout entityName={user?.parishName || 'Parroquia'}>
       <div className="mx-auto max-w-7xl space-y-7 pb-20">
         <DecreeCenterHeader scope="parish" />
+        <DecreeSeatingLinkV325 />
 
         <section className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
           {Object.entries(DECREE_OPERATION_META).map(([key, operation]) => {

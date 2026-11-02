@@ -1,11 +1,11 @@
 {
   "protocol": "V324",
-  "testedAt": "2026-11-02T00:57:47.254Z",
+  "testedAt": "2026-11-02T01:51:51.523Z",
   "source_sha256_lf": {
-    "src/config/commandCenters.js": "c82cb31d9cfe8ad629378012b332db5ec01b0263f7966bab85f384c1eb3e0817",
+    "src/config/commandCenters.js": "7106c72e9dc602dbd23ce51ad7a592b5fee3b2974cd9b55b650fe0ea2d24dc2c",
     "src/components/EcclesialCommandCenter.jsx": "a786315cf6ff70cd544050f23bcf49e2d748e5598a214a21a40e14eccbc95cab",
     "src/styles/command-center.css": "31ff48271cfd4ce8052eff16720db4151df2c0ebf21cc68d1b780b6c362faf0c",
-    "src/pages/parish/ParishDashboard.jsx": "087b2d0e158fc98d2a001b9073da9f6554e8cc45ed57fc9c4325224a816c9753",
+    "src/pages/parish/ParishDashboard.jsx": "1c42eb2e5c42770b3d6ead7d23f0a02d48c243cfccc29b580da5a85afe793198",
     "src/pages/diocese/DioceseUserDashboard.jsx": "3281901be1cd40f7e3035884f4ee705a15644cfba46634cfaf0befa715c995aa",
     "src/pages/chancery/ChanceryDashboard.jsx": "36df54b700d4742111c8924bec7c7331149ed829a2d8891a674ae072d63e97b6",
     "src/pages/admin/AdminGeneralDashboard.jsx": "7a3d7ef41277424e659ff01efff6a0474c3a93aed5f56699bb7365f95fce36e5",

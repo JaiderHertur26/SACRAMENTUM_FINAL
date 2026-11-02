@@ -22,6 +22,10 @@ jobs:
           cache: npm
       - name: Instalación reproducible
         run: npm ci
+      - name: Decretos separados y coordenadas obligatorias en Chrome
+        run: node scripts/audit-decree-pending-browser-v325.mjs
+      - name: Regresión de filtros de decretos
+        run: node --test scripts/test-decree-pending-v325.mjs
       - name: Recuperación de interfaz matrimonial en Chrome aislado
         run: node scripts/audit-seat-recovery-browser-v205.mjs
       - name: Recuperación de Bautismo Confirmación y Exequias en Chrome aislado
@@ -174,3 +178,24 @@ jobs:
         env:
           PG_CONTAINER: ${{ job.services.postgres.id }}
         run: bash scripts/ci-diocesan-auxiliaries-v323.sh
+
+  ensayo-decretos-pendientes-v325:
+    name: Decretos separados de los cuatro asientos ordinarios
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: ci_fixture_not_secret
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 8
+    steps:
+      - uses: actions/checkout@v5
+      - name: Cuatro RPC reales rechazan decretos y preservan boletas ordinarias
+        env:
+          PG_CONTAINER: ${{ job.services.postgres.id }}
+        run: bash scripts/ci-decree-pending-v325.sh

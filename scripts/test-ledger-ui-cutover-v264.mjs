@@ -78,13 +78,15 @@ test('V264 context SQL never grants a seat and restricts anonymous read',()=>{
  assert.match(gate,/scripts\/test-ledger-ui-cutover-v264\.mjs/);
 });
 
-test('V264 source review pins four screens without editing old V205-V207/V251 evidence',()=>{
+test('V264/V325 source review pins four screens without editing old V205-V207/V251 evidence',()=>{
  const reviewed=JSON.parse(read('AUDITORIA_V264_REVISION_UI_ASIENTOS.json'));
  const predecessor=JSON.parse(read('AUDITORIA_V251_REVISIÓN_SOLO_ETIQUETAS.json'));
+ const successor=JSON.parse(read('AUDITORIA_V325_REVISION_SEPARACION_DECRETOS.json'));
  assert.equal(Object.keys(reviewed.reviewedSourceSha256).length,4);
  for(const [file,entry] of Object.entries(reviewed.reviewedSourceSha256)){
    const normalized=read(file).replace(/\r\n/g,'\n');
-   assert.equal(createHash('sha256').update(normalized).digest('hex'),entry.after);
+   assert.equal(successor.reviewedSourceSha256[file].before,entry.after);
+   assert.equal(createHash('sha256').update(normalized).digest('hex'),successor.reviewedSourceSha256[file].after);
    if(predecessor.reviewedSourceSha256[file])
      assert.equal(predecessor.reviewedSourceSha256[file].after,entry.previousSourceSha256);
  }
@@ -97,16 +99,19 @@ test('V264 source review pins four screens without editing old V205-V207/V251 ev
 test('V264 accepts freshly regenerated browser evidence and archived reviewed evidence only',()=>{
  const review=JSON.parse(read('AUDITORIA_V264_REVISION_UI_ASIENTOS.json'));
  const old=JSON.parse(read('AUDITORIA_V251_REVISIÓN_SOLO_ETIQUETAS.json'));
+ const successor=JSON.parse(read('AUDITORIA_V325_REVISION_SEPARACION_DECRETOS.json'));
  for(const [file,item] of Object.entries(review.reviewedSourceSha256)){
+   const current=successor.reviewedSourceSha256[file].after;
+   assert.doesNotThrow(()=>assertV251RevisedSource({file,historicalSha256:current,currentSha256:current}));
    assert.doesNotThrow(()=>assertV251RevisedSource({
-     file,historicalSha256:item.after,currentSha256:item.after
+     file,historicalSha256:item.after,currentSha256:current
    }));
    const previous=old.reviewedSourceSha256[file]?.before||item.previousSourceSha256;
    assert.doesNotThrow(()=>assertV251RevisedSource({
-     file,historicalSha256:previous,currentSha256:item.after
+     file,historicalSha256:previous,currentSha256:current
    }));
    assert.throws(()=>assertV251RevisedSource({
-     file,historicalSha256:'0'.repeat(64),currentSha256:item.after
+     file,historicalSha256:'0'.repeat(64),currentSha256:current
    }));
    assert.throws(()=>assertV251RevisedSource({
      file,historicalSha256:previous,currentSha256:'f'.repeat(64)

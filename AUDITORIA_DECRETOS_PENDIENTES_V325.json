@@ -1,0 +1,207 @@
+{
+  "protocol": "V325",
+  "testedAt": "2026-11-02T01:56:38.394Z",
+  "source_sha256_lf": {
+    "src/domain/pendingOriginV325.mjs": "f5897f5c11470c0bd0ab0cb95d2ddf9927c130829dba8cabf5fe0605e45087d1",
+    "src/components/parish/ParishDecreeQueueV325.jsx": "b42b6fdcabea46320cf21353e4672776d7b4c01cf4fee9fa240edaa3a3caeb3b",
+    "src/components/DecreeSeatingLinkV325.jsx": "bbe791357b5510c5c03c2a86a73a5cedf40029ad02696dfd82ae4a58231b567b",
+    "src/pages/parish/BaptismSentarRegistrosPage.jsx": "354eae24bdaa95d5e288ed780708ad86581a19b42d20f1679df90870fff3549c",
+    "src/components/parish/ParishDecreeSeatPanelV280.jsx": "0e50597783022bf780cff4030784d5d677fb2f4d85ceee4865f1c687d35650b9",
+    "src/services/decreeSeatsV280.js": "55bbba8dcb581fb40b6c6708f06f7b932ef5e6de3e93912c194783097db733b4",
+    "scripts/qa-v325-decrees/index.html": "7b0e75429cdc2a7db5ae4ddcf5a6a3f93e47e2910ef0fbc73f9d111104988ca8",
+    "scripts/qa-v325-decrees/vite.config.mjs": "1124e7bb9bd6b2593bc7686fd7e8ba8e3062cfd840e50f3f0fd1af943f7dc5e6",
+    "scripts/qa-v325-decrees/mockComponent.jsx": "908e7ae55436be61d3833ced9ad3dd320987e1354d9f6b34a8f35bc518028b2d",
+    "scripts/qa-v325-decrees/mocks.jsx": "2e4a22a6d61a0c07e18ffde8e67a86a511a30d61425fb58071599f9db0f5634f",
+    "scripts/qa-v325-decrees/entry.jsx": "61d373b484c4c466219f08fef694b3c594b364f15b37d0e87abe1f4d25d5eca7",
+    "scripts/audit-decree-pending-browser-v325.mjs": "1d2b98b6b05c08964869fd849503d5c2673ebcb030b90374e90cdc9a15f63dc8"
+  },
+  "method": "Chrome real; pantallas reales con servicios y datos ficticios aislados",
+  "approved": true,
+  "checked": 34,
+  "passed": 34,
+  "failed": 0,
+  "exceptions": [],
+  "externalRequests": [],
+  "screens": [
+    {
+      "file": "v325-queue-desktop.png",
+      "viewport": "desktop"
+    },
+    {
+      "file": "v325-queue-mobile.png",
+      "viewport": "mobile"
+    }
+  ],
+  "checks": [
+    {
+      "name": "Bautismos excluye ambos decretos",
+      "passed": true,
+      "viewport": "desktop"
+    },
+    {
+      "name": "Conteos solo de boletas ordinarias",
+      "passed": true,
+      "viewport": "desktop"
+    },
+    {
+      "name": "Acceso separado a decretos",
+      "passed": true,
+      "viewport": "desktop"
+    },
+    {
+      "name": "Lote solo ordinario",
+      "passed": true,
+      "viewport": "desktop"
+    },
+    {
+      "name": "Historial excluye decreto sentado por error",
+      "passed": true,
+      "viewport": "desktop"
+    },
+    {
+      "name": "Consultar bandejas no asienta",
+      "passed": true,
+      "viewport": "desktop"
+    },
+    {
+      "name": "Bandeja propia conserva dos decretos pendientes",
+      "passed": true,
+      "viewport": "desktop"
+    },
+    {
+      "name": "Bandeja de decretos adaptable",
+      "passed": true,
+      "viewport": "desktop"
+    },
+    {
+      "name": "Abrir lleva al detalle legal del decreto",
+      "passed": true,
+      "viewport": "desktop"
+    },
+    {
+      "name": "Abrir decreto no ejecuta asiento",
+      "passed": true,
+      "viewport": "desktop"
+    },
+    {
+      "name": "Coordenadas y capacidad se solicitan vacías",
+      "passed": true,
+      "viewport": "desktop"
+    },
+    {
+      "name": "No se puede sentar sin coordenadas",
+      "passed": true,
+      "viewport": "desktop"
+    },
+    {
+      "name": "Un solo asiento usa RPC propio de decreto",
+      "passed": true,
+      "viewport": "desktop"
+    },
+    {
+      "name": "Asiento recibe exactamente las coordenadas escritas",
+      "passed": true,
+      "viewport": "desktop"
+    },
+    {
+      "name": "Segundo decreto espera al primero",
+      "passed": true,
+      "viewport": "desktop"
+    },
+    {
+      "name": "Error de lectura no simula bandeja vacía",
+      "passed": true,
+      "viewport": "desktop"
+    },
+    {
+      "name": "Bautismos excluye ambos decretos",
+      "passed": true,
+      "viewport": "mobile"
+    },
+    {
+      "name": "Conteos solo de boletas ordinarias",
+      "passed": true,
+      "viewport": "mobile"
+    },
+    {
+      "name": "Acceso separado a decretos",
+      "passed": true,
+      "viewport": "mobile"
+    },
+    {
+      "name": "Lote solo ordinario",
+      "passed": true,
+      "viewport": "mobile"
+    },
+    {
+      "name": "Historial excluye decreto sentado por error",
+      "passed": true,
+      "viewport": "mobile"
+    },
+    {
+      "name": "Consultar bandejas no asienta",
+      "passed": true,
+      "viewport": "mobile"
+    },
+    {
+      "name": "Bandeja propia conserva dos decretos pendientes",
+      "passed": true,
+      "viewport": "mobile"
+    },
+    {
+      "name": "Bandeja de decretos adaptable",
+      "passed": true,
+      "viewport": "mobile"
+    },
+    {
+      "name": "Abrir lleva al detalle legal del decreto",
+      "passed": true,
+      "viewport": "mobile"
+    },
+    {
+      "name": "Abrir decreto no ejecuta asiento",
+      "passed": true,
+      "viewport": "mobile"
+    },
+    {
+      "name": "Coordenadas y capacidad se solicitan vacías",
+      "passed": true,
+      "viewport": "mobile"
+    },
+    {
+      "name": "No se puede sentar sin coordenadas",
+      "passed": true,
+      "viewport": "mobile"
+    },
+    {
+      "name": "Un solo asiento usa RPC propio de decreto",
+      "passed": true,
+      "viewport": "mobile"
+    },
+    {
+      "name": "Asiento recibe exactamente las coordenadas escritas",
+      "passed": true,
+      "viewport": "mobile"
+    },
+    {
+      "name": "Segundo decreto espera al primero",
+      "passed": true,
+      "viewport": "mobile"
+    },
+    {
+      "name": "Error de lectura no simula bandeja vacía",
+      "passed": true,
+      "viewport": "mobile"
+    },
+    {
+      "name": "Cero excepciones JavaScript",
+      "passed": true,
+      "exceptions": 0
+    },
+    {
+      "name": "Cero solicitudes a servicios externos",
+      "passed": true,
+      "externalRequests": 0
+    }
+  ]
+}
