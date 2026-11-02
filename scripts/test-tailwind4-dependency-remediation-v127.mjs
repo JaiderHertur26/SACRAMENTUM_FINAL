@@ -29,12 +29,15 @@ test('No existe braces vulnerable ni micromatch/chokidar de Tailwind 3 en el loc
   assert.ok(!packages.includes(affected),'Still bundled '+affected);
  }
 });
-test('Paneles de Diócesis y Admin General usan transparencias Tailwind 4 sin clase obsoleta',()=>{
- assert.match(admin,/bg-blue-600\/10/);
- assert.match(diocese,/bg-\[#f5e8db\]/);
- assert.match(diocese,/ecclesial-scope-hero/);
- assert.doesNotMatch(admin,/bg-opacity-10/);
- assert.doesNotMatch(diocese,/bg-opacity-10/);
+test('Paneles de Diócesis y Admin General usan el tema eclesial compartido sin clases obsoletas',()=>{
+ for(const page of [admin,diocese]){
+  assert.match(page,/EcclesialCommandCenter/);
+  assert.doesNotMatch(page,/bg-opacity-10/);
+ }
+ const centerCss=read('src/styles/command-center.css');
+ assert.match(centerCss,/--cc-wine: #682b3e/);
+ assert.match(centerCss,/--cc-gold: #87632f/);
+ assert.match(centerCss,/@media screen/);
 });
 test('CI exige auditoría de producción y auditoría completa',()=>{
  assert.match(CI,/npm audit --omit=dev --audit-level=low/);

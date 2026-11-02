@@ -1,0 +1,145 @@
+/* V324 · Centro de mando eclesial. Presentación acotada a los inicios de cada rol. */
+@media screen {
+  .ecclesial-command-center {
+    --cc-wine: #682b3e;
+    --cc-gold: #87632f;
+    --cc-ink: #26343a;
+    --cc-muted: #64716f;
+    --cc-line: #e5ded3;
+    color: var(--cc-ink);
+    font-family: "Segoe UI", Arial, sans-serif;
+    margin: 0 0 1.75rem;
+  }
+  .ecclesial-command-center * { box-sizing: border-box; }
+  .ecclesial-command-center a { text-decoration: none; }
+  .ecclesial-command-center button { font-family: inherit; cursor: pointer; }
+  .ecclesial-command-center button:disabled { cursor: wait; opacity: .65; }
+  .ecclesial-command-center :is(a, button):focus-visible { outline: 3px solid var(--cc-gold); outline-offset: 4px; }
+  .ecclesial-command-center :is(h1,h2) { color: var(--cc-ink); font-family: Georgia, Cambria, serif; letter-spacing: -.035em; }
+  .ecclesial-command-center h1 { font-size: clamp(2.25rem, 3.6vw, 3.5rem); line-height: 1.06; font-weight: 700; margin: .4rem 0 .55rem; }
+  .cc-heading { display: flex; align-items: center; justify-content: space-between; gap: 1.25rem; margin-bottom: 1.35rem; }
+  .cc-eyebrow { display: flex; align-items: center; gap: .55rem; color: var(--cc-gold); font-size: .67rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; line-height: 1.6; }
+  .cc-entity { font-family: Georgia, Cambria, serif; font-size: 1.1rem; line-height: 1.45; }
+  .cc-description { color: var(--cc-muted); font-size: .88rem; margin-top: .25rem; }
+  .cc-refresh { display: inline-flex; align-items: center; justify-content: center; gap: .55rem; padding: .7rem .9rem; color: var(--cc-wine); border: 1px solid var(--cc-line); border-radius: .6rem; background: #fffdfa; font-size: .8rem; flex-shrink: 0; }
+  .cc-search { display: flex; align-items: center; gap: .8rem; padding: 1rem 1.1rem; border: 1px solid var(--cc-line); border-radius: .7rem; background: white; box-shadow: 0 3px 14px #26343a04; color: #64716f; font-size: .92rem; }
+  .cc-search:hover { border-color: var(--cc-gold); background: #fffdfa; }
+  .cc-search-open { display: inline-flex; align-items: center; gap: .5rem; margin-left: auto; color: var(--cc-wine); font-size: .74rem; white-space: nowrap; }
+  .cc-metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: .75rem; margin: 1rem 0 1.65rem; }
+  .cc-metric { display: flex; align-items: center; gap: .8rem; min-width: 0; padding: .95rem .85rem; background: #fffefd; border: 1px solid var(--cc-line); border-radius: .7rem; color: var(--cc-ink); }
+  .cc-metric > svg { flex-shrink: 0; width: 23px; height: 23px; color: var(--cc-gold); stroke-width: 1.5; }
+  .cc-metric > span { min-width: 0; display: grid; gap: .12rem; }
+  .cc-metric strong { font-size: 1.65rem; line-height: 1; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .cc-metric > span > span { font-size: .69rem; line-height: 1.35; color: #596765; }
+  .cc-metric .cc-chevron { color: #7c8581; width: 14px; height: 14px; margin-left: auto; }
+  a.cc-metric:hover { border-color: var(--cc-gold); }
+  .cc-workarea { display: grid; grid-template-columns: minmax(0,1fr) minmax(250px, 29%); grid-template-areas: "main aside"; gap: 1.25rem; align-items: start; }
+  .cc-main { grid-area: main; min-width: 0; }
+  .cc-aside { grid-area: aside; display: grid; gap: 1rem; min-width: 0; }
+  .cc-section-heading { display: flex; justify-content: space-between; align-items: center; gap: .75rem; margin: 0 0 .85rem; }
+  .ecclesial-command-center h2 { font-size: 1.55rem; line-height: 1.2; font-weight: 700; margin: 0; }
+  .cc-section-heading > span { font-size: .68rem; color: var(--cc-muted); }
+  .cc-modules { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: .9rem; }
+  .cc-module { display: flex; align-items: flex-start; gap: 1rem; padding: 1.25rem; text-align: left; border: 1px solid var(--cc-line); border-radius: .8rem; background: #fffefd; color: var(--cc-ink); box-shadow: 0 3px 12px #26343a03; min-width: 0; transition: border-color .18s, box-shadow .18s, background .18s; }
+  .cc-module:hover { border-color: #b39364; box-shadow: 0 6px 20px #682b3e09; background: #fffdfa; }
+  .cc-module.is-selected { border-color: var(--cc-wine); background: #fcf8f7; box-shadow: inset 0 0 0 1px var(--cc-wine); }
+  .cc-module-icon { width: 40px; height: 45px; flex-shrink: 0; margin-top: 10px; color: var(--cc-gold); stroke-width: 1.3; }
+  .cc-module.is-selected .cc-module-icon { color: var(--cc-wine); }
+  .cc-module-content { display: grid; min-width: 0; width: 100%; gap: .45rem; }
+  .cc-module-rule { width: 27px; height: 2px; background: #b5945a; margin-bottom: .05rem; }
+  .cc-module-content > strong { font-family: Georgia, Cambria, serif; font-size: 1.3rem; line-height: 1.2; font-weight: 700; letter-spacing: -.025em; }
+  .cc-module-description { color: var(--cc-muted); font-size: .76rem; line-height: 1.5; min-height: 2.3em; }
+  .cc-module-open { display: flex; justify-content: space-between; align-items: center; gap: .5rem; padding: .5rem .65rem; border: 1px solid #d5ccc0; border-radius: .35rem; font-size: .77rem; margin-top: .25rem; }
+  .is-selected .cc-module-open { background: var(--cc-wine); color: #fff; border-color: var(--cc-wine); }
+  .cc-shortcut-section { margin-top: 1.45rem; }
+  .cc-shortcut-section > h2 { margin-bottom: .8rem; }
+  .cc-shortcuts { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: .65rem; }
+  .cc-shortcut { display: flex; align-items: center; gap: .6rem; min-width: 0; padding: .8rem; background: #fffefd; border: 1px solid var(--cc-line); border-radius: .5rem; color: var(--cc-ink); text-align: left; font-size: .77rem; line-height: 1.45; }
+  .cc-shortcut > svg:first-child { color: var(--cc-wine); width: 20px; height: 20px; flex-shrink: 0; stroke-width: 1.6; }
+  .cc-chevron { flex-shrink: 0; width: 15px; height: 15px; margin-left: auto; }
+  .cc-shortcut:hover, .cc-followup-link:hover { border-color: var(--cc-gold); background: #fbf7f0; }
+  .cc-action-panel,.cc-welcome,.cc-followup { padding: 1.15rem; background: white; border: 1px solid var(--cc-line); border-radius: .8rem; box-shadow: 0 4px 18px #26343a05; }
+  .cc-panel-topline { display: flex; align-items: center; justify-content: space-between; gap: .5rem; margin-bottom: .7rem; }
+  .cc-panel-topline .cc-eyebrow { font-size: .58rem; color: var(--cc-wine); letter-spacing: .13em; }
+  .cc-close { display: grid; place-items: center; width: 30px; height: 30px; border-radius: .35rem; color: #6b7271; background: transparent; border: 0; flex-shrink: 0; }
+  .cc-close:hover { background: #f5efe8; color: var(--cc-wine); }
+  .cc-action-panel h2 { font-size: 1.85rem; outline: none; overflow-wrap: anywhere; }
+  .cc-panel-description { color: var(--cc-muted); font-size: .75rem; line-height: 1.5; margin: .5rem 0 .9rem; }
+  .cc-action-list { display: grid; gap: .6rem; }
+  .cc-action { display: flex; align-items: center; gap: .7rem; padding: .9rem .75rem; border: 1px solid #cbc5bc; border-radius: .45rem; color: var(--cc-ink); background: white; font-size: .8rem; line-height: 1.45; text-align: left; }
+  .cc-action > svg:first-child { width: 22px; height: 22px; flex-shrink: 0; stroke-width: 1.6; }
+  .cc-action:hover { background: #f9f5ee; border-color: var(--cc-gold); }
+  .cc-action.cc-access-primary { background: var(--cc-wine); color: white; border-color: var(--cc-wine); }
+  .cc-action.cc-access-primary:hover { background: #532232; }
+  .cc-welcome { background: linear-gradient(135deg,#fffcf7,#f6efe3); padding: 1.5rem 1.2rem; }
+  .cc-welcome-symbol { display: grid; place-items: center; height: 47px; width: 47px; color: var(--cc-wine); background: #fffaf2; border: 1px solid #decaa8; border-radius: 50%; margin-bottom: 1rem; }
+  .cc-welcome > .cc-eyebrow { font-size: .57rem; letter-spacing: .12em; }
+  .cc-welcome > h2 { margin-top: .6rem; font-size: 1.65rem; }
+  .cc-welcome > p:last-child { margin-top: .7rem; color: #68736c; font-size: .78rem; line-height: 1.6; }
+  .cc-followup h2 { font-size: 1.25rem; margin-bottom: .65rem; }
+  .cc-followup-link { display: flex; align-items: center; gap: .6rem; color: #43504e; padding: .8rem 0; border-bottom: 1px solid #eee8df; font-size: .73rem; line-height: 1.5; }
+  .cc-followup-link:last-child { border-bottom: 0; padding-bottom: .2rem; }
+  .cc-followup-link > svg:first-child { width: 18px; height: 18px; flex-shrink: 0; color: var(--cc-gold); }
+  .cc-access-count { margin-left: auto; color: var(--cc-wine); font-variant-numeric: tabular-nums; }
+  .cc-mission { display: flex; align-items: center; gap: .5rem; font-family: Georgia, Cambria, serif; font-size: .8rem; font-style: italic; color: #6b675d; padding: 1.2rem 0 .25rem; }
+  .cc-mission > span { color: var(--cc-gold); font-style: normal; }
+  .cc-error { padding: .8rem 1rem; margin-top: 1rem; color: #8b2943; border: 1px solid #e2c6ca; background: #fff7f7; border-radius: .5rem; font-size: .85rem; }
+  .cc-spinning { animation: cc-spin 1s linear infinite; }
+  .command-center-workspace .ecclesial-content { max-width: 1580px; }
+  .command-center-workspace .ecclesial-main { min-width: 0; }
+  @media (min-width: 1024px) {
+    .command-center-workspace .ecclesial-sidebar { width: 15.75rem; }
+    .command-center-workspace .ecclesial-header { left: 15.75rem; }
+    .command-center-workspace .ecclesial-main { padding-left: 15.75rem; }
+    .command-center-workspace .ecclesial-sidebar-brand { padding-left: 1.25rem; padding-right: 1.25rem; }
+    .command-center-workspace .ecclesial-sidebar-scroll { padding: 1.2rem .75rem; }
+  }
+  @media (max-width: 1199px) {
+    .cc-workarea { grid-template-columns: minmax(0,1fr) 250px; gap: 1rem; }
+    .cc-module { padding: 1rem; gap: .65rem; }
+    .cc-module-icon { width: 30px; height: 36px; }
+    .cc-module-content > strong { font-size: 1.18rem; }
+    .cc-shortcuts { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  }
+  @media (max-width: 767px) {
+    .cc-heading { align-items: flex-start; gap: .6rem; }
+    .ecclesial-command-center h1 { font-size: 2.25rem; }
+    .cc-eyebrow { font-size: .58rem; letter-spacing: .11em; }
+    .cc-entity { font-size: .95rem; }
+    .cc-description { font-size: .78rem; }
+    .cc-refresh { padding: .65rem; margin-top: .15rem; }
+    .cc-refresh > span { display: none; }
+    .cc-search { padding: .9rem; font-size: .8rem; gap: .65rem; }
+    .cc-search > svg { flex-shrink: 0; }
+    .cc-search-open { display: none; }
+    .cc-metrics { grid-template-columns: repeat(2,minmax(0,1fr)); gap: .6rem; margin-bottom: 1.2rem; }
+    .cc-metric { padding: .8rem .7rem; gap: .65rem; }
+    .cc-metric:last-child:nth-child(odd) { grid-column: 1 / -1; }
+    .cc-workarea { grid-template-columns: minmax(0,1fr); grid-template-areas: "aside" "main"; }
+    .cc-aside { display: contents; }
+    .cc-action-panel { grid-area: aside; margin-bottom: .5rem; }
+    .cc-welcome { display: none; }
+    .cc-followup { grid-column: 1; grid-row: 3; margin-top: .25rem; }
+    .cc-main { grid-area: main; }
+    .cc-module { padding: 1rem; gap: .6rem; }
+    .cc-modules { gap: .7rem; }
+    .cc-module-icon { width: 28px; height: 34px; }
+    .cc-module-content > strong { font-size: 1.12rem; }
+    .cc-module-description { font-size: .72rem; }
+    .cc-module-open { padding: .45rem; font-size: .7rem; }
+    .cc-section-heading > span { font-size: .6rem; }
+    .cc-shortcut { font-size: .75rem; }
+    .cc-mission { line-height: 1.5; }
+  }
+  @media (max-width: 400px) {
+    .cc-modules { grid-template-columns: minmax(0,1fr); }
+    .cc-module { align-items: center; }
+    .cc-module-icon { width: 38px; height: 45px; margin: 0; }
+    .cc-module-description { min-height: 0; }
+    .cc-shortcuts { grid-template-columns: minmax(0,1fr); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ecclesial-command-center * { transition: none !important; animation: none !important; }
+  }
+  @keyframes cc-spin { to { transform: rotate(360deg); } }
+}

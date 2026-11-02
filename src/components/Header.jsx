@@ -3,7 +3,7 @@ import { Menu, LogOut, User, ChevronDown } from 'lucide-react';
 import { ROLE_TYPES } from '@/config/supabaseConfig';
 import { SACRAMENTUM_BRAND } from '@/config/brand';
 
-const Header = ({ username, role, entityName, onLogout, onToggleSidebar }) => {
+const Header = ({ username, role, entityName, onLogout, onToggleSidebar, commandCenter = false }) => {
   const [showUserMenu, setShowUserMenu] = useState(false);
 
   // Helper to safely get string from potential object
@@ -25,7 +25,7 @@ const Header = ({ username, role, entityName, onLogout, onToggleSidebar }) => {
   const safeRoleStr = typeof rawRole === 'object' ? '' : String(rawRole);
 
   const isEcclesialHeader = [ROLE_TYPES.DIOCESE, ROLE_TYPES.CHANCERY, ROLE_TYPES.PARISH]
-    .includes(safeRoleStr);
+    .includes(safeRoleStr) || (commandCenter && safeRoleStr === ROLE_TYPES.ADMIN_GENERAL);
   const getRoleLabel = (r) => {
     const roleStr = String(r);
     switch(roleStr) {
@@ -43,6 +43,7 @@ const Header = ({ username, role, entityName, onLogout, onToggleSidebar }) => {
         <div className="flex items-center gap-4 flex-1">
           <button 
             onClick={onToggleSidebar}
+            aria-label="Abrir menú de navegación"
             className="lg:hidden p-2 hover:bg-slate-100 rounded-lg text-slate-700"
           >
             <Menu className="w-5 h-5" />

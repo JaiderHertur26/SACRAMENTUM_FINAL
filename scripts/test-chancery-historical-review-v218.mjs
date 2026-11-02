@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
+import {getCommandCenter} from '../src/config/commandCenters.js';
 const migration = fs.readFileSync('supabase/migrations/20261026140324_chancery_historical_link_review_v218.sql','utf8');
 const qa = fs.readFileSync('scripts/qa-rollback-chancery-unresolved-review-v218.sql','utf8');
 const page = fs.readFileSync('src/pages/chancery/HistoricalLinkReviewPage.jsx','utf8');
@@ -60,9 +61,10 @@ test('V218 route is protected by real chancery role',()=>{
  assert.match(app,/path="\/chancery\/historicos\/conciliacion"/);
  assert.match(app,/requiredRole=\{ROLE_TYPES.CHANCERY\}><HistoricalLinkReviewPage/);
 });
-test('V218 dashboard exposes historical review',()=>{
- assert.match(dashboard,/Revisión de Vínculos Históricos/);
- assert.match(dashboard,/navigate\('\/chancery\/historicos\/conciliacion'\)/);
+test('V218 dashboard exposes historical review through its shared command center',()=>{
+ assert.match(dashboard,/EcclesialCommandCenter/);
+ const actions=getCommandCenter('chancery').modules.flatMap(item=>item.actions);
+ assert.ok(actions.some(item=>item.label==='Revisión de Vínculos Históricos'&&item.to==='/chancery/historicos/conciliacion'));
 });
 test('V218 interface is auditable and no action directly corrects a sacramental registry',()=>{
  assert.match(page,/list_unresolved_legacy_links_v218/);

@@ -1,0 +1,2282 @@
+{
+  "protocol": "V324",
+  "testedAt": "2026-11-02T00:57:47.254Z",
+  "source_sha256_lf": {
+    "src/config/commandCenters.js": "c82cb31d9cfe8ad629378012b332db5ec01b0263f7966bab85f384c1eb3e0817",
+    "src/components/EcclesialCommandCenter.jsx": "a786315cf6ff70cd544050f23bcf49e2d748e5598a214a21a40e14eccbc95cab",
+    "src/styles/command-center.css": "31ff48271cfd4ce8052eff16720db4151df2c0ebf21cc68d1b780b6c362faf0c",
+    "src/pages/parish/ParishDashboard.jsx": "087b2d0e158fc98d2a001b9073da9f6554e8cc45ed57fc9c4325224a816c9753",
+    "src/pages/diocese/DioceseUserDashboard.jsx": "3281901be1cd40f7e3035884f4ee705a15644cfba46634cfaf0befa715c995aa",
+    "src/pages/chancery/ChanceryDashboard.jsx": "36df54b700d4742111c8924bec7c7331149ed829a2d8891a674ae072d63e97b6",
+    "src/pages/admin/AdminGeneralDashboard.jsx": "7a3d7ef41277424e659ff01efff6a0474c3a93aed5f56699bb7365f95fce36e5",
+    "src/components/DashboardLayout.jsx": "345802fa40934da92845587b0d2038ab2dd2ea13cc7f45d9d90f99c016327afd",
+    "src/components/Sidebar.jsx": "9745645b0f3d933399c13aec1106b7d9cf264a7515749117a183fe1a203b9647",
+    "src/components/Header.jsx": "33a2ba0fd54acd11c6275b66d32bb0182939ba20fdde9be7b46a9d12b331b263",
+    "scripts/qa-v324-command/entry.jsx": "e6b385981e747cc29dda7059b34338941ed7f7b7e47ee8662e96d404b26907b6",
+    "scripts/qa-v324-command/mocks.jsx": "3bc5a1dc97dd119b44f195059d4ca2166d5b00d0e5cdc2e766b3eb8a4172795f",
+    "scripts/qa-v324-command/vite.config.mjs": "2ce5be25d137a00f3a0409f72f56f198088f900abcbeddce8c32be2a10233b2a",
+    "scripts/audit-command-centers-browser-v324.mjs": "8fd2b9a03c41029a71377397f27688f066521f5e6bd400eee68c6c3a9e049c53"
+  },
+  "method": "Chrome real; cuatro dashboards, DashboardLayout, Sidebar y Header reales; perfiles y servicios ficticios aislados; sin iniciar sesiones institucionales ni escribir datos",
+  "approved": true,
+  "checked": 256,
+  "passed": 256,
+  "failed": 0,
+  "exceptions": [],
+  "externalRequests": [],
+  "screens": [
+    {
+      "role": "parish",
+      "viewport": "desktop",
+      "file": "v324-parish-desktop.png",
+      "title": "Centro de mando",
+      "overflow": false,
+      "modules": 4,
+      "metrics": 5,
+      "ecclesial": true,
+      "header": true,
+      "writes": 0,
+      "overflowing": [],
+      "wine": "#682b3e"
+    },
+    {
+      "role": "parish",
+      "viewport": "mobile",
+      "file": "v324-parish-mobile.png",
+      "title": "Centro de mando",
+      "overflow": false,
+      "modules": 4,
+      "metrics": 5,
+      "ecclesial": true,
+      "header": true,
+      "writes": 0,
+      "overflowing": [
+        {
+          "tag": "TBODY",
+          "classes": "",
+          "width": 700,
+          "text": "PERSONADE ENSAYOBautismoSIN FECHA Pendiente de asiento"
+        },
+        {
+          "tag": "TR",
+          "classes": "border-t border-slate-100 transition hover:bg-[#F8FBFE]",
+          "width": 700,
+          "text": "PERSONADE ENSAYOBautismoSIN FECHA Pendiente de asiento"
+        },
+        {
+          "tag": "TD",
+          "classes": "px-4 py-4",
+          "width": 124,
+          "text": "SIN FECHA"
+        },
+        {
+          "tag": "TD",
+          "classes": "px-4 py-4",
+          "width": 290,
+          "text": " Pendiente de asiento"
+        },
+        {
+          "tag": "SPAN",
+          "classes": "inline-flex items-center gap-1.5 rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-[8px] font-black uppercase tracki",
+          "width": 159,
+          "text": " Pendiente de asiento"
+        },
+        {
+          "tag": "svg",
+          "classes": "[object SVGAnimatedString]",
+          "width": 12,
+          "text": ""
+        },
+        {
+          "tag": "circle",
+          "classes": "[object SVGAnimatedString]",
+          "width": 10,
+          "text": ""
+        },
+        {
+          "tag": "polyline",
+          "classes": "[object SVGAnimatedString]",
+          "width": 2,
+          "text": ""
+        }
+      ],
+      "wine": "#682b3e"
+    },
+    {
+      "role": "diocese",
+      "viewport": "desktop",
+      "file": "v324-diocese-desktop.png",
+      "title": "Centro de mando",
+      "overflow": false,
+      "modules": 4,
+      "metrics": 3,
+      "ecclesial": true,
+      "header": true,
+      "writes": 0,
+      "overflowing": [],
+      "wine": "#682b3e"
+    },
+    {
+      "role": "diocese",
+      "viewport": "mobile",
+      "file": "v324-diocese-mobile.png",
+      "title": "Centro de mando",
+      "overflow": false,
+      "modules": 4,
+      "metrics": 3,
+      "ecclesial": true,
+      "header": true,
+      "writes": 0,
+      "overflowing": [],
+      "wine": "#682b3e"
+    },
+    {
+      "role": "chancery",
+      "viewport": "desktop",
+      "file": "v324-chancery-desktop.png",
+      "title": "Centro de mando",
+      "overflow": false,
+      "modules": 4,
+      "metrics": 4,
+      "ecclesial": true,
+      "header": true,
+      "writes": 0,
+      "overflowing": [],
+      "wine": "#682b3e"
+    },
+    {
+      "role": "chancery",
+      "viewport": "mobile",
+      "file": "v324-chancery-mobile.png",
+      "title": "Centro de mando",
+      "overflow": false,
+      "modules": 4,
+      "metrics": 4,
+      "ecclesial": true,
+      "header": true,
+      "writes": 0,
+      "overflowing": [
+        {
+          "tag": "TBODY",
+          "classes": "divide-y divide-slate-200",
+          "width": 615,
+          "text": "Persona de ensayoParroquia de ensayoBautismo01/11/2026Ver pendientes"
+        },
+        {
+          "tag": "TR",
+          "classes": "bg-white  ",
+          "width": 615,
+          "text": "Persona de ensayoParroquia de ensayoBautismo01/11/2026Ver pendientes"
+        },
+        {
+          "tag": "TD",
+          "classes": "px-4 py-3 align-middle text-slate-900 font-medium",
+          "width": 119,
+          "text": "Bautismo"
+        },
+        {
+          "tag": "SPAN",
+          "classes": "font-black text-[10px] uppercase tracking-widest text-[#4B7BA7] bg-blue-50 px-3 py-1 rounded-full",
+          "width": 87,
+          "text": "Bautismo"
+        },
+        {
+          "tag": "TD",
+          "classes": "px-4 py-3 align-middle text-slate-900 font-medium",
+          "width": 98,
+          "text": "01/11/2026"
+        },
+        {
+          "tag": "SPAN",
+          "classes": "text-slate-500 text-xs font-bold",
+          "width": 66,
+          "text": "01/11/2026"
+        },
+        {
+          "tag": "TD",
+          "classes": "px-4 py-3 align-middle text-slate-900 font-medium",
+          "width": 131,
+          "text": "Ver pendientes"
+        },
+        {
+          "tag": "BUTTON",
+          "classes": "inline-flex items-center justify-center gap-2 rounded-xl transition-all focus-visible:outline-none focus-visible:ring-2 focus-visi",
+          "width": 99,
+          "text": "Ver pendientes"
+        }
+      ],
+      "wine": "#682b3e"
+    },
+    {
+      "role": "admin_general",
+      "viewport": "desktop",
+      "file": "v324-admin_general-desktop.png",
+      "title": "Centro de mando",
+      "overflow": false,
+      "modules": 4,
+      "metrics": 4,
+      "ecclesial": true,
+      "header": true,
+      "writes": 0,
+      "overflowing": [],
+      "wine": "#682b3e"
+    },
+    {
+      "role": "admin_general",
+      "viewport": "mobile",
+      "file": "v324-admin_general-mobile.png",
+      "title": "Centro de mando",
+      "overflow": false,
+      "modules": 4,
+      "metrics": 4,
+      "ecclesial": true,
+      "header": true,
+      "writes": 0,
+      "overflowing": [
+        {
+          "tag": "TD",
+          "classes": "px-4 py-3 align-middle text-slate-900 font-medium",
+          "width": 152,
+          "text": "Sin asignar"
+        },
+        {
+          "tag": "SPAN",
+          "classes": "text-xs font-bold text-slate-600",
+          "width": 62,
+          "text": "Sin asignar"
+        },
+        {
+          "tag": "TD",
+          "classes": "px-4 py-3 align-middle text-slate-900 font-medium",
+          "width": 90,
+          "text": ""
+        },
+        {
+          "tag": "DIV",
+          "classes": "flex gap-2 justify-end",
+          "width": 58,
+          "text": ""
+        },
+        {
+          "tag": "BUTTON",
+          "classes": "inline-flex items-center justify-center gap-2 rounded-xl text-sm font-semibold transition-all focus-visible:outline-none focus-vis",
+          "width": 40,
+          "text": ""
+        },
+        {
+          "tag": "svg",
+          "classes": "[object SVGAnimatedString]",
+          "width": 16,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "classes": "[object SVGAnimatedString]",
+          "width": 13,
+          "text": ""
+        },
+        {
+          "tag": "circle",
+          "classes": "[object SVGAnimatedString]",
+          "width": 4,
+          "text": ""
+        }
+      ],
+      "wine": "#682b3e"
+    }
+  ],
+  "checks": [
+    {
+      "name": "Identidad eclesial por rol",
+      "passed": true,
+      "role": "parish",
+      "viewport": "desktop"
+    },
+    {
+      "name": "Sin desbordamiento horizontal",
+      "passed": true,
+      "role": "parish",
+      "viewport": "desktop",
+      "overflowing": []
+    },
+    {
+      "name": "Áreas y resumen del rol",
+      "passed": true,
+      "role": "parish",
+      "viewport": "desktop"
+    },
+    {
+      "name": "Carga sin escrituras",
+      "passed": true,
+      "role": "parish",
+      "viewport": "desktop"
+    },
+    {
+      "name": "Panel de acciones y foco",
+      "passed": true,
+      "role": "parish",
+      "viewport": "desktop",
+      "module": "baptism"
+    },
+    {
+      "name": "Escape cierra y devuelve el foco",
+      "passed": true,
+      "role": "parish",
+      "viewport": "desktop",
+      "module": "baptism"
+    },
+    {
+      "name": "Panel de acciones y foco",
+      "passed": true,
+      "role": "parish",
+      "viewport": "desktop",
+      "module": "confirmation"
+    },
+    {
+      "name": "Escape cierra y devuelve el foco",
+      "passed": true,
+      "role": "parish",
+      "viewport": "desktop",
+      "module": "confirmation"
+    },
+    {
+      "name": "Panel de acciones y foco",
+      "passed": true,
+      "role": "parish",
+      "viewport": "desktop",
+      "module": "marriage"
+    },
+    {
+      "name": "Escape cierra y devuelve el foco",
+      "passed": true,
+      "role": "parish",
+      "viewport": "desktop",
+      "module": "marriage"
+    },
+    {
+      "name": "Panel de acciones y foco",
+      "passed": true,
+      "role": "parish",
+      "viewport": "desktop",
+      "module": "funeral"
+    },
+    {
+      "name": "Escape cierra y devuelve el foco",
+      "passed": true,
+      "role": "parish",
+      "viewport": "desktop",
+      "module": "funeral"
+    },
+    {
+      "name": "Búsqueda abre la pantalla existente",
+      "passed": true,
+      "role": "parish"
+    },
+    {
+      "name": "Acción navega a su destino existente",
+      "passed": true,
+      "role": "parish"
+    },
+    {
+      "name": "Identidad eclesial por rol",
+      "passed": true,
+      "role": "parish",
+      "viewport": "small-desktop"
+    },
+    {
+      "name": "Sin desbordamiento horizontal",
+      "passed": true,
+      "role": "parish",
+      "viewport": "small-desktop",
+      "overflowing": []
+    },
+    {
+      "name": "Áreas y resumen del rol",
+      "passed": true,
+      "role": "parish",
+      "viewport": "small-desktop"
+    },
+    {
+      "name": "Carga sin escrituras",
+      "passed": true,
+      "role": "parish",
+      "viewport": "small-desktop"
+    },
+    {
+      "name": "Panel de acciones y foco",
+      "passed": true,
+      "role": "parish",
+      "viewport": "small-desktop",
+      "module": "baptism"
+    },
+    {
+      "name": "Escape cierra y devuelve el foco",
+      "passed": true,
+      "role": "parish",
+      "viewport": "small-desktop",
+      "module": "baptism"
+    },
+    {
+      "name": "Panel de acciones y foco",
+      "passed": true,
+      "role": "parish",
+      "viewport": "small-desktop",
+      "module": "confirmation"
+    },
+    {
+      "name": "Escape cierra y devuelve el foco",
+      "passed": true,
+      "role": "parish",
+      "viewport": "small-desktop",
+      "module": "confirmation"
+    },
+    {
+      "name": "Panel de acciones y foco",
+      "passed": true,
+      "role": "parish",
+      "viewport": "small-desktop",
+      "module": "marriage"
+    },
+    {
+      "name": "Escape cierra y devuelve el foco",
+      "passed": true,
+      "role": "parish",
+      "viewport": "small-desktop",
+      "module": "marriage"
+    },
+    {
+      "name": "Panel de acciones y foco",
+      "passed": true,
+      "role": "parish",
+      "viewport": "small-desktop",
+      "module": "funeral"
+    },
+    {
+      "name": "Escape cierra y devuelve el foco",
+      "passed": true,
+      "role": "parish",
+      "viewport": "small-desktop",
+      "module": "funeral"
+    },
+    {
+      "name": "Identidad eclesial por rol",
+      "passed": true,
+      "role": "parish",
+      "viewport": "tablet"
+    },
+    {
+      "name": "Sin desbordamiento horizontal",
+      "passed": true,
+      "role": "parish",
+      "viewport": "tablet",
+      "overflowing": []
+    },
+    {
+      "name": "Áreas y resumen del rol",
+      "passed": true,
+      "role": "parish",
+      "viewport": "tablet"
+    },
+    {
+      "name": "Carga sin escrituras",
+      "passed": true,
+      "role": "parish",
+      "viewport": "tablet"
+    },
+    {
+      "name": "Panel de acciones y foco",
+      "passed": true,
+      "role": "parish",
+      "viewport": "tablet",
+      "module": "baptism"
+    },
+    {
+      "name": "Escape cierra y devuelve el foco",
+      "passed": true,
+      "role": "parish",
+      "viewport": "tablet",
+      "module": "baptism"
+    },
+    {
+      "name": "Panel de acciones y foco",
+      "passed": true,
+      "role": "parish",
+      "viewport": "tablet",
+      "module": "confirmation"
+    },
+    {
+      "name": "Escape cierra y devuelve el foco",
+      "passed": true,
+      "role": "parish",
+      "viewport": "tablet",
+      "module": "confirmation"
+    },
+    {
+      "name": "Panel de acciones y foco",
+      "passed": true,
+      "role": "parish",
+      "viewport": "tablet",
+      "module": "marriage"
+    },
+    {
+      "name": "Escape cierra y devuelve el foco",
+      "passed": true,
+      "role": "parish",
+      "viewport": "tablet",
+      "module": "marriage"
+    },
+    {
+      "name": "Panel de acciones y foco",
+      "passed": true,
+      "role": "parish",
+      "viewport": "tablet",
+      "module": "funeral"
+    },
+    {
+      "name": "Escape cierra y devuelve el foco",
+      "passed": true,
+      "role": "parish",
+      "viewport": "tablet",
+      "module": "funeral"
+    },
+    {
+      "name": "Identidad eclesial por rol",
+      "passed": true,
+      "role": "parish",
+      "viewport": "mobile"
+    },
+    {
+      "name": "Sin desbordamiento horizontal",
+      "passed": true,
+      "role": "parish",
+      "viewport": "mobile",
+      "overflowing": [
+        {
+          "tag": "TBODY",
+          "classes": "",
+          "width": 700,
+          "text": "PERSONADE ENSAYOBautismoSIN FECHA Pendiente de asiento"
+        },
+        {
+          "tag": "TR",
+          "classes": "border-t border-slate-100 transition hover:bg-[#F8FBFE]",
+          "width": 700,
+          "text": "PERSONADE ENSAYOBautismoSIN FECHA Pendiente de asiento"
+        },
+        {
+          "tag": "TD",
+          "classes": "px-4 py-4",
+          "width": 124,
+          "text": "SIN FECHA"
+        },
+        {
+          "tag": "TD",
+          "classes": "px-4 py-4",
+          "width": 290,
+          "text": " Pendiente de asiento"
+        },
+        {
+          "tag": "SPAN",
+          "classes": "inline-flex items-center gap-1.5 rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-[8px] font-black uppercase tracki",
+          "width": 159,
+          "text": " Pendiente de asiento"
+        },
+        {
+          "tag": "svg",
+          "classes": "[object SVGAnimatedString]",
+          "width": 12,
+          "text": ""
+        },
+        {
+          "tag": "circle",
+          "classes": "[object SVGAnimatedString]",
+          "width": 10,
+          "text": ""
+        },
+        {
+          "tag": "polyline",
+          "classes": "[object SVGAnimatedString]",
+          "width": 2,
+          "text": ""
+        }
+      ]
+    },
+    {
+      "name": "Áreas y resumen del rol",
+      "passed": true,
+      "role": "parish",
+      "viewport": "mobile"
+    },
+    {
+      "name": "Carga sin escrituras",
+      "passed": true,
+      "role": "parish",
+      "viewport": "mobile"
+    },
+    {
+      "name": "Panel de acciones y foco",
+      "passed": true,
+      "role": "parish",
+      "viewport": "mobile",
+      "module": "baptism"
+    },
+    {
+      "name": "Escape cierra y devuelve el foco",
+      "passed": true,
+      "role": "parish",
+      "viewport": "mobile",
+      "module": "baptism"
+    },
+    {
+      "name": "Panel de acciones y foco",
+      "passed": true,
+      "role": "parish",
+      "viewport": "mobile",
+      "module": "confirmation"
+    },
+    {
+      "name": "Escape cierra y devuelve el foco",
+      "passed": true,
+      "role": "parish",
+      "viewport": "mobile",
+      "module": "confirmation"
+    },
+    {
+      "name": "Panel de acciones y foco",
+      "passed": true,
+      "role": "parish",
+      "viewport": "mobile",
+      "module": "marriage"
+    },
+    {
+      "name": "Escape cierra y devuelve el foco",
+      "passed": true,
+      "role": "parish",
+      "viewport": "mobile",
+      "module": "marriage"
+    },
+    {
+      "name": "Panel de acciones y foco",
+      "passed": true,
+      "role": "parish",
+      "viewport": "mobile",
+      "module": "funeral"
+    },
+    {
+      "name": "Escape cierra y devuelve el foco",
+      "passed": true,
+      "role": "parish",
+      "viewport": "mobile",
+      "module": "funeral"
+    },
+    {
+      "name": "Identidad eclesial por rol",
+      "passed": true,
+      "role": "parish",
+      "viewport": "small-mobile"
+    },
+    {
+      "name": "Sin desbordamiento horizontal",
+      "passed": true,
+      "role": "parish",
+      "viewport": "small-mobile",
+      "overflowing": [
+        {
+          "tag": "TR",
+          "classes": "border-t border-slate-100 transition hover:bg-[#F8FBFE]",
+          "width": 700,
+          "text": "PERSONADE ENSAYOBautismoSIN FECHA Pendiente de asiento"
+        },
+        {
+          "tag": "TD",
+          "classes": "px-4 py-4",
+          "width": 124,
+          "text": "SIN FECHA"
+        },
+        {
+          "tag": "SPAN",
+          "classes": "font-mono text-[10px] font-bold text-slate-500",
+          "width": 49,
+          "text": "SIN FECHA"
+        },
+        {
+          "tag": "TD",
+          "classes": "px-4 py-4",
+          "width": 290,
+          "text": " Pendiente de asiento"
+        },
+        {
+          "tag": "SPAN",
+          "classes": "inline-flex items-center gap-1.5 rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-[8px] font-black uppercase tracki",
+          "width": 159,
+          "text": " Pendiente de asiento"
+        },
+        {
+          "tag": "svg",
+          "classes": "[object SVGAnimatedString]",
+          "width": 12,
+          "text": ""
+        },
+        {
+          "tag": "circle",
+          "classes": "[object SVGAnimatedString]",
+          "width": 10,
+          "text": ""
+        },
+        {
+          "tag": "polyline",
+          "classes": "[object SVGAnimatedString]",
+          "width": 2,
+          "text": ""
+        }
+      ]
+    },
+    {
+      "name": "Áreas y resumen del rol",
+      "passed": true,
+      "role": "parish",
+      "viewport": "small-mobile"
+    },
+    {
+      "name": "Carga sin escrituras",
+      "passed": true,
+      "role": "parish",
+      "viewport": "small-mobile"
+    },
+    {
+      "name": "Panel de acciones y foco",
+      "passed": true,
+      "role": "parish",
+      "viewport": "small-mobile",
+      "module": "baptism"
+    },
+    {
+      "name": "Escape cierra y devuelve el foco",
+      "passed": true,
+      "role": "parish",
+      "viewport": "small-mobile",
+      "module": "baptism"
+    },
+    {
+      "name": "Panel de acciones y foco",
+      "passed": true,
+      "role": "parish",
+      "viewport": "small-mobile",
+      "module": "confirmation"
+    },
+    {
+      "name": "Escape cierra y devuelve el foco",
+      "passed": true,
+      "role": "parish",
+      "viewport": "small-mobile",
+      "module": "confirmation"
+    },
+    {
+      "name": "Panel de acciones y foco",
+      "passed": true,
+      "role": "parish",
+      "viewport": "small-mobile",
+      "module": "marriage"
+    },
+    {
+      "name": "Escape cierra y devuelve el foco",
+      "passed": true,
+      "role": "parish",
+      "viewport": "small-mobile",
+      "module": "marriage"
+    },
+    {
+      "name": "Panel de acciones y foco",
+      "passed": true,
+      "role": "parish",
+      "viewport": "small-mobile",
+      "module": "funeral"
+    },
+    {
+      "name": "Escape cierra y devuelve el foco",
+      "passed": true,
+      "role": "parish",
+      "viewport": "small-mobile",
+      "module": "funeral"
+    },
+    {
+      "name": "Identidad eclesial por rol",
+      "passed": true,
+      "role": "diocese",
+      "viewport": "desktop"
+    },
+    {
+      "name": "Sin desbordamiento horizontal",
+      "passed": true,
+      "role": "diocese",
+      "viewport": "desktop",
+      "overflowing": []
+    },
+    {
+      "name": "Áreas y resumen del rol",
+      "passed": true,
+      "role": "diocese",
+      "viewport": "desktop"
+    },
+    {
+      "name": "Carga sin escrituras",
+      "passed": true,
+      "role": "diocese",
+      "viewport": "desktop"
+    },
+    {
+      "name": "Panel de acciones y foco",
+      "passed": true,
+      "role": "diocese",
+      "viewport": "desktop",
+      "module": "organization"
+    },
+    {
+      "name": "Escape cierra y devuelve el foco",
+      "passed": true,
+      "role": "diocese",
+      "viewport": "desktop",
+      "module": "organization"
+    },
+    {
+      "name": "Panel de acciones y foco",
+      "passed": true,
+      "role": "diocese",
+      "viewport": "desktop",
+      "module": "reports"
+    },
+    {
+      "name": "Escape cierra y devuelve el foco",
+      "passed": true,
+      "role": "diocese",
+      "viewport": "desktop",
+      "module": "reports"
+    },
+    {
+      "name": "Panel de acciones y foco",
+      "passed": true,
+      "role": "diocese",
+      "viewport": "desktop",
+      "module": "migration"
+    },
+    {
+      "name": "Escape cierra y devuelve el foco",
+      "passed": true,
+      "role": "diocese",
+      "viewport": "desktop",
+      "module": "migration"
+    },
+    {
+      "name": "Panel de acciones y foco",
+      "passed": true,
+      "role": "diocese",
+      "viewport": "desktop",
+      "module": "communications"
+    },
+    {
+      "name": "Escape cierra y devuelve el foco",
+      "passed": true,
+      "role": "diocese",
+      "viewport": "desktop",
+      "module": "communications"
+    },
+    {
+      "name": "Búsqueda abre la pantalla existente",
+      "passed": true,
+      "role": "diocese"
+    },
+    {
+      "name": "Acción navega a su destino existente",
+      "passed": true,
+      "role": "diocese"
+    },
+    {
+      "name": "Identidad eclesial por rol",
+      "passed": true,
+      "role": "diocese",
+      "viewport": "small-desktop"
+    },
+    {
+      "name": "Sin desbordamiento horizontal",
+      "passed": true,
+      "role": "diocese",
+      "viewport": "small-desktop",
+      "overflowing": []
+    },
+    {
+      "name": "Áreas y resumen del rol",
+      "passed": true,
+      "role": "diocese",
+      "viewport": "small-desktop"
+    },
+    {
+      "name": "Carga sin escrituras",
+      "passed": true,
+      "role": "diocese",
+      "viewport": "small-desktop"
+    },
+    {
+      "name": "Panel de acciones y foco",
+      "passed": true,
+      "role": "diocese",
+      "viewport": "small-desktop",
+      "module": "organization"
+    },
+    {
+      "name": "Escape cierra y devuelve el foco",
+      "passed": true,
+      "role": "diocese",
+      "viewport": "small-desktop",
+      "module": "organization"
+    },
+    {
+      "name": "Panel de acciones y foco",
+      "passed": true,
+      "role": "diocese",
+      "viewport": "small-desktop",
+      "module": "reports"
+    },
+    {
+      "name": "Escape cierra y devuelve el foco",
+      "passed": true,
+      "role": "diocese",
+      "viewport": "small-desktop",
+      "module": "reports"
+    },
+    {
+      "name": "Panel de acciones y foco",
+      "passed": true,
+      "role": "diocese",
+      "viewport": "small-desktop",
+      "module": "migration"
+    },
+    {
+      "name": "Escape cierra y devuelve el foco",
+      "passed": true,
+      "role": "diocese",
+      "viewport": "small-desktop",
+      "module": "migration"
+    },
+    {
+      "name": "Panel de acciones y foco",
+      "passed": true,
+      "role": "diocese",
+      "viewport": "small-desktop",
+      "module": "communications"
+    },
+    {
+      "name": "Escape cierra y devuelve el foco",
+      "passed": true,
+      "role": "diocese",
+      "viewport": "small-desktop",
+      "module": "communications"
+    },
+    {
+      "name": "Identidad eclesial por rol",
+      "passed": true,
+      "role": "diocese",
+      "viewport": "tablet"
+    },
+    {
+      "name": "Sin desbordamiento horizontal",
+      "passed": true,
+      "role": "diocese",
+      "viewport": "tablet",
+      "overflowing": []
+    },
+    {
+      "name": "Áreas y resumen del rol",
+      "passed": true,
+      "role": "diocese",
+      "viewport": "tablet"
+    },
+    {
+      "name": "Carga sin escrituras",
+      "passed": true,
+      "role": "diocese",
+      "viewport": "tablet"
+    },
+    {
+      "name": "Panel de acciones y foco",
+      "passed": true,
+      "role": "diocese",
+      "viewport": "tablet",
+      "module": "organization"
+    },
+    {
+      "name": "Escape cierra y devuelve el foco",
+      "passed": true,
+      "role": "diocese",
+      "viewport": "tablet",
+      "module": "organization"
+    },
+    {
+      "name": "Panel de acciones y foco",
+      "passed": true,
+      "role": "diocese",
+      "viewport": "tablet",
+      "module": "reports"
+    },
+    {
+      "name": "Escape cierra y devuelve el foco",
+      "passed": true,
+      "role": "diocese",
+      "viewport": "tablet",
+      "module": "reports"
+    },
+    {
+      "name": "Panel de acciones y foco",
+      "passed": true,
+      "role": "diocese",
+      "viewport": "tablet",
+      "module": "migration"
+    },
+    {
+      "name": "Escape cierra y devuelve el foco",
+      "passed": true,
+      "role": "diocese",
+      "viewport": "tablet",
+      "module": "migration"
+    },
+    {
+      "name": "Panel de acciones y foco",
+      "passed": true,
+      "role": "diocese",
+      "viewport": "tablet",
+      "module": "communications"
+    },
+    {
+      "name": "Escape cierra y devuelve el foco",
+      "passed": true,
+      "role": "diocese",
+      "viewport": "tablet",
+      "module": "communications"
+    },
+    {
+      "name": "Identidad eclesial por rol",
+      "passed": true,
+      "role": "diocese",
+      "viewport": "mobile"
+    },
+    {
+      "name": "Sin desbordamiento horizontal",
+      "passed": true,
+      "role": "diocese",
+      "viewport": "mobile",
+      "overflowing": []
+    },
+    {
+      "name": "Áreas y resumen del rol",
+      "passed": true,
+      "role": "diocese",
+      "viewport": "mobile"
+    },
+    {
+      "name": "Carga sin escrituras",
+      "passed": true,
+      "role": "diocese",
+      "viewport": "mobile"
+    },
+    {
+      "name": "Panel de acciones y foco",
+      "passed": true,
+      "role": "diocese",
+      "viewport": "mobile",
+      "module": "organization"
+    },
+    {
+      "name": "Escape cierra y devuelve el foco",
+      "passed": true,
+      "role": "diocese",
+      "viewport": "mobile",
+      "module": "organization"
+    },
+    {
+      "name": "Panel de acciones y foco",
+      "passed": true,
+      "role": "diocese",
+      "viewport": "mobile",
+      "module": "reports"
+    },
+    {
+      "name": "Escape cierra y devuelve el foco",
+      "passed": true,
+      "role": "diocese",
+      "viewport": "mobile",
+      "module": "reports"
+    },
+    {
+      "name": "Panel de acciones y foco",
+      "passed": true,
+      "role": "diocese",
+      "viewport": "mobile",
+      "module": "migration"
+    },
+    {
+      "name": "Escape cierra y devuelve el foco",
+      "passed": true,
+      "role": "diocese",
+      "viewport": "mobile",
+      "module": "migration"
+    },
+    {
+      "name": "Panel de acciones y foco",
+      "passed": true,
+      "role": "diocese",
+      "viewport": "mobile",
+      "module": "communications"
+    },
+    {
+      "name": "Escape cierra y devuelve el foco",
+      "passed": true,
+      "role": "diocese",
+      "viewport": "mobile",
+      "module": "communications"
+    },
+    {
+      "name": "Identidad eclesial por rol",
+      "passed": true,
+      "role": "diocese",
+      "viewport": "small-mobile"
+    },
+    {
+      "name": "Sin desbordamiento horizontal",
+      "passed": true,
+      "role": "diocese",
+      "viewport": "small-mobile",
+      "overflowing": []
+    },
+    {
+      "name": "Áreas y resumen del rol",
+      "passed": true,
+      "role": "diocese",
+      "viewport": "small-mobile"
+    },
+    {
+      "name": "Carga sin escrituras",
+      "passed": true,
+      "role": "diocese",
+      "viewport": "small-mobile"
+    },
+    {
+      "name": "Panel de acciones y foco",
+      "passed": true,
+      "role": "diocese",
+      "viewport": "small-mobile",
+      "module": "organization"
+    },
+    {
+      "name": "Escape cierra y devuelve el foco",
+      "passed": true,
+      "role": "diocese",
+      "viewport": "small-mobile",
+      "module": "organization"
+    },
+    {
+      "name": "Panel de acciones y foco",
+      "passed": true,
+      "role": "diocese",
+      "viewport": "small-mobile",
+      "module": "reports"
+    },
+    {
+      "name": "Escape cierra y devuelve el foco",
+      "passed": true,
+      "role": "diocese",
+      "viewport": "small-mobile",
+      "module": "reports"
+    },
+    {
+      "name": "Panel de acciones y foco",
+      "passed": true,
+      "role": "diocese",
+      "viewport": "small-mobile",
+      "module": "migration"
+    },
+    {
+      "name": "Escape cierra y devuelve el foco",
+      "passed": true,
+      "role": "diocese",
+      "viewport": "small-mobile",
+      "module": "migration"
+    },
+    {
+      "name": "Panel de acciones y foco",
+      "passed": true,
+      "role": "diocese",
+      "viewport": "small-mobile",
+      "module": "communications"
+    },
+    {
+      "name": "Escape cierra y devuelve el foco",
+      "passed": true,
+      "role": "diocese",
+      "viewport": "small-mobile",
+      "module": "communications"
+    },
+    {
+      "name": "Identidad eclesial por rol",
+      "passed": true,
+      "role": "chancery",
+      "viewport": "desktop"
+    },
+    {
+      "name": "Sin desbordamiento horizontal",
+      "passed": true,
+      "role": "chancery",
+      "viewport": "desktop",
+      "overflowing": []
+    },
+    {
+      "name": "Áreas y resumen del rol",
+      "passed": true,
+      "role": "chancery",
+      "viewport": "desktop"
+    },
+    {
+      "name": "Carga sin escrituras",
+      "passed": true,
+      "role": "chancery",
+      "viewport": "desktop"
+    },
+    {
+      "name": "Panel de acciones y foco",
+      "passed": true,
+      "role": "chancery",
+      "viewport": "desktop",
+      "module": "decrees"
+    },
+    {
+      "name": "Escape cierra y devuelve el foco",
+      "passed": true,
+      "role": "chancery",
+      "viewport": "desktop",
+      "module": "decrees"
+    },
+    {
+      "name": "Panel de acciones y foco",
+      "passed": true,
+      "role": "chancery",
+      "viewport": "desktop",
+      "module": "pending"
+    },
+    {
+      "name": "Escape cierra y devuelve el foco",
+      "passed": true,
+      "role": "chancery",
+      "viewport": "desktop",
+      "module": "pending"
+    },
+    {
+      "name": "Panel de acciones y foco",
+      "passed": true,
+      "role": "chancery",
+      "viewport": "desktop",
+      "module": "historical"
+    },
+    {
+      "name": "Escape cierra y devuelve el foco",
+      "passed": true,
+      "role": "chancery",
+      "viewport": "desktop",
+      "module": "historical"
+    },
+    {
+      "name": "Panel de acciones y foco",
+      "passed": true,
+      "role": "chancery",
+      "viewport": "desktop",
+      "module": "communications"
+    },
+    {
+      "name": "Escape cierra y devuelve el foco",
+      "passed": true,
+      "role": "chancery",
+      "viewport": "desktop",
+      "module": "communications"
+    },
+    {
+      "name": "Membrete conserva su formulario",
+      "passed": true
+    },
+    {
+      "name": "Cancelar membrete no guarda datos",
+      "passed": true
+    },
+    {
+      "name": "Búsqueda abre la pantalla existente",
+      "passed": true,
+      "role": "chancery"
+    },
+    {
+      "name": "Acción navega a su destino existente",
+      "passed": true,
+      "role": "chancery"
+    },
+    {
+      "name": "Identidad eclesial por rol",
+      "passed": true,
+      "role": "chancery",
+      "viewport": "small-desktop"
+    },
+    {
+      "name": "Sin desbordamiento horizontal",
+      "passed": true,
+      "role": "chancery",
+      "viewport": "small-desktop",
+      "overflowing": []
+    },
+    {
+      "name": "Áreas y resumen del rol",
+      "passed": true,
+      "role": "chancery",
+      "viewport": "small-desktop"
+    },
+    {
+      "name": "Carga sin escrituras",
+      "passed": true,
+      "role": "chancery",
+      "viewport": "small-desktop"
+    },
+    {
+      "name": "Panel de acciones y foco",
+      "passed": true,
+      "role": "chancery",
+      "viewport": "small-desktop",
+      "module": "decrees"
+    },
+    {
+      "name": "Escape cierra y devuelve el foco",
+      "passed": true,
+      "role": "chancery",
+      "viewport": "small-desktop",
+      "module": "decrees"
+    },
+    {
+      "name": "Panel de acciones y foco",
+      "passed": true,
+      "role": "chancery",
+      "viewport": "small-desktop",
+      "module": "pending"
+    },
+    {
+      "name": "Escape cierra y devuelve el foco",
+      "passed": true,
+      "role": "chancery",
+      "viewport": "small-desktop",
+      "module": "pending"
+    },
+    {
+      "name": "Panel de acciones y foco",
+      "passed": true,
+      "role": "chancery",
+      "viewport": "small-desktop",
+      "module": "historical"
+    },
+    {
+      "name": "Escape cierra y devuelve el foco",
+      "passed": true,
+      "role": "chancery",
+      "viewport": "small-desktop",
+      "module": "historical"
+    },
+    {
+      "name": "Panel de acciones y foco",
+      "passed": true,
+      "role": "chancery",
+      "viewport": "small-desktop",
+      "module": "communications"
+    },
+    {
+      "name": "Escape cierra y devuelve el foco",
+      "passed": true,
+      "role": "chancery",
+      "viewport": "small-desktop",
+      "module": "communications"
+    },
+    {
+      "name": "Identidad eclesial por rol",
+      "passed": true,
+      "role": "chancery",
+      "viewport": "tablet"
+    },
+    {
+      "name": "Sin desbordamiento horizontal",
+      "passed": true,
+      "role": "chancery",
+      "viewport": "tablet",
+      "overflowing": []
+    },
+    {
+      "name": "Áreas y resumen del rol",
+      "passed": true,
+      "role": "chancery",
+      "viewport": "tablet"
+    },
+    {
+      "name": "Carga sin escrituras",
+      "passed": true,
+      "role": "chancery",
+      "viewport": "tablet"
+    },
+    {
+      "name": "Panel de acciones y foco",
+      "passed": true,
+      "role": "chancery",
+      "viewport": "tablet",
+      "module": "decrees"
+    },
+    {
+      "name": "Escape cierra y devuelve el foco",
+      "passed": true,
+      "role": "chancery",
+      "viewport": "tablet",
+      "module": "decrees"
+    },
+    {
+      "name": "Panel de acciones y foco",
+      "passed": true,
+      "role": "chancery",
+      "viewport": "tablet",
+      "module": "pending"
+    },
+    {
+      "name": "Escape cierra y devuelve el foco",
+      "passed": true,
+      "role": "chancery",
+      "viewport": "tablet",
+      "module": "pending"
+    },
+    {
+      "name": "Panel de acciones y foco",
+      "passed": true,
+      "role": "chancery",
+      "viewport": "tablet",
+      "module": "historical"
+    },
+    {
+      "name": "Escape cierra y devuelve el foco",
+      "passed": true,
+      "role": "chancery",
+      "viewport": "tablet",
+      "module": "historical"
+    },
+    {
+      "name": "Panel de acciones y foco",
+      "passed": true,
+      "role": "chancery",
+      "viewport": "tablet",
+      "module": "communications"
+    },
+    {
+      "name": "Escape cierra y devuelve el foco",
+      "passed": true,
+      "role": "chancery",
+      "viewport": "tablet",
+      "module": "communications"
+    },
+    {
+      "name": "Identidad eclesial por rol",
+      "passed": true,
+      "role": "chancery",
+      "viewport": "mobile"
+    },
+    {
+      "name": "Sin desbordamiento horizontal",
+      "passed": true,
+      "role": "chancery",
+      "viewport": "mobile",
+      "overflowing": [
+        {
+          "tag": "TBODY",
+          "classes": "divide-y divide-slate-200",
+          "width": 615,
+          "text": "Persona de ensayoParroquia de ensayoBautismo01/11/2026Ver pendientes"
+        },
+        {
+          "tag": "TR",
+          "classes": "bg-white  ",
+          "width": 615,
+          "text": "Persona de ensayoParroquia de ensayoBautismo01/11/2026Ver pendientes"
+        },
+        {
+          "tag": "TD",
+          "classes": "px-4 py-3 align-middle text-slate-900 font-medium",
+          "width": 119,
+          "text": "Bautismo"
+        },
+        {
+          "tag": "SPAN",
+          "classes": "font-black text-[10px] uppercase tracking-widest text-[#4B7BA7] bg-blue-50 px-3 py-1 rounded-full",
+          "width": 87,
+          "text": "Bautismo"
+        },
+        {
+          "tag": "TD",
+          "classes": "px-4 py-3 align-middle text-slate-900 font-medium",
+          "width": 98,
+          "text": "01/11/2026"
+        },
+        {
+          "tag": "SPAN",
+          "classes": "text-slate-500 text-xs font-bold",
+          "width": 66,
+          "text": "01/11/2026"
+        },
+        {
+          "tag": "TD",
+          "classes": "px-4 py-3 align-middle text-slate-900 font-medium",
+          "width": 131,
+          "text": "Ver pendientes"
+        },
+        {
+          "tag": "BUTTON",
+          "classes": "inline-flex items-center justify-center gap-2 rounded-xl transition-all focus-visible:outline-none focus-visible:ring-2 focus-visi",
+          "width": 99,
+          "text": "Ver pendientes"
+        }
+      ]
+    },
+    {
+      "name": "Áreas y resumen del rol",
+      "passed": true,
+      "role": "chancery",
+      "viewport": "mobile"
+    },
+    {
+      "name": "Carga sin escrituras",
+      "passed": true,
+      "role": "chancery",
+      "viewport": "mobile"
+    },
+    {
+      "name": "Panel de acciones y foco",
+      "passed": true,
+      "role": "chancery",
+      "viewport": "mobile",
+      "module": "decrees"
+    },
+    {
+      "name": "Escape cierra y devuelve el foco",
+      "passed": true,
+      "role": "chancery",
+      "viewport": "mobile",
+      "module": "decrees"
+    },
+    {
+      "name": "Panel de acciones y foco",
+      "passed": true,
+      "role": "chancery",
+      "viewport": "mobile",
+      "module": "pending"
+    },
+    {
+      "name": "Escape cierra y devuelve el foco",
+      "passed": true,
+      "role": "chancery",
+      "viewport": "mobile",
+      "module": "pending"
+    },
+    {
+      "name": "Panel de acciones y foco",
+      "passed": true,
+      "role": "chancery",
+      "viewport": "mobile",
+      "module": "historical"
+    },
+    {
+      "name": "Escape cierra y devuelve el foco",
+      "passed": true,
+      "role": "chancery",
+      "viewport": "mobile",
+      "module": "historical"
+    },
+    {
+      "name": "Panel de acciones y foco",
+      "passed": true,
+      "role": "chancery",
+      "viewport": "mobile",
+      "module": "communications"
+    },
+    {
+      "name": "Escape cierra y devuelve el foco",
+      "passed": true,
+      "role": "chancery",
+      "viewport": "mobile",
+      "module": "communications"
+    },
+    {
+      "name": "Identidad eclesial por rol",
+      "passed": true,
+      "role": "chancery",
+      "viewport": "small-mobile"
+    },
+    {
+      "name": "Sin desbordamiento horizontal",
+      "passed": true,
+      "role": "chancery",
+      "viewport": "small-mobile",
+      "overflowing": [
+        {
+          "tag": "TBODY",
+          "classes": "divide-y divide-slate-200",
+          "width": 615,
+          "text": "Persona de ensayoParroquia de ensayoBautismo01/11/2026Ver pendientes"
+        },
+        {
+          "tag": "TR",
+          "classes": "bg-white  ",
+          "width": 615,
+          "text": "Persona de ensayoParroquia de ensayoBautismo01/11/2026Ver pendientes"
+        },
+        {
+          "tag": "TD",
+          "classes": "px-4 py-3 align-middle text-slate-900 font-medium",
+          "width": 119,
+          "text": "Bautismo"
+        },
+        {
+          "tag": "SPAN",
+          "classes": "font-black text-[10px] uppercase tracking-widest text-[#4B7BA7] bg-blue-50 px-3 py-1 rounded-full",
+          "width": 87,
+          "text": "Bautismo"
+        },
+        {
+          "tag": "TD",
+          "classes": "px-4 py-3 align-middle text-slate-900 font-medium",
+          "width": 98,
+          "text": "01/11/2026"
+        },
+        {
+          "tag": "SPAN",
+          "classes": "text-slate-500 text-xs font-bold",
+          "width": 66,
+          "text": "01/11/2026"
+        },
+        {
+          "tag": "TD",
+          "classes": "px-4 py-3 align-middle text-slate-900 font-medium",
+          "width": 131,
+          "text": "Ver pendientes"
+        },
+        {
+          "tag": "BUTTON",
+          "classes": "inline-flex items-center justify-center gap-2 rounded-xl transition-all focus-visible:outline-none focus-visible:ring-2 focus-visi",
+          "width": 99,
+          "text": "Ver pendientes"
+        }
+      ]
+    },
+    {
+      "name": "Áreas y resumen del rol",
+      "passed": true,
+      "role": "chancery",
+      "viewport": "small-mobile"
+    },
+    {
+      "name": "Carga sin escrituras",
+      "passed": true,
+      "role": "chancery",
+      "viewport": "small-mobile"
+    },
+    {
+      "name": "Panel de acciones y foco",
+      "passed": true,
+      "role": "chancery",
+      "viewport": "small-mobile",
+      "module": "decrees"
+    },
+    {
+      "name": "Escape cierra y devuelve el foco",
+      "passed": true,
+      "role": "chancery",
+      "viewport": "small-mobile",
+      "module": "decrees"
+    },
+    {
+      "name": "Panel de acciones y foco",
+      "passed": true,
+      "role": "chancery",
+      "viewport": "small-mobile",
+      "module": "pending"
+    },
+    {
+      "name": "Escape cierra y devuelve el foco",
+      "passed": true,
+      "role": "chancery",
+      "viewport": "small-mobile",
+      "module": "pending"
+    },
+    {
+      "name": "Panel de acciones y foco",
+      "passed": true,
+      "role": "chancery",
+      "viewport": "small-mobile",
+      "module": "historical"
+    },
+    {
+      "name": "Escape cierra y devuelve el foco",
+      "passed": true,
+      "role": "chancery",
+      "viewport": "small-mobile",
+      "module": "historical"
+    },
+    {
+      "name": "Panel de acciones y foco",
+      "passed": true,
+      "role": "chancery",
+      "viewport": "small-mobile",
+      "module": "communications"
+    },
+    {
+      "name": "Escape cierra y devuelve el foco",
+      "passed": true,
+      "role": "chancery",
+      "viewport": "small-mobile",
+      "module": "communications"
+    },
+    {
+      "name": "Identidad eclesial por rol",
+      "passed": true,
+      "role": "admin_general",
+      "viewport": "desktop"
+    },
+    {
+      "name": "Sin desbordamiento horizontal",
+      "passed": true,
+      "role": "admin_general",
+      "viewport": "desktop",
+      "overflowing": []
+    },
+    {
+      "name": "Áreas y resumen del rol",
+      "passed": true,
+      "role": "admin_general",
+      "viewport": "desktop"
+    },
+    {
+      "name": "Carga sin escrituras",
+      "passed": true,
+      "role": "admin_general",
+      "viewport": "desktop"
+    },
+    {
+      "name": "Panel de acciones y foco",
+      "passed": true,
+      "role": "admin_general",
+      "viewport": "desktop",
+      "module": "jurisdictions"
+    },
+    {
+      "name": "Escape cierra y devuelve el foco",
+      "passed": true,
+      "role": "admin_general",
+      "viewport": "desktop",
+      "module": "jurisdictions"
+    },
+    {
+      "name": "Panel de acciones y foco",
+      "passed": true,
+      "role": "admin_general",
+      "viewport": "desktop",
+      "module": "users"
+    },
+    {
+      "name": "Escape cierra y devuelve el foco",
+      "passed": true,
+      "role": "admin_general",
+      "viewport": "desktop",
+      "module": "users"
+    },
+    {
+      "name": "Panel de acciones y foco",
+      "passed": true,
+      "role": "admin_general",
+      "viewport": "desktop",
+      "module": "migration"
+    },
+    {
+      "name": "Escape cierra y devuelve el foco",
+      "passed": true,
+      "role": "admin_general",
+      "viewport": "desktop",
+      "module": "migration"
+    },
+    {
+      "name": "Panel de acciones y foco",
+      "passed": true,
+      "role": "admin_general",
+      "viewport": "desktop",
+      "module": "security"
+    },
+    {
+      "name": "Escape cierra y devuelve el foco",
+      "passed": true,
+      "role": "admin_general",
+      "viewport": "desktop",
+      "module": "security"
+    },
+    {
+      "name": "Búsqueda abre la pantalla existente",
+      "passed": true,
+      "role": "admin_general"
+    },
+    {
+      "name": "Acción navega a su destino existente",
+      "passed": true,
+      "role": "admin_general"
+    },
+    {
+      "name": "Identidad eclesial por rol",
+      "passed": true,
+      "role": "admin_general",
+      "viewport": "small-desktop"
+    },
+    {
+      "name": "Sin desbordamiento horizontal",
+      "passed": true,
+      "role": "admin_general",
+      "viewport": "small-desktop",
+      "overflowing": []
+    },
+    {
+      "name": "Áreas y resumen del rol",
+      "passed": true,
+      "role": "admin_general",
+      "viewport": "small-desktop"
+    },
+    {
+      "name": "Carga sin escrituras",
+      "passed": true,
+      "role": "admin_general",
+      "viewport": "small-desktop"
+    },
+    {
+      "name": "Panel de acciones y foco",
+      "passed": true,
+      "role": "admin_general",
+      "viewport": "small-desktop",
+      "module": "jurisdictions"
+    },
+    {
+      "name": "Escape cierra y devuelve el foco",
+      "passed": true,
+      "role": "admin_general",
+      "viewport": "small-desktop",
+      "module": "jurisdictions"
+    },
+    {
+      "name": "Panel de acciones y foco",
+      "passed": true,
+      "role": "admin_general",
+      "viewport": "small-desktop",
+      "module": "users"
+    },
+    {
+      "name": "Escape cierra y devuelve el foco",
+      "passed": true,
+      "role": "admin_general",
+      "viewport": "small-desktop",
+      "module": "users"
+    },
+    {
+      "name": "Panel de acciones y foco",
+      "passed": true,
+      "role": "admin_general",
+      "viewport": "small-desktop",
+      "module": "migration"
+    },
+    {
+      "name": "Escape cierra y devuelve el foco",
+      "passed": true,
+      "role": "admin_general",
+      "viewport": "small-desktop",
+      "module": "migration"
+    },
+    {
+      "name": "Panel de acciones y foco",
+      "passed": true,
+      "role": "admin_general",
+      "viewport": "small-desktop",
+      "module": "security"
+    },
+    {
+      "name": "Escape cierra y devuelve el foco",
+      "passed": true,
+      "role": "admin_general",
+      "viewport": "small-desktop",
+      "module": "security"
+    },
+    {
+      "name": "Identidad eclesial por rol",
+      "passed": true,
+      "role": "admin_general",
+      "viewport": "tablet"
+    },
+    {
+      "name": "Sin desbordamiento horizontal",
+      "passed": true,
+      "role": "admin_general",
+      "viewport": "tablet",
+      "overflowing": []
+    },
+    {
+      "name": "Áreas y resumen del rol",
+      "passed": true,
+      "role": "admin_general",
+      "viewport": "tablet"
+    },
+    {
+      "name": "Carga sin escrituras",
+      "passed": true,
+      "role": "admin_general",
+      "viewport": "tablet"
+    },
+    {
+      "name": "Panel de acciones y foco",
+      "passed": true,
+      "role": "admin_general",
+      "viewport": "tablet",
+      "module": "jurisdictions"
+    },
+    {
+      "name": "Escape cierra y devuelve el foco",
+      "passed": true,
+      "role": "admin_general",
+      "viewport": "tablet",
+      "module": "jurisdictions"
+    },
+    {
+      "name": "Panel de acciones y foco",
+      "passed": true,
+      "role": "admin_general",
+      "viewport": "tablet",
+      "module": "users"
+    },
+    {
+      "name": "Escape cierra y devuelve el foco",
+      "passed": true,
+      "role": "admin_general",
+      "viewport": "tablet",
+      "module": "users"
+    },
+    {
+      "name": "Panel de acciones y foco",
+      "passed": true,
+      "role": "admin_general",
+      "viewport": "tablet",
+      "module": "migration"
+    },
+    {
+      "name": "Escape cierra y devuelve el foco",
+      "passed": true,
+      "role": "admin_general",
+      "viewport": "tablet",
+      "module": "migration"
+    },
+    {
+      "name": "Panel de acciones y foco",
+      "passed": true,
+      "role": "admin_general",
+      "viewport": "tablet",
+      "module": "security"
+    },
+    {
+      "name": "Escape cierra y devuelve el foco",
+      "passed": true,
+      "role": "admin_general",
+      "viewport": "tablet",
+      "module": "security"
+    },
+    {
+      "name": "Identidad eclesial por rol",
+      "passed": true,
+      "role": "admin_general",
+      "viewport": "mobile"
+    },
+    {
+      "name": "Sin desbordamiento horizontal",
+      "passed": true,
+      "role": "admin_general",
+      "viewport": "mobile",
+      "overflowing": [
+        {
+          "tag": "TD",
+          "classes": "px-4 py-3 align-middle text-slate-900 font-medium",
+          "width": 152,
+          "text": "Sin asignar"
+        },
+        {
+          "tag": "SPAN",
+          "classes": "text-xs font-bold text-slate-600",
+          "width": 62,
+          "text": "Sin asignar"
+        },
+        {
+          "tag": "TD",
+          "classes": "px-4 py-3 align-middle text-slate-900 font-medium",
+          "width": 90,
+          "text": ""
+        },
+        {
+          "tag": "DIV",
+          "classes": "flex gap-2 justify-end",
+          "width": 58,
+          "text": ""
+        },
+        {
+          "tag": "BUTTON",
+          "classes": "inline-flex items-center justify-center gap-2 rounded-xl text-sm font-semibold transition-all focus-visible:outline-none focus-vis",
+          "width": 40,
+          "text": ""
+        },
+        {
+          "tag": "svg",
+          "classes": "[object SVGAnimatedString]",
+          "width": 16,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "classes": "[object SVGAnimatedString]",
+          "width": 13,
+          "text": ""
+        },
+        {
+          "tag": "circle",
+          "classes": "[object SVGAnimatedString]",
+          "width": 4,
+          "text": ""
+        }
+      ]
+    },
+    {
+      "name": "Áreas y resumen del rol",
+      "passed": true,
+      "role": "admin_general",
+      "viewport": "mobile"
+    },
+    {
+      "name": "Carga sin escrituras",
+      "passed": true,
+      "role": "admin_general",
+      "viewport": "mobile"
+    },
+    {
+      "name": "Panel de acciones y foco",
+      "passed": true,
+      "role": "admin_general",
+      "viewport": "mobile",
+      "module": "jurisdictions"
+    },
+    {
+      "name": "Escape cierra y devuelve el foco",
+      "passed": true,
+      "role": "admin_general",
+      "viewport": "mobile",
+      "module": "jurisdictions"
+    },
+    {
+      "name": "Panel de acciones y foco",
+      "passed": true,
+      "role": "admin_general",
+      "viewport": "mobile",
+      "module": "users"
+    },
+    {
+      "name": "Escape cierra y devuelve el foco",
+      "passed": true,
+      "role": "admin_general",
+      "viewport": "mobile",
+      "module": "users"
+    },
+    {
+      "name": "Panel de acciones y foco",
+      "passed": true,
+      "role": "admin_general",
+      "viewport": "mobile",
+      "module": "migration"
+    },
+    {
+      "name": "Escape cierra y devuelve el foco",
+      "passed": true,
+      "role": "admin_general",
+      "viewport": "mobile",
+      "module": "migration"
+    },
+    {
+      "name": "Panel de acciones y foco",
+      "passed": true,
+      "role": "admin_general",
+      "viewport": "mobile",
+      "module": "security"
+    },
+    {
+      "name": "Escape cierra y devuelve el foco",
+      "passed": true,
+      "role": "admin_general",
+      "viewport": "mobile",
+      "module": "security"
+    },
+    {
+      "name": "Identidad eclesial por rol",
+      "passed": true,
+      "role": "admin_general",
+      "viewport": "small-mobile"
+    },
+    {
+      "name": "Sin desbordamiento horizontal",
+      "passed": true,
+      "role": "admin_general",
+      "viewport": "small-mobile",
+      "overflowing": [
+        {
+          "tag": "TD",
+          "classes": "px-4 py-3 align-middle text-slate-900 font-medium",
+          "width": 152,
+          "text": "Sin asignar"
+        },
+        {
+          "tag": "SPAN",
+          "classes": "text-xs font-bold text-slate-600",
+          "width": 62,
+          "text": "Sin asignar"
+        },
+        {
+          "tag": "TD",
+          "classes": "px-4 py-3 align-middle text-slate-900 font-medium",
+          "width": 90,
+          "text": ""
+        },
+        {
+          "tag": "DIV",
+          "classes": "flex gap-2 justify-end",
+          "width": 58,
+          "text": ""
+        },
+        {
+          "tag": "BUTTON",
+          "classes": "inline-flex items-center justify-center gap-2 rounded-xl text-sm font-semibold transition-all focus-visible:outline-none focus-vis",
+          "width": 40,
+          "text": ""
+        },
+        {
+          "tag": "svg",
+          "classes": "[object SVGAnimatedString]",
+          "width": 16,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "classes": "[object SVGAnimatedString]",
+          "width": 13,
+          "text": ""
+        },
+        {
+          "tag": "circle",
+          "classes": "[object SVGAnimatedString]",
+          "width": 4,
+          "text": ""
+        }
+      ]
+    },
+    {
+      "name": "Áreas y resumen del rol",
+      "passed": true,
+      "role": "admin_general",
+      "viewport": "small-mobile"
+    },
+    {
+      "name": "Carga sin escrituras",
+      "passed": true,
+      "role": "admin_general",
+      "viewport": "small-mobile"
+    },
+    {
+      "name": "Panel de acciones y foco",
+      "passed": true,
+      "role": "admin_general",
+      "viewport": "small-mobile",
+      "module": "jurisdictions"
+    },
+    {
+      "name": "Escape cierra y devuelve el foco",
+      "passed": true,
+      "role": "admin_general",
+      "viewport": "small-mobile",
+      "module": "jurisdictions"
+    },
+    {
+      "name": "Panel de acciones y foco",
+      "passed": true,
+      "role": "admin_general",
+      "viewport": "small-mobile",
+      "module": "users"
+    },
+    {
+      "name": "Escape cierra y devuelve el foco",
+      "passed": true,
+      "role": "admin_general",
+      "viewport": "small-mobile",
+      "module": "users"
+    },
+    {
+      "name": "Panel de acciones y foco",
+      "passed": true,
+      "role": "admin_general",
+      "viewport": "small-mobile",
+      "module": "migration"
+    },
+    {
+      "name": "Escape cierra y devuelve el foco",
+      "passed": true,
+      "role": "admin_general",
+      "viewport": "small-mobile",
+      "module": "migration"
+    },
+    {
+      "name": "Panel de acciones y foco",
+      "passed": true,
+      "role": "admin_general",
+      "viewport": "small-mobile",
+      "module": "security"
+    },
+    {
+      "name": "Escape cierra y devuelve el foco",
+      "passed": true,
+      "role": "admin_general",
+      "viewport": "small-mobile",
+      "module": "security"
+    },
+    {
+      "name": "Lectura fallida no presenta ceros como datos",
+      "passed": true,
+      "role": "parish"
+    },
+    {
+      "name": "Lectura fallida no presenta ceros como datos",
+      "passed": true,
+      "role": "diocese"
+    },
+    {
+      "name": "Lectura fallida no presenta ceros como datos",
+      "passed": true,
+      "role": "chancery"
+    },
+    {
+      "name": "Lectura fallida no presenta ceros como datos",
+      "passed": true,
+      "role": "admin_general"
+    },
+    {
+      "name": "Cero excepciones JavaScript",
+      "passed": true,
+      "exceptions": 0
+    },
+    {
+      "name": "Cero solicitudes a servicios externos",
+      "passed": true,
+      "externalRequests": 0
+    }
+  ]
+}

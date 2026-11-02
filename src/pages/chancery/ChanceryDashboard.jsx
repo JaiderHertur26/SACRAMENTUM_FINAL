@@ -1,22 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
+import EcclesialCommandCenter from '@/components/EcclesialCommandCenter';
 import { useAppData } from '@/context/AppDataContext';
 import { useAuth } from '@/context/AuthContext';
 import Table from '@/components/ui/Table';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/Input';
 import Modal from '@/components/ui/Modal';
-import { 
-    ScrollText, Mail, LayoutDashboard, Database, 
-    AlertCircle, FileCheck, CheckCircle, 
-    FileText, Settings, Building, MapPin, Phone, 
-    Info, Loader2, ShieldCheck, Search,
-    Zap, FileStack, FileSearch, ChevronRight, AtSign
+import {
+    ScrollText, Mail, AlertCircle, CheckCircle, FileText, Building, Info, Loader2, AtSign,
 } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { cn } from '@/lib/utils';
 import { supabase } from '@/lib/supabaseClient';
 import { loadChanceryPendingSacraments } from '@/services/chanceryPendingService';
 import ChanceryDecreeSeatReceiptsV280 from '@/components/chancery/ChanceryDecreeSeatReceiptsV280';
@@ -32,6 +27,8 @@ const ChanceryDashboard = () => {
 
     const [globalCorrectionsCount, setGlobalCorrectionsCount] = useState(0);
     const [globalReplacementsCount, setGlobalReplacementsCount] = useState(0);
+    const [globalState, setGlobalState] = useState({ loading: true, error: false });
+    const [pendingState, setPendingState] = useState({ loading: true, error: false });
 
     const [misDatosForm, setMisDatosForm] = useState({
         id: null,
@@ -83,50 +80,47 @@ const ChanceryDashboard = () => {
     }, [user, isSettingsOpen, getMisDatosList]);
 
     useEffect(() => {
+        let active = true;
         const fetchGlobalDecreesStats = async () => {
-            let targetDioceseId = user?.dioceseId || user?.diocese_id;
-            
-            const chanceryId = user?.chanceryId || user?.chancery_id;
-            if (!targetDioceseId && chanceryId) {
-                 const { data: chanData } = await supabase.from('chancelleries').select('diocese_id').eq('id', chanceryId).single();
-                 if (chanData) targetDioceseId = chanData.diocese_id;
-            }
-
-            if (!targetDioceseId) return;
-
+            setGlobalState({ loading: true, error: false });
             try {
-                const { data: parishesData } = await supabase
-                    .from('parishes')
-                    .select('id')
-                    .eq('diocese_id', targetDioceseId)
-                    .eq('is_operational', true);
-
-                const parishIds = parishesData ? parishesData.map(p => p.id) : [];
-
-                if (parishIds.length === 0) return;
-
-                const { count: correctionsCount, error: corrError } = await supabase
-                    .from('decretos')
-                    .select('*', { count: 'exact', head: true })
-                    .eq('tipo', 'correccion')
-                    .in('parish_id', parishIds);
-
-                if (!corrError) setGlobalCorrectionsCount(correctionsCount || 0);
-
-                const { count: replacementsCount, error: repError } = await supabase
-                    .from('decretos')
-                    .select('*', { count: 'exact', head: true })
-                    .eq('tipo', 'reposicion')
-                    .in('parish_id', parishIds);
-
-                if (!repError) setGlobalReplacementsCount(replacementsCount || 0);
-
+                let targetDioceseId = user?.dioceseId || user?.diocese_id;
+                const chanceryId = user?.chanceryId || user?.chancery_id;
+                if (!targetDioceseId && chanceryId) {
+                    const { data: chanData, error } = await supabase.from('chancelleries')
+                        .select('diocese_id').eq('id', chanceryId).single();
+                    if (error) throw error;
+                    targetDioceseId = chanData?.diocese_id;
+                }
+                if (!targetDioceseId) throw new Error('Jurisdicción de Cancillería no disponible.');
+                const { data: parishesData, error: parishError } = await supabase.from('parishes')
+                    .select('id').eq('diocese_id', targetDioceseId).eq('is_operational', true);
+                if (parishError) throw parishError;
+                const parishIds = (parishesData || []).map(parish => parish.id);
+                if (parishIds.length === 0) {
+                    if (active) { setGlobalCorrectionsCount(0); setGlobalReplacementsCount(0); }
+                    return;
+                }
+                const [corrections, replacements] = await Promise.all([
+                    supabase.from('decretos').select('*', { count: 'exact', head: true })
+                        .eq('tipo', 'correccion').in('parish_id', parishIds),
+                    supabase.from('decretos').select('*', { count: 'exact', head: true })
+                        .eq('tipo', 'reposicion').in('parish_id', parishIds),
+                ]);
+                if (corrections.error || replacements.error) throw corrections.error || replacements.error;
+                if (active) {
+                    setGlobalCorrectionsCount(corrections.count || 0);
+                    setGlobalReplacementsCount(replacements.count || 0);
+                }
             } catch (error) {
-                console.error("Error cargando estadísticas globales de decretos:", error);
+                console.error('Error cargando estadísticas globales de decretos:', error);
+                if (active) setGlobalState({ loading: false, error: true });
+            } finally {
+                if (active) setGlobalState(previous => ({ ...previous, loading: false }));
             }
         };
-
         fetchGlobalDecreesStats();
+        return () => { active = false; };
     }, [user]);
 
     const [dioceseStats, setDioceseStats] = useState({ pendingCount: 0, communicationsCount: 0, pendingSacraments: [] });
@@ -134,6 +128,7 @@ const ChanceryDashboard = () => {
     useEffect(() => {
         let active = true;
         const loadPendingSacraments = async () => {
+            setPendingState({ loading: true, error: false });
             try {
                 const result = await loadChanceryPendingSacraments(user);
                 if (!active) return;
@@ -144,7 +139,9 @@ const ChanceryDashboard = () => {
                 });
             } catch (error) {
                 console.error('Error cargando pendientes diocesanos:', error);
-                if (active) setDioceseStats((prev) => ({ ...prev, pendingCount: 0, pendingSacraments: [] }));
+                if (active) setPendingState({ loading: false, error: true });
+            } finally {
+                if (active) setPendingState(previous => ({ ...previous, loading: false }));
             }
         };
         loadPendingSacraments();
@@ -200,99 +197,25 @@ const ChanceryDashboard = () => {
     ];
 
     return (
-        <DashboardLayout entityName={`Cancillería • ${user?.dioceseName}`}>
+        <DashboardLayout entityName={`Cancillería · ${user?.dioceseName || "Jurisdicción eclesiástica"}`} commandCenter>
             <div className="max-w-7xl mx-auto pb-20">
                 
-                <div className="ecclesial-scope-hero flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-9">
-                    <div>
-                        <div className="flex items-center gap-3 mb-2 text-[#966f3b]">
-                            <ShieldCheck className="w-5 h-5" />
-                            <span className="text-[10px] font-black uppercase tracking-[0.3em]">Curia diocesana · Servicio de Cancillería</span>
-                        </div>
-                        <h1 className="text-4xl font-black text-slate-900 tracking-tight font-serif">Cancillería eclesiástica</h1>
-                        <p className="text-slate-500 font-bold uppercase text-[11px] tracking-widest mt-2">Custodia de documentos, decretos y memoria sacramental</p>
-                    </div>
-                    <div className="flex gap-3">
-                        <Button variant="outline" onClick={() => setIsSettingsOpen(true)} className="h-14 px-8 rounded-2xl border-slate-200 hover:bg-white hover:shadow-lg transition-all">
-                            <Settings className="w-4 h-4 mr-2 text-[#4B7BA7]" />
-                            <span className="text-[10px] font-black uppercase tracking-widest text-slate-600">Configurar Membrete</span>
-                        </Button>
-                    </div>
-                </div>
-
-                {/* Avisos automáticos de asientos completados; fuera del Centro de Decretos simplificado. */}
-                <ChanceryDecreeSeatReceiptsV280 />
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-                    {statsCards.map((stat, idx) => (
-                        <motion.div 
-                            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.1 }}
-                            key={idx} className="bg-white rounded-3xl p-8 border border-slate-100 shadow-sm hover:shadow-xl hover:shadow-blue-900/5 transition-all group overflow-hidden relative"
-                        >
-                            <div className={cn("absolute -right-4 -bottom-4 opacity-5 group-hover:scale-110 transition-transform", stat.color)}><stat.icon className="w-32 h-32" /></div>
-                            <div className={cn("w-12 h-12 rounded-2xl flex items-center justify-center mb-6 shadow-inner", stat.bg)}>
-                                <stat.icon className={cn("w-6 h-6", stat.color)} />
-                            </div>
-                            <div>
-                                <p className="text-3xl font-black text-slate-900 tracking-tighter">{stat.value}</p>
-                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mt-1">{stat.label}</p>
-                            </div>
-                        </motion.div>
-                    ))}
-                </div>
-
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
-                    <div className="bg-white rounded-3xl p-10 border border-slate-100 shadow-sm space-y-8">
-                        <div className="flex items-center gap-3">
-                            <div className="bg-blue-600 p-2 rounded-xl text-white shadow-lg shadow-blue-900/10"><Zap className="w-5 h-5"/></div>
-                            <h2 className="text-sm font-black text-slate-900 uppercase tracking-widest">Servicios y trámites de Cancillería</h2>
-                        </div>
-                        <div className="grid grid-cols-1 gap-4">
-                            <ChanceryActionButton label="Buscador Unificado" icon={Search} color="bg-[#D4AF37]" onClick={() => navigate('/buscar')} />
-                            <ChanceryActionButton label="Revisar Sacramentos Pendientes" icon={AlertCircle} color="bg-amber-500" onClick={() => navigate('/chancery/pending')} />
-                            <ChanceryActionButton label="Centro de Decretos Sacramentales" icon={FileText} color="bg-slate-900" onClick={() => navigate('/chancery/decretos')} />
-                            <ChanceryActionButton label="Revisión de Vínculos Históricos" icon={FileSearch} color="bg-blue-700" onClick={() => navigate('/chancery/historicos/conciliacion')} />
-                            <ChanceryActionButton label="Bandeja de Comunicaciones" icon={Mail} color="bg-slate-700" onClick={() => navigate('/communications')} />
-                        </div>
-                    </div>
-
-                    <div className="bg-white rounded-3xl p-10 border border-slate-100 shadow-sm">
-                        <div className="flex items-center gap-3 mb-8">
-                            <div className="bg-amber-500 p-2 rounded-xl text-white shadow-lg shadow-amber-900/10"><FileStack className="w-5 h-5"/></div>
-                            <h2 className="text-sm font-black text-slate-900 uppercase tracking-widest">Archivo Histórico de Decretos</h2>
-                        </div>
-                        <button
-                            onClick={() => navigate('/chancery/decretos/archivo')}
-                            className="w-full rounded-3xl border border-slate-200 bg-slate-50 p-7 text-left transition-all hover:border-slate-300 hover:bg-slate-100"
-                        >
-                            <div className="flex items-center justify-between gap-4">
-                                <div>
-                                    <p className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400">Archivo único</p>
-                                    <p className="mt-1 text-sm font-black uppercase tracking-wider text-slate-800">Todos los decretos sacramentales</p>
-                                    <p className="mt-2 text-xs font-medium text-slate-500">Filtre dentro del archivo por sacramento, corrección, reposición o estado histórico.</p>
-                                </div>
-                                <FileStack className="h-8 w-8 shrink-0 text-[#4B7BA7]" />
-                            </div>
-                            <div className="mt-5 grid grid-cols-2 gap-3">
-                                <div className="rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-center">
-                                    <div className="text-2xl font-black text-blue-700">{globalCorrectionsCount}</div>
-                                    <div className="text-[8px] font-black uppercase tracking-widest text-blue-600">Correcciones</div>
-                                </div>
-                                <div className="rounded-2xl border border-amber-100 bg-amber-50 px-4 py-3 text-center">
-                                    <div className="text-2xl font-black text-amber-700">{globalReplacementsCount}</div>
-                                    <div className="text-[8px] font-black uppercase tracking-widest text-amber-600">Reposiciones</div>
-                                </div>
-                            </div>
-                        </button>
-                        <Button 
-                            variant="ghost" 
-                            className="w-full mt-6 py-6 rounded-2xl font-black uppercase tracking-widest text-[10px] text-[#4B7BA7]"
-                            onClick={() => navigate('/chancery/decree-annulment')}
-                        >
-                            Gestionar Conceptos de Decreto <ChevronRight className="w-4 h-4 ml-1" />
-                        </Button>
-                    </div>
-                </div>
+                <EcclesialCommandCenter
+                    role="chancery"
+                    loading={globalState.loading || pendingState.loading}
+                    error={globalState.error || pendingState.error}
+                    entityName={misDatosForm.nombreCancilleria || user?.dioceseName || 'Cancillería eclesiástica'}
+                    metrics={statsCards.map((stat, index) => ({
+                        label: stat.label,
+                        value: stat.value,
+                        icon: ['clock', 'chat', 'file', 'scroll'][index],
+                        to: ['/chancery/pending', '/communications', '/chancery/decretos/archivo?type=correccion', '/chancery/decretos/archivo?type=reposicion'][index],
+                    }))}
+                    commands={{ configureIdentity: () => setIsSettingsOpen(true) }}
+                />
+                <section aria-label="Decretos asentados y completados" className="mb-7">
+                    <ChanceryDecreeSeatReceiptsV280 />
+                </section>
 
                 <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
                     <div className="px-10 py-8 bg-slate-50/50 border-b border-slate-100 flex items-center justify-between">
@@ -303,7 +226,9 @@ const ChanceryDashboard = () => {
                         <Button variant="link" onClick={() => navigate('/chancery/pending')} className="text-[#4B7BA7] font-black uppercase tracking-widest text-[10px]">Ver todos los pendientes</Button>
                     </div>
                     <div className="p-4">
-                        {dioceseStats.pendingCount > 0 ? (
+                        {pendingState.error ? (
+                            <p className="p-5 text-sm text-rose-800" role="alert">No fue posible consultar los expedientes. Actualiza para volver a intentar.</p>
+                        ) : dioceseStats.pendingCount > 0 ? (
                             <Table columns={columns} data={dioceseStats.pendingSacraments.slice(0, 5)} className="border-none shadow-none" />
                         ) : (
                             <div className="py-20 text-center space-y-4">
@@ -383,17 +308,5 @@ const ChanceryDashboard = () => {
         </DashboardLayout>
     );
 };
-
-const ChanceryActionButton = ({ label, icon: Icon, color, onClick }) => (
-    <button 
-        onClick={onClick}
-        className="w-full flex items-center justify-between p-6 rounded-2xl bg-slate-50 hover:bg-white border border-transparent hover:border-slate-200 hover:shadow-lg hover:shadow-slate-200/50 transition-all group"
-    >
-        <span className="text-[11px] font-black text-slate-700 uppercase tracking-widest">{label}</span>
-        <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center text-white shadow-lg transition-transform group-hover:translate-x-1", color)}>
-            <Icon className="w-5 h-5" />
-        </div>
-    </button>
-);
 
 export default ChanceryDashboard;
