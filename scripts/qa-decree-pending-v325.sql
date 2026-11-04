@@ -1,3 +1,6 @@
+-- Cada psql de CI abre su propia conexión; la identidad ficticia se fija aquí.
+SELECT set_config('request.jwt.claim.sub','00000000-0000-4000-8000-000000000003',false);
+
 DO $qa$
 DECLARE id_row uuid; sac text; t text; blocked boolean; n int; ordinary uuid:=gen_random_uuid(); checks int:=0;
 BEGIN
