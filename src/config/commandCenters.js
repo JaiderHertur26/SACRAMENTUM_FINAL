@@ -39,6 +39,7 @@ export const COMMAND_CENTERS = {
     shortcuts: [
       action('Libros sacramentales', '/parroquia/libros', 'book'),
       action('Centro de decretos', '/parroquia/decretos', 'scroll'),
+      action('Decretos por sentar', '/parroquia/decretos?view=asiento', 'pen'),
       action('Datos auxiliares', '/datos-auxiliares', 'database'),
       action('Plantillas documentales', '/documentos/plantillas', 'file'),
       action('Parámetros', '/parroquia/bautismo/parametros', 'sliders'),

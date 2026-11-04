@@ -1,3 +1,4 @@
+import { isOrdinaryPendingV325 } from '@/domain/pendingOriginV325.mjs';
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '@/components/DashboardLayout';
@@ -129,10 +130,10 @@ const ParishDashboard = () => {
       const cData = cRes.data || [];
       const mData = mRes.data || [];
       const fData = fRes.data || [];
-      const bPendingData = bPendingRes.data || [];
-      const cPendingData = cPendingRes.data || [];
-      const mPendingData = mPendingRes.data || [];
-      const fPendingData = fPendingRes.data || [];
+      const bPendingData = (bPendingRes.data || []).filter(isOrdinaryPendingV325);
+      const cPendingData = (cPendingRes.data || []).filter(isOrdinaryPendingV325);
+      const mPendingData = (mPendingRes.data || []).filter(isOrdinaryPendingV325);
+      const fPendingData = (fPendingRes.data || []).filter(isOrdinaryPendingV325);
 
       const bSeated = bData
         .map((row) => purificarRegistroBautismo(row))

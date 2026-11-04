@@ -4,11 +4,31 @@ import fs from 'node:fs';
 const receipt=JSON.parse(fs.readFileSync('AUDITORIA_V251_REVISIÓN_SOLO_ETIQUETAS.json','utf8'));
 // V264 is a separate, reviewed source revision; V205-V207/V251 archives remain immutable.
 const v264=JSON.parse(fs.readFileSync('AUDITORIA_V264_REVISION_UI_ASIENTOS.json','utf8'));
+const v325=JSON.parse(fs.readFileSync('AUDITORIA_V325_REVISION_SEPARACION_DECRETOS.json','utf8'));
 const v323=JSON.parse(fs.readFileSync('AUDITORIA_V323_REVISION_AUXILIARES.json','utf8'));
 const approvedV264=['BaptismSentarRegistrosPage.jsx','ConfirmationSentarRegistrosPage.jsx',
  'MatrimonioSentarRegistrosPage.jsx','FuneralRegistryPage.jsx']
  .map(name=>'src/pages/parish/'+name);
 export function assertV251RevisedSource({file,historicalSha256,currentSha256}){
+ const isolation=v325.reviewedSourceSha256[file];
+ if(isolation){
+  assert.ok(approvedV264.includes(file),'Fuente ajena a los cuatro asientos revisados V325');
+  assert.equal(v325.protocol,'V325');assert.equal(v325.approved,true);
+  assert.equal(isolation.before,v264.reviewedSourceSha256[file].after,'Predecesor V325 no coincide con V264');
+  const preceding=receipt.reviewedSourceSha256[file];
+  const accepted=[isolation.before,isolation.after,v264.reviewedSourceSha256[file].previousSourceSha256,preceding?.before,preceding?.after].filter(Boolean);
+  assert.ok(accepted.includes(historicalSha256),'Evidencia ajena a las revisiones aprobadas V325: '+file);
+  assert.equal(currentSha256,isolation.after,'Fuente V325 cambió después del cotejo: '+file);
+  const recovery=JSON.parse(fs.readFileSync(file.endsWith('MatrimonioSentarRegistrosPage.jsx')
+   ? 'AUDITORIA_RECUPERACION_MATRIMONIO_V325.json' : 'AUDITORIA_RECUPERACION_TRES_SACRAMENTOS_V325.json','utf8'));
+  assert.equal(recovery.passed,recovery.total);assert.equal(recovery.total,file.endsWith('MatrimonioSentarRegistrosPage.jsx')?8:24);
+  assert.deepEqual(recovery.exceptions,[]);assert.deepEqual(recovery.externalRequests,[]);
+  const hashes=recovery.sourceSha256;
+  assert.equal(typeof hashes==='string'?hashes:hashes[file],isolation.after,'Fuente V325 no coincide con navegador de recuperación');
+  const separation=JSON.parse(fs.readFileSync('AUDITORIA_DECRETOS_PENDIENTES_V325.json','utf8'));
+  assert.equal(separation.approved,true);assert.ok(separation.checked>=34);
+  return;
+ }
  const shared=v323.reviewedSourceSha256[file];
  if(shared){
   assert.equal(file,'src/pages/parish/ConfirmationNewPage.jsx');
