@@ -84,6 +84,15 @@ try{
      await evaluate('[...document.querySelectorAll("form button")].find(x=>x.textContent.trim()==="Cancelar").click()');
      check(await evaluate('window.__V324_QA.writes.length===0'),'Cancelar membrete no guarda datos');
     }
+    if(role==='admin_general'){
+     await evaluate('[...document.querySelectorAll(".cc-module")].find(x=>x.textContent.includes("Revisión institucional")).click()');
+     await pause(80);
+     await evaluate('document.querySelector(".cc-action-panel a").click()');
+     await pause(160);
+     check(await evaluate('location.hash==="#revision-institucional" && document.activeElement?.id==="revision-institucional" && !!document.querySelector("#revision-institucional h2")'),
+      'Revisión institucional abre y enfoca el panel existente',{role});
+     await load(role);
+    }
     await evaluate('document.querySelector(".cc-search").click()');await pause(80);
     check(await evaluate('document.querySelector("[data-qa-destination]")?.textContent==="/buscar"'),'Búsqueda abre la pantalla existente',{role});
     await load(role);
@@ -108,7 +117,7 @@ try{
 }finally{
  try{socket?.close()}catch{}try{chrome?.kill()}catch{}try{vite.kill()}catch{}try{fs.rmSync(temp,{recursive:true,force:true})}catch{}
 }
-const sourcePaths=["src/config/commandCenters.js","src/components/EcclesialCommandCenter.jsx","src/styles/command-center.css","src/pages/parish/ParishDashboard.jsx","src/pages/diocese/DioceseUserDashboard.jsx","src/pages/chancery/ChanceryDashboard.jsx","src/pages/admin/AdminGeneralDashboard.jsx","src/components/DashboardLayout.jsx","src/components/Sidebar.jsx","src/components/Header.jsx","scripts/qa-v324-command/entry.jsx","scripts/qa-v324-command/mocks.jsx","scripts/qa-v324-command/vite.config.mjs","scripts/audit-command-centers-browser-v324.mjs"];
+const sourcePaths=["src/config/commandCenters.js","src/components/EcclesialCommandCenter.jsx","src/styles/command-center.css","src/pages/parish/ParishDashboard.jsx","src/pages/diocese/DioceseUserDashboard.jsx","src/pages/chancery/ChanceryDashboard.jsx","src/pages/admin/AdminGeneralDashboard.jsx","src/components/InstitutionalReadinessV274.jsx","src/components/DashboardLayout.jsx","src/components/Sidebar.jsx","src/components/Header.jsx","scripts/qa-v324-command/entry.jsx","scripts/qa-v324-command/mocks.jsx","scripts/qa-v324-command/vite.config.mjs","scripts/audit-command-centers-browser-v324.mjs"];
 const source_sha256_lf=Object.fromEntries(sourcePaths.map(file=>[file,createHash('sha256').update(fs.readFileSync(file,'utf8').replace(/\r\n/g,'\n')).digest('hex')]));
 const passed=checks.filter(x=>x.passed).length;
 const report={protocol:'V324',testedAt:new Date().toISOString(),source_sha256_lf,method:'Chrome real; cuatro dashboards, DashboardLayout, Sidebar y Header reales; perfiles y servicios ficticios aislados; sin iniciar sesiones institucionales ni escribir datos',approved:passed===checks.length&&exceptions.length===0&&externalRequests.length===0,checked:checks.length,passed,failed:checks.length-passed,exceptions,externalRequests,screens,checks};

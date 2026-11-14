@@ -64,7 +64,8 @@ export const mapMarriageRow = (row) => {
     tipoLibro: row.book_type ?? raw.tipoLibro ?? raw.bookType ?? raw.book_type ?? 'ordinario',
 
     sacramentDate: row.celebration_date || raw.sacramentDate || raw.fechaSacramento || raw.fechaMatrimonio || dateOnly(raw.fechaHoraPrevista),
-    celebration_date: row.celebration_date || dateOnly(raw.fechaHoraPrevista),
+    celebration_date: row.celebration_date || raw.fechaSacramento || raw.fechaMatrimonio || dateOnly(raw.fechaHoraPrevista),
+    celebration_time: row.hora || null,
 
     groomName,
     groomSurname,

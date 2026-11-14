@@ -1,5 +1,6 @@
 import { generateUUID } from '@/utils/supabaseHelpers';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { canSeatCelebration } from '@/domain/celebrationTime.mjs';
 import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '@/components/DashboardLayout';
 import DecreeSeatingLinkV325 from '@/components/DecreeSeatingLinkV325';
@@ -122,16 +123,7 @@ const Field = ({ label, children, className = '' }) => (
 
 const canSeatByDate = (row) => {
   const raw = row?.raw_data || {};
-  const date = row?.fecha_exequias || raw.fecha_exequias;
-  if (!date) return true;
-
-  const time = row?.hora || raw.hora_exequias || '00:00:00';
-  const eventDate = String(date).slice(0, 10);
-  const eventTime = String(time).slice(0, 8);
-  const event = new Date(`${eventDate}T${eventTime}`);
-
-  if (Number.isNaN(event.getTime())) return true;
-  return Date.now() >= event.getTime();
+  return canSeatCelebration(row?.fecha_exequias || raw.fecha_exequias, row?.hora || raw.hora_exequias);
 };
 
 const FuneralRegistryPage = () => {
@@ -444,7 +436,7 @@ const FuneralRegistryPage = () => {
     if (!canSeatByDate(item)) {
       toast({
         title: 'Todavía no puede asentarse',
-        description: 'La fecha y hora de las exequias aún no han ocurrido.',
+        description: 'Verifique la fecha y la hora de las exequias antes de asentar.',
         variant: 'destructive'
       });
       return;

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { canSeatCelebration } from '@/domain/celebrationTime.mjs';
 import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '@/components/DashboardLayout';
 import DecreeSeatingLinkV325 from '@/components/DecreeSeatingLinkV325';
@@ -29,6 +30,8 @@ const getLocalDateISO = () => {
     return local.toISOString().slice(0, 10);
 };
 
+const canSeatRecord = (record) => canSeatCelebration(record.fechaSacramento, record.horaSacramento || record.hora_sacramento || record.hora);
+
 const ConfirmationSentarRegistrosPage = () => {
     const { user } = useAuth();
     const { 
@@ -58,13 +61,6 @@ const ConfirmationSentarRegistrosPage = () => {
     const seatInFlight = useRef(false);
     const [loadError, setLoadError] = useState('');
     const [parishInfo, setParishInfo] = useState(null); 
-
-    const isDateInFuture = (dateString) => {
-        if (!dateString) return false;
-        const now = new Date();
-        const sacramentDate = new Date(dateString.includes('T') ? dateString : `${dateString}T12:00:00`);
-        return sacramentDate > now; 
-    };
 
     useEffect(() => {
         const resolveParish = async () => {
@@ -234,7 +230,7 @@ const ConfirmationSentarRegistrosPage = () => {
     );
 
     const currentConfirmation = pendingConfirmations[currentIndex];
-    const currentIsFuture = currentConfirmation ? isDateInFuture(currentConfirmation.fechaSacramento) : false;
+    const currentIsFuture = currentConfirmation ? !canSeatRecord(currentConfirmation) : false;
     const currentBaptismReferencePending = hasPendingLinkedBaptism(currentConfirmation);
 
     const handleReprint = () => {
@@ -314,7 +310,7 @@ const ConfirmationSentarRegistrosPage = () => {
     const handleSelectAll = (checked) => {
         if (checked) {
             const validIds = pendingConfirmations
-                .filter(b => !isDateInFuture(b.fechaSacramento) && !hasPendingLinkedBaptism(b))
+                .filter(b => canSeatRecord(b) && !hasPendingLinkedBaptism(b))
                 .map(b => b.id);
             setSelectedIds(validIds);
         } else {
@@ -537,7 +533,7 @@ const ConfirmationSentarRegistrosPage = () => {
                                     <AlertCircle className="w-8 h-8 flex-shrink-0" />
                                     <div>
                                         <p className="font-black uppercase text-sm">Registro Bloqueado</p>
-                                        <p className="text-xs font-bold opacity-80">La fecha del sacramento ({currentConfirmation?.fechaSacramento}) aún no ha ocurrido. No se puede asentar antes de su celebración.</p>
+                                        <p className="text-xs font-bold opacity-80">Verifique la fecha y la hora de la celebración antes de asentar.</p>
                                     </div>
                                 </div>
                             )}
@@ -592,7 +588,7 @@ const ConfirmationSentarRegistrosPage = () => {
                         <table className="w-full text-left">
                             <thead className="bg-slate-50 border-b font-black text-[10px] text-slate-400 uppercase">
                                 <tr>
-                                    <th className="px-8 py-6 w-16 text-center"><button onClick={() => handleSelectAll(selectedIds.length !== pendingConfirmations.filter(b => !isDateInFuture(b.fechaSacramento) && !hasPendingLinkedBaptism(b)).length)}>{selectedIds.length > 0 && selectedIds.length === pendingConfirmations.filter(b => !isDateInFuture(b.fechaSacramento) && !hasPendingLinkedBaptism(b)).length ? <CheckSquare className="text-[#4B7BA7]" /> : <Square />}</button></th>
+                                    <th className="px-8 py-6 w-16 text-center"><button onClick={() => handleSelectAll(selectedIds.length !== pendingConfirmations.filter(b => canSeatRecord(b) && !hasPendingLinkedBaptism(b)).length)}>{selectedIds.length > 0 && selectedIds.length === pendingConfirmations.filter(b => canSeatRecord(b) && !hasPendingLinkedBaptism(b)).length ? <CheckSquare className="text-[#4B7BA7]" /> : <Square />}</button></th>
                                     <th className="px-6 py-6">ESTADO</th>
                                     <th className="px-6 py-6">Confirmando</th>
                                     <th className="px-6 py-6">Fecha Sacramento</th>
@@ -601,7 +597,7 @@ const ConfirmationSentarRegistrosPage = () => {
                             </thead>
                             <tbody className="divide-y divide-slate-100">
                                 {pendingConfirmations.map(conf => {
-                                    const isFuture = isDateInFuture(conf.fechaSacramento);
+                                    const isFuture = !canSeatRecord(conf);
                                     const baptismPending = hasPendingLinkedBaptism(conf);
                                     const isBlocked = isFuture || baptismPending;
                                     const isSelected = selectedIds.includes(conf.id);
@@ -627,7 +623,7 @@ const ConfirmationSentarRegistrosPage = () => {
                                                 {baptismPending
                                                     ? <span className="text-[8px] font-black bg-blue-50 text-[#315F89] px-2 py-1 rounded-full uppercase border border-blue-200">Esperando Bautismo</span>
                                                     : isFuture
-                                                        ? <span className="text-[8px] font-black bg-slate-100 text-slate-500 px-2 py-1 rounded-full uppercase border border-slate-200">Futuro</span>
+                                                        ? <span className="text-[8px] font-black bg-slate-100 text-slate-500 px-2 py-1 rounded-full uppercase border border-slate-200">Revisar fecha</span>
                                                         : <span className="text-[8px] font-black bg-green-100 text-green-700 px-2 py-1 rounded-full uppercase border border-green-200">Listo</span>}
                                             </td>
                                             <td className="px-6 py-4">

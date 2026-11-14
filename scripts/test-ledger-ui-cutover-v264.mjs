@@ -82,11 +82,13 @@ test('V264/V325 source review pins four screens without editing old V205-V207/V2
  const reviewed=JSON.parse(read('AUDITORIA_V264_REVISION_UI_ASIENTOS.json'));
  const predecessor=JSON.parse(read('AUDITORIA_V251_REVISIÓN_SOLO_ETIQUETAS.json'));
  const successor=JSON.parse(read('AUDITORIA_V325_REVISION_SEPARACION_DECRETOS.json'));
+ const reviewV326=JSON.parse(read('AUDITORIA_V326_REVISION_ASIENTOS.json'));
  assert.equal(Object.keys(reviewed.reviewedSourceSha256).length,4);
  for(const [file,entry] of Object.entries(reviewed.reviewedSourceSha256)){
    const normalized=read(file).replace(/\r\n/g,'\n');
    assert.equal(successor.reviewedSourceSha256[file].before,entry.after);
-   assert.equal(createHash('sha256').update(normalized).digest('hex'),successor.reviewedSourceSha256[file].after);
+   assert.equal(reviewV326.reviewedSourceSha256[file].before,successor.reviewedSourceSha256[file].after);
+   assert.equal(createHash('sha256').update(normalized).digest('hex'),reviewV326.reviewedSourceSha256[file].after);
    if(predecessor.reviewedSourceSha256[file])
      assert.equal(predecessor.reviewedSourceSha256[file].after,entry.previousSourceSha256);
  }
@@ -100,8 +102,10 @@ test('V264 accepts freshly regenerated browser evidence and archived reviewed ev
  const review=JSON.parse(read('AUDITORIA_V264_REVISION_UI_ASIENTOS.json'));
  const old=JSON.parse(read('AUDITORIA_V251_REVISIÓN_SOLO_ETIQUETAS.json'));
  const successor=JSON.parse(read('AUDITORIA_V325_REVISION_SEPARACION_DECRETOS.json'));
+ const reviewV326=JSON.parse(read('AUDITORIA_V326_REVISION_ASIENTOS.json'));
  for(const [file,item] of Object.entries(review.reviewedSourceSha256)){
-   const current=successor.reviewedSourceSha256[file].after;
+   assert.equal(reviewV326.reviewedSourceSha256[file].before,successor.reviewedSourceSha256[file].after);
+   const current=reviewV326.reviewedSourceSha256[file].after;
    assert.doesNotThrow(()=>assertV251RevisedSource({file,historicalSha256:current,currentSha256:current}));
    assert.doesNotThrow(()=>assertV251RevisedSource({
      file,historicalSha256:item.after,currentSha256:current

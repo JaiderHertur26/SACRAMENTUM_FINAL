@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { canSeatCelebration } from '@/domain/celebrationTime.mjs';
 import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '@/components/DashboardLayout';
 import DecreeSeatingLinkV325 from '@/components/DecreeSeatingLinkV325';
@@ -32,6 +33,12 @@ const getMarriageDateValue = (marriage) => (
     || marriage?.sacramentDate
     || marriage?.celebration_date
     || ''
+);
+
+const canSeatMarriage = (marriage) => canSeatCelebration(
+    marriage.celebration_date || marriage.fechaSacramento || marriage.fechaMatrimonio || marriage.fechaHoraPrevista,
+    marriage.celebration_time || marriage.hora || marriage.horaSacramento || marriage.hora_matrimonio
+        || marriage.fechaHoraPrevista?.split('T')[1]
 );
 
 const formatMarriageDate = (value) => {
@@ -99,13 +106,6 @@ const MatrimonioSentarRegistrosPage = () => {
     const [isSaving, setIsSaving] = useState(false);
     const [loadError, setLoadError] = useState(null);
     const seatInFlight = useRef(false);
-
-    const isDateInFuture = (dateString) => {
-        if (!dateString) return false;
-        const sacramentDate = new Date(dateString);
-        if (Number.isNaN(sacramentDate.getTime())) return false;
-        return sacramentDate > new Date();
-    };
 
     // 🚀 1. RASTREADOR DE PARROQUIA
     useEffect(() => {
@@ -187,7 +187,7 @@ const MatrimonioSentarRegistrosPage = () => {
 
     const currentMarriage = pendingMarriages[currentIndex];
     const currentMarriageDateValue = getMarriageDateValue(currentMarriage);
-    const currentIsFuture = currentMarriage ? isDateInFuture(currentMarriageDateValue) : false;
+    const currentIsFuture = currentMarriage ? !canSeatMarriage(currentMarriage) : false;
 
     const handleRegisterIndividual = async () => {
         if (ledgerV264Enabled) return;
@@ -217,7 +217,7 @@ const MatrimonioSentarRegistrosPage = () => {
     const handleSelectAll = (checked) => {
         if (checked) {
             const validIds = pendingMarriages
-                .filter(m => !isDateInFuture(getMarriageDateValue(m)))
+                .filter(m => canSeatMarriage(m))
                 .map(m => m.id);
             setSelectedIds(validIds);
         } else {
@@ -420,7 +420,7 @@ const MatrimonioSentarRegistrosPage = () => {
                                     <AlertCircle className="w-8 h-8" />
                                     <div>
                                         <p className="font-black uppercase text-sm">Registro Bloqueado</p>
-                                        <p className="text-xs font-bold opacity-80">La fecha del matrimonio ({fechaMatrimonio}) aún no ha ocurrido. No se puede asentar.</p>
+                                        <p className="text-xs font-bold opacity-80">Verifique la fecha y la hora de la celebración antes de asentar.</p>
                                     </div>
                                 </div>
                             )}
@@ -461,8 +461,8 @@ const MatrimonioSentarRegistrosPage = () => {
                             <thead className="bg-slate-50 border-b font-black text-[10px] text-slate-400 uppercase">
                                 <tr>
                                     <th className="px-8 py-6 w-16 text-center">
-                                        <button onClick={() => handleSelectAll(selectedIds.length !== pendingMarriages.filter(m => !isDateInFuture(getMarriageDateValue(m))).length)}>
-                                            {selectedIds.length > 0 && selectedIds.length === pendingMarriages.filter(m => !isDateInFuture(getMarriageDateValue(m))).length ? <CheckSquare className="text-[#4B7BA7]" /> : <Square />}
+                                        <button onClick={() => handleSelectAll(selectedIds.length !== pendingMarriages.filter(m => canSeatMarriage(m)).length)}>
+                                            {selectedIds.length > 0 && selectedIds.length === pendingMarriages.filter(m => canSeatMarriage(m)).length ? <CheckSquare className="text-[#4B7BA7]" /> : <Square />}
                                         </button>
                                     </th>
                                     <th className="px-6 py-6">ESTADO</th>
@@ -475,7 +475,7 @@ const MatrimonioSentarRegistrosPage = () => {
                                 {pendingMarriages.map(marriage => {
                                     const dateValue = getMarriageDateValue(marriage);
                                     const dateStr = formatMarriageDate(dateValue);
-                                    const isFuture = isDateInFuture(dateValue);
+                                    const isFuture = !canSeatMarriage(marriage);
                                     const isSelected = selectedIds.includes(marriage.id);
                                     const {
                                         groomNames: hName,
@@ -503,7 +503,7 @@ const MatrimonioSentarRegistrosPage = () => {
                                                 {isFuture && <Lock className="w-4 h-4 text-slate-300 mx-auto" />}
                                             </td>
                                             <td className="px-6 py-4">
-                                                {isFuture ? <span className="text-[8px] font-black bg-amber-50 text-amber-700 border border-amber-200 px-2 py-1 rounded-full uppercase">Futuro</span> : <span className="text-[8px] font-black bg-green-100 text-green-600 px-2 py-1 rounded-full uppercase">Listo</span>}
+                                                {isFuture ? <span className="text-[8px] font-black bg-amber-50 text-amber-700 border border-amber-200 px-2 py-1 rounded-full uppercase">Revisar fecha</span> : <span className="text-[8px] font-black bg-green-100 text-green-600 px-2 py-1 rounded-full uppercase">Listo</span>}
                                             </td>
                                             <td className="px-6 py-4">
                                                 <p className="font-black uppercase text-xs text-slate-800">{hName} {hSur}</p>

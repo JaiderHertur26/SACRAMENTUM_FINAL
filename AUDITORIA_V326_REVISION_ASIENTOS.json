@@ -1,0 +1,31 @@
+{
+  "protocol": "V326",
+  "reviewedSourceSha256": {
+    "src/pages/parish/BaptismSentarRegistrosPage.jsx": {
+      "before": "354eae24bdaa95d5e288ed780708ad86581a19b42d20f1679df90870fff3549c",
+      "after": "513b77bad79babc2721a0a7fc1c9db2fad91db9b1b89ce008f14066d0e701d87"
+    },
+    "src/pages/parish/ConfirmationSentarRegistrosPage.jsx": {
+      "before": "cdee297b3b4acd9c00ddfbab46ef2cc82d05a849ed127f8f8752a219ca963c9c",
+      "after": "6c8bafe727c1a1d90dcc9ee0823d90820d53ab45dd0c752e65c4aee8d510e027"
+    },
+    "src/pages/parish/MatrimonioSentarRegistrosPage.jsx": {
+      "before": "157c3718b786f3c6447b499f148ccbdac73eb6e9c16b57f865f80d8ce93a4d65",
+      "after": "4c842793578aacf5aff9afae4e26adffdc4ea706cded6ce634db2010916cd30b"
+    },
+    "src/pages/parish/FuneralRegistryPage.jsx": {
+      "before": "013e12f08b5f29fc418470a8b48edd793906adc1b6e2083c4812872e018f4eff",
+      "after": "051e4f02588f097a17f78499fd84b6e3890a85e5d48250dcf3d8ab0a055683c1"
+    }
+  },
+  "calendar": [
+    {
+      "file": "src/domain/celebrationTime.mjs",
+      "sha256": "625b847226e876e59920aa5e8e31f5e98aba7e06eb55649e72669e07e1a6475a"
+    },
+    {
+      "file": "src/services/marriagesCloudService.js",
+      "sha256": "65167db197d510dd29d4519fb31e4b8b5e3e150ba7d929f4beb565ded1ac89c2"
+    }
+  ]
+}

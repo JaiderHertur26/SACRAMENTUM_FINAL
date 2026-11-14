@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Activity, Copy, Eye, Search, Trash2 } from 'lucide-react';
 
@@ -19,6 +19,7 @@ const AdminGeneralDashboard = () => {
   const { user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { hash, key: locationKey } = useLocation();
 
   const [pendingDioceses, setPendingDioceses] = useState([]);
   const [activeDioceses, setActiveDioceses] = useState([]);
@@ -28,6 +29,13 @@ const AdminGeneralDashboard = () => {
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState(false);
+
+  useEffect(() => {
+    if (hash !== '#revision-institucional' || loading) return;
+    const section = document.getElementById('revision-institucional');
+    section?.focus({ preventScroll: true });
+    section?.scrollIntoView({ block: 'start' });
+  }, [hash, loading, locationKey]);
 
   const loadCloudData = useCallback(async () => {
     setLoading(true);

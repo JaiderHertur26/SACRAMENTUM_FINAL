@@ -17,7 +17,7 @@ test('V324 every role launcher targets a real route authorized for that role',()
  for(const role of roles)for(const action of allActions(role)){
   if(action.command){assert.equal(role,'chancery');assert.equal(action.command,'configureIdentity');continue;}
   assert.ok(action.to.startsWith('/')&&!action.to.startsWith('//'),action.to);
-  const pathname=action.to.split('?')[0],route=app.split('\n').find(line=>line.includes('path="'+pathname+'"'));
+  const pathname=new URL(action.to,'https://qa.invalid').pathname,route=app.split('\n').find(line=>line.includes('path="'+pathname+'"'));
   assert.ok(route,'Missing route '+pathname);
   if(route.includes('requiredRole='))assert.ok(route.includes('ROLE_TYPES.'+constants[role])||(role==='parish'&&route.includes('requiredRole="parish"')),role+' denied at '+pathname);
  }
@@ -86,6 +86,7 @@ test('V324 actual four dashboards pass responsive navigation, focus and read-onl
   assert.equal(createHash('sha256').update(read(file).replace(/\r\n/g,'\n')).digest('hex'),expected,file+' cambió después del ensayo');
  for(const role of roles)for(const viewport of ['desktop','small-desktop','tablet','mobile','small-mobile'])
   assert.ok(audit.checks.some(x=>x.name==='Sin desbordamiento horizontal'&&x.role===role&&x.viewport===viewport&&x.passed));
+ assert.ok(audit.checks.some(x=>x.name==='Revisión institucional abre y enfoca el panel existente'&&x.role==='admin_general'&&x.passed));
  assert.deepEqual(audit.exceptions,[]);assert.deepEqual(audit.externalRequests,[]);
  for(const role of roles){
   for(const viewport of ['desktop','mobile']){
