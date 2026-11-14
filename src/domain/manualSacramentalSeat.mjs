@@ -18,22 +18,15 @@ export function readManualSeat(fields, context) {
   if (context.initial) {
     const capacity = positiveCoordinate(fields.capacity);
     if (!capacity) throw new Error('Indique cuántas partidas admite cada folio.');
-    return { ...coordinates, capacity, restart: Boolean(fields.restart) };
+    const initial = { ...coordinates, capacity, restart: Boolean(fields.restart) };
+    const used = String(fields.firstFolioUsed ?? '').trim();
+    if (used === '') return initial;
+    if (!/^\d{1,4}$/.test(used) || Number(used) >= capacity) {
+      throw new Error('Las partidas que ya tiene el folio deben ser menos que su capacidad.');
+    }
+    return { ...initial, firstFolioUsed: Number(used) };
   }
   return coordinates;
-}
-
-export const initialSeatSequence = (context, coordinates) => context.initial
-  ? { firstFolio: coordinates.folio, firstNumber: coordinates.number, capacity: coordinates.capacity, restart: coordinates.restart }
-  : context;
-
-export function nextManualSeat(position, sequence) {
-  const { book, folio, number } = position;
-  const { capacity, restart, firstFolio, firstNumber } = sequence;
-  const firstFolioOffset = folio === firstFolio ? firstNumber - 1 : 0;
-  if (restart && number >= capacity + firstFolioOffset) return { book, folio: folio + 1, number: 1 };
-  const advanceFolio = !restart && (number - firstNumber + 1) % capacity === 0;
-  return { book, folio: folio + Number(advanceFolio), number: number + 1 };
 }
 
 export const formatSeatCoordinate = (value) => String(value).padStart(4, '0');

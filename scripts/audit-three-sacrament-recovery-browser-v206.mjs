@@ -157,6 +157,6 @@ try{
 }finally{try{socket?.close()}catch{}try{browser?.kill()}catch{}try{vite.kill()}catch{}try{fs.rmSync(tmp,{recursive:true,force:true})}catch{}}
 const files=['BaptismSentarRegistrosPage.jsx','ConfirmationSentarRegistrosPage.jsx','FuneralRegistryPage.jsx'].map(x=>'src/pages/parish/'+x);
 const result={protocol:'V328',scope:'Actual React pages; isolated fictitious services; no authenticated production E2E or physical network fault',sourceSha256:Object.fromEntries(files.map(file=>[file,createHash('sha256').update(fs.readFileSync(file,'utf8').replace(/\r\n/g,'\n')).digest('hex')])),date:new Date().toISOString(),rows,passed:rows.filter(r=>r.passed).length,total:rows.length,exceptions,externalRequests};
-fs.writeFileSync('AUDITORIA_RECUPERACION_TRES_SACRAMENTOS_V328.json',JSON.stringify(result,null,2)+'\n');
+fs.writeFileSync('AUDITORIA_RECUPERACION_TRES_SACRAMENTOS_V330.json',JSON.stringify(result,null,2)+'\n');
 console.log('V206_BROWSER '+result.passed+'/'+result.total+' exceptions='+exceptions.length+' external='+externalRequests.length);
 if(result.passed!==24||exceptions.length||externalRequests.length)process.exitCode=1;

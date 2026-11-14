@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import {createHash} from 'node:crypto';
 import {assertV251RevisedSource} from './v251-reviewed-source-receipt.mjs';
 const read=p=>fs.readFileSync(p,'utf8').replace(/\r\n/g,'\n');
-const result=JSON.parse(read('AUDITORIA_RECUPERACION_MATRIMONIO_V328.json'));
+const result=JSON.parse(read('AUDITORIA_RECUPERACION_MATRIMONIO_V330.json'));
 const names=['individual-reject','individual-lost-response','individual-read-failure','batch-timeout','batch-lost-response','batch-read-failure','initial-read-error','batch-cancel'];
 for(const scenario of names)test('V205 actual React recovery: '+scenario,()=>{
  const row=result.rows.find(r=>r.scenario===scenario);

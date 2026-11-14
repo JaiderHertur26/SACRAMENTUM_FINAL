@@ -25,8 +25,12 @@ export const supabase={
    if(new URLSearchParams(location.search).has('fail'))return {data:null,error:{message:'Lectura de ensayo no disponible'}};
    return {data:queue,error:null};
   }
-  if(name==='get_parish_decree_books_v280')return {data:{books:[]},error:null};
-  if(name==='seat_chancery_decree_v280'){
+  if(name==='get_parish_decree_books_v280'){
+   const books=new URLSearchParams(location.search).has('existing')?
+    [{id:id(30),bookCode:'0001A',version:2,nextFolio:8,nextNumber:15,partidasPorFolio:2,restartEachFolio:false,advanced:true}]:[];
+   return {data:{books},error:null};
+  }
+  if(name==='seat_chancery_decree_v330'){
    window.__qa325.decreeCalls.push(args);queue.find(d=>d.id===args.p_decree_id).seatStatus='seated';
    return {data:{book:args.p_book_code,folio:args.p_folio,number:args.p_number,chanceryNotified:true,notificationCompleted:true},error:null};
   }

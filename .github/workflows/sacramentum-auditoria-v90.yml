@@ -23,7 +23,7 @@ jobs:
       - name: Instalación reproducible
         run: npm ci
       - name: Decretos separados y coordenadas obligatorias en Chrome
-        run: node scripts/audit-decree-pending-browser-v325.mjs --v328
+        run: node scripts/audit-decree-pending-browser-v325.mjs --v330
       - name: Regresión de filtros de decretos
         run: node --test scripts/test-decree-pending-v325.mjs scripts/test-celebration-time-v326.mjs
       - name: Recuperación de interfaz matrimonial en Chrome aislado

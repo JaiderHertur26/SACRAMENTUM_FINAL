@@ -21,7 +21,6 @@ import { getParishPrintProfile, purificarRegistroConfirmacion } from '@/services
 import { getMarginalNoteTemplates } from '@/services/marginalNotesTemplatesService';
 import { institutionalSeatCoordinates } from '@/lib/institutionalDialog';
 import { getManualSeatContext, seatManually } from '@/services/manualSacramentalSeatService';
-import { initialSeatSequence, nextManualSeat } from '@/domain/manualSacramentalSeat.mjs';
 import LedgerSeatPanelV264 from '@/components/LedgerSeatPanelV264';
 import {ledgerV264Enabled} from '@/domain/ledgerSeatV264.mjs';
 
@@ -167,7 +166,7 @@ const ConfirmationSentarRegistrosPage = () => {
     }, [resolvedParishId]);
 
     // 🚀 FUNCIÓN AUTO-ENLACE: MÁQUINA CREADORA DE NOTAS MARGINALES CRUZADAS
-    const prepararNotaMarginal = async (confData, targetBook, targetFolio, targetNumero) => {
+    const prepararNotaMarginal = async (confData) => {
         try {
             const raw = confData.raw_data || confData || {};
             // Extrae los datos del bautismo apuntado por el confirmado
@@ -203,10 +202,7 @@ const ConfirmationSentarRegistrosPage = () => {
                 const notaRedactada = templateNota
                     .replace('[FECHA_CONFIRMACION]', dateStr)
                     .replace('[PARROQUIA_CONFIRMACION]', (parishInfo?.nombre || nombreParroquia).toUpperCase())
-                    .replace('[DIOCESIS_CONFIRMACION]', (parishInfo?.diocesis || '').toUpperCase())
-                    .replace('[LIBRO_CONF]', String(targetBook).padStart(4, '0'))
-                    .replace('[FOLIO_CONF]', String(targetFolio).padStart(4, '0'))
-                    .replace('[NUMERO_CONF]', String(targetNumero).padStart(4, '0'));
+                    .replace('[DIOCESIS_CONFIRMACION]', (parishInfo?.diocesis || '').toUpperCase());
 
                 return {
                     sacrament_id: bData.id,
@@ -249,8 +245,8 @@ const ConfirmationSentarRegistrosPage = () => {
             const context = await getManualSeatContext(resolvedParishId, 'confirmacion', [currentConfirmation.id]);
             const coordinates = await institutionalSeatCoordinates({ title: 'Asentar Confirmación', context });
             if (!coordinates) return;
-            const nota = await prepararNotaMarginal(currentConfirmation, coordinates.book, coordinates.folio, coordinates.number);
-            const record = { pending_id: currentConfirmation.id, cross_baptism_id: nota?.sacrament_id, cross_note: nota?.content };
+            const nota = await prepararNotaMarginal(currentConfirmation);
+            const record = { pending_id: currentConfirmation.id, cross_baptism_id: nota?.sacrament_id, cross_note_template: nota?.content };
             await seatManually({ parishId: resolvedParishId, sacrament: 'confirmacion', records: [record], context, coordinates });
             toast({ title: "Éxito", description: "Confirmación y Nota Marginal asentadas permanentemente.", className: "bg-green-50 text-green-900 border-green-200" });
             await loadData();
@@ -293,21 +289,18 @@ const ConfirmationSentarRegistrosPage = () => {
             const context = await getManualSeatContext(resolvedParishId, 'confirmacion', ids);
             const coordinates = await institutionalSeatCoordinates({
                 title: 'Asentar registros de Confirmación',
-                message: `Ingrese las coordenadas de la primera partida. Se asentarán ${ids.length} boletas en orden consecutivo.`,
+                message: `Ingrese las coordenadas de la primera partida. Se asentarán ${ids.length} boletas en las siguientes posiciones libres.`,
                 context
             });
             if (!coordinates) return;
-            const sequence = initialSeatSequence(context, coordinates);
-            let position = coordinates;
             const records = [];
             for (const id of ids) {
                 const conf = pendingConfirmations.find(record => record.id === id);
                 if (!conf || hasPendingLinkedBaptism(conf)) {
                     throw new Error('Revise la selección y los bautismos vinculados antes de asentar.');
                 }
-                const nota = await prepararNotaMarginal(conf, position.book, position.folio, position.number);
-                records.push({ pending_id: id, cross_baptism_id: nota?.sacrament_id, cross_note: nota?.content });
-                position = nextManualSeat(position, sequence);
+                const nota = await prepararNotaMarginal(conf);
+                records.push({ pending_id: id, cross_baptism_id: nota?.sacrament_id, cross_note_template: nota?.content });
             }
             await seatManually({ parishId: resolvedParishId, sacrament: 'confirmacion', records, context, coordinates });
             toast({ title: "Lote Procesado", className: "bg-green-50 text-green-900 border-green-200" });

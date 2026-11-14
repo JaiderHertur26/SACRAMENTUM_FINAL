@@ -48,6 +48,7 @@ export default function InstitutionalDialogHost() {
     setCoordinates({
       book: '', folio: '', number: '',
       capacity: next?.context?.capacity ?? '',
+      firstFolioUsed: '',
       restart: next?.context?.restart ?? false
     });
     setError('');
@@ -108,7 +109,7 @@ export default function InstitutionalDialogHost() {
         {isSeat && (
           <div className="mt-5 w-full space-y-4 text-left">
             {dialog.context.initial ? (
-              <p className="text-sm text-slate-600">Indique las coordenadas iniciales y la numeración del libro físico.</p>
+              <p className="text-sm text-slate-600">Confirme la primera posición libre y la numeración del libro físico.</p>
             ) : (
               <p className="text-sm text-slate-600">
                 Siguiente asiento del libro {dialog.context.bookType}
@@ -151,6 +152,18 @@ export default function InstitutionalDialogHost() {
                     onChange={(event) => update('capacity', event.target.value)}
                     className="mt-1 w-full rounded-lg border border-slate-300 p-2"
                     required
+                  />
+                </label>
+                <label className="text-sm font-semibold text-slate-700">
+                  Partidas anteriores en ese folio
+                  <input
+                    name="firstFolioUsed"
+                    inputMode="numeric"
+                    maxLength={4}
+                    value={coordinates.firstFolioUsed}
+                    onChange={(event) => update('firstFolioUsed', event.target.value)}
+                    placeholder="Según lo digitalizado"
+                    className="mt-1 w-full rounded-lg border border-slate-300 p-2"
                   />
                 </label>
                 <label className="flex items-center gap-2 text-sm text-slate-700">

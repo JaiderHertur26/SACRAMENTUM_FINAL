@@ -1,7 +1,7 @@
 import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';import {createHash} from 'node:crypto';
 import {assertV251RevisedSource} from './v251-reviewed-source-receipt.mjs';
 const read=p=>fs.readFileSync(p,'utf8').replace(/\r\n/g,'\n');
-const report=JSON.parse(read('AUDITORIA_RECUPERACION_TRES_SACRAMENTOS_V328.json'));
+const report=JSON.parse(read('AUDITORIA_RECUPERACION_TRES_SACRAMENTOS_V330.json'));
 const definitions=[...['bautismo','confirmacion'].flatMap(kind=>['individual-timeout','individual-lost-response','individual-read-failure','success-read-failure','batch-timeout','batch-lost-response','batch-read-failure','initial-read-error','batch-cancel'].map(scenario=>({kind,scenario}))),...['individual-timeout','individual-lost-response','individual-read-failure','success-read-failure','initial-read-error','double-across-records'].map(scenario=>({kind:'exequias',scenario}))];
 for(const {kind,scenario} of definitions)test('V206 actual React '+kind+' '+scenario,()=>{
  const row=report.rows.find(r=>r.kind===kind&&r.scenario===scenario);

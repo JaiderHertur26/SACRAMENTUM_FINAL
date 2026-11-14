@@ -5,6 +5,7 @@ const receipt=JSON.parse(fs.readFileSync('AUDITORIA_V251_REVISIÓN_SOLO_ETIQUETA
 // V264 is a separate, reviewed source revision; V205-V207/V251 archives remain immutable.
 const v264=JSON.parse(fs.readFileSync('AUDITORIA_V264_REVISION_UI_ASIENTOS.json','utf8'));
 const v325=JSON.parse(fs.readFileSync('AUDITORIA_V325_REVISION_SEPARACION_DECRETOS.json','utf8'));
+const v330=JSON.parse(fs.readFileSync('AUDITORIA_V330_REVISION_CONTINUIDAD_LIBROS.json','utf8'));
 const v328=JSON.parse(fs.readFileSync('AUDITORIA_V328_REVISION_ASIENTO_MANUAL.json','utf8'));
 const v326=JSON.parse(fs.readFileSync('AUDITORIA_V326_REVISION_ASIENTOS.json','utf8'));
 const v323=JSON.parse(fs.readFileSync('AUDITORIA_V323_REVISION_AUXILIARES.json','utf8'));
@@ -18,23 +19,25 @@ export function assertV251RevisedSource({file,historicalSha256,currentSha256}){
   assert.equal(v325.protocol,'V325');assert.equal(v325.approved,true);
   assert.equal(isolation.before,v264.reviewedSourceSha256[file].after,'Predecesor V325 no coincide con V264');
   const calendar=v326.reviewedSourceSha256[file];
-  const current=v328.reviewedSourceSha256[file];
+  const previous=v328.reviewedSourceSha256[file];
+  const current=v330.reviewedSourceSha256[file];
   assert.equal(calendar.before,isolation.after,'Predecesor V326 no coincide con V325');
-  assert.equal(current.before,calendar.after,'Predecesor V328 no coincide con V326');
+  assert.equal(previous.before,calendar.after,'Predecesor V328 no coincide con V326');
+  assert.equal(current.before,previous.after,'Predecesor V330 no coincide con V328');
   const preceding=receipt.reviewedSourceSha256[file];
-  const accepted=[current.after,calendar.after,isolation.before,isolation.after,v264.reviewedSourceSha256[file].previousSourceSha256,preceding?.before,preceding?.after].filter(Boolean);
+  const accepted=[current.after,previous.after,calendar.after,isolation.before,isolation.after,v264.reviewedSourceSha256[file].previousSourceSha256,preceding?.before,preceding?.after].filter(Boolean);
   assert.ok(accepted.includes(historicalSha256),'Evidencia ajena a las revisiones aprobadas V325: '+file);
-  assert.equal(currentSha256,current.after,'Fuente V328 cambió después del cotejo: '+file);
+  assert.equal(currentSha256,current.after,'Fuente V330 cambió después del cotejo: '+file);
   const recovery=JSON.parse(fs.readFileSync(file.endsWith('MatrimonioSentarRegistrosPage.jsx')
-   ? 'AUDITORIA_RECUPERACION_MATRIMONIO_V328.json' : 'AUDITORIA_RECUPERACION_TRES_SACRAMENTOS_V328.json','utf8'));
+   ? 'AUDITORIA_RECUPERACION_MATRIMONIO_V330.json' : 'AUDITORIA_RECUPERACION_TRES_SACRAMENTOS_V330.json','utf8'));
   assert.equal(recovery.passed,recovery.total);assert.equal(recovery.total,file.endsWith('MatrimonioSentarRegistrosPage.jsx')?8:24);
   assert.deepEqual(recovery.exceptions,[]);assert.deepEqual(recovery.externalRequests,[]);
   const hashes=recovery.sourceSha256;
-  assert.equal(typeof hashes==='string'?hashes:hashes[file],current.after,'Fuente V328 no coincide con navegador de recuperación');
+  assert.equal(typeof hashes==='string'?hashes:hashes[file],current.after,'Fuente V330 no coincide con navegador de recuperación');
   const separation=JSON.parse(fs.readFileSync('AUDITORIA_DECRETOS_PENDIENTES_V325.json','utf8'));
   assert.equal(separation.approved,true);assert.ok(separation.checked>=34);
-  const separationReplay=JSON.parse(fs.readFileSync('AUDITORIA_DECRETOS_PENDIENTES_V328.json','utf8'));
-  assert.equal(separationReplay.approved,true);assert.ok(separationReplay.checked>=34);
+  const separationReplay=JSON.parse(fs.readFileSync('AUDITORIA_DECRETOS_PENDIENTES_V330.json','utf8'));
+  assert.equal(separationReplay.approved,true);assert.ok(separationReplay.checked>=40);
   assert.deepEqual(separationReplay.exceptions,[]);assert.deepEqual(separationReplay.externalRequests,[]);
   return;
  }

@@ -21,6 +21,7 @@ export default function ParishDecreeSeatPanelV280({decreeId,onSeated}){
  const [folio,setFolio]=useState('');
  const [number,setNumber]=useState('');
  const [capacity,setCapacity]=useState('');
+ const [firstFolioUsed,setFirstFolioUsed]=useState('');
  const [restart,setRestart]=useState(false);
  const [locked,setLocked]=useState(false);
  const active=useRef(false);
@@ -32,7 +33,7 @@ export default function ParishDecreeSeatPanelV280({decreeId,onSeated}){
    ]);
    setQueue(items||[]);setContext(books);
    setBookId('');setBookCode('');setFolio('');setNumber('');
-   setCapacity('');setRestart(false);setLocked(false);
+   setCapacity('');setFirstFolioUsed('');setRestart(false);setLocked(false);
   }catch(e){setError(e.message);setQueue([]);setContext(null);}
   finally{setBusy(false);}
  },[decreeId]);
@@ -46,7 +47,7 @@ export default function ParishDecreeSeatPanelV280({decreeId,onSeated}){
  const chooseBook=id=>{
   const x=books.find(b=>b.id===id);
   setBookId(id);setBookCode('');setError('');
-  setFolio('');setNumber('');
+  setFolio('');setNumber('');setFirstFolioUsed('');
   setCapacity(x?String(x.partidasPorFolio):'');
   setRestart(x?Boolean(x.restartEachFolio):false);
  };
@@ -54,7 +55,7 @@ export default function ParishDecreeSeatPanelV280({decreeId,onSeated}){
   if(active.current||submitting||busy||locked||!canProceed)return;
   const operationId=crypto.randomUUID();
   const params={decreeId,bookCode,bookId:bookId||null,
-   folio,number,capacity,restart,expectedVersion:chosen?.version??0,
+   folio,number,capacity,firstFolioUsed,restart,expectedVersion:chosen?.version??0,
    operationId,context};
   try{validateSeatDecreeV280(params);}catch(e){setError(e.message);return;}
   active.current=true;setSubmitting(true);setError('');
@@ -71,7 +72,7 @@ export default function ParishDecreeSeatPanelV280({decreeId,onSeated}){
    await onSeated?.(result);
    await reload();
    setNotice('Asiento y acuse confirmados para Cancillería. Libro '+result.book+', Folio '+result.folio+', Número '+result.number+'.');
-  }catch(e){setLocked(true);setError('No se confirmó el asiento. Verifique la operación en el servidor antes de repetir. '+e.message);}
+  }catch(e){setLocked(true);setError('No se confirmó el asiento. Reconsulte el libro antes de continuar. '+e.message);}
   finally{setSubmitting(false);active.current=false;}
  };
  if(!busy&&!info)return null;
@@ -94,13 +95,13 @@ export default function ParishDecreeSeatPanelV280({decreeId,onSeated}){
      <option value="">Seleccione el libro físico</option>
      {books.map(b=><option key={b.id} value={b.id}>{b.bookCode} · próxima posición {b.nextFolio}/{b.nextNumber}</option>)}
     </select>
-   </label>:<p className="text-xs font-bold text-blue-800">Primer asiento de libro supletorio: indique Libro, Folio, Número y capacidad. Esta configuración quedará inmutable.</p>}
+   </label>:<p className="text-xs font-bold text-blue-800">Para iniciar la memoria supletoria, confirme la primera posición libre del libro físico y su capacidad.</p>}
    {(books.length===0||chosen)&&<>
     <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
      <label className={label}>Código del Libro (admite 0001A)
       <input className={input} value={bookCode} maxLength={32} onChange={e=>setBookCode(e.target.value.toUpperCase())} autoComplete="off"/>
      </label>
-     <label className={label}>Folio inicial
+     <label className={label}>Folio
       <input className={input} value={folio} onChange={e=>setFolio(e.target.value)} inputMode="numeric" autoComplete="off"/>
      </label>
      <label className={label}>Número de partida
@@ -111,7 +112,14 @@ export default function ParishDecreeSeatPanelV280({decreeId,onSeated}){
        onChange={e=>setCapacity(e.target.value)} autoComplete="off"/>
      </label>
     </div>
-    {chosen?<p className="text-xs font-semibold text-slate-600">Memoria inmutable del libro: {chosen.partidasPorFolio} partidas por folio; próximo Folio {chosen.nextFolio}, Número {chosen.nextNumber}. Escriba la posición exacta; el servidor rechazará otra.</p>:
+    {!chosen&&<label className={label}>Partidas anteriores en ese folio
+      <input className={input} value={firstFolioUsed} inputMode="numeric" maxLength={4}
+       onChange={e=>setFirstFolioUsed(e.target.value)} placeholder="Según lo digitalizado"/>
+    </label>}
+    {chosen?.advanced&&<p className="text-xs font-semibold text-slate-700">
+      Hay una posición registrada antes del próximo asiento libre. Verifique la ubicación indicada en el libro físico.
+    </p>}
+    {chosen?<p className="text-xs font-semibold text-slate-600">Memoria del libro: {chosen.partidasPorFolio} partidas por folio; próximo Folio {chosen.nextFolio}, Número {chosen.nextNumber}. Escriba la posición exacta.</p>:
      <label className="flex items-center gap-2 text-xs font-bold text-slate-700"><input type="checkbox" checked={restart}
       onChange={e=>setRestart(e.target.checked)}/>Reiniciar número de partida al pasar de folio</label>}
     <Button type="button" onClick={submit} disabled={submitting||locked||!bookCode||!folio||!number||!capacity}
