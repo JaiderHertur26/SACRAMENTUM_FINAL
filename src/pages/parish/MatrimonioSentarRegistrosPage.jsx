@@ -16,11 +16,12 @@ import {
     Layers, CheckSquare, Square, Lock, Heart, Users, FileText, Search
 } from 'lucide-react';
 import { supabase } from '@/lib/supabaseClient';
-import { listPendingMarriagesCloud, listReportedMarriageTicketsCloud, seatPendingMarriageCloud } from '@/services/marriagesCloudService';
+import { listPendingMarriagesCloud, listReportedMarriageTicketsCloud } from '@/services/marriagesCloudService';
 import { getMatrimonioParameters } from '@/services/sacramentParametersService';
 import MatrimonioTicket from '@/components/MatrimonioTicket';
 import { getParishPrintProfile } from '@/services/sacramentsService';
-import { institutionalConfirm } from '@/lib/institutionalDialog';
+import { institutionalSeatCoordinates } from '@/lib/institutionalDialog';
+import { getManualSeatContext, seatManually } from '@/services/manualSacramentalSeatService';
 import LedgerSeatPanelV264 from '@/components/LedgerSeatPanelV264';
 import {ledgerV264Enabled} from '@/domain/ledgerSeatV264.mjs';
 import { getCanonicalMarriageCategoryLabel } from '@/utils/marriageCanonicalStatus';
@@ -195,7 +196,13 @@ const MatrimonioSentarRegistrosPage = () => {
         seatInFlight.current = true;
         setIsSaving(true);
         try {
-            await seatPendingMarriageCloud({ pendingId: currentMarriage.id, parishId: resolvedParishId });
+            const context = await getManualSeatContext(resolvedParishId, 'matrimonio', [currentMarriage.id]);
+            const coordinates = await institutionalSeatCoordinates({ title: 'Asentar Matrimonio', context });
+            if (!coordinates) return;
+            await seatManually({
+                parishId: resolvedParishId, sacrament: 'matrimonio',
+                records: [{ pending_id: currentMarriage.id }], context, coordinates
+            });
             toast({ title: 'Registro asentado', description: 'Matrimonio asentado permanentemente en Supabase.', className: 'bg-green-50 text-green-900 border-green-200' });
             if (await loadData()) setMode('reported');
         } catch (error) {
@@ -237,26 +244,26 @@ const MatrimonioSentarRegistrosPage = () => {
         // Acquire before opening the asynchronous confirmation to reject duplicate clicks.
         seatInFlight.current = true;
         setIsSaving(true);
-        let completed = 0;
         try {
-            if (!(await institutionalConfirm({
+            const context = await getManualSeatContext(resolvedParishId, 'matrimonio', selectedIds);
+            const coordinates = await institutionalSeatCoordinates({
                 title: 'Asentar actas de Matrimonio',
-                message: 'Se asentarán ' + selectedIds.length + ' actas una por una. Si se interrumpe el lote, las actas ya asentadas se conservarán.',
-                confirmText: 'Sí, asentar actas',
-                tone: 'warning'
-            }))) return;
-            for (const id of selectedIds) {
-                await seatPendingMarriageCloud({ pendingId: id, parishId: resolvedParishId });
-                completed++;
-            }
-            toast({ title: 'Lote procesado', description: completed + ' matrimonios asentados en Supabase.', className: 'bg-green-50 text-green-900 border-green-200' });
+                message: `Ingrese las coordenadas de la primera partida. Se asentarán ${selectedIds.length} actas en orden consecutivo.`,
+                context
+            });
+            if (!coordinates) return;
+            await seatManually({
+                parishId: resolvedParishId, sacrament: 'matrimonio',
+                records: selectedIds.map(id => ({ pending_id: id })), context, coordinates
+            });
+            toast({ title: 'Lote procesado', description: `${selectedIds.length} matrimonios asentados en Supabase.`, className: 'bg-green-50 text-green-900 border-green-200' });
             setSelectedIds([]);
             if (await loadData()) setMode('reported');
         } catch (error) {
             const verified = await loadData();
             toast({
                 title: 'Lote interrumpido',
-                description: completed + ' acta(s) confirmada(s) antes de la interrupción. ' + (verified
+                description: (verified
                     ? 'Se consultó el estado actual y la selección conserva solo pendientes. Revise las boletas emitidas antes de continuar. ' + (error?.message || '')
                     : 'No se pudo verificar el resto. Reintente la sincronización antes de continuar.'),
                 variant: 'destructive'

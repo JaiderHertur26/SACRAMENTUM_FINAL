@@ -17,6 +17,7 @@ export const getParishPrintProfile=async()=>({});
 export const getBaptismParameters=async()=>({ordinarioLibro:1,ordinarioFolio:1,ordinarioNumero:2,ordinarioPartidas:2});
 export const calculateNextConsecutive=(numero,folio,libro)=>({numero:numero+1,folio,libro});
 export const institutionalConfirm=async()=>true;
+export const institutionalSeatCoordinates=async()=>{throw Error('QA no espera el asiento de una boleta ordinaria')};
 export const supabase={
  from(){const q={select(){return q},eq(){return q},order(){return q},then(ok,bad){return Promise.resolve({data:pending,error:null}).then(ok,bad)}};return q;},
  async rpc(name,args){

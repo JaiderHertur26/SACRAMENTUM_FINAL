@@ -1,0 +1,30 @@
+{
+  "protocol": "V328",
+  "reviewedSourceSha256": {
+    "src/pages/parish/BaptismSentarRegistrosPage.jsx": {
+      "before": "513b77bad79babc2721a0a7fc1c9db2fad91db9b1b89ce008f14066d0e701d87",
+      "after": "88570852f240c419ed59b00437f2084063622a89dde568f102bc8f6ba47cc17a"
+    },
+    "src/pages/parish/ConfirmationSentarRegistrosPage.jsx": {
+      "before": "6c8bafe727c1a1d90dcc9ee0823d90820d53ab45dd0c752e65c4aee8d510e027",
+      "after": "351388a01aafb9cb30fa4577b313716186e2e07e67aa3f2961582d1b8c5c58ea"
+    },
+    "src/pages/parish/MatrimonioSentarRegistrosPage.jsx": {
+      "before": "4c842793578aacf5aff9afae4e26adffdc4ea706cded6ce634db2010916cd30b",
+      "after": "adf0a36550eda80853210058b38d859440f80082f3ef4a42d68388fa5c3700dd"
+    },
+    "src/pages/parish/FuneralRegistryPage.jsx": {
+      "before": "051e4f02588f097a17f78499fd84b6e3890a85e5d48250dcf3d8ab0a055683c1",
+      "after": "8c95b49db49c46e6225581a3d5e1c3e6ac149cb3d29edc08b8094236a08c3f60"
+    }
+  },
+  "sourceSha256": {
+    "src/components/ui/InstitutionalDialogHost.jsx": "b383f8006d8b2b0ae0a71c456fa47aff7e1befd1f084a255781b49b5e6b8fcf3",
+    "src/lib/institutionalDialog.js": "069be21057bffec30512064166b6181e6d2151779f25fb9a486ef9159d580471",
+    "src/domain/manualSacramentalSeat.mjs": "c0039ca77a14236f18bcd934cb4c11c41e2a0222fa0a17aff96dd0b21d3a2d68",
+    "src/services/manualSacramentalSeatService.js": "72946e96f758d94393c92e850bc2c55d734aacc380c1edabf6aa14ce35720e6b",
+    "supabase/deployment/20261114134302_require_manual_ordinary_seating_v328.sql": "86d139f01cb38e1653e6d7b0d22db3fa8e1d60193bf0e359886f7c732dc05abd",
+    "supabase/deployment/20261114134304_reconcile_occupied_ordinary_positions_v328.sql": "aa8a1585e5bb90f6fff04f9830920281f79f70fd5a4bab56f2b46a358c7f45d5",
+    "supabase/deployment/20261114134305_restrict_automatic_ordinary_seating_v328.sql": "f22fae02fea3d11bf2f987ab591e9b4f3a948cd62b1f477cbfd922885504cd98"
+  }
+}

@@ -23,7 +23,7 @@ jobs:
       - name: Instalación reproducible
         run: npm ci
       - name: Decretos separados y coordenadas obligatorias en Chrome
-        run: node scripts/audit-decree-pending-browser-v325.mjs --v326
+        run: node scripts/audit-decree-pending-browser-v325.mjs --v328
       - name: Regresión de filtros de decretos
         run: node --test scripts/test-decree-pending-v325.mjs scripts/test-celebration-time-v326.mjs
       - name: Recuperación de interfaz matrimonial en Chrome aislado
@@ -195,7 +195,7 @@ jobs:
           --health-retries 8
     steps:
       - uses: actions/checkout@v5
-      - name: Cuatro RPC reales rechazan decretos y preservan boletas ordinarias
+      - name: Separación de decretos y asiento manual de los cuatro registros
         env:
           PG_CONTAINER: ${{ job.services.postgres.id }}
         run: bash scripts/ci-decree-pending-v325.sh

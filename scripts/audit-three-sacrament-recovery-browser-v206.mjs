@@ -1,3 +1,4 @@
+import { manualCoordinatesBrowser } from './qa-manual-coordinates-browser-v328.mjs';
 // Actual React page, in-memory fictitious services. NO authenticated production E2E.
 import fs from 'node:fs';import os from 'node:os';import path from 'node:path';import {spawn} from 'node:child_process';import {createHash} from 'node:crypto';
 const chrome=['C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe','C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe','/usr/bin/google-chrome','/usr/bin/chromium','/usr/bin/chromium-browser'].find(fs.existsSync);
@@ -15,9 +16,14 @@ try{
  browser.stderr.on('data',chunk=>{chromeDiagnostics=(chromeDiagnostics+chunk.toString()).slice(-2400)});
  browser.on('error',error=>{chromeDiagnostics=error.message});
  const portfile=path.join(tmp,'DevToolsActivePort');
- for(let i=0;i<300&&!fs.existsSync(portfile);i++){if(browser.exitCode!==null||browser.signalCode)break;await sleep(100)}
- if(!fs.existsSync(portfile))throw Error('Chrome startup failed (exit='+browser.exitCode+'): '+chromeDiagnostics);
- const port=fs.readFileSync(portfile,'utf8').split(/\r?\n/)[0];
+ let port;
+ for(let i=0;i<300&&!port;i++){
+  if(browser.exitCode!==null||browser.signalCode)break;
+  try { port=fs.readFileSync(portfile,'utf8').match(/^\d+/)?.[0]; }
+  catch(error){ if(!['ENOENT','EBUSY','EACCES'].includes(error.code))throw error; }
+  if(!port) await sleep(100);
+ }
+ if(!port)throw Error('Chrome startup failed (exit='+browser.exitCode+'): '+chromeDiagnostics);
  const pages=await(await fetch('http://127.0.0.1:'+port+'/json/list')).json();
  socket=new WebSocket(pages.find(p=>p.type==='page').webSocketDebuggerUrl);
  await new Promise((resolve,reject)=>{socket.addEventListener('open',resolve,{once:true});socket.addEventListener('error',reject,{once:true})});
@@ -45,6 +51,9 @@ try{
  for(let i=0;i<400;i++){if((await state()).text.includes('No fue posible verificar')){compiled=true;break;}await sleep(100);}
  if(!compiled)throw Error('Initial isolated fixture compilation did not complete');
 
+ const manual=manualCoordinatesBrowser(evaluate,sleep);
+ const coordinates=async()=>{const n=(await state()).next;return {book:31,folio:442+Math.floor((n-1)/2),number:n};};
+ const accept=async()=>{await manual.open();await manual.fill(await coordinates());await manual.submit();};
  const definitions=[
   ...['bautismo','confirmacion'].flatMap(kind=>['individual-timeout','individual-lost-response','individual-read-failure','success-read-failure','batch-timeout','batch-lost-response','batch-read-failure','initial-read-error','batch-cancel'].map(scenario=>({kind,scenario}))),
   ...['individual-timeout','individual-lost-response','individual-read-failure','success-read-failure','initial-read-error','double-across-records'].map(scenario=>({kind:'exequias',scenario}))
@@ -70,20 +79,35 @@ try{
     if(batch){await click('Por Lote');await waitFor(s=>s.text.includes('Asentar Selecci'),'batch mode');await evaluate("document.querySelector('thead button').click()");await waitFor(s=>s.text.includes('Seleccionados: 3'),'selection')}
     const label=funeral?'Asentar ahora':batch?'Asentar Selecci':'Firmar y Sellar Permanente';
     if(scenario==='batch-cancel'){
-     await evaluate('window.__qa206.confirm=false');await click(label,true);await sleep(180);
-     first=await state();check(first.calls.length===0&&first.confirmCalls===1,'duplicate confirmation or write after cancel');
-     await evaluate('window.__qa206.confirm=true');await click(label,true);
+     await click(label,true);
+     await manual.open();
+     await manual.submit();
+     check(!!(await manual.error()),'blank coordinates did not show a validation error');
+     await manual.fill({...await coordinates(),folio:9999});
+     await manual.submit();
+     check(!!(await manual.error()),'mismatching coordinates did not show a validation error');
+     first=await state();
+     check(first.calls.length===0,'blank or mismatching coordinates submitted a write');
+     await manual.cancel();
+     await waitFor(s=>s.buttons.some(b=>!b.disabled&&b.text.includes(label)),'cancel released lock');
+     check((await manual.exists())===0,'cancel left a second dialog open');
+     await click(label,true);await accept();
      final=await waitFor(s=>s.reported?.length===3&&!s.buttons.some(b=>b.text.includes('Asentar Selecci')),'retry after cancel');
-     check(final.confirmCalls===2&&final.calls.length===1,'cancel did not release lock or duplicated batch');
+     check(final.calls.length===1,'cancel did not release lock or duplicated batch');
     }else if(scenario==='double-across-records'){
      await evaluate("(()=>{let b=[...document.querySelectorAll('button')].filter(x=>x.textContent.includes('Asentar ahora'));b[0].click();b[1].click();return true})()");
+     await manual.open();
+     await manual.submit();
+     check(!!(await manual.error())&&(await state()).calls.length===0,'Exequias accepted empty coordinates');
+     await manual.fill(await coordinates());await manual.submit();
      first=await waitFor(s=>s.calls?.length>0,'first seat');check(first.calls.length===1,'second row was submitted while first active');
      await waitFor(s=>s.reported?.length===1&&s.toasts.some(t=>t.title==='Registro asentado'),'first seat done');
-     await pendingTab();await click(label,true);
+     await pendingTab();await click(label,true);await accept();
      final=await waitFor(s=>s.reported?.length===2&&s.toasts.filter(t=>t.title==='Registro asentado').length===2,'second explicit seat');
      check(final.calls.length===2,'cross-row lock not released or duplicate writes');
     }else{
      check(await click(label,true),'seat action unavailable');
+     await accept();
      // V219: failed reads require an explicitly settled *blocked* UI state.
      // Destructive toast and a previously enabled batch button may coexist in
      // different React commits; accepting that interim snapshot caused CI
@@ -115,6 +139,7 @@ try{
       if(!funeral&&!batch)check(restored.text.includes(String(restored.next).padStart(4,'0')),'stale displayed consecutive');
       if(batch)check(restored.text.includes('Seleccionados: 3'),'uncommitted selection lost');
       check(await click(label,true),'explicit retry unavailable');
+      await accept();
       const expected=batch?3:scenario.includes('timeout')?1:2;
       final=await waitFor(s=>s.reported?.length===expected&&s.reads>restored.reads,'explicit retry completion');
       check(final.calls.length===2,'explicit retry count mismatch');
@@ -131,7 +156,7 @@ try{
  }
 }finally{try{socket?.close()}catch{}try{browser?.kill()}catch{}try{vite.kill()}catch{}try{fs.rmSync(tmp,{recursive:true,force:true})}catch{}}
 const files=['BaptismSentarRegistrosPage.jsx','ConfirmationSentarRegistrosPage.jsx','FuneralRegistryPage.jsx'].map(x=>'src/pages/parish/'+x);
-const result={protocol:'V206',scope:'Actual React pages; isolated fictitious services; no authenticated production E2E or physical network fault',sourceSha256:Object.fromEntries(files.map(file=>[file,createHash('sha256').update(fs.readFileSync(file,'utf8').replace(/\r\n/g,'\n')).digest('hex')])),date:new Date().toISOString(),rows,passed:rows.filter(r=>r.passed).length,total:rows.length,exceptions,externalRequests};
-fs.writeFileSync('AUDITORIA_RECUPERACION_TRES_SACRAMENTOS_V206.json',JSON.stringify(result,null,2)+'\n');
+const result={protocol:'V328',scope:'Actual React pages; isolated fictitious services; no authenticated production E2E or physical network fault',sourceSha256:Object.fromEntries(files.map(file=>[file,createHash('sha256').update(fs.readFileSync(file,'utf8').replace(/\r\n/g,'\n')).digest('hex')])),date:new Date().toISOString(),rows,passed:rows.filter(r=>r.passed).length,total:rows.length,exceptions,externalRequests};
+fs.writeFileSync('AUDITORIA_RECUPERACION_TRES_SACRAMENTOS_V328.json',JSON.stringify(result,null,2)+'\n');
 console.log('V206_BROWSER '+result.passed+'/'+result.total+' exceptions='+exceptions.length+' external='+externalRequests.length);
 if(result.passed!==24||exceptions.length||externalRequests.length)process.exitCode=1;

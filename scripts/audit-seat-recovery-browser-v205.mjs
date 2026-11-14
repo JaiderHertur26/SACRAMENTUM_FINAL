@@ -1,3 +1,4 @@
+import { manualCoordinatesBrowser } from './qa-manual-coordinates-browser-v328.mjs';
 // Actual React page, in-memory fictitious services. NO authenticated production E2E.
 import fs from 'node:fs';import os from 'node:os';import path from 'node:path';import {spawn} from 'node:child_process';import {createHash} from 'node:crypto';
 const baseline=process.argv.includes('--baseline');
@@ -16,9 +17,14 @@ try{
  browser.stderr.on('data',chunk=>{chromeDiagnostics=(chromeDiagnostics+chunk.toString()).slice(-2400)});
  browser.on('error',error=>{chromeDiagnostics=error.message});
  const portfile=path.join(tmp,'DevToolsActivePort');
- for(let i=0;i<300&&!fs.existsSync(portfile);i++){if(browser.exitCode!==null||browser.signalCode)break;await sleep(100)}
- if(!fs.existsSync(portfile))throw Error('Chrome startup failed (exit='+browser.exitCode+'): '+chromeDiagnostics);
- const port=fs.readFileSync(portfile,'utf8').split(/\r?\n/)[0];
+ let port;
+ for(let i=0;i<300&&!port;i++){
+  if(browser.exitCode!==null||browser.signalCode)break;
+  try { port=fs.readFileSync(portfile,'utf8').match(/^\d+/)?.[0]; }
+  catch(error){ if(!['ENOENT','EBUSY','EACCES'].includes(error.code))throw error; }
+  if(!port) await sleep(100);
+ }
+ if(!port)throw Error('Chrome startup failed (exit='+browser.exitCode+'): '+chromeDiagnostics);
  const pages=await(await fetch('http://127.0.0.1:'+port+'/json/list')).json();
  socket=new WebSocket(pages.find(p=>p.type==='page').webSocketDebuggerUrl);
  await new Promise((resolve,reject)=>{socket.addEventListener('open',resolve,{once:true});socket.addEventListener('error',reject,{once:true})});
@@ -38,7 +44,14 @@ try{
  const waitFor=async(predicate,label)=>{let s;for(let i=0;i<100;i++){s=await state();if(predicate(s))return s;await sleep(60)}throw Error('Timeout '+label+': '+JSON.stringify(s).slice(0,900))};
  const click=async(label,twice=false)=>evaluate("(()=>{const b=[...document.querySelectorAll('button')].find(b=>b.textContent.trim().includes("+JSON.stringify(label)+"));if(!b||b.disabled)return false;b.click();"+(twice?"b.click();":"")+"return true})()");
  await call('Page.enable');await call('Runtime.enable');await call('Fetch.enable',{patterns:[{urlPattern:'*'}]});
- const scenarios=['individual-reject','individual-lost-response','individual-read-failure','batch-partial','batch-lost-response','batch-read-failure','initial-read-error','batch-cancel'];
+ const manual=manualCoordinatesBrowser(evaluate,sleep);
+ const coordinates=async()=>({book:31,folio:442,number:(await state()).next});
+ const accept=async()=>{await manual.open();await manual.fill(await coordinates());await manual.submit();};
+ await call('Page.navigate',{url:'http://127.0.0.1:4855/?case=initial-read-error'});
+ let readyFixture=false;
+ for(let i=0;i<450;i++){if((await state()).text.includes('No fue posible verificar')){readyFixture=true;break;}await sleep(100);}
+ if(!readyFixture)throw Error('No se pudo preparar la muestra de Matrimonio');
+ const scenarios=['individual-reject','individual-lost-response','individual-read-failure','batch-timeout','batch-lost-response','batch-read-failure','initial-read-error','batch-cancel'];
  for(const scenario of scenarios){
   const faults=[];let first,final;
   const check=(condition,message)=>{if(!condition)faults.push(message)};
@@ -54,16 +67,26 @@ try{
     if(batch){await click('Por Lote');await evaluate("document.querySelector('thead button').click()");await sleep(70)}
     const label=batch?'Asentar Selección':'Firmar y Sellar Permanente';
     if(scenario==='batch-cancel'){
-     await evaluate('window.__qa205.confirm=false');await click(label,true);await sleep(230);
-     first=await state();check(first.calls.length===0&&first.confirmCalls===1,'cancel/double confirmation not guarded');
-     await evaluate('window.__qa205.confirm=true');await click(label,true);
+     await click(label,true);
+     await manual.open();
+     await manual.submit();
+     check(!!(await manual.error()),'blank coordinates did not show a validation error');
+     await manual.fill({...await coordinates(),number:9999});
+     await manual.submit();
+     check(!!(await manual.error()),'mismatching coordinates did not show a validation error');
+     first=await state();
+     check(first.calls.length===0,'blank or mismatching coordinates submitted a write');
+     await manual.cancel();
+     await waitFor(s=>s.buttons.some(b=>!b.disabled&&b.text.includes(label)),'cancel released lock');
+     check((await manual.exists())===0,'cancel left a second dialog open');
+     await click(label,true);await accept();
      final=await waitFor(s=>s.reported?.length===3&&s.text.includes('Boletas matrimoniales emitidas'),'retry after cancel');
-     check(final.calls.length===3&&final.confirmCalls===2,'cancel left lock or duplicate confirmation');
+     check(final.calls.length===1&&final.calls[0].length===3,'expected one atomic batch after cancellation');
     }else{
      check(await click(label,true),'missing enabled seat action');
-     const expectedCalls=batch?2:1;
+     await accept();
      first=await waitFor(s=>(s.toasts||[]).some(t=>t.variant==='destructive')&&s.buttons.some(b=>!b.disabled)&&(s.text.includes('No fue posible verificar')||s.text.includes('Sentar Registros de Matrimonio')),'failure recovery');
-     check(first.calls.length===expectedCalls,'duplicate or automatic mutation replay');
+     check(first.calls.length===1,'duplicate or automatic mutation replay');
      check(first.toasts.some(t=>t.description?.length>20),'missing actionable failure detail');
      if(scenario.includes('read-failure')){
       check(first.text.includes('No fue posible verificar'),'unverified snapshot remained writable');
@@ -73,16 +96,18 @@ try{
      }else{
       check(first.reads>3,'no post-failure verification');
      }
-     if(batch){
-      const expectedPending=scenario==='batch-partial'?2:1;
-      check((await state()).text.includes('Seleccionados: '+expectedPending),'selection includes committed marriages');
+     if(batch&&scenario!=='batch-timeout'){
+      final=await state();
+      check(final.reported.length===3&&final.pending.length===0,'committed atomic batch was not verified');
+      check(!final.buttons.some(b=>!b.disabled&&b.text.includes('Asentar Selección')),'committed batch still available for re-seat');
      }else{
-      check((await state()).text.includes(String(first.next).padStart(4,'0')),'counter was not refreshed');
+      if(batch)check((await state()).text.includes('Seleccionados: 3'),'rolled-back batch lost its selection');
+      else check((await state()).text.includes(String(first.next).padStart(4,'0')),'counter was not refreshed');
+      check(await click(label,true),'retry action unavailable');
+      await accept();
+      final=await waitFor(s=>s.reported?.length===(batch?3:scenario==='individual-reject'?1:2)&&s.text.includes('Boletas matrimoniales emitidas'),'explicit retry');
+      check(final.calls.length===2,'wrong retry mutation count');
      }
-     // The user explicitly retries; the page must submit only remaining boletas.
-     check(await click(label,true),'retry action unavailable');
-     final=await waitFor(s=>s.reported?.length===(batch?3:(scenario==='individual-reject'?1:2))&&s.text.includes('Boletas matrimoniales emitidas'),'explicit retry');
-     check(final.calls.length===(scenario==='batch-partial'?4:scenario.startsWith('batch')?3:2),'wrong retry mutation count');
      check(new Set(final.reported).size===final.reported.length,'duplicate official record');
      check(final.next===final.reported.length+1,'counter skipped or duplicated');
     }
@@ -94,7 +119,7 @@ try{
  }
 }finally{try{socket?.close()}catch{}try{browser?.kill()}catch{}try{vite.kill()}catch{}try{fs.rmSync(tmp,{recursive:true,force:true})}catch{}}
 const source='src/pages/parish/MatrimonioSentarRegistrosPage.jsx';
-const result={protocol:'V205',scope:'Actual React marriage seating page; in-memory fictitious services; no authenticated production E2E or physical network fault',sourceSha256:createHash('sha256').update(fs.readFileSync(source,'utf8').replace(/\r\n/g,'\n')).digest('hex'),date:new Date().toISOString(),rows,passed:rows.filter(x=>x.passed).length,total:rows.length,exceptions,externalRequests};
-fs.writeFileSync(baseline?'AUDITORIA_RECUPERACION_UI_BASELINE_V205.json':'AUDITORIA_RECUPERACION_UI_V205.json',JSON.stringify(result,null,2)+'\n');
+const result={protocol:'V328',scope:'Actual React marriage seating page; in-memory fictitious services; no authenticated production E2E or physical network fault',sourceSha256:createHash('sha256').update(fs.readFileSync(source,'utf8').replace(/\r\n/g,'\n')).digest('hex'),date:new Date().toISOString(),rows,passed:rows.filter(x=>x.passed).length,total:rows.length,exceptions,externalRequests};
+fs.writeFileSync('AUDITORIA_RECUPERACION_MATRIMONIO_V328.json',JSON.stringify(result,null,2)+'\n');
 console.log('V205_BROWSER '+result.passed+'/'+result.total+' exceptions='+exceptions.length+' external='+externalRequests.length);
 if(result.passed!==8||exceptions.length||externalRequests.length)process.exitCode=1;

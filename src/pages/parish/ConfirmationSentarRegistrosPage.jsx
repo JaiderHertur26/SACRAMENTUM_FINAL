@@ -17,10 +17,11 @@ import {
 } from 'lucide-react';
 import ConfirmationTicket from '@/components/ConfirmationTicket';
 import { supabase } from '@/lib/supabaseClient'; 
-import { calculateNextConsecutive } from '@/services/sacramentParametersService';
 import { getParishPrintProfile, purificarRegistroConfirmacion } from '@/services/sacramentsService';
 import { getMarginalNoteTemplates } from '@/services/marginalNotesTemplatesService';
-import { institutionalConfirm } from '@/lib/institutionalDialog';
+import { institutionalSeatCoordinates } from '@/lib/institutionalDialog';
+import { getManualSeatContext, seatManually } from '@/services/manualSacramentalSeatService';
+import { initialSeatSequence, nextManualSeat } from '@/domain/manualSacramentalSeat.mjs';
 import LedgerSeatPanelV264 from '@/components/LedgerSeatPanelV264';
 import {ledgerV264Enabled} from '@/domain/ledgerSeatV264.mjs';
 
@@ -54,7 +55,6 @@ const ConfirmationSentarRegistrosPage = () => {
     const [searchTerm, setSearchTerm] = useState(''); 
     
     const [nextNumbers, setNextNumbers] = useState({ book: '0001', page: '0001', entry: '0001' });
-    const [fullParamsCache, setFullParamsCache] = useState(null); 
 
     const [isLoading, setIsLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
@@ -134,7 +134,6 @@ const ConfirmationSentarRegistrosPage = () => {
             setCurrentIndex(index => Math.min(index, Math.max(0, pendientes.length - 1)));
 
             const p = await getConfirmationParameters(resolvedParishId);
-            setFullParamsCache(p);
             setNextNumbers({
                 book: String(p.ordinarioLibro || 1).padStart(4, '0'),
                 page: String(p.ordinarioFolio || 1).padStart(4, '0'),
@@ -247,53 +246,12 @@ const ConfirmationSentarRegistrosPage = () => {
         seatInFlight.current = true;
         setIsSaving(true);
         try {
-            const cleanDate = (d) => (d && String(d).trim() !== '' && String(d).trim() !== '---') ? d : null;
-
-            const finalData = {
-                parish_id: resolvedParishId,
-                book_number: nextNumbers.book,
-                folio: nextNumbers.page,
-                number: nextNumbers.entry,
-                numero_registro: currentConfirmation.numeroRegistro,
-                status: 'seated',
-                celebration_date: cleanDate(currentConfirmation.fechaSacramento),
-                lugar_bautismo: currentConfirmation.lugarBautismo || null,
-                apellidos: currentConfirmation.apellidos || null,
-                nombres: currentConfirmation.nombres || null,
-                sexo: currentConfirmation.sexo || null,
-                fecha_nacimiento: cleanDate(currentConfirmation.fechaNacimiento),
-                lugar_nacimiento: currentConfirmation.lugarNacimiento || null,
-                nombre_padre: currentConfirmation.nombrePadre || null,
-                nombre_madre: currentConfirmation.nombreMadre || null,
-                tipo_union_padres: currentConfirmation.tipoUnionPadres || null,
-                padrinos: currentConfirmation.padrinos || null,
-                ministro: currentConfirmation.ministro || null,
-                da_fe: currentConfirmation.daFe || null,
-                nota_marginal: currentConfirmation.notaMarginal || null,
-                raw_data: { ...currentConfirmation, Libro: nextNumbers.book, folio: nextNumbers.page, numero: nextNumbers.entry },
-                created_at: new Date().toISOString()
-            };
-
-            // El auto-enlace se prepara de forma de solo lectura; PostgreSQL valida y aplica
-            // la partida, la nota, el pendiente y el consecutivo en una única transacción.
-            const notaCruza = await prepararNotaMarginal(currentConfirmation, nextNumbers.book, nextNumbers.page, nextNumbers.entry);
-            const { error: seatError } = await supabase.rpc('seat_confirmation_records', {
-                p_parish_id: resolvedParishId,
-                p_records: [{
-                    ...finalData,
-                    pending_id: currentConfirmation.id,
-                    assigned_book: Number(nextNumbers.book),
-                    assigned_folio: Number(nextNumbers.page),
-                    assigned_number: Number(nextNumbers.entry),
-                    cross_baptism_id: notaCruza?.sacrament_id || null,
-                    cross_note: notaCruza?.content || null
-                }],
-                p_expected_book: Number(nextNumbers.book),
-                p_expected_folio: Number(nextNumbers.page),
-                p_expected_number: Number(nextNumbers.entry)
-            });
-            if (seatError) throw seatError;
-            
+            const context = await getManualSeatContext(resolvedParishId, 'confirmacion', [currentConfirmation.id]);
+            const coordinates = await institutionalSeatCoordinates({ title: 'Asentar Confirmación', context });
+            if (!coordinates) return;
+            const nota = await prepararNotaMarginal(currentConfirmation, coordinates.book, coordinates.folio, coordinates.number);
+            const record = { pending_id: currentConfirmation.id, cross_baptism_id: nota?.sacrament_id, cross_note: nota?.content };
+            await seatManually({ parishId: resolvedParishId, sacrament: 'confirmacion', records: [record], context, coordinates });
             toast({ title: "Éxito", description: "Confirmación y Nota Marginal asentadas permanentemente.", className: "bg-green-50 text-green-900 border-green-200" });
             await loadData();
         } catch (error) { 
@@ -331,84 +289,27 @@ const ConfirmationSentarRegistrosPage = () => {
         seatInFlight.current = true;
         setIsSaving(true);
         try {
-            if (!(await institutionalConfirm({
+            const ids = selectedIds;
+            const context = await getManualSeatContext(resolvedParishId, 'confirmacion', ids);
+            const coordinates = await institutionalSeatCoordinates({
                 title: 'Asentar registros de Confirmación',
-                message: `Se asentarán permanentemente ${selectedIds.length} registros y se consumirán sus consecutivos oficiales.`,
-                confirmText: 'Sí, asentar registros',
-                tone: 'warning'
-            }))) return;
-
-            const cleanDate = (d) => (d && String(d).trim() !== '' && String(d).trim() !== '---') ? d : null;
-            const p = fullParamsCache || await getConfirmationParameters(resolvedParishId);
-            let cFolio = parseInt(p.ordinarioFolio || 1, 10);
-            let cNumero = parseInt(p.ordinarioNumero || 1, 10);
-            let cLibro = parseInt(p.ordinarioLibro || 1, 10);
-            let pPorFolio = parseInt(p.ordinarioPartidas || 2, 10);
-            let restart = p.ordinarioRestartNumber;
-
-            const recordsToInsert = [];
-
-            for (const id of selectedIds) {
-                const conf = pendingConfirmations.find(c => c.id === id);
-                if (!conf) throw new Error('Uno de los registros seleccionados ya no está disponible.');
-                if (hasPendingLinkedBaptism(conf)) {
-                    throw new Error('Hay una Confirmación seleccionada cuyo Bautismo vinculado todavía no ha sido asentado.');
-                }
-                const curBook = String(cLibro).padStart(4, '0');
-                const curFolio = String(cFolio).padStart(4, '0');
-                const curEntry = String(cNumero).padStart(4, '0');
-
-                recordsToInsert.push({
-                    pending_id: id,
-                    assigned_book: cLibro,
-                    assigned_folio: cFolio,
-                    assigned_number: cNumero,
-                    parish_id: resolvedParishId,
-                    book_number: curBook,
-                    folio: curFolio,
-                    number: curEntry,
-                    numero_registro: conf.numeroRegistro,
-                    status: 'seated',
-                    celebration_date: cleanDate(conf.fechaSacramento),
-                    lugar_bautismo: conf.lugarBautismo || null,
-                    apellidos: conf.apellidos || null,
-                    nombres: conf.nombres || null,
-                    sexo: conf.sexo || null,
-                    fecha_nacimiento: cleanDate(conf.fechaNacimiento),
-                    lugar_nacimiento: conf.lugarNacimiento || null,
-                    nombre_padre: conf.nombrePadre || null,
-                    nombre_madre: conf.nombreMadre || null,
-                    tipo_union_padres: conf.tipoUnionPadres || null,
-                    padrinos: conf.padrinos || null,
-                    ministro: conf.ministro || null,
-                    da_fe: conf.daFe || null,
-                    nota_marginal: conf.notaMarginal || null,
-                    raw_data: { ...conf, Libro: curBook, folio: curFolio, numero: curEntry },
-                    created_at: new Date().toISOString()
-                });
-
-                // 🚀 AUTO-ENLACE: Preparamos la nota marginal si el bautismo existe
-                const notaCruza = await prepararNotaMarginal(conf, curBook, curFolio, curEntry);
-                if (notaCruza) {
-                    recordsToInsert[recordsToInsert.length - 1].cross_baptism_id = notaCruza.sacrament_id;
-                    recordsToInsert[recordsToInsert.length - 1].cross_note = notaCruza.content;
-                }
-
-                const siguiente = calculateNextConsecutive(cNumero, cFolio, cLibro, pPorFolio, restart);
-                cNumero = parseInt(siguiente.numero, 10);
-                cFolio = parseInt(siguiente.folio, 10);
-                cLibro = parseInt(siguiente.libro, 10);
-            }
-
-            const { error: seatError } = await supabase.rpc('seat_confirmation_records', {
-                p_parish_id: resolvedParishId,
-                p_records: recordsToInsert,
-                p_expected_book: Number(p.ordinarioLibro || 1),
-                p_expected_folio: Number(p.ordinarioFolio || 1),
-                p_expected_number: Number(p.ordinarioNumero || 1)
+                message: `Ingrese las coordenadas de la primera partida. Se asentarán ${ids.length} boletas en orden consecutivo.`,
+                context
             });
-            if (seatError) throw seatError;
-
+            if (!coordinates) return;
+            const sequence = initialSeatSequence(context, coordinates);
+            let position = coordinates;
+            const records = [];
+            for (const id of ids) {
+                const conf = pendingConfirmations.find(record => record.id === id);
+                if (!conf || hasPendingLinkedBaptism(conf)) {
+                    throw new Error('Revise la selección y los bautismos vinculados antes de asentar.');
+                }
+                const nota = await prepararNotaMarginal(conf, position.book, position.folio, position.number);
+                records.push({ pending_id: id, cross_baptism_id: nota?.sacrament_id, cross_note: nota?.content });
+                position = nextManualSeat(position, sequence);
+            }
+            await seatManually({ parishId: resolvedParishId, sacrament: 'confirmacion', records, context, coordinates });
             toast({ title: "Lote Procesado", className: "bg-green-50 text-green-900 border-green-200" });
             setSelectedIds([]);
             await loadData();
