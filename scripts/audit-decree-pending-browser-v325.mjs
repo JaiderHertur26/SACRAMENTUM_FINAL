@@ -107,7 +107,8 @@ try{
 const sourcePaths=["src/domain/pendingOriginV325.mjs","src/components/parish/ParishDecreeQueueV325.jsx","src/components/DecreeSeatingLinkV325.jsx","src/pages/parish/BaptismSentarRegistrosPage.jsx","src/components/parish/ParishDecreeSeatPanelV280.jsx","src/services/decreeSeatsV280.js","scripts/qa-v325-decrees/index.html","scripts/qa-v325-decrees/vite.config.mjs","scripts/qa-v325-decrees/mockComponent.jsx","scripts/qa-v325-decrees/mocks.jsx","scripts/qa-v325-decrees/entry.jsx","scripts/audit-decree-pending-browser-v325.mjs"];
 const source_sha256_lf=Object.fromEntries(sourcePaths.map(file=>[file,createHash('sha256').update(fs.readFileSync(file,'utf8').replace(/\r\n/g,'\n')).digest('hex')]));
 const passed=checks.filter(x=>x.passed).length;
-const report={protocol:'V325',testedAt:new Date().toISOString(),source_sha256_lf,method:'Chrome real; pantallas reales con servicios y datos ficticios aislados',approved:passed===checks.length,checked:checks.length,passed,failed:checks.length-passed,exceptions,externalRequests,screens,checks};
-fs.writeFileSync('AUDITORIA_DECRETOS_PENDIENTES_V325.json',JSON.stringify(report,null,2)+'\n');
+const protocol=process.argv.includes('--v326')?'V326':'V325';
+const report={protocol,testedAt:new Date().toISOString(),source_sha256_lf,method:'Chrome real; pantallas reales con servicios y datos ficticios aislados',approved:passed===checks.length,checked:checks.length,passed,failed:checks.length-passed,exceptions,externalRequests,screens,checks};
+fs.writeFileSync(`AUDITORIA_DECRETOS_PENDIENTES_${protocol}.json`,JSON.stringify(report,null,2)+'\n');
 console.log('V325 DECRETOS '+(report.approved?'PASS':'FAIL')+' '+passed+'/'+checks.length);
 if(!report.approved)process.exitCode=1;

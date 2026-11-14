@@ -1,26 +1,27 @@
 {
   "protocol": "V324",
-  "testedAt": "2026-11-02T01:51:51.523Z",
+  "testedAt": "2026-11-14T12:15:02.606Z",
   "source_sha256_lf": {
-    "src/config/commandCenters.js": "7106c72e9dc602dbd23ce51ad7a592b5fee3b2974cd9b55b650fe0ea2d24dc2c",
+    "src/config/commandCenters.js": "afcb5318875b289d37c5b9ba8bdbe38b4b5962d0fd34cfd3790ec137a28fc0a8",
     "src/components/EcclesialCommandCenter.jsx": "a786315cf6ff70cd544050f23bcf49e2d748e5598a214a21a40e14eccbc95cab",
     "src/styles/command-center.css": "31ff48271cfd4ce8052eff16720db4151df2c0ebf21cc68d1b780b6c362faf0c",
     "src/pages/parish/ParishDashboard.jsx": "1c42eb2e5c42770b3d6ead7d23f0a02d48c243cfccc29b580da5a85afe793198",
     "src/pages/diocese/DioceseUserDashboard.jsx": "3281901be1cd40f7e3035884f4ee705a15644cfba46634cfaf0befa715c995aa",
     "src/pages/chancery/ChanceryDashboard.jsx": "36df54b700d4742111c8924bec7c7331149ed829a2d8891a674ae072d63e97b6",
-    "src/pages/admin/AdminGeneralDashboard.jsx": "7a3d7ef41277424e659ff01efff6a0474c3a93aed5f56699bb7365f95fce36e5",
+    "src/pages/admin/AdminGeneralDashboard.jsx": "2bfdfce131abd252358bb8a765f62800181f6ad2ce49ee6fd8270b0c2606a725",
+    "src/components/InstitutionalReadinessV274.jsx": "26a3d586910712f3fded0554b18a0d4a6e6168381796ff5dcea5d2ae102141ea",
     "src/components/DashboardLayout.jsx": "345802fa40934da92845587b0d2038ab2dd2ea13cc7f45d9d90f99c016327afd",
     "src/components/Sidebar.jsx": "9745645b0f3d933399c13aec1106b7d9cf264a7515749117a183fe1a203b9647",
     "src/components/Header.jsx": "33a2ba0fd54acd11c6275b66d32bb0182939ba20fdde9be7b46a9d12b331b263",
     "scripts/qa-v324-command/entry.jsx": "e6b385981e747cc29dda7059b34338941ed7f7b7e47ee8662e96d404b26907b6",
     "scripts/qa-v324-command/mocks.jsx": "3bc5a1dc97dd119b44f195059d4ca2166d5b00d0e5cdc2e766b3eb8a4172795f",
     "scripts/qa-v324-command/vite.config.mjs": "2ce5be25d137a00f3a0409f72f56f198088f900abcbeddce8c32be2a10233b2a",
-    "scripts/audit-command-centers-browser-v324.mjs": "8fd2b9a03c41029a71377397f27688f066521f5e6bd400eee68c6c3a9e049c53"
+    "scripts/audit-command-centers-browser-v324.mjs": "196735e27d37dea5975798a64796f3a4ecea226def05dc5783a5b1953773b01f"
   },
   "method": "Chrome real; cuatro dashboards, DashboardLayout, Sidebar y Header reales; perfiles y servicios ficticios aislados; sin iniciar sesiones institucionales ni escribir datos",
   "approved": true,
-  "checked": 256,
-  "passed": 256,
+  "checked": 257,
+  "passed": 257,
   "failed": 0,
   "exceptions": [],
   "externalRequests": [],
@@ -1815,6 +1816,11 @@
       "role": "admin_general",
       "viewport": "desktop",
       "module": "security"
+    },
+    {
+      "name": "Revisión institucional abre y enfoca el panel existente",
+      "passed": true,
+      "role": "admin_general"
     },
     {
       "name": "Búsqueda abre la pantalla existente",

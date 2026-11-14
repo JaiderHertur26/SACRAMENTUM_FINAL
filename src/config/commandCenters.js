@@ -132,15 +132,15 @@ export const COMMAND_CENTERS = {
       module('migration', 'Migración histórica', 'Supervisión del archivo legado', 'archive', [
         action('Abrir Centro de Migración', '/admin/migration-center', 'archive'),
       ]),
-      module('security', 'Seguridad y respaldos', 'Configuración y custodia del sistema', 'shield', [
-        action('Abrir ajustes del sistema', '/admin/settings', 'settings'),
+      module('security', 'Revisión institucional', 'Estado de cuentas, parroquias y conceptos', 'shield', [
+        action('Abrir revisión institucional', '/admin/dashboard#revision-institucional', 'shield'),
       ]),
     ],
     shortcuts: [],
     followUp: [
       action('Jurisdicciones y activación', '/admin/dioceses', 'church'),
       action('Usuarios institucionales', '/admin/users', 'users'),
-      action('Seguridad y respaldos', '/admin/settings', 'shield'),
+      action('Estado institucional', '/admin/dashboard#revision-institucional', 'shield'),
     ],
   },
 };

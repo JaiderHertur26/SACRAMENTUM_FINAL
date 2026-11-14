@@ -41,8 +41,8 @@ export default function InstitutionalReadinessV274(){
      String(x.tipo).toLowerCase()==='porreposicion'&&x.enlibro===2&&x.is_active===true).length
   };
  },[value]);
- return <section aria-label="Estado de revisión institucional V274"
-   className="mb-8 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+ return <section id="revision-institucional" tabIndex={-1} aria-label="Estado de revisión institucional V274"
+   className="scroll-mt-24 mb-8 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
    <div className="flex flex-wrap justify-between items-start gap-4">
     <div className="flex items-start gap-3">
      <ShieldCheck className="h-6 w-6 mt-1 text-slate-700"/>

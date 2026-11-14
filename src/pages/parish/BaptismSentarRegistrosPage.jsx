@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { canSeatCelebration } from '@/domain/celebrationTime.mjs';
 import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '@/components/DashboardLayout';
 import DecreeSeatingLinkV325 from '@/components/DecreeSeatingLinkV325';
@@ -21,6 +22,8 @@ import { getParishPrintProfile, purificarRegistroBautismo } from '@/services/sac
 import { institutionalConfirm } from '@/lib/institutionalDialog';
 import LedgerSeatPanelV264 from '@/components/LedgerSeatPanelV264';
 import {ledgerV264Enabled} from '@/domain/ledgerSeatV264.mjs';
+
+const canSeatRecord = (record) => canSeatCelebration(record.fechaSacramento || record.celebration_date, record.horaSacramento || record.hora_sacramento);
 
 const BaptismSentarRegistrosPage = () => {
     const { user } = useAuth();
@@ -55,13 +58,6 @@ const BaptismSentarRegistrosPage = () => {
         const raw = String(value).slice(0, 10);
         const match = raw.match(/^(\d{4})-(\d{2})-(\d{2})$/);
         return match ? `${match[3]}/${match[2]}/${match[1]}` : raw;
-    };
-
-    const isDateInFuture = (dateString) => {
-        if (!dateString) return false;
-        const now = new Date();
-        const sacramentDate = new Date(dateString.includes('T') ? dateString : `${dateString}T12:00:00`);
-        return sacramentDate > now; 
     };
 
     useEffect(() => {
@@ -156,7 +152,7 @@ const BaptismSentarRegistrosPage = () => {
     }, [resolvedParishId, loadData]);
 
     const currentBaptism = pendingBaptisms[currentIndex];
-    const currentIsFuture = currentBaptism ? isDateInFuture(currentBaptism.fechaSacramento) : false;
+    const currentIsFuture = currentBaptism ? !canSeatRecord(currentBaptism) : false;
 
     const handleReprint = () => {
         if (!currentBaptism) return;
@@ -206,7 +202,7 @@ const BaptismSentarRegistrosPage = () => {
     const handleSelectAll = (checked) => {
         if (checked) {
             const validIds = pendingBaptisms
-                .filter(b => !isDateInFuture(b.fechaSacramento))
+                .filter(b => canSeatRecord(b))
                 .map(b => b.id);
             setSelectedIds(validIds);
         } else {
@@ -406,7 +402,7 @@ const BaptismSentarRegistrosPage = () => {
                                     <AlertCircle className="w-8 h-8 flex-shrink-0" />
                                     <div>
                                         <p className="font-black uppercase text-sm">Registro Bloqueado</p>
-                                        <p className="text-xs font-bold opacity-80">La fecha del sacramento ({formatCivilDate(currentBaptism?.fechaSacramento)}) aún no ha ocurrido. No se puede asentar antes de su celebración.</p>
+                                        <p className="text-xs font-bold opacity-80">Verifique la fecha y la hora de la celebración antes de asentar.</p>
                                     </div>
                                 </div>
                             )}
@@ -463,7 +459,7 @@ const BaptismSentarRegistrosPage = () => {
                         <table className="w-full text-left">
                             <thead className="bg-slate-50 border-b font-black text-[10px] text-slate-400 uppercase">
                                 <tr>
-                                    <th className="px-8 py-6 w-16 text-center"><button onClick={() => handleSelectAll(selectedIds.length !== pendingBaptisms.filter(b => !isDateInFuture(b.fechaSacramento)).length)}>{selectedIds.length > 0 && selectedIds.length === pendingBaptisms.filter(b => !isDateInFuture(b.fechaSacramento)).length ? <CheckSquare className="text-[#4B7BA7]" /> : <Square />}</button></th>
+                                    <th className="px-8 py-6 w-16 text-center"><button onClick={() => handleSelectAll(selectedIds.length !== pendingBaptisms.filter(b => canSeatRecord(b)).length)}>{selectedIds.length > 0 && selectedIds.length === pendingBaptisms.filter(b => canSeatRecord(b)).length ? <CheckSquare className="text-[#4B7BA7]" /> : <Square />}</button></th>
                                     <th className="px-6 py-6">ESTADO</th>
                                     <th className="px-6 py-6">Bautizando</th>
                                     <th className="px-6 py-6">Fecha Sacramento</th>
@@ -472,7 +468,7 @@ const BaptismSentarRegistrosPage = () => {
                             </thead>
                             <tbody className="divide-y">
                                 {pendingBaptisms.map(baptism => {
-                                    const isFuture = isDateInFuture(baptism.fechaSacramento);
+                                    const isFuture = !canSeatRecord(baptism);
                                     const isSelected = selectedIds.includes(baptism.id);
                                     return (
                                         <tr 
@@ -493,7 +489,7 @@ const BaptismSentarRegistrosPage = () => {
                                                 {isFuture && <Lock className="w-4 h-4 text-slate-300 mx-auto" />}
                                             </td>
                                             <td className="px-6 py-4">
-                                                {isFuture ? <span className="text-[8px] font-black bg-amber-50 text-amber-700 border border-amber-200 px-2 py-1 rounded-full uppercase">Futuro</span> : <span className="text-[8px] font-black bg-green-100 text-green-600 px-2 py-1 rounded-full uppercase">Listo</span>}
+                                                {isFuture ? <span className="text-[8px] font-black bg-amber-50 text-amber-700 border border-amber-200 px-2 py-1 rounded-full uppercase">Revisar fecha</span> : <span className="text-[8px] font-black bg-green-100 text-green-600 px-2 py-1 rounded-full uppercase">Listo</span>}
                                             </td>
                                             <td className="px-6 py-4">
                                                 <p className="font-black uppercase text-xs text-slate-800">{baptism.apellidos}, {baptism.nombres}</p>
