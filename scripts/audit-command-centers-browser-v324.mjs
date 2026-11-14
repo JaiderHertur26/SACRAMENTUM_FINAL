@@ -20,7 +20,12 @@ try{
  const portfile=path.join(temp,'DevToolsActivePort');
  for(let i=0;i<180&&!fs.existsSync(portfile)&&chrome.exitCode===null;i++)await pause(100);
  if(!fs.existsSync(portfile))throw Error('Chrome no inició CDP');
- const [port]=fs.readFileSync(portfile,'utf8').split(/\r?\n/);
+ let port;
+ for(let i=0;i<30&&!port;i++){
+  try{[port]=fs.readFileSync(portfile,'utf8').split(/\r?\n/);}catch(issue){if(!['EBUSY','EPERM'].includes(issue.code))throw issue;}
+  if(!port)await pause(100);
+ }
+ if(!port)throw Error('Chrome no entregó un puerto CDP');
  const target=(await(await fetch('http://127.0.0.1:'+port+'/json/list')).json()).find(x=>x.type==='page');
  socket=new WebSocket(target.webSocketDebuggerUrl);
  await new Promise((ok,bad)=>{socket.addEventListener('open',ok,{once:true});socket.addEventListener('error',bad,{once:true});});
@@ -51,6 +56,76 @@ try{
    await pause(100);
   }
   throw Error('No cargó el centro '+role+': '+viteOutput);
+ };
+ const waitFor=async expression=>{
+  for(let i=0;i<100;i++){if(await evaluate(expression))return true;await pause(80);}
+  return false;
+ };
+ const clickButton=label=>evaluate('[...document.querySelectorAll("button")].find(b=>b.textContent.trim()==='+JSON.stringify(label)+')?.click()');
+ const chooseBackup=(field,value)=>evaluate(`(()=>{
+  const data=new DataTransfer(), file=JSON.parse(window.__V329_downloadBody);
+  if(${JSON.stringify(field)})file[${JSON.stringify(field)}]=${JSON.stringify(value)};
+  data.items.add(new File([JSON.stringify(file)],'respaldo-ensayo.json',{type:'application/json'}));
+  const input=document.querySelector('input[type="file"]');
+  input.files=data.files;
+  input.dispatchEvent(new Event('change',{bubbles:true}));
+ })()`);
+ const checkBackup=async role=>{
+  await load(role);
+  await evaluate('document.querySelector(\'.cc-shortcuts a[href="/copias-de-seguridad"]\')?.click()');
+  check(await waitFor('location.pathname==="/copias-de-seguridad" && document.querySelector("h1")?.textContent==="Copia de seguridad" && [...document.querySelectorAll("button")].some(b=>b.textContent.trim()==="Exportar copia"&&!b.disabled)'),
+   'Cada centro abre sus copias de seguridad',{role});
+  const scope={parish:'decretos recibidos',diocese:'informes generados por su cuenta',chancery:'datos de su Cancillería',admin_general:'Directorio institucional'}[role];
+  check(await evaluate('document.querySelector("h1").parentElement.textContent.includes('+JSON.stringify(scope)+')'),
+   'La página explica el alcance del rol',{role});
+  await evaluate(`(()=>{
+   URL.createObjectURL=(blob)=>{void blob.text().then(body=>window.__V329_downloadBody=body);return 'blob:qa-backup';};
+   const click=HTMLAnchorElement.prototype.click;
+   HTMLAnchorElement.prototype.click=function(){
+    if(this.download)window.__V329_downloadName=this.download;
+    else click.call(this);
+   };
+  })()`);
+  await clickButton('Exportar copia');
+  check(await waitFor('!!window.__V329_downloadBody && JSON.parse(window.__V329_downloadBody).role==='+JSON.stringify(role)+' && window.__V329_downloadName.endsWith(".json")'),
+   'El archivo exportado se descarga con su rol',{role});
+  if(role==='parish'){
+   await chooseBackup('role','diocese');
+   check(await waitFor('document.querySelector("[role=alert]")?.textContent.includes("otro rol")'),
+    'Se rechaza un archivo de otro rol antes de subirlo',{role});
+   await chooseBackup('integrity','c'.repeat(64));
+   await waitFor('[...document.querySelectorAll("button")].some(b=>b.textContent==="Importar a mi archivo")');
+   await clickButton('Importar a mi archivo');
+   check(await waitFor('document.querySelector("[role=alert]")?.textContent.includes("La copia está dañada")'),
+    'La interfaz muestra el rechazo del servidor',{role});
+  }
+  const imports=await evaluate('window.__V324_QA.backupActions.filter(x=>x==="import").length');
+  await chooseBackup(null,null);
+  check(await waitFor('[...document.querySelectorAll("button")].some(b=>b.textContent==="Importar a mi archivo"&&!b.disabled)') &&
+   await evaluate('window.__V324_QA.backupActions.filter(x=>x==="import").length')===imports,
+   'Seleccionar archivo exige una confirmación explícita',{role});
+  await clickButton('Importar a mi archivo');
+  check(await waitFor('!!document.querySelector("select option:nth-child(2)") && [...document.querySelectorAll("[role=status]")].some(el=>el.textContent.includes("archivo personal"))'),
+   'La importación aparece en Mi copia importada',{role});
+  await evaluate(`(()=>{
+   const select=document.querySelector('select');
+   select.value=select.options[1].value;
+   select.dispatchEvent(new Event('change',{bubbles:true}));
+  })()`);
+  check(await waitFor('document.querySelector("details summary")?.textContent.includes("Registro de ensayo 1")'),
+   'Se consultan los registros importados',{role});
+  if(role==='parish'){
+   await clickButton('Siguiente');
+   check(await waitFor('document.querySelector("details summary")?.textContent.includes("Registro de ensayo 26")'),
+    'La consulta privada conserva la paginación',{role});
+  }
+  await evaluate('document.querySelector(\'main a[href="'+paths[role]+'"]\')?.click()');
+  check(await waitFor('location.pathname==='+JSON.stringify(paths[role])+' && !!document.querySelector("[data-command-center-role]")'),
+   'La copia vuelve al centro del mismo rol',{role});
+  await evaluate('document.querySelector(\'.cc-shortcuts a[href="/copias-de-seguridad"]\')?.click()');
+  check(await waitFor('!!document.querySelector("select option:nth-child(2)")') &&
+   await evaluate('window.__V324_QA.writes.length===0'),
+   'Al volver, la copia sigue disponible y los módulos no recibieron escrituras',{role});
  };
  const viewportList=[{name:'desktop',width:1440,height:1040},{name:'small-desktop',width:1024,height:900},{name:'tablet',width:820,height:1180},{name:'mobile',width:390,height:844},{name:'small-mobile',width:320,height:740}];
  for(const role of Object.keys(paths).filter(role=>!process.argv.some(x=>x.startsWith('--role='))||process.argv.includes('--role='+role))){
@@ -100,6 +175,7 @@ try{
     const expected=COMMAND_CENTERS[role].modules[0].actions[0].to;
     await evaluate('document.querySelector(".cc-action-panel a").click()');await pause(80);
     check(await evaluate('document.querySelector("[data-qa-destination]")?.textContent==='+JSON.stringify(expected)),'Acción navega a su destino existente',{role});
+    await checkBackup(role);
    }
    console.log('V324 '+role+'/'+viewport.name+' OK');
   }
@@ -117,10 +193,10 @@ try{
 }finally{
  try{socket?.close()}catch{}try{chrome?.kill()}catch{}try{vite.kill()}catch{}try{fs.rmSync(temp,{recursive:true,force:true})}catch{}
 }
-const sourcePaths=["src/config/commandCenters.js","src/components/EcclesialCommandCenter.jsx","src/styles/command-center.css","src/pages/parish/ParishDashboard.jsx","src/pages/diocese/DioceseUserDashboard.jsx","src/pages/chancery/ChanceryDashboard.jsx","src/pages/admin/AdminGeneralDashboard.jsx","src/components/InstitutionalReadinessV274.jsx","src/components/DashboardLayout.jsx","src/components/Sidebar.jsx","src/components/Header.jsx","scripts/qa-v324-command/entry.jsx","scripts/qa-v324-command/mocks.jsx","scripts/qa-v324-command/vite.config.mjs","scripts/audit-command-centers-browser-v324.mjs"];
+const sourcePaths=["src/pages/PersonalBackupPage.jsx","src/services/personalBackupService.js","src/lib/backupHelpers.js","src/config/commandCenters.js","src/components/EcclesialCommandCenter.jsx","src/styles/command-center.css","src/pages/parish/ParishDashboard.jsx","src/pages/diocese/DioceseUserDashboard.jsx","src/pages/chancery/ChanceryDashboard.jsx","src/pages/admin/AdminGeneralDashboard.jsx","src/components/InstitutionalReadinessV274.jsx","src/components/DashboardLayout.jsx","src/components/Sidebar.jsx","src/components/Header.jsx","scripts/qa-v324-command/entry.jsx","scripts/qa-v324-command/mocks.jsx","scripts/qa-v324-command/vite.config.mjs","scripts/audit-command-centers-browser-v324.mjs"];
 const source_sha256_lf=Object.fromEntries(sourcePaths.map(file=>[file,createHash('sha256').update(fs.readFileSync(file,'utf8').replace(/\r\n/g,'\n')).digest('hex')]));
 const passed=checks.filter(x=>x.passed).length;
-const report={protocol:'V324',testedAt:new Date().toISOString(),source_sha256_lf,method:'Chrome real; cuatro dashboards, DashboardLayout, Sidebar y Header reales; perfiles y servicios ficticios aislados; sin iniciar sesiones institucionales ni escribir datos',approved:passed===checks.length&&exceptions.length===0&&externalRequests.length===0,checked:checks.length,passed,failed:checks.length-passed,exceptions,externalRequests,screens,checks};
+const report={protocol:'V324',testedAt:new Date().toISOString(),source_sha256_lf,method:'Chrome real; cuatro dashboards, DashboardLayout, Sidebar y Header reales; perfiles y servicios ficticios aislados; copias verificadas con datos de ensayo y sin sesiones institucionales',approved:passed===checks.length&&exceptions.length===0&&externalRequests.length===0,checked:checks.length,passed,failed:checks.length-passed,exceptions,externalRequests,screens,checks};
 fs.writeFileSync('AUDITORIA_CENTROS_DE_MANDO_V324.json',JSON.stringify(report,null,2)+'\n');
 console.log('V324 CENTROS '+(report.approved?'PASS':'FAIL')+' '+passed+'/'+checks.length);
 if(!report.approved)process.exitCode=1;

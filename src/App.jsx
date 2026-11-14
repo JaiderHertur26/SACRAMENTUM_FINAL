@@ -22,6 +22,7 @@ import { ROLE_TYPES } from '@/config/supabaseConfig';
 /* =========================
    PUBLIC & SHARED PAGES
 ========================= */
+const PersonalBackupPage = lazy(() => import('@/pages/PersonalBackupPage'));
 const ResetPasswordPage = lazy(() => import('@/pages/ResetPasswordPage'));
 const PublicSearchPage = lazy(() => import('@/pages/PublicSearchPage'));
 const NotFoundPage = lazy(() => import('@/pages/NotFoundPage'));
@@ -268,7 +269,7 @@ const AppContent = () => {
                 <Route path="/chancery/dashboard" element={<ProtectedRoute requiredRole={ROLE_TYPES.CHANCERY}><ChanceryDashboard /></ProtectedRoute>} />
                 <Route path="/chancery/pending" element={<ProtectedRoute requiredRole={ROLE_TYPES.CHANCERY}><ChanceryPendingPage /></ProtectedRoute>} />
                 <Route path="/chancery/certifications" element={<Navigate to="/chancery/dashboard" replace />} />
-                <Route path="/chancery/backups" element={<Navigate to="/chancery/dashboard" replace />} />
+                <Route path="/chancery/backups" element={<Navigate to="/copias-de-seguridad" replace />} />
 
                 {/* --- CENTRO UNIFICADO DE DECRETOS SACRAMENTALES Â· FASE 033 --- */}
                 <Route path="/chancery/decretos" element={<ProtectedRoute requiredRole={ROLE_TYPES.CHANCERY}><SacramentalDecreesCenterPage /></ProtectedRoute>} />
@@ -305,6 +306,7 @@ const AppContent = () => {
 
                 {/* -------- SHARED (DISPONIBLES PARA CUALQUIER ROL AUTENTICADO) -------- */}
                 <Route path="/communications" element={<ProtectedRoute requiredRole={[ROLE_TYPES.DIOCESE, ROLE_TYPES.CHANCERY, ROLE_TYPES.PARISH]}><CommunicationsPage /></ProtectedRoute>} />
+                <Route path="/copias-de-seguridad" element={<ProtectedRoute><PersonalBackupPage /></ProtectedRoute>} />
                 <Route path="/buscar" element={<ProtectedRoute><UnifiedSearchPage /></ProtectedRoute>} /> {/* ðŸš€ AÃ‘ADIDO: Ruta del Buscador Interno */}
                 <Route path="/documentos/plantillas" element={<ProtectedRoute><DocumentTemplateLibraryPage /></ProtectedRoute>} />
 
@@ -336,4 +338,3 @@ export default function App() {
         </Router>
     );
 }
-

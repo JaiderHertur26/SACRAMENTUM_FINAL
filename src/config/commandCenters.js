@@ -2,6 +2,8 @@
 const action = (label, to, icon = 'arrow') => ({ label, to, icon });
 const module = (id, label, description, icon, actions) => ({ id, label, description, icon, actions });
 
+const personalBackup = action('Copia de seguridad', '/copias-de-seguridad', 'archive');
+
 export const COMMAND_CENTERS = {
   parish: {
     eyebrow: 'Despacho parroquial',
@@ -37,6 +39,7 @@ export const COMMAND_CENTERS = {
       ]),
     ],
     shortcuts: [
+      personalBackup,
       action('Libros sacramentales', '/parroquia/libros', 'book'),
       action('Centro de decretos', '/parroquia/decretos', 'scroll'),
       action('Decretos por sentar', '/parroquia/decretos?view=asiento', 'pen'),
@@ -75,7 +78,7 @@ export const COMMAND_CENTERS = {
         action('Abrir chat diocesano', '/communications', 'chat'),
       ]),
     ],
-    shortcuts: [],
+    shortcuts: [personalBackup],
     followUp: [
       action('Consultar la organización', '/diocese/ecclesiastical', 'network'),
       action('Revisar informes', '/diocese/reports', 'chart'),
@@ -106,6 +109,7 @@ export const COMMAND_CENTERS = {
       ]),
     ],
     shortcuts: [
+      personalBackup,
       action('Archivo de decretos', '/chancery/decretos/archivo', 'archive'),
       action('Conceptos de decreto', '/chancery/decree-annulment', 'file'),
       { label: 'Configurar membrete', command: 'configureIdentity', icon: 'settings' },
@@ -136,7 +140,7 @@ export const COMMAND_CENTERS = {
         action('Abrir revisión institucional', '/admin/dashboard#revision-institucional', 'shield'),
       ]),
     ],
-    shortcuts: [],
+    shortcuts: [personalBackup],
     followUp: [
       action('Jurisdicciones y activación', '/admin/dioceses', 'church'),
       action('Usuarios institucionales', '/admin/users', 'users'),

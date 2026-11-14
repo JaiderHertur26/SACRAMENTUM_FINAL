@@ -89,6 +89,10 @@ test('V324 actual four dashboards pass responsive navigation, focus and read-onl
  assert.ok(audit.checks.some(x=>x.name==='Revisión institucional abre y enfoca el panel existente'&&x.role==='admin_general'&&x.passed));
  assert.deepEqual(audit.exceptions,[]);assert.deepEqual(audit.externalRequests,[]);
  for(const role of roles){
+  for(const name of ['Cada centro abre sus copias de seguridad','El archivo exportado se descarga con su rol',
+   'La importación aparece en Mi copia importada','Se consultan los registros importados']){
+   assert.ok(audit.checks.some(x=>x.role===role&&x.name===name&&x.passed),role+' / '+name);
+  }
   for(const viewport of ['desktop','mobile']){
    const screen=audit.screens.find(x=>x.role===role&&x.viewport===viewport);
    assert.ok(screen,role+'/'+viewport);

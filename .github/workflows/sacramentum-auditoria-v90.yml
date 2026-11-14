@@ -99,6 +99,15 @@ jobs:
         env:
           PG_CONTAINER: ${{ job.services.postgres.id }}
         run: bash scripts/ci-postgres-restore-drill-v247.sh
+      - name: Ensayar copia personal, aislamiento y cifrado para los cuatro roles
+        shell: bash
+        env:
+          PG_CONTAINER: ${{ job.services.postgres.id }}
+        run: |
+          docker exec -i "$PG_CONTAINER" psql -X -v ON_ERROR_STOP=1 -U postgres -d postgres -c 'CREATE DATABASE sacramentum_fixture_backups'
+          for file in scripts/fixtures/personal-backups-v329.sql supabase/deployment/20261114145018_personal_backups_v329.sql scripts/fixtures/personal-backups-isolation-v329.sql; do
+            docker exec -i "$PG_CONTAINER" psql -X -v ON_ERROR_STOP=1 -U postgres -d sacramentum_fixture_backups -f - < "$file"
+          done
 
   revision-visual-eclesial-v249:
     name: Recorrido visual eclesial · tres roles, sin Administrador General

@@ -1,8 +1,11 @@
 {
   "protocol": "V324",
-  "testedAt": "2026-11-14T12:15:02.606Z",
+  "testedAt": "2026-11-14T15:09:12.981Z",
   "source_sha256_lf": {
-    "src/config/commandCenters.js": "afcb5318875b289d37c5b9ba8bdbe38b4b5962d0fd34cfd3790ec137a28fc0a8",
+    "src/pages/PersonalBackupPage.jsx": "29f013d628dcde7014111d142171c41e090fcf1b51f0677efa7cb2d188ec22d3",
+    "src/services/personalBackupService.js": "c12470d1fc8b35837ec7f9d7aaa5e245bafbbed764deb3505d922f1f5a60f34b",
+    "src/lib/backupHelpers.js": "856d8277874e8a4330a6f30335545a9e0cd5ce916fd613190f4ff6af68e9c687",
+    "src/config/commandCenters.js": "9b8b8a24b32001ae9f2193c14d0f310bfb71dd9d2602890f38c279c347e2535b",
     "src/components/EcclesialCommandCenter.jsx": "a786315cf6ff70cd544050f23bcf49e2d748e5598a214a21a40e14eccbc95cab",
     "src/styles/command-center.css": "31ff48271cfd4ce8052eff16720db4151df2c0ebf21cc68d1b780b6c362faf0c",
     "src/pages/parish/ParishDashboard.jsx": "1c42eb2e5c42770b3d6ead7d23f0a02d48c243cfccc29b580da5a85afe793198",
@@ -13,15 +16,15 @@
     "src/components/DashboardLayout.jsx": "345802fa40934da92845587b0d2038ab2dd2ea13cc7f45d9d90f99c016327afd",
     "src/components/Sidebar.jsx": "9745645b0f3d933399c13aec1106b7d9cf264a7515749117a183fe1a203b9647",
     "src/components/Header.jsx": "33a2ba0fd54acd11c6275b66d32bb0182939ba20fdde9be7b46a9d12b331b263",
-    "scripts/qa-v324-command/entry.jsx": "e6b385981e747cc29dda7059b34338941ed7f7b7e47ee8662e96d404b26907b6",
-    "scripts/qa-v324-command/mocks.jsx": "3bc5a1dc97dd119b44f195059d4ca2166d5b00d0e5cdc2e766b3eb8a4172795f",
+    "scripts/qa-v324-command/entry.jsx": "8a06b35473b3f976f57a452f70ad11c44547a7f26ed99a88629197608d769e74",
+    "scripts/qa-v324-command/mocks.jsx": "b149966b1fcc91ae78b65f6383d3335f7823b9b15bfac17b6306db88cc9d508d",
     "scripts/qa-v324-command/vite.config.mjs": "2ce5be25d137a00f3a0409f72f56f198088f900abcbeddce8c32be2a10233b2a",
-    "scripts/audit-command-centers-browser-v324.mjs": "196735e27d37dea5975798a64796f3a4ecea226def05dc5783a5b1953773b01f"
+    "scripts/audit-command-centers-browser-v324.mjs": "393e553ef90ddb53c3427c9b290e3a4fdeb59b780f2f361f18d0e554b663ef49"
   },
-  "method": "Chrome real; cuatro dashboards, DashboardLayout, Sidebar y Header reales; perfiles y servicios ficticios aislados; sin iniciar sesiones institucionales ni escribir datos",
+  "method": "Chrome real; cuatro dashboards, DashboardLayout, Sidebar y Header reales; perfiles y servicios ficticios aislados; copias verificadas con datos de ensayo y sin sesiones institucionales",
   "approved": true,
-  "checked": 257,
-  "passed": 257,
+  "checked": 292,
+  "passed": 292,
   "failed": 0,
   "exceptions": [],
   "externalRequests": [],
@@ -375,6 +378,61 @@
     },
     {
       "name": "Acción navega a su destino existente",
+      "passed": true,
+      "role": "parish"
+    },
+    {
+      "name": "Cada centro abre sus copias de seguridad",
+      "passed": true,
+      "role": "parish"
+    },
+    {
+      "name": "La página explica el alcance del rol",
+      "passed": true,
+      "role": "parish"
+    },
+    {
+      "name": "El archivo exportado se descarga con su rol",
+      "passed": true,
+      "role": "parish"
+    },
+    {
+      "name": "Se rechaza un archivo de otro rol antes de subirlo",
+      "passed": true,
+      "role": "parish"
+    },
+    {
+      "name": "La interfaz muestra el rechazo del servidor",
+      "passed": true,
+      "role": "parish"
+    },
+    {
+      "name": "Seleccionar archivo exige una confirmación explícita",
+      "passed": true,
+      "role": "parish"
+    },
+    {
+      "name": "La importación aparece en Mi copia importada",
+      "passed": true,
+      "role": "parish"
+    },
+    {
+      "name": "Se consultan los registros importados",
+      "passed": true,
+      "role": "parish"
+    },
+    {
+      "name": "La consulta privada conserva la paginación",
+      "passed": true,
+      "role": "parish"
+    },
+    {
+      "name": "La copia vuelve al centro del mismo rol",
+      "passed": true,
+      "role": "parish"
+    },
+    {
+      "name": "Al volver, la copia sigue disponible y los módulos no recibieron escrituras",
       "passed": true,
       "role": "parish"
     },
@@ -892,6 +950,46 @@
       "role": "diocese"
     },
     {
+      "name": "Cada centro abre sus copias de seguridad",
+      "passed": true,
+      "role": "diocese"
+    },
+    {
+      "name": "La página explica el alcance del rol",
+      "passed": true,
+      "role": "diocese"
+    },
+    {
+      "name": "El archivo exportado se descarga con su rol",
+      "passed": true,
+      "role": "diocese"
+    },
+    {
+      "name": "Seleccionar archivo exige una confirmación explícita",
+      "passed": true,
+      "role": "diocese"
+    },
+    {
+      "name": "La importación aparece en Mi copia importada",
+      "passed": true,
+      "role": "diocese"
+    },
+    {
+      "name": "Se consultan los registros importados",
+      "passed": true,
+      "role": "diocese"
+    },
+    {
+      "name": "La copia vuelve al centro del mismo rol",
+      "passed": true,
+      "role": "diocese"
+    },
+    {
+      "name": "Al volver, la copia sigue disponible y los módulos no recibieron escrituras",
+      "passed": true,
+      "role": "diocese"
+    },
+    {
       "name": "Identidad eclesial por rol",
       "passed": true,
       "role": "diocese",
@@ -1311,6 +1409,46 @@
     },
     {
       "name": "Acción navega a su destino existente",
+      "passed": true,
+      "role": "chancery"
+    },
+    {
+      "name": "Cada centro abre sus copias de seguridad",
+      "passed": true,
+      "role": "chancery"
+    },
+    {
+      "name": "La página explica el alcance del rol",
+      "passed": true,
+      "role": "chancery"
+    },
+    {
+      "name": "El archivo exportado se descarga con su rol",
+      "passed": true,
+      "role": "chancery"
+    },
+    {
+      "name": "Seleccionar archivo exige una confirmación explícita",
+      "passed": true,
+      "role": "chancery"
+    },
+    {
+      "name": "La importación aparece en Mi copia importada",
+      "passed": true,
+      "role": "chancery"
+    },
+    {
+      "name": "Se consultan los registros importados",
+      "passed": true,
+      "role": "chancery"
+    },
+    {
+      "name": "La copia vuelve al centro del mismo rol",
+      "passed": true,
+      "role": "chancery"
+    },
+    {
+      "name": "Al volver, la copia sigue disponible y los módulos no recibieron escrituras",
       "passed": true,
       "role": "chancery"
     },
@@ -1829,6 +1967,46 @@
     },
     {
       "name": "Acción navega a su destino existente",
+      "passed": true,
+      "role": "admin_general"
+    },
+    {
+      "name": "Cada centro abre sus copias de seguridad",
+      "passed": true,
+      "role": "admin_general"
+    },
+    {
+      "name": "La página explica el alcance del rol",
+      "passed": true,
+      "role": "admin_general"
+    },
+    {
+      "name": "El archivo exportado se descarga con su rol",
+      "passed": true,
+      "role": "admin_general"
+    },
+    {
+      "name": "Seleccionar archivo exige una confirmación explícita",
+      "passed": true,
+      "role": "admin_general"
+    },
+    {
+      "name": "La importación aparece en Mi copia importada",
+      "passed": true,
+      "role": "admin_general"
+    },
+    {
+      "name": "Se consultan los registros importados",
+      "passed": true,
+      "role": "admin_general"
+    },
+    {
+      "name": "La copia vuelve al centro del mismo rol",
+      "passed": true,
+      "role": "admin_general"
+    },
+    {
+      "name": "Al volver, la copia sigue disponible y los módulos no recibieron escrituras",
       "passed": true,
       "role": "admin_general"
     },
