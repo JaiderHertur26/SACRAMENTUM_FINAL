@@ -1,4 +1,6 @@
 import { generateUUID } from '@/utils/supabaseHelpers';
+import { institutionalSeatCoordinates } from '@/lib/institutionalDialog';
+import { getManualSeatContext, seatManually } from '@/services/manualSacramentalSeatService';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { canSeatCelebration } from '@/domain/celebrationTime.mjs';
 import { useNavigate } from 'react-router-dom';
@@ -446,9 +448,11 @@ const FuneralRegistryPage = () => {
     setSeatingId(item.id);
 
     try {
-      const result = await seatFuneralRecordCloud({
-        pendingId: item.id,
-        formData: data
+      const context = await getManualSeatContext(parishId, 'exequias', [item.id]);
+      const coordinates = await institutionalSeatCoordinates({ title: 'Asentar Exequias', context });
+      if (!coordinates) return;
+      const result = await seatManually({
+        parishId, sacrament: 'exequias', records: [{ pending_id: item.id }], context, coordinates
       });
 
       if (await refresh()) setActiveTab('libro');

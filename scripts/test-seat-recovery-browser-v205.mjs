@@ -4,8 +4,8 @@ import fs from 'node:fs';
 import {createHash} from 'node:crypto';
 import {assertV251RevisedSource} from './v251-reviewed-source-receipt.mjs';
 const read=p=>fs.readFileSync(p,'utf8').replace(/\r\n/g,'\n');
-const result=JSON.parse(read('AUDITORIA_RECUPERACION_UI_V205.json'));
-const names=['individual-reject','individual-lost-response','individual-read-failure','batch-partial','batch-lost-response','batch-read-failure','initial-read-error','batch-cancel'];
+const result=JSON.parse(read('AUDITORIA_RECUPERACION_MATRIMONIO_V328.json'));
+const names=['individual-reject','individual-lost-response','individual-read-failure','batch-timeout','batch-lost-response','batch-read-failure','initial-read-error','batch-cancel'];
 for(const scenario of names)test('V205 actual React recovery: '+scenario,()=>{
  const row=result.rows.find(r=>r.scenario===scenario);
  assert.ok(row,'missing scenario');assert.equal(row.passed,true,JSON.stringify(row.faults));
@@ -14,11 +14,11 @@ for(const scenario of names)test('V205 actual React recovery: '+scenario,()=>{
  assert.equal(new Set(end.reported).size,end.reported.length);
  assert.equal(end.next,end.reported.length+1);
  if(scenario==='initial-read-error'){assert.deepEqual(end.calls,[]);assert.equal(end.pending.length,3)}
- else if(scenario==='batch-cancel'){assert.equal(end.confirmCalls,2);assert.deepEqual(end.calls,['qa-1','qa-2','qa-3'])}
- else if(scenario==='batch-partial')assert.deepEqual(end.calls,['qa-1','qa-2','qa-2','qa-3']);
- else if(scenario.startsWith('batch'))assert.deepEqual(end.calls,['qa-1','qa-2','qa-3']);
- else if(scenario==='individual-reject')assert.deepEqual(end.calls,['qa-1','qa-1']);
- else assert.deepEqual(end.calls,['qa-1','qa-2']);
+ else if(scenario==='batch-cancel'){assert.deepEqual(row.first.calls,[]);assert.deepEqual(end.calls,[['qa-1','qa-2','qa-3']])}
+ else if(scenario==='batch-timeout')assert.deepEqual(end.calls,[['qa-1','qa-2','qa-3'],['qa-1','qa-2','qa-3']]);
+ else if(scenario.startsWith('batch'))assert.deepEqual(end.calls,[['qa-1','qa-2','qa-3']]);
+ else if(scenario==='individual-reject')assert.deepEqual(end.calls,[['qa-1'],['qa-1']]);
+ else assert.deepEqual(end.calls,[['qa-1'],['qa-2']]);
 });
 test('V205 browser evidence belongs to the current React source and stays isolated',()=>{
  assert.equal(result.total,8);assert.equal(result.passed,8);

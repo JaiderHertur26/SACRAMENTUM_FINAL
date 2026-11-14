@@ -6,7 +6,7 @@ const priestAtDate=()=>null,aux={currentPriest:null,priestAtDate,cityOptions:[],
 export default function useAuxiliaries(){return aux}
 export const getParishPrintProfile=async()=>({nombre:'PARROQUIA FICTICIA V206'});
 export const purificarRegistroBautismo=r=>({...r});export const purificarRegistroConfirmacion=r=>({...r});
-export const getMarginalNoteTemplates=async()=>({});export const institutionalConfirm=async()=>{q().confirmCalls++;await delay(35);return q().confirm};
+export const getMarginalNoteTemplates=async()=>({});
 const read=type=>{q().reads++;if(q().failRead===true||(q().failRead==='pending-only'&&type==='pending'))throw Error('QA V206 lectura no disponible')};
 async function parameters(){read('params');return {ordinarioLibro:31,ordinarioFolio:442+Math.floor((q().next-1)/2),ordinarioNumero:q().next,ordinarioPartidas:2,ordinarioRestartNumber:false}}
 export const getBaptismParameters=parameters;
@@ -36,5 +36,13 @@ export const supabase={
  from:table=>{const query={select(){return this},eq(){return this},order(){return this},not(){return this},maybeSingle:async()=>({data:null,error:null}),then(resolve,reject){
   return Promise.resolve().then(()=>{try{read('pending');return {data:[...q().pending,...q().reported].map(r=>({...r})),error:null}}catch(error){return {data:null,error}}}).then(resolve,reject)
  }};return query},
- rpc:async(name,args)=>{try{return {data:await mutate(args.p_records.map(r=>r.pending_id),args.p_expected_number),error:null}}catch(error){return {data:null,error}}}
+ async rpc(name,args){
+  if(name==='get_parish_seat_context_v328'){
+   const p=await parameters();
+   return {data:{bookType:'ordinario',book:p.ordinarioLibro,folio:p.ordinarioFolio,number:p.ordinarioNumero,capacity:2,restart:false,initial:false,firstFolio:1,firstNumber:1}};
+  }
+  if(name!=='seat_parish_records_v328') throw Error('Unexpected write '+name);
+  try {return {data:await mutate(args.p_records.map(r=>r.pending_id),args.p_coordinates.number),error:null}}
+  catch(error){return {data:null,error}}
+ }
 };

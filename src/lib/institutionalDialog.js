@@ -20,6 +20,10 @@ export const institutionalConfirm = ({
   kind: 'confirm', title, message, confirmText, cancelText, tone
 });
 
+export const institutionalSeatCoordinates = ({ title, message, context }) => requestDialog({
+  kind: 'seatCoordinates', title, message, context, confirmText: 'Asentar', tone: 'warning'
+});
+
 export const institutionalPrompt = ({
   title = 'Información requerida',
   message,

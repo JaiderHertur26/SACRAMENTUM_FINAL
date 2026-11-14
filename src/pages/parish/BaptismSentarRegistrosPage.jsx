@@ -17,9 +17,10 @@ import {
 } from 'lucide-react';
 import BaptismTicket from '@/components/BaptismTicket';
 import { supabase } from '@/lib/supabaseClient'; 
-import { calculateNextConsecutive, getBaptismParameters } from '@/services/sacramentParametersService';
+import { getBaptismParameters } from '@/services/sacramentParametersService';
 import { getParishPrintProfile, purificarRegistroBautismo } from '@/services/sacramentsService';
-import { institutionalConfirm } from '@/lib/institutionalDialog';
+import { institutionalSeatCoordinates } from '@/lib/institutionalDialog';
+import { getManualSeatContext, seatManually } from '@/services/manualSacramentalSeatService';
 import LedgerSeatPanelV264 from '@/components/LedgerSeatPanelV264';
 import {ledgerV264Enabled} from '@/domain/ledgerSeatV264.mjs';
 
@@ -45,7 +46,6 @@ const BaptismSentarRegistrosPage = () => {
     const [searchTerm, setSearchTerm] = useState(''); // 🚀 BUSCADOR
     
     const [nextNumbers, setNextNumbers] = useState({ book: '0001', page: '0001', entry: '0001' });
-    const [fullParamsCache, setFullParamsCache] = useState(null); 
 
     const [isLoading, setIsLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
@@ -119,7 +119,6 @@ const BaptismSentarRegistrosPage = () => {
             setCurrentIndex(index => Math.min(index, Math.max(0, pendientes.length - 1)));
 
             const p = await getBaptismParameters(resolvedParishId);
-            setFullParamsCache(p);
             setNextNumbers({
                 book: String(p.ordinarioLibro || 1).padStart(4, '0'),
                 page: String(p.ordinarioFolio || 1).padStart(4, '0'),
@@ -167,20 +166,11 @@ const BaptismSentarRegistrosPage = () => {
         seatInFlight.current = true;
         setIsSaving(true);
         try {
-            const { error: seatError } = await supabase.rpc('seat_baptism_records', {
-                p_parish_id: resolvedParishId,
-                p_records: [{
-                    pending_id: currentBaptism.id,
-                    assigned_book: Number(nextNumbers.book),
-                    assigned_folio: Number(nextNumbers.page),
-                    assigned_number: Number(nextNumbers.entry)
-                }],
-                p_expected_book: Number(nextNumbers.book),
-                p_expected_folio: Number(nextNumbers.page),
-                p_expected_number: Number(nextNumbers.entry)
-            });
-            if (seatError) throw seatError;
-
+            const context = await getManualSeatContext(resolvedParishId, 'bautismo', [currentBaptism.id]);
+            const coordinates = await institutionalSeatCoordinates({ title: 'Asentar Bautismo', context });
+            if (!coordinates) return;
+            const record = { pending_id: currentBaptism.id };
+            await seatManually({ parishId: resolvedParishId, sacrament: 'bautismo', records: [record], context, coordinates });
             toast({
                 title: "Éxito",
                 description: "Bautismo asentado permanentemente desde el pre-registro validado en Supabase.",
@@ -222,20 +212,6 @@ const BaptismSentarRegistrosPage = () => {
         seatInFlight.current = true;
         setIsSaving(true);
         try {
-            if (!(await institutionalConfirm({
-                title: 'Asentar registros de Bautismo',
-                message: `Se asentarán permanentemente ${selectedIds.length} registros y se consumirán sus consecutivos oficiales.`,
-                confirmText: 'Sí, asentar registros',
-                tone: 'warning'
-            }))) return;
-
-            const p = fullParamsCache || await getBaptismParameters(resolvedParishId);
-            let cFolio = parseInt(p.ordinarioFolio || 1, 10);
-            let cNumero = parseInt(p.ordinarioNumero || 1, 10);
-            let cLibro = parseInt(p.ordinarioLibro || 1, 10);
-            const pPorFolio = parseInt(p.ordinarioPartidas || 2, 10);
-            const restart = Boolean(p.ordinarioRestartNumber);
-
             const orderedSelection = pendingBaptisms
                 .filter(record => selectedIds.includes(record.id))
                 .sort((a, b) => {
@@ -249,31 +225,16 @@ const BaptismSentarRegistrosPage = () => {
             if (orderedSelection.length !== selectedIds.length) {
                 throw new Error('La selección cambió durante el asiento. Recargue antes de continuar.');
             }
-
-            const recordsToSeat = [];
-            for (const record of orderedSelection) {
-                recordsToSeat.push({
-                    pending_id: record.id,
-                    assigned_book: cLibro,
-                    assigned_folio: cFolio,
-                    assigned_number: cNumero
-                });
-
-                const siguiente = calculateNextConsecutive(cNumero, cFolio, cLibro, pPorFolio, restart);
-                cNumero = parseInt(siguiente.numero, 10);
-                cFolio = parseInt(siguiente.folio, 10);
-                cLibro = parseInt(siguiente.libro, 10);
-            }
-
-            const { error: seatError } = await supabase.rpc('seat_baptism_records', {
-                p_parish_id: resolvedParishId,
-                p_records: recordsToSeat,
-                p_expected_book: Number(p.ordinarioLibro || 1),
-                p_expected_folio: Number(p.ordinarioFolio || 1),
-                p_expected_number: Number(p.ordinarioNumero || 1)
+            const ids = orderedSelection.map(record => record.id);
+            const context = await getManualSeatContext(resolvedParishId, 'bautismo', ids);
+            const coordinates = await institutionalSeatCoordinates({
+                title: 'Asentar registros de Bautismo',
+                message: `Ingrese las coordenadas de la primera partida. Se asentarán ${ids.length} boletas en orden consecutivo.`,
+                context
             });
-            if (seatError) throw seatError;
-
+            if (!coordinates) return;
+            const records = ids.map(id => ({ pending_id: id }));
+            await seatManually({ parishId: resolvedParishId, sacrament: 'bautismo', records, context, coordinates });
             toast({
                 title: "Lote Procesado",
                 description: `${selectedIds.length} Bautismo(s) asentado(s) de forma atómica.`,
