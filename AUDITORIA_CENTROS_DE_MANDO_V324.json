@@ -1,11 +1,11 @@
 {
   "protocol": "V324",
-  "testedAt": "2026-11-14T15:09:12.981Z",
+  "testedAt": "2026-11-14T15:19:19.673Z",
   "source_sha256_lf": {
-    "src/pages/PersonalBackupPage.jsx": "29f013d628dcde7014111d142171c41e090fcf1b51f0677efa7cb2d188ec22d3",
+    "src/pages/PersonalBackupPage.jsx": "81634b0bbcde9ae372d33b2e2f5dad2cdaa66b0cfe98f179e6166412eed776e9",
     "src/services/personalBackupService.js": "c12470d1fc8b35837ec7f9d7aaa5e245bafbbed764deb3505d922f1f5a60f34b",
     "src/lib/backupHelpers.js": "856d8277874e8a4330a6f30335545a9e0cd5ce916fd613190f4ff6af68e9c687",
-    "src/config/commandCenters.js": "9b8b8a24b32001ae9f2193c14d0f310bfb71dd9d2602890f38c279c347e2535b",
+    "src/config/commandCenters.js": "f15b3d2f6c8f3793fcbd62d25549299c9161ead70017c8341a9192d04bf24ab0",
     "src/components/EcclesialCommandCenter.jsx": "a786315cf6ff70cd544050f23bcf49e2d748e5598a214a21a40e14eccbc95cab",
     "src/styles/command-center.css": "31ff48271cfd4ce8052eff16720db4151df2c0ebf21cc68d1b780b6c362faf0c",
     "src/pages/parish/ParishDashboard.jsx": "1c42eb2e5c42770b3d6ead7d23f0a02d48c243cfccc29b580da5a85afe793198",
@@ -13,13 +13,13 @@
     "src/pages/chancery/ChanceryDashboard.jsx": "36df54b700d4742111c8924bec7c7331149ed829a2d8891a674ae072d63e97b6",
     "src/pages/admin/AdminGeneralDashboard.jsx": "2bfdfce131abd252358bb8a765f62800181f6ad2ce49ee6fd8270b0c2606a725",
     "src/components/InstitutionalReadinessV274.jsx": "26a3d586910712f3fded0554b18a0d4a6e6168381796ff5dcea5d2ae102141ea",
-    "src/components/DashboardLayout.jsx": "345802fa40934da92845587b0d2038ab2dd2ea13cc7f45d9d90f99c016327afd",
+    "src/components/DashboardLayout.jsx": "15e624c7d184198f959f163e472e2c76059c9b91ad30a2ce6e7029db9c4811be",
     "src/components/Sidebar.jsx": "9745645b0f3d933399c13aec1106b7d9cf264a7515749117a183fe1a203b9647",
     "src/components/Header.jsx": "33a2ba0fd54acd11c6275b66d32bb0182939ba20fdde9be7b46a9d12b331b263",
-    "scripts/qa-v324-command/entry.jsx": "8a06b35473b3f976f57a452f70ad11c44547a7f26ed99a88629197608d769e74",
-    "scripts/qa-v324-command/mocks.jsx": "b149966b1fcc91ae78b65f6383d3335f7823b9b15bfac17b6306db88cc9d508d",
+    "scripts/qa-v324-command/entry.jsx": "2a48e817c3acecc89e7b333d8126f3f2f77494b177587426258e95816560a5dc",
+    "scripts/qa-v324-command/mocks.jsx": "607d6dfc2ac082e6c91d6d96fb3788e80b1484e12604539c89f07d93f66bdebd",
     "scripts/qa-v324-command/vite.config.mjs": "2ce5be25d137a00f3a0409f72f56f198088f900abcbeddce8c32be2a10233b2a",
-    "scripts/audit-command-centers-browser-v324.mjs": "393e553ef90ddb53c3427c9b290e3a4fdeb59b780f2f361f18d0e554b663ef49"
+    "scripts/audit-command-centers-browser-v324.mjs": "f43b383694d0f7f8f25491cfa1c9859d1e2e0ad13952ca6500a3a35727e32e49"
   },
   "method": "Chrome real; cuatro dashboards, DashboardLayout, Sidebar y Header reales; perfiles y servicios ficticios aislados; copias verificadas con datos de ensayo y sin sesiones institucionales",
   "approved": true,

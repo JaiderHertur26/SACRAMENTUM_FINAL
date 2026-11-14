@@ -72,8 +72,8 @@ try{
  })()`);
  const checkBackup=async role=>{
   await load(role);
-  await evaluate('document.querySelector(\'.cc-shortcuts a[href="/copias-de-seguridad"]\')?.click()');
-  check(await waitFor('location.pathname==="/copias-de-seguridad" && document.querySelector("h1")?.textContent==="Copia de seguridad" && [...document.querySelectorAll("button")].some(b=>b.textContent.trim()==="Exportar copia"&&!b.disabled)'),
+  await evaluate('document.querySelector(\'.cc-shortcuts a[href$="?vista=copia-de-seguridad"]\')?.click()');
+  check(await waitFor('new URLSearchParams(location.search).get("vista")==="copia-de-seguridad" && document.querySelector("h1")?.textContent==="Copia de seguridad" && [...document.querySelectorAll("button")].some(b=>b.textContent.trim()==="Exportar copia"&&!b.disabled)'),
    'Cada centro abre sus copias de seguridad',{role});
   const scope={parish:'decretos recibidos',diocese:'informes generados por su cuenta',chancery:'datos de su Cancillería',admin_general:'Directorio institucional'}[role];
   check(await evaluate('document.querySelector("h1").parentElement.textContent.includes('+JSON.stringify(scope)+')'),
@@ -122,7 +122,7 @@ try{
   await evaluate('document.querySelector(\'main a[href="'+paths[role]+'"]\')?.click()');
   check(await waitFor('location.pathname==='+JSON.stringify(paths[role])+' && !!document.querySelector("[data-command-center-role]")'),
    'La copia vuelve al centro del mismo rol',{role});
-  await evaluate('document.querySelector(\'.cc-shortcuts a[href="/copias-de-seguridad"]\')?.click()');
+  await evaluate('document.querySelector(\'.cc-shortcuts a[href$="?vista=copia-de-seguridad"]\')?.click()');
   check(await waitFor('!!document.querySelector("select option:nth-child(2)")') &&
    await evaluate('window.__V324_QA.writes.length===0'),
    'Al volver, la copia sigue disponible y los módulos no recibieron escrituras',{role});

@@ -1,7 +1,8 @@
 import React from 'react';
-const requested=new URLSearchParams(location.search).get('role');
-export const QA_ROLE=['parish','diocese','chancery','admin_general'].includes(requested)?requested:'parish';
 export const QA_PATHS={parish:'/parish/dashboard',diocese:'/diocese/dashboard',chancery:'/chancery/dashboard',admin_general:'/admin/dashboard'};
+const requested=new URLSearchParams(location.search).get('role');
+export const QA_ROLE=Object.hasOwn(QA_PATHS,requested)?requested:
+ Object.keys(QA_PATHS).find(role=>QA_PATHS[role]===location.pathname)||'parish';
 const parish='00000000-0000-4000-8000-000000000001',diocese='00000000-0000-4000-8000-000000000002',chancery='00000000-0000-4000-8000-000000000003';
 const user=Object.freeze({id:'00000000-0000-4000-8000-000000000004',role:QA_ROLE,
  full_name:'Despacho de ensayo',username:'Identidad ficticia',email:'v324@example.invalid',

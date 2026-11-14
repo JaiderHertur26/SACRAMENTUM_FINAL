@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, ChevronLeft, ChevronRight, Download, ShieldCheck, Upload } from 'lucide-react';
-import DashboardLayout from '@/components/DashboardLayout';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/context/AuthContext';
 import { getDashboardPathForRole } from '@/lib/authz';
@@ -278,9 +277,5 @@ export default function PersonalBackupPage() {
   const { session, profile, role, parishId, dioceseId, chanceryId, user } = useAuth();
   const identity = [session?.user?.id || user?.id, profile?.id, role, parishId, dioceseId, chanceryId].join('/');
   if (!Object.hasOwn(SCOPE, role)) return null;
-  return (
-    <DashboardLayout commandCenter>
-      <BackupWorkspace key={identity} role={role} />
-    </DashboardLayout>
-  );
+  return <BackupWorkspace key={identity} role={role} />;
 }
