@@ -1,13 +1,18 @@
-import React, { useState } from 'react';
+import React, { lazy, Suspense, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import Sidebar from '@/components/Sidebar';
 import Header from '@/components/Header';
 import { useAuth } from '@/context/AuthContext';
 import { Church } from 'lucide-react';
 import { ROLE_TYPES } from '@/config/supabaseConfig';
+import { getDashboardPathForRole } from '@/lib/authz';
 import '@/styles/ecclesial-workspace.css';
+
+const PersonalBackupPage = lazy(() => import('@/pages/PersonalBackupPage'));
 
 const DashboardLayout = ({ children, entityName, commandCenter = false }) => {
   const { user, profile, logout } = useAuth();
+  const { pathname, search } = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const handleLogout = async () => {
     await logout();
@@ -62,6 +67,9 @@ const DashboardLayout = ({ children, entityName, commandCenter = false }) => {
   const isEcclesialWorkspace = [
     ROLE_TYPES.DIOCESE, ROLE_TYPES.CHANCERY, ROLE_TYPES.PARISH
   ].includes(roleForPresentation) || (commandCenter && roleForPresentation === ROLE_TYPES.ADMIN_GENERAL);
+  const showPersonalBackup = commandCenter && isEcclesialWorkspace
+    && pathname === getDashboardPathForRole(roleForPresentation)
+    && new URLSearchParams(search).get('vista') === 'copia-de-seguridad';
   const ecclesialArea = roleForPresentation === ROLE_TYPES.DIOCESE
     ? 'Gobierno diocesano' : roleForPresentation === ROLE_TYPES.CHANCERY
       ? 'Cancillería eclesiástica' : roleForPresentation === ROLE_TYPES.ADMIN_GENERAL ? 'Administración institucional' : 'Archivo parroquial';
@@ -104,7 +112,11 @@ const DashboardLayout = ({ children, entityName, commandCenter = false }) => {
               <span className="ecclesial-context-note">Al servicio de la memoria y la misión de la Iglesia</span>
             </div>
           )}
-          {children}
+          {showPersonalBackup ? (
+            <Suspense fallback={<p role="status" className="p-4 text-sm text-stone-600">Cargando copia de seguridad…</p>}>
+              <PersonalBackupPage />
+            </Suspense>
+          ) : children}
         </div>
       </main>
     </div>

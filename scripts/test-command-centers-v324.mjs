@@ -17,8 +17,13 @@ test('V324 every role launcher targets a real route authorized for that role',()
  for(const role of roles)for(const action of allActions(role)){
   if(action.command){assert.equal(role,'chancery');assert.equal(action.command,'configureIdentity');continue;}
   assert.ok(action.to.startsWith('/')&&!action.to.startsWith('//'),action.to);
-  const pathname=new URL(action.to,'https://qa.invalid').pathname,route=app.split('\n').find(line=>line.includes('path="'+pathname+'"'));
+  const pathname=new URL(action.to,'https://qa.invalid').pathname;
+  const route=app.split(/<Route\b/).find(element=>element.includes('path="'+pathname+'"'));
   assert.ok(route,'Missing route '+pathname);
+  if(action.label==='Copia de seguridad'){
+   assert.equal(new URL(action.to,'https://qa.invalid').searchParams.get('vista'),'copia-de-seguridad');
+   assert.ok(route.includes('requiredRole=') && route.includes('ROLE_TYPES.'+constants[role]),role+' backup must use its protected dashboard');
+  }
   if(route.includes('requiredRole='))assert.ok(route.includes('ROLE_TYPES.'+constants[role])||(role==='parish'&&route.includes('requiredRole="parish"')),role+' denied at '+pathname);
  }
 });
@@ -89,6 +94,10 @@ test('V324 actual four dashboards pass responsive navigation, focus and read-onl
  assert.ok(audit.checks.some(x=>x.name==='Revisión institucional abre y enfoca el panel existente'&&x.role==='admin_general'&&x.passed));
  assert.deepEqual(audit.exceptions,[]);assert.deepEqual(audit.externalRequests,[]);
  for(const role of roles){
+  for(const name of ['Cada centro abre sus copias de seguridad','El archivo exportado se descarga con su rol',
+   'La importación aparece en Mi copia importada','Se consultan los registros importados']){
+   assert.ok(audit.checks.some(x=>x.role===role&&x.name===name&&x.passed),role+' / '+name);
+  }
   for(const viewport of ['desktop','mobile']){
    const screen=audit.screens.find(x=>x.role===role&&x.viewport===viewport);
    assert.ok(screen,role+'/'+viewport);

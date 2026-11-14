@@ -1,47 +1,29 @@
-export const generateBackup = (data, user) => {
-  const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-  let backupData = {};
-  let filename = `respaldo-${user.role}-${timestamp}.json`;
+export const BACKUP_FORMAT = 'SACRAMENTUM_PERSONAL_BACKUP';
+export const BACKUP_MAX_FILE_SIZE = 18 * 1024 * 1024;
 
-  if (user.role === 'admin_general') {
-    backupData = { ...data };
-    filename = `respaldo-global-${timestamp}.json`;
-  } else if (['diocese', 'archdiocese'].includes(user.role)) {
-    backupData = {
-      ...data,
-      users: data.users.filter(u => u.dioceseId === user.dioceseId),
-      parishes: data.parishes.filter(p => p.dioceseId === user.dioceseId),
-      vicariates: data.vicariates.filter(v => v.dioceseId === user.dioceseId),
-      deaneries: data.deaneries.filter(d => data.vicariates.find(v => v.id === d.vicariateId)?.dioceseId === user.dioceseId),
-      sacraments: data.sacraments.filter(s => s.dioceseId === user.dioceseId)
-    };
-    filename = `respaldo-diocesis-${user.dioceseName?.replace(/\s+/g, '_') || 'diocesis'}-${timestamp}.json`;
-  } else if (user.role === 'parish') {
-    backupData = {
-      ...data,
-      users: data.users.filter(u => u.parishId === user.parishId),
-      parishes: data.parishes.filter(p => p.id === user.parishId),
-      sacraments: data.sacraments.filter(s => s.parishId === user.parishId)
-    };
-    filename = `respaldo-parroquia-${user.parishName?.replace(/\s+/g, '_') || 'parroquia'}-${timestamp}.json`;
+export function validateBackup(value, role) {
+  if (!value || typeof value !== 'object' || Array.isArray(value)
+    || value.format !== BACKUP_FORMAT || value.version !== 1
+    || typeof value.exportedAt !== 'string' || !Number.isFinite(Date.parse(value.exportedAt))
+    || typeof value.sealed !== 'string' || value.sealed.length < 64
+    || value.sealed.length > 17 * 1024 * 1024
+    || !/^[a-f0-9]{64}$/.test(value.integrity || '')) {
+    throw new Error('Seleccione un archivo de copia de seguridad de SACRAMENTUM.');
   }
+  if (value.role !== role) throw new Error('La copia corresponde a otro rol.');
+  const { format, version, exportedAt, sealed, integrity } = value;
+  return { format, version, role, exportedAt, sealed, integrity };
+}
 
-  const blob = new Blob([JSON.stringify(backupData, null, 2)], { type: 'application/json' });
+export function downloadBackup(file) {
+  const date = file.exportedAt.slice(0, 19).replace(/:/g, '-');
+  const blob = new Blob([JSON.stringify(file)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
   link.href = url;
-  link.download = filename;
+  link.download = `sacramentum-${file.role}-${date}.json`;
   document.body.appendChild(link);
   link.click();
-  document.body.removeChild(link);
-  URL.revokeObjectURL(url);
-};
-
-export const validateBackup = (jsonData) => {
-  const requiredKeys = ['users', 'sacraments', 'parishes'];
-  const keys = Object.keys(jsonData);
-  if (!requiredKeys.some(key => keys.includes(key))) {
-    throw new Error('Formato de respaldo inválido: faltan entidades principales.');
-  }
-  return true;
-};
+  link.remove();
+  window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
