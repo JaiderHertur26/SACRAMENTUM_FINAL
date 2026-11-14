@@ -229,7 +229,7 @@ const BaptismSentarRegistrosPage = () => {
             const context = await getManualSeatContext(resolvedParishId, 'bautismo', ids);
             const coordinates = await institutionalSeatCoordinates({
                 title: 'Asentar registros de Bautismo',
-                message: `Ingrese las coordenadas de la primera partida. Se asentarán ${ids.length} boletas en orden consecutivo.`,
+                message: `Ingrese las coordenadas de la primera partida. Se asentarán ${ids.length} boletas en las siguientes posiciones libres.`,
                 context
             });
             if (!coordinates) return;

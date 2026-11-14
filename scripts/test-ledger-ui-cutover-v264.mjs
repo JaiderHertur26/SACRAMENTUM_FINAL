@@ -84,13 +84,14 @@ test('V264/V325 source review pins four screens without editing old V205-V207/V2
  const successor=JSON.parse(read('AUDITORIA_V325_REVISION_SEPARACION_DECRETOS.json'));
  const reviewV326=JSON.parse(read('AUDITORIA_V326_REVISION_ASIENTOS.json'));
  const reviewV328=JSON.parse(read('AUDITORIA_V328_REVISION_ASIENTO_MANUAL.json'));
+ const reviewV330=JSON.parse(read('AUDITORIA_V330_REVISION_CONTINUIDAD_LIBROS.json'));
  assert.equal(Object.keys(reviewed.reviewedSourceSha256).length,4);
  for(const [file,entry] of Object.entries(reviewed.reviewedSourceSha256)){
    const normalized=read(file).replace(/\r\n/g,'\n');
    assert.equal(successor.reviewedSourceSha256[file].before,entry.after);
    assert.equal(reviewV326.reviewedSourceSha256[file].before,successor.reviewedSourceSha256[file].after);
    assert.equal(reviewV328.reviewedSourceSha256[file].before,reviewV326.reviewedSourceSha256[file].after);
-   assert.equal(createHash('sha256').update(normalized).digest('hex'),reviewV328.reviewedSourceSha256[file].after);
+   assert.equal(createHash('sha256').update(normalized).digest('hex'),reviewV330.reviewedSourceSha256[file].after);
    if(predecessor.reviewedSourceSha256[file])
      assert.equal(predecessor.reviewedSourceSha256[file].after,entry.previousSourceSha256);
  }
@@ -106,9 +107,11 @@ test('V264 accepts freshly regenerated browser evidence and archived reviewed ev
  const successor=JSON.parse(read('AUDITORIA_V325_REVISION_SEPARACION_DECRETOS.json'));
  const reviewV326=JSON.parse(read('AUDITORIA_V326_REVISION_ASIENTOS.json'));
  const reviewV328=JSON.parse(read('AUDITORIA_V328_REVISION_ASIENTO_MANUAL.json'));
+ const reviewV330=JSON.parse(read('AUDITORIA_V330_REVISION_CONTINUIDAD_LIBROS.json'));
  for(const [file,item] of Object.entries(review.reviewedSourceSha256)){
    assert.equal(reviewV326.reviewedSourceSha256[file].before,successor.reviewedSourceSha256[file].after);
-   const current=reviewV328.reviewedSourceSha256[file].after;
+   assert.equal(reviewV330.reviewedSourceSha256[file].before,reviewV328.reviewedSourceSha256[file].after);
+   const current=reviewV330.reviewedSourceSha256[file].after;
    assert.doesNotThrow(()=>assertV251RevisedSource({file,historicalSha256:current,currentSha256:current}));
    assert.doesNotThrow(()=>assertV251RevisedSource({
      file,historicalSha256:item.after,currentSha256:current

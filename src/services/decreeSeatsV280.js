@@ -44,13 +44,13 @@ export async function issueChanceryDecreeV280(args){
 }
 
 export function validateSeatDecreeV280({
- decreeId,bookCode,bookId,folio,number,capacity,restart,expectedVersion,operationId,context
+ decreeId,bookCode,bookId,folio,number,capacity,firstFolioUsed,restart,expectedVersion,operationId,context
 }){
  if(!/^[A-Za-z0-9]{1,32}$/.test(String(bookCode||'').trim())||
  !/^[0-9a-f-]{36}$/i.test(String(decreeId||''))||
  !/^[0-9a-f-]{36}$/i.test(String(operationId||''))||
- !Number.isInteger(+folio)||+folio<1||+folio>2147483647||
- !Number.isInteger(+number)||+number<1||+number>2147483647||
+ !Number.isInteger(+folio)||+folio<1||+folio>9999||
+ !Number.isInteger(+number)||+number<1||+number>9999||
  !Number.isInteger(+capacity)||+capacity<1||+capacity>200||
  !Number.isSafeInteger(+expectedVersion)||+expectedVersion<0||
  typeof restart!=='boolean')throw new Error('Libro, Folio, Número y partidas por folio inválidos');
@@ -64,14 +64,20 @@ export function validateSeatDecreeV280({
  if(!bookId && (context?.books||[]).length>0)
  throw new Error('Existe un libro abierto; debe utilizar su secuencia');
  if(!bookId && +expectedVersion!==0)throw new Error('Nuevo libro debe empezar con versión cero');
+ const used=String(firstFolioUsed??'').trim();
+ if(!bookId&&used!==''&&(!/^\d{1,4}$/.test(used)||+used>=+capacity)){
+  throw new Error('Las partidas que ya tiene el folio deben ser menos que su capacidad.');
+ }
  return true;
 }
 export async function seatChanceryDecreeV280(args){
  validateSeatDecreeV280(args);
- return request('seat_chancery_decree_v280',{
+ const used=String(args.firstFolioUsed??'').trim();
+ return request('seat_chancery_decree_v330',{
   p_decree_id:args.decreeId,p_book_code:String(args.bookCode).trim().toUpperCase(),
   p_book_id:args.bookId||null,p_folio:+args.folio,p_number:+args.number,
   p_partidas_per_folio:+args.capacity,p_restart_number_each_folio:args.restart,
-  p_expected_version:+args.expectedVersion,p_operation_id:args.operationId
+  p_expected_version:+args.expectedVersion,p_operation_id:args.operationId,
+  p_first_folio_used:!args.bookId&&used!==''?Number(used):null
  });
 }

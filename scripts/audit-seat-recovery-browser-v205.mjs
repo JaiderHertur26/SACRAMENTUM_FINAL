@@ -120,6 +120,6 @@ try{
 }finally{try{socket?.close()}catch{}try{browser?.kill()}catch{}try{vite.kill()}catch{}try{fs.rmSync(tmp,{recursive:true,force:true})}catch{}}
 const source='src/pages/parish/MatrimonioSentarRegistrosPage.jsx';
 const result={protocol:'V328',scope:'Actual React marriage seating page; in-memory fictitious services; no authenticated production E2E or physical network fault',sourceSha256:createHash('sha256').update(fs.readFileSync(source,'utf8').replace(/\r\n/g,'\n')).digest('hex'),date:new Date().toISOString(),rows,passed:rows.filter(x=>x.passed).length,total:rows.length,exceptions,externalRequests};
-fs.writeFileSync('AUDITORIA_RECUPERACION_MATRIMONIO_V328.json',JSON.stringify(result,null,2)+'\n');
+fs.writeFileSync('AUDITORIA_RECUPERACION_MATRIMONIO_V330.json',JSON.stringify(result,null,2)+'\n');
 console.log('V205_BROWSER '+result.passed+'/'+result.total+' exceptions='+exceptions.length+' external='+externalRequests.length);
 if(result.passed!==8||exceptions.length||externalRequests.length)process.exitCode=1;

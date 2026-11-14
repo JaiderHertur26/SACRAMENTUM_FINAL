@@ -248,7 +248,7 @@ const MatrimonioSentarRegistrosPage = () => {
             const context = await getManualSeatContext(resolvedParishId, 'matrimonio', selectedIds);
             const coordinates = await institutionalSeatCoordinates({
                 title: 'Asentar actas de Matrimonio',
-                message: `Ingrese las coordenadas de la primera partida. Se asentarán ${selectedIds.length} actas en orden consecutivo.`,
+                message: `Ingrese las coordenadas de la primera partida. Se asentarán ${selectedIds.length} actas en las siguientes posiciones libres.`,
                 context
             });
             if (!coordinates) return;
